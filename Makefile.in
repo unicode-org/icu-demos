@@ -10,7 +10,7 @@ include @ICU_MAKEFILE@
 top_builddir = .
 subdir = .
 
-SUBDIRS= usort
+SUBDIRS= uconv usort
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
