@@ -167,10 +167,8 @@ static const char htmlHeader[]=
     "<script type=\"text/javascript\" language=\"JavaScript\" src=\"//www.ibm.com/common/v14/pmh.js\">\n"
     "</script>\n"
     "\n"
-    "<br/>\n"
 
-    "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
-    "<tr><td>\n"
+    "<div style=\"font-size: 6px\">"NBSP"</div>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
@@ -184,11 +182,6 @@ static const char navigationSubHeader[]=
     "<strong>%s</strong>\n";
 
 static const char navigationEndHeader[]=
-    "</td>"
-    "<td align=\"right\">"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">" PROGRAM_NAME " Help</a>"
-    "</td></tr>\n"
-    "</table>\n"
     "<h1><br />ICU " PROGRAM_NAME "</h1>\n";
 
 static const char aliasHeader[]=
@@ -210,6 +203,8 @@ static const char startUCharEscape[]="\\u%04X";
 static const char trailingUCharEscape[]="\\u%04X";
 
 static const char startForm[]=
+    "<table width=\"760\" border=\"0\" cellspacing=\"5\" cellpadding=\"2\">\n"
+    "<tr><td style=\"white-space: nowrap\">\n"
     "<form method=\"get\" action=\"%s\">\n"
     "<p>Select a standard to view:<br />\n"
     "<br />\n"
@@ -217,9 +212,22 @@ static const char startForm[]=
     "\n";
 
 static const char endForm[]=
-            "<input type=\"submit\" value=\"View Results\" size=\"100\" />\n"
-            "</p>"
-            "</form>\n";
+    "<input type=\"submit\" value=\"View Results\" size=\"100\" />\n"
+    "</p>"
+    "</form>\n"
+    "</td>\n"
+    "<td align=\"right\" valign=\"top\">\n"
+
+    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"175\" class=\"v14-gray-table-border\">\n"
+    "<tr><th colspan=\"3\" class=\"v14-header-1-small\">Related Topics</th></tr>\n"
+    "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://oss.software.ibm.com/icu/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
+    "</table>\n"
+
+    "</td></tr>\n"
+    "</table>\n";
 
 static const char startTable[]=
     "<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">\n";
