@@ -50,8 +50,12 @@ function foldcmp(a, b) {
   return 0;
 }
 
-var s = "$USER_IDS";
-USER_IDS = (s ? s.split(";").sort(foldcmp) : []);
+USER_IDS = splitIDs("$USER_IDS");
+
+// Given a string of ';'-separated IDs, return a sorted array
+function splitIDs(s) {
+  return (s ? s.split(";").sort(foldcmp) : [])
+}
 
 // Generate options (inline) for SELECT element
 function generateSelectIDOptions() {
@@ -133,7 +137,7 @@ function updateUserIDs(id) {
   op("callbackUpdateUserIDs", id, "GETUSERIDS");
 }
 function callbackUpdateUserIDs(id, list) {
-  USER_IDS = (list ? list.split(";") : []);
+  USER_IDS = splitIDs(list);
   var o = (id ? [SEPARATOR1] : [NEW_ID, SEPARATOR1]);
   o = o.concat(USER_IDS).concat(SEPARATOR2).concat(AVAILABLE_RBT_IDS);
   setOptions(document.FORM.SELECT_ID, o, id ? id : NEW_ID);
