@@ -1,13 +1,16 @@
 /*
 *******************************************************************************
-* Copyright (C) 2004     , International Business Machines Corporation and    *
+* Copyright (C) 2004-2005, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 **/
 
 #include "unicode/utypes.h"
+#include "unicode/putil.h"
 #include "unicode/udata.h"
 #include "unicode/ustdio.h"
 #include "unicode/ures.h"
+
+#include <string.h>
 
 U_CFUNC char ubrowseres_dat[];
 
