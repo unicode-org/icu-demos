@@ -36,8 +36,17 @@ cat > rebuildData.sh <<EOF
 #!/bin/sh
 cp $DS $1/
 echo copying $DS $1/
+if [ ! -f $1/../source/tools/makeconv/ucmlocal.mk ]; then
+    cp ucmlocal.mk $1/../source/tools/makeconv/ucmlocal.mk
+fi
 cd $1/../source/tools
+cd makeconv
+make 
+cd ..
 make -f Makefile build-local install-local
+if [ -f $1/../source/tools/makeconv/ucmlocal.mk ]; then
+    echo NOT over-writing $1/../source/tools/makeconv/ucmlocal.mk - move out of the way manually!
+fi
 EOF
 
 chmod u+x rebuildData.sh
