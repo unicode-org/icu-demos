@@ -358,7 +358,12 @@ int main(int argc, char** argv)
         }
 #endif
     }
-
+#ifdef WIN32
+  if( setmode( fileno ( stdout ), O_BINARY ) == -1 ) {
+          perror ( "Cannot set stdout to binary mode" );
+          exit(-1);
+  }
+#endif
     if (!convertFile(fromcpage, tocpage, infile, stdout))
         goto error_exit;
 
