@@ -15,9 +15,6 @@ subdir = ubrowse
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
--include $(shell $(ICU_CONFIG) --incfile) 
-
-
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
@@ -25,28 +22,18 @@ CLEANFILES = *~
 ## Target information
 TARGET = ubrowse
 
-LDFLAGS += -L../locexp/util 
+LDFLAGS += -L../locexp/util $(LDFLAGS_USTDIO)
 CPPFLAGS +=
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
 # -ldl is needed for DLL version
-ICULIBS    +=  -lustdio 
+#ICULIBS    +=  -lustdio 
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  := -I../locexp/util  $(CPPFLAGS)
-
+CPPFLAGS  += -I../locexp/util
 
 OBJECTS = ubrowse.o 
-
-DEPS = $(OBJECTS:.o=.d)
-
-## List of phony targets
-.PHONY : all all-local install install-local clean clean-local \
-distclean distclean-local dist dist-local check check-local
-
-## Clear suffix list
-.SUFFIXES :
 
 ## List of standard targets
 all: all-local
@@ -62,8 +49,8 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(bindir)
-	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
+	$(MKINSTALLDIRS) $(BINDIR)
+	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
 
 dist-local:
 
@@ -90,9 +77,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 $(TARGET) : $(OBJECTS)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
 
-ifneq ($(MAKECMDGOALS),distclean)
--include $(DEPS)
-endif
 
 
 

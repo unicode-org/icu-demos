@@ -763,7 +763,7 @@ main(int argc,
              );
 
       printf("<B>Blocks:</B>");
-      for(i=U_BASIC_LATIN;i<UBLOCK_COUNT;i++)
+      for(i=UBLOCK_BASIC_LATIN;i<UBLOCK_COUNT;i++)
       {
         printf("<A HREF=\"?scr=%d&b=0\">", i);
         printBlock(i);
@@ -773,7 +773,7 @@ main(int argc,
       
 
       printf("<B>General Categories:</B>");
-      for(i=U_UNASSIGNED;i<=U_GENERAL_OTHER_TYPES;i++)
+      for(i=U_UNASSIGNED;i<U_CHAR_CATEGORY_COUNT;i++)
       {
         printf("<A HREF=\"?typ=%d&b=0\">", i);
         printType(i);
@@ -1189,8 +1189,8 @@ void printType(int8_t type)
     case U_MODIFIER_SYMBOL: printf("Modifier Symbol"); break; 
     case U_OTHER_SYMBOL: printf("Other Symbol"); break; 
     case U_INITIAL_PUNCTUATION: printf("Initial Punctuation"); break; 
-      /*    case U_FINAL_PUNCTUATION: printf("Final Punctuation"); break; 
-    case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;       */
+    case U_FINAL_PUNCTUATION: printf("Final Punctuation"); break; 
+      /* case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;      */
 
     default: printf("Unknown type %d", type); break;
     }
@@ -1297,6 +1297,22 @@ case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("Halfwidth and Fullwidth Forms
     case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B: printf("CJK Unified Ideographs, Extension B"); return;
     case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT: printf("CJK Compatibility Ideographs, Supplement"); return;
     case UBLOCK_TAGS: printf("Tags"); return;
+      /* ICU 2.2: (Unicode 3.2) */
+    case UBLOCK_CYRILLIC_SUPPLEMENTARY: printf("Cyrillic Supplementary"); return;
+    case UBLOCK_TAGALOG: printf("Tagalog"); return;
+    case UBLOCK_HANUNOO: printf("Hanunoo"); return;
+    case UBLOCK_BUHID: printf("Buhid"); return;
+    case UBLOCK_TAGBANWA: printf("Tagbanwa"); return;
+    case UBLOCK_MISCELLANEOUS_MATHEMATICAL_SYMBOLS_A: printf("Miscellaneous Mathematical Symbols A"); return;
+    case UBLOCK_SUPPLEMENTAL_ARROWS_A: printf("Supplemental Arrows A"); return;
+    case UBLOCK_SUPPLEMENTAL_ARROWS_B: printf("Supplemental Arrows B"); return;
+    case UBLOCK_MISCELLANEOUS_MATHEMATICAL_SYMBOLS_B: printf("Miscellaneous Mathematical Symbols B"); return;
+    case UBLOCK_SUPPLEMENTAL_MATHEMATICAL_OPERATORS: printf("Supplemental Mathematical Operators"); return;
+    case UBLOCK_KATAKANA_PHONETIC_EXTENSIONS: printf("Katakana Phonetic Extensions"); return;
+    case UBLOCK_VARIATION_SELECTORS: printf("Variation Selectors"); return;
+    case UBLOCK_SUPPLEMENTARY_PRIVATE_USE_AREA_A: printf("Supplementary Private Use Area A"); return;
+    case UBLOCK_SUPPLEMENTARY_PRIVATE_USE_AREA_B: printf("Supplementary Private Use Area B"); return;
+      
 
     default: printf("Unknown block %d",block); return;
     }
@@ -1305,6 +1321,11 @@ case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("Halfwidth and Fullwidth Forms
 UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
 {
   UChar32 end = (startFrom-1);
+  if(end > UCHAR_MAX_VALUE)
+  {
+    end = UCHAR_MAX_VALUE;
+  }
+
   for(;startFrom != end; startFrom++)
   {
     if(startFrom > UCHAR_MAX_VALUE)
@@ -1319,13 +1340,32 @@ UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
 UChar32 doSearchType(int8_t type, UChar32 startFrom)
 {
   UChar32 end = (startFrom-1);
+#ifdef DEBUG_UBROWSE
+  int tick  =0;
+#endif
+  if(end > UCHAR_MAX_VALUE) {
+    end = UCHAR_MAX_VALUE;
+  }
+
   for(;startFrom != end; startFrom++)
   {
     if(startFrom > UCHAR_MAX_VALUE)
+    {
       startFrom = UCHAR_MIN_VALUE;
+    }
 
     if(u_charType(startFrom) == type)
       return startFrom;
+
+
+#ifdef DEBUG_UBROWSE
+    tick++;
+
+    if((tick%1024) ==0) {
+      fprintf(stderr, "%d: Searching, %04X... to %04X\n", getpid(), startFrom, end);
+      fflush(stderr);
+    }
+#endif
   }
 
   return startFrom;
@@ -1347,7 +1387,7 @@ void showSearchMenu(UChar32 startFrom)
          "\r\n");
 
   printf("<SELECT NAME=scr>");
-  for(i=U_BASIC_LATIN;i<=U_SCRIPT_COUNT;i++)
+  for(i=UBLOCK_BASIC_LATIN;i<UBLOCK_COUNT;i++)
     {
       printf("  <OPTION ");
       if(i == gSearchBlock)
@@ -1364,7 +1404,7 @@ void showSearchMenu(UChar32 startFrom)
 
   printf("</tr><tr><FORM METHOD=GET><td align=left>General Category: </td><td align=right>");
   printf("<SELECT NAME=typ>\r\n");
-  for(i=U_UNASSIGNED;i<=U_GENERAL_OTHER_TYPES;i++)
+  for(i=U_UNASSIGNED;i<U_CHAR_CATEGORY_COUNT;i++)
     {
       printf("  <OPTION ");
       if(i == gSearchType)
