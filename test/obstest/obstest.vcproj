@@ -38,7 +38,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuobsd.lib icuucd.lib icuind.lib icudata.lib icutud.lib"
+				AdditionalDependencies="icuobsd.lib icuucd.lib icuind.lib icudt.lib icutud.lib"
 				OutputFile=".\Debug/obstest.exe"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib\,..\..\..\icu\lib\"
@@ -100,7 +100,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuobs.lib icuuc.lib icuin.lib icudata.lib icutu.lib"
+				AdditionalDependencies="icuobs.lib icuuc.lib icuin.lib icudt.lib icutu.lib"
 				OutputFile=".\Release/obstest.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
