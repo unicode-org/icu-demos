@@ -1,0 +1,53 @@
+## Copyright (c) 2000, International Business Machines Corporation and
+## others. All Rights Reserved.
+
+UNICODE BROWSER  :  by Steven R. Loomis, IBM
+-------------------------
+
+This file describes necessary steps for building and using unicode browser
+on Win32 platforms.
+
+Before reading this file, please read README file in the same directory.
+
+BUILDING UNICODE BROWSER ON WIN32
+---------------------------------
+
+Required environment for building ubrowse on Win32 platforms is
+the same as for building ICU - Microsoft Visual C++ 6.0. 
+
+Also, before building ubrowse, the whole icu system should be built and 
+working.
+
+ubrowse is automatically built by using using the provided ubrowse.dsw
+work space in this directory, or by using all.dsw workspace in ..\all
+directory. 
+
+When you build ubrowse, you should get an executable file ubrowse.exe in
+your debug or release directory, depending on the type of build.
+
+RUNNING UNICODE BROWSER
+-----------------------
+
+Locale explorer is intendended to be run as a CGI-BIN application from
+your web server. 
+
+If you don't have the web server readily available, you can still start 
+the ubrowse from command line. 
+
+Setting up ubrowse to work with a web server involves several more steps.
+
+1) Environment variable ICU_DATA should be set to point to icu data directory.
+Although it is a requirement for running and building ICU, for some reason web
+server do not transfer this environment variable. 
+
+If you are using Apache for Win32 you should add the line:
+SetEnv ICU_DATA c:\icu\icu\data\ #or whatever is the path to your icu\data dir
+to the end of httpd.conf file.
+
+2) Copy file icudata.dll from icu data directory to any directory on PATH. 
+(Good candidates are icu\bin\debug or icu\bin\release).
+
+3) Copy ubrowse.exe to cgi-bin directory of your web server.
+
+Try locexp by going to http://localhost/cgi-bin/ubrowse
+
