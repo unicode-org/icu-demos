@@ -223,9 +223,18 @@ static void parseAllStandards(const char *queryStr, UErrorCode *status) {
             gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
         }
         else if (strncmp(src, "bytes=", 6) == 0) {
+            const char *strItr = gStartBytesBuffer;
             gStartBytes = gStartBytesBuffer;
             strncpy(gStartBytes, nextVal, nextOpt - nextVal);
             gStartBytes[sizeof(gStartBytesBuffer)-1] = 0;   // NULL terminate for safety
+            while (*strItr) {
+                if (!isxdigit(*strItr)) {
+                    // Bad data! Ignore the whole thing
+                    gStartBytes = NULL;
+                    break;
+                }
+                strItr++;
+            }
         }
         else {
             // Woah! I don't know what this option is.
@@ -290,7 +299,7 @@ static void printOptions(UErrorCode *status) {
     }
     printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\"%s> <em>All Aliases</em><br>\n", checked);
     if (gStartBytes) {
-        printf("<input type=\"checkbox\" name=\"bytes\" value=\"%s\" checked> <em>All Aliases</em><br>\n", gStartBytes);
+        printf("<input type=\"HIDDEN\" name=\"bytes\" value=\"%s\" checked>\n", gStartBytes);
     }
     puts("<br>");
 }
@@ -700,6 +709,7 @@ main(int argc, const char *argv[]) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=windows-1256&bytes=")!=NULL) {
+//    if((cgi="conv=windows-1256&bytes=a")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
