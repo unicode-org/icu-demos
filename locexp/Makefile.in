@@ -45,7 +45,7 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 
 DEPS = $(OBJECTS:.o=.d)
 
-ICULIBS := -lustdio $(ICULIBS) -lusort -liculxutil 
+ICULIBS := -lustdio $(ICULIBS) -lusort -liculxutil  
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
