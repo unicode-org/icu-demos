@@ -86,11 +86,12 @@ function insertSamples() {
   document.FORM.OUTPUT_1.value = "(Press the Transliterate button to see results.)";
   document.FORM.TRANSLITERATOR_ID_1.selectedIndex = 0; // (Compound)
   document.FORM.COMPOUND_ID_1.value =
-    "Hangul-Latin; Kana-Latin; Cyrillic-Latin; Greek-Latin";
+    "Hangul-Latin; Kana-Latin; Cyrillic-Latin; Greek-Latin; Any-Title";
 
   document.FORM.OUTPUT_2.value = "";
-  document.FORM.TRANSLITERATOR_ID_2.selectedIndex = 0; // (Inverse)
-  document.FORM.COMPOUND_ID_2.value = "";
+  document.FORM.TRANSLITERATOR_ID_2.selectedIndex = 1; // (Compound)
+  document.FORM.COMPOUND_ID_2.value =
+    "Latin-Greek";
 }
 
 // Return the editor window
@@ -208,8 +209,12 @@ function handleUnload() {
       $ids2</select></td>
     </tr>
     <tr>
-	  <td><input type="button" value="Edit Custom Rules" name="NEW"
-           onclick="openRuleEditor()" class="wide">
+	  <td>
+      &nbsp;
+      <!--Let's hide this for now -- and just put up the real one later
+      <input type="button" value="Edit Custom Rules" name="NEW"
+       onclick="openRuleEditor()" class="wide">
+       -->
       </td>
       <td rowspan="2"><textarea rows="2" name="COMPOUND_ID_1" class="wide"
            onKeyPress="compoundKeyPress(1)">$compound1</textarea>
