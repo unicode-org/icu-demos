@@ -2112,7 +2112,7 @@ void listBundles(char *b)
     showLocaleScript(lx, myRB, locale);
 
     showUnicodeSet(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
-    showString(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
+    /*    showString(lx, myRB, locale, b, "ExemplarCharacters", FALSE); */
     
     showTaggedArray(lx, myRB, locale, b, "Languages");
     showTaggedArray(lx, myRB, locale, b, "Countries"); 
@@ -2282,6 +2282,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
   UChar temp[UCA_LEN]={'\0'};
   UChar *scopy = 0;
   UChar *comps = 0;
+  UChar *compsBuf = 0;
   UBool bigString     = FALSE; /* is it too big to show automatically? */
   UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len = 0, len2, i;
@@ -2407,7 +2408,8 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 	  if(U_SUCCESS(status))
 	    {
 
-	      comps = malloc(sizeof(UChar) * (len*3));
+	      compsBuf = malloc(sizeof(UChar) * (len*3));
+              comps = compsBuf;
               
               {
                   for(i=0;i<(len*3);i++)
@@ -2430,9 +2432,11 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
                         len2,len); */
               if(U_FAILURE(status))
               {
+                  free(compsBuf);
                   u_fprintf(lx->OUT, "xlit failed -} %s<P>\n",
                             u_errorName(status));
                   comps = (UChar*)s;
+                  compsBuf = comps;
                   len = len2;
               }
 
@@ -2456,7 +2460,13 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 		  if(*comps == '&')
 		    u_fprintf(lx->OUT, "<P>");
 		  else if(*comps == '<')
-		    u_fprintf(lx->OUT, "<BR>&nbsp;");
+                  {
+                    if((comps != compsBuf) && (comps[-1] != '<'))
+                    {
+                      /* don't break more than once. */
+                      u_fprintf(lx->OUT, "<BR>&nbsp;");
+                    }
+                  }
 		  
 		  if((*comps == 0x000A) || u_isprint(*comps))
 		    u_fprintf(lx->OUT, "%K", *comps);
