@@ -44,4 +44,10 @@ UBool util_writeTo(FILE* file, const UnicodeString& str);
  */
 UBool util_readFrom(FILE* file, UnicodeString& key);
 
+/**
+ * Escape a string for JavaScript, such that JavaScript's unescape()
+ * function recovers the original string.  Modifies the string in place.
+ */
+void util_escapeJavaScriptString(UnicodeString& str);
+
 #endif

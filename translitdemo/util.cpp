@@ -99,3 +99,25 @@ UBool util_readFrom(FILE* file, UnicodeString& key) {
     delete[] charBuf;
     return TRUE;
 }
+
+/**
+ * Escape a string for JavaScript, such that JavaScript's unescape()
+ * function recovers the original string.  Modifies the string in place.
+ */
+void util_escapeJavaScriptString(UnicodeString& str) {
+    int32_t i;
+    char buf[8];
+    strcpy(buf, "%00");
+    for (i=0; i<str.length(); ++i) {
+        UChar c = str[i];
+        if ((c >= 48 && c <= 57) ||
+            (c >= 65 && c <= 90) ||
+            (c >= 97 && c <= 122)) {
+            // c is in [0-9A-Za-z]; do nothing
+        } else {
+            sprintf(buf+1, "%02X", c);
+            str.replace(i, 1, UnicodeString(buf, ""));
+            i += 2;
+        }
+    }
+}
