@@ -726,7 +726,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
   
 /* Show a resource that's an array. Useful for types we haven't written viewers for yet --------*/
 
-void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key )
+void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *key, ECal isCal )
 {
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode firstStatus = U_ZERO_ERROR;
@@ -734,11 +734,36 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     int32_t len;
     const UChar *s  = 0;
     int i;
+    const char *realKey;
+    char   key2[1024];
+    UBool userRequested = FALSE;
 
-    array = ures_getByKey(rb, key, array, &firstStatus);
+    userRequested = didUserAskForKey(key, queryString);
+
+    if( (isCal == kCal) && lx->defaultCalendar[0]) {
+      snprintf(key2, 1022, "%s_%s", key, lx->defaultCalendar);
+
+      array = ures_getByKey(rb, key2, array, &firstStatus);
+      
+      if(firstStatus == U_MISSING_RESOURCE_ERROR) {
+        firstStatus = U_ZERO_ERROR;
+        realKey = key;
+      } else {
+        realKey = key2;
+      }
+    }
+
+    if(array == NULL ) {
+      array = ures_getByKey(rb, key, array, &firstStatus);
+    }
+
     item = ures_getByIndex(array, 0, item, &firstStatus);
 
     showKeyAndStartItem(lx, key, NULL, locale, FALSE, firstStatus);
+
+    if(realKey == key2) {
+      u_fprintf(lx->OUT, "(%s)<br>\r\n", lx->defaultCalendar);
+    }
 
     u_fprintf(lx->OUT, "<OL>\r\n");
 
@@ -747,6 +772,11 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
         status = U_ZERO_ERROR;
         if(U_FAILURE(firstStatus)) {
             status = firstStatus; /* ** todo: clean up err handling! */
+        }
+
+        if((i > 10) && !userRequested) {
+          u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+          break;
         }
 
         item = ures_getByIndex(array, i, item, &status);
@@ -766,7 +796,14 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
 	}
 
     }
-    u_fprintf(lx->OUT, "</OL></TD>");
+    u_fprintf(lx->OUT, "</OL>");
+    if((i>=10) && userRequested) {
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+                locale,
+                key,
+                FSWF("bigStringHide", "Hide"));
+    }
+    u_fprintf(lx->OUT, "</TD>");
     u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
     showKeyAndEndItem(lx, key, locale);
     u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
@@ -777,7 +814,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
 
 /* Show a resource that's an array, wiht an explanation ------------------------------- */
 
-void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *key )
+void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *key, ECal isCal )
 {
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode firstStatus;
@@ -797,6 +834,8 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     UChar tempChars[1024];
     UChar tempDate[1024]; /* for Date-Time */
     UChar tempTime[1024]; /* for Date-Time */
+    const char *realKey;
+    char   key2[1024];
 
     /* figure out what example to use */
     if(!strcmp(key,"DateTimePatterns"))
@@ -810,10 +849,31 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     now = ucal_getNow();
 
     firstStatus = U_ZERO_ERROR;
-    array = ures_getByKey(rb, key, array, &firstStatus);
+    
+    if( (isCal == kCal) && lx->defaultCalendar[0]) {
+      snprintf(key2, 1022, "%s_%s", key, lx->defaultCalendar);
+
+      array = ures_getByKey(rb, key2, array, &firstStatus);
+      
+      if(firstStatus == U_MISSING_RESOURCE_ERROR) {
+        firstStatus = U_ZERO_ERROR;
+        realKey = key;
+      } else {
+        realKey = key2;
+      }
+    }
+
+    if(array == NULL ) {
+      array = ures_getByKey(rb, key, array, &firstStatus);
+    }
+
     item = ures_getByIndex(array, 0, item, &firstStatus);
     s = ures_getString(item, &len, &firstStatus);
     showKeyAndStartItemShort(lx, key, NULL, locale, FALSE, firstStatus);
+
+    if(realKey == key2) {
+      u_fprintf(lx->OUT, "(%s)<br>\r\n", lx->defaultCalendar);
+    }
 
     if(exampleType != kNoExample)
     {
@@ -1206,7 +1266,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
 /* Show a resource that has a short (*Abbreviations) and long (*Names) version ---------------- */
 /* modified showArray */
-void showShortLong( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num )
+void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num )
 {
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode shortStatus = U_ZERO_ERROR, longStatus = U_ZERO_ERROR;

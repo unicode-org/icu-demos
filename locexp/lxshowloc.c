@@ -191,11 +191,33 @@ void showOneLocale(LXContext *lx, char *b)
       
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   Date/Time section %%%*/
+        showString(lx, myRB, locale, b, "DefaultCalendar", FALSE);
 
-        showShortLong(lx, myRB, locale, "Day", 
+        {
+          int32_t len;
+          const UChar *defCal;
+          UErrorCode defCalStatus = U_ZERO_ERROR;
+          
+          defCal = ures_getStringByKey(myRB, "DefaultCalendar", &len,  &defCalStatus);
+          if(U_SUCCESS(defCalStatus) && len > 0) {
+            char defCalStr[200];
+            if(len > 199) {
+              len = 199;
+            }
+            u_UCharsToChars(defCal, defCalStr, len);
+            defCalStr[len]=0;
+           
+            if(strcmp(defCalStr,"gregorian")) {
+              /* copy the default calendar out */
+              strcpy(lx->defaultCalendar,defCalStr);
+            }
+          }
+        }
+
+        showShortLongCal(lx, myRB, locale, "Day", 
                       FSWF("DayAbbreviations", "Short Names"),
                       FSWF("DayNames", "Long Names"),7);
-        showShortLong(lx, myRB, locale, "Month",
+        showShortLongCal(lx, myRB, locale, "Month",
                       FSWF("MonthAbbreviations", "Short Names"),
                       FSWF("MonthNames", "Long Names"), 12);
 
@@ -207,10 +229,10 @@ void showOneLocale(LXContext *lx, char *b)
             ampmDesc[1] = FSWF("AmPmMarkers1", "pm");
             ampmDesc[2] = 0;
       
-            showArrayWithDescription(lx, myRB, locale, ampmDesc, "AmPmMarkers");
+            showArrayWithDescription(lx, myRB, locale, ampmDesc, "AmPmMarkers", kCal);
         }
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
-        showArray(lx, myRB, locale, "Eras");
+        showArray(lx, myRB, locale, b, "Eras", kCal);
         u_fprintf(lx->OUT, "</td></tr></table>");
     
     
@@ -227,7 +249,7 @@ void showOneLocale(LXContext *lx, char *b)
             dtpDesc[8] = FSWF("DateTimePatterns8", "Date-Time pattern.<BR>{0} = time, {1} = date");
             dtpDesc[9] = 0;
       
-            showArrayWithDescription(lx, myRB, locale, dtpDesc, "DateTimePatterns");
+            showArrayWithDescription(lx, myRB, locale, dtpDesc, "DateTimePatterns", kCal);
         }
     
     
@@ -246,7 +268,7 @@ void showOneLocale(LXContext *lx, char *b)
 #endif
             zsDesc[7] = 0;
       
-            show2dArrayWithDescription(lx, myRB, locale, zsDesc, b, "zoneStrings");
+            show2dArrayWithDescription(lx, myRB, locale, zsDesc, b, "zoneStrings");  /* not calendrical */
         }
     
         /* locale pattern chars */
@@ -275,9 +297,9 @@ void showOneLocale(LXContext *lx, char *b)
             charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
             charDescs[20] = 0;
       
-            showStringWithDescription(lx, myRB, locale, b, charDescs, "localPatternChars", TRUE);
+            showStringWithDescription(lx, myRB, locale, b, charDescs, "localPatternChars", TRUE); /* calendrical? */
         }
-        showDateTimeElements(lx, myRB, locale);
+        showDateTimeElements(lx, myRB, locale); /* not calendrical? */
 
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*     Numbers section %%%*/
@@ -292,7 +314,7 @@ void showOneLocale(LXContext *lx, char *b)
             currDesc[2] = FSWF("CurrencyElements2", "Currency separator");
             currDesc[3] = 0;
       
-            showArrayWithDescription(lx, myRB, locale, currDesc, "CurrencyElements");
+            showArrayWithDescription(lx, myRB, locale, currDesc, "CurrencyElements", kNormal);
         }
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
 #endif
@@ -316,7 +338,7 @@ void showOneLocale(LXContext *lx, char *b)
             numDesc[9] = FSWF("NumberElements9", "Infinity");
             numDesc[10] = FSWF("NumberElements10", "Not a number");
             numDesc[11] = 0;
-            showArrayWithDescription(lx, myRB, locale, numDesc, "NumberElements");
+            showArrayWithDescription(lx, myRB, locale, numDesc, "NumberElements", kNormal);
         }
     
     
@@ -328,7 +350,7 @@ void showOneLocale(LXContext *lx, char *b)
             numDesc[3] = FSWF("NumberPatterns3", "Scientific Pattern");
             numDesc[4] = 0;
       
-            showArrayWithDescription(lx, myRB, locale, numDesc, "NumberPatterns");
+            showArrayWithDescription(lx, myRB, locale, numDesc, "NumberPatterns", kNormal);
         }
     
         showSpelloutExample(lx, myRB, locale);

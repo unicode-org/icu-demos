@@ -68,15 +68,18 @@ typedef struct
   char             curLocaleName[128];
   UChar           newZone[300];          /* Timezone to set to */
   const UChar          *timeZone;
-    UChar displayName[1024];        /* Cache of current language display name */
-
+  UChar displayName[1024];        /* Cache of current language display name */
+  
+  /* current locale's default calendar */
+  char             defaultCalendar[1024];
+  
   MySortable     specialParLocale; /* owns the parent IF it's not in the tree */
 
-  /* === Put the following  into a CACHE - keyed on locale! */
+  /* === TODO: put the following  into a CACHE keyed on locale! */
   MySortable      *locales ;     /* tree of locales */
   int32_t          numLocales;
 
-  /* === Context information for callbacks.. woo hoo ! */
+  /* === Context information for callbacks..  */
   FromUBackslashContext   backslashCtx;
   FromUDecomposeContext   decomposeCtx;
   FromUTransliteratorContext   xlitCtx;
@@ -126,7 +129,7 @@ extern void openLX();
 extern void closeLX(LXContext *lx);
 extern void explainStatus( LXContext *lx, UErrorCode status, const char *tag );
 
-
+typedef enum { kNormal, kCal } ECal;
 
 /* setup the UFILE */
 
@@ -162,12 +165,12 @@ extern void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale,
 extern void showLocaleCodes(LXContext *lx, UResourceBundle *myRB, const char *locale);
 extern void showLocaleScript(LXContext *lx, UResourceBundle *myRB, const char *locale);
 extern void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *whichString, UBool hidable);
-extern void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString);
-extern void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString);
+extern void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, ECal isCal);
+extern void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString, ECal);
 extern void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *queryString, const char *whichString);
 extern void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *whichString, UBool compareToDisplay);
 extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString);
-extern void showShortLong( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);
+extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showSort( LXContext *lx, const char *locale, const char *b);
 
