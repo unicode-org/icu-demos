@@ -46,7 +46,8 @@ static const char htmlHeader[]=
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
     "td {white-space: nowrap;}\n"
     "td.value {font-family: monospace;}\n"
-    "td.reserved {background-color: #EEEEEE;}\n"
+    "td.reserved {padding-top: 0.8em; padding-bottom: 0.8em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
+    "td.continue {padding-top: 0.8em; padding-bottom: 0.8em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
     "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: 1px, solid; font-size: 75%; font-family: monospace;}\n"
     "</style>\n"
     "</head>\n"
@@ -134,6 +135,10 @@ static const char *getStandardOptionsURL(UErrorCode *status) {
     while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
         standard = (const char*) e->value.pointer;
         len += sprintf(optionsURL+len, "&s=%s", standard);
+        if (*standard == 0) {
+            /* Special case for when browsers are too smart, like Opera */
+            len += sprintf(optionsURL+len, "-");
+        }
     }
 
     return optionsURL;
@@ -147,7 +152,7 @@ static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *s
     int32_t i;
     const char *standard;
 
-    if (nameSize <= 0) {
+    if (nameSize <= 0 || *newStandard == '-') {
         uhash_put(gStandardsSelected,
             (void*)ucnv_getStandard(gMaxStandards-1, status),
             (void*)ucnv_getStandard(gMaxStandards-1, status),
@@ -288,7 +293,7 @@ static void printOptions(UErrorCode *status) {
             printf("<input type=\"checkbox\" name=\"s\" value=\"%s\"%s> %s<br>\n", standard, checked, standard);
         }
         else {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"\"%s> <em>Untagged Aliases</em><br>\n", checked);
+            printf("<input type=\"checkbox\" name=\"s\" value=\"-\"%s> <em>Untagged Aliases</em><br>\n", checked);
         }
     }
     if (uhash_find(gStandardsSelected, ALL) != NULL) {
@@ -541,7 +546,7 @@ static void printConverterInfo(UErrorCode *status) {
     puts(endTable);
 
     if (gStartBytes) {
-        printCPTable(gCurrConverter, status);
+        printCPTable(gCurrConverter, gStartBytes, status);
     }
 
     if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
@@ -709,7 +714,7 @@ main(int argc, const char *argv[]) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=windows-1256&bytes=")!=NULL) {
-//    if((cgi="conv=windows-1256&bytes=a")!=NULL) {
+//    if((cgi="conv=ibm-950&bytes=C0")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {

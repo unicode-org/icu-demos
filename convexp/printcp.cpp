@@ -24,6 +24,7 @@
 #include "unicode/uchar.h"
 
 #include <stdio.h>
+#include <string.h>
 
 //#define CELL_WIDTH " width=\"5%\""
 #define CELL_WIDTH ""
@@ -34,7 +35,7 @@ static void printHeader() {
     int32_t idx;
     puts("<tr><th></th>");
     for (idx = 0; idx < 16; idx++) {
-        printf("<th " CELL_WIDTH ">%02X</th>", idx);
+        printf("<th class=\"standard\"" CELL_WIDTH ">%02X</th>", idx);
     }
     puts("</tr>");
 }
@@ -114,8 +115,44 @@ static const char *getEscapeChar(UChar32 uniVal) {
     return NULL;
 }
 
-void printCPTable(const char *convName, UErrorCode *status) {
-    int32_t col, row, utf8Size;
+static const int8_t
+basicToDigit[256]={
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,  0,
+
+     0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24,  0,  0,  0,  0,  0,  0,
+
+     0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24,  0,  0,  0,  0,  0,  0,
+
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
+};
+
+char *parseAndCopy(char *dest, const char *source, int32_t len) {
+    len-=2;
+    while (len >= 0) {
+        dest[len/2] = (basicToDigit[source[len]] << 4) + basicToDigit[source[len+1]];
+        len-=2;
+    }
+    return dest;
+}
+
+void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
+    int32_t col, row, utf8Size, startBytesLen;
     UConverter *cnv = ucnv_open(convName, status);
     char *sourceBuffer;
     char *source;
@@ -124,45 +161,93 @@ void printCPTable(const char *convName, UErrorCode *status) {
     UChar *target;
     UChar *targetLimit;
     UChar32 uniVal;
-    char utf8[32];
+    static char utf8[32];
+    static char uniName[128];
     int8_t maxCharSize;
 
     if (U_FAILURE(*status)) {
         return;
     }
 
+    if (!startBytes) {
+        puts("<p>ERROR: startBytes == NULL</p>");
+    }
+
     UConverterType convType = ucnv_getType(cnv);
     switch (convType) {
     case UCNV_SBCS:
 //    case UCNV_DBCS:
-//    case UCNV_MBCS:
+//    case UCNV_MBCS:   /* Be careful. This can also act like DBCS */
     case UCNV_LATIN_1:
+//    case UCNV_UTF8:
+//    case UCNV_UTF16_BigEndian:
+//    case UCNV_UTF16_LittleEndian:
+//    case UCNV_UTF32_BigEndian:
+//    case UCNV_UTF32_LittleEndian:
+//    case UCNV_EBCDIC_STATEFUL:
+//    case UCNV_ISO_2022:
+//    case UCNV_LMBCS_1:
+//    case UCNV_LMBCS_2: 
+//    case UCNV_LMBCS_3:
+//    case UCNV_LMBCS_4:
+//    case UCNV_LMBCS_5:
+//    case UCNV_LMBCS_6:
+//    case UCNV_LMBCS_8:
+//    case UCNV_LMBCS_11:
+//    case UCNV_LMBCS_16:
+//    case UCNV_LMBCS_17:
+//    case UCNV_LMBCS_18:
+//    case UCNV_LMBCS_19:
+//    case UCNV_HZ:
+//    case UCNV_SCSU:
+//    case UCNV_ISCII:
     case UCNV_US_ASCII:
+//    case UCNV_UTF7:
+//    case UCNV_BOCU1:
+//    case UCNV_UTF16:
+//    case UCNV_UTF32:
+//    case UCNV_CESU8:
+//    case UCNV_IMAP_MAILBOX:
         puts("<h2>Codepage Layout</h2>");
         break;
     default:
         puts("<p>Codepage layout information is not available for this converter at this time.</p>");
+        ucnv_close(cnv);
         return;
     }
 
+    /* The string has two digits per byte */
+    /* If it's an odd number, ignore the last digit */
+    startBytesLen = ((strlen(startBytes)>>1)<<1);
+    maxCharSize = startBytesLen/2;
+    if (maxCharSize >= ucnv_getMaxCharSize(cnv)) {
+        puts("<p>WARNING: startBytes > maximum number of characters. startBytes is truncated.</p>");
+        maxCharSize = ucnv_getMaxCharSize(cnv) - 1;
+        startBytesLen = (ucnv_getMaxCharSize(cnv)-1) * 2;
+    }
+    maxCharSize++;
+    if (startBytesLen > 0) {
+        printf("<p>Currently showing the codepage starting with %s</p>\n", startBytes);
+    }
+
     ucnv_setToUCallBack(cnv, UCNV_TO_U_CALLBACK_SKIP, NULL, NULL, NULL, status);
-    maxCharSize = ucnv_getMaxCharSize(cnv);
     sourceBuffer = new char[maxCharSize];
     sourceLimit = sourceBuffer + maxCharSize;
-    targetBuffer = new UChar[maxCharSize*2];
+    targetBuffer = new UChar[maxCharSize*UTF_MAX_CHAR_LENGTH];
     targetLimit = targetBuffer + maxCharSize;
+    parseAndCopy(sourceBuffer, startBytes, startBytesLen);
 
     puts("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the layout of the codepage\">");
     printHeader();
 
     for (row = 0; row < 16; row++) {
         puts("<tr>");
-        printf("<th>%X0</th>", row);
+        printf("<th class=\"standard\">%X0</th>\n", row);
         for (col = 0; col < 16; col++) {
             *status = U_ZERO_ERROR;
-            ucnv_reset(cnv);
+            ucnv_resetToUnicode(cnv);
 
-            sourceBuffer[0] = (char)(row << 4 | col);
+            sourceBuffer[startBytesLen/2] = (char)(row << 4 | col);
             targetBuffer[0] = 0;
             source = sourceBuffer;
             target = targetBuffer;
@@ -171,22 +256,29 @@ void printCPTable(const char *convName, UErrorCode *status) {
             U16_GET_UNSAFE(targetBuffer, 0, uniVal);
             if (U_SUCCESS(*status) && (target - targetBuffer) > 0) {
                 const char *escapedChar = getEscapeChar(uniVal);
+                u_charName(uniVal, U_EXTENDED_CHAR_NAME, uniName, sizeof(uniName), status);
                 if (!escapedChar) {
                     u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, target - targetBuffer, status);
-                    printf("<td align=\"center\" " CELL_WIDTH "><font size=\"+2\">%s</font><br>", utf8);
+                    printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br>", uniName, utf8);
                 }
                 else {
-                    printf("<td align=\"center\" " CELL_WIDTH ">%s", escapedChar);
+                    printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">%s", uniName, escapedChar);
                 }
                 printf("<font size=\"-2\">%04X</font></td>\n", uniVal);
             }
+            else if (*status == U_TRUNCATED_CHAR_FOUND) {
+                printf("<td class=\"continue\"" CELL_WIDTH ">%02X</td>", (uint32_t)(row << 4 | col));
+            }
             else {
                 // show nothing
-                printf("<td class=\"reserved\" " CELL_WIDTH ">&nbsp;</td>");
+                printf("<td class=\"reserved\"" CELL_WIDTH ">&nbsp;</td>");
             }
         }
         puts("</tr>");
     }
     puts("</table>");
+
+    delete sourceBuffer;
+    delete targetBuffer;
     ucnv_close(cnv);
 }
