@@ -69,9 +69,9 @@ install: all
 	cp -R data/js $(TRANSLITD)/
 	cp -R data/*.html $(TRANSLITD)
 	-mkdir $(TRANSLITD)/cache
-	chmod a+rw $(TRANSLITD)/cache
-	find $(TRANSLITD) -type d -print | xargs chmod a+x
-	find $(TRANSLITD) -type f -print | xargs chmod a+r
+	-chmod a+rw $(TRANSLITD)/cache
+	-find $(TRANSLITD) -type d -print | xargs chmod a+x
+	-find $(TRANSLITD) -type f -print | xargs chmod a+r
 
 $(ICU_INC):
 	@echo "Please read the directions at the top of this file (Makefile)"
