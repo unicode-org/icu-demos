@@ -1,0 +1,156 @@
+<!-- file scompare-content-templ.html
+        This file is a template for the content html of the ICU String Compare demo application.
+	It is one of the inputs to the cgi-bin program for that app.
+	
+	Copyright (c) 2004-2005, International Business Machines Corporation and others.  All Rights Reserved.
+-->
+
+<!-- Breadcrumb navigation across the top  -->
+	
+<table border="0" cellpadding="0" cellspacing="0">
+<tr valign="top">
+<td height="80"><img alt="" class="display-img" height="6" src="//www.ibm.com/i/c.gif" width="1"/>
+<a class="bctl" href="http://www.ibm.com/software">Software</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+<a class="bctl" href="http://www.ibm.com/software/globalization/index.jsp">Globalization</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+<a class="bctl" href="http://www.ibm.com/software/globalization/topics/icu/index.jsp">ICU</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+<a class="bctl" href="http://www.ibm.com/software/globalization/topics/icu/demo.jsp">Demo</a><span class="bct">&nbsp;&gt;&nbsp;</span><br />
+
+<!-- bread crumb end -->
+
+<!-- content -->
+
+<h1>ICU Unicode String Comparison</h1>
+<img alt="" class="display-img" height="6" src="//www.ibm.com/i/c.gif" width="1"/>
+
+	     
+
+<!-- "Unless the site is an online application where technical requirements are driving compliance issues, 
+       the maximum line length is 443 and standard column grids apply."
+       from http://w3-03.ibm.com/standards/internet/OneX/modify/column_grids.shtml
+       The ICU demos, as a group, should apply for this width exemption for the white (content) space.
+       -->
+
+<p>This demo application illustrates the operation of some of the different string compare functions that are
+available in the ICU Unicode support library.
+</p>
+  <p>Enter two strings to be compared, then click on the &quot;Submit&quot; button. The results are 
+  described in the <a href="#Key">Key</a>. For more information, see <a href="#Background">
+  Background</a>.</p>
+
+<br />
+
+<!-- The form for entering the strings to be compared. -->
+<!-- for oss server, action="/cgi-bin/icu/scompare"
+       for windows test, action= "/cgi-bin/scompare.exe"
+-->
+<form id="ourForm" accept-charset="utf-8" action="/cgi-bin/scompare.exe"
+	method="post" >  
+
+<table border="0" cellpadding="0" cellspacing="0" class="data-table-2" width="600" summary=""> 
+       <caption><em>Strings to be Compared</em></caption>
+
+   <tr>
+      <th> </th>
+      <th><label for="s1a">String 1</label></th>
+      <th><label for="s1b">String 2</label></th>
+  </tr>
+  <tr>
+      <td>Enter strings, then submit</td>
+      <td rowspan="2"><textarea  rows="2" cols="25" name="s1a" id="s1a" 
+           title="The first of the two strings to be compared">%%s1a%%</textarea></td>
+      <td rowspan="2"><textarea  rows="2" cols="25" name="s1b"  id="s1b" 
+	   title="The second of the two strings to be compared">%%s1b%%</textarea></td>
+    </tr>
+    <tr>   <!-- phony row, in conjunction with the rowspans, above, for the purpose of putting
+          the submit button in sequence after the input fields. -->
+	  <td><input type="image" src="//www.ibm.com/i/v14/buttons/us/en/submit.gif" 
+         alt="Submit" name="submit" value="Submit"/>
+	 </td>
+     </tr>
+      <tr>
+      <td align="left" width="10%">Strings after unescaping</td>
+      <td> %%str1%% </td>
+      <td> %%str2%% </td>
+    </tr>
+    <tr>
+      <td align="left" width="10%">Strings in hex format</td>
+      <td> %%hex1%% </td>
+      <td> %%hex2%% </td>
+    </tr>
+  </table>
+</form>
+
+   <br />
+   <br />
+  <table border="0" cellpadding="0" cellspacing="0" class="data-table-2" width="600"
+       summary="Table containing the four comparison results for the input strings.  A value of 'Y' indicates equivalent strings, a value of '-' indicates unequal strings."  >
+       <caption><em>Comparison Result</em></caption>
+     <tr>
+      <th><a href="#a_Binary">Binary</a></th>
+      <th><a href="#a_Caseless">Caseless</a></th>
+      <th><a href="#a_Equiv">Equiv</a></th>
+      <th><a href="#a_Equiv_Caseless">Equiv-Caseless</a></th>
+    </tr>
+    <tr>
+      <td><b>%%binary%%</b></td>
+      <td><b>%%case%%</b></td>
+      <td><b>%%equiv%%</b></td>
+      <td><b>%%eq_ca%%</b></td>
+    </tr>
+</table>
+  
+<br />
+<br />
+<table border="0" cellpadding="0" cellspacing="0" class="data-table-2" width="600"
+      summary="Explanations of each of the four kinds of string comparisons performed by this application.">
+        <caption><em><a name="Key">Key</a> to Results</em></caption> 
+  <tr>
+    <th >Result</th>
+    <th >Meaning</th>
+  </tr>
+  <tr>
+    <td><a id="a_Binary"/>Binary</td>
+    <td>Strings have exactly the same code points in Unicode</td>
+  </tr>
+  <tr>
+    <td><a id="a_Caseless"/>Caseless</td>
+    <td>Strings are equal, case insensitive; thus case differences are discarded.   Examples: αλφα and Αλφα</td>
+  </tr>
+  <tr>
+    <td><a id="a_Equiv"/>Equiv</td>
+    <td>Strings are canonically equivalent; thus equal after normalization.   Examples: Åland and &#x212B;land,
+    or \u062f\u0650\u0651 and \u062f\u0651\u0650.  Note that Åland and &#x212B;land are also equal in a
+    caseless match because they both case-fold to the same string.</td>
+  </tr>
+  <tr>
+    <td><a id="a_Equiv_Caseless"/>Equiv-Caseless </td>
+    <td>Strings are canonically equivalent, case insensitive. Examples: åland and &#x212B;land</td>
+  </tr>
+  <tr>
+    <td>Hex</td>
+    <td>Display all input characters as hex values.</td>
+  </tr>
+</table>
+
+
+<br />
+<br />
+<b><a name="Background">Background</a></b>
+<ul>
+  <li>The above comparisons use only Unicode properties, and are invariant across locales. To 
+  compare two strings according to locale settings, see
+  <a href="http://www-950.ibm.com/software/globalization/icu/demo/locales/root/?_=en_US&amp;x=col">ICU Collation 
+  Demo</a>. 
+  </li>
+  <li>The strings may contain \uhhhh and \Uhhhhhhhh hex escapes for characters that can not be 
+  entered directly from the keyboard. For descriptions of additional escape sequences, see 
+  UnicodeString::unescape() in the
+  <a href="http://icu.sourceforge.net/apiref/icu4c/classUnicodeString.html">ICU API reference</a>.</li>
+  <li>This tool is built using ICU's string comparison functions, showing the effects of the options 
+  for Unicode Normalization (canonical equivalence) and Case Insensitive comparisons.</li>
+</ul>
+<p> </p>
+</td>
+</tr>
+</table>
+<!-- End of  file scompare-content-templ.html -->
