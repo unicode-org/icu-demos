@@ -12,6 +12,12 @@
 *
 *   created on: 2003feb16
 *   created by: Markus W. Scherer
+*
+*   This is a fairly crude, un-internationalized cgi for a "Normalization Browser".
+*   It demonstrates various normalization forms and options and their
+*   effects on user-provided input strings.
+*
+*   This code works only if compiled and run with an ASCII-based charset!
 */
 
 #include <stdlib.h>
@@ -20,6 +26,7 @@
 #include "unicode/utypes.h"
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
+#include "unicode/unistr.h"
 #include "unicode/unorm.h"
 #include "unormimp.h"           // ### TODO internal file, for normalization prototype
 #include "uparse.h"             // toolutil library
@@ -39,7 +46,23 @@ static const char *htmlHeader=
     "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;<br>\n"
     "<h1>Normalization Browser</h1>\n";
 
-static const char *htmlFooter="</body>";
+static const char *htmlFooter=
+    "</body>";
+
+static const char *helpText=
+    "<a name=\"help\"></a><h2>About this demo</h2>\n"
+    "<p>The options flags are for a prototype "
+    "to demonstrate tailored normalization as mentioned as\n"
+    "<a href=\"http://www.unicode.org/review/\">Unicode public review</a> issue 7.\n"
+    "Uncheck all of these options for regular <a href=\"http://www.unicode.org/reports/tr15/\">Unicode Normalization</a>.</p>\n"
+    "<p>Hangul excludes AC00..D7A3. CJK Compat. excludes CJK Compatibility Ideographs (those with a canonical decomposition).\n"
+    "A-umlaut excludes just U+00E4, which does not fulfill the closure condition for exclusions (try e.g. U+01DF).</p>\n"
+    "\n"
+    "<p>FCD is not a normalization form but a test for whether\n"
+    "text is canonically ordered. \"Normalizing to FCD\" does not generate\n"
+    "a unique form but only one of potentially many that are canonically ordered.\n"
+    "See <a href=\"http://www.unicode.org/notes/tn5/\">UTN #5 Canonical Equivalence in Applications</a>.</p>"
+    "<hr>";
 
 static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
@@ -53,14 +76,19 @@ static const char *endString="";
 
 static const char *startForm=
     "<form method=\"GET\" action=\"%s\">\n"
-    "<p>Input string: <input size=\"80\" name=\"s\" value=\"";
+    "<p>Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes<br>"
+    "<input size=\"80\" name=\"t\" value=\"%s\"><br>\n"
+    "or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)<br>"
+    "<input size=\"80\" name=\"s\" value=\"";
 
-static const char *endForm="\"></p>\n"
+static const char *endForm=
+    "\"></p>\n"
     "<p>Decomposition exclusions:"
     " <input type=\"checkbox\" name=\"op0\" %s> Hangul"
     " <input type=\"checkbox\" name=\"op1\" %s> CJK Compat."
     " <input type=\"checkbox\" name=\"op2\" %s> A-umlaut"
     " <input type=\"submit\" value=\"Go\">"
+    " (<a href=\"#help\">Help</a>)"
     "</p>\n"
     "</form>\n";
 
@@ -157,6 +185,43 @@ printNormalized(const UChar *s, int32_t length,
     puts("</tr>");
 }
 
+static inline int32_t
+getHexValue(char c) {
+    if('0'<=c && c<='9') {
+        return (int32_t)(c-'0');
+    } else if('a'<=c && c<='f') {
+        return (int32_t)(c-'a'+10);
+    } else if('A'<=c && c<='F') {
+        return (int32_t)(c-'A'+10);
+    } else {
+        return -1;
+    }
+}
+
+/* parse percent-escaped input into a byte array; does not NUL-terminate */
+static int32_t
+parseEscaped(const char *s, char *dest, int32_t destCapacity, UErrorCode &errorCode) {
+    int32_t i, hi, lo;
+    char c;
+
+    i=0;
+    while((c=*s++)!=0 && c!='&') {
+        if(i==destCapacity) {
+            errorCode=U_BUFFER_OVERFLOW_ERROR;
+            return 0;
+        }
+
+        if(c=='%' && (hi=getHexValue(*s))>=0 && (lo=getHexValue(s[1]))>=0) {
+            dest[i++]=(char)((hi<<4)|lo);
+            s+=2;
+        } else {
+            dest[i++]=c;
+        }
+    }
+
+    return i;
+}
+
 /*
  * Handle various command-line input:
  * - one code point per argv[]
@@ -231,15 +296,19 @@ parseInput(const char *argv[], int argc,
 
 extern int
 main(int argc, const char *argv[]) {
-    UChar input[100];
+    UChar input[100], buffer16[600]; // buffer16 should be 6 times longer than input for \\uhhhh
+    char input8[400];
     char buffer[1000];
     const char *endInLastArg;
     int32_t inputLength, countArgs, options;
-    UErrorCode errorCode = U_ZERO_ERROR;
-    const char *script=getenv("SCRIPT_NAME");   /*   "/cgi-bin/nbrowser" */
+    UErrorCode errorCode;
+    const char *script;
+    UBool inputIsUTF8;
 
+    script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
 
+    inputIsUTF8=FALSE;
     if(argc>1) {
         /* get input from command line */
         errorCode=U_ZERO_ERROR;
@@ -262,10 +331,28 @@ main(int argc, const char *argv[]) {
         }
     } else {
         /* get input from cgi variable */
-        const char *cgi=getenv("QUERY_STRING");     /*   "s=xxxx&op0=yyyy"   */
-        const char *in=strstr(cgi, "s=");
-        if(in!=NULL) {
+        const char *cgi=getenv("QUERY_STRING"); // "s=xxxx&op0=yyyy"
+        const char *in;
+
+        if((in=strstr(cgi, "t="))!=NULL) {
+            inputIsUTF8=TRUE;
+            in+=2; // skip "t="
+            errorCode=U_ZERO_ERROR;
+            inputLength=parseEscaped(in, buffer, sizeof(buffer), errorCode);
+            u_strFromUTF8(buffer16, LENGTHOF(buffer16), &inputLength,
+                          buffer, inputLength,
+                          &errorCode);
+            UnicodeString us(FALSE, (const UChar *)buffer16, inputLength); // readonly alias
+            inputLength=us.unescape().extract(input, LENGTHOF(input), errorCode);
+            u_strToUTF8(input8, sizeof(input8), NULL,
+                        input, inputLength,
+                        &errorCode);
+            if(errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+                errorCode=U_BUFFER_OVERFLOW_ERROR;
+            }
+        } else if((in=strstr(cgi, "s="))!=NULL) {
             in+=2; // skip "s="
+            errorCode=U_ZERO_ERROR;
             inputLength=parseInput(&in, 1,
                                    countArgs, endInLastArg,
                                    buffer, sizeof(buffer),
@@ -292,8 +379,10 @@ main(int argc, const char *argv[]) {
         inputLength=0;
     }
 
-    printf(startForm, script ? script : "" );
-    printString(input, inputLength);
+    printf(startForm, script ? script : "", inputIsUTF8 ? input8 : "");
+    if(!inputIsUTF8 && inputLength>0) {
+        printString(input, inputLength);
+    }
     printf(endForm,
         options&1 ? "checked" : "",
         options&2 ? "checked" : "",
@@ -315,6 +404,8 @@ main(int argc, const char *argv[]) {
 
     char uvString[16], ivString[16];
     UVersionInfo uv, iv;
+
+    puts(helpText);
 
     u_getUnicodeVersion(uv);
     u_getVersion(iv);
