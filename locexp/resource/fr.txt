@@ -9,6 +9,8 @@ fr
 
   // images
      lx.jpg:import { "fr/lx.jpg" }
+     explore.gif:import { "fr/explore.gif" }
+   displayproblems.gif:import { "fr/displayproblems.gif" }
 
 // ==  Keys  ==
    LocaleID      { "Identificateur de locale de Windows" }

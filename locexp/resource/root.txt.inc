@@ -14,3 +14,9 @@
    lxbar_g.gif:import { "root/lxbar_g.gif" }
    lxbar_ibm.jpg:import { "root/lxbar_ibm.jpg" }
    lxbar_icu.jpg:import { "root/lxbar_icu.jpg" }
+
+// tab
+   tab_bot.gif:import { "root/tab_bot.gif" }
+   tab_aleft.gif:import { "root/tab_aleft.gif" }
+   tab_aright.gif:import { "root/tab_aright.gif" }
+

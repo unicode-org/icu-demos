@@ -12,7 +12,7 @@ top_srcdir=@top_srcdir@
 include @ICU_MAKEFILE@
 
 # the 'locexp' directory lives inside the exported ICU data dir..
-lxdatadir= $(datadir)/$(PACKAGE)/$(VERSION)/locexp
+lxdatadir= $(libdir)/$(PACKAGE)/$(VERSION)/locexp
 
 ## Build directory information
 top_builddir = ../..
@@ -29,7 +29,9 @@ GENSRC = root.txt index.txt
 # resource files
 # AUTOGEN - source whose encoding is detected
 AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt zh.txt
-SRC    = sr.txt $(AUTOGENSRC)
+
+# ones which have a BOM can just go here
+SRC    = sr.txt zh_SG.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)
 RES = $(ALLSRC:.txt=.res)
@@ -82,7 +84,7 @@ tmp/locexp.lst: Makefile
 	done;
 
 resinst: $(RES) tmp/locexp.lst
-	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m dll -v -c -d $(datadir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
+	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m common -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
 
 install-res: res-local resinst
 

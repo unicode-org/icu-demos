@@ -1,0 +1,15 @@
+﻿ // -*- Coding: utf-8; -*-
+
+// Copyright (c) 2000 IBM, Inc. and Others
+// by Syn Wee Quek
+
+zh_SG
+{
+   localeList_Sublocale { "国家" }
+   localeList_Locale { "语言" } 
+
+   explore.gif:import { "zh_SG/explore.gif" }
+   
+   display_ALT { "显示问题" }
+   displayproblems.gif:import { "zh_SG/displayproblems.gif" } // 显示问题
+}

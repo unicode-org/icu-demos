@@ -1,14 +1,23 @@
-// -*- Coding: latin1 -*-
-// -*- Cxding: shift_jis -*-
+// -*- Coding: utf-8 -*- 
 // Copyright (c) 1999, International Business Machines Corporation and
 // others. All Rights Reserved.
 // Japanese. by Steven R. Loomis
 
 ja 
 {
-   localeList_Locale  {  "\u3052\u3093\u8a9E"  } //‚°‚ñ‚²
-   localeList_Sublocale  {  "\u304F\u306B"  }    // ‚­‚É
-   
+   localeList_Locale  {  "è¨€èª"  } 
+   localeList_Sublocale  {  "å›½"  } 
+   Day { "æ—¥" }
+   Month { "æœˆ" }
 
+   LocaleCodes_Country  {  "å›½"  }
+   LocaleCodes_Language  {  "èª"  }
+   LocaleCodes_Variant  {  "Variant"  }
+  
+  localPatternChars1 { "å††" }
+   localPatternChars2  {  "æœˆ"  }
+   localPatternChars6  {  "åˆ†"  }
+   none  {  "ãªã„"  }
 
 }
+

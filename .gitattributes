@@ -86,6 +86,8 @@ XMLConverter/samples/test.xml -text svneol=unset#text/xml
 XMLConverter/samples/testit.xml -text svneol=unset#text/xml
 XMLConverter/samples/utf8-sm_jis.xml -text svneol=unset#text/xml
 XMLConverter/samples/x.xml -text svneol=unset#text/xml
+locexp/resource/fr/displayproblems.gif -text
+locexp/resource/fr/explore.gif -text
 locexp/resource/fr/lx.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/c.gif -text
 locexp/resource/root/closed.gif -text
@@ -100,6 +102,9 @@ locexp/resource/root/lxbar_g.gif -text
 locexp/resource/root/lxbar_ibm.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/lxbar_icu.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/opened.gif -text
+locexp/resource/root/tab_aleft.gif -text
+locexp/resource/root/tab_aright.gif -text
+locexp/resource/root/tab_bot.gif -text
 locexp/resource/root/transliteration.html svneol=native#text/html
 locexp/resource/root_head.html svneol=native#text/html
 locexp/resource/root_tail.html svneol=native#text/html
