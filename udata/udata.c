@@ -57,15 +57,112 @@ udata_openChoice(const char *type, const char *name,
 
 /* platform-specific implementation ----------------------------------------- */
 
-#if defined(WIN32)
-#   if defined(UDATA_DLL) /* Win32 dll implementation */
-#   else /* Win32 memory map implementation */
+/*
+ * Most implementations define a MappedData struct
+ * and have a MappedData *p; in UDataMemory.
+ * They share the source code for some functions.
+ * Other implementations need to #undef the following #define.
+ * See after the platform-specific code.
+ */
+#define UDATA_INDIRECT
+
+#if defined(WIN32) /* Win32 implementations --------------------------------- */
+
 #include <windows.h>
 
 typedef struct {
     uint16_t headerSize;
     uint8_t magic1, magic2;
 } MappedData;
+
+#   if defined(UDATA_DLL) /* Win32 dll implementation ----------------------- */
+
+struct UDataMemory {
+    HINSTANCE lib;
+    MappedData *p;
+};
+
+static UDataMemory *
+doOpenChoice(const char *type, const char *name,
+             UDataMemoryIsAcceptable *isAcceptable, void *context,
+             UErrorCode *pErrorCode) {
+    char buffer[40];
+    UDataMemory *pData;
+    MappedData *p;
+    UDataInfo *info;
+    int nameLimit;
+
+    /* allocate the data structure */
+    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
+    if(pData==NULL) {
+        *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
+        return NULL;
+    }
+
+    /* set up the dll filename */
+    icu_strcpy(buffer, name);
+    if(type!=NULL && *type!=0) {
+        icu_strcat(buffer, "_");
+        icu_strcat(buffer, type);
+    }
+    nameLimit=icu_strlen(buffer);
+    icu_strcat(buffer, ".dll");
+
+    /* open the dll */
+    pData->lib=LoadLibrary(buffer);
+    if(pData->lib==NULL) {
+        icu_free(pData);
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
+    }
+
+    /* get the data pointer */
+    buffer[nameLimit]=0;
+    pData->p=p=(MappedData *)GetProcAddress(pData->lib, buffer);
+    if(p==NULL) {
+        FreeLibrary(pData->lib);
+        icu_free(pData);
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
+    }
+
+    /* check magic1 & magic2 */
+    if(p->magic1!=0xda || p->magic2!=0x27) {
+        FreeLibrary(pData->lib);
+        icu_free(pData);
+        *pErrorCode=U_INVALID_FORMAT_ERROR;
+        return NULL;
+    }
+
+    /* check for the byte ordering */
+    info=(UDataInfo *)(p+1);
+    if(info->isBigEndian!=U_IS_BIG_ENDIAN) {
+        FreeLibrary(pData->lib);
+        icu_free(pData);
+        *pErrorCode=U_INVALID_FORMAT_ERROR;
+        return NULL;
+    }
+
+    /* is this acceptable? */
+    if(isAcceptable!=NULL && !isAcceptable(context, type, name, info)) {
+        FreeLibrary(pData->lib);
+        icu_free(pData);
+        *pErrorCode=U_INVALID_FORMAT_ERROR;
+        return NULL;
+    }
+
+    return pData;
+}
+
+U_CAPI void U_EXPORT2
+udata_close(UDataMemory *pData) {
+    if(pData!=NULL) {
+        FreeLibrary(pData->lib);
+        icu_free(pData);
+    }
+}
+
+#   else /* Win32 memory map implementation --------------------------------- */
 
 struct UDataMemory {
     HANDLE map;
@@ -178,34 +275,18 @@ udata_close(UDataMemory *pData) {
     }
 }
 
-U_CAPI const void * U_EXPORT2
-udata_getMemory(UDataMemory *pData) {
-    if(pData!=NULL) {
-        return (char *)(pData->p)+pData->p->headerSize;
-    } else {
-        return NULL;
-    }
-}
-
-U_CAPI void U_EXPORT2
-udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
-    if(pInfo!=NULL) {
-        if(pData!=NULL) {
-            UDataInfo *info=(UDataInfo *)(pData->p+1);
-            uint16_t size=pInfo->size;
-            if(size>info->size) {
-                pInfo->size=info->size;
-            }
-            icu_memcpy((uint16_t *)pInfo+1, (uint16_t *)info+1, size-2);
-        } else {
-            pInfo->size=0;
-        }
-    }
-}
 #   endif
+
+/* POSIX implementations ---------------------------------------------------- */
+
 #elif defined (LINUX)||defined(POSIX)||defined(SOLARIS)||defined(AIX)||defined(HPUX)
-#   if defined(UDATA_DLL) /* POSIX dll implementation */
-#   else /* POSIX memory map implementation */
+
+#   if defined(UDATA_DLL) /* POSIX dll implementation ----------------------- */
+
+#       error the UDATA_DLL configuration is not implemented yet
+
+#   else /* POSIX memory map implementation --------------------------------- */
+
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -324,34 +405,13 @@ udata_close(UDataMemory *pData) {
         icu_free(pData);
     }
 }
-
-U_CAPI const void * U_EXPORT2
-udata_getMemory(UDataMemory *pData) {
-    if(pData!=NULL) {
-        return (char *)(pData->p)+pData->p->headerSize;
-    } else {
-        return NULL;
-    }
-}
-
-U_CAPI void U_EXPORT2
-udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
-    if(pInfo!=NULL) {
-        if(pData!=NULL) {
-            UDataInfo *info=(UDataInfo *)(pData->p+1);
-            uint16_t size=pInfo->size;
-            if(size>info->size) {
-                pInfo->size=info->size;
-            }
-            icu_memcpy((uint16_t *)pInfo+1, (uint16_t *)info+1, size-2);
-        } else {
-            pInfo->size=0;
-        }
-    }
-}
 #   endif 
-#else /* unknown platform - stdio fopen()/fread() implementation */
+
+#else /* unknown platform - stdio fopen()/fread() implementation ------------ */
+
 #include <stdio.h>
+
+#undef UDATA_INDIRECT
 
 struct UDataMemory {
     uint16_t headerSize;
@@ -460,6 +520,35 @@ udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
     if(pInfo!=NULL) {
         if(pData!=NULL) {
             UDataInfo *info=(UDataInfo *)(pData+1);
+            uint16_t size=pInfo->size;
+            if(size>info->size) {
+                pInfo->size=info->size;
+            }
+            icu_memcpy((uint16_t *)pInfo+1, (uint16_t *)info+1, size-2);
+        } else {
+            pInfo->size=0;
+        }
+    }
+}
+#endif
+
+/* common function implementations if UDATA_INDIRECT was not #undef'ed ------ */
+
+#ifdef UDATA_INDIRECT
+U_CAPI const void * U_EXPORT2
+udata_getMemory(UDataMemory *pData) {
+    if(pData!=NULL) {
+        return (char *)(pData->p)+pData->p->headerSize;
+    } else {
+        return NULL;
+    }
+}
+
+U_CAPI void U_EXPORT2
+udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
+    if(pInfo!=NULL) {
+        if(pData!=NULL) {
+            UDataInfo *info=(UDataInfo *)(pData->p+1);
             uint16_t size=pInfo->size;
             if(size>info->size) {
                 pInfo->size=info->size;
