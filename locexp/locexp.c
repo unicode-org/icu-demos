@@ -238,13 +238,24 @@ int main(const char *argv[], int argc)
 
   status = U_ZERO_ERROR; 
 
+
+
+
+
+
   /* ------- END INIT ----------*/
+  putenv("QUERY_STRING=_=hi");
+  putenv("PATH_INFO=/kn/transliterated/");
+  putenv("SERVER_NAME=blah");
+  putenv("SCRIPT_NAME=/a/b/c");
+
 
   if((tmp=getenv("QUERY_STRING")) == NULL)
   {
         fprintf(stderr, "This program is designed to be run as a CGI-BIN.  QUERY_STRING is undefined.");
         exit(1);
   }
+
 
   /* Set up some initial values, just in case something goes wrong later. */
   strcpy(lx->chosenEncoding, "LATIN_1");

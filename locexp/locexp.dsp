@@ -134,10 +134,6 @@ SOURCE=.\util\lx_utils.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\all\sleep.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\util\syriac.cpp
 # End Source File
 # Begin Source File
