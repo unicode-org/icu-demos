@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include "cmemory.h"
 #include "cstring.h"
-#include "utypes.h"
+#include "unicode/utypes.h"
 
 static uint16_t column=0xffff;
 
@@ -108,7 +108,7 @@ writeCCode(const char *filename) {
     }
 
     fprintf(out,
-        "#include \"utypes.h\"\n"
+        "#include \"unicode/utypes.h\"\n"
         "U_CAPI const uint8_t U_EXPORT2 %s[]={\n",
         entry);
 

@@ -11,6 +11,10 @@
  */
 
 #include "syrtables.h"
+#include <stdio.h>
+#include <string.h>
+
+#define kBufLen 99
 
 /* look up a char in the Assyrian table */
 char syrLookupChar(UChar uch)

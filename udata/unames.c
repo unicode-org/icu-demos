@@ -23,7 +23,7 @@
 #endif
 
 #include "cmemory.h"
-#include "utypes.h"
+#include "unicode/utypes.h"
 #include "udata.h"
 #include "unames.h"
 #include "umutex.h"

@@ -10,6 +10,7 @@
 #define kOutBufSize    1024 /* expected line length in chars. [mem usage: 2x ] */
 #define kPrintBufSize  1024
 
+#define T_USORT_IMPLEMENTATION
 
 #include "usort.h"
 
@@ -57,6 +58,9 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
   while(*status == U_INDEX_OUTOFBOUNDS_ERROR); 
 
  finish:
+#ifdef WIN32
+  ;
+#endif
   
 }
 
@@ -92,14 +96,14 @@ static int usort_sortProc(const void *aa, const void *bb)
 }
 
 
-U_CAPI USort*
+USort*
 usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
            UErrorCode *status)
 {
   USort *n;
   
   if(U_FAILURE(*status))
-    return;
+    return 0;
 
   n = malloc(sizeof(USort));
 
@@ -126,7 +130,7 @@ usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
   return n;
 }
 
-U_CAPI void
+void
 usort_close(USort *usort)
 {
   if(!usort)
@@ -143,7 +147,7 @@ usort_close(USort *usort)
   free(usort);
 }
 
-U_CAPI void
+void
 usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *userData)
 {
   UErrorCode status = U_ZERO_ERROR;
@@ -189,7 +193,11 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
   if(copy)
     {
       memcpy((UChar*)usort->lines[usort->count].chars, line, (len+1) * sizeof(UChar));
+#ifdef WIN32
+      (usort->lines[usort->count].chars[len]) = 0;
+#else
       (UChar*)(usort->lines[usort->count].chars[len]) = 0;
+#endif
     }
 
   /* now,  collate it. Note we do NOT include the null or newline in the collation. */
@@ -210,7 +218,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
 
 }
 
-U_CAPI void
+void
 usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t escapeMode)
 {
   UConverter *newConverter = NULL;
@@ -403,14 +411,14 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
     ucnv_close(newConverter);
 }
 
-U_CAPI void 
+void 
 usort_sort(USort *usort)
 {
   /* Too easy! */
   qsort(usort->lines, usort->count, sizeof(USortLine), &usort_sortProc);
 }
 
-U_CAPI void
+void
 usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
 {
   UConverter *newConverter = NULL;

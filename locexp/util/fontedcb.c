@@ -13,7 +13,7 @@
 #include "fontedcb.h"
 #include "fonted_imp.h"
 
-#include "uchar.h"
+#include "unicode/uchar.h"
 
 UConverterFromUCallback FONTED_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 
@@ -53,9 +53,12 @@ U_CAPI void
   UChar u;
   bool_t handled = FALSE;
 
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
   if (CONVERSION_U_SUCCESS (*err))
     return;
-
+#endif
   /* ERROR */
   if(_this->invalidUCharLength != 1)
     {

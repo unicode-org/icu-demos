@@ -13,10 +13,13 @@
 #ifndef _DECOMPCB
 #define _DECOMPCB
 
-#include "ucnv.h"
+#include "unicode/ucnv.h"
 
-
-extern UConverterFromUCallback DECOMPOSE_lastResortCallback;
+#ifdef WIN32
+UConverterFromUCallback DECOMPOSE_lastResortCallback;
+#else
+extern  UConverterFromUCallback DECOMPOSE_lastResortCallback;
+#endif
 
 U_CAPI void 
   UCNV_FROM_U_CALLBACK_DECOMPOSE (UConverter * _this,

@@ -17,8 +17,8 @@
 *   created by: Markus W. Scherer
 */
 
-#include "utypes.h"
-#include "uloc.h"
+#include "unicode/utypes.h"
+#include "unicode/uloc.h"
 #include "umutex.h"
 #include "cmemory.h"
 #include "cstring.h"

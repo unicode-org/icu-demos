@@ -20,7 +20,7 @@
 #ifndef __UNEWDATA_H__
 #define __UNEWDATA_H__
 
-#include "utypes.h"
+#include "unicode/utypes.h"
 #include "udata.h"
 
 /* API for writing data -----------------------------------------------------*/

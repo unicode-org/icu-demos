@@ -14,8 +14,9 @@
 
 #include "translitcb.h"
 #include "utrnslit.h"
-#include "uchar.h"
-#include "ustring.h"
+#include "unicode/uchar.h"
+#include "unicode/ustring.h"
+
 
 UConverterFromUCallback TRANSLITERATED_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 
@@ -102,8 +103,14 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
     return gTR[n];
 }
 
+
 #define _beginMark "<FONT COLOR=green>"   /* 18 */
 #define _endMark   "</FONT>"              /* 7  */
+
+#ifdef WIN32
+#define L_beginMark "<FONT COLOR=green>"   /* 18 */
+#define L_endMark   "</FONT>"              /* 7  */
+#endif
 
 U_STRING_DECL(beginMark, _beginMark, 18 );
 U_STRING_DECL(  endMark, _endMark,   7);
@@ -177,10 +184,12 @@ U_CAPI void
 
     UChar tmpbuf[300];
     
-
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
     if (CONVERSION_U_SUCCESS (*err))
         return;
-
+#endif
     *err = U_ZERO_ERROR; /* so that we get called in a loop */
 
     script =  u_charScript(_this->invalidUCharBuffer[0]);

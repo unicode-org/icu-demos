@@ -20,10 +20,14 @@
 * 
 */
 
+#ifdef WIN32
+#include <ctype.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "utypes.h"
-#include "udata.h"
+#include "unicode/utypes.h"
+#include "unicode/udata.h"
 
 /* prototypes --------------------------------------------------------------- */
 void printVersion(uint8_t  *v);

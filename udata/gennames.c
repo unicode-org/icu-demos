@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "utypes.h"
+#include "unicode/utypes.h"
 #include "unewdata.h"
 #include "cmemory.h"
 #include "cstring.h"

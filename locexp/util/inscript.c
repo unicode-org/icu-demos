@@ -9,7 +9,8 @@
    Again, the table is NOT complete.
 */
 
-#include "syrinput.c"
+#include "unicode/utypes.h"
+#include "unicode/ustring.h"
 
 extern UChar ktbl[];
 

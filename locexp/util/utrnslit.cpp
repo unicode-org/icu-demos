@@ -7,10 +7,10 @@
 */
 
 
-#include "utypes.h"
+#include "unicode/utypes.h"
 #include "utrnslit.h"
-#include "translit.h"
-#include "rbt.h"
+#include "unicode/translit.h"
+#include "unicode/rbt.h"
 /* 
 #include "cpputils.h"
 */
@@ -32,7 +32,7 @@ U_CAPI void U_EXPORT2 T_fillOutputParams(const UnicodeString* temp,
 /********** end ripoff */
 
 #include <stdio.h>
-#include <ustring.h>
+#include <unicode/ustring.h>
 
 UTransliterator * 
 utrns_open(const char *id)

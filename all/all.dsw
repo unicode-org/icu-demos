@@ -1,0 +1,269 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "EscapeABundle"=..\locexp\resource\EscapeABundle.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "allapps"=.\allapps.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dumpdat
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name EscapeABundle
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name genccode
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gencmn
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name locexp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tools
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ubrowse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name uconv
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name udata
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name unescapeABundle
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name unewdata
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name usort_client
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name usort_lib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name util
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dumpdat"=..\dumpdat\dumpdat.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "genccode"=..\udata\genccode.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gencmn"=..\udata\gencmn.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "locexp"=..\locexp\locexp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name usort_lib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name util
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "tools"=..\locexp\tools\tools.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ubrowse"=..\ubrowse\ubrowse.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name util
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "uconv"=..\uconv\uconv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "udata"=..\udata\udata.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "unescapeABundle"=..\locexp\resource\unescapeABundle.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "unewdata"=..\udata\unewdata.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "usort"=..\usort\usort.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name usort_client
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name usort_lib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "usort_client"=..\usort\client\usort_client.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name usort_lib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "usort_lib"=..\usort\lib\usort_lib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "util"=..\locexp\util\util.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

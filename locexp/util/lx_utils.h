@@ -16,15 +16,15 @@
 #ifndef _LXUTILS
 #define _LXUTILS
 
-#include "ustdio.h"
-#include "ucnv.h"
-#include "ustring.h"
-#include "udat.h"
-#include "uloc.h"
-#include "ures.h"
-#include "ucol.h"
+#include "unicode/ustdio.h"
+#include "unicode/ucnv.h"
+#include "unicode/ustring.h"
+#include "unicode/udat.h"
+#include "unicode/uloc.h"
+#include "unicode/ures.h"
+#include "unicode/ucol.h"
 #include "string.h"
-#include "ucal.h"
+#include "unicode/ucal.h"
 #include "ctype.h"
 
 
@@ -52,7 +52,7 @@ typedef struct mysortable
 
 
 /* Sort */
-void mySort(MySortable *root, UErrorCode *err, bool_t recurse);
+U_CAPI void mySort(MySortable *root, UErrorCode *err, bool_t recurse);
 
 
 /**
@@ -83,7 +83,7 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
  * @return a new MySortable tree, owned by the caller.  Not sorted.
  */
 
-MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount);
+U_CAPI MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount);
 
 
 /**
@@ -93,16 +93,16 @@ MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount);
  * @param locale The locale to search for 
  * @return Pointer to a node matching the requested locale, or NULL
  */
-MySortable *findLocale(MySortable *root, const char *locale);
+U_CAPI MySortable *findLocale(MySortable *root, const char *locale);
 
 /* Pick a better charset name */
-const char *MIMECharsetName(const char *origName);
+U_CAPI const char *MIMECharsetName(const char *origName);
 
 /* Convert unichars to an escaped query (one containing \uXXXX, etc */
 void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src);
 
 /* Decode escaped query field.  returns: # chars.  dstlen is a max. src can point to the beginning of the field (after the '='), it will terminate at & or \0 */
-int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src);
+U_CAPI int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src);
 
 /* copy UChars around, WITHOUT termination, and convert \uXXXX back to the right chars */
 int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen);
@@ -117,7 +117,7 @@ void doDecodeQueryField(const char *in, char *out, int32_t length);
  * @param status [returned] status of formatting, etc.
  * @return pointer to the formatted chars. Caller must dispose of them.
  */
-UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
+U_CAPI UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
 
 /**
  * Format a date in the given style
@@ -131,7 +131,7 @@ UChar *dateAt(UDate date, const UChar *tz, UDateFormatStyle style, UErrorCode *s
 
 
 /* substitute with value, of the form: <B>\uXXXX</B>  */
-void
+U_CAPI void
 UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML (UConverter * _this,
 			 char **target,
 			 const char *targetLimit,
@@ -142,7 +142,7 @@ UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML (UConverter * _this,
 			 UErrorCode * err);
 
 /* substitute with value, of the form: \uXXXX  */
-void
+U_CAPI void
 UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
 			 char **target,
 			 const char *targetLimit,
@@ -159,7 +159,7 @@ UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
  * @param to the char to change it to.
  */
 
-void u_replaceChar(UChar *str, UChar from, UChar to);
+U_CAPI void u_replaceChar(UChar *str, UChar from, UChar to);
 
 /**
  * Duplicate a string from the host encoding to Unicode 
@@ -168,7 +168,11 @@ void u_replaceChar(UChar *str, UChar from, UChar to);
  * @return ptr to new unichars
  */
 
+#ifdef WIN32
+U_CAPI UChar *uastrdup(const char *hostchars);
+#else
 U_CFUNC UChar *uastrdup(const char *hostchars);
+#endif
 
 
 /**
@@ -182,7 +186,7 @@ U_CFUNC UChar *uastrdup(const char *hostchars);
  */
 
 
-bool_t testConverter(const char *converter, 
+U_CAPI bool_t testConverter(const char *converter, 
                      const UChar *sample,
 		     int32_t sampleLen, 
 		     int8_t *buffer,

@@ -2,7 +2,7 @@
 *   Copyright (C) 1999, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
-#include "utypes.h"
+#include "unicode/utypes.h"
 
 #ifndef _UTIMZONE
 #define _UTIMZONE

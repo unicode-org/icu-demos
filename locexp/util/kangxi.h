@@ -9,8 +9,12 @@
 
 #ifndef KXITBL_H
 
-#include <utypes.h>
+#include <unicode/utypes.h>
 
+#ifdef WIN32
+UChar  gKangXiRadicalTable[];
+#else
 extern UChar  gKangXiRadicalTable[];
+#endif
 
 #endif

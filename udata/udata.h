@@ -20,7 +20,7 @@
 #ifndef __UDATA_H__
 #define __UDATA_H__
 
-#include "utypes.h"
+#include "unicode/utypes.h"
 
 /* utypes.h: values for UDataInfo.charsetFamily */
 #define U_ASCII_FAMILY 0

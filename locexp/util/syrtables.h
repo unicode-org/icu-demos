@@ -38,6 +38,7 @@ u -> ch [t/m/i]
 0742 + 071d -> 53
 */
 
+#include "unicode/utypes.h"
 
 struct
 {

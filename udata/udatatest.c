@@ -19,8 +19,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "utypes.h"
-#include "udata.h"
+#include "unicode/utypes.h"
+#include "unicode/udata.h"
 #include "unames.h"
 
 static char
@@ -31,7 +31,7 @@ printName(uint32_t code) {
     UErrorCode errorCode=U_ZERO_ERROR;
     UTextOffset length=u_charName(code, U_UNICODE_CHAR_NAME, name, sizeof(name), &errorCode);
     if(U_FAILURE(errorCode)) {
-        printf("U-%08x: %s\n", code, errorName(errorCode));
+        printf("U-%08x: %s\n", code, u_errorName(errorCode));
     } else if(length>0) {
         printf("U-%08x: %s\n", code, name);
     }

@@ -12,7 +12,7 @@
 #ifndef FONTEDIMP_H
 #define FONTEDIMP_H
 
-#include "ucnv.h"
+#include "unicode/ucnv.h"
 
 /* Sub modules. Return TRUE on success. */
 

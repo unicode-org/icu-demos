@@ -29,7 +29,7 @@ this in the current implementation?
 #ifndef UTRNSLIT_H
 #define UTRNSLIT_H
 
-#include "utypes.h"
+#include "unicode/utypes.h"
 
 typedef void* UTransliterator;
 

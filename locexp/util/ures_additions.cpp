@@ -3,9 +3,9 @@
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "ures_additions.h"
-#include "resbund.h"
-#include "ustring.h"
-#include "decimfmt.h"
+#include "unicode/resbund.h"
+#include "unicode/ustring.h"
+#include "unicode/decimfmt.h"
 
 U_CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
 				 const char * resourceTag,

@@ -9,16 +9,15 @@
 /* Largest decomposition sequence is 18 chars at U+FDFA */
 #define DECOMP_MAX 32
 
-#include "utypes.h"
-#include "ustring.h"
+#include "unicode/utypes.h"
+#include "unicode/ustring.h"
 
-#include "ucnv.h"
-#include "ucnv_bld.h"
-#include "udat.h"
-#include "ucal.h"
-#include "uchar.h"
+#include "unicode/ucnv.h"
+#include "unicode/udat.h"
+#include "unicode/ucal.h"
+#include "unicode/uchar.h"
 
-#include "ucol.h"
+#include "unicode/ucol.h"
 
 #include "decompcb.h"
 
@@ -287,8 +286,12 @@ U_CAPI void
   int32_t i;
   char   *oldTarget;
 
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
   if (CONVERSION_U_SUCCESS (*err))
     return;
+#endif
 
   for(i=0;i<_this->invalidUCharLength;i++)
     {

@@ -6,9 +6,9 @@
 /* Largest decomposition sequence is 18 chars at U+FDFA */
 #define COLLECT_DEFAULT_SIZE 16
 
-#include "utypes.h"
-#include "ucnv.h"
-#include "uchar.h"
+#include "unicode/utypes.h"
+#include "unicode/ucnv.h"
+#include "unicode/uchar.h"
 #include "collectcb.h"
 
 U_CAPI bool_t U_EXPORT2 u_isalnum(UChar c)
@@ -88,8 +88,12 @@ U_CAPI void
 {
   int32_t i;
 
-  if (CONVERSION_U_SUCCESS (*err))
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
+  if (CONVERSION_U_SUCCESS(*err))
     return;
+#endif
 
   /* Store all of 'em in the bad char buffer */
   for(i=0;i<_this->invalidUCharLength;i++)

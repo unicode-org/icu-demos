@@ -16,17 +16,25 @@
 #ifndef COLLECTCB_H
 #define COLLECTCB_H
 
-#include "utypes.h"
-#include "ucnv.h"
+#include "unicode/utypes.h"
+#include "unicode/ucnv.h"
 
 
 
+#ifdef WIN32
+UConverterFromUCallback COLLECT_lastResortCallback;
+#else
 extern UConverterFromUCallback COLLECT_lastResortCallback;
+#endif
 
 /* if TRUE, collect will only record chars that pass the u_isalnum() 
    test in uchars.h. if FALSE (default), collect will record all chars.
 */
+#ifdef WIN32
+bool_t                  COLLECT_alnum;
+#else
 extern bool_t                  COLLECT_alnum;
+#endif
 
 U_CAPI void 
   UCNV_FROM_U_CALLBACK_COLLECT (UConverter * _this,

@@ -30,6 +30,12 @@
 #ifndef USORT_H
 #define USORT_H
 
+#ifdef _WIN32
+#include <string.h>
+#endif
+
+#include "unicode/ustring.h"
+
 /*Deals with imports and exports of the dynamic library*/
 #ifdef _WIN32
     #define T_USORT_EXPORT __declspec(dllexport)
@@ -56,10 +62,10 @@
 
 
 
-#include <utypes.h>
-#include <ucol.h>
-#include <ucnv.h>
-#include <uloc.h>
+#include <unicode/utypes.h>
+#include <unicode/ucol.h>
+#include <unicode/ucnv.h>
+#include <unicode/uloc.h>
 #include <stdio.h>  /* for FILE*'s */
 
 /**
@@ -70,7 +76,11 @@ typedef struct
 {
   uint8_t     *key;     /* Opaque key for this line. 0wned. */
   int32_t      keySize; /* size of above struct */
+#ifdef WIN32
+  /*const*/ UChar *chars;   /* Null terminated string. Can be 0wned. */
+#else
   const UChar *chars;   /* Null terminated string. Can be 0wned. */
+#endif
   void        *userData;/* User data */
 } USortLine;
 

@@ -14,9 +14,13 @@
 
 #include "devtables.h"
 #include <stdio.h>
-#include "utypes.h"
-#include "ucnv.h"
-#include "unistr.h"
+#include "unicode/utypes.h"
+#include "unicode/ucnv.h"
+#include "unicode/unistr.h"
+#ifdef WIN32
+#include <string.h>
+#endif
+
 #define kBufLen 99
 
 #if 0
@@ -70,6 +74,16 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
       myTarget = _this->charErrorBuffer + _this->charErrorBufferLength;
 
       /* OK hit it */
+#ifdef WIN32
+      ucnv_fromUnicode(&myConverter,
+		       (char**)&myTarget,
+		       (const char *)_this->charErrorBuffer + UCNV_ERROR_BUFFER_LENGTH,
+		       &sourceAlias,
+		       sourceLimit,
+		       NULL,
+		       TRUE,
+		       &subErr);
+#else
       ucnv_fromUnicode(&myConverter,
 		       (char**)&myTarget,
 		       _this->charErrorBuffer + UCNV_ERROR_BUFFER_LENGTH,
@@ -78,6 +92,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 		       NULL,
 		       TRUE,
 		       &subErr);
+#endif
       /* fix the charBufferLength */
 
       /* **todo: check err here! */
@@ -255,8 +270,11 @@ U_CAPI bool_t
      UnicodeString str  = "<FONT FACE=\"Xdvng\">";
      int len = str.length();
      const UChar *chars = str.getUChars();
-
+#ifdef WIN32
+     convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
+#else
      convertIntoTargetOrErrChars(_this,target,(unsigned char*)targetLimit,&chars,chars+len,err);
+#endif
      inFont = TRUE;
    }
 
@@ -323,9 +341,17 @@ U_CAPI bool_t
      int len = str.length();
      const UChar *chars = str.getUChars();
 
+#ifdef WIN32
+     convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
+#else
      convertIntoTargetOrErrChars(_this,target,targetLimit,&chars,chars+len,err);
+#endif
+
      inFont = TRUE;
   }
+#ifdef WIN32
+  return TRUE;
+#endif
 }
 
 //#include "syriac.cpp"

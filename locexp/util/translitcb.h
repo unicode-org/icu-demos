@@ -18,11 +18,15 @@
 #ifndef TRANSLITCB_H
 #define TRANSLITCB_H
 
-#include "ucnv.h"
+#include "unicode/ucnv.h"
 
 
 /* probably not needed */
+#ifdef WIN32
+UConverterFromUCallback TRANSLITERATED_lastResortCallback;
+#else
 extern UConverterFromUCallback TRANSLITERATED_lastResortCallback;
+#endif
 
 U_CAPI void 
   UCNV_FROM_U_CALLBACK_TRANSLITERATED (UConverter * _this,

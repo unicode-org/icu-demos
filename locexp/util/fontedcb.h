@@ -15,7 +15,7 @@
 #ifndef FONTEDCB_H
 #define FONTEDCB_H
 
-#include "ucnv.h"
+#include "unicode/ucnv.h"
 
 /* #include a bunch of stuff before this file... */
 

@@ -25,20 +25,20 @@ extern int srl_mode;
 #include <stdio.h>
 #include <string.h>
 
-#include "utypes.h"
-#include "ustring.h"
+#include "unicode/utypes.h"
+#include "unicode/ustring.h"
 
-#include "ucnv.h"
-#include "udat.h"
-#include "ucal.h"
-#include "uchar.h"
-#include <ustdio.h>
+#include "unicode/ucnv.h"
+#include "unicode/udat.h"
+#include "unicode/ucal.h"
+#include "unicode/uchar.h"
+#include <unicode/ustdio.h>
 
 #include "decompcb.h" /* from locexp/util */
 
 #define HAVE_KANGXI
 #define RADICAL_LIST
-#include <kangxi.h> /* Kang-Xi Radical mapping table */
+#include <kangxi.c> /* Kang-Xi Radical mapping table */
 
 /* Protos */
 int main(int argc, char **argv);
@@ -136,8 +136,12 @@ void
   UErrorCode err2 = U_ZERO_ERROR;
 
 
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
   if (CONVERSION_U_SUCCESS (*err))
     return;
+#endif
 
   ucnv_reset (&myConverter);
   ucnv_setFromUCallBack (&myConverter,
@@ -257,10 +261,11 @@ main(int argc,
   char theString[800];
   UChar chars[800];
   UChar theChar;
-  int n,i,r,c;
+  int n,i,r,c,uc;
   bool_t searchedFor;
   UChar block = 0xFFFF;
   enum { ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME } mode;
+  UVersionInfo uvi;
 
   chars[1] = 0;
   pi = getenv("PATH_INFO");
@@ -646,6 +651,7 @@ main(int argc,
       int u,stroke;
       char s[200];
 
+
       printf("<B>");
       printBasicBlockInfo(gKangXiRadicalTable[(block-1)*2]);
       printf(" (radical %d)</B> \r\n",block);
@@ -725,8 +731,12 @@ main(int argc,
 
     }
 
-  printf("<A HREF=\"http://www.unicode.org/\">Based on: %s</A>\r\n",
-         u_getVersion());
+  u_getUnicodeVersion(uvi);
+  printf("<A HREF=\"http://www.unicode.org/\">Based on: ");
+  for(uc=0;uc<U_MAX_VERSION_LEN;uc++) {
+      printf("%d.",uvi[uc]);
+  }
+  printf("</A>\r\n");
 
   printf("<BR>Powered by <A HREF=\"http://oss.software.ibm.com/developerworks/opensource/icu/\">ICU 1.3.1</A>\r\n");
   

@@ -19,11 +19,16 @@
 #include <errno.h>
 
 // This is the UnicodeConverterCPP headerfile
-#include <convert.h>
+#include <unicode/convert.h>
 
 // This is the UnicodeString headerfile
-#include <unistr.h>
+#include <unicode/unistr.h>
 
+#ifdef WIN32
+#include <string.h>
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 
 
@@ -266,7 +271,7 @@ int main(int argc, char** argv)
     // Open the correct input file or connect to stdin for reading input
     if (infilestr!=0)
     {
-        file = fopen(infilestr, "r");
+        file = fopen(infilestr, "rb");
         if (file==0)
         {
             fprintf(stderr, "Couldn't open the input file: %s\n", strerror(errno));
@@ -274,8 +279,15 @@ int main(int argc, char** argv)
         }
         infile = file;
     }
-    else
+    else {
         infile = stdin;
+#ifdef WIN32
+        if( setmode( fileno ( stdin ), O_BINARY ) == -1 ) {
+                perror ( "Cannot set stdin to binary mode" );
+                exit(-1);
+        }
+#endif
+    }
 
     if (!convertFile(fromcpage, tocpage, infile, stdout))
         goto error_exit;

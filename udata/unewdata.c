@@ -18,11 +18,13 @@
 */
 
 #include "stdio.h"
-#include "utypes.h"
-#include "ustring.h"
+
+#include "unicode/utypes.h"
+#include "unicode/ustring.h"
+#include "unicode/uloc.h"
+
 #include "cmemory.h"
 #include "cstring.h"
-#include "uloc.h"
 #include "udata.h"
 #include "unewdata.h"
 

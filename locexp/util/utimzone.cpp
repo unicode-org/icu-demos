@@ -3,8 +3,8 @@
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "utimzone.h"
-#include "timezone.h"
-#include "simpletz.h"
+#include "unicode/timezone.h"
+#include "unicode/simpletz.h"
 
 TimeZone *gmtZone  = NULL; // for comparison
 

@@ -36,7 +36,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "utypes.h"
+#include "unicode/utypes.h"
 
 #define icu_strcpy(dst, src) strcpy(dst, src)
 #define icu_strcpyWithSize(dst, src, size) strncpy(dst, src, size)

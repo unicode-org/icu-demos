@@ -82,8 +82,12 @@ UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML  (UConverter * _this,
   UErrorCode err2 = U_ZERO_ERROR;
 
 
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
   if (CONVERSION_U_SUCCESS (*err))
     return;
+#endif
 
   ucnv_reset (&myConverter);
   ucnv_setFromUCallBack (&myConverter,
@@ -181,8 +185,12 @@ UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
   UErrorCode err2 = U_ZERO_ERROR;
 
 
+#ifdef WIN32
+  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
+#else
   if (CONVERSION_U_SUCCESS (*err))
     return;
+#endif
 
   ucnv_reset (&myConverter);
   ucnv_setFromUCallBack (&myConverter,

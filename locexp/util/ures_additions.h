@@ -16,10 +16,10 @@
 #ifndef URES_ADDITIONS_H
 #define URES_ADDITIONS_H
 
-#include "utypes.h"
-#include "uloc.h"
-#include "ures.h"
-#include "unum.h"
+#include "unicode/utypes.h"
+#include "unicode/uloc.h"
+#include "unicode/ures.h"
+#include "unicode/unum.h"
 
 /**
 * Counts the numbers of rows and columns in the specified 2d array
