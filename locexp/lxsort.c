@@ -8,15 +8,38 @@
 /* routines having to do with the sort sample */
 void printRuleString(LXContext *lx, const UChar*s) 
 {
+  /* push HTML state, turn off <b> tags in escape */
+  UChar lastChar = 0;
+  UBool oldHtml;
+
+  oldHtml = lx->backslashCtx.html;
+  lx->backslashCtx.html = FALSE;
+
   while(*s) {
     switch(*s) {
-    case '&':  u_fprintf(lx->OUT, "&amp;"); break;
-    case '<': u_fprintf(lx->OUT, "&lt;"); break;
+    case '\r': break;
+    case '\n': break;
+    case '&':  u_fprintf(lx->OUT, "\n&amp;"); break;
+    case ']': u_fprintf(lx->OUT, "]\n"); break;
+    case '<': 
+    {
+      /*
+        if((lastChar != '<') && (s[1] != '<')) {
+        u_fprintf(lx->OUT, "\n");
+        }
+      */
+      u_fprintf(lx->OUT, "&lt;"); 
+      break;
+    }
     case '>': u_fprintf(lx->OUT, "&gt;"); break;
     default: u_fputc(*s,lx->OUT);
     }
+    lastChar = *s;
     s++;
   }
+
+  /* pop state */
+  lx->backslashCtx.html = TRUE;
 }
 
 /**
@@ -25,9 +48,8 @@ void printRuleString(LXContext *lx, const UChar*s)
  * @param sort the USort object being displayed - or NULL.
  * @param num the index into the USort. (ignored if sort == NULL)
  * @param chars NULL terminated UChars to be output for this word
- * @param evenOdd A counter 
  */
-void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* chars)
+void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* chars, const char *queryString)
 {
   UBool lineAbove;  /* Show box above the current line? */
   UBool lineBelow;  /* Show box below current line? */
@@ -72,6 +94,18 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 #if 1
   if(lineAbove) { u_fprintf(lx->OUT, "<div class=\"box%d\">\r\n", (evenOdd++)%2 ); }
   u_fprintf(lx->OUT, "%U", chars);
+
+  {
+    int32_t ii;
+    if(aSort  && strstr(queryString,"showCollKey")  ) {
+      u_fprintf(lx->OUT, "<br><font size=-2 color=\"#999999\"><tt>");
+
+      for(ii=0;ii<aSort->lines[num].keySize;ii++) {
+        u_fprintf(lx->OUT, "%02x ", aSort->lines[num].key[ii]);
+      }
+      u_fprintf(lx->OUT, "</tt></font>\r\n");
+    }
+  }
   if(lineBelow) { u_fprintf(lx->OUT, "\r\n</div>\r\n"); } else { u_fprintf(lx->OUT, "<br>\r\n"); }
   /* CSS mode */
 #else
@@ -210,7 +244,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     lxCustSortOpts = TRUE;
   }
 
-  u_fprintf(lx->OUT, "<style>\r\n<!--.box0 { border: 1px inset blue; margin: 1px }\r\n.box1 { border: 1px inset red; margin: 1px; background-color: #CCEECC } -->\r\n</style>\r\n");
+  u_fprintf(lx->OUT, "<style>\r\n<!--.box0 { border: 1px inset gray; margin: 1px }\r\n.box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC } -->\r\n</style>\r\n");
 
   /* Mode switch.. */
   enum
@@ -585,7 +619,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     break;
   } 
 
-  u_fprintf(lx->OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WI_DTH=100% HE_IGHT=100%><TR><TD WIDTH=\"20%\"><B>%U</B></TD>\r\n",
+  u_fprintf(lx->OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WI_DTH=100% HE_IGHT=100%><TR><TD WI_DTH=\"33%\"><B>%U</B></TD>\r\n",
             FSWF("usortSource", "Source"));
 
   /* Now, the table itself. first the column headings  ============================== */
@@ -595,7 +629,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     { 
      case  kSimpleMode:
      {
-       u_fprintf(lx->OUT, "<TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD>",
+       u_fprintf(lx->OUT, "<TD WI_DTH=\"33%\"><B>%U</B></TD><TD WI_DTH=\"33%\"><B>%U</B></TD>",
                  FSWF("usortOriginal", "Original"),
                  FSWF("usortCollated", "Collated"));
      }
@@ -629,6 +663,9 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   
   u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\"><P>\r\n",
             FSWF("EXPLORE_CollationElements_Sort", "Sort"));
+
+  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT NAME=showCollKey VALUE=\"%U\"><P>\r\n",
+            FSWF("EXPLORE_CollationElements_ShowCollKey", "Show Collation Key"));
 
   /* END source box */
   u_fprintf(lx->OUT, "</TD>\r\n");
@@ -692,7 +729,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
           for(i=0;i<aSort->count;i++) {
-            showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars);
+            showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars,b);
           }
 
           u_fprintf(lx->OUT, "</TD>");	  
@@ -745,7 +782,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
           for(i=0;i<aSort->count;i++) {
-            showSort_outputWord(lx, aSort, i, aSort->lines[i].chars);
+            showSort_outputWord(lx, aSort, i, aSort->lines[i].chars,b);
           }
           
           u_fprintf(lx->OUT, "</TD>");	  
