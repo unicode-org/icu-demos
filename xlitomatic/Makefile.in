@@ -50,10 +50,8 @@ all-local: $(TARGET) res-local
 
 install-local: all-local install-target install-res
 
-mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
-
 install-target: all-local
-	$(mkinstalldirs) $(bindir)
+	$(MKINSTALLDIRS) $(bindir)
 	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
 
 dist-local:

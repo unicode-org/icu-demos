@@ -13,8 +13,6 @@ subdir= dumpdat
 
 include @ICU_MAKEFILE@
 
-mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
-
 top_builddir=..
 
 ## Extra files to remove for 'make clean'
@@ -49,7 +47,7 @@ check: check-local
 all-local: $(TARGET)
 
 install-local: target-clean-local all-local
-	$(mkinstalldirs) $(sbindir)
+	$(MKINSTALLDIRS) $(sbindir)
 	$(INSTALL) $(TARGET) $(sbindir)/$(TARGET)
 
 dist-local:

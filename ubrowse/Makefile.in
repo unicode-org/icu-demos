@@ -59,10 +59,8 @@ all-local: $(TARGET)
 
 install-local: all-local install-target
 
-mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
-
 install-target: all-local
-	$(mkinstalldirs) $(bindir)
+	$(MKINSTALLDIRS) $(bindir)
 	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
 
 dist-local:
