@@ -368,9 +368,17 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
 	}
       else
 	{
-	  status = U_ZERO_ERROR;
-	  if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
-	      (siz > 1) )
+          if((siz == 0) && inLocale[0] == '_')
+          {
+            s->ustr = calloc(2,1);
+            s->ustr[0] = '-';
+            s->ustr[1] = 0;
+          }
+          else
+          {
+            status = U_ZERO_ERROR;
+            if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
+                (siz > 1) )
 	    {
 	      s->ustr = calloc((siz+2) , sizeof(UChar));
 	      ((UChar*)(s->ustr))[0] = 0;
@@ -379,9 +387,9 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
 	    }
 	  else
 	    s->ustr = 0;
-	}
+          }
+        }
     }
-  
   s->subLocs = 0;
   s->nSubLocs = 0;
   s->parent = parent;
