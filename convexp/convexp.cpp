@@ -665,11 +665,11 @@ main(int argc, const char *argv[]) {
     gStandardsSelected = uhash_open(uhash_hashLong, uhash_compareLong, &errorCode);
     gMaxStandards = ucnv_countStandards();
 
-//    if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
+    if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
-    if((cgi="conv=ibm-949")!=NULL) {
+//    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
