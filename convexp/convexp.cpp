@@ -33,35 +33,47 @@ static const char htmlHeader[]=
     "\n"
     "<html lang=\"en-US\">\n"
     "<head>\n"
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
     "<title>ICU " CGI_NAME "</title>\n"
+    "<meta name=\"robots\" content=\"nofollow\">\n"
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
     "<style type=\"text/css\">\n"
     "th {white-space: nowrap; background-color: #EEEEEE; text-align: left;}\n"
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
     "td {white-space: nowrap;}\n"
+    "td.value {font-family: monospace;}\n"
     "</style>\n"
     "</head>\n"
     "<body bgcolor=\"#FFFFFF\">\n"
+    "<table width=\"100%\"border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
+    "<tr><td>"
     "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;\n";
+    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;";
 
 static const char navigationMainHeader[]=
-    "<strong>" CGI_NAME "</strong><br><hr>\n"
-    "<h1>ICU " CGI_NAME "</h1>\n";
+    "<strong>" CGI_NAME "</strong>\n";
 
 static const char navigationSubHeader[]=
     "<a href=\"?\">" CGI_NAME "</a> &gt;\n"
-    "<strong>%s</strong><br><hr>\n"
+    "<strong>%s</strong>\n";
+
+static const char navigationEndHeader[]=
+    "</td>"
+    "<td align=\"right\">"
+    "<a href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">Help</a>"
+    "</td></tr>\n"
+    "</table>\n"
+    "<hr>\n"
     "<h1>ICU " CGI_NAME "</h1>\n";
 
 static const char htmlFooter[]=
     "</body>\n"
     "</html>\n";
 
-static const char helpText[]=
+/*static const char helpText[]=
     "<h2><a name=\"help\">About this demo</a></h2>\n"
-    " There is no help for this demo at this time."
+    "<p>There is no help for this demo at this time.</p>"
     "<hr>";
+*/
 
 static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
@@ -99,6 +111,7 @@ static const char ALL[]="ALL";
 
 int32_t gMaxStandards;
 char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
+UHashtable *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
 
 #define OPTION_SEPARATOR  '&' 
@@ -106,14 +119,14 @@ const char *gScriptName = NULL;
 
 
 
-static const char *getStandardOptionsURL(const UHashtable *standardsHashtable, UErrorCode *status) {
+static const char *getStandardOptionsURL(UErrorCode *status) {
     static char optionsURL[1024] = "";
     int32_t pos = -1;
     const UHashElement *e;
     const char *standard;
     int32_t len = 0;
 
-    while ((e = uhash_nextElement(standardsHashtable, &pos)) != NULL) {
+    while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
         standard = (const char*) e->value.pointer;
         len += sprintf(optionsURL+len, "&s=%s", standard);
     }
@@ -125,12 +138,12 @@ static const char *getStandardOptionsURL(const UHashtable *standardsHashtable, U
  Only insert standards that we recognize into the hashtable
  All other standards could be bad/malicious data
 */
-static void addStandard(UHashtable *standardsHashtable, const char *newStandard, int32_t nameSize, UErrorCode *status) {
+static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *status) {
     int32_t i;
     const char *standard;
 
     if (nameSize <= 0) {
-        uhash_put(standardsHashtable,
+        uhash_put(gStandardsSelected,
             (void*)ucnv_getStandard(gMaxStandards-1, status),
             (void*)ucnv_getStandard(gMaxStandards-1, status),
             status);
@@ -140,7 +153,7 @@ static void addStandard(UHashtable *standardsHashtable, const char *newStandard,
         return;
     }
     if (uprv_strnicmp(ALL, newStandard, nameSize) == 0) {
-        uhash_put(standardsHashtable, (void*)ALL, (void*)ALL, status);
+        uhash_put(gStandardsSelected, (void*)ALL, (void*)ALL, status);
         if (U_FAILURE(*status)) {
             printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
         }
@@ -153,7 +166,7 @@ static void addStandard(UHashtable *standardsHashtable, const char *newStandard,
             printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
         }
         if (uprv_strnicmp(standard, newStandard, nameSize) == 0) {
-            uhash_put(standardsHashtable, (void*)standard, (void*)standard, status);
+            uhash_put(gStandardsSelected, (void*)standard, (void*)standard, status);
             if (U_FAILURE(*status)) {
                 printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
             }
@@ -174,7 +187,7 @@ static const char* getNextOption(const char* src, const char* srcLimit) {
     return src;
 }
 
-static void parseAllStandards(UHashtable *standardsHashtable, const char *queryStr, UErrorCode *status) {
+static void parseAllStandards(const char *queryStr, UErrorCode *status) {
     const char* src = queryStr;
     int srcLen = strlen(queryStr);
     const char* srcLimit = queryStr + srcLen;
@@ -189,7 +202,7 @@ static void parseAllStandards(UHashtable *standardsHashtable, const char *queryS
         }
         const char *nextOpt = getNextOption(src, srcLimit);
         if (strncmp(src, "s=", 2) == 0) {
-            addStandard(standardsHashtable, nextVal, nextOpt - nextVal, status);
+            addStandard(nextVal, nextOpt - nextVal, status);
         }
         else if (strncmp(src, "conv=", 5) == 0) {
             UErrorCode myStatus = U_ZERO_ERROR;
@@ -228,7 +241,7 @@ static void parseAllStandards(UHashtable *standardsHashtable, const char *queryS
 }
 */
 
-static void printOptions(const UHashtable *standardsSelected, UErrorCode *status) {
+static void printOptions(UErrorCode *status) {
     int32_t i;
     const char *standard, *checked;
 
@@ -241,7 +254,7 @@ static void printOptions(const UHashtable *standardsSelected, UErrorCode *status
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
         }
-        if (uhash_find(standardsSelected, standard) != NULL) {
+        if (uhash_find(gStandardsSelected, standard) != NULL) {
             checked = " checked";
         }
         else {
@@ -254,7 +267,7 @@ static void printOptions(const UHashtable *standardsSelected, UErrorCode *status
             printf("<input type=\"checkbox\" name=\"s\" value=\"\"%s> <em>Untagged Aliases</em><br>\n", checked);
         }
     }
-    if (uhash_find(standardsSelected, ALL) != NULL) {
+    if (uhash_find(gStandardsSelected, ALL) != NULL) {
         checked = " checked";
     }
     else {
@@ -349,7 +362,7 @@ static void escapeBytes(const char *source, int8_t len) {
     }
 }
 
-static void escapeUChars(const UChar *source, int8_t len) {
+/*static void escapeUChars(const UChar *source, int8_t len) {
     if (len > 0) {
         printf(startUCharEscape, (uint8_t)*(source++));
     }
@@ -360,6 +373,35 @@ static void escapeUChars(const UChar *source, int8_t len) {
     len--;
     while (len-- > 0) {
         printf(trailingUCharEscape, (uint8_t)*(source++));
+    }
+}
+*/
+
+static void printAmbiguousAliasedConverters() {
+    UErrorCode status = U_ZERO_ERROR;
+    const char *alias;
+    const char *canonicalName;
+    const char *standard;
+    uint16_t idx, stdIdx;
+    uint16_t countAliases = ucnv_countAliases(gCurrConverter, &status);
+
+    for (idx = 0; idx < countAliases; idx++) {
+        status = U_ZERO_ERROR;
+        alias = ucnv_getAlias(gCurrConverter, idx, &status);
+        ucnv_getStandardName(alias, "", &status);
+        if (status == U_AMBIGUOUS_ALIAS_WARNING) {
+            for (stdIdx = 0; stdIdx < gMaxStandards; stdIdx++) {
+                status = U_ZERO_ERROR;
+                standard = ucnv_getStandard((uint16_t)stdIdx, &status);
+                if (U_FAILURE(status)) {
+                    printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(status));
+                }
+                canonicalName = ucnv_getCanonicalName(alias, standard, &status);
+                if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
+                    printf("<a href=\"?conv=%s%s\">%s<br>\n", canonicalName, getStandardOptionsURL(&status), canonicalName);
+                }
+            }
+        }
     }
 }
 
@@ -414,8 +456,8 @@ static UBool isASCIIcompatible(UConverter *cnv) {
 
 static void printConverterInfo(UErrorCode *status) {
     char buffer[64];    // It would be insane if it were lager than 64 bytes
-    UChar uBuffer[64];    // It would be insane if it were lager than 64 code units
     UBool starterBufferBool[256];
+    UBool ambiguousAlias = FALSE;
     char starterBuffer[sizeof(starterBufferBool)+1];    // Add one for the NULL
     int8_t len;
     UConverter *cnv = ucnv_open(gCurrConverter, status);
@@ -426,16 +468,25 @@ static void printConverterInfo(UErrorCode *status) {
         return;
     }
     puts(startTable);
-    printf("<tr><th>Type of converter</th><td>%s</td></tr>\n", getConverterType(ucnv_getType(cnv)));
-    printf("<tr><th>Minimum number of bytes</th><td>%d</td></tr>\n", ucnv_getMinCharSize(cnv));
-    printf("<tr><th>Maximum number of bytes</th><td>%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
-    printf("<tr><th>Is converter ambiguous?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (containsAmbiguousAliases() ? "TRUE" : "FALSE"));
-    printf("<tr><th>Is ASCII compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Type of converter</th><td class=\"value\">%s</td></tr>\n", getConverterType(ucnv_getType(cnv)));
+    printf("<tr><th>Minimum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMinCharSize(cnv));
+    printf("<tr><th>Maximum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
+
+    printf("<tr><th>Substitution character</th><td class=\"value\">");
+    buffer[0] = 0;
+    len = sizeof(buffer)/sizeof(buffer[0]);
+    ucnv_getSubstChars(cnv, buffer, &len, status);
+    escapeBytes(buffer, len);
+    if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
+        printf(" <strong><em>(Note: This byte sequence is platform dependent)</em></strong>");
+    }
+    printf("</td></tr>\n");
+
+    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
 
     if (ucnv_getType(cnv) == UCNV_MBCS) {
         UErrorCode myStatus = U_ZERO_ERROR;
-        printf("<tr><th>Starter bytes</th><td>");
+        printf("<tr><th>Starter bytes</th><td class=\"value\">");
         ucnv_getStarters(cnv, starterBufferBool, &myStatus);
         starterBuffer[0] = 0;
         len = 0;
@@ -450,57 +501,42 @@ static void printConverterInfo(UErrorCode *status) {
         printf("</td></tr>\n");
     }
 
-    printf("<tr><th>Substitution character</th><td>");
-    buffer[0] = 0;
-    len = sizeof(buffer)/sizeof(buffer[0]);
-    ucnv_getSubstChars(cnv, buffer, &len, status);
-    escapeBytes(buffer, len);
-    if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
-        printf(" <strong><em>(Note: This byte sequence is platform dependent)</em></strong>");
+    printf("<tr><th>Is converter ambiguous?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    ambiguousAlias = containsAmbiguousAliases();
+    printf("<tr><th>Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
+    if (ambiguousAlias) {
+        puts("<tr><th>Converters with conflicting aliases</th><td>");
+        printAmbiguousAliasedConverters();
+        puts("</td></tr>");
     }
-    printf("</td></tr>\n");
-
-    printf("<tr><th>Illegal character</th><td>");
-    buffer[0] = 0;
-    len = sizeof(buffer)/sizeof(buffer[0]);
-    ucnv_getInvalidChars(cnv, buffer, &len, status);
-    escapeBytes(buffer, len);
-    printf("</td></tr>\n");
-
-    printf("<tr><th>Illegal Unicode character</th><td>");
-    uBuffer[0] = 0;
-    len = sizeof(uBuffer)/sizeof(uBuffer[0]);
-    ucnv_getInvalidUChars(cnv, uBuffer, &len, status);
-    escapeUChars(uBuffer, len);
-    printf("</td></tr>\n");
 
     puts(endTable);
 
     ucnv_close(cnv);
 }
 
-static void printStandardHeaders(const UHashtable *standardsSelected, UErrorCode *status) {
+static void printStandardHeaders(UErrorCode *status) {
     int32_t i;
     const char *standard;
 
-    puts("<tr><th class=standard>Internal<br>Converter Name</th>");
+    puts("<tr><th class=\"standard\">Internal<br>Converter Name</th>");
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
         standard = ucnv_getStandard((uint16_t)i, status);
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
         }
-        if (uhash_find(standardsSelected, standard) != NULL) {
+        if (uhash_find(gStandardsSelected, standard) != NULL) {
             if (*standard) {
-                printf("<th class=standard>%s</th>\n", standard);
+                printf("<th class=\"standard\">%s</th>\n", standard);
             }
             else {
-                puts("<th class=standard><em>Untagged Aliases</em></th>");
+                puts("<th class=\"standard\"><em>Untagged Aliases</em></th>");
             }
         }
     }
-    if (uhash_find(standardsSelected, ALL) != NULL) {
-        puts("<th class=standard><em>All Aliases</em></th>");
+    if (uhash_find(gStandardsSelected, ALL) != NULL) {
+        puts("<th class=\"standard\"><em>All Aliases</em></th>");
     }
     puts("</tr>");
 }
@@ -542,7 +578,7 @@ static void printStandardAliasList(const char *canonicalName, const char *standa
     uenum_close(stdConvEnum);
 }
 
-static void printAliases(const UHashtable *standardsSelected, const char *canonicalName, UErrorCode *status) {
+static void printAliases(const char *canonicalName, UErrorCode *status) {
     int32_t i;
     const char *standard;
 
@@ -552,21 +588,21 @@ static void printAliases(const UHashtable *standardsSelected, const char *canoni
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
         standard = ucnv_getStandard((uint16_t)i, status);
-        if (uhash_find(standardsSelected, standard) != NULL) {
+        if (uhash_find(gStandardsSelected, standard) != NULL) {
             printStandardAliasList(canonicalName, standard, status);
         }
     }
-    if (uhash_find(standardsSelected, ALL) != NULL) {
+    if (uhash_find(gStandardsSelected, ALL) != NULL) {
         printAllAliasList(canonicalName, status);
     }
 }
 
-static void printAliasTable(const UHashtable *standardsSelected) {
+static void printAliasTable() {
     UErrorCode status = U_ZERO_ERROR;
     UEnumeration *convEnum;
 
     printf(startTable);
-    printStandardHeaders(standardsSelected, &status);
+    printStandardHeaders(&status);
 
     convEnum = ucnv_openAllNames(&status);
     if (U_FAILURE(status)) {
@@ -586,10 +622,10 @@ static void printAliasTable(const UHashtable *standardsSelected) {
             }
             else {
                 printf("<tr>\n<th><a href=\"?conv=%s%s\">%s</a></th>\n",
-                    canonicalName, getStandardOptionsURL(standardsSelected, &status), canonicalName);
+                    canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
             status = U_ZERO_ERROR;
-            printAliases(standardsSelected, canonicalName, &status);
+            printAliases(canonicalName, &status);
             puts("</tr>\n");
         }
         uenum_close(convEnum);
@@ -626,23 +662,23 @@ main(int argc, const char *argv[]) {
     
 #   endif
 #endif
-    UHashtable *standardsSelected = uhash_open(uhash_hashLong, uhash_compareLong, &errorCode);
+    gStandardsSelected = uhash_open(uhash_hashLong, uhash_compareLong, &errorCode);
     gMaxStandards = ucnv_countStandards();
 
-    if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
+//    if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
-//    if((cgi="conv=ibm-949")!=NULL) {
+    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //        puts(cgi);
-        parseAllStandards(standardsSelected, cgi, &errorCode);
+        parseAllStandards(cgi, &errorCode);
     }
-    if (uhash_count(standardsSelected) == 0) {
+    if (uhash_count(gStandardsSelected) == 0) {
         /* Didn't specify a standard. Give the person something to look at. */
-        uhash_put(standardsSelected, (void*)ALL, (void*)ALL, &errorCode);
+        uhash_put(gStandardsSelected, (void*)ALL, (void*)ALL, &errorCode);
         if (U_FAILURE(errorCode)) {
             printf("ERROR: uhash_put() -> %s\n", u_errorName(errorCode));
         }
@@ -657,32 +693,36 @@ main(int argc, const char *argv[]) {
         printf(navigationSubHeader, gCurrConverter);
     }
     else {
-        puts(navigationMainHeader);
+        printf(navigationMainHeader);
     }
+
+    puts(navigationEndHeader);
 
     printf(startForm, gScriptName ? gScriptName : "");
 
-    printOptions(standardsSelected, &errorCode);
+    printOptions(&errorCode);
 
     printf(endForm);
 
-    printAliasTable(standardsSelected);
+    printAliasTable();
 
     if (*gCurrConverter) {
         printConverterInfo(&errorCode);
     }
 
-    uhash_close(standardsSelected);
     
+//    puts(helpText);
+    puts("<br>\n<hr>");
+
     char icuVString[16];
     UVersionInfo icuVer;
-
-    puts(helpText);
 
     u_getVersion(icuVer);
     u_versionToString(icuVer, icuVString);
     printf(versions, icuVString);
     
     puts(htmlFooter);
+
+    uhash_close(gStandardsSelected);
     return 0;
 }
