@@ -740,7 +740,7 @@ main(int argc,
 
   u_getUnicodeVersion(uvi);
   printf("<A HREF=\"http://www.unicode.org/\">Based on: ");
-  for(uc=0;uc<U_MAX_VERSION_LEN;uc++) {
+  for(uc=0;uc<U_MAX_VERSION_LENGTH;uc++) {
       printf("%d.",uvi[uc]);
   }
   printf("</A>\r\n");
