@@ -57,7 +57,7 @@ mt {
   helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
   inherited  {  "(jintirtu)"  }
   inherited_from  {  "(jintirtu mill-%U)"  }
-  localPatternChars { "Localized Date Pattern Chars" }
+//  localPatternChars { "Localized Date Pattern Chars" }
   localeList_Locale { "Il-Lingwi" }
   localeList_Sublocale{ "Il-Pajji¿i" }
   myConverter{ "Kodiåi:" }
@@ -65,6 +65,7 @@ mt {
   none { "Xejn" }
   on { "Mixg±ul" }
   off { "Mitfi" }
+   poweredby  {  "Miõjub minn"  }
   statusTableHeader  {  "G±a¿la:<BR><!-- Click to change -->"  }
   title  {  "MER¡BA! ICU LocaleExplorer"  }
   usortIdentical  {  "Identiku"  }

@@ -1,6 +1,207 @@
 // -*- Coding: iso-8859-1 -*-
+// Copyright (c) 2000 IBM, Inc and Others
+
+// Thanks to: Yves Arrouye and 'ephemeral'
+
 fr
 {
         EXPLORE_CollationElements_sampleString { "déjà|Meme|deja|même|dejà|bpef|b\u0153g|Boef|Mémé|b\u0153f|boef|bnef|pêche|pèché|pêché|pêche|pêché" }
+
+// ==  Keys  ==
+   LocaleID      { "Identificateur de locale de Windows" }
+   Version { "Version des données d'ICU" }
+   Languages { "Noms de langues" }
+   Countries { "Noms de pays" }
+   CollationElements { "Règles de tri" }
+   localPatternChars { "Caractères spéciaux des motifs de dates" }
+   zoneStrings { "Fuseaux horaires" }
+   NumberPatterns { "Motifs de nombres" }
+   NumberElements { "Constituants de nombres" }
+   DateTimePatterns { "Motifs de dates et d'heures" }
+   AmPmMarkers { "AM & PM" }
+   CurrencyElements { "Constituants de valeurs monétaires" }
+	Day { "Jours" }
+	Month { "Mois" }
+
+
+
+   AmPmMarkers0  {  "AM"  }
+   AmPmMarkers1  {  "PM"  }
+   CurrencyElements0  {  "Symbole monétaire"  }
+   CurrencyElements1  {  "Symbole monétaire international"  }
+   CurrencyElements2  {  "Séparateur de valeurs monétaires"  }
+   DateTimeElements   {  "Options de dates et d'heures" }
+   DateTimeElements0  {  "Premier jour de la semaine : "  }
+   DateTimeElements1  {  "Nombre minimum de jours de la première semaine : " }
+   DateTimePatterns0  {  "Heure complète"  }
+   DateTimePatterns1  {  "Heure longue"  }
+   DateTimePatterns2  {  "Heure moyenne"  }
+   DateTimePatterns3  {  "Heure abrégée"  }
+   DateTimePatterns4  {  "Date complète"  }
+   DateTimePatterns5  {  "Date longue"  }
+   DateTimePatterns6  {  "Date moyenne"  }
+   DateTimePatterns7  {  "Date abrégée"  }
+   DateTimePatterns8  {  "Motif date-heure.<BR>{0} = heure, {1} = date" }
+   DayAbbreviations  {  "Noms abrégés"  }
+   DayNames  {  "Noms complets"  }
+   Eras { "Ères" }
+   EXPLORE_CollationElements  {  "Exemple de tri"  }
+   EXPLORE_CollationElements_Prompt  {  "Entrez quelques lignes de texte à trier."  }
+   EXPLORE_CollationElements_Sort  {  "Trier"  }
+//   EXPLORE_CollationElements_strength  {  "There are four different
+   EXPLORE_DateTimePatterns  {  "Explorer &gt; Date / heure"  }
+   EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
+   EXPLORE_NumberPatterns  {  "Explorer &gt; Nombres"  }
+   EXPLORE_NumberPatterns_defaultPattern  {  "#,###.###############"  }
+   EXPLORE_change  {  "Changer"  }
+   LocaleCodes  {  "Codes de locales"  }
+   LocaleCodes_2  {  "2"  }
+   LocaleCodes_3  {  "3"  }
+   LocaleCodes_Country  {  "Pays"  }
+   LocaleCodes_Language  {  "Langue"  }
+   LocaleCodes_Variant  {  "Variante"  }
+   MonthAbbreviations  {  "Noms abrégés"  }
+   MonthNames  {  "Noms complets"  }
+   NoLocale  {  "NOM DE LOCALE ABSENT"  }
+   NumberElements0  {  "Séparateur décimal"  }
+   NumberElements1  {  "Séparateur de groupe"  }
+   NumberElements10  {  "N'est pas un nombre"  }
+   NumberElements2  {  "Séparateur de motif"  }
+   NumberElements3  {  "Pourcent"  }
+   NumberElements4  {  "Chiffre zéro"  }
+   NumberElements5  {  "Chiffre"  }
+   NumberElements6  {  "Signe moins"  }
+   NumberElements7  {  "Exponentielle"  }
+   NumberElements8  {  "Pour mille [/1000]"  }
+   NumberElements9  {  "Infini"  }
+   NumberPatterns0  {  "Motif décimal"  }
+   NumberPatterns1  {  "Motif monétaire"  }
+   NumberPatterns2  {  "Motif de pourcentage"  }
+   NumberPatterns3  {  "Motif scientifique"  }
+   UNKNOWN_ERROR  {  "Erreur indéterminée"  }
+   U_MISSING_RESOURCE_ERROR  {  "(ressource absente)"  }
+   aliasFor  {  "Synonyme de "  }
+   bigStringClickToShow  {  "(Omis pour raison de taille. Cliquer ici pour afficher.)"  }
+   bigStringHide  {  "Cacher"  }
+   changeEncoding  {  "Changer votre encodage"  }
+   changeLocale  {  "Changer la locale utilisée pour les titres"  }
+   char  {  "Caractère"  }
+   charMeaning  {  "Signification"  }
+   charNum  {  "#"  }
+   chooseEncoding  {  "Choisissez votre encodage"  }
+   chooseLocale  {  "Choisissez votre locale."  }
+   convERR  {  "Une erreur s'est produite durant l'ouverture d'un convertisseur.\n"  }
+   converter_matchesTo  {  "À la recherche for matches to these chars: "  }
+   converter_searching  {  "À la recherche de convertisseurs appropriés .." }
+   convsAvail  {  "%d convertisseurs disponibles, %d synonymes en tout."  }
+   convsMatch  {  "%d convertisseurs (sur %d) sont appropriés, %d synonymes en tout." }
+   cumulative_notshown  {  "Données cumulatives du parent non-affichées"  }
+   demos  {  "Démos"  }
+   display_ALT  {  "Problèmes d'affichage ?"  }
+   display_GIF  {  "displayproblems.gif"  }
+//   display_OPTIONS  {  "ALIGNEMENT = À DROITE"  }
+   empty  {  "(Empty)"  }
+   encodingOK0  {  "Cliquer ici si l'encodage '"  }
+   encodingOK1  {  "' est acceptable, ou sélectionnez-en un ci-dessous."  }
+   encoding_Missing  {  "Les caractères suivants n'ont pas pu être affichés correctement avec l'encodage courant :"  }
+   encoding_PickABetter  {  "Cliquer ici pour rechercher un meilleur encodage"  }
+   encoding_translit_setting  {  "Translitération :"  }
+   exploreTitle  {  "Exploration"  }
+   explore_Button  {  "Explorer"  }
+   explore_G7  {  "Essayer le tri multilangue"  }
+   explore_xlitomatic  {  "Translit-o-matic"  }
+   formatExample_DateTimePatterns_What  {  "Cet exemple illustre le formattage de motifs de dates et d'heures dans cette locale."  }
+   formatExample_DateTimePatterns_errorFormat  {  "La date n'a pas pu être formattée"  }
+   formatExample_DateTimePatterns_errorOpen  {  "Le formatteur n'a pas pu être ouvert"  }
+   formatExample_NumberPatterns_What  {  "Cet exemple illustre le formattage de nombres dans cette locale."  }
+   formatExample_errorFormat2  {  "Le nombre n'a pas pu être formatté normalement" 
+}
+   formatExample_errorFormatDate2  {  "La date n'a pas pu êre formattée normalement"  }
+   formatExample_errorFormatDefault  {  "Le nombre n'a pas pu être formatté en utilisant le motif par défaut"  }
+   formatExample_errorOpen  {  "Le formatteur n'a pas pu être ouvert"  }
+   formatExample_errorOpenDefault  {  "Le format de nombres par défaut n'a pas pu être ouvert"  }
+   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
+   formatExample_errorParse3  {  "Could not parse this, replaced with a
+default value."  }
+   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
+   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
+   help  {  "Help"  }
+   helpPrefix  {  "default_"  }
+   helpgif  {  "help.gif"  }
+   helpgif_opt  {  "BORDER=0"  }
+   inherited  {  "(hérité)"  }
+   inherited_from  {  "(Héritage: %U)"  }
+
+//== We'd like to have:
+// Hérité de la racine  [special case]
+// Hérité du français  [consonant]
+// Hérité de l'allemand  [vowel - H counts as a vowel]
+
+//   introSpiel  {  "This demo illustrates the ICU ...... " }
+
+   localPatternChars0  {  "Ères"  }
+   localPatternChars1  {  "Year"  }
+   localPatternChars10  {  "Day Of Year"  }
+   localPatternChars11  {  "Day Of Week In Month"  }
+   localPatternChars12  {  "Week Of Year"  }
+   localPatternChars13  {  "Week Of Month"  }
+   localPatternChars14  {  "Am/Pm"  }
+   localPatternChars15  {  "Hour 1"  }
+   localPatternChars16  {  "Hour 0"  }
+   localPatternChars17  {  "Timezone"  }
+   localPatternChars2  {  "Month"  }
+   localPatternChars3  {  "Date"  }
+   localPatternChars4  {  "Hour Of Day 1"  }
+   localPatternChars5  {  "Hour Of Day 0"  }
+   localPatternChars6  {  "Minute"  }
+   localPatternChars7  {  "Second"  }
+   localPatternChars8  {  "Millisecond"  }
+   localPatternChars9  {  "Day Of Week"  }
+//   localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
+//   localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
+//   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular country."  }
+//   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular country."  }
+//   localeDataLanguage  {  "No country is specified, so the data is generic to this language."  }
+//   localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
+   localeList_Locale  {  "Languages"  }
+   localeList_Sublocale  {  "Countries"  }
+//   locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
+//   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported. [i think]"  }
+   myConverter  {  "Encoding:"  }
+   myLocale  {  "Label Locale:"  }
+   none  {  "None"  }
+   off  {  "off"  }
+   on  {  "on"  }
+   poweredby  {  "Powered by"  }
+   poweredby_filebug  {  "Communiquer un problème"  }
+   statusTableHeader  {  "Your settings: (click to change)"  }
+   stringClickToShow  {  "(Click here to show.)"  }
+   sublocales  {  "Sublocales:"  }
+   taggedarrayTag  {  "Étiquette"  }
+   title  {  "Explorateur de locales d'ICU"  }
+//   transliterate_help  {  "Aide de la translitération"  }  [YA]
+   transliterate_help  {  "Aide à la translitération"  }
+   ubrowse  {  "Browse Unicode in this codepage"  }
+   usortHide  {  "Cacher cet exemple"  }
+   usortOriginal  {  "Originale"  }
+   usortPrimary  {  "Primaire"  }
+   usortSecondary  {  "Secondaire"  }
+   usortShow  {  "Montrer cet exemple"  }
+   usortSource  {  "Source"  }
+   usortTertiary  {  "Tertiaire"  }
+   usortWhat { "Cet exemple démontre le tri dans cette locale" }
+   warningExperimentalLocale { "Note: Vous utilisez une locale expérimentale. Cette locale ne fait pas partie de la distribution officielle d'ICU !" }
+   warningInheritedLocale { " Vous utilisez une locale qui ne fait pas naturellement partie de l'ICU. Locale Explorer supportera l'information héritée, mais n'est pas conçu pour comprendre cette locale. Le résultat de l'héritage peut être erroné."}
+
+   zoneStrings0  {  "Canonique"  }
+   zoneStrings1  {  "Nom régulier"  }
+   zoneStrings2  {  "Abbrév. régulière"  }
+   zoneStrings3  {  "Nom pour l'heure d'été"  }
+   zoneStrings4  {  "Abbrév. pour l'heure d'été"  }
+   zoneStrings5  {  "Exemple de ville"  }
+   zoneStrings6  {  "Écart brut"  }
+   zoneStrings_open_failed  {  "<I>Unknown</I>"  }
+   zone_set  {  "Set timezone to:"  }
+   zone_warn  {  "Note : ne marche que si votre navigateur accepte les cookies."  }
 }
 
