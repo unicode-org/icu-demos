@@ -171,7 +171,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     u_fprintf(lx->OUT, "</table>\r\n");
 
     if(hadUnsupportedLocales)
-        u_fputs(FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."), lx->OUT);
+        u_fputs(FSWF("locale_experimental", "Locales in <I>Italics</I> are Draft and not officially supported."), lx->OUT);
 
     if(showAll == FALSE && toOpen == FALSE)
     {
@@ -287,7 +287,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
   
   /* this notice covers sublocs and sibling locs */
   if(hadExperimentalSubLocales)
-    u_fprintf(lx->OUT, "<br>%S", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
+    u_fprintf(lx->OUT, "<br>%S", FSWF("locale_experimental", "Locales in <I>Italics</I> are Draft and not officially supported."));
   
   
 }

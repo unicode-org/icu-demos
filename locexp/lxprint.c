@@ -43,7 +43,11 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 
     case U_USING_DEFAULT_WARNING:
 	u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
+	if(lx->locales) {
         u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->locales->ustr); 
+	} else {
+        u_fprintf_u(lx->OUT, "inherited ???"); 
+	}
         u_fprintf(lx->OUT, "</A>");
         break;
 

@@ -164,7 +164,7 @@ void displayLocaleExplorer(LXContext *lx)
          strcmp(lx->curLocaleName,"g7")) {
         lx->noBug = TRUE;
         u_fprintf(lx->OUT, "<blockquote><b>%S</b>\r\n",
-                  FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation. &nbsp;"  ));
+                  FSWF("warningExperimentalLocale", "Note: You're viewing a Draft locale. This locale is not part of the official ICU installation. &nbsp;"  ));
       }
       
       if(lx->noBug) {
