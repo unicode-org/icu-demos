@@ -1073,7 +1073,6 @@ main(int argc,
   uvi[1]=0xFF;
   uvi[2]=0xFF;
   uvi[3]=0xFF;
-  u_tolower(0x0000); /* to force data loading!!!!!! JB#1409l */
   u_getUnicodeVersion(uvi);
   printf("<A HREF=\"http://www.unicode.org/\">Based on Unicode ");
   for(uc=0;uc<U_MAX_VERSION_LENGTH;uc++) {
