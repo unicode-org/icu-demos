@@ -75,13 +75,13 @@ isAcceptable(void *context,
 extern int
 main(int argc, char *argv[]) {
     static uint8_t buffer[4096];
-    char line[512];
-    char *s;
+/*    char line[512];*/
+/*    char *s;*/
     UErrorCode errorCode=U_ZERO_ERROR;
     UDataInfo  info;
-    uint32_t i, fileOffset, basenameOffset, length;
-        UDataMemory *data;
-        const uint16_t *table=NULL;
+/*    uint32_t i, fileOffset, basenameOffset, length; */
+    UDataMemory *data;
+    const uint16_t *table=NULL;
 
 
     if( (argc<3) || (argc >4) ) {
@@ -94,11 +94,11 @@ main(int argc, char *argv[]) {
 
     /* open the data outside the mutex block */
     data=udata_openChoice(NULL, argv[1], argv[2], isAcceptable, NULL, &errorCode);
-        if(U_FAILURE(errorCode)) {
-            fprintf(stderr, "%s: error %s [%d]\n", argv[0],u_errorName(errorCode),
-		    (int)errorCode);
-	    return errorCode;
-        }
+    if(U_FAILURE(errorCode)) {
+        fprintf(stderr, "%s: error %s [%d]\n", argv[0],u_errorName(errorCode),
+                (int)errorCode);
+        return errorCode;
+    }
 
     table=(const uint16_t *)udata_getMemory(data);
 
