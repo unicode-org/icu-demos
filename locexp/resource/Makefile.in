@@ -45,7 +45,7 @@ distclean :  distclean-local
 dist:  dist-local
 check:  check-local
 
-all-local: res-local
+all-local: res-local default_SAMPLE.txt
 
 res-local: $(RES)
 
@@ -113,3 +113,9 @@ sr.txt:  sr.utf16.txt escapeABundle
 
 escapeABundle: escapeABundle.c
 	cc -o escapeABundle escapeABundle.c
+
+
+default_SAMPLE.txt: default.txt
+	echo "// Generated copy of default.txt. Also look at 'en.txt'." > default_SAMPLE.txt
+	cat < default.txt >> default_SAMPLE.txt
+

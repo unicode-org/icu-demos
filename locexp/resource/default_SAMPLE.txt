@@ -1,0 +1,187 @@
+// Generated copy of default.txt. Also look at 'en.txt'.
+// locexp default file. Generated from locexp.c on Fri Dec 10 12:39:18 PST 1999 on daphne
+// It's probably not a good idea to change this file.
+// Better to change locexp.c or the DEFAULT.* source files and rebuild.
+
+
+default {
+
+   AmPmMarkers0  {  "am"  }
+   AmPmMarkers1  {  "pm"  }
+   CurrencyElements0  {  "Currency symbol"  }
+   CurrencyElements1  {  "Int'l Currency symbol"  }
+   CurrencyElements2  {  "Currency separator"  }
+   DateTimeElements0  {  "First day of the week: "  }
+   DateTimeElements1  {  "Minimal Days in First Week: "  }
+   DateTimePatterns0  {  "Full Time"  }
+   DateTimePatterns1  {  "Long Time"  }
+   DateTimePatterns2  {  "Medium Time"  }
+   DateTimePatterns3  {  "Short Time"  }
+   DateTimePatterns4  {  "Full Date"  }
+   DateTimePatterns5  {  "Long Date"  }
+   DateTimePatterns6  {  "Medium Date"  }
+   DateTimePatterns7  {  "Short Date"  }
+   DateTimePatterns8  {  "Date-Time pattern.<BR>{0} = time, {1} = date"  }
+   DayAbbreviations  {  "Short Names"  }
+   DayNames  {  "Long Names"  }
+   EXPLORE_CollationElements  {  "Collation (sorting) Example"  }
+   EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
+   EXPLORE_CollationElements_Sort  {  "Sort"  }
+   EXPLORE_CollationElements_sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
+   EXPLORE_CollationElements_strength  {  "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."  }
+   EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
+   EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
+   EXPLORE_NumberPatterns  {  "Explore &gt; Numbers"  }
+   EXPLORE_NumberPatterns_defaultPattern  {  "#,###.###############"  }
+   EXPLORE_change  {  "Change"  }
+   LocaleCodes  {  "Locale Codes"  }
+   LocaleCodes_2  {  "2"  }
+   LocaleCodes_3  {  "3"  }
+   LocaleCodes_Country  {  "Country"  }
+   LocaleCodes_Language  {  "Language"  }
+   LocaleCodes_Variant  {  "Variant"  }
+   MonthAbbreviations  {  "Short Names"  }
+   MonthNames  {  "Long Names"  }
+   NoLocale  {  "MISSING LOCALE NAME"  }
+   NumberElements0  {  "Decimal Separator"  }
+   NumberElements1  {  "Grouping Separator"  }
+   NumberElements10  {  "Not a number"  }
+   NumberElements2  {  "Pattern Separator"  }
+   NumberElements3  {  "Percent"  }
+   NumberElements4  {  "ZeroDigit"  }
+   NumberElements5  {  "Digit"  }
+   NumberElements6  {  "Minus Sign"  }
+   NumberElements7  {  "Exponential"  }
+   NumberElements8  {  "PerMill [/1000]"  }
+   NumberElements9  {  "Infinity"  }
+   NumberPatterns0  {  "Decimal Pattern"  }
+   NumberPatterns1  {  "Currency Pattern"  }
+   NumberPatterns2  {  "Percent Pattern"  }
+   NumberPatterns3  {  "Scientific Pattern"  }
+   UNKNOWN_ERROR  {  "unknown error"  }
+   U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
+   bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
+   bigStringHide  {  "Hide"  }
+   changeEncoding  {  "Change Your Encoding"  }
+   changeLocale  {  "Change Your Locale"  }
+   char  {  "Char"  }
+   charMeaning  {  "Meaning"  }
+   charNum  {  "#"  }
+   chooseEncoding  {  "Choose Your Encoding"  }
+   chooseLocale  {  "Choose Your Locale."  }
+   convERR  {  "AN error occured trying to sort the converters.\n"  }
+   converter_matchesTo  {  "Looking for matches to these chars: "  }
+   converter_searching  {  "Searching for converters which match .."  }
+   convsAvail  {  "%d converters available, %d aliases total."  }
+   convsMatch  {  "%d converters match (out of %d), %d aliases total."  }
+   display_ALT  {  "Display Problem?"  }
+   display_GIF  {  "displayproblems.gif"  }
+   display_OPTIONS  {  "ALIGN=RIGHT"  }
+   empty  {  "(Empty)"  }
+   encodingOK0  {  "Click here if the encoding '"  }
+   encodingOK1  {  "' is acceptable, or choose one from below."  }
+   encoding_Missing  {  "The following characters could not be displayed properly by the current encoding:"  }
+   encoding_PickABetter  {  "Click here to search for a better encoding"  }
+   encoding_Transliterate  {  "Transliterate it for me!"  }
+   encoding_translitmsg_0  {  "Transliteration courtesy of the ICU. Text in "  }
+   encoding_translitmsg_1  {  "green"  }
+   encoding_translitmsg_2  {  " has been transliterated."  }
+   exploreTitle  {  "Explore"  }
+   explore_Button  {  "Explore"  }
+   explore_G7  {  "Try G7 Sorting"  }
+   explore_close  {  "Done"  }
+   formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
+   formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date"  }
+   formatExample_DateTimePatterns_errorOpen  {  "Couldn't open the formatter"  }
+   formatExample_NumberPatterns_What  {  "This example demonstrates formatting of numbers in this locale."  }
+   formatExample_errorFormat2  {  "Couldn't format the number normally"  }
+   formatExample_errorFormatDate2  {  "Couldn't format the date normally"  }
+   formatExample_errorFormatDefault  {  "Unable to format number using default version of the pattern"  }
+   formatExample_errorOpen  {  "Couldn't open the formatter"  }
+   formatExample_errorOpenDefault  {  "Couldn't open the default number fmt"  }
+   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
+   formatExample_errorParse3  {  "Could not parse this, replaced with a default value."  }
+   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
+   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
+   help  {  "Help"  }
+   helpPrefix  {  "default_"  }
+   helpgif  {  "help.gif"  }
+   helpgif_opt  {  "BORDER=0"  }
+   inherited  {  "(inherited)"  }
+   inherited_from  {  "(inherited from %U)"  }
+   introSpiel  {  "This demo illustrates the IBM International Classes for Unicode localization data.  The classes cover 45 different languages, further divided into 154 geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P> The IBM Classes for Unicode are open-source. See the <A HREF=../project>ICU Project Page</A>  for further information."  }
+   localPatternChars0  {  "Era"  }
+   localPatternChars1  {  "Year"  }
+   localPatternChars10  {  "Day Of Year"  }
+   localPatternChars11  {  "Day Of Week In Month"  }
+   localPatternChars12  {  "Week Of Year"  }
+   localPatternChars13  {  "Week Of Month"  }
+   localPatternChars14  {  "Am/Pm"  }
+   localPatternChars15  {  "Hour 1"  }
+   localPatternChars16  {  "Hour 0"  }
+   localPatternChars17  {  "Timezone"  }
+   localPatternChars2  {  "Month"  }
+   localPatternChars3  {  "Date"  }
+   localPatternChars4  {  "Hour Of Day 1"  }
+   localPatternChars5  {  "Hour Of Day 0"  }
+   localPatternChars6  {  "Minute"  }
+   localPatternChars7  {  "Second"  }
+   localPatternChars8  {  "Millisecond"  }
+   localPatternChars9  {  "Day Of Week"  }
+   localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
+   localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
+   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular country."  }
+   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular country."  }
+   localeDataLanguage  {  "No country is specified, so the data is generic to this language."  }
+   localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
+   localeList_Locale  {  "Languages"  }
+   localeList_Sublocale  {  "Countries"  }
+   locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
+   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported."  }
+   myConverter  {  "Encoding:"  }
+   myLocale  {  "Locale:"  }
+   none  {  "None"  }
+   poweredby  {  "Powered by"  }
+   poweredby_filebug  {  "Found an error? Click here!"  }
+   poweredby_url  {  "http://www10.software.ibm.com/developerworks/opensource/icu/"  }
+   poweredby_vers  {  "ICU 1.3.1 + "  }
+   statusTableHeader  {  "Your settings:<BR>(click to change)"  }
+   stringClickToShow  {  "(Click here to show.)"  }
+   sublocales  {  "Sublocales:"  }
+   taggedarrayTag  {  "Tag"  }
+   title  {  "ICU LocaleExplorer"  }
+   ubrowse  {  "Browse Unicode in this codepage"  }
+   usortHide  {  "Hide this example"  }
+   usortOriginal  {  "Original"  }
+   usortPrimary  {  "Primary"  }
+   usortSecondary  {  "Secondary"  }
+   usortShow  {  "Show this example"  }
+   usortSource  {  "Source"  }
+   usortTertiary  {  "Tertiary"  }
+   usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
+   warningExperimentalLocale  {  "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>"  }
+   warningInheritedLocale  {  "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"  }
+   zoneStrings0  {  "Canonical"  }
+   zoneStrings1  {  "Normal Name"  }
+   zoneStrings2  {  "Normal Abbrev"  }
+   zoneStrings3  {  "Summer/DST Name"  }
+   zoneStrings4  {  "Summer/DST Abbrev"  }
+   zoneStrings5  {  "Example City"  }
+   zoneStrings6  {  "Raw Offset"  }
+   zoneStrings_open_failed  {  "<I>Unknown</I>"  }
+
+// Special Cases
+
+// From default_head.html (iso-8859-1)
+   htmlHEAD {
+       "<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. --srl -->\u000A<!-- Note: look for the 'IBM connected vs. non-connected version of the search tag. Also, replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->\u000A\u000A<style type=\u0022text/css\u0022>\u000A<!--\u000A.barTitles {  font-size: 9pt; font-weight: 700; letter-spacing: 1px; color: #FFFFFF; font-family: HELVETICA, HELV, ARIAL}\u000A-->\u000A</style>\u000A<style TYPE=\u0022text/css\u0022>\u000A    .input {background:#FFFFFF;color:#000000;font-weight:normal;}\u000A    .iconNames {font-weight:600;font-size:9pt;}\u000A    .iconBlurb {font-weight:400;font-size:8pt;}\u000A    .barTitles {font-weight:700;font-size:9pt;letter-spacing:1px;}\u000A    .boxCaption {font-weight:600;font-size:9pt;}\u000A    .boxBlurb {font-weight:400;font-size:8pt;}\u000A    .zoneSection {font-weight:600;font-size:10pt;}\u000A</style>\u000A<script LANGUAGE=\u0022JavaScript\u0022>\u000A<!--\u000A/* sitemap and content window creator [from alphaworks --srl] */\u000Afunction openNavWin(navURL) {\u000A\u0009var navWin = null;\u000A\u0009navWin = window.open(navURL , \u0022lxWin\u0022 , \u0022WIDTH=440 , HEIGHT=400 , toolbar=yes , location=no , status=yes , scrollbars=yes , resizable=yes , copyhistory=no\u0022);\u000A\u0009if (navigator.appName == \u0022Netscape\u0022) { navWin.focus()};\u000A}\u000A\u000Afunction openHelpWin(navURL, frag) {\u000A\u0009var navWin = null;\u000A\u0009if(navWin == null)\u000A\u0009\u0009navWin = window.open(navURL , \u0022helpWin\u0022 , \u0022scrollbars=yes,toolbar=yes,WIDTH=440,HEIGHT=400,location=yes,copyhistory=no,alwaysRaised=yes\u0022);\u000A\u0009if (navigator.appName == \u0022Netscape\u0022) { navWin.focus()};\u000A\u0009navWin.location.hash = frag;\u000A// Bug: wish the window would pop up on subsequent calls. Maybe it would be best to kill the window and re open it!\u000A}\u000A//\u0009navWin = window.open(navURL , \u0022lxWin\u0022 , \u0022WIDTH=440 , HEIGHT=400 , toolbar=yes , location=yes , status=yes , scrollbars=yes , resizable=yes , copyhistory=no\u0022);\u000A\u000Afunction nav_pulldown(list) {top.document.location.href = list.options[list.selectedIndex].value;}\u000Afunction wB(){var br=\u0022BR\u0022;if((navigator.userAgent.indexOf('Mozilla')!= -1)&&((navigator.userAgent.indexOf('Spoofer')==-1)&&(navigator.userAgent.indexOf('compatible')==-1))){br=\u0022NS\u0022}return br}\u000Afunction wV(br){var bv=0;bv=navigator.appVersion.substring(0,1);if(br==\u0022IE\u0022){(parseInt(bv));}if(br==\u0022NS\u0022){(parseInt(bv));}return bv;}\u000Afunction wP(){var os=\u0022OS\u0022;if(navigator.userAgent.indexOf(\u0022OS/2\u0022)!=-1){os='os/2'}return os;}b=wB();v=wV(b);o=wP();\u000Afunction change_bgColor() {if (b==\u0022NS\u0022 && v==2 && o != \u0022os/2\u0022){document.bgColor=\u0022#999999\u0022}}\u000Afunction gotosite() {var L = document.formSpinbox.pickWW.selectedIndex; location.href = document.formSpinbox.pickWW.options[L].value; return false;}\u000A// end the hiding comment --> \u000A</script>\u000A<!-- <BODY ONLOAD=\u0022change_bgColor()\u0022 BGCOLOR=\u0022#FFFFFF\u0022 TEXT=\u0022#000000\u0022> -->\u000A<!-- begin masthead table -->\u000A<!--#include virtual=\u0022/general/warning.inc\u0022 -->\u000A<!--#include virtual=\u0022/general/warning.inc\u0022 -->\u000A</head>\u000A<body text=\u0022#000000\u0022 bgcolor=\u0022#FFFFFF\u0022 TOPMARGIN=\u00222\u0022 LEFTMARGIN=\u00222\u0022 MARGINWIDTH=\u00222\u0022 MARGINHEIGHT=\u00222\u0022>\u000A&nbsp;\u000A<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=\u0022100%\u0022 >\u000A<tr>\u000A<td ALIGN=LEFT VALIGN=TOP WIDTH=\u0022451\u0022 BGCOLOR=\u0022#0033CC\u0022><a href=\u0022http://www.ibm.com/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/ibm_logo.gif\u0022 ALT=\u0022IBM\u0022 BORDER=0 height=24 width=57></a><img SRC=\u0022/developerworks/opensource/icu/project/images/logo_sp.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=24 width=394></td>\u000A\u000A<td ROWSPAN=\u00222\u0022 WIDTH=\u002249\u0022><a href=\u0022http://www.ibm.com/shop/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/i_shopibm.gif\u0022 ALT=\u0022ShopIBM\u0022 BORDER=0 height=45 width=49></a></td>\u000A\u000A<td ROWSPAN=\u00222\u0022 WIDTH=\u002245\u0022><a href=\u0022http://www.ibm.com/support/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/i_support.gif\u0022 ALT=\u0022Support\u0022 BORDER=0 height=45 width=45></a></td>\u000A\u000A<td ROWSPAN=\u00222\u0022 WIDTH=\u002254\u0022><a href=\u0022http://www.ibm.com/download/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/i_download.gif\u0022 ALT=\u0022Download\u0022 BORDER=0 height=45 width=54></a></td>\u000A\u000A<td WIDTH=\u0022100%\u0022 BGCOLOR=\u0022#0033CC\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/c.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=1 width=1></td>\u000A</tr>\u000A\u000A<tr>\u000A<td ALIGN=LEFT WIDTH=\u0022451\u0022 BGCOLOR=\u0022#000000\u0022><a href=\u0022http://www.ibm.com/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/n_home.gif\u0022 ALT=\u0022Home\u0022 BORDER=0 height=21 width=38></a><a href=\u0022http://www.ibm.com/news/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/n_news.gif\u0022 ALT=\u0022News\u0022 BORDER=0 height=21 width=34></a><a href=\u0022http://www.ibm.com/products/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/n_products.gif\u0022 ALT=\u0022Products\u0022 BORDER=0 height=21 width=52></a><a href=\u0022http://www.ibm.com/services/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/n_services.gif\u0022 ALT=\u0022services\u0022 BORDER=0 height=21 width=51></a><a href=\u0022http://www.ibm.com/solutions/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/n_solutions.gif\u0022 ALT=\u0022Solutions\u0022 BORDER=0 height=21 width=54></a><a href=\u0022http://www.ibm.com/ibm/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/n_about.gif\u0022 ALT=\u0022About IBM\u0022 BORDER=0 height=21 width=59></a><img SRC=\u0022/developerworks/opensource/icu/project/images/n_sp.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=21 width=163></td>\u000A\u000A<td WIDTH=\u0022100%\u0022 BGCOLOR=\u0022#000000\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/c.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=1 width=1></td>\u000A</tr>\u000A</table>\u000A\u000A<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=\u0022100%\u0022 >\u000A<caption><!-- borders of search area, left-top-right-->\u000A<br><!-- search area--></caption>\u000A\u000A<tr>\u000A<td ROWSPAN=\u00222\u0022 WIDTH=\u00221\u0022 BGCOLOR=\u0022#003366\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/c.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=1 width=1></td>\u000A\u000A<td BGCOLOR=\u0022#FFFFFF\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/c.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=1 width=598></td>\u000A\u000A<td ROWSPAN=\u00222\u0022 WIDTH=\u00221\u0022 BGCOLOR=\u0022#9999CC\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/c.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=1 width=1></td>\u000A</tr>\u000A\u000A\u000A<!-- <tr>\u000A<td COLSPAN=\u00223\u0022 BGCOLOR=\u0022#9999CC\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/c.gif\u0022 ALT=\u0022\u0022 BORDER=0 height=1 width=1></td>\u000A</tr>\u000A-->\u000A\u000A</table>\u000A\u000A"   }
+
+
+// From default_tail.html (iso-8859-1)
+   htmlTAIL {
+       "<!-- DEFAULT.htmlTAIL -->\u000A\u000A<!-- replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->\u000A\u000A<br>&nbsp;\u000A<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=\u0022100%\u0022 >\u000A<tr>\u000A<td COLSPAN=\u00221\u0022 WIDTH=\u00220%\u0022><a href=\u0022http://www.ibm.com/Privacy/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/privacy.gif\u0022 ALT=\u0022Privacy\u0022 BORDER=0 height=19 width=53></a><a href=\u0022http://www.ibm.com/Legal/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/legal.gif\u0022 ALT=\u0022Legal\u0022 BORDER=0 height=19 width=41></a><a href=\u0022http://www.ibm.com/Contact/\u0022><img SRC=\u0022/developerworks/opensource/icu/project/images/contact.gif\u0022 ALT=\u0022Contact\u0022 BORDER=0 height=19 width=56></a></TD><TD BGCOLOR WIDTH=100%><img SRC=\u0022/developerworks/opensource/icu/project/localeexplorer/foot-extra.gif\u0022 ALT=\u0022---\u0022 height=19 WIDTH=\u0022100%\u0022 ></td>\u000A</tr>\u000A</table>\u000A<!-- DEFAULT.htmlTAIL -->\u000A"   }
+
+
+
+}
+
