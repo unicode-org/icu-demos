@@ -44,7 +44,7 @@ void prettyPrintUChar(UChar c)
   } else if ( c > 0x007F ) {
     char buf[1000];
     UErrorCode status = U_ZERO_ERROR;
-    UTextOffset o;
+    int32_t o;
     
     o = u_charName(c, U_UNICODE_CHAR_NAME, buf, 1000, &status);
     if(U_SUCCESS(status) && (o>0) ) {
@@ -151,15 +151,15 @@ main()
       sub = ures_getNextResource(x, sub, &err);
       U_ASSERT(err);
       
-/*      printf("== %s\n", ures_getTag(sub)); */
+/*      printf("== %s\n", ures_getKey(sub)); */
       if(ures_getType(sub)==RES_STRING)
         {
           s1 = ures_getString(sub, &len, &err);
           U_ASSERT(err);
-          s2 = ures_getStringByKey(root,ures_getTag(sub),&len,&err);
+          s2 = ures_getStringByKey(root,ures_getKey(sub),&len,&err);
           if(U_FAILURE(err))
             {
-              printf("Couldn't find %s in %s, only %s\n", ures_getTag(sub),
+              printf("Couldn't find %s in %s, only %s\n", ures_getKey(sub),
                      rootName, loc);
               err = U_ZERO_ERROR;
               continue;
@@ -168,7 +168,7 @@ main()
 
           if(u_strcmp(s1,s2)==0)
             {
-              printf("DUP: %s (same txt in %s and %s)\n", ures_getTag(sub),
+              printf("DUP: %s (same txt in %s and %s)\n", ures_getKey(sub),
                      rootName, loc);
             }
         }
