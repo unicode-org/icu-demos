@@ -1,4 +1,5 @@
 * text=auto !eol
+locexp/html/c.gif -text
 locexp/html/closed.gif -text
 locexp/html/default_help.html svneol=native#text/html
 locexp/html/displayproblems.gif -text

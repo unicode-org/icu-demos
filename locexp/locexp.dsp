@@ -54,7 +54,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=install to cgi-bin
-PostBuild_Cmds=copy release\locexp.exe "c:\program files\apache group\apache\cgi-bin"
+PostBuild_Cmds=copy debug\locexp.exe "c:\apacher\cgi-bin"
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
@@ -71,7 +71,7 @@ PostBuild_Cmds=copy release\locexp.exe "c:\program files\apache group\apache\cgi
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\icu\include" /I ".\util" /I "..\usort\lib" /I "..\..\icu\source\common" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\icu\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -84,7 +84,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=install to cgi-bin
-PostBuild_Cmds=copy debug\locexp.exe "c:\program files\apache group\apache\cgi-bin"
+PostBuild_Cmds=copy debug\locexp.exe "c:\apacher\cgi-bin"
 # End Special Build Tool
 
 !ENDIF 
