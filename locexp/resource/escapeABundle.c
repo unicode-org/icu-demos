@@ -41,7 +41,7 @@ int main()
 	{
         if(myChar == 0xFFFF)
 	    printf("// FFFF\n");
-	  else
+	  else if (myChar != 0xFEFF)
 	    printf("\\u%04X", (int) myChar);
 	}
     }
