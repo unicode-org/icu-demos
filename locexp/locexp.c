@@ -511,7 +511,7 @@ int main(const char *argv[], int argc)
     u_fprintf(lx->OUT, "</H2>"); /* close the 'title text */
 
 	u_fprintf(lx->OUT, "<UL>%U<P>\r\n",
-	  FSWF("introSpiel", "This demo illustrates the IBM International Classes for Unicode localization data.  The classes cover 45 different languages, further divided into 154 geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P> The IBM Classes for Unicode are open-source. See the <A HREF=../project>ICU Project Page</A>  for further information."));
+	  FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The classes cover 45 different languages, further divided into 154 geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P> The International Components for Unicode are open-source. See the <A HREF=../project>ICU Project Page</A>  for further information."));
 
 	u_fprintf(lx->OUT, "</UL>");
   }
