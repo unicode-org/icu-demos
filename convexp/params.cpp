@@ -25,7 +25,7 @@
 
 int32_t gMaxStandards;
 char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
-char *gStartBytes = NULL;
+char gStartBytes[MAX_BYTE_SIZE] = "";
 UHashtable *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
 
@@ -112,7 +112,6 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
     const char* src = queryStr;
     int srcLen = strlen(queryStr);
     const char* srcLimit = queryStr + srcLen;
-    static char gStartBytesBuffer[16];
 
     while (src < srcLimit) {
         const char *nextVal = strchr(src, VALUE_SEPARATOR);
@@ -139,15 +138,14 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
             gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
         }
         else if (strncmp(src, "b=", 2) == 0) {
-            const char *strItr = gStartBytesBuffer;
-            gStartBytes = gStartBytesBuffer;
+            const char *strItr = gStartBytes;
             strncpy(gStartBytes, nextVal, nextOpt - nextVal);
-            gStartBytes[sizeof(gStartBytesBuffer)-1] = 0;   // NULL terminate for safety
+            gStartBytes[sizeof(gStartBytes)-1] = 0;   // NULL terminate for safety
             gStartBytes[((strlen(gStartBytes)>>1)<<1)] = 0;// Make it an even number of chars
             while (*strItr) {
                 if (!isxdigit(*strItr)) {
                     // Bad data! Ignore the whole thing
-                    gStartBytes = NULL;
+                    gStartBytes[0] = 0;
                     break;
                 }
                 strItr++;
@@ -160,7 +158,7 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
     }
     if (!gCurrConverter) {
         // Can't use the starter bytes without a converter! Someone made a mistake.
-        gStartBytes = NULL;
+        gStartBytes[0] = 0;
     }
 }
 

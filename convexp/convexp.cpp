@@ -112,8 +112,8 @@ static void printOptions(UErrorCode *status) {
     if (*gCurrConverter) {
         printf("<input type=\"HIDDEN\" name=\"conv\" value=\"%s\" checked>\n", gCurrConverter);
     }
-    if (gStartBytes) {
-        printf("<input type=\"HIDDEN\" name=\"bytes\" value=\"%s\" checked>\n", gStartBytes);
+    if (*gStartBytes) {
+        printf("<input type=\"HIDDEN\" name=\"b\" value=\"%s\" checked>\n", gStartBytes);
     }
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
@@ -252,6 +252,8 @@ static void printAmbiguousAliasedConverters() {
     uint16_t idx, stdIdx;
     uint16_t countAliases = ucnv_countAliases(gCurrConverter, &status);
 
+    /* Do not include the startBytes in the address. It's specific to the current converter. */
+
     for (idx = 0; idx < countAliases; idx++) {
         status = U_ZERO_ERROR;
         alias = ucnv_getAlias(gCurrConverter, idx, &status);
@@ -373,7 +375,7 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th>Is converter ambiguous?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\x20-\\x7E] irregular?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
 
     ambiguousAlias = containsAmbiguousAliases();
     printf("<tr><th>Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
@@ -394,9 +396,7 @@ static void printConverterInfo(UErrorCode *status) {
              "Please see the <a href=\"http://www.unicode.org/faq/utf_bom.html\">Unicode FAQ</a> for details.</p>");
     }
 
-    if (gStartBytes) {
-        printCPTable(cnv, gStartBytes, status);
-    }
+    printCPTable(cnv, gStartBytes, status);
 
     ucnv_close(cnv);
 }

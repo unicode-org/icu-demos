@@ -213,7 +213,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
 //    case UCNV_UTF32:
 //    case UCNV_CESU8:
 //    case UCNV_IMAP_MAILBOX:
-        puts("<h2>Codepage Layout</h2>");
+        puts("<h2><a name=\"layout\">Codepage Layout</a></h2>");
         break;
     default:
         puts("<p>Codepage layout information is not available for this converter at this time.</p>");
@@ -279,7 +279,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             else if (*status == U_TRUNCATED_CHAR_FOUND
 				|| (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0))
             {
-                printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s\">%02X</a></td>\n",
+                printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s#layout\">%02X</a></td>\n",
                     gCurrConverter, startBytes, (uint32_t)currCh,
                     getStandardOptionsURL(status),
                     (uint32_t)currCh);

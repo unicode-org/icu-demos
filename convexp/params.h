@@ -23,9 +23,11 @@
 #include "uhash.h"
 #include "cstring.h"
 
+#define MAX_BYTE_SIZE 64
+
 U_CFUNC int32_t gMaxStandards;
 U_CFUNC char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH];
-U_CFUNC char *gStartBytes;
+U_CFUNC char gStartBytes[MAX_BYTE_SIZE];
 U_CFUNC UHashtable *gStandardsSelected;
 U_CFUNC const char *gScriptName;
 
