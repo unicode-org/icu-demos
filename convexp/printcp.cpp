@@ -204,6 +204,10 @@ static inline void printNothing() {
     puts("<td class=\"reserved\"" CELL_WIDTH ">"NBSP"</td>");
 }
 
+static inline void printError() {
+    puts("<td class=\"reserved\"" CELL_WIDTH ">ERR</td>");
+}
+
 void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     int32_t col, row, startBytesLen, maxCharSize;
     char *sourceBuffer;
@@ -266,12 +270,53 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         return;
     }
 
+    switch (convType) {
+//    case UCNV_MBCS:
+    case UCNV_EBCDIC_STATEFUL:
+    case UCNV_ISO_2022:
+    case UCNV_LMBCS_1:
+    case UCNV_LMBCS_2: 
+    case UCNV_LMBCS_3:
+    case UCNV_LMBCS_4:
+    case UCNV_LMBCS_5:
+    case UCNV_LMBCS_6:
+    case UCNV_LMBCS_8:
+    case UCNV_LMBCS_11:
+    case UCNV_LMBCS_16:
+    case UCNV_LMBCS_17:
+    case UCNV_LMBCS_18:
+    case UCNV_LMBCS_19:
+    case UCNV_HZ:
+    case UCNV_SCSU:
+    case UCNV_ISCII:
+    case UCNV_UTF7:
+    case UCNV_BOCU1:
+    case UCNV_IMAP_MAILBOX:
+        puts("<p>WARNING: This is a stateful encoding. Some states may be missing. Some of information on the layout of this codepage may be incorrect.</p>");
+        break;
+    default:
+        break;
+    }
+
     /* The string has two digits per byte */
     /* If it's an odd number, ignore the last digit */
     startBytesLen = ((strlen(startBytes)>>1)<<1);
     maxCharSize = startBytesLen/2;
 	cnvMaxCharSize = ucnv_getMaxCharSize(cnv);
-	if (convType == UCNV_EBCDIC_STATEFUL || convType == UCNV_ISO_2022) {
+	if (convType == UCNV_EBCDIC_STATEFUL || convType == UCNV_ISO_2022
+        || convType == UCNV_LMBCS_1
+        || convType == UCNV_LMBCS_2
+        || convType == UCNV_LMBCS_3
+        || convType == UCNV_LMBCS_4
+        || convType == UCNV_LMBCS_5
+        || convType == UCNV_LMBCS_6
+        || convType == UCNV_LMBCS_8
+        || convType == UCNV_LMBCS_11
+        || convType == UCNV_LMBCS_16
+        || convType == UCNV_LMBCS_17
+        || convType == UCNV_LMBCS_18
+        || convType == UCNV_LMBCS_19)
+    {
 		/* Add one for the shift */
 		cnvMaxCharSize++;
 	}
@@ -280,6 +325,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         maxCharSize = cnvMaxCharSize - 1;
         startBytesLen = (cnvMaxCharSize-1) * 2;
     }
+    startBytes[startBytesLen] = 0;  /* Prevent crawlers and browsers from going too far. */
     maxCharSize++;
     if (startBytesLen > 0) {
         printf("<p>Currently showing the codepage starting with the bytes %s</p>\n", startBytes);
@@ -322,7 +368,12 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             else if (*status == U_TRUNCATED_CHAR_FOUND
 				|| (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0))
             {
-                printContinue(startBytes, currCh, status);
+                if (maxCharSize >= cnvMaxCharSize) {
+                    printError();
+                }
+                else {
+                    printContinue(startBytes, currCh, status);
+                }
             }
             else {
                 // show nothing
