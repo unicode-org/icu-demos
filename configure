@@ -972,7 +972,7 @@ else
 fi
 
 
-ICU_MAKEFILE=$prefix/share/icu/Makefile.inc
+ICU_MAKEFILE=$prefix/lib/icu/Makefile.inc
 
 
 trap '' 1 2 15
