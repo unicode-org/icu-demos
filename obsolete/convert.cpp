@@ -8,7 +8,6 @@
 
 #include "unicode/utypes.h"
 
-#ifdef ICU_UNICODECONVERTER_USE_DEPRECATES
 U_NAMESPACE_BEGIN
 
 class Locale;
@@ -174,7 +173,7 @@ UnicodeConverter::fromUnicodeString(char*                    target,
 
 
     mySourceLength = source.length();
-    mySource = source.getArrayStart();
+    mySource = source.getBuffer();
     myTarget = target;
     ucnv_fromUnicode(&myConverter,
                  &myTarget,
@@ -517,7 +516,9 @@ void UnicodeConverter::fixFileSeparator(UnicodeString& source) const {
         return;
     }
 
-    ucnv_fixFileSeparator(myUnicodeConverter, source.getArrayStart(), source.length());
+    int32_t length=source.length();
+    ucnv_fixFileSeparator(myUnicodeConverter, source.getBuffer(-1), length);
+    source.releaseBuffer(length);
 }
 
 UBool UnicodeConverter::isAmbiguous(void) const
@@ -526,4 +527,3 @@ UBool UnicodeConverter::isAmbiguous(void) const
 }
 
 U_NAMESPACE_END
-#endif /* ICU_UNICODECONVERTER_USE_DEPRECATES */
