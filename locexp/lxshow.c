@@ -826,6 +826,8 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
         realKey = key2;
       }
     }
+    
+    /* u_fprintf(lx->OUT, "(REALKEY %s)\n", realKey); */
 
     if(array == NULL ) {
       array = ures_getByKey(rb, key, array, &firstStatus);
@@ -1103,7 +1105,7 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     double examples[] = { 0, 123.45, 67890 };
     UNumberFormat *exampleNF = 0;
     UNumberFormatStyle styles[] = { UNUM_SPELLOUT 
-#ifdef SRL_HAVE_XRBNF
+#if defined (UNUM_ORDINAL)
                                     , UNUM_ORDINAL, UNUM_DURATION
 #endif
     };
@@ -1747,7 +1749,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         {
           UChar ucn[8];
           u_charsToUChars(tag, ucn,4);
-          u_fprintf(lx->OUT, "<td>%d</td>", ucurr_getDefaultFractionDigits(ucn));
+          u_fprintf(lx->OUT, "<td>%d</td>", ucurr_getDefaultFractionDigits(ucn, &status));
         }
 
         if(isDefault) {
@@ -1765,7 +1767,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
                   cflu,
                   ucurr_getName(cflu,locale,UCURR_SYMBOL_NAME,&isChoiceFormat,&len,&subSta),
                   ucurr_getName(cflu,locale,UCURR_LONG_NAME,&isChoiceFormat,&len,&subSta),
-                  ucurr_getDefaultFractionDigits(cflu)
+                  ucurr_getDefaultFractionDigits(cflu, &status)
                   );
         if(U_FAILURE(subSta)) {
           u_fprintf(lx->OUT, "<td>");
