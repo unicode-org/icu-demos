@@ -18,13 +18,14 @@ CLEANFILES = *~
 ## Target information
 TARGET = usort
 
-LDFLAGS += -L../lib 
+LDFLAGS := -L../lib $(LDFLAGS)
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licu-uc -lusort' ...
 ICULIBS    += -lusort
 
-CFLAGS  += -I../lib
+# Want to make sure the usort.h dependency is not on the installed version .. 
+CPPFLAGS  := -I../lib $(CPPFLAGS)
 
 OBJECTS = usort_main.o 
 
