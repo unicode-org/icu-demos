@@ -22,11 +22,11 @@ U_CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
       return;
     }
   
-  /* ignore result */
+  /* ignore result
   ((ResourceBundle*)resourceBundle)-> get2dArray(resourceTag,
                   *rowCount,
                   *columnCount,
-                  *status);
+                  *status); */
 }
 
 U_CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
@@ -34,41 +34,23 @@ U_CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
                                int32_t index,
                                UErrorCode* status)
 {
-  UnicodeString *itemTags;
-  UnicodeString *items;
-  int32_t numItems;
 
-  if (U_FAILURE(*status)) return NULL;
+  if (U_FAILURE(*status)) {
+      return NULL;
+  }
   if (!resourceBundle || !resourceTag || (index < 0) )
     {
       *status = U_ILLEGAL_ARGUMENT_ERROR;
       return NULL;
     }
 
-   ((ResourceBundle*)resourceBundle)
-    ->getTaggedArray(resourceTag,
-             itemTags,
-             items,
-             numItems,
-             *status);
+  UnicodeString uStr = ((ResourceBundle*)resourceBundle)->getStringEx(index,*status);
   if (U_SUCCESS(*status))
     {
-      delete [] items; 
-
-      if(index >= numItems)
-        {
-          *status = U_INDEX_OUTOFBOUNDS_ERROR;
-          delete [] itemTags;
-          return NULL;
-        }
-      else
-        {
-          char *str = (char*)malloc(itemTags[index].size() + 3);
-          u_austrcpy(str,itemTags[index].getUChars()); /* should be extract? */
-          delete [] itemTags;
-          return str; /* LEAK */
-        }
-    }
+       char *str = (char*)malloc(uStr.length() + 3);
+       u_austrcpy(str,uStr.getUChars()); /* should be extract? */
+       return str;
+     }
   else return NULL;
   
 }
