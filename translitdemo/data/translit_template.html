@@ -126,7 +126,7 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
     </tr>
     <!-- debug row
     <tr>
-      <td><input type="button" value="Debug:" class="wide" onclick="alert(eval(document.FORM.DEBUGINPUT.value));"></td>
+      <td><input type="button" value="Debug:" class="wide" onclick="alert(\"Debug:\"+eval(document.FORM.DEBUGINPUT.value));"></td>
       <td colspan="6"><input type="input" name="DEBUGINPUT" class="wide"></td>
     </tr>
     -->
@@ -138,14 +138,19 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
 // Handler for a change to a transliterator SOURCE box.
 function handleSelectSource(i) {
   var source = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
-  op("callbackHandleSelectSource", i,
-     "GETAVAILABLETARGETS", source);
+  if (source.charAt(0) == '(') {
+    setOptions(document.FORM["SELECT_TARGET" + i], []);
+    setOptions(document.FORM["SELECT_VARIANT" + i], []);
+  } else {
+    op("callbackHandleSelectSource", i,
+       "GETAVAILABLETARGETS", source);
+  }
 }
 function callbackHandleSelectSource(i, targets) {
   var s = getSelectedOption(document.FORM["SELECT_TARGET" + i]); 
   var t = targets.split(";").sort();
   setOptions(document.FORM["SELECT_TARGET" + i], t, s);
-  _handleTransliterateButton(i);
+  handleSelectTarget(i);
 }
 
 // Handler for a change to a transliterator TARGET box.
@@ -156,7 +161,6 @@ function handleSelectTarget(i) {
      "GETAVAILABLEVARIANTS", source, target);
 }
 function callbackHandleSelectTarget(i, variants) {
-  alert(variants);
   var s = getSelectedOption(document.FORM["SELECT_VARIANT" + i]);
   var v = variants.split(";").sort();
   setOptions(document.FORM["SELECT_VARIANT" + i], v, s);
@@ -173,18 +177,27 @@ function handleSelectVariant(i) {
 // Called by edit window when user ID list has changed.
 function updateUserIDs() {
   updateSelector(1);
-  updateSelector(2);
+  // DO NOT put 'updateSelector(2);' here
+  // Instead, make the callback invoke updateSelector(2) when it's
+  // done.  Always chain calls to op(); never stack them.
 }
 
 function updateSelector(i) {
+  alert("updateSelector " + i);
   op("callbackUpdateSelector", i, "GETAVAILABLESOURCES");
 }
 function callbackUpdateSelector(i, list) {
+  alert("callbackUpdateSelector " + i);
   var s = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
   document.FORM["SELECT_SOURCE" + i].selectedIndex = 0;
   var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
   setOptions(document.FORM["SELECT_SOURCE" + i], o.concat(list.split(";").sort()), s);
+  alert("Calling hss" + i);
   handleSelectSource(i);
+  alert("Called hss" + i);
+  if (i == 1) {
+    updateSelector(2);
+  }
 }
 
 // Determine the i-th ID
@@ -198,8 +211,10 @@ function getID(i) {
   }
   var trg = getSelectedOption(document.FORM["SELECT_TARGET" + i]);
   var vrt = getSelectedOption(document.FORM["SELECT_VARIANT" + i]);
-  if (vrt) {
+  if (vrt && vrt != "(Default)") {
     vrt = "/" + vrt;
+  } else {
+    vrt = "";
   }
   return src + "-" + trg + vrt;
 }
