@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xliff SYSTEM "./xliff.dtd" >
+<!--DOCTYPE xliff SYSTEM "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd"--> 
+<xliff version = "1.0">
+    <file xml:space = "preserve" source-language = "en" datatype = "text" original = "root.txt" tool = "genrb" date = "2004-01-15T05:00:44Z">
+        <header></header>
+        <body>
+            <group restype = "table" xml:space = "preserve" id = "root" >
+                <group restype = "array" xml:space = "preserve" id = "root_fortunes" resname="fortunes">
+                    <note> Array of strings that contain fortune messages to be printed.</note>
+                    <trans-unit xml:space = "preserve" id = "root_fortunes_0" translate="yes">
+                        <source xml:lang = "en">A child of five could understand this! Fetch me a child of five.</source>
+                        <target xml:lang="te"> ఒక ఐదు యెళ్ళ పిల్లవాడు దీనిని అర్థం చేసుకొగలడు, ఐదు యెళ్ళ పిల్లవాడిని తీసుకు రండి </target>
+                    </trans-unit>
+                    <trans-unit xml:space = "preserve" id = "root_fortunes_1" translate="yes">
+                        <source xml:lang = "en">A closed mouth gathers no foot.</source>
+                        <target xml:lang="te"> ఊరుకొంన్నంత ఉత్తమం వెరొకటి లేదు </target> 
+                    </trans-unit>
+                </group>
+                <trans-unit xml:space = "preserve" id = "root_optionMessage" resname = "optionMessage" translate="yes">
+                    <source xml:lang = "en">unrecognized command line option:</source>
+                     <target xml:lang="te">ఎరగని ఇఛ్చము:</target>
+                    <note> Error message that is printed when unrecognized options are passed to the application</note>
+                </trans-unit>
+                <trans-unit xml:space = "preserve" id = "root_usage" resname = "usage" translate="yes">
+                    <source xml:lang = "en">usage: ufortune [options] 
+-v   Print out verbose output.
+-l   The language for printing out the fortune. 
+                    </source>
+                    <target xml:lang = "te"> వాడుక: ufortune [ఇఛ్చములు]
+-v   శబ్దసుష్టిగల సందెశమును ముద్రీంచుము.
+-l   అదృష్ట సందెశమును ముద్రీంచు భూష.
+                    </target>
+                    <note> Help message for the application. Do not localize &quot;ufortune&quot;, &quot;-v&quot; and &quot;-l&quot;.</note>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>
