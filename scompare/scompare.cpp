@@ -18,8 +18,19 @@
 //  into the displayed page.
 //
 //  A result is returned in this format:
-//    <p id="result-name">result string</p>
+//    <p id="s1a>input string 1 after unescaping it</p>
+//    <p id="s1b>input string 2 after unescaping it</p>
+//    <p id="r1">--YY</p>
 //
+//   and continuing with [s2a, s2b, r2] [s3a, s3b, r3] ...
+//   for as many input strings as are found in the incoming POST data.
+//
+//   Within the rn strings, 
+//            r[0] : 'Y' if input strings are binary equal, otherwise '-'
+//            r[1] : 'Y' if input strings are case-insesitive equal.
+//            r[2] : 'Y' if input strings are canonically-equivalent equal
+//            r[3] : 'Y' if input strings are case / canon equiv equal.
+
 //  The script on the browser side picks up a value with InvisibleFramedDoc.getElementById("result-name")
 //    and, from there, can do whatever it wants with it.
 //
@@ -48,6 +59,8 @@
 //             - the html form escaping removed
 //             - converted from utf-8
 //             - ICU unescape applied
+//       If the parameter does not exist in the POST data, return
+//          a BOGUS string.
 //
 UnicodeString  getParam(const char *content, const char *name) {
     UnicodeString returnStr;
@@ -58,6 +71,7 @@ UnicodeString  getParam(const char *content, const char *name) {
     char *start = strstr(content, namebuf);
     delete[] namebuf;
     if (start==0) {
+        returnStr.setToBogus();
         return returnStr;
     }
     start+=strlen(name)+1;
@@ -114,26 +128,58 @@ UnicodeString  getParam(const char *content, const char *name) {
 //
 //      output (to stdout) looks like
 //          <p id="rName">result string</p>
+//
+//      return true if name1 and name2 exist as parameters in the POST data
+//             false if eithe is missing.
 
-void doCompare(const char *content, const char *name1, const char *name2, const char *rName) {
+bool doCompare(const char *content, const char *name1, const char *name2, const char *rName) {
     UErrorCode    status = U_ZERO_ERROR;
 
     UnicodeString s1 = getParam(content, name1);
     UnicodeString s2 = getParam(content, name2);
-    const char *resultString;
+    if (s1.isBogus() || s2.isBogus()) {
+        return false;
+    }
+  
+    // html escape all '<' and '&' in the two strings,
+    //   in preparation for putting them into the output html.
+    UnicodeString s1Copy(s1);
+    UnicodeString s2Copy(s2);
+    s1Copy.findAndReplace("&", "&amp;");
+    s1Copy.findAndReplace("<", "&lt;");
+    s2Copy.findAndReplace("&", "&amp;");
+    s2Copy.findAndReplace("<", "&lt;");
 
+    // Convert the two input strings to utf-8 and spit them back into
+    //  the output so that the client can see them after the unescape().
+    int len = s1Copy.length() > s2Copy.length()? s1Copy.length() : s2Copy.length();
+    char *buf = new char[len*5];
+    s1Copy.extract(0, s1Copy.length(), buf, "utf-8");
+    printf("<p id=\"%s\" >%s</p>\n", name1, buf);
+    s2Copy.extract(0, s2Copy.length(), buf, "utf-8");
+    printf("<p id=\"%s\" >%s</p>\n", name2, buf);
+    delete buf;
+    buf = 0;
+
+    //
+    // Do the actual comparisons
+    //
+    char resultString[5];
+    strcpy(resultString, "----");
     if (s1.compare(s2) == 0) {
-        resultString = "=";
-    } else if (s1.caseCompare(s2, U_FOLD_CASE_DEFAULT) == 0) {
-        resultString = "=(I)";
-    } else if (Normalizer::compare(s1, s2, U_FOLD_CASE_DEFAULT, status) == 0) {
-        resultString = "=(N)";
-    } else if (Normalizer::compare(s1, s2, U_COMPARE_IGNORE_CASE, status) == 0) {
-        resultString = "=(N,I)";
-    } else {
-        resultString = "<>";
+        resultString[0] = 'Y';
+    }
+    if (s1.caseCompare(s2, U_FOLD_CASE_DEFAULT) == 0) {
+        resultString[1] = 'Y';
+    }
+    if (Normalizer::compare(s1, s2, U_FOLD_CASE_DEFAULT, status) == 0) {
+        resultString[2] = 'Y';
+    }
+    if (Normalizer::compare(s1, s2, U_COMPARE_IGNORE_CASE, status) == 0) {
+        resultString[3] = 'Y';
     }
     printf("<p id=\"%s\" >%s</p>\n", rName, resultString);
+    return true;
 }
 
 
@@ -143,6 +189,7 @@ void doCompare(const char *content, const char *name1, const char *name2, const 
 int main(int argc, const char **argv) {
     UErrorCode  status = U_ZERO_ERROR;
     const char *request_method;
+    int         n;
 
     u_init(&status); 
     printf("Content-Type: text/html; charset=utf-8\n"
@@ -169,10 +216,18 @@ int main(int argc, const char **argv) {
     fread(content, 1, contentLen, stdin);
     content[contentLen] = 0;
     
-    doCompare(content, "s1a", "s1b", "r1");
-    doCompare(content, "s2a", "s2b", "r2");
-    doCompare(content, "s3a", "s3b", "r3");
-    doCompare(content, "s4a", "s4b", "r4");
+    for (n=1; ; n++) {
+        char sAName[20];
+        char sBName[20];
+        char rName[20];
+        sprintf(sAName, "s%da", n);
+        sprintf(sBName, "s%db", n);
+        sprintf(rName,  "r%d", n);
+
+        if (doCompare(content, sAName, sBName, rName) == false) {
+            break;
+        }
+    }
 
     printf("\n</body>\n");
     delete[] content;
