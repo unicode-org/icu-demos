@@ -821,7 +821,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convalias/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convexp/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -900,7 +900,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convalias/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convexp/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

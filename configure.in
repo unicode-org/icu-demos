@@ -27,7 +27,7 @@ if test "$srcdir" = "."; then
 fi
 
 
-AC_OUTPUT([icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convalias/Makefile])
+AC_OUTPUT([icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convexp/Makefile])
 
 dnl
 
