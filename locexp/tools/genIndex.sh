@@ -14,7 +14,7 @@ echo "    {"
 # Following line generates index of ALL .txt files
 #    cat *.txt | grep "^[a-z]" | sed "s/\([a-zA-Z_]*\).*/         \1,/" | sort
     for BUND in `echo $* | sed -e 's/.txt//g'`; do
-        echo \"$BUND\" , | fgrep -v root
+        echo \"$BUND\" {} | fgrep -v root
     done
 echo "    }"
 echo "}"

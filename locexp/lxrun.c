@@ -664,9 +664,7 @@ void setLocaleAndEncoding(LXContext *lx)
 
     
     available = ures_openAvailableLocales(FSWF_bundlePath(), &acceptStatus);
-    fprintf(stderr, "opened: [%s]->%p   %s\n=%s=\n", FSWF_bundlePath(), available, u_errorName(acceptStatus), lx->acceptLanguage);
     newLocaleLen = uloc_acceptLanguageFromHTTP(newLocale, 200, &outResult, lx->acceptLanguage, available, &acceptStatus);
-    fprintf(stderr, "al: [%s]\n     ->%d   %s  %s\n", lx->acceptLanguage, newLocaleLen, newLocale, u_errorName(acceptStatus));
     if(U_SUCCESS(status) && isSupportedLocale(newLocale, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
       setBlobFromLocale(lx, &lx->dispLocaleBlob, newLocale, &status);
       strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
