@@ -65,15 +65,12 @@ static const char navigationEndHeader[]=
     "<hr>\n"
     "<h1>ICU " CGI_NAME "</h1>\n";
 
+static const char aliasHeader[]=
+    "<h2>List of Converter Aliases</h2>";
+
 static const char htmlFooter[]=
     "</body>\n"
     "</html>\n";
-
-/*static const char helpText[]=
-    "<h2><a name=\"help\">About this demo</a></h2>\n"
-    "<p>There is no help for this demo at this time.</p>"
-    "<hr>";
-*/
 
 static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
@@ -398,7 +395,8 @@ static void printAmbiguousAliasedConverters() {
                 }
                 canonicalName = ucnv_getCanonicalName(alias, standard, &status);
                 if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
-                    printf("<a href=\"?conv=%s%s\">%s<br>\n", canonicalName, getStandardOptionsURL(&status), canonicalName);
+                    printf("<a href=\"?conv=%s%s\">%s</a> %s { %s }<br>\n",
+                        canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
                 }
             }
         }
@@ -462,7 +460,7 @@ static void printConverterInfo(UErrorCode *status) {
     int8_t len;
     UConverter *cnv = ucnv_open(gCurrConverter, status);
 
-    puts("<h2>Information about this converter</h2>");
+    puts("<h2>Information About This Converter</h2>");
     if (U_FAILURE(*status)) {
         printf("<p>Warning: Nothing is known about this converter.</p>");
         return;
@@ -670,6 +668,7 @@ main(int argc, const char *argv[]) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
+//    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
@@ -704,6 +703,8 @@ main(int argc, const char *argv[]) {
 
     printf(endForm);
 
+    puts(aliasHeader);
+
     printAliasTable();
 
     if (*gCurrConverter) {
@@ -711,7 +712,6 @@ main(int argc, const char *argv[]) {
     }
 
     
-//    puts(helpText);
     puts("<br>\n<hr>");
 
     char icuVString[16];
