@@ -26,14 +26,15 @@
 #include "uhash.h"
 #include "cstring.h"
 
-#define CGI_NAME "Converter Explorer"
+#define PROGRAM_NAME "Converter Explorer"
+#define CGI_NAME "convexp"
 
 static const char htmlHeader[]=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
     "<html lang=\"en-US\">\n"
     "<head>\n"
-    "<title>ICU " CGI_NAME "</title>\n"
+    "<title>ICU " PROGRAM_NAME "</title>\n"
     "<meta name=\"robots\" content=\"nofollow\">\n"
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
     "<style type=\"text/css\">\n"
@@ -50,10 +51,10 @@ static const char htmlHeader[]=
     "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;";
 
 static const char navigationMainHeader[]=
-    "<strong>" CGI_NAME "</strong>\n";
+    "<strong>" PROGRAM_NAME "</strong>\n";
 
 static const char navigationSubHeader[]=
-    "<a href=\"?\">" CGI_NAME "</a> &gt;\n"
+    "<a href=\"" CGI_NAME "\">" PROGRAM_NAME "</a> &gt;\n"
     "<strong>%s</strong>\n";
 
 static const char navigationEndHeader[]=
@@ -63,7 +64,7 @@ static const char navigationEndHeader[]=
     "</td></tr>\n"
     "</table>\n"
     "<hr>\n"
-    "<h1>ICU " CGI_NAME "</h1>\n";
+    "<h1>ICU " PROGRAM_NAME "</h1>\n";
 
 static const char aliasHeader[]=
     "<h2>List of Converter Aliases</h2>";
@@ -395,7 +396,7 @@ static void printAmbiguousAliasedConverters() {
                 }
                 canonicalName = ucnv_getCanonicalName(alias, standard, &status);
                 if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
-                    printf("<a href=\"?conv=%s%s\">%s</a> %s { %s }<br>\n",
+                    printf("<a href=\"" CGI_NAME "?conv=%s%s\">%s</a> %s { %s }<br>\n",
                         canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
                 }
             }
@@ -625,7 +626,7 @@ static void printAliasTable() {
                 printf("<tr>\n<th>%s</th>\n", canonicalName);
             }
             else {
-                printf("<tr>\n<th><a href=\"?conv=%s%s\">%s</a></th>\n",
+                printf("<tr>\n<th><a href=\"" CGI_NAME "?conv=%s%s\">%s</a></th>\n",
                     canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
             status = U_ZERO_ERROR;
