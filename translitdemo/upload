@@ -1,4 +1,6 @@
 target=/home/httpd/cgi-bin
+mkdir $target/data 2> /dev/null
+mkdir $target/../html/js 2> /dev/null
 cp -vu translit $target
 cp -vu data/*.html $target/data
 cp -vu js/*.js $target/../html/js
