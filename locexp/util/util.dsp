@@ -91,19 +91,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\collectcb.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\decompcb.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\devanagari.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\fontedcb.c
 # End Source File
 # Begin Source File
 
@@ -124,10 +112,6 @@ SOURCE=.\syriac.cpp
 # Begin Source File
 
 SOURCE=.\syrinput.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\translitcb.c
 # End Source File
 # Begin Source File
 
@@ -156,7 +140,7 @@ InputPath=.\unicode\collectcb.h
 InputName=collectcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -167,7 +151,7 @@ InputPath=.\unicode\collectcb.h
 InputName=collectcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -185,7 +169,7 @@ InputPath=.\unicode\decompcb.h
 InputName=decompcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -196,7 +180,7 @@ InputPath=.\unicode\decompcb.h
 InputName=decompcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -214,7 +198,7 @@ InputPath=.\unicode\devtables.h
 InputName=devtables
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -225,7 +209,7 @@ InputPath=.\unicode\devtables.h
 InputName=devtables
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -243,7 +227,7 @@ InputPath=.\unicode\fonted_imp.h
 InputName=fonted_imp
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -254,7 +238,7 @@ InputPath=.\unicode\fonted_imp.h
 InputName=fonted_imp
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -272,7 +256,7 @@ InputPath=.\unicode\fontedcb.h
 InputName=fontedcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -283,7 +267,7 @@ InputPath=.\unicode\fontedcb.h
 InputName=fontedcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -301,7 +285,7 @@ InputPath=.\unicode\kangxi.h
 InputName=kangxi
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -312,7 +296,7 @@ InputPath=.\unicode\kangxi.h
 InputName=kangxi
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -330,7 +314,7 @@ InputPath=.\unicode\lx_utils.h
 InputName=lx_utils
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -341,7 +325,7 @@ InputPath=.\unicode\lx_utils.h
 InputName=lx_utils
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -359,7 +343,7 @@ InputPath=.\unicode\syrinput.h
 InputName=syrinput
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -370,7 +354,7 @@ InputPath=.\unicode\syrinput.h
 InputName=syrinput
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -388,7 +372,7 @@ InputPath=.\unicode\syrtables.h
 InputName=syrtables
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -399,7 +383,7 @@ InputPath=.\unicode\syrtables.h
 InputName=syrtables
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -417,7 +401,7 @@ InputPath=.\unicode\translitcb.h
 InputName=translitcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -428,7 +412,7 @@ InputPath=.\unicode\translitcb.h
 InputName=translitcb
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -446,7 +430,7 @@ InputPath=.\unicode\ures_additions.h
 InputName=ures_additions
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -457,7 +441,7 @@ InputPath=.\unicode\ures_additions.h
 InputName=ures_additions
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -475,7 +459,7 @@ InputPath=.\unicode\utimzone.h
 InputName=utimzone
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -486,7 +470,7 @@ InputPath=.\unicode\utimzone.h
 InputName=utimzone
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -504,7 +488,7 @@ InputPath=.\unicode\utrnslit.h
 InputName=utrnslit
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
@@ -515,7 +499,7 @@ InputPath=.\unicode\utrnslit.h
 InputName=utrnslit
 
 "..\..\..\icu\include\unicode\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy  unicode\$(InputName).h  ..\..\..\icu\include\unicode\ 
+	copy   unicode\$(InputName).h   ..\..\..\icu\include\unicode\ 
 
 # End Custom Build
 
