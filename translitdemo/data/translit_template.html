@@ -15,16 +15,15 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 // Determine our location.
 if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
   SELF = "/developerworks/opensource/icu/translitdemo";
-  JSDIR = "../icu/project/demo";
+  JS = "../icu/project/demo";
 } else {
   SELF = "/cgi-bin/translit";
-  JSDIR = "../js";
+  JS = "../js";
 }
-</script>
 
-<!-- a bit of a hack: only one of these will work -->
-<script src="../js/util.js"></script>
-<script src="../icu/project/demo/util.js"></script>
+// Load up the js/util.js script.  Unbelievably, this works.
+document.writeln("\x3Cscript src=\"" + JS + "/util.js\"\x3E\x3C\x2Fscript\x3E");
+</script>
 
 <script>
 // Load available IDs from CGI and populate select elems

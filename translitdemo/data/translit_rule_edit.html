@@ -8,21 +8,24 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 </style>
 </head>
 
-<!-- a bit of a hack: only one of these will work -->
-<script src="../js/util.js"></script>
-<script src="../icu/project/demo/util.js"></script>
+<script>
+// Determine our location.
+if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
+  SELF = "/developerworks/opensource/icu/translitdemo";
+  JS = "../icu/project/demo";
+} else {
+  SELF = "/cgi-bin/translit";
+  JS = "../js";
+}
+
+// Load up the js/util.js script.  Unbelievably, this works.
+document.writeln("\x3Cscript src=\"" + JS + "/util.js\"\x3E\x3C\x2Fscript\x3E");
+</script>
 
 <script>
 NEW_ID = "(New Transliterator)";
 SEPARATOR = "--------";
 IS_NEW_ID = 0;
-
-// Determine our location.
-if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
-  SELF = "/developerworks/opensource/icu/translitdemo";
-} else {
-  SELF = "/cgi-bin/translit";
-}
 
 // We can get these dynamically from the CGI, but it's too slow.  Also,
 // this allows us to eliminate ones we don't want, like
