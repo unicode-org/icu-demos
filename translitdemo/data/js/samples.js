@@ -80,7 +80,7 @@ function handleInsertSamples(sample) {
 
     document.FORM.OUTPUT2.value = "";
     document.FORM.SELECT_SOURCE2.selectedIndex = 0; // (Compound)
-    document.FORM.COMPOUND_ID2.value = "Remove";
+    document.FORM.COMPOUND_ID2.value = "";
   }
 }
 
