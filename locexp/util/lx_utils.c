@@ -14,12 +14,14 @@
 /* Realloc broken on linux????? */
 void *my_realloc(void *ptr, size_t old, size_t size)
 {
-  void *newptr;
+    void *newptr;
 
-  newptr = malloc(size);
-  if(ptr)
-    memcpy(newptr,ptr,old);
-  return newptr;
+    newptr = malloc(size);
+    if (ptr) {
+        memcpy(newptr,ptr,old);
+        free(ptr);
+    }
+    return newptr;
 }
 
 /******************************************************** derived from ucnv_err.c */
