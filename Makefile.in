@@ -16,9 +16,9 @@ include @ICU_MAKEFILE@
 top_builddir = .
 subdir = .
 
-## Locale Explorer depends on uconv [build] and usort [runtime].
+## Locale Explorer depends on usort [runtime].
 # Don't change this ordering!
-SUBDIRS= uconv usort locexp ubrowse dumpdat 
+SUBDIRS= usort locexp ubrowse dumpdat 
 # calexpo
 
 

@@ -23,6 +23,6 @@ AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, true)
 ICU_MAKEFILE=$prefix/lib/icu/Makefile.inc
 AC_SUBST(ICU_MAKEFILE)
 
-AC_OUTPUT([Makefile  uconv/Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xtradata/Makefile xlitomatic/Makefile rtfcvrt/Makefile])
+AC_OUTPUT([Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xtradata/Makefile xlitomatic/Makefile rtfcvrt/Makefile])
 
 dnl # calexpo/Makefile
