@@ -213,3 +213,5 @@ function arrayContainsString(a, s, ignoreCase) {
     }
     return false;
 }
+
+UTIL_LOADED = 1;
