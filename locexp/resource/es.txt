@@ -158,7 +158,7 @@ es
 //    helpgif_opt { "BORDER=0" }
     inherited { "(heredado)" }
     inherited_from { "(heredado de %U)" }
-    introSpiel { "<p>Este programa de la demostración ilustra los International Components for Unicode para los datos de la localización. Los datos cubren %V diversas idiomas, divididas más lejos en %V regiones y variantes. Para cada lengua, los datos tales como días de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de la abrir-fuente.</p>" }
+    introSpiel { "<p>Este programa de la demostración ilustra los International Components for Unicode para los datos de la localización. Los datos cubren %V diversas idiomas, divididas más lejos en %V regiones y variantes. Para cada lengua, los datos tales como días de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de fuente abierta.</p>" }
     localPatternChars0 { "Era" }
     localPatternChars1 { "Año" }
     localPatternChars10 { "Día Del Año" }
@@ -233,8 +233,6 @@ es
 //   zone_warn { "Note: only works if you have cookies turned on." }  // cookies in Spanish?
 
 
-    localeList_Locale { "Idiomas" }
-    localeList_Sublocale { "Regiones" }
     Day { "Día" }
     Month { "Mes" }
 //    helpPrefix { "default_" } // needed to get Maltese in the list of locales
