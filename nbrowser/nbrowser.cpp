@@ -214,6 +214,8 @@ parseEscaped(const char *s, char *dest, int32_t destCapacity, UErrorCode &errorC
         if(c=='%' && (hi=getHexValue(*s))>=0 && (lo=getHexValue(s[1]))>=0) {
             dest[i++]=(char)((hi<<4)|lo);
             s+=2;
+        } else if(c=='+') {
+            dest[i++]=' ';
         } else {
             dest[i++]=c;
         }
