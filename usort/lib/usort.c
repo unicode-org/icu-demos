@@ -136,8 +136,10 @@ usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
       free(n);
       return 0;
     }
-  
-  ucol_setStrength(n->collator, strength);
+  if(strength != UCOL_DEFAULT) 
+  {
+    ucol_setStrength(n->collator, strength);
+  }
 
   return n;
 }
