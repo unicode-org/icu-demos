@@ -348,7 +348,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
 	  if(U_FAILURE(status))
 	    {
 	      /* we have a fairly good calculation of where the error was. totalReadCount 
-		 has how many bytes have been successfully converted,
+		 has how many bytes have been successfully converted, */
 	      fprintf(stderr,"Error %d converting data around byte %d in the inputstream. (%d+ bytes successfully converted)\n", status, totalReadCount + (source-inBuf), totalReadCount);
 
 	      /* Ignore the data?? */
