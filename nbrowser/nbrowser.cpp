@@ -29,7 +29,6 @@
 #include "unicode/unistr.h"
 #include "unicode/unorm.h"
 #include "unormimp.h"           // ### TODO internal file, for normalization prototype
-#include "uparse.h"             // toolutil library
 
 #define LENGTHOF(array) (sizeof(array)/sizeof((array)[0]))
 
@@ -57,6 +56,9 @@ static const char *helpText=
     "Uncheck all of these options for regular <a href=\"http://www.unicode.org/reports/tr15/\">Unicode Normalization</a>.</p>\n"
     "<p>Hangul excludes AC00..D7A3. CJK Compat. excludes CJK Compatibility Ideographs (those with a canonical decomposition).\n"
     "A-umlaut excludes just U+00E4, which does not fulfill the closure condition for exclusions (try e.g. U+01DF).</p>\n"
+    "\n"
+    "<p>The Unicode 3.2 option performs normalization according to Unicode 3.2 (except for NormalizationCorrections) "
+    "even if ICU otherwise supports a higher version.\n</p>"
     "\n"
     "<p>FCD is not a normalization form but a test for whether\n"
     "text is canonically ordered. \"Normalizing to FCD\" does not generate\n"
@@ -87,7 +89,12 @@ static const char *endForm=
     " <input type=\"checkbox\" name=\"op0\" %s> Hangul"
     " <input type=\"checkbox\" name=\"op1\" %s> CJK Compat."
     " <input type=\"checkbox\" name=\"op2\" %s> A-umlaut"
-    " <input type=\"submit\" value=\"Go\">"
+    "<br>\n"
+    "Unicode version:"
+    " <input type=\"radio\" name=\"uv\" value=\"0\" %s>current"
+    " <input type=\"radio\" name=\"uv\" value=\"1\" %s>Unicode 3.2"
+    "<br>\n"
+    "<input type=\"submit\" value=\"Go\">"
     " (<a href=\"#help\">Help</a>)"
     "</p>\n"
     "</form>\n";
@@ -163,7 +170,7 @@ printNormalized(const UChar *s, int32_t length,
     printf("<tr><th>%s</th>", modeNames[mode]);
 
     errorCode=U_ZERO_ERROR;
-    qc=unorm_quickCheckTailored(s, length, mode, options, &errorCode);
+    qc=unorm_quickCheckWithOptions(s, length, mode, options, &errorCode);
     if(U_FAILURE(errorCode)) {
         printf("<td>%s</td>", u_errorName(errorCode));
     } else {
@@ -198,6 +205,14 @@ getHexValue(char c) {
     }
 }
 
+static const char *
+skipEscapedWhitespace(const char *s) {
+    while(*s==' ' || *s=='\t' || *s=='+') {
+        ++s;
+    }
+    return s;
+}
+
 /* parse percent-escaped input into a byte array; does not NUL-terminate */
 static int32_t
 parseEscaped(const char *s, char *dest, int32_t destCapacity, UErrorCode &errorCode) {
@@ -224,76 +239,45 @@ parseEscaped(const char *s, char *dest, int32_t destCapacity, UErrorCode &errorC
     return i;
 }
 
-/*
- * Handle various command-line input:
- * - one code point per argv[]
- * - multiple code points separated by '+'
- * - end of input: NUL or ';' or '&'
- */
-static int32_t
-parseInput(const char *argv[], int argc,
-           int32_t &countArgs, const char *&endInLastArg,
-           char *buffer, int32_t bufferCapacity,
-           UChar *input, int32_t inputCapacity,
-           UErrorCode &errorCode) {
-    char *p, *q;
-    int32_t length, piece, pieceLength;
+/* parse a list of hex code point values into the input[] string */
+U_CAPI int32_t U_EXPORT2
+parseString(const char *s,
+            UChar *dest, int32_t destCapacity,
+            UErrorCode &errorCode) {
+    char *end;
+    UChar32 value;
+    int32_t length;
+    UBool isError;
 
     length=0;
-    p=NULL; // !=NULL when an end-character was found
-    for(piece=0; piece<argc; ++piece) {
-        /* find the end - look for ';' or '&' */
-        p=strchr(argv[piece], ';');
-        q=strchr(argv[piece], '&');
-        if(p!=NULL) {
-            if(q!=NULL) {
-                if(p<q) {
-                    pieceLength=(int32_t)(p-argv[piece]);
-                } else {
-                    pieceLength=(int32_t)(q-argv[piece]);
-                    p=q;
-                }
-            } else {
-                pieceLength=(int32_t)(p-argv[piece]);
-            }
-        } else if(q!=NULL) {
-            pieceLength=(int32_t)(q-argv[piece]);
-            p=q;
-        } else {
-            pieceLength=strlen(argv[piece]);
+    isError=FALSE;
+    for(;;) {
+        s=skipEscapedWhitespace(s);
+        if(*s=='&' || *s==0) {
+            return length;
         }
 
-        // add a separating space
-        if(0<length && length<bufferCapacity) {
-            buffer[length++]=' ';
+        /* read one code point */
+        value=(UChar32)strtol(s, &end, 16);
+        if(end<=s || (*end!=' ' && *end!='\t' && *end!='+' && *end!='&' && *end!=0) || (uint32_t)value>=0x110000) {
+            errorCode=U_PARSE_ERROR;
+            return 0;
         }
 
-        // copy the current piece
-        if((length+pieceLength+1)>=bufferCapacity) {
+        /* append it to the destination array */
+        if(length>=destCapacity) {
             errorCode=U_BUFFER_OVERFLOW_ERROR;
             return 0;
         }
-        memcpy(buffer+length, argv[piece], pieceLength);
-        length+=pieceLength;
-
-        if(p!=NULL) {
-            // finish without ++piece
-            break;
+        U16_APPEND(dest, length, destCapacity, value, isError);
+        if(isError) {
+            errorCode=U_BUFFER_OVERFLOW_ERROR;
+            return 0;
         }
+
+        /* go to the following characters */
+        s=end;
     }
-
-    // NUL-terminate
-    buffer[length]=0;
-
-    // replace plusses by spaces
-    q=buffer;
-    while((q=strchr(q, '+'))!=NULL) {
-        *q++=' ';
-    }
-
-    countArgs=piece;
-    endInLastArg=p;
-    return u_parseString(buffer, input, inputCapacity, NULL, &errorCode);
 }
 
 extern int
@@ -301,8 +285,7 @@ main(int argc, const char *argv[]) {
     UChar input[100], buffer16[600]; // buffer16 should be 6 times longer than input for \\uhhhh
     char input8[400];
     char buffer[1000];
-    const char *endInLastArg;
-    int32_t inputLength, countArgs, options;
+    int32_t inputLength, options;
     UErrorCode errorCode;
 
     const char *cgi, *script;
@@ -314,26 +297,8 @@ main(int argc, const char *argv[]) {
     inputLength=options=0;
     inputIsUTF8=FALSE;
     errorCode=U_ZERO_ERROR;
-    if(argc>1) {
-        /* get input from command line */
-        inputLength=parseInput(argv+1, argc-1,
-                               countArgs, endInLastArg,
-                               buffer, sizeof(buffer),
-                               input, LENGTHOF(input),
-                               errorCode);
-        if(endInLastArg!=NULL && *(++endInLastArg)==0) {
-            endInLastArg=NULL; // nothing in the last parsed argument after ';' or '&'
-            ++countArgs;
-        }
-        if(endInLastArg==NULL && (1+countArgs)<argc) {
-            endInLastArg=argv[1+countArgs];
-        }
-        if(endInLastArg!=NULL) {
-            options=(int32_t)strtol(endInLastArg, NULL, 16);
-        } else {
-            options=0;
-        }
-    } else if((cgi=getenv("QUERY_STRING"))!=NULL) {
+
+    if((cgi=getenv("QUERY_STRING"))!=NULL) {
         // get input from cgi variable, e.g. t=a\\u0308%EA%B0%81&s=0061+0308&op1=on
         const char *in;
 
@@ -354,11 +319,7 @@ main(int argc, const char *argv[]) {
             }
         } else if((in=strstr(cgi, "s="))!=NULL && in[2]!='&' && in[2]!=0) {
             in+=2; // skip "s="
-            inputLength=parseInput(&in, 1,
-                                   countArgs, endInLastArg,
-                                   buffer, sizeof(buffer),
-                                   input, LENGTHOF(input),
-                                   errorCode);
+            inputLength=parseString(in, input, LENGTHOF(input), errorCode);
         } else {
             inputLength=0;
         }
@@ -372,6 +333,9 @@ main(int argc, const char *argv[]) {
         }
         if(strstr(cgi, "op2=")!=NULL) {
             options|=4;
+        }
+        if(strstr(cgi, "uv=1")!=NULL) {
+            options|=UNORM_UNICODE_3_2;
         }
     }
 
@@ -387,7 +351,9 @@ main(int argc, const char *argv[]) {
     printf(endForm,
         options&1 ? "checked" : "",
         options&2 ? "checked" : "",
-        options&4 ? "checked" : "");
+        options&4 ? "checked" : "",
+        (options&0xe0)==0 ? "checked" : "",
+        (options&0xe0)==UNORM_UNICODE_3_2 ? "checked" : "");
 
     printf(startTable);
     printString(input, inputLength);

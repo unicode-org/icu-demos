@@ -23,8 +23,8 @@ CLEANFILES = *~
 TARGET = nbrowser
 
 #LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
-LDFLAGS += $(LDFLAGS_TOOLUTIL)
-CPPFLAGS += -I$(ICU_SOURCE)/common -I$(ICU_SOURCE)/tools/toolutil
+#LDFLAGS += $(LDFLAGS_TOOLUTIL)
+CPPFLAGS += -I$(ICU_SOURCE)/common
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
