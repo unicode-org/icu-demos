@@ -68,12 +68,15 @@ void TextCache::readIndex() {
     }
 }
 
-void TextCache::writeIndex() {
+UBool TextCache::writeIndex() {
     char path[256];
     strcpy(path, root);
     strcat(path, INDEX_FILENAME);
     FILE *indexFile = fopen(path, "w+");
-    if (indexFile != NULL) {
+    UBool success = TRUE;
+    if (indexFile == NULL) {
+        success = FALSE;
+    } else {
         int32_t pos = -1;
         for (;;) {
             const UHashElement* elem = hash.nextElement(pos);
@@ -82,12 +85,13 @@ void TextCache::writeIndex() {
             }
             UnicodeString* key = (UnicodeString*) elem->key;
             CacheObj* obj = (CacheObj*) elem->value;
-            util_writeTo(indexFile, *key);
-            util_writeTo(indexFile, obj->filename, strlen(obj->filename) + 1);
+            success &= util_writeTo(indexFile, *key);
+            success &= util_writeTo(indexFile, obj->filename, strlen(obj->filename) + 1);
         }
-        util_writeTo(indexFile, UnicodeString()); // empty string is end mark
+        success &= util_writeTo(indexFile, UnicodeString()); // empty string is end mark
         fclose(indexFile);
     }
+    return success;
 }
 
 void TextCache::visitKeys(KeyVisitor visit, void* context) const {
@@ -99,7 +103,7 @@ void TextCache::visitKeys(KeyVisitor visit, void* context) const {
             break;
         }
         UnicodeString* key = (UnicodeString*) elem->key;
-        visit(i, *key, context);
+        visit(i++, *key, context);
     }
 }
 
@@ -117,7 +121,7 @@ UBool TextCache::put(const UnicodeString& key, const UnicodeString& value) {
     obj->text = value;
     UBool result = obj->save(root);
     if (doUpdateIndex) {
-        writeIndex();
+        result &= writeIndex();
     }
     return result && U_SUCCESS(status);
 }
