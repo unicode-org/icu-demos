@@ -46,6 +46,9 @@ int main(int argc , const char *argv[])
   initLX();
   initContext(&localContext);
   localContext.fOUT = stdout;
+
+  /* chroot */
+
   initCGIVariables(&localContext);
   initPOSTFromFILE(&localContext, stdin);
   runLocaleExplorer(&localContext);

@@ -210,9 +210,8 @@ extern const UChar *defaultLanguageDisplayName(LXContext *lx);
  * @param leaf Which node to start printing at
  * @param current The locale that should be selected
  * @param styled Should bold tags and links be put in?
- * @param suffix Any text to follow the URL
  */
-extern void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled, const char *suffix);
+extern void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled);
 extern void printChangeLocale(LXContext *lx);
 extern void printChangeA(LXContext *lx, const char *loc, const char *prefix);
 extern void showChangePage(LXContext *lx); /* obeys 'section' */

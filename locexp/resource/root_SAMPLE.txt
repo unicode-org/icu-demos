@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c on Thu May 27 15:34:58 PDT 2004 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c on Thu Jun  3 16:37:44 PDT 2004 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -9,6 +9,8 @@ root {
    ...  {  "..."  }
    AmPmMarkers0  {  "am"  }
    AmPmMarkers1  {  "pm"  }
+   Calendar_type_format  {  "Formatting"  }
+   Calendar_type_stand-alone  {  "Stand-alone"  }
    Collation  {  "Collation"  }
    DateTimeElements  {  "Date and Time Options"  }
    DateTimeElements0  {  "First day of the week: "  }
@@ -25,6 +27,7 @@ root {
    DateTimePatterns8  {  "Date-Time pattern.<BR>{0} = time, {1} = date"  }
    DayAbbreviations  {  "Short Names"  }
    DayNames  {  "Long Names"  }
+   DayNarrow  {  "Narrow Names"  }
    EXPLORE_CollationElements_Defaults  {  "Reset to Defaults"  }
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
    EXPLORE_CollationElements_ShowCollKey  {  "Show Collation Key"  }
@@ -49,8 +52,8 @@ root {
    LocaleScript  {  "Locale Script"  }
    LocaleScriptAbbreviations  {  "Short Names"  }
    LocaleScriptNames  {  "Long Names"  }
-   MonthAbbreviations  {  "Short Names"  }
-   MonthNames  {  "Long Names"  }
+   MonthAbbreviations  {  " - NOT USED - see DayAbbreviations "  }
+   MonthNames  {  "  - NOT USED - see DayNames "  }
    NoLocale  {  "MISSING LOCALE NAME"  }
    NumberElements0  {  "Decimal Separator"  }
    NumberElements1  {  "Grouping Separator"  }
@@ -179,6 +182,8 @@ root {
    inherited  {  "(inherited)"  }
    inherited_from  {  "(inherited from %S)"  }
    introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."  }
+   keyword_Current  {  "Current"  }
+   keyword_Default  {  "Default"  }
    localPatternChars0  {  "Era"  }
    localPatternChars1  {  "Year"  }
    localPatternChars10  {  "Day Of Year"  }
@@ -205,6 +210,10 @@ root {
    localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular region."  }
    localeDataLanguage  {  "No region is specified, so the data is generic to this language."  }
    localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
+   localeList_Calendar  {  "Calendars"  }
+   localeList_Clear  {  "(clear)"  }
+   localeList_Collation  {  "Collation"  }
+   localeList_Currency  {  "Currency"  }
    localeList_Locale  {  "Languages"  }
    localeList_Sublocale  {  "Regions"  }
    locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }

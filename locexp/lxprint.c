@@ -596,6 +596,9 @@ void exPrintChangeLocale(LXContext *lx)
 }
 #endif
 
+#define LX_FSECTION_START  "<font size=-2 color=\"#888888\">"
+#define LX_FSECTION_END    "</font>"
+
 void printChangeField(LXContext *lx, const char *locale, const char *prefix, char part)
 {
   UChar dispname[1024];
@@ -623,8 +626,8 @@ void printChangeField(LXContext *lx, const char *locale, const char *prefix, cha
     if((part == 'v') || (part == 's')) {
       u_fprintf(lx->OUT, ")");
     }
-  } else {
-    u_fprintf(lx->OUT, "&nbsp;");
+  } else if((part != 'v') && (part != 's')) {
+    u_fprintf(lx->OUT, "%S", FSWF("localeList_None", "(none)"));
   }
 }
 
@@ -657,44 +660,59 @@ void printChangeKeyword(LXContext *lx, const char *locale, const char *prefix,
       status = U_ZERO_ERROR;
     }
     
+    u_fprintf(lx->OUT, "%s%S%s<br/>", LX_FSECTION_START, keyBuf, LX_FSECTION_END);
     u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
               getLXBaseURL(lx, kNO_URL | kNO_SECT),
               prefix, type, lx->section);
-    u_fprintf(lx->OUT, "%S: <b>%S</b>\n", keyBuf, valBuf);
-    u_fprintf(lx->OUT, "</a> &nbsp;");
+    if(valBuf[0]) {
+      u_fprintf(lx->OUT, "%S",  valBuf);
+    } else {
+      u_fprintf(lx->OUT, "%S", FSWF("localeList_None", "(none)"));
+    }
+    u_fprintf(lx->OUT, "</a>");
 }
 
 void printChangeA(LXContext *lx, const char *locale, const char *prefix)
 {
   int32_t n;
   UErrorCode status = U_ZERO_ERROR;
-  
+
+  u_fprintf(lx->OUT, "<table border=3><tr>\r\n");
+  u_fprintf(lx->OUT, "<td>%s%S%s<br/>", LX_FSECTION_START, FSWF("LocaleCodes_Language", "Language"), LX_FSECTION_END);
   u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
             getLXBaseURL(lx, kNO_URL | kNO_SECT),
             prefix, 'l', lx->section);
   printChangeField(lx, locale, prefix, 'l');
   printChangeField(lx, locale, prefix, 's');
-  u_fprintf(lx->OUT, "</a> &nbsp;");
+  u_fprintf(lx->OUT, "</a></td>");
 
+  u_fprintf(lx->OUT, "<td>%s%S / %S%s<br/>", LX_FSECTION_START,
+            FSWF("LocaleCodes_Country", "Region"),
+            FSWF("LocaleCodes_Variant", "Variant"),LX_FSECTION_END);
   u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
             getLXBaseURL(lx, kNO_URL | kNO_SECT),
             prefix, 'r', lx->section);
   printChangeField(lx, locale, prefix, 'r');
   printChangeField(lx, locale, prefix, 'v');
-  u_fprintf(lx->OUT, "</a> &nbsp;");
+  u_fprintf(lx->OUT, "</a></td>");
   
   if(prefix[0]==0) {
     /* -------------- calendar ---------- */
+    u_fprintf(lx->OUT, "<td>");
     printChangeKeyword(lx, locale, prefix, "calendar", kCalendarPart);
+    u_fprintf(lx->OUT, "</td><td>");
     printChangeKeyword(lx, locale, prefix, "collation", kCollationPart);
+    u_fprintf(lx->OUT, "</td><td>");
     printChangeKeyword(lx, locale, prefix, "currency", kCurrencyPart);
+    u_fprintf(lx->OUT, "</td>");
   }
+  u_fprintf(lx->OUT, "</tr></table>");
 }
 
 void printChangeLocale(LXContext *lx)
 {
 #if defined(LX_DEBUG)
-  u_fprintf(lx->OUT, "<tt>base URL= %s</tt><br>\n", getLXBaseURL(lx,0));
+  u_fprintf(lx->OUT, "<br><tt>base URL= %s</tt><br>\n", getLXBaseURL(lx,0));
 #endif
   printChangeA(lx, lx->curLocaleName, "");
 }
@@ -824,16 +842,17 @@ void showChangePage(LXContext *lx)
   case 'l':
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Locale", "Languages"));
     startCell(lx);
+    printCell(lx, myURL, prefix, part, "root", lx->locales->ustr, n, b->l);  /* Language doesn't need a 'none' - use root */
     for(n=0;n<lx->locales->nSubLocs;n++) {
       printCell(lx, myURL, prefix, part, lx->locales->subLocs[n]->str, 
-                lx->locales->subLocs[n]->ustr, n, b->l);
+                lx->locales->subLocs[n]->ustr, n+1, b->l);
     }
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->l);
+    /*printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->l); */ /* Language doesn't need a 'none' - use root */
     endCell(lx);
     break;
   case 's':
     startCell(lx);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->s);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->s);
     endCell(lx);
     break;
   case 'r':
@@ -851,13 +870,13 @@ void showChangePage(LXContext *lx)
       printCell(lx, myURL, prefix, part, rgn,
                 lx->regions->subLocs[n]->ustr, n, b->r);
     }
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->r);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->r);
     endCell(lx);
     break;
 
   case 'v':
     startCell(lx);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->v);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->v);
     endCell(lx);
     break;
 
@@ -865,7 +884,7 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Calendar", "Calendars"));
     startCell(lx);
     showKeywordMenu(lx, "calendar", b->calendar, &n, myURL, prefix, part, &status);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->calendar);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->calendar);
     endCell(lx);
     break;
 
@@ -873,7 +892,7 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Collation", "Collation"));
     startCell(lx);
     showKeywordMenu(lx, "collation", b->collation, &n, myURL, prefix, part, &status);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->collation);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->collation);
     endCell(lx);
     break;
 
@@ -881,7 +900,7 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Currency", "Currency"));
     startCell(lx);
     showKeywordMenu(lx, "currency", b->currency, &n, myURL, prefix, part, &status);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->currency);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->currency);
     endCell(lx);
     break;
 

@@ -63,7 +63,7 @@ void displayLocaleExplorer(LXContext *lx)
     
     u_fprintf(lx->OUT, "<head><title>");
     lx->backslashCtx.html = FALSE;
-    printPath(lx, lx->curLocale, lx->curLocale, FALSE, NULL);
+    printPath(lx, lx->curLocale, lx->curLocale, FALSE);
 
     /* TODO: check 'section' here */
     if(strstr(lx->queryString, "EXPLORE"))
@@ -170,12 +170,9 @@ void displayLocaleExplorer(LXContext *lx)
     if(strstr(lx->queryString,"EXPLORE"))
     {
       const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
-      if(queryField(lx, "EXPLORE_CollationElements")) {
-        suffix = "EXPLORE_CollationElements=";
-      } 
 
       u_fprintf(lx->OUT, "<font size=\"+1\">");
-      printPath(lx, lx->curLocale, lx->curLocale, suffix?TRUE:FALSE, suffix);
+      printPath(lx, lx->curLocale, lx->curLocale, TRUE);
 
       if(queryField(lx, "EXPLORE_CollationElements")) {
         u_fprintf(lx->OUT, " &gt; %S", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
@@ -189,14 +186,13 @@ void displayLocaleExplorer(LXContext *lx)
     else
     {
       u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\"><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
-      
-#if 0      
-      u_fprintf(lx->OUT, "<font size=\"+1\">");
-      printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
-      u_fprintf(lx->OUT, "</font>");
-#else
-      printChangeLocale(lx);
-#endif
+
+      if(lx->curLocaleName[0]) { /* don't show a completely empty locale control */
+        u_fprintf(lx->OUT, "<font size=\"+1\">");
+        printPath(lx, lx->curLocale, lx->curLocale, TRUE);
+        u_fprintf(lx->OUT, "</font>");
+        printChangeLocale(lx);
+      }
       
       u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
       
@@ -313,6 +309,8 @@ void displayLocaleExplorer(LXContext *lx)
       /* show an entire locale */
       showOneLocale(lx);
     }
+
+  } /* END OLD STYLE */
     
     printStatusTable(lx);
 #if 0
@@ -358,8 +356,6 @@ void displayLocaleExplorer(LXContext *lx)
 #ifndef LXHOST
 # define LXHOST ""
 #endif
-
-    } /* END OLD STYLE */
     
     if(!strcmp(lx->dispLocale,"tlh"))
         u_fprintf(lx->OUT, "<p>Thank you for using the ICU LocaleExplorer, from %s compiled %s on %s<p>\r\n", LXHOSTNAME, lx_version(), LXHOST);

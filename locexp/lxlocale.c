@@ -298,55 +298,42 @@ void printSubLocales(LXContext *lx, const char *suffix)
   
 }
 
-void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled, const char *suffix)
+void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled)
 {
-    if(!suffix) { 
-      suffix = "";
+  if(!leaf) { /* top level */
+    if(styled && !lx->section[0]) {
+      u_fprintf(lx->OUT, "<a href=\"%s\">", getLXBaseURL(lx, kNO_URL | kNO_LOC)); /* Reset */
     }
-    if(!leaf) /* top level */
-    {
-        if(styled && !*suffix) 
-            u_fprintf(lx->OUT, "<a href=\"?%s\">", suffix); /* Reset */
+    
+    u_fprintf_u(lx->OUT, FSWF("title", "ICU LocaleExplorer"));
       
-        u_fprintf_u(lx->OUT, FSWF("title", "ICU LocaleExplorer"));
-      
-        if(styled && !*suffix) 
-            u_fprintf(lx->OUT, "</a>");
-
-        return;
+    if(styled && !lx->section[0]) {
+      u_fprintf(lx->OUT, "</a>");
     }
-
-  
-    /* reverse order recursively */
-    printPath(lx, leaf->parent,current,styled,suffix);
-
-
-    u_fprintf(lx->OUT, " &gt; ");
-  
-    if(leaf->isVariant) u_fprintf(lx->OUT, " [");
-
-
-    if(styled)
-    {
-        if(leaf == current)
-            u_fprintf(lx->OUT, "<b>");
-
-        u_fprintf(lx->OUT, "<a href=\"?_=%s%s%s\">", leaf->str, *suffix?"&":"", suffix);
+    
+    return;
+  }
+  /* reverse order recursively */
+  printPath(lx, leaf->parent,current,styled);
+  u_fprintf(lx->OUT, " &gt; ");
+  if(leaf->isVariant) {
+    u_fprintf(lx->OUT, " [");
+  }
+  if(styled) {
+    if(leaf == current) {
+      u_fprintf(lx->OUT, "<b>");
     }
-
-
-    u_fprintf_u(lx->OUT, leaf->ustr);
-
-
-    if(styled)
-    {
-        u_fprintf(lx->OUT, "</a>");
-
-        if(leaf == current)
-            u_fprintf(lx->OUT, "</b>");
-    }
-
-    if(leaf->isVariant) u_fprintf(lx->OUT, "] ");
+    u_fprintf(lx->OUT, "<a href=\"%s&_=%s\">", getLXBaseURL(lx, kNO_URL|kNO_LOC), leaf->str);
+  }
+  u_fprintf_u(lx->OUT, leaf->ustr);
+  if(styled) {
+    u_fprintf(lx->OUT, "</a>");
+    if(leaf == current)
+      u_fprintf(lx->OUT, "</b>");
+  }
+  if(leaf->isVariant) {
+    u_fprintf(lx->OUT, "] ");
+  }
 }
 
 
