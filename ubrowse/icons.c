@@ -9,12 +9,9 @@
 #include "unicode/udata.h"
 #include "unicode/ustdio.h"
 #include "unicode/ures.h"
+#include "icons.h"
 
 #include <string.h>
-
-#ifndef ICU_URL
-# define ICU_URL "http://ibm.com/software/globalization/icu"
-#endif
 
 U_CFUNC char ubrowseres_dat[];
 

@@ -169,10 +169,30 @@
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath=".\icons.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath=".\makedata.mak">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot; CFG=Debug"
+						Outputs="Debug\ubrowseres.lib"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot; CFG=Release"
+						Outputs="Release\ubrowseres.lib"/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

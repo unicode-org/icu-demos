@@ -20,11 +20,6 @@
 *******************************************************************************
 */
 
-#ifndef ICU_URL
-# define ICU_URL "http://ibm.com/software/globalization/icu"
-#endif
-
-
 /*
    Short list of todo's:
      - a new 'character' view that drills down into a single char,  with all the u_isXXX properties put back
@@ -79,6 +74,7 @@
 #include "unicode/decompcb.h" /* from locexp/util */
 #include "unicode/lx_utils.h"
 #include "unicode/uset.h"
+#include "icons.h"
 
 int validate_sanity();
 
