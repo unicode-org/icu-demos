@@ -1,5 +1,15 @@
 Transliterator Demo README
 
+----------------------------------------------------------------------
+NOTICE
+This README is badly out of date.  It does not reflect:
+- The state of the world after the 08/2001 OSS server relocation.
+- New information about running the CGI locally on a Win2K/WinNT machine
+  running Apache Win32.
+Expect an update (or write one, if you can!) Real Soon Now.
+Alan 8/17/01
+----------------------------------------------------------------------
+
 The Transliterator demo program is a simple CGI that allows the user
 to transliterate text to and from various scripts using system
 transliterators built into ICU.  It is designed to work with ICU4c
