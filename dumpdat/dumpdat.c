@@ -18,6 +18,8 @@
 
 #include "unicode/utypes.h"
 #include "unicode/udata.h"
+#include "unicode/uloc.h"
+#include "unicode/ucnv.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
