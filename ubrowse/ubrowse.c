@@ -312,7 +312,7 @@ UBool myEnumCharNamesFn(void *context,
                         UChar32 code,
                         UCharNameChoice nameChoice,
                         const char *name,
-                        UTextOffset length)
+                       int32_t length)
 {
   enumHits++;
   if(strstr(name, gSearchName))
@@ -1297,7 +1297,6 @@ case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("Halfwidth and Fullwidth Forms
     case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B: printf("CJK Unified Ideographs, Extension B"); return;
     case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT: printf("CJK Compatibility Ideographs, Supplement"); return;
     case UBLOCK_TAGS: printf("Tags"); return;
-    case UBLOCK_PRIVATE_USE: printf("Private Use"); return;
 
     default: printf("Unknown block %d",block); return;
     }
