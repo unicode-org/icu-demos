@@ -220,7 +220,7 @@ static const char endForm[]=
     "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"175\" class=\"v14-gray-table-border\">\n"
     "<tr><th colspan=\"3\" class=\"v14-header-1-small\">Related Topics</th></tr>\n"
     "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
     "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
     "<tr><td><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
     "</table>\n"
