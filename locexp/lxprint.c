@@ -372,13 +372,15 @@ void printStatusTable(LXContext *lx)
      
       if(!isExperimentalLocale(lx->curLocaleName) && !lx->noBug) {
         u_fprintf(lx->OUT, " &nbsp; ");
-        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/xml/%s.xml\">%S</A>", 
+        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/%s/%s.xml\">%S</A>", 
+                  !strcmp(lx->section,"col")?"collation":"main",
                   lx->curLocaleBlob.base,
                 FSWF("XMLsource", "XML Source"));
       
       u_fprintf(lx->OUT, " &nbsp; ");
 
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/all_diff_xml/%s.html\">%S</A>", 
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/diff/%s/%s.html\">%S</A>", 
+                !strcmp(lx->section,"col")?"collation":"main",
                 lx->curLocaleBlob.base,
                 FSWF("XMLcomp", "Compare"));
       u_fprintf(lx->OUT, " &nbsp; ");
