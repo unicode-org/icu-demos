@@ -148,8 +148,8 @@ main(int argc, char *argv[]) {
     qsort(files, fileCount, sizeof(File), compareFiles);
 
     /* determine the offsets of all basenames and files in this common one */
-    fileOffset=4+8*fileCount+(basenameTotal+15)&~0xf;
-    basenameOffset=0;
+    basenameOffset=4+8*fileCount;
+    fileOffset=basenameOffset+(basenameTotal+15)&~0xf;
     for(i=0; i<fileCount; ++i) {
         files[i].fileOffset=fileOffset;
         fileOffset+=(files[i].fileSize+15)&~0xf;
