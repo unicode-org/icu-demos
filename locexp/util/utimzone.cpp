@@ -52,7 +52,7 @@ U_CAPI const UChar* utz_hackyGetDisplayName(const UTimeZone *zone)
   if(!zone)
     return NULL;
 
-  ((const TimeZone*)zone)->getDisplayName(*(new UnicodeString())).getBuffer();
+  return ((const TimeZone*)zone)->getDisplayName(*(new UnicodeString())).getBuffer();
 }
 
 U_CAPI void utz_setDefault(const UTimeZone *zone)

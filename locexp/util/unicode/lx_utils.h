@@ -41,8 +41,8 @@ typedef struct mysortable
 {
   char key[SORTKEYSIZE];
   uint32_t keySize;
-  const UChar *ustr;
-  const char *str;
+  UChar *ustr;
+  char *str;
   
   struct mysortable *subLocs;
   struct mysortable *parent;
@@ -110,7 +110,7 @@ U_CAPI int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const
 U_CAPI int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen);
 
 /* Decode a URL query field  [%XX, +, etc.] */
-U_CAPI void doDecodeQueryField(const char *in, char *out, int32_t length);
+U_CAPI void doDecodeQueryField(const char *in, char *out, uint32_t length);
 
 /**
  * Format the current date in the given style
@@ -141,7 +141,7 @@ typedef struct _FromUBackslashContext
 
 /* substitute with value, of the form: <B>\uXXXX</B>  */
 U_CAPI void
-UCNV_FROM_U_CALLBACK_BACKSLASH (void *context,
+UCNV_FROM_U_CALLBACK_BACKSLASH (const void *context,
                                 UConverterFromUnicodeArgs *fromUArgs,
                                 const UChar* codeUnits,
                                 int32_t length,

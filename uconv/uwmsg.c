@@ -160,7 +160,7 @@ U_CAPI void  u_wmsg(const char *tag, ... )
 }
 
 /* these will break if the # of messages change. simply add or remove 0's .. */
-UChar * gInfoMessages[U_ERROR_INFO_LIMIT-U_ERROR_INFO_START] = 
+UChar * gInfoMessages[U_ERROR_WARNING_LIMIT-U_ERROR_WARNING_START] = 
   { 0,0 };
 
 UChar * gErrMessages[U_ERROR_LIMIT] = 
@@ -171,7 +171,7 @@ static const UChar *fetchErrorName(UErrorCode err)
   if(err>=0)
     return gErrMessages[err];
   else
-    return gInfoMessages[err-U_ERROR_INFO_START];
+    return gInfoMessages[err-U_ERROR_WARNING_START];
 }
 
 U_CAPI const UChar *u_wmsg_errorName(UErrorCode err)
@@ -213,7 +213,7 @@ U_CAPI const UChar *u_wmsg_errorName(UErrorCode err)
   if(err>=0)
     gErrMessages[err] = msg;
   else
-    gInfoMessages[err-U_ERROR_INFO_START] = msg;
+    gInfoMessages[err-U_ERROR_WARNING_START] = msg;
 
   return msg;
 }

@@ -70,7 +70,7 @@ U_STRING_DECL(backslashEnd,       ""      , 0);
 U_STRING_DECL(backslashEndHTML,   "</B>"  , 4);
 
 void 
-UCNV_FROM_U_CALLBACK_BACKSLASH (void *context,
+UCNV_FROM_U_CALLBACK_BACKSLASH (const void *context,
                                 UConverterFromUnicodeArgs *fromUArgs,
                                 const UChar* codeUnits,
                                 int32_t length,
@@ -205,7 +205,7 @@ UCNV_FROM_U_CALLBACK_BACKSLASH (void *context,
 /*******************************************************end of borrowed code from ucnv_err.c **/
 
 
-void doDecodeQueryField(const char *in, char *out, int32_t length)
+void doDecodeQueryField(const char *in, char *out, uint32_t length)
 {
   unsigned int i;
   char *anchor;
@@ -551,7 +551,7 @@ int myCompare(const void *aa, const void *bb)
 
       if(cmp != 0) /* if dissimilar, just return */
 	return cmp;
-      if(a->keySize == minSize)
+      if(a->keySize == (uint32_t)minSize)
 	return -1;
       else
 	return 1;
@@ -695,7 +695,7 @@ void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src)
 	  *(urlQuery++) = ToOffset( ((*src) & 0x000F) >>  0);
 	}
       else
-	*(urlQuery++) = *src;
+	*(urlQuery++) = (char)*src;
 
       src++;
     }

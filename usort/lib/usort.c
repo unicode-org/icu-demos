@@ -108,7 +108,7 @@ static int usort_sortProc(const void *aa, const void *bb)
 
 
 USort*
-usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
+usort_open(const char *locale, UCollationStrength strength, UBool ownText,
            UErrorCode *status)
 {
   USort *n;
@@ -162,7 +162,7 @@ usort_close(USort *usort)
 }
 
 void
-usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *userData)
+usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *userData)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -232,7 +232,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
 }
 
 void
-usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t escapeMode)
+usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool escapeMode)
 {
   UConverter *newConverter = NULL;
   UErrorCode status = U_ZERO_ERROR;
@@ -312,7 +312,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
 			 &source, 
 			 readData,/* always use all read data */
 			 NULL,    /* don't need offsets */
-			 feof(f), /* We're always giving it the entire amount of read data.*/
+			 (UBool)feof(f), /* We're always giving it the entire amount of read data.*/
 		         &status);/* Therefore, if we're at EOF, [source,readData] is the */
 				  /* last chunk so flush.. */
 	  

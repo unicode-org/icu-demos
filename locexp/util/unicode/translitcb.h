@@ -33,7 +33,7 @@ typedef struct
 
 
 U_CAPI void 
-  UCNV_FROM_U_CALLBACK_TRANSLITERATED  (void *context,
+  UCNV_FROM_U_CALLBACK_TRANSLITERATED  (const void *context,
                                 UConverterFromUnicodeArgs *fromUArgs,
                                 const UChar* codeUnits,
                                 int32_t length,

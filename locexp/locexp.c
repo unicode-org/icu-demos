@@ -141,6 +141,7 @@ void showExploreButton(UResourceBundle *rb, const char *locale, const UChar *sam
 void showExploreButtonSort(UResourceBundle *rb, const char *locale, const char *sampleString, const char *key);
 void showExploreLink(UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 void showExploreCloseButton(const char *locale, const char *frag);
+void showExploreCalendar( LXContext *lx, const char *qs);
 
 UBool didUserAskForKey(const char *key, const char *queryString);
 
@@ -873,7 +874,7 @@ char *createEscapedSortList(const UChar *source)
         int togo = 6; /* copy the next 6 */
         for(;(i<inlen) && (togo--);i++)
         {
-          *p++ = source[i];
+          *p++ = (char)source[i];
         }
         i--; 
       }
@@ -1520,7 +1521,7 @@ void chooseConverterMatching(const char *restored, UChar *sample)
 
       for(j=0;U_SUCCESS(err);j++)
 	{
-	  alias = ucnv_getAlias(name, j, &err);
+	  alias = ucnv_getAlias(name,(uint16_t) j, &err);
 
 	  if(!alias)
 	    break;
@@ -1739,7 +1740,7 @@ void chooseConverterFrom(const char *restored, USort *list)
 
       for(i=0;U_SUCCESS(status);i++)
 	{
-	  alias = ucnv_getAlias(name, i, &status);
+	  alias = ucnv_getAlias(name, (uint16_t)i, &status);
 
 	  if(!alias)
 	    break;
@@ -2637,7 +2638,8 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 {
   UErrorCode status = U_ZERO_ERROR;
   UErrorCode firstStatus;
-  UChar *s  = 0, *toShow =0;
+  const UChar *s  = 0;
+  UChar *toShow =0;
   UChar nothing[] = {(UChar)0x00B3, (UChar)0x0000};
   UResourceBundle  *array = NULL, *item = NULL;
   int32_t len;
@@ -2783,7 +2785,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       
       if(U_SUCCESS(status) && s)
 	{
-	  toShow = s;
+	  toShow = (UChar*) s;
 
 	  switch(exampleType)
 	    {

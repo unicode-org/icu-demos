@@ -16,6 +16,8 @@
 #include "unicode/utrans.h"
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
+#include "unicode/ucnv_cb.h"
+#include <stdlib.h>
 
 UBool TRANSLITERATED_tagWithHTML = TRUE;
 
@@ -138,7 +140,7 @@ UTransliterator *getTransliteratorForScript(UBlockCode script)
 
 
 U_CAPI void 
-  UCNV_FROM_U_CALLBACK_TRANSLITERATED  (void *context,
+  UCNV_FROM_U_CALLBACK_TRANSLITERATED  (const void *context,
                                 UConverterFromUnicodeArgs *fromUArgs,
                                 const UChar* codeUnits,
                                 int32_t length,

@@ -109,7 +109,7 @@ typedef struct
   USortLine *lines;     /* the list of lines to be sorted. 0wned. */
   int32_t    size;      /* the size of the list */
   int32_t    count;     /* the # of actual lines */
-  bool_t     ownsText;     /* True of the lineList owns the chars. */
+  UBool     ownsText;     /* True of the lineList owns the chars. */
   UCollator *collator;     /* Collator for text. 0wned.  */
   SortKeyFunction *func;   /* Function producing sortkeys */
 } USort;
@@ -123,7 +123,7 @@ typedef struct
  */
 
 T_USORT_API USort*
-usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
+usort_open(const char *locale, UCollationStrength strength, UBool ownText,
            UErrorCode *status);
 
 /**
@@ -149,7 +149,7 @@ usort_close(USort *usort);
  */
 
 T_USORT_API void
-usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *userData);
+usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *userData);
 
 /**
  * Add a bunch of lines to the list from a FILE, converting as 
@@ -162,7 +162,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
  */
 
 T_USORT_API void
-usort_addLinesFromFILE( USort *sort, FILE *file, UConverter *inConverter, bool_t escapeMode);
+usort_addLinesFromFILE( USort *sort, FILE *file, UConverter *inConverter, UBool escapeMode);
 
 /**
  * Do the final sort.

@@ -26,14 +26,14 @@
 #include "unicode/udata.h"
 
 /* prototypes --------------------------------------------------------------- */
-void printVersion(uint8_t  *v);
-void printInfo(UDataInfo *info);
+void printVersion(const uint8_t  *v);
+void printInfo(const UDataInfo *info);
 
 
 /* -------------------------------------------------------------------------- 
 
  */
-void printVersion(uint8_t  *v)
+void printVersion(const uint8_t  *v)
 {
   int i;
   for(i=0;i<4;i++)
@@ -45,7 +45,7 @@ void printVersion(uint8_t  *v)
   printf("\n");
 }
 
-void printInfo(UDataInfo *info)
+void printInfo(const UDataInfo *info)
 {
     printf("Size: %d, Endianness: %c, Charset family: %c, ",
 	   (int)info->size,
@@ -62,10 +62,10 @@ void printInfo(UDataInfo *info)
     printVersion(info->dataVersion);
 }
 
-static bool_t
+static UBool
 isAcceptable(void *context,
              const char *type, const char *name,
-             UDataInfo *pInfo) {
+             const UDataInfo *pInfo) {
   printf("isAcceptable() called on:\n");
   printInfo(pInfo);
   printf("\n");
