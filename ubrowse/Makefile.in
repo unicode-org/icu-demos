@@ -24,7 +24,7 @@ CLEANFILES = *~
 ## Target information
 TARGET = ubrowse
 
-LDFLAGS := -L../locexp/util  $(LDFLAGS)
+LDFLAGS := -L../locexp/util  $(LDFLAGS) 
 CPPFLAGS +=
 
 # ICULIBS includes all standard ICU libraries.
@@ -58,6 +58,7 @@ check: check-local
 all-local: $(TARGET)
 
 install-local: all-local install-target
+
 
 install-target: all-local
 	$(MKINSTALLDIRS) $(bindir)

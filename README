@@ -4,13 +4,15 @@ I C U  -  A P P S
  This package contains sample applications built using the ICU. For
 more information on the ICU:
 
- URL:   http://oss.software.ibm.com/developerworks/opensource/icu/
+ URL:   http://oss.software.ibm.com/icu
 
- Email: icu4c@us.ibm.com
+ Email: icu@jtcsv.com
+
 
 
  If you have an application that is written using the ICU that you
-would like to contribute, see the contact information above.
+would like to contribute, join the ICU mailing list [above URL] and
+contact us.
 
 
 BUILDING

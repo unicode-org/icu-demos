@@ -256,9 +256,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
   if(outBuf == NULL)
     {
       outBuf = malloc((sizeof(UChar) * kOutBufSize)
-#ifdef SDEBUG
 		      + 4 /* termination */
-#endif
 		      );
       outBufEnd = outBuf + kOutBufSize;
     }

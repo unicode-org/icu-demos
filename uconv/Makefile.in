@@ -82,7 +82,7 @@ $(TARGET) : $(OBJECTS)
 resfiles: $(RESFILES)
 
 $(RESDIR)/$(RESDIR).lst: Makefile resfiles.mk
-	@$(mkinstalldirs) $(RESDIR)
+	@$(MKINSTALLDIRS) $(RESDIR)
 	@-$(RMV) $@
 	@for file in $(RESFILES); do \
 	  echo `pwd`/$$file >> $@; \
@@ -92,7 +92,7 @@ resinst: $(RESFILES) $(RESDIR)/$(RESDIR).lst
 	$(INVOKE) $(sbindir)/pkgdata -p $(RESDIR) -O @ICU_MAKEFILE@ -m dll -v -c -d $(datadir)/$(PACKAGE)/$(VERSION) -T $(RESDIR) $(RESDIR)/$(RESDIR).lst
 
 $(RESDIR)/%.res: ./%.txt
-	@$(mkinstalldirs) $(RESDIR)
+	@$(MKINSTALLDIRS) $(RESDIR)
 	$(INVOKE) $(sbindir)/genrb -eutf-8 -d $(RESDIR) -s . $^
 
 ifneq ($(MAKECMDGOALS),distclean)
