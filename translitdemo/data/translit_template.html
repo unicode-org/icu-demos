@@ -1,16 +1,20 @@
 <html>
 
 <head>
-<title>Transliteration Demo</title>
+<title>Transform Demo</title>
 <style type="text/css">
 .wide    { width: 100% }
 textarea { font-family: Arial Unicode MS; font-size: 100% }
 select   { font-family: Arial Unicode MS; font-size: 80% }
+.label   { text-align: center; background-color: #99CCFF; font-weight: bold; letter-spacing: 1px; font-size: 60% }
+.label2  { text-align: center; background-color: #99CCFF; font-weight: bold; letter-spacing: 2px; font-size: 70% }
+.label3  { text-align: center; font-weight: bold; font-size: 200% }
+.status  { width: 100%; border-width: 0px; font-weight: bold; color: red }
 </style>
 </head>
 
 <body>
-<font face="arial,helvetica,sanserif">
+<font face="tahoma,arial,helvetica,sanserif">
 
 <script>
 
@@ -20,11 +24,18 @@ select   { font-family: Arial Unicode MS; font-size: 80% }
 
 // Load up the js/util.js script.  This works as long as we cloak the tag.
 document.writeln("\x3Cscript src=\"" + JS + "/util.js\">\x3C/script>");
+
+// Load up the js/samples.js script.  This works as long as we cloak the tag.
+document.writeln("\x3Cscript src=\"" + JS + "/samples.js\">\x3C/script>");
 </script>
 
 <script>
 if ((typeof UTIL_LOADED) == "undefined" || !UTIL_LOADED) {
-  alert("Internal Error: util.js not loaded.\nThis page will not function properly.");
+  alert("Internal Error: util.js not loaded.\nThis page will not function properly.\nPlease try Refreshing/Reloading your browser window.");
+}
+
+if ((typeof SAMPLES_LOADED) == "undefined" || !SAMPLES_LOADED) {
+  alert("Internal Error: samples.js not loaded.\nSamples will not be available.\nPlease try Refreshing/Reloading your browser window.");
 }
 
 // Load available IDs from CGI and populate select elems
@@ -48,27 +59,43 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
       <a href="http://www.unicode.org/unicode/standard/WhatIsUnicode.html" target="_blank">Samples</a>
       <a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Samples2</a>
 </td>
-      <td width="60%" align="center"><strong><big><big><big>Transliteration Demo</big></big></big></strong><br>
-<font size="-1">Running <b>ICU $ICU_VERSION</b> &mdash; Demo Built $BUILD_TIME</font></td>
+      <td width="60%" class="label3">ICU Transform Demo</td>
       <td width="20%" align="right">
       <a href=http://oss.software.ibm.com/icu/demo/translit_help.html target="_blank">Help</a>
       </td>
     </tr>
+    <tr><td height=10px></td></tr>
   </table>
-
-  <hr>
 
   <table width="100%">
     <tr>
-      <td width="34%" align="center"><strong><big>Input</strong></td>
-      <td width="33%" align="center" colspan="3"><strong><big>Output 1</strong></td>
-      <td width="33%" align="center" colspan="3"><strong><big>Output 2</big></strong></td>
+      <td width="34%" rowspan="4" align="center">
+      <table>
+        <tr><td>
+          <input type="button" value="Transform" name="SUBMIT"
+           onclick="handleTransformButton()" class="wide">
+        </td></tr>
+        <tr><td>
+          <input type="button" value="Edit Rules" name="NEW"
+           onclick="handleEditRules();" class="wide">
+        </td></tr>
+        <tr><td align="center">
+          Insert sample: <select name="SELECT_SAMPLE" size="1"
+          onchange="handleInsertSamples(getSelectedOption(document.FORM.SELECT_SAMPLE))">
+	    <option selected value="">(Select from list)</option> 
+<script>emitSamplesGUI();</script>
+ 	  </select>
+        </td></tr>
+      </table></td>
+
+      <td width="11%" class="label">Source 1</td>
+      <td width="11%" class="label">Target 1</td>
+      <td width="11%" class="label">Variant 1</td>
+      <td width="11%" class="label">Source 2</td>
+      <td width="11%" class="label">Target 2</td>
+      <td width="11%" class="label">Variant 2</td>
     </tr>
     <tr>
-      <td><input type="button" value="Transliterate" name="SUBMIT"
-           onclick="handleTransliterateButton()" class="wide">
-          </td>
-
       <td><select name="SELECT_SOURCE1" size="1"
            onChange="handleSelectSource(1)" class="wide">
           <script>generateSelectSourceOptions(1);</script>
@@ -92,26 +119,34 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
       </select></td>
     </tr>
     <tr>
-	  <td>
-      <input type="button" value="Edit Rules" name="NEW"
-       onclick="handleEditRules();" class="wide">
-      </td>
-      <td rowspan="2" colspan="3"><textarea rows="2" name="COMPOUND_ID1" class="wide"
+      <td colspan="3" class="label">Compound 1</td>
+      <td colspan="3" class="label">Compound 2</td>
+    </tr>
+    <tr>
+      <td colspan="3"><textarea rows="2" name="COMPOUND_ID1" class="wide"
            onKeyPress="handleCompoundIDKeyPress(1)">$COMPOUND_ID1</textarea>
       </td>
-      <td rowspan="2" colspan="3"><textarea rows="2" name="COMPOUND_ID2" class="wide"
+      <td colspan="3"><textarea rows="2" name="COMPOUND_ID2" class="wide"
            onKeyPress="handleCompoundIDKeyPress(2)">$COMPOUND_ID2</textarea>
       </td>
     </tr>
-    <tr>
-      <td><input type="button" value="Insert Samples" name="SAMPLES"
-           onclick="handleInsertSamples()" class="wide">
-      </td>
+    <tr class="label2">
+      <td>Input</td>
+      <td colspan="3">Output 1</td>
+      <td colspan="3">Output 2</td>
     </tr>
     <tr>
       <td><textarea rows="16" name="ARG_INPUT" class="wide">$ARG_INPUT</textarea></td>
       <td colspan="3"><textarea rows="16" name="OUTPUT1" readonly class="wide">$OUTPUT1</textarea></td>
       <td colspan="3"><textarea rows="16" name="OUTPUT2" readonly class="wide">$OUTPUT2</textarea></td>
+    </tr>
+    <tr align="right">
+      <td>
+        <input type=text name="STATUS" readonly class="status">
+      </td>
+      <td colspan="6">
+        <font size="-1">Running <b>ICU $ICU_VERSION</b> &mdash; Demo Built $BUILD_TIME</font>
+      </td>
     </tr>
     <!-- debug row
     <tr>
@@ -131,7 +166,7 @@ function handleSelectSource(i) {
     setOptions(document.FORM["SELECT_TARGET" + i], []);
     setOptions(document.FORM["SELECT_VARIANT" + i], []);
     if (source == "(Inverse)") {
-      _handleTransliterateButton(2);
+      _handleTransformButton(2);
     }
   } else {
     op("callbackHandleSelectSource", i,
@@ -139,7 +174,7 @@ function handleSelectSource(i) {
   }
 }
 function callbackHandleSelectSource(i, targets) {
-  var s = getSelectedOption(document.FORM["SELECT_TARGET" + i]); 
+  var s = getSelectedOption(document.FORM["SELECT_TARGET" + i]);
   var t = targets.split(";").sort();
   setOptions(document.FORM["SELECT_TARGET" + i], t, s);
   handleSelectTarget(i);
@@ -156,12 +191,12 @@ function callbackHandleSelectTarget(i, variants) {
   var s = getSelectedOption(document.FORM["SELECT_VARIANT" + i]);
   var v = variants.split(";").sort();
   setOptions(document.FORM["SELECT_VARIANT" + i], v, s);
-  _handleTransliterateButton(i);
+  _handleTransformButton(i);
 }
 
 // Handler for a change to a transliterator VARIANT box.
 function handleSelectVariant(i) {
-  _handleTransliterateButton(i);
+  _handleTransformButton(i);
 }
 
 // Update ourself to reflect new/deleted user IDs.
@@ -208,10 +243,11 @@ function getID(i) {
 }
 
 // Handler for Transliterate button
-function handleTransliterateButton() {
-  _handleTransliterateButton(1);
+function handleTransformButton() {
+  _handleTransformButton(1);
 }
-function _handleTransliterateButton(i) {
+function _handleTransformButton(i) {
+  document.FORM.STATUS.value = "Busy...";
   var id = getID(i);
   op("callbackHandleTransliterateButton", i,
      "TRANSLITERATE",
@@ -221,8 +257,14 @@ function _handleTransliterateButton(i) {
 }
 function callbackHandleTransliterateButton(i, result) {
   document.FORM["OUTPUT" + i].value = result;
-  if (i == 1 && result.search(/^Error:/) < 0) {
-    _handleTransliterateButton(2);
+  if (result.search(/^Error:/) >= 0) {
+    document.FORM.STATUS.value = "Error";
+    return;
+  }
+  if (i == 1) {
+    _handleTransformButton(2);
+  } else {
+    document.FORM.STATUS.value = "Done";
   }
 }
 
@@ -231,57 +273,6 @@ function callbackHandleTransliterateButton(i, result) {
 // This is assumed to be the index 0.
 function handleCompoundIDKeyPress(i) {
   document.FORM["SELECT_SOURCE" + i].selectedIndex = 0;
-}
-
-// Handler to insert some sample text into the INPUT area
-// and set up the COMPOUND_ID_x boxes.
-function handleInsertSamples() {
-  x = document.FORM.ARG_INPUT;
-  x.value =
-    "\uae40, \uad6d\uc0bc\n"+
-    "\uc774, \uae30\uc218\n"+
-    "\uae40, \uba85\ud76c\n"+
-    "\uc774, \ud61c\ubbfc\n"+
-    "\uac15, \uc815\ub2d8\n"+
-    "\uc815, \ubcd1\ud638\n"+
-    "\u305f\u3051\u3060, \u307e\u3055\u3086\u304d\n"+
-    "\u307e\u3059\u3060, \u3088\u3057\u3072\u3053\n"+
-    "\u3084\u307e\u3082\u3068, \u306e\u307c\u308b\n"+
-    "\u304a\u304a\u306f\u3089, \u307e\u306a\u3076\n"+
-    "\u3075\u306a\u3064, \u304b\u305a\u3072\u3053\n"+
-    "\u305f\u3058\u308a, \u307f\u306d\u306f\u308b\n"+
-    "\u3064\u3060, \u305f\u304b\u3057\n"+
-    "\u306a\u304c\u304a, \u3068\u3082\u307f\n"+
-    "\u304a\u304a\u3059\u304e, \u3072\u308d\u3086\u304d\n"+
-    "\u041a\u043e\u0440\u043d\u0438\u043b\u044c\u0435\u0432, \u041a\u0438\u0440\u0438\u043b\u043b\n"+
-    "\u0410\u0440\u0431\u0430\u0442\u043e\u0432, \u0413\u0435\u043e\u0440\u0433\u0438\u0439\n"+
-    "\u041a\u043e\u0432\u0430\u043b\u0435\u0432, \u041d\u0438\u043a\u043e\u043b\u0430\u0439\n"+
-    "\u0413\u043e\u0440\u0431\u0430\u0447\u0435\u0432, \u041c\u0438\u0445\u0430\u0438\u043b\n"+
-    "\u0410\u0440\u0431\u0443\u0437\u043e\u0432, \u041c\u0438\u0445\u0430\u0438\u043b\n"+
-    "\u041a\u043e\u0437\u044b\u0440\u0435\u0432, \u0410\u043d\u0434\u0440\u0435\u0439\n"+
-    "\u0414\u0443\u0431\u0440\u043e\u0432\u0438\u043d\u0430, \u0415\u043b\u0435\u043d\u0430\n"+
-    "\u041a\u0430\u0437\u0430\u043a\u043e\u0432\u0430, \u0420\u0438\u043c\u043c\u0430\n"+
-    "\u0424\u0435\u0434\u043e\u0440\u043e\u0432, \u0411\u043e\u0440\u0438\u0441\n"+
-    "\u041d\u0435\u043c\u0446\u043e\u0432, \u0411\u043e\u0440\u0438\u0441\n"+
-    "\u0414\u043e\u0433\u0438\u043b\u0435\u0432\u0430, \u0422\u0430\u0442\u044c\u044f\u043d\u0430\n"+
-    "\u039a\u03b1\u03c6\u03b5\u03c4\u03b6\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf\u03c2, \u0398\u03b5\u03cc\u03c6\u03b9\u03bb\u03bf\u03c2\n"+
-    "\u03a1\u03bf\u03cd\u03c4\u03c3\u03b7, \u0386\u03bd\u03bd\u03b1\n"+
-    "\u039a\u03b1\u03bb\u03bf\u03cd\u03b4\u03b7\u03c2, \u03a7\u03c1\u03ae\u03c3\u03c4\u03bf\u03c2\n"+
-    "\u039b\u03af\u03bd\u03c4\u03c7\u03bf\u03c1\u03c3\u03c4, \u0391\u03bd\u03c4\u03ce\u03bd\u03b9\n"+
-    "\u0398\u03b5\u03bf\u03b4\u03c9\u03c1\u03ac\u03c4\u03bf\u03c5, \u0395\u03bb\u03ad\u03bd\u03b7\n"+
-    "\u039d\u03b1\u03b4\u03ac\u03bb\u03b7\u03c2, \u039a\u03ce\u03c3\u03c4\u03b1\u03c2\n"+
-    "\u039a\u03b9\u03b1\u03c0\u03b5\u03ba\u03ac\u03ba\u03b7, \u03a7\u03b1\u03c1\u03ac\n"+
-    "\u039a\u03bf\u03bd\u03c4\u03bf\u03b3\u03b9\u03b1\u03bd\u03bd\u03ac\u03c4\u03bf\u03c2, \u0392\u03b1\u03c3\u03af\u03bb\u03b7\u03c2";
-
-  document.FORM.OUTPUT1.value = "(Press the Transliterate button to see results.)";
-  document.FORM.SELECT_SOURCE1.selectedIndex = 0; // (Compound)
-  document.FORM.COMPOUND_ID1.value =
-    "Hangul-Latin; Hiragana-Latin; Title(); Cyrillic-Latin; Greek-Latin/UNGEGN";
-
-  document.FORM.OUTPUT2.value = "";
-  document.FORM.SELECT_SOURCE2.selectedIndex = 0; // (Compound)
-  document.FORM.COMPOUND_ID2.value =
-    "Latin-Greek";
 }
 
 // Handler for Edit Rules button
@@ -295,6 +286,7 @@ function handleEditRules() {
 function op(callback, context, opcode, arg1, arg2, arg3) {
   parent.NUBFRAME.op(callback, context, opcode, arg1, arg2, arg3);
 }
+
 </script>
 
 </body>
