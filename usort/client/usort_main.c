@@ -14,12 +14,14 @@
 
 #include "unicode/usort.h"
 
-#ifdef WIN32
+
 #include <stdlib.h>
+
+
+#ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
 #endif
-
 
 void usage(const char *pname, const char *msg)
 {

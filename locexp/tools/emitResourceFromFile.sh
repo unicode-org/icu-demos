@@ -11,17 +11,22 @@ if [ ! -f $3 ]; then
   exit 1
 fi
 
+if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+    ECHO_N=-n ECHO_C=
+else
+    ECHO_N= ECHO_C='\c'
+fi
+
 echo
 echo "// From $3 ($2)"
 echo "   $1 {"
 
 # should be: -n or \c
-echo -n "       \""
+echo $ECHO_N "       \"$ECHO_C"
 
 uconv -f $2 -t UTF16_BigEndian $3 | escapeForBundle
 
-# should be: -n or \c
-echo -n  "\""
+echo $ECHO_N  "\"$ECHO_C"
 
 echo "   }"
 echo

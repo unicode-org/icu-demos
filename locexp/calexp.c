@@ -30,7 +30,7 @@ void fillFieldNames(const UChar** n)
 void printCalMenuSection( LXContext *lx, const char *num, char type,
                           char thisType,const UChar *name)
 {
-//  if(type==thisType)  /* LEFT tab A */
+  /* if(type==thisType) */  /* LEFT tab A */
   {
     u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"5%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aleft.gif\">");
     u_fprintf(lx->OUT, "<A HREF=\"?_=x-klingon&EXPLORE_Calendar=%c&NP_DBL=%s\">%U</A>", 

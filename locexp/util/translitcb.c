@@ -45,7 +45,7 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
   if(!gTR[n])
     {
       gTR[n] = utrans_open(id, UTRANS_FORWARD, &status);
-      //        fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]); 
+      /* fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]);  */
     }
   
   if(!gTR[n] || U_FAILURE(status))
@@ -61,10 +61,17 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
 #define _beginMark "<FONT COLOR=green>"   /* 18 */
 #define _endMark   "</FONT>"              /* 7  */
 
-#ifdef WIN32
+#if defined(WIN32)
 #define L_beginMark "<FONT COLOR=green>"   /* 18 */
 #define L_endMark   "</FONT>"              /* 7  */
 #endif
+
+#if defined(AIX)
+#define L_beginMark L"<FONT COLOR=green>"   /* 18 */
+#define L_endMark   L"</FONT>"              /* 7  */
+#endif
+
+
 
 U_STRING_DECL(beginMark, _beginMark, 18 );
 U_STRING_DECL(  endMark, _endMark,   7);
@@ -79,7 +86,7 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
         U_STRING_INIT(beginMark, _beginMark, 18);
         U_STRING_INIT(  endMark, _endMark, 7);
 
-        gTR = (UTransliterator*) malloc(sizeof(UTransliterator*)*U_CHAR_SCRIPT_COUNT);
+        gTR = (UTransliterator**) malloc(sizeof(UTransliterator*)*U_CHAR_SCRIPT_COUNT);
         for(i=0;i<U_CHAR_SCRIPT_COUNT;i++)
             gTR[i] = 0;
     }
@@ -213,7 +220,7 @@ U_CAPI void
         /* If we found any, xliterate them */
         if(n > 0)
         {
-          const UChar *mySource; // trans,text,len,cap,start,limit,status
+          const UChar *mySource; 
           len = n;
 
           utrans_transUChars(myTrans, totrans,  &n, 300, 0, &len, &status2);
