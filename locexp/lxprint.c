@@ -251,13 +251,13 @@ void printStatusTable(LXContext *lx)
 
     /* /PrintHelpTag */
     u_fprintf(lx->OUT, "</b></a></td>\r\n"
-              "  </tr>\r\n"
+              "  </tr>\r\n");
+#if 0
               "  <tr>\r\n"
               "   <td>");
     u_fprintf(lx->OUT, "<b>%S</b></td>\r\n", FSWF("myConverter", "Encoding:"));
     u_fprintf(lx->OUT, "   <td>");
     /* now encoding */
-
     if(lx->inDemo == FALSE)
     {
         u_fprintf(lx->OUT, "<a href=\"?converter");
@@ -274,7 +274,9 @@ void printStatusTable(LXContext *lx)
     }
   
     u_fprintf(lx->OUT, "</td>\r\n");
+#endif
 
+    u_fprintf(lx->OUT, "<tr><td></td><td></td>");
     u_fprintf(lx->OUT, "<td align=right rowspan=3>\r\n"); /* ====== begin right hand thingy ======== */
 
     u_fprintf(lx->OUT, "<a href=\"http://oss.software.ibm.com/icu/\"><i>%S</i> %S</a><br>",
@@ -292,10 +294,12 @@ void printStatusTable(LXContext *lx)
 #endif
     u_fprintf(lx->OUT, "<br>\r\n");
 
+#if 0
     if(lx->inDemo == FALSE)
     {
         u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH "incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
     }
+#endif
 
     u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */
 
