@@ -93,6 +93,7 @@ U_CFUNC char locexp_dat[];
 #define kStatusBG "\"#EEEEEE\" " 
 #define kXKeyBGColor "\"#AAEEAA\" "
 #define kShowStringCutoffSize 200   /* size in chars before a string is 'too big'. */
+#define kShowUnicodeSetCutoffSize 80   /* size in chars before a string is 'too big'. */
 #define kShow2dArrayRowCutoff 5     /* size in rows before an array is too big */
 #define kShow2dArrayColCutoff 5     /* size in cols before an array is too big */
 
@@ -136,6 +137,7 @@ void listBundles(char *b);
 /* fcns for dumping the contents of a particular rb */
 void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString);
 void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, UBool PREformatted);
+void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, UBool PREformatted);
 void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, int radix);
 void showLocaleCodes(LXContext *lx, UResourceBundle *myRB, const char *locale);
 void showLocaleScript(LXContext *lx, UResourceBundle *myRB, const char *locale);
@@ -1270,6 +1272,16 @@ void printStatusTable()
 
   u_fprintf(lx->OUT, " &nbsp; ");
 
+  if(lx->curLocaleName[0])
+  {
+    u_fprintf(lx->OUT, "<A TARGET=\"_new\" HREF=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
+            lx->curLocaleName,
+              FSWF("sourceFile", "View Locale Source"));
+
+    u_fprintf(lx->OUT, " &nbsp; ");
+  }
+
+
   u_fprintf(lx->OUT, "<A TARGET=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%U</A>",
             FSWF("poweredby_filebug", "File a bug"));
   
@@ -2099,6 +2111,7 @@ void listBundles(char *b)
 
     showLocaleScript(lx, myRB, locale);
 
+    showUnicodeSet(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
     showString(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
     
     showTaggedArray(lx, myRB, locale, b, "Languages");
@@ -2379,8 +2392,6 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
       if(bigString && !userRequested) /* it's hidden. */
 	{
-	  /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something 
-	     [duh, HTML numbered escape sequence] */
 	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
 	}
       else
@@ -2684,8 +2695,6 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
 
       if(bigString && !userRequested) /* it's hidden. */
 	{
-	  /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something 
-	     [duh, HTML numbered escape sequence] */
 	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
 	}
       else
@@ -2714,6 +2723,144 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
 	    }
 	}
     }
+  u_fprintf(lx->OUT, "</TD>");
+  showKeyAndEndItem(key, locale);
+}
+
+/* Show a resource that's a UnicodeSeet -----------------------------------------------------*/
+/**
+ * Show a string.  Make it progressive disclosure if it exceeds some length !
+ * @param rb the resourcebundle to pull junk out of 
+ * @param locale the name of the locale (for URL generation)
+ * @param queryString the querystring of the request.
+ * @param key the key we're listing
+ */
+
+void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *key, UBool PRE )
+{
+  
+  UErrorCode status = U_ZERO_ERROR;
+  const UChar *s  = 0;
+  UChar smallString[ kShowUnicodeSetCutoffSize + 1];
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
+  int32_t setLen = 0, rulesLen = 0, len;
+  UChar32 c;
+  int32_t i;
+  UUSet *uset;
+  
+  s = ures_getStringByKey(rb, key, &rulesLen, &status);
+
+  uset = uuset_openPattern(s, &status);
+
+  showKeyAndStartItem(key, NULL, locale, FALSE, status);
+
+  if(U_FAILURE(status))
+  {
+    u_fprintf(lx->OUT, "</TD>");
+    showKeyAndEndItem(key, locale);
+    return;
+  }
+
+  setLen = uuset_size(uset);
+
+  if( (rulesLen > kShowUnicodeSetCutoffSize ) ||
+      (setLen > kShowUnicodeSetCutoffSize) )
+  {
+    userRequested = didUserAskForKey(key, queryString);
+    bigString = TRUE;
+
+    if(!userRequested) /* it's hidden. */
+    {
+#if 0
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U ", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+      u_fprintf(lx->OUT, " </A>\r\n<P>");
+#endif
+    }
+    else
+    {
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+		locale,
+		key,
+		FSWF("bigStringShorten", "Don't show all"));
+    }
+  }
+
+  /** RULES **/
+  u_fprintf(lx->OUT, "<table border=1 cellpadding=3 cellspacing=3><tr><td><b>%U</b></td><td>\r\n",
+	    FSWF("rules", "Rules"));
+
+  /* Always do this loop */
+
+  if( (rulesLen > kShowUnicodeSetCutoffSize) && !userRequested ) 
+  { 
+    /* shorten string */
+    u_strncpy(smallString, s, kShowUnicodeSetCutoffSize);
+    smallString[kShowUnicodeSetCutoffSize] = 0;
+    s = smallString;
+    len = kShowUnicodeSetCutoffSize;
+  }
+  else
+  {
+    len = rulesLen;
+  }
+  
+  u_fprintf_u(lx->OUT, s);
+
+  if(len != rulesLen)
+  {
+    u_fprintf(lx->OUT, "%U", FSWF("...", "..."));
+    u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%U</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+      u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), len, rulesLen);
+      u_fprintf(lx->OUT, " </A>\r\n");
+  }
+  
+  u_fprintf(lx->OUT, "</td></tr>\r\n");
+
+  /** Set **/
+
+  u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td>\r\n",
+	    FSWF("set", "Set"));
+  
+  if( (setLen > kShowUnicodeSetCutoffSize) && !userRequested )
+  {
+    len = kShowUnicodeSetCutoffSize;
+  }
+  else
+  {
+    len = setLen;
+  }
+
+  for(i=0;i<len;i++)
+  {
+    c = uuset_charAt(uset, i);
+    if(u_isprint(c))
+    {
+      u_fputc(c, lx->OUT);
+    }
+    else
+    {
+      u_fprintf(lx->OUT, "\\u%04X", c);
+    }
+  }
+
+  if(len != setLen)
+  {
+    u_fprintf(lx->OUT, "%U", FSWF("...", "..."));
+      u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%U</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+      u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), len, setLen);
+      u_fprintf(lx->OUT, " </A>\r\n");
+  }
+  
+  if(uuset_contains(uset, 0x007B)) /* { */
+  {
+    u_fprintf(lx->OUT, "<p><I>%U</I>\r\n", 
+	      FSWF("uniset_containsSequence", "Note: this set may contain a sequence, such as {ch}. This is currently not supported in ICU4C's UnicodeSet, therefore the 'Set' display may be incorrect."));
+  }
+
+
+  u_fprintf(lx->OUT, "</td></tr></table>\r\n");
+
   u_fprintf(lx->OUT, "</TD>");
   showKeyAndEndItem(key, locale);
 }
@@ -2760,8 +2907,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
 
   if(bigString && !userRequested) /* it's hidden. */
     {
-      /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
 	u_fprintf(lx->OUT, "<P>");
     }
   else
