@@ -516,7 +516,9 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
     fprintf(lx->fOUT, "<TITLE>ICU LocaleExplorer: Error</TITLE>\r\n");
     fprintf(lx->fOUT, "<H1>ICU LocaleExplorer: Error</H1>\r\n");
     fprintf(lx->fOUT, "<dd>An error of type %d occured while trying to %s.</dd><HR><P>\r\n",err,what);
+#if defined (LX_DEBUG)
     fprintf(stderr, "locexp: err %d trying to %s\n",err,what);
+#endif
     fprintf(lx->fOUT, "You can try <A HREF=\"%s\">starting over</A>, or complain to srl.<P>\r\n",
             lx->scriptName);
     fflush(lx->fOUT);

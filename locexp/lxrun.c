@@ -231,8 +231,10 @@ void setupLocaleExplorer(LXContext *lx)
         trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
         if(U_FAILURE(transStatus))
         {
+#if defined(LX_DEBUG)
             fprintf(stderr,"Failed to open - %s\n", u_errorName(transStatus));
             /* blah blah balh*/
+#endif
         }
         else
         {

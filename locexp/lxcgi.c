@@ -98,8 +98,10 @@ void initPOSTFromFILE(LXContext* lx, FILE *f)
   buf = malloc(clen+1);
   len=fread(buf, 1, clen, f);
   if(len<0) {
+#if defined(LX_DEBUG)
     perror("fread");
     fprintf(stderr, "err reading %d got %d\n", clen,len);
+#endif
     free(buf);
     return;
   }
