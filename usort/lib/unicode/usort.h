@@ -107,7 +107,7 @@ typedef struct
 /**
  * Open a USort object.
  * @param locale Locale to use. NULL for default
- * @param strength Collation strength. UCOL_DEFAULT is a good default.
+ * @param strength Collation strength. If UCOL_DEFAULT, strength will not be set.
  * @param ownText TRUE if this object should own its' text.
  * @param status Error code. [values?]
  */
