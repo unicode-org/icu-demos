@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2004, International Business Machines
+*   Copyright (C) 2003-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -203,7 +203,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     escapedChar = getEscapeChar(uniVal);  // Maybe this needs to go into the loop above
     if (!escapedChar) {
         u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
-        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br />",
+        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><div class=\"glyph\">%s</div>",
             uniName, utf8);
     }
     else {
@@ -211,7 +211,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     }
 
     // Print the Unicode codepoint values
-    printf("<font size=\"-2\">");
+    printf("<span style=\"font-size: 80%%\">");
     for (idx = 0; idx < targetSize; ) {
         if (idx != 0) {
             puts("<br />");
@@ -219,7 +219,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
         U16_NEXT(targetBuffer, idx, targetSize, uniVal);
         printf("%04X", uniVal);
     }
-    puts("</font></td>");
+    puts("</span></td>");
 }
 
 static inline void printContinue(const char *startBytes, uint8_t currCh, UErrorCode *status) {
@@ -298,14 +298,14 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
 //    case UCNV_UTF32:
 //    case UCNV_CESU8:
 //    case UCNV_IMAP_MAILBOX:
-        puts("<h2><a name=\"layout\">Codepage Layout</a></h2>");
+        puts("<h2><br /><a name=\"layout\">Codepage Layout</a></h2>");
         break;
     default:
         if (!gShowStartBytes) {
             puts("<p>Codepage layout information is not available for this converter at this time.</p>");
             return;
         }
-        puts("<h2><a name=\"layout\">Codepage Layout</a></h2>");
+        puts("<h2><br /><a name=\"layout\">Codepage Layout</a></h2>");
         hideContinueBytes = TRUE;
     }
 

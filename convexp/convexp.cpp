@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2004, International Business Machines
+*   Copyright (C) 2003-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -39,30 +39,133 @@ TODO:
 static const char htmlHeader[]=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
-    "<html lang=\"en-US\">\n"
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
     "<head>\n"
-    "<title>ICU " PROGRAM_NAME "</title>\n"
-    "<meta name=\"robots\" content=\"nofollow\" />\n"
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+    "<meta http-equiv=\"PICS-Label\" content='(PICS-1.1 \"http://www.icra.org/ratingsv02.html\" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1) \"http://www.rsac.org/ratingsv01.html\" l gen true r (n 0 s 0 v 0 l 0) \"http://www.classify.org/safesurf/\" l gen true r (SS~~000 1))' />\n"
+    "<link rel=\"schema.DC\" href=\"http://purl.org/DC/elements/1.0/\"/>\n"
+    "<link rel=\"SHORTCUT ICON\" href=\"http://www.ibm.com/favicon.ico\"/>\n"
+    "<meta name=\"Description\" content=\"Here is a demonstration of how ICU conversion works.\"/>\n"
+    "<meta name=\"IBM.Country\" content=\"ZZ\"/>\n"
+    "<meta name=\"DC.Date\" scheme=\"iso8601\" content=\"2005-02-01\"/>\n"
+    "<meta name=\"Source\" content=\"v14 Template Generator, Template 14.7\"/>\n"
+    "<meta name=\"DC.Type\" scheme=\"IBM_ContentClassTaxonomy\" content=\"ZZ999\"/>\n"
+    "<meta name=\"Abstract\" content=\"Here is a demonstration of how ICU conversion works.\"/>\n"
+    "<meta name=\"Keywords\" content=\"ICU, ICU4C, converter, conversion, charset, character set, codepage, encoding\"/>\n"
+    "<meta name=\"DC.Subject\" scheme=\"IBM_SubjectTaxonomy\" content=\"57006, 2001220, 2001102\"/>\n"
+    "<meta name=\"DC.Language\" scheme=\"rfc1766\" content=\"en\"/>\n"
+    "<meta name=\"Security\" content=\"Public\"/>\n"
+    "<meta name=\"IBM.Industry\" scheme=\"IBM_IndustryTaxonomy\" content=\"ZZ\"/>\n"
+    "<meta name=\"Robots\" content=\"index,nofollow\"/>\n"
+    "<meta name=\"DC.Publisher\" content=\"IBM Corporation - Software Group - Globalization Center of Competency (GCoC) - ICU Department\"/>\n"
+    "<meta name=\"IBM.Effective\" scheme=\"W3CDTF\" content=\"2005-01-01\"/>\n"
+    "<meta name=\"Owner\" content=\"Icu Intl/Cupertino/IBM@IBMUS\"/>\n"
+    "<meta name=\"DC.Rights\" content=\"Copyright (c) 2005 by IBM Corporation\"/>\n"
+    "\n"
+    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n"
+    "<link rel=\"stylesheet\" type=\"text/css\" href=\"//www.ibm.com/common/v14/main.css\" />\n"
+    "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"//www.ibm.com/common/v14/screen.css\" />\n"
+    "<link rel=\"stylesheet\" type=\"text/css\" media=\"print\" href=\"//www.ibm.com/common/v14/print.css\" />\n"
+    // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
-    "body {background-color: #FFFFFF;}\n"
     "p.value {font-family: monospace;}\n"
     "th {white-space: nowrap; background-color: #EEEEEE; text-align: left;}\n"
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
     "td.alias {white-space: nowrap;}\n"
     "td.value {font-family: monospace;}\n"
-    "td.reserved {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
-    "td.continue {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
-    "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 75%; font-family: monospace;}\n"
+    "td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
+    "td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
+    "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
+    "div.glyph {font-size: 200%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
+    "<script src=\"//www.ibm.com/common/v14/detection.js\" language=\"JavaScript\" type=\"text/javascript\">\n"
+    "</script>\n"
+    "\n"
     "</head>\n"
+
     "<body>\n"
+
+    "<table width=\"760\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<tr valign=\"top\">\n"
+    "<td width=\"110\" class=\"bbg\"><a href=\"http://www.ibm.com/\"><img width=\"110\" src=\"//www.ibm.com/i/v14/t/ibm-logo.gif\" height=\"52\" border=\"0\" alt=\"IBM®\"/></a></td>\n"
+    "<td width=\"650\" class=\"mbbg\" align=\"right\">\n"
+    "<table align=\"right\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<tr class=\"cty-tou\">\n"
+    "<td class=\"upper-masthead-corner\" width=\"17\" rowspan=\"2\"><a href=\"#main\"><img alt=\"Skip to main content\" height=\"1\" width=\"1\" border=\"0\" src=\"//www.ibm.com/i/c.gif\"/></a></td>\n"
+    "<td align=\"left\">\n"
+    "<table align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<tr>\n"
+    "<td><span class=\"spacer\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b class=\"country\">Country/region</b><span class=\"spacer\">&nbsp;[</span><a href=\"http://www.ibm.com/planetwide/select/selector.html\" class=\"ur-link\">select</a><span class=\"spacer\">]</span></td>\n"
+    "<td class=\"upper-masthead-divider\" width=\"29\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
+    "<td align=\"left\"><a href=\"http://www.ibm.com/legal/\" class=\"ur-link\">Terms of use</a></td>\n"
+    "</tr>\n"
+    "</table>\n"
+    "</td>\n"
+    "<td width=\"40\">&nbsp;</td>\n"
+    "</tr>\n"
+    "<tr>\n"
+    "<td colspan=\"2\" height=\"1\" class=\"cty-tou-border\"><img width=\"1\" height=\"1\" alt=\"\" src=\"//www.ibm.com/i/c.gif\"/></td>\n"
+    "</tr>\n"
+    "<tr>\n"
+    "<td colspan=\"3\"><img width=\"1\" src=\"//www.ibm.com/i/c.gif\" height=\"8\" alt=\"\"/></td>\n"
+    "</tr>\n"
+    "<tr>\n"
+    "<td>&nbsp;</td>\n"
+    "<td colspan=\"2\" align=\"center\">\n"
+    "<form title=\"Search form\" name=\"search-form\" method=\"get\" action=\"http://www.ibm.com/Search\">\n"
+    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<tr>\n"
+    "<td width=\"1\"><label for=\"q\"><img alt=\"Search for:\" height=\"1\" width=\"1\" src=\"//www.ibm.com/i/c.gif\"/></label></td>\n"
+    "<td align=\"right\"><input value=\"\" type=\"text\" size=\"15\" name=\"q\" maxlength=\"100\" id=\"q\" class=\"input\"/></td>\n"
+    "<td width=\"7\">&nbsp;<input type=\"hidden\" name=\"v\" value=\"14\"/><input type=\"hidden\" name=\"lang\" value=\"en\"/><input type=\"hidden\" name=\"cc\" value=\"zz\"/><input type=\"hidden\" value=\"utf\" name=\"en\"/></td>\n"
+    "<td><input value=\"Search\" type=\"image\" src=\"//www.ibm.com/i/v14/t/zz/en/search.gif\" name=\"Search\" alt=\"Search\"/></td>\n"
+    "<td width=\"20\">&nbsp;</td>\n"
+    "</tr>\n"
+    "</table>\n"
+    "</form>\n"
+    "</td>\n"
+    "</tr>\n"
+    "</table>\n"
+    "</td>\n"
+    "</tr>\n"
+    "<tr>\n"
+    "<td colspan=\"2\" class=\"blbg\">\n"
+    "<table width=\"760\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<tr>\n"
+    "<td>\n"
+    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<tr>\n"
+    "<td><span class=\"spacer\">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>\n"
+    "<td><a href=\"http://www.ibm.com/\" class=\"masthead-mainlink\">Home</a></td>\n"
+    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
+    "<td><a href=\"http://www.ibm.com/products/\" class=\"masthead-mainlink\">Products</a></td>\n"
+    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
+    "<td><a href=\"http://www.ibm.com/servicessolutions/\" class=\"masthead-mainlink\">Services &amp; solutions</a></td>\n"
+    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
+    "<td><a href=\"http://www.ibm.com/support/\" class=\"masthead-mainlink\">Support &amp; downloads</a></td>\n"
+    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
+    "<td><a href=\"http://www.ibm.com/account/\" class=\"masthead-mainlink\">My account</a></td>\n"
+    "<td><span class=\"spacer\">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>\n"
+    "</tr>\n"
+    "</table>\n"
+    "</td>\n"
+    "</tr>\n"
+    "</table>\n"
+    "</td>\n"
+    "</tr>\n"
+    "</table>\n"
+    "<script type=\"text/javascript\" language=\"JavaScript\" src=\"//www.ibm.com/common/v14/pmh.js\">\n"
+    "</script>\n"
+    "\n"
+    "\n"
+
     "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
     "<tr><td>"
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;";
+    "<a href=\"//www.ibm.com/software/globalization/icu/\">ICU</a> &gt;\n"
+    "<a href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a> &gt;";
 
 static const char navigationMainHeader[]=
     "<strong>" PROGRAM_NAME "</strong>\n";
@@ -81,7 +184,7 @@ static const char navigationEndHeader[]=
     "<h1>ICU " PROGRAM_NAME "</h1>\n";
 
 static const char aliasHeader[]=
-    "<h2>List of Converter Aliases</h2>";
+    "<h2><br />List of Converter Aliases</h2>";
 
 static const char htmlFooter[]=
     "</body>\n"
@@ -353,7 +456,7 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
     if (U_FAILURE(*status)) {
         return;
     }
-    puts("<h3><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></h3>");
+    puts("<h2><br /><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></h2>");
     if (gShowLanguages) {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
@@ -416,7 +519,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     printCPTable(cnv, gStartBytes, status);
 
-    puts("<h2>Information About This Converter</h2>");
+    puts("<h2><br />Information About This Converter</h2>");
     if (U_FAILURE(*status)) {
         printf("<p>Warning: Nothing is known about this converter.</p>");
         return;
@@ -474,7 +577,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     puts(endTable);
 
-    puts("<h3><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h3>");
+    puts("<h2><br /><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
     if (gShowUnicodeSet) {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
