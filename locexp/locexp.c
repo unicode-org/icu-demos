@@ -1100,6 +1100,10 @@ static void printLocaleAndSubs(bool_t toOpen, MySortable *l, const char *current
 
       for(n=0;n<(l->nSubLocs);n++)
 	{
+          if(n > 0)
+            {
+              u_fprintf(lx->OUT, ", ");
+            }
 	  printLocaleAndSubs(toOpen, &(l->subLocs[n]), current, restored, hadUnsupportedLocales);
 	}
       

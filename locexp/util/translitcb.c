@@ -147,6 +147,9 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
 
     case U_DEVANAGARI:
         return loadTranslitFromCache((int)script, "Devanagari-Latin");
+
+    case U_TAMIL:
+        return loadTranslitFromCache((int)script, "Tamil-Latin");
         
     case U_GREEK:
         return loadTranslitFromCache((int)script, "Greek-Latin");
