@@ -130,6 +130,8 @@ static const char *versions=
     "<p>Unicode version used by IDNA %s &mdash; "
     "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> %s</p>\n";
 
+static const char *samples[] = { "www.&#x65E5;&#x672C;&#x5E73;.jp","www.&#x30CF;&#x30F3;&#x30C9;&#x30DC;&#x30FC;&#x30EB;&#x30B5;&#x30E0;&#x30BA;.com","www.f&#x00E4;rgbolaget.nu","www.b&#x00FC;cher.de","www.br&#x00E6;ndendek&#x00E6;rlighed.com","www.r&#x00E4;ksm&#x00F6;rg&#x00E5;s.se",  "www.&#xC608;&#xBE44;&#xAD50;&#xC0AC;.com", "&#x7406;&#x5BB9;&#x30CA;&#x30AB;&#x30E0;&#x30E9;.com", "&#x3042;&#x30FC;&#x308B;&#x3044;&#x3093;.com", "www.f&#xE4;rjestadsbk.net", "www.m&#xE4;kitorppa.com", NULL };
+
 static void
 printString(const UChar *s, int32_t length) {
     UChar32 c;
@@ -733,6 +735,12 @@ main(int argc, const char *argv[]) {
     }
     char uvString[16], ivString[16];
     UVersionInfo uv, iv;
+    printf("<table border=0><tr><td>Or choose a sample from this list:</td><td> <form method=\"GET\" action=\"%s\"><SELECT NAME='t'>", "?");
+    printf("<option SELECTED value=\"\">(samples...)</option>\n");
+    for(int j=0;samples[j];j++) {
+      printf("<option value=\"%s\">%s</option>", samples[j], samples[j]);
+    }
+    puts("</select>\n<input type=submit value=\"Load\"></form></td></tr></table>\n");
 
     puts(helpText);
 
