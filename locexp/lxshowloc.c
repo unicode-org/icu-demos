@@ -174,7 +174,11 @@ void showOneLocale(LXContext *lx, char *b)
         u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%\"><tr><td valign=TOP>");
         showLocaleCodes(lx, myRB, locale);
         u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
-        showInteger(lx, myRB, locale, "LocaleID", 16);
+
+        showKeyAndStartItem(lx, "LocaleID", NULL, locale, FALSE, status);
+        u_fprintf(lx->OUT, "0x%X</TD>", uloc_getLCID(locale));
+        showKeyAndEndItem(lx, "LocaleID", locale);
+
         u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
         showString(lx, myRB, locale, b, "Version", FALSE);
         u_fprintf(lx->OUT, "</td></tr></table>");
