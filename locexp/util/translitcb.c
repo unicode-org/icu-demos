@@ -24,16 +24,8 @@
 #define _beginMark "<FONT COLOR=green>"   /* 18 */
 #define _endMark   "</FONT>"              /* 7  */
 
-#if defined(WIN32)
-#define L_beginMark "<FONT COLOR=green>"   /* 18 */
-#define L_endMark   "</FONT>"              /* 7  */
-#endif
-
-#if defined(AIX)
 #define L_beginMark L"<FONT COLOR=green>"   /* 18 */
 #define L_endMark   L"</FONT>"              /* 7  */
-#endif
-
 
 U_STRING_DECL(beginMark, _beginMark, 18 );
 U_STRING_DECL(  endMark, _endMark,   7);

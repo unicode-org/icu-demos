@@ -386,8 +386,8 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
       s->ustr[0] = '-';
       s->ustr[1] = 0;
     } else {
-      status = U_ZERO_ERROR;
       int32_t len;
+      status = U_ZERO_ERROR;
       if((siz = uloc_getDisplayName( s->str, inLocale, NULL, 0, &status)) >1) {
 /*       int32_t len, scriptLen; */
         UChar *aStr; 
@@ -698,8 +698,7 @@ U_CAPI MySortable *createRegionList(const char * inLocale, MySortable *locales)
   UErrorCode status = U_ZERO_ERROR;
   int32_t i,j,k,h;
   root = malloc(sizeof(MySortable));
-  root->nSubLocs=0;
-  root->subLocsSize=0;
+  memset(root, 0, sizeof(MySortable));
   
   for(i=0;i<locales->nSubLocs;i++) {
     for(j=0;j<locales->subLocs[i]->nSubLocs;j++) {

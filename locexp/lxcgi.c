@@ -236,20 +236,23 @@ UBool hasQueryField(LXContext* lx, const char *field)
 /* Cookie versions */
 const char *cookieField(LXContext* lx, const char *field)
 {
+  const char *val;
+
   if((lx->cookies == NULL) || !lx->cookies[0]) {
     return FALSE;
   }
-  const char *val =  fieldInCookie(lx,lx->cookies, field);
+  val =  fieldInCookie(lx,lx->cookies, field);
 
   return copyField(lx, val);
 }
 
 UBool hasCookieField(LXContext* lx, const char *field)
 {
+  const char *val;
   if((lx->cookies == NULL) || !lx->cookies[0]) {
     return FALSE;
   }
-  const char *val =  fieldInCookie(lx,lx->cookies, field);
+  val =  fieldInCookie(lx,lx->cookies, field);
   if((val == NULL) || (*val == ';')) {
     return FALSE; 
   } else {
