@@ -93,18 +93,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "uconv"=..\uconv\uconv.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "unescapeABundle"=..\locexp\resource\unescapeABundle.dsp - Package Owner=<4>
 
 Package=<5>
@@ -133,18 +121,6 @@ Package=<4>
 ###############################################################################
 
 Project: "usort_lib"=..\usort\lib\usort_lib.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "util"=..\locexp\util\util.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -108,7 +108,15 @@ SOURCE=.\locexp.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\util\lx_cpputils.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\util\lx_utils.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\srchexp.c
 # End Source File
 # Begin Source File
 
