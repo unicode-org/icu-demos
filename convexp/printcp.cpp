@@ -347,11 +347,11 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     startBytesLen = ((strlen(startBytes)>>1)<<1);
     maxCharSize = startBytesLen/2;
     cnvMaxCharSize = ucnv_getMaxCharSize(cnv);
-    if (convType == UCNV_ISO_2022
-        || convType == UCNV_UTF8)
-    {
-        /* Add one for the shift (or one byte for UTF-8 supplementary chars) */
-        cnvMaxCharSize++;
+    if (convType == UCNV_UTF8) {
+        cnvMaxCharSize++;   /* one byte for UTF-8 supplementary chars */
+    }
+    if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian || convType == UCNV_UTF16_LittleEndian) {
+        cnvMaxCharSize+=2;   /* two bytes for UTF-16 supplementary chars */
     }
     if (maxCharSize >= cnvMaxCharSize) {
         puts("<p>WARNING: startBytes > maximum number of characters. startBytes is truncated.</p>");
