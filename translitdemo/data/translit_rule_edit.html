@@ -15,6 +15,13 @@ NEW_ID = "(New Transliterator)";
 SEPARATOR = "--------";
 IS_NEW_ID = 0;
 
+// Determine our location.
+if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
+  SELF = "/developerworks/opensource/icu/translitdemo";
+} else {
+  SELF = "/cgi-bin/translit";
+}
+
 // We can get these dynamically from the CGI, but it's too slow.  Also,
 // this allows us to eliminate ones we don't want, like
 // UnicodeName-UnicodeChar.
@@ -115,11 +122,9 @@ function handleSelectID() {
 <body>
 <font face="arial,helvetica,sanserif">
 
-<!--
-<form method="POST" action="/developerworks/opensource/icu/translitdemo" name="FORM">
-<form method="POST" action="/cgi-bin/translit" name="FORM">
--->
-<form method="POST" action="/cgi-bin/translit" name="FORM">
+<script>
+document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
+</script>
   <input type="hidden" name="ARG_ID" value="$ARG_ID">
   <input type="hidden" name="ARG_RULES">
   <input type="hidden" name="ARG_OPERATION" value="$ARG_OPERATION">

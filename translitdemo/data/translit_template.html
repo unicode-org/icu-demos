@@ -19,6 +19,13 @@ AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
 
 USER_IDS = "$USER_IDS".split(";");
 
+// Determine our location.
+if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
+  SELF = "/developerworks/opensource/icu/translitdemo";
+} else {
+  SELF = "/cgi-bin/translit";
+}
+
 // Generate options (inline) for a SELECT_ID element
 function generateSelectIDOptions(i) {
   var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
@@ -27,11 +34,9 @@ function generateSelectIDOptions(i) {
 }
 </script>
 
-<!--
-<form method="POST" action="/developerworks/opensource/icu/translitdemo" name="FORM">
-<form method="POST" action="/cgi-bin/translit" name="FORM">
--->
-<form method="POST" action="/cgi-bin/translit" name="FORM">
+<script>
+document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
+</script>
   <input type="hidden" name="TEMPLATE_FILE" value="data/translit_template.html">
   <input type="hidden" name="ARG_ID">
   <input type="hidden" name="ARG_ID2">
@@ -135,8 +140,7 @@ function handleTransliterateButton() {
 
 // Handler for compound type-in box.  This handler switches
 // the corresponding pop-up box to "(Compound)".
-// This is assumed to be the index 0 item for pop-up 1, and
-// the index 1 item for pop-up 2.
+// This is assumed to be the index 0.
 function handleCompoundIDKeyPress(i) {
   x = document.FORM["SELECT_ID" + i];
   x.selectedIndex = 0;
@@ -200,7 +204,7 @@ function handleEditRules() {
 
 // Return the editor window
 function _getEditor() {
-  return open("/cgi-bin/translit?TEMPLATE_FILE=data/translit_rule_edit.html",
+  return open(SELF + "?TEMPLATE_FILE=data/translit_rule_edit.html",
               "_TRANSLIT_EDIT");
 }
 
