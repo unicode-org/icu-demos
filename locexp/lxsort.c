@@ -259,27 +259,37 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
 
       /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
-      attribute = UCOL_CASE_FIRST;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(b, "&cas1=")) 
       {
-        value = UCOL_ON;
-      } 
-#if 1 
-      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else
-      {
-        value = UCOL_OFF;
-      }
-#endif
-      u_fprintf(lx->OUT, "<input type=checkbox %s name=cas1> %U <BR>\r\n",
-                (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+          UColAttributeValue caseVals[] = { UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST };
+          int i;
+          attribute = UCOL_CASE_FIRST;
+          status = U_ZERO_ERROR;
+          value = ucol_getAttribute(customCollator, attribute, &status);
+          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+          if(ss=strstr(b, "&cas1="))
+          {
+              value = atoi(ss+strlen("&cas1="));
+          }
+          else
+          {
+              value = UCOL_OFF;
+          }
+          u_fprintf(lx->OUT, "%U: <select name=cas1>\r\n", showSort_attributeName(attribute) );
 
+          for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
+          {
+              u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
+                        (caseVals[i]==value)?"selected":"",
+                        caseVals[i],
+                        showSort_attributeVal(caseVals[i]));
+          }
+          u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
+
+          status = U_ZERO_ERROR;
+          ucol_setAttribute(customCollator, attribute, value, &status);
+          if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+      }
       /* ------------------------------- UCOL_CASE_LEVEL ------------------------------------- */
       attribute = UCOL_CASE_LEVEL;
       status = U_ZERO_ERROR;
