@@ -52,7 +52,9 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 	{
             u_fprintf(lx->OUT, "(%U %d - %s)", FSWF("UNKNOWN_ERROR", "unknown error"), (int) status,
                       u_errorName(status));
+#ifdef SRL_DEBUG
             fprintf(stderr,"LRB: caught Unknown err- %d %s\n", status, u_errorName(status)); 
+#endif
 	}
     }
 

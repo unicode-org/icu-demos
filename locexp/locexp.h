@@ -113,7 +113,7 @@ typedef struct
 
 /** Lengths and limits **/
 #define UCA_LEN 110000           /* showCollationElements() */
-#define SORTSIZE 8192            /* showSort() */
+#define SORTSIZE 32767            /* showSort() */
 
 
 /** Tuning and appearance **/

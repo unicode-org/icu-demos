@@ -714,7 +714,6 @@ void showSort(LXContext *lx, const char *locale)
           aSort = customSort;
           if(n>0 && !lxCustSortOpts) {
             /* don't setstrength on 1st item (default) if custom options have been set */
-            u_fprintf(lx->OUT, "<td>SET STRENGTH</td>\r\n");
             ucol_setStrength(usort_getCollator(aSort), UCOL_DEFAULT);
           }
           

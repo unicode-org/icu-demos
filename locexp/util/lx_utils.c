@@ -764,20 +764,23 @@ finish:
 }
 
 UChar* u_uastrcpy_enc(UChar *ucs1,
-          const char *s2, const char *enc )
+                      const char *s2, const char *enc, int32_t len )
 {
     UErrorCode err = U_ZERO_ERROR;
+    int32_t len2;
 
   UConverter *cnv = ucnv_open(enc, &err);
   if(cnv != NULL) {
-    ucnv_toUChars(cnv,
+    len2 = ucnv_toUChars(cnv,
                     ucs1,
-                    1000,
+                    len,
                     s2,
                     strlen(s2),
                     &err);
     if(U_FAILURE(err)) {
       *ucs1 = 0;
+    } else if(len2>=0) {
+      ucs1[len2]=0;
     }
   } else {
     *ucs1 = 0;
@@ -789,12 +792,18 @@ UChar* u_uastrcpy_enc(UChar *ucs1,
 int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src)
 {
   const char *fieldLimit;
-  UChar temp[1024];
-  char tmpc[1024];
+  UChar *temp;
+  char *tmpc;
   int32_t len;
 
+  temp = malloc((dstLen*2)+5);
+  tmpc = malloc(dstLen+5);
+
+  if(!temp || !tmpc) {
+    return 0;
+  }
   /* make fieldLimit point to the end of the field data */
-  fieldLimit = strchr(src,'&');
+  fieldLimit = strchr(src,'&');  /* not needed once all callers use queryField().. */
   if(!fieldLimit)
     fieldLimit = src + strlen(src);
 
@@ -814,17 +823,23 @@ int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src)
   len = u_strlen(temp);
   len = copyWithUnescaping( dst, temp, len);
   dst[len] = 0; /* copy with unescaping DOES NOT terminate the str */
-  
+  free(temp);
+  free(tmpc);
   return len;
 }
 
 int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *src, const char *enc)
 {
   const char *fieldLimit;
-  UChar temp[1024];
-  char tmpc[1024];
+  UChar *temp;
+  char *tmpc;
   int32_t len;
 
+  temp = malloc((dstLen*2)+5);
+  tmpc = malloc(dstLen+5);
+  if(!temp || !tmpc) {
+    return 0;
+  }
   /* make fieldLimit point to the end of the field data */
   fieldLimit = strchr(src,'&');
   if(!fieldLimit)
@@ -843,13 +858,15 @@ int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *
   if(enc == NULL)
       u_uastrcpy(temp, tmpc);
   else
-      u_uastrcpy_enc(temp, tmpc, enc);
+    u_uastrcpy_enc(temp, tmpc, enc, (fieldLimit-src)+1); /* convert the null */
   
   /* Now, de escape it.. */
   len = u_strlen(temp);
   len = copyWithUnescaping( dst, temp, len);
   dst[len] = 0; /* copy with unescaping DOES NOT terminate the str */
   
+  free (temp);
+  free(tmpc);
   return len;
 }
 

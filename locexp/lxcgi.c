@@ -105,8 +105,9 @@ void initPOSTFromFILE(LXContext* lx, FILE *f)
   }
   
   buf[len]=0;
-
+#ifdef SRL_DEBUG
   fprintf(stderr, "Got: [%d/%d] >%s<\n", len,clen,buf);
+#endif
 
   lx->postData = buf;
 }
