@@ -15,7 +15,48 @@
 *   06/16/99    stephen     Modified to use uprint.
 *   08/02/1999  srl         Unibrowse
 *   12/02/1999  srl         Integrated design changes from Josh Mast
+*   05/12/2001  srl         Revamping design from the beautiful St. Paul's Bay, Malta
 *******************************************************************************
+*/
+
+/*
+   Short* list of todo's:
+     - better default/fallback handling
+     - use mime type!
+     - ui to select encodings
+     - use a table for the block list
+     - put radical list back
+
+     - make block/type list jump to blocks [search->block]
+       
+
+Another todo:
+ *fix the main page, add help, 
+
+ * add new searches by BiDi properties and such, 
+
+ *a new 'character' view that drills down into a single char,  with all the u_isXXX properties put back
+
+ * encodings popup
+
+  *short, that is incomplete
+*/
+
+/*
+    Query formats which come in:
+
+  *****************
+        go=XXXXXX           (from the 'go' panel- key doesn't tell
+                             you the action)
+          k.x=                (-> copy go= to k, continue - column format)
+         or
+          n.x=                (-> copy go= to n, continue- block format)
+ *****************
+       k=XXXXXXX            column  16- XXXXX?
+ *****************
+       n=XXXXXXXX           block  256- XXXXnn
+*****************
+
 */
 
 #include <stdlib.h>
@@ -34,7 +75,7 @@
 #include "unicode/decompcb.h" /* from locexp/util */
 
 #define HAVE_KANGXI
-#define RADICAL_LIST
+/* #define RADICAL_LIST */
 #include <kangxi.c> /* Kang-Xi Radical mapping table */
 
 /* Protos */
@@ -42,15 +83,15 @@ int main(int argc, char **argv);
 void doDecodeQueryField(const char *in, char *out);
  const char * up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *status);  
 void printType(int8_t type);
-void printScript(UCharScript script);
-UChar32 doSearchScript(int32_t, UChar32 startFrom);
+void printBlock(UCharScript block);
+UChar32 doSearchBlock(int32_t, UChar32 startFrom);
 UChar32 doSearchType(int8_t, UChar32 startFrom);
 void showSearchMenu(UChar32 startFrom);
 void printCharName(UChar32 ch);
 
 /* globals, current search.. */
 int32_t gSearchType = -1;
-int32_t gSearchScript = -1;
+int32_t gSearchBlock = -1;
 char    gSearchName[512];
 
 UChar32 gSearchChar = 0xFFFF;
@@ -63,13 +104,20 @@ int enumHits = 0, foundCount = 0; /* # of enumerations, # of hits */
 void printCharName(UChar32 c)
 {
   char junkbuf[512];
+  int i;
   UErrorCode status = U_ZERO_ERROR;
   u_charName(c, U_UNICODE_CHAR_NAME, junkbuf, 512, &status);
+
+  /* once this used to lowercase the unicode names.....*/
+/*    for(i=0;junkbuf[i];i++) */
+/*    { */
+/*      junkbuf[i] = tolower(junkbuf[i]); */
+/*    } */
 
   if(U_SUCCESS(status))
     puts(junkbuf);
   else
-    printf("{U+%06X}", c);
+    printf("{U+%04X}", c);
 }
 
 /******************************************************** derived from ucnv_err.c */
@@ -259,7 +307,7 @@ UBool myEnumCharNamesFn(void *context,
   {
     foundCount ++;
 
-    printf("<LI><A HREF=\"?k1=%06X#here\"><TT>%06X</TT> - %s\r\n",
+    printf("<LI><A HREF=\"?k1=%04X#here\"><TT>%04X</TT> - %s\r\n",
            code, code, name);
     
     printBasicBlockInfo( code );
@@ -287,7 +335,7 @@ main(int argc,
   chars[1] = 0;
   pi = getenv("PATH_INFO");
   if(!pi)
-    pi = "/iso-8859-1";
+    pi = "/utf-8";
 
 
   pi++;
@@ -298,7 +346,7 @@ main(int argc,
 
   {
     if(*pi==0) pi = NULL;
-    ucnv_setDefaultName(pi);
+    ucnv_setDefaultName("utf-8");
     printf("content-type: text/html;charset=%s\r\n\r\n",pi);
   }
 
@@ -323,10 +371,30 @@ main(int argc,
 
   if(qs)
     { 
-      if (sscanf(qs,"n=%x", &block)== 1)
+      if (sscanf(qs,"go=%x", &block)== 1)
+        {
+          if(strstr(qs,"k.x="))
+          {
+            block &= 0x1FFFF0;
+            printf("<TITLE>ICU UnicodeBrowser: column U+%04X</TITLE>\r\n", block);
+            mode = ECOLUMN;
+          }
+          else if(strstr(qs, "n.x="))
+          {
+            block &= 0x1FFF00;
+            printf("<TITLE>ICU UnicodeBrowser: block U+%04X</TITLE>\r\n", block);
+            mode = EBLOCK;
+          }
+          else
+          {
+            mode = ETOP;
+            /* Title comes lower */
+          }
+        }
+      else if(sscanf(qs,"n=%x", &block)== 1)
 	{
 	  block &= 0x1FFF00;
-	  printf("<TITLE>ICU UnicodeBrowser: block U+%06X</TITLE>\r\n", block);
+	  printf("<TITLE>ICU UnicodeBrowser: block U+%04X</TITLE>\r\n", block);
 	  mode = EBLOCK;
 	}
       else if(sscanf(qs, "k1=%x", &block) == 1)
@@ -334,18 +402,18 @@ main(int argc,
 	  gSearchChar = block;
 	  gSearchCharValid = TRUE;
 	  block &= 0x1FFFF0;
-	  printf("<TITLE>ICU UnicodeBrowser: column U+%06X</TITLE>\r\n", block);
+	  printf("<TITLE>ICU UnicodeBrowser: column U+%04X</TITLE>\r\n", block);
 	  mode = ECOLUMN;
 	}
       else if(sscanf(qs, "k=%x", &block) == 1)
 	{
 	  block &= 0x1FFFF0;
-	  printf("<TITLE>ICU UnicodeBrowser: column U+%06X</TITLE>\r\n", block);
+	  printf("<TITLE>ICU UnicodeBrowser: column U+%04X</TITLE>\r\n", block);
 	  mode = ECOLUMN;
 	}
-      else if(sscanf(qs, "scr=%d&b=%x", &gSearchScript, &block) == 2)
+      else if(sscanf(qs, "scr=%d&b=%x", &gSearchBlock, &block) == 2)
 	{
-	  block = doSearchScript(gSearchScript, block);
+	  block = doSearchBlock(gSearchBlock, block);
 	  block &= 0x1FFFF0;
 	  mode = ECOLUMN;
 	}
@@ -355,6 +423,20 @@ main(int argc,
 	  block &= 0x1FFFF0;
 	  mode = ECOLUMN;
 	}
+/* For: search -> block (not column) 
+      else if(sscanf(qs, "scr=%d&n=%x", &gSearchBlock, &block) == 2)
+	{
+	  block = doSearchBlock(gSearchBlock, block);
+	  block &= 0x1FFF00;
+	  mode = EBLOCK;
+	}
+      else if(sscanf(qs, "typ=%d&n=%x", &gSearchType, &block) == 2)
+	{
+	  block = doSearchType(gSearchType, block);
+	  block &= 0x1FFF00;
+	  mode = EBLOCK;
+	}
+*/
       else if(sscanf(qs, "radlst=%d", &block) == 1)
 	{
 	  mode = ERADLST;
@@ -365,12 +447,16 @@ main(int argc,
 	}
       else if(sscanf(qs, "s=%200s", &gSearchName) == 1)
 	{
+          char *ss;
+          ss = strstr(gSearchName,"&sx=");
+          
 	  mode = ENAME;
+          if(ss != NULL)
+          {
+            *ss=0;
+            mode=EEXACTNAME;
+          }
 	}
-      else if(sscanf(qs, "sx=%200s", &gSearchName) == 1)
-        {
-          mode = EEXACTNAME;
-        }
     }
 
   if(mode == ETOP)
@@ -382,68 +468,93 @@ main(int argc,
   printf("</HEAD>\r\n");
   
   printf("<BODY BGCOLOR=\"#FFFFFF\" link=\"green\" vlink=\"brown\">\r\n");
-  
-  printf("<table border=0><tr><td>"
-         "<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
-         "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n");
+
+  printf("<A HREF=\"http://oss.software.ibm.com/icu\">ICU</A> &gt;\r\n"
+         "<A HREF=\"http://oss.software.ibm.com/icu/demo\">Demo</A> &gt;\r\n"
+         "<B>Unicode Browser</B><BR>\r\n");
 
 
+  printf("<table border=1 cellpadding=1 cellspacing=1><tr>");
 
+  printf("<td >");
+
+  printf("<FORM>Go: <INPUT size=7 NAME=go VALUE=\"%04X\">", block);
+
+  /* show which item we're on */
+  printf("<INPUT TYPE=image alt=Column align=middle NAME=k src=\"/icu/demo/ubrowse.d/column%s.gif\" width=16 height=16 VALUE=\"Column\">", (mode==ECOLUMN)?"-x":"");
+  printf("<INPUT TYPE=image alt=Block align=middle NAME=n VALUE=\"Block\" src=\"/icu/demo/ubrowse.d/block%s.gif\" width=16 height=16>", (mode==EBLOCK)?"-x":"");
+  printf(" | <INPUT TYPE=image alt=All align=middle src=\"/icu/demo/ubrowse.d/all%s.gif\" width=16 height=16 NAME=all value=\"All\">", (mode==ETOP)?"-x":"" );
+
+  /* forward and back buttons */
+  switch(mode)
+  {
+  case EBLOCK:
+    printf(" | <A HREF=\"?n=%04X\">prev</A> <A HREF=\"?n=%04X\">next</A> ",
+           (block & 0x1FFF00)-0x100, (block & 0x1FFF00)+0x100);
+    break;
+
+  case ECOLUMN:
+    printf(" | <A HREF=\"?k=%04X\">prev</A> <A HREF=\"?k=%04X\">next</A> ",
+	     (block & 0x1FFFF0)-0x10, (block & 0x1FFFF0)+0x10);
+    break;
+  }
+
+  printf("</FORM>");
+  printf("</TD>");
+
+  printf("<td>\r\n"); 
   printf("<B>Encoding: %s.</B><BR>\r\n", pi);
 
-  printf("</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n");
+  printf("</td>");  
 
 
-  printf("<TABLE><TR><TD>");
-  printf("<FORM>Jump to Unicode block: (hex) <INPUT NAME=n VALUE=\"%06X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM><BR>", block);
-  printf("<FORM>Jump to Unicode column: (hex) <INPUT NAME=k VALUE=\"%06X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM><BR>", block);
-  printf("</TD><TD><FORM><INPUT TYPE=SUBMIT NAME=n VALUE=\"Show All\"></FORM></TD></TR></TABLE>\r\n");
-
-  printf("</td></tr></table>\r\n"
-         "</td></tr></table>\r\n");
-
-  printf("</td></tr><tr><td>\r\n");
-
-
-  if(mode == ETOP) /* top level list of blocks */
+  if(mode == ETOP) /* top level list of blocks ******************************** ETOP ********** */
     {
-        printf("<table border=0 cellpadding=0 cellspacing=0><tr><td bgcolor=\"#000000\">\r\n"
-               "<table border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\r\n");
 
-      printf("<b>Unicode Browser</b> - Click on a block to view it in more detail<br>\r\n");
+      printf("</tr></table>"); /* closer of menu */
+
+        printf("<table border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\r\n");
+
+      printf("<b>Unicode Browser</b> - Click on a type of character view it in more detail<br>\r\n");
       printf("</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
              );
 
-      printf("<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-      for(n = 0;n<0x10;n++)
-	{
-	  printf("<B>_%X__</B> ", n);
-	}
-      for(n = 0x0000; n <= 0xFF00; n += 0x0100)
-	{
-	  if( (n% 0x1000) == (0x0000) )
-	    printf("<BR>\r\n<B>%04X</B> ", n);
-	  printf("<A HREF=\"?n=%06X\">%04X</A> ", n, n);
-	}
-      printf("<BR></TT>\r\n");
+      printf("<B>Blocks:</B>");
+      for(i=U_BASIC_LATIN;i<U_CHAR_SCRIPT_COUNT;i++)
+      {
+        printf("<A HREF=\"?scr=%d&b=0\">", i);
+        printBlock(i);
+        printf("</A> | &nbsp;");
+      }
+      printf("<P>");
+      
+
+      printf("<B>General Categories:</B>");
+      for(i=U_UNASSIGNED;i<=U_GENERAL_OTHER_TYPES;i++)
+      {
+        printf("<A HREF=\"?typ=%d&b=0\">", i);
+        printType(i);
+        printf("</A> | &nbsp;");
+      }
+      printf("<P>");
+      
+
 
       printf(
              "</td></tr></table>\r\n"
-             "</td></tr></table>\r\n"
              );
 
-      printf("\r\n</td></tr><tr><td align=right>\r\n");
+//      printf("\r\n</td></tr><tr><td align=right>\r\n");
       
       showSearchMenu(0x0000);
     }      
-  else if (mode == EBLOCK)
+  else if (mode == EBLOCK) /* *************** BLOCK *******************************************/
     {
-      /* Unicode table  at block 'block' */
 
-      printf("- Block: <A HREF=\"?n=%06X\">%06X</A> -\r\n",
-	     (block & 0x1FFF00)-0x100, (block & 0x1FFF00)-0x100);
-      printf("<A HREF=\"?n=%06X\">%06X</A> -\r\n",
-	     (block & 0x1FFF00)+0x100, (block & 0x1FFF00)+0x100);
+    printf("</tr></table>"); /* closer of menu */
+
+
+      /* Unicode table  at block 'block' */
 
       n = 0;
       /*      for(n=0; n<0x100; n += 0x080) */
@@ -452,7 +563,7 @@ main(int argc,
 	  printf("<TR><TD></TD>");
 	  for(c = n;c<(n + 0x100);c+= 0x10)
 	    {
-	      printf("<TD><B><A HREF=\"?k=%06X\"><TT>%03X</TT></A></B></TD>", (block|c),  (block | c) >> 4   );
+	      printf("<TD><B><A HREF=\"?k=%04X\"><TT>%03X</TT></A></B></TD>", (block|c),  (block | c) >> 4   );
 	    }
 	  printf("</TR>\r\n");
 	  for(r = 0; r < 0x10; r++)
@@ -490,175 +601,225 @@ main(int argc,
         }
       showSearchMenu( block + 0x0100);
     }
-  else if(mode == ECOLUMN )
+  else if(mode == ECOLUMN ) /****************************** COLUMN **************************/
     {
+      const char *hilite;
+      UBool showBlock = FALSE;
+      if(  ((block&~0xF)==0xFFF0) ||    /* FFFD/FFFF and */
+           ((block&~0xF)==0xFEF0) ) {   /* FEFF are exceptional columns */
+        showBlock = TRUE;
+      }
       /* Unicode table  at column 'block' */
 
-      printf("<A HREF=\"?n=%06X\">View all of block %06X</A>\r\n",
-	     block & 0x1FFF00, block & 0x1FFF00);
-      /* should check view here */
-      printf("- Column: <A HREF=\"?k=%06X\">%06X</A> -\r\n",
-	     (block & 0x1FFFF0)-0x10, (block & 0x1FFFF0)-0x10);
-      printf("<A HREF=\"?k=%06X\">%06X</A> -\r\n",
-	     (block & 0x1FFFF0)+0x10, (block & 0x1FFFF0)+0x10);
-      printf("<TT><TABLE BORDER=1><TR><TD></TD>");
+      if(showBlock == FALSE) /* Explain what the block is ONCE: here */
+      {  
+        theChar = block;
+        printf("<TD>"); 
+        printf("<B>Block:</B>  ");
+        searchedFor = (u_charScript(theChar) == gSearchBlock);
+        
+        
+        if(searchedFor)
+          printf("<B>");
+        
+        printBlock(u_charScript(theChar));
+        if(searchedFor)
+          printf("</B>");
+
+        printf(" | <A HREF=\"?scr=%d&b=%04X\">", (u_charScript(theChar)+1)%U_CHAR_SCRIPT_COUNT, theChar);
+        printf("next</A>");
+            
+        printf("</TD></TR></TABLE>");  /* closer */
+      }
+
+
+      printf("</tr></table>"); /* closer of menu */
+
+
+
+      printf("<TABLE BORDER=1>");
+
+
+      printf("<TR>"); /* 0: column index */
+      printf("<TD></TD>"); /* 1: char */
+      printf("<TD></TD>"); /* 2: char #, name */
+      printf("<TD><B>General Category</B></TD>"); /* 3: type */ 
+      if(showBlock == TRUE) 
+      {
+        printf("<TD><B>Block</B></TD>"); /* 3 1/2 */
+      }
+      printf("<TD><B></B></TD>"); /* 4 digit */
+      printf("<TD><B>Wid</B></TD>"); /* 5 width */
+      printf("<TD><B>BiDi Direction</B></TD>"); /* 6 Direction (BiDi?) */
+      printf("</TR>\r\n");
+
+#if 0 /* Don't identify the columns (for now) */
+      printf("<TR><TD></TD>");
       printf("<TD><B>%03X</B></TD>",  (block ) >> 4   );
 
 
-      printf("<TD><B>Lower<BR>Upper<BR>Title</B></TD>");
-      printf("<TD><B>#Digit<BR>DefinedDigit</B></TD>");
-      printf("<TD><B>alph<BR>spc<BR>ctrl<BR>print</B></TD>");
+      printf("<TD><!-- <B>Lower<BR>Upper<BR>Title</B>--></TD>");
+      printf("<TD><B>#</B></TD>");
+      printf("<TD><!-- <B>alph<BR>spc<BR>ctrl<BR>print</B>--></TD>");
       printf("<TD><B>base<BR>direction<BR>width<BR>type</B></TD>");
-      printf("<TD><B>Script</B></TD>");
+      if(showBlock == TRUE) 
+      {
+        printf("<TD><B>Block</B></TD>");
+      }
 
       printf("</TR>\r\n");
-      for(r = 0; r < 0x10; r++) 
+#endif
+      for(r = 0; r < 0x10; r++)  /***** rows ******/
 	{
 	  theChar = (block | r );
 
-	  printf("<TR><TD><B>%X</B></TD>", r);
+          /* Do we have a match? for cell highlighting */ 
+	  if( (u_charScript(theChar) == gSearchBlock) || (u_charType(theChar) == gSearchType) || ((theChar == gSearchChar) && gSearchCharValid))
+          {
+	    hilite = " BGCOLOR=\"#FFdddd\" ";
+          }
+	  else if(u_charType(theChar) == U_UNASSIGNED)
+	  {
+            hilite = " BGCOLOR=\"#666666\" ";
+	  }
+          else 
+          {
+            hilite = "";
+          }
+
+
+	  printf("<TR %s >", hilite);
+
+          /** 0 Row # (un needed????) **/ 
+//          printf("<TD><B>%X</B></TD>", r);
+
+          /** 1 The Char **/
 	  printf("<TD ");
 
-	  if( (u_charScript(theChar) == gSearchScript) || (u_charType(theChar) == gSearchType) || ((theChar == gSearchChar) && gSearchCharValid))
-	    printf(" BGCOLOR=\"#EE0000\" ");
-	  else if(u_charType(theChar) == U_UNASSIGNED)
-	    {
-	      printf(" BGCOLOR=\"#888888\" ");
-	    }
+          /* TODO: 'if matches(theChar)' */
 
-
-	  printf(" ALIGN=CENTER>\r\n");
+	  printf("%s ALIGN=CENTER>\r\n", hilite);
 	  
 	  if((theChar == gSearchChar) && gSearchCharValid)
 	    printf("<A NAME=here></A>");
 	  
-	  /* print the simple data */
+	  /* print the simple data (i.e. the actual char ) */
 	  printBasicBlockInfo(theChar);
 	  
 	  printf("</TD>");
 
-	  /* L/U/T */
-	  printf("<TD>");
-	  if(u_islower(theChar))
-	    printf("L<BR>");
-	  if(u_isupper(theChar))
-	    printf("U<BR>");
-	  if(u_istitle(theChar))
-	    printf("T<BR>");
 
-	  printf("</TD>");
+          /** 2. print the char val and name  */
+          printf("<TD>");
+          printf("<FONT SIZE=-1>U+%04X ", theChar);
+          printCharName(theChar);
+          printf("</FONT></TD>");
 
-
-	  /* digit/defined */
-	  printf("<TD>");
-	  if(u_isdigit(theChar))
-	    printf("# %d<BR>", u_charDigitValue(theChar));
-	  if(u_isdefined(theChar))
-	    printf("Def<BR>");
-	  printf("</TD>");
-
-
-	  /* alpha.. */
-	  printf("<TD>");
-	  if(u_isalpha(theChar))
-	    printf("alph<BR>");
-	  if(u_isspace(theChar))
-	    printf("spc<BR>");
-	  if(u_iscntrl(theChar))
-	    printf("ctrl<BR>");
-	  if(u_isprint(theChar))
-	    printf("print</BR>");
-	  printf("</TD>");
-
-
-	  /* base... */
+          /** 3. char type */
 	  searchedFor = (u_charType(theChar) == gSearchType);
-
-	  printf("<TD ");
-	  if(searchedFor)
-	    printf(" BGCOLOR=\"#EE0000\" "); /* mark the one we were searching for */
-	  
-	  printf(" >");
-	  if(u_isbase(theChar))
-	    printf("base<BR>");
-	  switch(u_charDirection(theChar))
-	    {
-	    case U_LEFT_TO_RIGHT: printf("LEFT_TO_RIGHT"); break; 
-	    case U_RIGHT_TO_LEFT: printf("RIGHT_TO_LEFT"); break; 
-	    case U_EUROPEAN_NUMBER: printf("EUROPEAN_NUMBER"); break; 
-	    case U_EUROPEAN_NUMBER_SEPARATOR: printf("EUROPEAN_NUMBER_SEPARATOR"); break; 
-	    case U_EUROPEAN_NUMBER_TERMINATOR: printf("EUROPEAN_NUMBER_TERMINATOR"); break; 
-	    case U_ARABIC_NUMBER: printf("ARABIC_NUMBER"); break; 
-	    case U_COMMON_NUMBER_SEPARATOR: printf("COMMON_NUMBER_SEPARATOR"); break; 
-	    case U_BLOCK_SEPARATOR: printf("BLOCK_SEPARATOR"); break; 
-	    case U_SEGMENT_SEPARATOR: printf("SEGMENT_SEPARATOR"); break; 
-	    case U_WHITE_SPACE_NEUTRAL: printf("WHITE_SPACE_NEUTRAL"); break; 
-	    case U_OTHER_NEUTRAL: printf("OTHER_NEUTRAL"); break; 
-	    case U_LEFT_TO_RIGHT_EMBEDDING: printf("LEFT_TO_RIGHT_EMBEDDING"); break; 
-	    case U_LEFT_TO_RIGHT_OVERRIDE: printf("LEFT_TO_RIGHT_OVERRIDE"); break; 
-	    case U_RIGHT_TO_LEFT_ARABIC: printf("RIGHT_TO_LEFT_ARABIC"); break; 
-	    case U_RIGHT_TO_LEFT_EMBEDDING: printf("RIGHT_TO_LEFT_EMBEDDING"); break; 
-	    case U_RIGHT_TO_LEFT_OVERRIDE: printf("RIGHT_TO_LEFT_OVERRIDE"); break; 
-	    case U_POP_DIRECTIONAL_FORMAT: printf("POP_DIRECTIONAL_FORMAT"); break; 
-	    case U_DIR_NON_SPACING_MARK: printf("DIR_NON_SPACING_MARK"); break; 
-	    case U_BOUNDARY_NEUTRAL: printf("BOUNDARY_NEUTRAL"); break; 
-	    default: printf("Unknown Dir\n");
-	    }
-	  printf("<BR>\r\n");
-	  switch(u_charCellWidth(theChar))
-	    {
-	    case U_ZERO_WIDTH: printf("ZERO_WIDTH"); break; 
-	    case U_HALF_WIDTH: printf("HALF_WIDTH"); break; 
-	    case U_FULL_WIDTH: printf("FULL_WIDTH"); break; 
-	    case U_NEUTRAL_WIDTH: printf("NEUTRAL"); break; 
-	    }
-	  printf("<BR>");
+          printf("<td>");
 	  if(searchedFor)
 	    printf("<B>");
 	  printType(u_charType(theChar));
 	  if(searchedFor)
 	    printf("</B>");
+          printf("</td>");
 
-	  printf("<BR>");
+          /** 3 1/2. optional - block */
+          if(showBlock)
+          {  
+            printf("<TD ");
+            searchedFor = (u_charScript(theChar) == gSearchBlock);
+            
+            if(searchedFor)
+              printf(" BGCOLOR=\"#EE0000\" "); /* mark the one we were searching for */
+            
+            printf(" >");
+            
+            if(searchedFor)
+              printf("<B>");
+            
+            printf("<A HREF=\"?scr=%d&b=%04X\">", (u_charScript(theChar)+1)%U_CHAR_SCRIPT_COUNT, theChar);
+            printBlock(u_charScript(theChar));
+            printf("</A>");
+            
+            if(searchedFor)
+              printf("</B>");
+            
+            printf("</TD>");
+          }
 
-	  printf("</TD>");
-
-	  
-	  /* script */
-	  printf("<TD ");
-	  searchedFor = (u_charScript(theChar) == gSearchScript);
-
-	  if(searchedFor)
-	    printf(" BGCOLOR=\"#EE0000\" "); /* mark the one we were searching for */
-
-	  printf(" >");
-
-	  if(searchedFor)
-	    printf("<B>");
-
-	  printScript(u_charScript(theChar));
-
-	  if(searchedFor)
-	    printf("</B>");
-
-	  printf("</TD>");
-
+          /** 4: digit (optional) **/
 	  printf("<TD>");
-	  printCharName(theChar);
+	  if(u_isdigit(theChar))
+          {
+            if(u_charDigitValue(theChar) == -1)
+            {
+              printf("-");
+            }
+            else
+            {
+              printf("%d", u_charDigitValue(theChar));
+            }
+          }
 	  printf("</TD>");
-	  printf("<TD><FONT SIZE=-1>U+%06X</FONT>", theChar);
-          
-          /*
-              -- this works but it's kind of RUDE. -- [to link in w/o asking]
-              
-              printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n",
-                 ((theChar&0x1FFF00)>>8),
-                 theChar);
 
-#error you're rude
-          */
+          /** 5: cell width **/
+          printf("<TD>");
+	  switch(u_charCellWidth(theChar))
+	  {
+	    case U_ZERO_WIDTH: printf("0"); break; 
+	    case U_HALF_WIDTH: printf("1/2"); break; 
+	    case U_FULL_WIDTH: printf("1"); break; 
+	    case U_NEUTRAL_WIDTH: printf("-"); break; 
+	  }
 
-          printf("</TD></TR>");
+          printf("</TD>");
+
+          /** 6. direction **/
+          printf("<TD>");
+	  switch(u_charDirection(theChar))
+	    {
+	    case U_LEFT_TO_RIGHT: printf("LTR"); break; 
+	    case U_RIGHT_TO_LEFT: printf("RTL"); break; 
+	    case U_EUROPEAN_NUMBER: printf("European Number"); break; 
+	    case U_EUROPEAN_NUMBER_SEPARATOR: printf("Eur. Num. Sep"); break; 
+	    case U_EUROPEAN_NUMBER_TERMINATOR: printf("Eur. num. Term"); break; 
+	    case U_ARABIC_NUMBER: printf("Arabic Num."); break; 
+	    case U_COMMON_NUMBER_SEPARATOR: printf("Cmn Number Sep"); break; 
+	    case U_BLOCK_SEPARATOR: printf("Block Sep"); break; 
+	    case U_SEGMENT_SEPARATOR: printf("Segment Sep"); break; 
+	    case U_WHITE_SPACE_NEUTRAL: printf("White Space Neutral"); break; 
+	    case U_OTHER_NEUTRAL: printf("Other Neutral"); break; 
+	    case U_LEFT_TO_RIGHT_EMBEDDING: printf("LRE"); break; 
+	    case U_LEFT_TO_RIGHT_OVERRIDE: printf("LRO"); break; 
+	    case U_RIGHT_TO_LEFT_ARABIC: printf("RTL-Arabic"); break; 
+	    case U_RIGHT_TO_LEFT_EMBEDDING: printf("RLE"); break; 
+	    case U_RIGHT_TO_LEFT_OVERRIDE: printf("RLO"); break; 
+	    case U_POP_DIRECTIONAL_FORMAT: printf("PDF"); break; 
+	    case U_DIR_NON_SPACING_MARK: printf("Combining Class %d", u_getCombiningClass(theChar)); break; 
+	    case U_BOUNDARY_NEUTRAL: printf("BN"); break; 
+	    default: printf("Unknown Dir\n");
+	    }
+          /*  put the mirrored thing here. Not so common, keeps it out of the way. */
+          if(u_isMirrored(theChar))
+          {
+            printf(" (Mirrored)");
+          }
+	  printf("</TD>");
+
+
+	  /** image - removed **/
+/*  	  printf("<TD>"); */
+/*            /* */
+/*                -- this works but it's kind of RUDE. -- [to link in w/o asking] */
+/*                printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n", */
+/*                   ((theChar&0x1FFF00)>>8), */
+/*                   theChar); */
+/*  #error you're rude */
+/*            printf("</TD>"); */
+
+          printf("</TR>\r\n");
 	}
       
 
@@ -668,8 +829,8 @@ main(int argc,
 
     }
 
-#ifdef RADICAL_LIST
-  else if(mode == ERADLST)
+#ifdef RADICAL_LIST 
+  else if(mode == ERADLST) /************************ RADICAL LIST ********************/
     {
       printf("<TABLE BORDER=1>");
       printf("<TR>");
@@ -686,7 +847,7 @@ main(int argc,
 	}
       printf("</TR></TABLE>");
     }
-  else if(mode == ERADICAL)
+  else if(mode == ERADICAL) /************************* RADICAL ************************/
     {
       FILE *f;
       int u,stroke;
@@ -702,13 +863,13 @@ main(int argc,
       f = fopen(s,"r");
       i=0;
       printf("<TR>");
-      while(fscanf(f,"%06X\t%d", &u, &stroke) == 2)
+      while(fscanf(f,"%04X\t%d", &u, &stroke) == 2)
 	{
 	  if(!( (i++)%10))
 	    printf("</TR><TR>");
 	  printf("<TD>");
 	  printf("%d ", stroke);
-	  printf("<A HREF=\"?k1=%06X#here\">", u);
+	  printf("<A HREF=\"?k1=%04X#here\">", u);
 	  printBasicBlockInfo(u);
 	  printf("</A></TD>");
 	}
@@ -716,7 +877,7 @@ main(int argc,
       printf("</TR></TABLE>");
     }
 #endif /* RADICAL_LIST */
-  else if(mode == ENAME)
+  else if(mode == ENAME) /************************ NAME ***************************/
     {
       UChar32 c;
       char *p;
@@ -752,7 +913,7 @@ main(int argc,
       printf("</UL><!-- %d tested --><HR>\r\n",enumHits);
       showSearchMenu( 0x0000 ); 
     }
-  else if(mode == EEXACTNAME)
+  else if(mode == EEXACTNAME) /************** EXACT NAME ********************************/
     {
       UChar32 c;
       char *p;
@@ -784,7 +945,7 @@ main(int argc,
         }
       else
         {
-          printf("<LI><A HREF=\"?k1=%06X#here\"><TT>%06X</TT> - %s\r\n",
+          printf("<LI><A HREF=\"?k1=%04X#here\"><TT>%04X</TT> - %s\r\n",
                 c,c,gSearchName);
           printBasicBlockInfo(c);
 
@@ -793,7 +954,7 @@ main(int argc,
       printf("</UL><HR>\r\n");
       showSearchMenu( 0x0000 ); 
     }
-  else
+  else /************************************* ????????????????????????? ****************/
     {
       printf("Unknown search mode ! <HR>\r\n");
     }
@@ -811,8 +972,9 @@ main(int argc,
     }
 
   u_getUnicodeVersion(uvi);
-  printf("<A HREF=\"http://www.unicode.org/\">Based on: ");
+  printf("<A HREF=\"http://www.unicode.org/\">Based on Unicode ");
   for(uc=0;uc<U_MAX_VERSION_LENGTH;uc++) {
+    if((uc < 3) || (uvi[uc] != 0)) /* don't show trailing zero in 4th place. */
       printf("%d.",uvi[uc]);
   }
   printf("</A>\r\n");
@@ -821,7 +983,7 @@ main(int argc,
   
   printf("</td></tr></table>\r\n");
 
-  printf("</BODY></HTML>\r\n");
+  printf("</BODY><!-- SFCBugibba design 12 ta' Mejju 2001 --></HTML>\r\n");
 }
 
 /* still lazy evaluated. but it'll give us an alternate strcpy */
@@ -891,151 +1053,154 @@ up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *cnvStatus)
   return buf;
 }
 
+
+/* See printTypeFull also */
 void printType(int8_t type)
 {
   switch(type)
     {
-    case U_UNASSIGNED: printf("UNASSIGNED"); break; 
-	    case U_UPPERCASE_LETTER: printf("UPPERCASE_LETTER"); break; 
-	    case U_LOWERCASE_LETTER: printf("LOWERCASE_LETTER"); break; 
-    case U_TITLECASE_LETTER: printf("TITLECASE_LETTER"); break; 
-    case U_MODIFIER_LETTER: printf("MODIFIER_LETTER"); break; 
-	    case U_OTHER_LETTER: printf("OTHER_LETTER"); break; 
-	    case U_NON_SPACING_MARK: printf("NON_SPACING_MARK"); break; 
-	    case U_ENCLOSING_MARK: printf("ENCLOSING_MARK"); break; 
-	    case U_COMBINING_SPACING_MARK: printf("COMBINING_SPACING_MARK"); break; 
-	    case U_DECIMAL_DIGIT_NUMBER: printf("DECIMAL_DIGIT_NUMBER"); break; 
-	    case U_LETTER_NUMBER: printf("LETTER_NUMBER"); break; 
-	    case U_OTHER_NUMBER: printf("OTHER_NUMBER"); break; 
-	    case U_SPACE_SEPARATOR: printf("SPACE_SEPARATOR"); break; 
-	    case U_LINE_SEPARATOR: printf("LINE_SEPARATOR"); break; 
-	    case U_PARAGRAPH_SEPARATOR: printf("PARAGRAPH_SEPARATOR"); break; 
-	    case U_CONTROL_CHAR: printf("CONTROL"); break; 
-	    case U_FORMAT_CHAR: printf("FORMAT"); break; 
-	    case U_PRIVATE_USE_CHAR: printf("PRIVATE_USE"); break; 
-	    case U_SURROGATE: printf("SURROGATE"); break; 
-	    case U_DASH_PUNCTUATION: printf("DASH_PUNCTUATION"); break; 
-	    case U_START_PUNCTUATION: printf("START_PUNCTUATION"); break; 
-	    case U_END_PUNCTUATION: printf("END_PUNCTUATION"); break; 
-	    case U_CONNECTOR_PUNCTUATION: printf("CONNECTOR_PUNCTUATION"); break; 
-	    case U_OTHER_PUNCTUATION: printf("OTHER_PUNCTUATION"); break; 
-	    case U_MATH_SYMBOL: printf("MATH_SYMBOL"); break; 
-	    case U_CURRENCY_SYMBOL: printf("CURRENCY_SYMBOL"); break; 
-	    case U_MODIFIER_SYMBOL: printf("MODIFIER_SYMBOL"); break; 
-	    case U_OTHER_SYMBOL: printf("OTHER_SYMBOL"); break; 
-	    case U_INITIAL_PUNCTUATION: printf("INITIAL_PUNCTUATION"); break; 
-	    case U_FINAL_PUNCTUATION: printf("FINAL_PUNCTUATION"); break; 
-    case U_GENERAL_OTHER_TYPES: printf("GENRERAL_OTHER_TYPES"); break;  /* sic */
+    case U_UNASSIGNED: printf("Unassigned"); break; 
+    case U_UPPERCASE_LETTER: printf("Uppercase Letter");  break;  
+    case U_LOWERCASE_LETTER:  printf("Lowercase Letter");  break; 
+    case U_TITLECASE_LETTER: printf("Titlecase Letter"); break;  
+    case U_MODIFIER_LETTER: printf("Modifier Letter"); break; 
+    case U_OTHER_LETTER: printf("Other Letter"); break; 
+    case U_NON_SPACING_MARK: printf("Non-Spacing Mark"); break; 
+    case U_ENCLOSING_MARK: printf("Enclosing Mark"); break; 
+    case U_COMBINING_SPACING_MARK: printf("Combining Spacing Mark"); break; 
+    case U_DECIMAL_DIGIT_NUMBER: printf("Decimal Digit Number"); break; 
+    case U_LETTER_NUMBER: printf("Letter Number"); break; 
+    case U_OTHER_NUMBER: printf("Other Number"); break; 
+    case U_SPACE_SEPARATOR: printf("Space Separator"); break; 
+    case U_LINE_SEPARATOR: printf("Line Separator"); break; 
+    case U_PARAGRAPH_SEPARATOR: printf("Paragraph Separator"); break; 
+    case U_CONTROL_CHAR: printf("Control"); break; 
+    case U_FORMAT_CHAR: printf("Format"); break; 
+    case U_PRIVATE_USE_CHAR: printf("Private Use"); break; 
+    case U_SURROGATE: printf("Surrogate"); break; 
+    case U_DASH_PUNCTUATION: printf("Dash Punctuation"); break; 
+    case U_START_PUNCTUATION: printf("Start Punctuation"); break; 
+    case U_END_PUNCTUATION: printf("End Punctuation"); break; 
+    case U_CONNECTOR_PUNCTUATION: printf("Connector Punctuation"); break; 
+    case U_OTHER_PUNCTUATION: printf("Other Punctuation"); break; 
+    case U_MATH_SYMBOL: printf("Math Symbol"); break; 
+    case U_CURRENCY_SYMBOL: printf("Currency Symbol"); break; 
+    case U_MODIFIER_SYMBOL: printf("Modifier Symbol"); break; 
+    case U_OTHER_SYMBOL: printf("Other Symbol"); break; 
+    case U_INITIAL_PUNCTUATION: printf("Initial Punctuation"); break; 
+    case U_FINAL_PUNCTUATION: printf("Final Punctuation"); break; 
+    case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;  /* sic */
     default: printf("Unknown type %d", type); break;
     }
 }
 
-void printScript(UCharScript script)
-{
-  switch(script)
-    {
-case U_BASIC_LATIN: printf("BASIC_LATIN"); return;
-case U_LATIN_1_SUPPLEMENT: printf("LATIN_1_SUPPLEMENT"); return;
-case U_LATIN_EXTENDED_A: printf("LATIN_EXTENDED_A"); return;
-case U_LATIN_EXTENDED_B: printf("LATIN_EXTENDED_B"); return;
-case U_IPA_EXTENSIONS: printf("IPA_EXTENSIONS"); return;
-case U_SPACING_MODIFIER_LETTERS: printf("SPACING_MODIFIER_LETTERS"); return;
-case U_COMBINING_DIACRITICAL_MARKS: printf("COMBINING_DIACRITICAL_MARKS"); return;
-case U_GREEK: printf("GREEK"); return;
-case U_CYRILLIC: printf("CYRILLIC"); return;
-case U_ARMENIAN: printf("ARMENIAN"); return;
-case U_HEBREW: printf("HEBREW"); return;
-case U_ARABIC: printf("ARABIC"); return;
-case U_SYRIAC: printf("SYRIAC"); return;
-case U_THAANA: printf("THAANA"); return;
-case U_DEVANAGARI: printf("DEVANAGARI"); return;
-case U_BENGALI: printf("BENGALI"); return;
-case U_GURMUKHI: printf("GURMUKHI"); return;
-case U_GUJARATI: printf("GUJARATI"); return;
-case U_ORIYA: printf("ORIYA"); return;
-case U_TAMIL: printf("TAMIL"); return;
-case U_TELUGU: printf("TELUGU"); return;
-case U_KANNADA: printf("KANNADA"); return;
-case U_MALAYALAM: printf("MALAYALAM"); return;
-case U_SINHALA: printf("SINHALA"); return;
-case U_THAI: printf("THAI"); return;
-case U_LAO: printf("LAO"); return;
-case U_TIBETAN: printf("TIBETAN"); return;
-case U_MYANMAR: printf("MYANMAR"); return;
-case U_GEORGIAN: printf("GEORGIAN"); return;
-case U_HANGUL_JAMO: printf("HANGUL_JAMO"); return;
-case U_ETHIOPIC: printf("ETHIOPIC"); return;
-case U_CHEROKEE: printf("CHEROKEE"); return;
-case U_UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS: printf("UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS"); return;
-case U_OGHAM: printf("OGHAM"); return;
-case U_RUNIC: printf("RUNIC"); return;
-case U_KHMER: printf("KHMER"); return;
-case U_MONGOLIAN: printf("MONGOLIAN"); return;
-case U_LATIN_EXTENDED_ADDITIONAL: printf("LATIN_EXTENDED_ADDITIONAL"); return;
-case U_GREEK_EXTENDED: printf("GREEK_EXTENDED"); return;
-case U_GENERAL_PUNCTUATION: printf("GENERAL_PUNCTUATION"); return;
-case U_SUPERSCRIPTS_AND_SUBSCRIPTS: printf("SUPERSCRIPTS_AND_SUBSCRIPTS"); return;
-case U_CURRENCY_SYMBOLS: printf("CURRENCY_SYMBOLS"); return;
-case U_COMBINING_MARKS_FOR_SYMBOLS: printf("COMBINING_MARKS_FOR_SYMBOLS"); return;
-case U_LETTERLIKE_SYMBOLS: printf("LETTERLIKE_SYMBOLS"); return;
-case U_NUMBER_FORMS: printf("NUMBER_FORMS"); return;
-case U_ARROWS: printf("ARROWS"); return;
-case U_MATHEMATICAL_OPERATORS: printf("MATHEMATICAL_OPERATORS"); return;
-case U_MISCELLANEOUS_TECHNICAL: printf("MISCELLANEOUS_TECHNICAL"); return;
-case U_CONTROL_PICTURES: printf("CONTROL_PICTURES"); return;
-case U_OPTICAL_CHARACTER_RECOGNITION: printf("OPTICAL_CHARACTER_RECOGNITION"); return;
-case U_ENCLOSED_ALPHANUMERICS: printf("ENCLOSED_ALPHANUMERICS"); return;
-case U_BOX_DRAWING: printf("BOX_DRAWING"); return;
-case U_BLOCK_ELEMENTS: printf("BLOCK_ELEMENTS"); return;
-case U_GEOMETRIC_SHAPES: printf("GEOMETRIC_SHAPES"); return;
-case U_MISCELLANEOUS_SYMBOLS: printf("MISCELLANEOUS_SYMBOLS"); return;
-case U_DINGBATS: printf("DINGBATS"); return;
-case U_BRAILLE_PATTERNS: printf("BRAILLE_PATTERNS"); return;
-case U_CJK_RADICALS_SUPPLEMENT: printf("CJK_RADICALS_SUPPLEMENT"); return;
-case U_KANGXI_RADICALS: printf("KANGXI_RADICALS"); return;
-case U_IDEOGRAPHIC_DESCRIPTION_CHARACTERS: printf("IDEOGRAPHIC_DESCRIPTION_CHARACTERS"); return;
-case U_CJK_SYMBOLS_AND_PUNCTUATION: printf("CJK_SYMBOLS_AND_PUNCTUATION"); return;
-case U_HIRAGANA: printf("HIRAGANA"); return;
-case U_KATAKANA: printf("KATAKANA"); return;
-case U_BOPOMOFO: printf("BOPOMOFO"); return;
-case U_HANGUL_COMPATIBILITY_JAMO: printf("HANGUL_COMPATIBILITY_JAMO"); return;
-case U_KANBUN: printf("KANBUN"); return;
-case U_BOPOMOFO_EXTENDED: printf("BOPOMOFO_EXTENDED"); return;
-case U_ENCLOSED_CJK_LETTERS_AND_MONTHS: printf("ENCLOSED_CJK_LETTERS_AND_MONTHS"); return;
-case U_CJK_COMPATIBILITY: printf("CJK_COMPATIBILITY"); return;
-case U_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A: printf("CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A"); return;
-case U_CJK_UNIFIED_IDEOGRAPHS: printf("CJK_UNIFIED_IDEOGRAPHS"); return;
-case U_YI_SYLLABLES: printf("YI_SYLLABLES"); return;
-case U_YI_RADICALS: printf("YI_RADICALS"); return;
-case U_HANGUL_SYLLABLES: printf("HANGUL_SYLLABLES"); return;
-case U_HIGH_SURROGATES: printf("HIGH_SURROGATES"); return;
-case U_HIGH_PRIVATE_USE_SURROGATES: printf("HIGH_PRIVATE_USE_SURROGATES"); return;
-case U_LOW_SURROGATES: printf("LOW_SURROGATES"); return;
-case U_PRIVATE_USE_AREA /* PRIVATE_USE */: printf("PRIVATE_USE_AREA /* PRIVATE_USE */"); return;
-case U_CJK_COMPATIBILITY_IDEOGRAPHS: printf("CJK_COMPATIBILITY_IDEOGRAPHS"); return;
-case U_ALPHABETIC_PRESENTATION_FORMS: printf("ALPHABETIC_PRESENTATION_FORMS"); return;
-case U_ARABIC_PRESENTATION_FORMS_A: printf("ARABIC_PRESENTATION_FORMS_A"); return;
-case U_COMBINING_HALF_MARKS: printf("COMBINING_HALF_MARKS"); return;
-case U_CJK_COMPATIBILITY_FORMS: printf("CJK_COMPATIBILITY_FORMS"); return;
-case U_SMALL_FORM_VARIANTS: printf("SMALL_FORM_VARIANTS"); return;
-case U_ARABIC_PRESENTATION_FORMS_B: printf("ARABIC_PRESENTATION_FORMS_B"); return;
-case U_SPECIALS: printf("SPECIALS"); return;
-case U_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("HALFWIDTH_AND_FULLWIDTH_FORMS"); return;
-  /*case U_CHAR_SCRIPT_COUNT: printf("SCRIPT_COUNT"); return; */
-case U_NO_SCRIPT: printf("NO_SCRIPT"); return;
 
-    default: printf("Unknown script %d", script); return;
+void printBlock(UCharScript block)
+{
+  switch(block)
+    {
+case U_BASIC_LATIN: printf("Basic Latin"); return;
+case U_LATIN_1_SUPPLEMENT: printf("Latin-1 Supplement"); return;
+case U_LATIN_EXTENDED_A: printf("Latin Extended A"); return;
+case U_LATIN_EXTENDED_B: printf("Latin Extended B"); return;
+case U_IPA_EXTENSIONS: printf("IPA Extensions"); return;
+case U_SPACING_MODIFIER_LETTERS: printf("Spacing Modifier Letters"); return;
+case U_COMBINING_DIACRITICAL_MARKS: printf("Combining Diacritical Marks"); return;
+case U_GREEK: printf("Greek"); return;
+case U_CYRILLIC: printf("Cyrillic"); return;
+case U_ARMENIAN: printf("Armenian"); return;
+case U_HEBREW: printf("Hebrew"); return;
+case U_ARABIC: printf("Arabic"); return;
+case U_SYRIAC: printf("Syriac"); return;
+case U_THAANA: printf("Thaana"); return;
+case U_DEVANAGARI: printf("Devanagari"); return;
+case U_BENGALI: printf("Bengali"); return;
+case U_GURMUKHI: printf("Gurmukhi"); return;
+case U_GUJARATI: printf("Gujarati"); return;
+case U_ORIYA: printf("Oriya"); return;
+case U_TAMIL: printf("Tamil"); return;
+case U_TELUGU: printf("Telugu"); return;
+case U_KANNADA: printf("Kannada"); return;
+case U_MALAYALAM: printf("Malayalam"); return;
+case U_SINHALA: printf("Sinhala"); return;
+case U_THAI: printf("Thai"); return;
+case U_LAO: printf("Lao"); return;
+case U_TIBETAN: printf("Tibetan"); return;
+case U_MYANMAR: printf("Myanmar"); return;
+case U_GEORGIAN: printf("Georgian"); return;
+case U_HANGUL_JAMO: printf("Hangul-Jamo"); return;
+case U_ETHIOPIC: printf("Ethiopic"); return;
+case U_CHEROKEE: printf("Cherokee"); return;
+case U_UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS: printf("Unified Canadian Aboriginal Syllabics"); return;
+case U_OGHAM: printf("Ogham"); return;
+case U_RUNIC: printf("Runic"); return;
+case U_KHMER: printf("Khmer"); return;
+case U_MONGOLIAN: printf("Mongolian"); return;
+case U_LATIN_EXTENDED_ADDITIONAL: printf("Latin Extended Additional"); return;
+case U_GREEK_EXTENDED: printf("Greek Extended"); return;
+case U_GENERAL_PUNCTUATION: printf("General Punctuation"); return;
+case U_SUPERSCRIPTS_AND_SUBSCRIPTS: printf("Superscripts and Subscripts"); return;
+case U_CURRENCY_SYMBOLS: printf("Currency Symbols"); return;
+case U_COMBINING_MARKS_FOR_SYMBOLS: printf("Combining Marks for Symbols"); return;
+case U_LETTERLIKE_SYMBOLS: printf("Letterlike Symbols"); return;
+case U_NUMBER_FORMS: printf("Number Forms"); return;
+case U_ARROWS: printf("Arrows"); return;
+case U_MATHEMATICAL_OPERATORS: printf("Mathematical Operators"); return;
+case U_MISCELLANEOUS_TECHNICAL: printf("Miscellaneous Technical"); return;
+case U_CONTROL_PICTURES: printf("Control Pictures"); return;
+case U_OPTICAL_CHARACTER_RECOGNITION: printf("Optical Character Recognition"); return;
+case U_ENCLOSED_ALPHANUMERICS: printf("Enclosed Alphanumerics"); return;
+case U_BOX_DRAWING: printf("Box Drawing"); return;
+case U_BLOCK_ELEMENTS: printf("Block Elements"); return;
+case U_GEOMETRIC_SHAPES: printf("Geometric Shapes"); return;
+case U_MISCELLANEOUS_SYMBOLS: printf("Miscellaneous Symbols"); return;
+case U_DINGBATS: printf("Dingbats"); return;
+case U_BRAILLE_PATTERNS: printf("Braille Patterns"); return;
+case U_CJK_RADICALS_SUPPLEMENT: printf("CJK Radicals Supplement"); return;
+case U_KANGXI_RADICALS: printf("KangXi Radicals"); return;
+case U_IDEOGRAPHIC_DESCRIPTION_CHARACTERS: printf("Ideographic Description Characters"); return;
+case U_CJK_SYMBOLS_AND_PUNCTUATION: printf("CJK Symbols and Punctuation"); return;
+case U_HIRAGANA: printf("Hiragana"); return;
+case U_KATAKANA: printf("Katakana"); return;
+case U_BOPOMOFO: printf("Bopomofo"); return;
+case U_HANGUL_COMPATIBILITY_JAMO: printf("Hangul Compatibility Jamo"); return;
+case U_KANBUN: printf("Kanbun"); return;
+case U_BOPOMOFO_EXTENDED: printf("Bopomofo Extended"); return;
+case U_ENCLOSED_CJK_LETTERS_AND_MONTHS: printf("Enclosed CJK Letters and Months"); return;
+case U_CJK_COMPATIBILITY: printf("CJK Compatibility"); return;
+case U_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A: printf("CJK Unified Ideographs Extension A"); return;
+case U_CJK_UNIFIED_IDEOGRAPHS: printf("CJK Unified Ideographs"); return;
+case U_YI_SYLLABLES: printf("Yi Syllables"); return;
+case U_YI_RADICALS: printf("Yi Radicals"); return;
+case U_HANGUL_SYLLABLES: printf("Hangul Syllables"); return;
+case U_HIGH_SURROGATES: printf("High Surrogates"); return;
+case U_HIGH_PRIVATE_USE_SURROGATES: printf("High Private-Use Surrogates"); return;
+case U_LOW_SURROGATES: printf("Low Surrogates"); return;
+case U_PRIVATE_USE_AREA /* PRIVATE_USE */: printf("Private Use Area"); return;
+case U_CJK_COMPATIBILITY_IDEOGRAPHS: printf("CJK Compatibility Ideographs"); return;
+case U_ALPHABETIC_PRESENTATION_FORMS: printf("Alphabetic Presentation Forms"); return;
+case U_ARABIC_PRESENTATION_FORMS_A: printf("Arabic Presentation Forms A"); return;
+case U_COMBINING_HALF_MARKS: printf("Combining Half Marks"); return;
+case U_CJK_COMPATIBILITY_FORMS: printf("CJK Compatibility Forms"); return;
+case U_SMALL_FORM_VARIANTS: printf("Small Form Variants"); return;
+case U_ARABIC_PRESENTATION_FORMS_B: printf("Arabic Presentation Forms B"); return;
+case U_SPECIALS: printf("Specials"); return;
+case U_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("Halfwidth and Fullwidth Forms"); return;
+  /*case U_CHAR_SCRIPT_COUNT: printf("Script Count"); return; */
+case U_NO_SCRIPT: printf("No Script"); return;
+
+    default: printf("Unknown block %d",block); return;
     }
 }
 
-UChar32 doSearchScript(int32_t script, UChar32 startFrom)
+UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
 {
   UChar32 end = (startFrom-1);
   for(;startFrom != end; startFrom++)
   {
     if(startFrom > UCHAR_MAX_VALUE)
       startFrom = UCHAR_MIN_VALUE;
-    if(u_charScript(startFrom) == script)
+    if(u_charScript(startFrom) == block)
       return startFrom;
   }
 
@@ -1061,33 +1226,34 @@ void showSearchMenu(UChar32 startFrom)
 {
   int32_t i;
 
-  printf("<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
-         "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n"
+  printf("<table border=0 cellpadding=0 cellspacing=0 qwidth=100% ><tr><td bgcolor=\"#000000\">\r\n"
+         "<table border=0 cellpadding=1 cellspacing=1 qwidth=100%><tr><td bgcolor=\"#cccccc\">\r\n"
+//         "<table border=2 cellpadding=2 cellspacing=2 qwidth=100%><tr><td bgcolor=\"#cccccc\">\r\n"
          "\r\n");
 
   printf("<b>Search</b><br>\r\n"
          "\r\n"
          "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
-         "<table border=0><tr><td>\r\n"
+         "<table cellspacing=8><tr><td>\r\n"
          "\r\n");
 
-  printf("By Script: <FORM METHOD=GET>");
-  printf("<SELECT NAME=scr>\r\n");
+  printf("<FORM METHOD=GET>Block: ");
+  printf("<SELECT NAME=scr>");
   for(i=U_BASIC_LATIN;i<=U_CHAR_SCRIPT_COUNT;i++)
     {
       printf("  <OPTION ");
-      if(i == gSearchScript)
+      if(i == gSearchBlock)
 	printf(" SELECTED ");
       printf(" VALUE=\"%d\">", i);
-      printScript(i);
+      printBlock(i);
       printf("\r\n");
     }
   printf("</SELECT>\r\n");
-  printf("<INPUT TYPE=hidden NAME=b VALUE=%06X>\r\n", startFrom);
+  printf("<INPUT TYPE=hidden NAME=b VALUE=%04X>\r\n", startFrom);
   printf("<INPUT TYPE=SUBMIT VALUE=\"Search\">");
-  printf("</FORM>\r\n");
+  printf("</FORM></td>");
 
-  printf("By Type: <FORM METHOD=GET>");
+  printf("<td><FORM METHOD=GET>&nbsp;&nbsp;&nbsp;General Category: ");
   printf("<SELECT NAME=typ>\r\n");
   for(i=U_UNASSIGNED;i<=U_GENERAL_OTHER_TYPES;i++)
     {
@@ -1099,13 +1265,11 @@ void showSearchMenu(UChar32 startFrom)
       printf("\r\n");
     }
   printf("</SELECT>\r\n");
-  printf("<INPUT TYPE=hidden NAME=b VALUE=%06X>\r\n", startFrom);
+  printf("<INPUT TYPE=hidden NAME=b VALUE=%04X>\r\n", startFrom);
   printf("<INPUT TYPE=SUBMIT VALUE=\"Search\">");
-  printf("</FORM>\r\n");
+  printf("</FORM>");
 
-  printf("By Charname: <FORM METHOD=GET><INPUT NAME=s><INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
-
-  printf("By Exact Name: <FORM METHOD=GET><INPUT NAME=sx><INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
+  printf("</td></tr><tr><td colspan=2><FORM METHOD=GET>Name: <INPUT size=40 NAME=s> &nbsp; <input type=checkbox name=sx>Exact?<INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
 
 #ifdef RADICAL_LIST
   printf("<A HREF=\"?radlst=1\">Radicals</A><P>");
