@@ -39,3 +39,15 @@ directory, and the ICU libraries (e.g. libicuuc.so.18) are in
   Another way on Linux is to add the line
   /usr/local/lib
   to the file /etc/ld.so.conf, then run /sbin/ldconfig (as root).
+
+HTTP Server
+-----------
+
+Make sure that the http server is configured for JavaScript (.js)
+include files.  In Apache, this means adding the line:
+
+  AddType application/x-javascript .js
+
+to /etc/httpd/conf/httpd.conf.  (Then restart the server with
+  /etc/rc.d/init.d/httpd restart
+).
