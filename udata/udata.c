@@ -19,9 +19,16 @@
 
 #include "utypes.h"
 #include "uloc.h"
+#include "umutex.h"
 #include "cmemory.h"
 #include "cstring.h"
 #include "udata.h"
+
+#if !defined(UDATA_DLL) && !defined(UDATA_MAP)
+#   define UDATA_DLL
+#endif
+
+#define COMMON_DATA_NAME "icudata"
 
 static UDataMemory *
 doOpenChoice(const char *type, const char *name,
@@ -82,6 +89,14 @@ struct UDataMemory {
     MappedData *p;
 };
 
+static HINSTANCE commonLib=NULL;
+
+static MappedData *
+getChoice(HINSTANCE lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
 static UDataMemory *
 doOpenChoice(const char *type, const char *name,
              UDataMemoryIsAcceptable *isAcceptable, void *context,
@@ -89,8 +104,27 @@ doOpenChoice(const char *type, const char *name,
     char buffer[40];
     UDataMemory *pData;
     MappedData *p;
-    UDataInfo *info;
     int nameLimit;
+    UErrorCode commonErrorCode=U_ZERO_ERROR;
+
+    if(commonLib==NULL) {
+        /* load the common library if necessary - outside the mutex block */
+        HINSTANCE lib=LoadLibrary(COMMON_DATA_NAME ".dll");
+        if(lib!=NULL) {
+            /* in the mutex block, set the common library for this process */
+            umtx_lock(NULL);
+            if(commonLib==NULL) {
+                commonLib=lib;
+                lib=NULL;
+            }
+            umtx_unlock(NULL);
+
+            /* if a different thread set it first, then free the extra library instance */
+            if(lib!=NULL) {
+                FreeLibrary(lib);
+            }
+        }
+    }
 
     /* allocate the data structure */
     pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
@@ -99,12 +133,24 @@ doOpenChoice(const char *type, const char *name,
         return NULL;
     }
 
-    /* set up the dll filename */
+    /* set up the entry point name */
     icu_strcpy(buffer, name);
     if(type!=NULL && *type!=0) {
         icu_strcat(buffer, "_");
         icu_strcat(buffer, type);
     }
+
+    /* look for it in the common library */
+    if(commonLib!=NULL) {
+        p=getChoice(commonLib, buffer, type, name, isAcceptable, context, &commonErrorCode);
+        if(p!=NULL) {
+            pData->lib=NULL;
+            pData->p=p;
+            return pData;
+        }
+    }
+
+    /* set up the dll filename */
     nameLimit=icu_strlen(buffer);
     icu_strcat(buffer, ".dll");
 
@@ -116,20 +162,36 @@ doOpenChoice(const char *type, const char *name,
         return NULL;
     }
 
-    /* get the data pointer */
     buffer[nameLimit]=0;
-    pData->p=p=(MappedData *)GetProcAddress(pData->lib, buffer);
-    if(p==NULL) {
+    p=getChoice(pData->lib, buffer, type, name, isAcceptable, context, pErrorCode);
+    if(p!=NULL) {
+        pData->p=p;
+        return pData;
+    } else {
         FreeLibrary(pData->lib);
         icu_free(pData);
+        *pErrorCode=commonErrorCode;
+        return NULL;
+    }
+}
+
+static MappedData *
+getChoice(HINSTANCE lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode) {
+    MappedData *p;
+    UDataInfo *info;
+
+    /* get the data pointer */
+    p=(MappedData *)GetProcAddress(lib, entry);
+    if(p==NULL) {
         *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
     }
 
     /* check magic1 & magic2 */
     if(p->magic1!=0xda || p->magic2!=0x27) {
-        FreeLibrary(pData->lib);
-        icu_free(pData);
         *pErrorCode=U_INVALID_FORMAT_ERROR;
         return NULL;
     }
@@ -137,27 +199,25 @@ doOpenChoice(const char *type, const char *name,
     /* check for the byte ordering */
     info=(UDataInfo *)(p+1);
     if(info->isBigEndian!=U_IS_BIG_ENDIAN) {
-        FreeLibrary(pData->lib);
-        icu_free(pData);
         *pErrorCode=U_INVALID_FORMAT_ERROR;
         return NULL;
     }
 
     /* is this acceptable? */
     if(isAcceptable!=NULL && !isAcceptable(context, type, name, info)) {
-        FreeLibrary(pData->lib);
-        icu_free(pData);
         *pErrorCode=U_INVALID_FORMAT_ERROR;
         return NULL;
     }
 
-    return pData;
+    return p;
 }
 
 U_CAPI void U_EXPORT2
 udata_close(UDataMemory *pData) {
     if(pData!=NULL) {
-        FreeLibrary(pData->lib);
+        if(pData->lib!=NULL) {
+            FreeLibrary(pData->lib);
+        }
         icu_free(pData);
     }
 }

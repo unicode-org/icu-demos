@@ -66,6 +66,8 @@ static const UDataInfo dataInfo={
     3, 0, 0, 0                  /* dataVersion */
 };
 
+static bool_t beVerbose=FALSE, haveCopyright=TRUE;
+
 static uint8_t stringStore[STRING_STORE_SIZE],
                groupStore[GROUP_STORE_SIZE],
                lineLengths[LINES_PER_GROUP];
@@ -185,6 +187,8 @@ main(int argc, char *argv[]) {
             "\toptions:\n"
             "\t\t-1[-]  do not store Unicode 1.0 character names (default)\n"
             "\t\t-1+  do store Unicode 1.0 character names\n"
+            "\t\t-v[+|-]  verbose output\n"
+            "\t\t-c[+|-]  do (not) include a copyright notice\n"
             "\t\tfilename  absolute path/filename for the\n"
             "\t\t\tUnicode database text file (default: standard input)\n",
             argv[0]);
@@ -193,8 +197,18 @@ main(int argc, char *argv[]) {
     for(i=1; i<argc; ++i) {
         arg=argv[i];
         if(arg[0]=='-') {
-            if(arg[1]=='1') {
+            switch(arg[1]) {
+            case '1':
                 store10Names= arg[2]=='+';
+                break;
+            case 'v':
+                beVerbose= arg[2]=='+';
+                break;
+            case 'c':
+                haveCopyright= arg[2]=='+';
+                break;
+            default:
+                break;
             }
         } else {
             filename=arg;
@@ -417,9 +431,11 @@ compress() {
         for(i=0, wordNumber=0; wordNumber<(int16_t)wordCount; ++i) {
             if(tokens[i]!=-1) {
                 tokens[i]=wordNumber;
-                printf("tokens[0x%03x]: word%8ld \"%.*s\"\n",
-                        i, words[wordNumber].weight,
-                        words[wordNumber].length, words[wordNumber].s);
+                if(beVerbose) {
+                    printf("tokens[0x%03x]: word%8ld \"%.*s\"\n",
+                            i, words[wordNumber].weight,
+                            words[wordNumber].length, words[wordNumber].s);
+                }
                 ++wordNumber;
             }
         }
@@ -458,9 +474,11 @@ compress() {
 
         /* set token 0 to word 0 */
         tokens[0]=0;
-        printf("tokens[0x000]: word%8ld \"%.*s\"\n",
-                words[0].weight,
-                words[0].length, words[0].s);
+        if(beVerbose) {
+            printf("tokens[0x000]: word%8ld \"%.*s\"\n",
+                    words[0].weight,
+                    words[0].length, words[0].s);
+        }
         wordNumber=1;
 
         /* set the lead byte tokens */
@@ -472,9 +490,11 @@ compress() {
         for(; i<256; ++i) {
             if(tokens[i]!=-1) {
                 tokens[i]=wordNumber;
-                printf("tokens[0x%03x]: word%8ld \"%.*s\"\n",
-                        i, words[wordNumber].weight,
-                        words[wordNumber].length, words[wordNumber].s);
+                if(beVerbose) {
+                    printf("tokens[0x%03x]: word%8ld \"%.*s\"\n",
+                            i, words[wordNumber].weight,
+                            words[wordNumber].length, words[wordNumber].s);
+                }
                 ++wordNumber;
             }
         }
@@ -482,9 +502,11 @@ compress() {
         /* continue above 255 where there are no letters */
         for(; i<tokenCount; ++i) {
             tokens[i]=wordNumber;
-            printf("tokens[0x%03x]: word%8ld \"%.*s\"\n",
-                    i, words[wordNumber].weight,
-                    words[wordNumber].length, words[wordNumber].s);
+            if(beVerbose) {
+                printf("tokens[0x%03x]: word%8ld \"%.*s\"\n",
+                        i, words[wordNumber].weight,
+                        words[wordNumber].length, words[wordNumber].s);
+            }
             ++wordNumber;
         }
     }
@@ -611,7 +633,8 @@ generateData() {
     long dataLength;
     int16_t token;
 
-    pData=udata_create(DATA_TYPE, DATA_NAME, &dataInfo, DATA_COPYRIGHT, &errorCode);
+    pData=udata_create(DATA_TYPE, DATA_NAME, &dataInfo,
+                       haveCopyright ? DATA_COPYRIGHT : NULL, &errorCode);
     if(U_FAILURE(errorCode)) {
         fprintf(stderr, "gennames: unable to create data memory, error %d\n", errorCode);
         exit(errorCode);
