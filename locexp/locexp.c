@@ -1408,6 +1408,7 @@ void chooseConverter(const char *restored)
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "%U<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+      explainStatus_X( status, NULL);
       return;
     }
 
@@ -1857,7 +1858,7 @@ void listBundles(char *b)
       return;
     }
 
-#if SRL_HRCEK
+#if SRL_HRCAK
   /* check for aliasing */
   {
     UErrorCode qxc = U_ZERO_ERROR;
@@ -2186,7 +2187,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
       UCollator *coll = NULL;
 
 
-  s = ures_get(rb, key, &status);
+  s = ures_getStringByKey(rb, key, &len, &status);
 
   if(!s || !s[0] || (status == U_MISSING_RESOURCE_ERROR))
     {
@@ -2268,6 +2269,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
       char *sampleChars;
       UResourceBundle *sampleRB;
       UErrorCode sampleStatus = U_ZERO_ERROR;
+      int32_t len;
 
       /* samplestring will vary with label locale! */
       sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
@@ -2275,7 +2277,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
       sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
       if(U_SUCCESS(sampleStatus))
       {
-          sampleString2 = ures_get(sampleRB, "EXPLORE_CollationElements_sampleString", &sampleStatus);
+          sampleString2 = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
           ures_close(sampleRB);
       }
 
@@ -2404,12 +2406,13 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
   char tempchar[1000];
+  int32_t len;
 
   UErrorCode countStatus = U_ZERO_ERROR,langStatus = U_ZERO_ERROR;
   const UChar *count3 = 0, *lang3 = 0;
 
-  count3 = ures_get(rb, "ShortCountry", &countStatus);
-  lang3 = ures_get(rb, "ShortLanguage", &langStatus);
+  count3 = ures_getStringByKey(rb, "ShortCountry", &len, &countStatus);
+  lang3 = ures_getStringByKey(rb, "ShortLanguage", &len, &langStatus);
 
 
   showKeyAndStartItem("LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
@@ -2506,8 +2509,9 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
+  int32_t len;
 
-  s = ures_get(rb, key, &status);
+  s = ures_getStringByKey(rb, key, &len, &status);
 
   if(U_SUCCESS(status) && ( u_strlen(s) > kShowStringCutoffSize ) )
     {
@@ -2569,8 +2573,9 @@ void showStringWithDescription(UResourceBundle *rb, const char *locale, const ch
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
   int32_t i;
+  int32_t len;
 
-  s = ures_get(rb, key, &status);
+  s = ures_getStringByKey(rb, key, &len, &status);
 
   /* we'll assume it's always big, for now. */
   bigString = TRUE;
@@ -2638,10 +2643,14 @@ void showArray( UResourceBundle *rb, const char *locale, const char *key )
 {
   UErrorCode status = U_ZERO_ERROR;
   UErrorCode firstStatus = U_ZERO_ERROR;
+  UResourceBundle  *array = NULL, *item = NULL;
+  int32_t len;
   const UChar *s  = 0;
   int i;
 
-  ures_getArrayItem(rb, key, 0, &firstStatus);
+  array = ures_getByKey(rb, key, array, &firstStatus);
+  item = ures_getByIndex(array, 0, item, &firstStatus);
+//  msg   = ures_getString(item, &rsrclen, &firstStatus); /* dont care about this str */
 
   showKeyAndStartItem(key, NULL, locale, FALSE, firstStatus);
 
@@ -2650,8 +2659,13 @@ void showArray( UResourceBundle *rb, const char *locale, const char *key )
   for(i=0;;i++)
     {
       status = U_ZERO_ERROR;
+      if(U_FAILURE(firstStatus)) {
+        status = firstStatus; /* ** todo: clean up err handling! */
+      }
 
-      s = ures_getArrayItem(rb, key, i, &status);
+      item = ures_getByIndex(array, i, item, &status);
+      s  = ures_getString(item, &len, &status);
+
       if(!s)
 	break;
 
@@ -2668,6 +2682,9 @@ void showArray( UResourceBundle *rb, const char *locale, const char *key )
     }
   u_fprintf(lx->OUT, "</OL></TD>");
   showKeyAndEndItem(key, locale);
+
+  ures_close(item);
+  ures_close(array);
 }
 
 
@@ -2679,6 +2696,8 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
   UErrorCode firstStatus;
   UChar *s  = 0, *toShow =0;
   UChar nothing[] = {(UChar)0x00B3, (UChar)0x0000};
+  UResourceBundle  *array = NULL, *item = NULL;
+  int32_t len;
 
   enum { kNoExample = 0, kDateTimeExample, kNumberExample } exampleType;
   int32_t i;
@@ -2690,7 +2709,6 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
   UChar tempChars[1024];
   UChar tempDate[1024]; /* for Date-Time */
   UChar tempTime[1024]; /* for Date-Time */
-  int32_t len = 0;
 
   /* figure out what example to use */
   if(!strcmp(key,"DateTimePatterns"))
@@ -2704,7 +2722,10 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
   now = ucal_getNow();
 
   firstStatus = U_ZERO_ERROR;
-  s = ures_getArrayItem(rb, key, 0, &firstStatus);
+  array = ures_getByKey(rb, key, array, &firstStatus);
+  item = ures_getByIndex(array, 0, item, &firstStatus);
+  s = ures_getString(item, &len, &firstStatus);
+//  s = ures_getArrayItem(rb, key, 0, &firstStatus);
   showKeyAndStartItemShort(key, NULL, locale, FALSE, firstStatus);
 
   if(exampleType != kNoExample)
@@ -2762,9 +2783,16 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       UChar *curStr = NULL, *homeStr = NULL;
 
       /* index [1] is the int'l currency symbol */
-      curStr = ures_getArrayItem(rb, key, 1, &curStatus);
+      item = ures_getByIndex(array, 1, item, &curStatus);
+      curStr  = ures_getString(item, &len, &curStatus);
       if(lx->defaultRB)
-	homeStr = ures_getArrayItem(lx->defaultRB, key, 1, &curStatus);
+      {
+        item = ures_getByKey(lx->defaultRB, key, item, &curStatus);
+        item = ures_getByIndex(item, 1, item, &curStatus);
+        curStr  = ures_getString(item, &len, &curStatus);
+
+//	homeStr = ures_getArrayItem(lx->defaultRB, key, 1, &curStatus);
+      }
       else
 	homeStr = (const UChar[]){0x0000};
       
@@ -2804,7 +2832,8 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       status = U_ZERO_ERROR;
       exampleStatus = U_ZERO_ERROR;
 
-      s = ures_getArrayItem(rb, key, i, &status);
+      item = ures_getByIndex(array, i, item, &status);
+      s =    ures_getString(item, &len, &status);
 
       if(i==0)
 	firstStatus = status;
@@ -2951,6 +2980,8 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
   u_fprintf(lx->OUT, "</TABLE></TD>");
 
   showKeyAndEndItem(key, locale);
+  ures_close(item);
+  ures_close(array);
 }
 
 
@@ -2961,6 +2992,8 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
   UErrorCode status = U_ZERO_ERROR;
   UErrorCode firstStatus;
   const UChar *s  = 0;
+  int32_t    len;
+  UResourceBundle *array = NULL, *item = NULL;
 
   const char *key = "DateTimeElements";
   int i;
@@ -2971,7 +3004,9 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
 
   status = U_ZERO_ERROR;
 
-  s = ures_getArrayItem(rb, key, 0, &status);
+  array = ures_getByKey(rb, key, array, &status);
+  item  = ures_getByIndex(array, 0, item, &status);
+  s     = ures_getString(item, &len, &status);
 
   showKeyAndStartItem(key, FSWF("DateTimeElements","Date and Time Options"), locale, FALSE, status);
 
@@ -2992,14 +3027,21 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
       
       if(lx->defaultRB && U_SUCCESS(status))
 	{
-	  s = ures_getArrayItem(lx->defaultRB, "DayNames", firstDay, &status);
+          /* don't use 'array' here because it's the DTE resource */
+          item = ures_getByKey(lx->defaultRB, "DayNames", item, &status);
+          item = ures_getByIndex(item, firstDay, item, &status);
+          s    = ures_getString(item, &len, &status);
+            
 	  if(s && U_SUCCESS(status))
 	    {
 	      u_fprintf(lx->OUT, " = %U \r\n", s);
 	    }
 	  status = U_ZERO_ERROR;
 
-	  s = ures_getArrayItem(rb, "DayNames", firstDay , &status);
+          item = ures_getByKey(rb, "DayNames", item, &status);
+          item = ures_getByIndex(item, firstDay, item, &status);
+          s    = ures_getString(item, &len, &status);
+
 	  if(s && U_SUCCESS(status))
 	    {
 	      u_fprintf(lx->OUT, " = %U \r\n", s);
@@ -3023,7 +3065,8 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
   
   status = U_ZERO_ERROR;
 
-  s = ures_getArrayItem(rb, key, 1, &status);
+  item = ures_getByIndex(array, 1, item, &status);
+  s = ures_getString(item, &len, &status);
 
   firstStatus = status;
   
@@ -3038,6 +3081,8 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
   u_fprintf(lx->OUT, "</TD>");
 
   showKeyAndEndItem(key, locale);
+  ures_close(array);
+  ures_close(item);
 }
 
 /* Show a resource that has a short (*Abbreviations) and long (*Names) version ---------------- */
@@ -3047,6 +3092,8 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
   UErrorCode status = U_ZERO_ERROR;
   UErrorCode shortStatus = U_ZERO_ERROR, longStatus = U_ZERO_ERROR;
   char       shortKey[100], longKey[100];
+  UResourceBundle  *shortArray = NULL, *longArray = NULL, *item = NULL;
+  int32_t len;
   const UChar *s  = 0;
   int i;
 
@@ -3056,8 +3103,10 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
   sprintf(longKey,  "%sAbbreviations", keyStem);
 
   /* pre load the status of these things */
-  ures_getArrayItem(rb,longKey, 0, &longStatus);
-  ures_getArrayItem(rb,shortKey, 0, &shortStatus);
+  shortArray = ures_getByKey(rb, shortKey, shortArray, &shortStatus);
+  longArray  = ures_getByKey(rb, longKey, longArray, &longStatus);
+  item       = ures_getByIndex(shortArray, 0, item, &shortStatus);
+  item       = ures_getByIndex(longArray, 0, item, &longStatus);
 
   u_fprintf(lx->OUT, "<TABLE BORDER=1 WIDTH=100%% HEIGHT=100%%><TR><TD><B>#</B></TD><TD><B>%U</B> ", shortName);
   explainStatus_X(shortStatus, keyStem);
@@ -3075,7 +3124,8 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
       /* get the normal name */
       status = U_ZERO_ERROR;
       key = longKey;
-      s = ures_getArrayItem(rb, key, i, &status);
+      item = ures_getByIndex(longArray, i, item, &status);
+      s    = ures_getString(item, &len, &status);
 
       if(i==0)
 	longStatus = status;
@@ -3090,7 +3140,8 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
       /* get the short name */
       status = U_ZERO_ERROR;
       key = shortKey;
-      s = ures_getArrayItem(rb, key, i, &status);
+      item = ures_getByIndex(shortArray, i, item, &status);
+      s    = ures_getString(item, &len, &status);
 
       if(i==0)
 	shortStatus = status;
@@ -3107,6 +3158,9 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
   u_fprintf(lx->OUT, "</TD>");
 
   showKeyAndEndItem(keyStem, locale);
+  ures_close(item);
+  ures_close(shortArray);
+  ures_close(longArray);
 
 }
 
@@ -3123,6 +3177,8 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
   bool_t isTZ = FALSE; /* do special TZ processing */
+
+#if 0 /* NOT YET */
   UResourceBundle *array = ures_getByKey(rb, key, NULL, &status);
   UResourceBundle *column = ures_getByIndex(array, 0, NULL, &status);
 
@@ -3247,6 +3303,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
     }
 
   showKeyAndEndItem(key, locale);
+#endif
 }
 
 /* Show a Tagged Array  -------------------------------------------------------------------*/
@@ -3262,6 +3319,8 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
+  int32_t len;
+  UResourceBundle *item = NULL;
 
   rows = ures_countArrayItems(rb, key, &status);
 
@@ -3293,7 +3352,11 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
       if(U_SUCCESS(status))
 	{	
       UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
+      UResourceBundle *defaultTagged = NULL;
       UResourceBundle *taggedItem = NULL;
+      if(lx->defaultRB)
+        defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
+
 	  
 
 	  u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
@@ -3324,7 +3387,9 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 		  
 		  if(lx->defaultRB)
 		    {
-		      s = ures_getTaggedArrayItem(lx->defaultRB, key, tag, &status);
+                      item = ures_getByKey(defaultTagged, tag, item, &status);
+                      s = ures_getString(item, &len, &status);
+
 		      if(s)
 			u_fprintf(lx->OUT, "<TD><I>%U</I></TD>", s);
 		      else
@@ -3335,7 +3400,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 		  
 		  status = U_ZERO_ERROR;
 
-		  s = ures_getTaggedArrayItem(rb, key, tag, &status);
+		  s = ures_getString(taggedItem, &len, &status);
 
 		  if(s)
 		    u_fprintf(lx->OUT, "<TD>%U</TD>", s);
@@ -3349,6 +3414,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 	      u_fprintf(lx->OUT, "</TR>\r\n");
 	    }
 	  u_fprintf(lx->OUT, "</TABLE>\r\n<BR>");
+          ures_close(taggedItem); /* todo: mem. management? */
 	}
     }
 
@@ -4347,7 +4413,9 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
 	supp = FALSE;
       else
 	{
-	  ures_get(newRB, "helpPrefix", &status);
+          int32_t len;
+
+	  ures_getStringByKey(newRB, "helpPrefix", &len, &status);
 
 	  if(status == U_USING_DEFAULT_ERROR)
 	    supp = FALSE;
@@ -4366,13 +4434,14 @@ bool_t isExperimentalLocale(const char *locale)
   UResourceBundle *newRB;
   UErrorCode       status = U_ZERO_ERROR;
   bool_t           supp   = FALSE;
+  int32_t len;
 
   newRB = ures_open(NULL, locale, &status);
   if(U_FAILURE(status))
     supp = TRUE;
   else
     {
-      const UChar *s = ures_get(newRB, "Version", &status);
+      const UChar *s = ures_getStringByKey(newRB, "Version", &len, &status);
       
       if(*s == 0x0078) /* If it starts with an 'x'.. */
 	supp = TRUE;

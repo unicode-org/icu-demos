@@ -963,6 +963,7 @@ const UChar *FSWF(const char *key, const char *fallback)
   static UChar   gFSWFTempChars[1024];
   UChar *fswfTempChars = gFSWFTempChars;
   UResourceBundle *rb;
+  int32_t len;
 
   if(strlen(fallback) >  1020)
     fswfTempChars = malloc(sizeof(UChar)*(strlen(fallback)+1));
@@ -972,7 +973,7 @@ const UChar *FSWF(const char *key, const char *fallback)
   status = U_ZERO_ERROR;
 
   if(rb != 0)
-    str = ures_get( rb, key, &status);
+    str = ures_getStringByKey( rb, key, &len, &status);
 
   if(str == 0) /* failed to get a str */
     {
