@@ -31,7 +31,7 @@ SO_TARGET = $(LIBICU)obsolete$(ICULIBSUFFIX)$(ICULIBSUFFIX_VERSION).$(SO)
 SO_TARGET_VERSION_MAJOR=$(LIB_VERSION_MAJOR)
 SO_TARGET_VERSION=$(LIB_VERSION)
 
-OBJECTS = bidi.o convert.o unicode.o
+OBJECTS = bidi.o convert.o uchar_ob.o ucol_ob.o unicode.o unistrob.o
 HEADERS = unicode/*.h
 
 ## List of phony targets

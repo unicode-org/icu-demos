@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OBSOLETE_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\icu\include" /I "..\..\icu\source\common" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OBSOLETE_EXPORTS" /D "U_OBSOLETE_IMPLEMENTATION" /D "ICU_UBIDI_USE_DEPRECATES" /D "ICU_UNICODE_CLASS_USE_DEPRECATES" /D "ICU_UNICODECONVERTER_USE_DEPRECATES" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\icu\include" /I "..\..\icu\source\common" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OBSOLETE_EXPORTS" /D "U_OBSOLETE_IMPLEMENTATION" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 icuuc.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26.pdb" /machine:I386 /out:"../bin/icuob26.dll" /implib:"..\lib\icuobs.lib" /libpath:"..\..\..\icu\lib\\"
+# ADD LINK32 icuuc.lib icuin.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26.pdb" /machine:I386 /out:"../bin/icuob26.dll" /implib:"..\lib\icuobs.lib" /libpath:"..\..\..\icu\lib\\"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "obsolete - Win32 Debug"
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OBSOLETE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\icu\include" /I "..\..\icu\source\common" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OBSOLETE_EXPORTS" /D "U_OBSOLETE_IMPLEMENTATION" /D "ICU_UBIDI_USE_DEPRECATES" /D "ICU_UNICODE_CLASS_USE_DEPRECATES" /D "ICU_UNICODECONVERTER_USE_DEPRECATES" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\icu\include" /I "..\..\icu\source\common" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OBSOLETE_EXPORTS" /D "U_OBSOLETE_IMPLEMENTATION" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 icuucd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26d.pdb" /debug /machine:I386 /out:"../bin/icuob26d.dll" /implib:"..\lib\icuobsd.lib" /pdbtype:sept /libpath:"..\..\..\icu\lib\\"
+# ADD LINK32 icuucd.lib icuind.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26d.pdb" /debug /machine:I386 /out:"../bin/icuob26d.dll" /implib:"..\lib\icuobsd.lib" /pdbtype:sept /libpath:"..\..\..\icu\lib\\"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -96,18 +96,6 @@ LINK32=link.exe
 
 SOURCE=.\bidi.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\convert.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\unicode.cpp
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
 SOURCE=.\unicode\bidi.h
@@ -134,6 +122,10 @@ InputPath=.\unicode\bidi.h
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\convert.cpp
 # End Source File
 # Begin Source File
 
@@ -191,6 +183,26 @@ InputPath=.\unicode\obsolete.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\uchar_ob.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\unicode\uchar_ob.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ucol_ob.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\unicode\ucol_ob.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\unicode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\unicode\unicode.h
 
 !IF  "$(CFG)" == "obsolete - Win32 Release"
@@ -215,6 +227,18 @@ InputPath=.\unicode\unicode.h
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\unistrob.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\unicode\unistrob.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\unicode\unorm_ob.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

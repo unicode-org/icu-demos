@@ -39,6 +39,16 @@ nbrowser/Makefile
 nbrowser/Makefile.local
 nbrowser/Release
 nbrowser/nbrowser
+obsolete/*.ao
+obsolete/*.d
+obsolete/*.ncb
+obsolete/*.opt
+obsolete/*.plg
+obsolete/Debug
+obsolete/Makefile
+obsolete/Release
+obsolete/icucfg.h
+obsolete/libicu*.*
 rtfcvrt/Makefile
 ubrowse/Makefile
 uconv/*.d
