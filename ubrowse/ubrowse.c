@@ -70,6 +70,7 @@
 #include "unicode/ucal.h"
 #include "unicode/uchar.h"
 #include <unicode/ustdio.h>
+#include "unicode/uscript.h"
 
 #include "unicode/decompcb.h" /* from locexp/util */
 
@@ -423,6 +424,26 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
               printf("</B>");
             
             printf("</TD>");
+          }
+
+          /** 3 3/4: script **/
+          {
+            UErrorCode scriptErr = U_ZERO_ERROR;
+            UScriptCode scriptCode;
+            
+            scriptCode = uscript_getScript(theChar, &scriptErr);
+            if(U_FAILURE(scriptErr))
+            {
+              printf("<TD BGCOLOR=\"#888888\">&nbsp;</TD>\r\n");
+            }
+            else
+            {
+              printf("<TD>");
+              
+              printf("%s", uscript_getShortName(scriptCode));
+
+              printf("</TD>");
+            }
           }
 
           /** 4: digit (optional) **/
@@ -873,27 +894,12 @@ main(int argc,
       {
         printf("<TD><B>Block</B></TD>"); /* 3 1/2 */
       }
+      printf("<TD><B>Script</B></TD>"); /* 3 3/4 Script */
       printf("<TD><B></B></TD>"); /* 4 digit */
       printf("<TD><B>Wid</B></TD>"); /* 5 width */
       printf("<TD><B>BiDi</B></TD>"); /* 6 Direction (BiDi?) */
       printf("</TR>\r\n");
 
-#if 0 /* Don't identify the columns (for now) */
-      printf("<TR><TD></TD>");
-      printf("<TD><B>%03X</B></TD>",  (block ) >> 4   );
-
-
-      printf("<TD><!-- <B>Lower<BR>Upper<BR>Title</B>--></TD>");
-      printf("<TD><B>#</B></TD>");
-      printf("<TD><!-- <B>alph<BR>spc<BR>ctrl<BR>print</B>--></TD>");
-      printf("<TD><B>base<BR>direction<BR>width<BR>type</B></TD>");
-      if(showBlock == TRUE) 
-      {
-        printf("<TD><B>Block</B></TD>");
-      }
-
-      printf("</TR>\r\n");
-#endif
       for(r = 0; r < 0x10; r++)  /***** rows ******/
 	{
 	  theChar = (block | r );
@@ -1063,6 +1069,11 @@ main(int argc,
 
     }
 
+  uvi[0]=0xFF;
+  uvi[1]=0xFF;
+  uvi[2]=0xFF;
+  uvi[3]=0xFF;
+  u_tolower(0x0000); /* to force data loading!!!!!! JB#1409l */
   u_getUnicodeVersion(uvi);
   printf("<A HREF=\"http://www.unicode.org/\">Based on Unicode ");
   for(uc=0;uc<U_MAX_VERSION_LENGTH;uc++) {
@@ -1180,7 +1191,7 @@ void printType(int8_t type)
     case U_OTHER_SYMBOL: printf("Other Symbol"); break; 
     case U_INITIAL_PUNCTUATION: printf("Initial Punctuation"); break; 
     case U_FINAL_PUNCTUATION: printf("Final Punctuation"); break; 
-    case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;  /* sic */
+//    case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;  /* sic */
     default: printf("Unknown type %d", type); break;
     }
 }
@@ -1277,8 +1288,16 @@ case UBLOCK_SMALL_FORM_VARIANTS: printf("Small Form Variants"); return;
 case UBLOCK_ARABIC_PRESENTATION_FORMS_B: printf("Arabic Presentation Forms B"); return;
 case UBLOCK_SPECIALS: printf("Specials"); return;
 case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("Halfwidth and Fullwidth Forms"); return;
-  /*case U_CHAR_SCRIPT_COUNT: printf("Script Count"); return; */
-case UBLOCK_NO_SCRIPT: printf("No Script"); return;
+    case UBLOCK_OLD_ITALIC: printf("Old Italic"); return;
+    case UBLOCK_GOTHIC: printf("Gothic"); return;
+    case UBLOCK_DESERET: printf("Deseret"); return;
+    case UBLOCK_BYZANTINE_MUSICAL_SYMBOLS: printf("Byzantine Musical Symbols"); return;
+    case UBLOCK_MUSICAL_SYMBOLS: printf("Musical Symbols"); return;
+    case UBLOCK_MATHEMATICAL_ALPHANUMERIC_SYMBOLS: printf("Mathematical Alphanumeric Symbols"); return;
+    case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B: printf("CJK Unified Ideographs, Extension B"); return;
+    case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT: printf("CJK Compatibility Ideographs, Supplement"); return;
+    case UBLOCK_TAGS: printf("Tags"); return;
+    case UBLOCK_PRIVATE_USE: printf("Private Use"); return;
 
     default: printf("Unknown block %d",block); return;
     }

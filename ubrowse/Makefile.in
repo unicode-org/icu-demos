@@ -30,7 +30,7 @@ CPPFLAGS +=
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
 # -ldl is needed for DLL version
-ICULIBS    += -llxutil -lustdio 
+ICULIBS    +=  -lustdio 
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
 CPPFLAGS  := -I../locexp/util  $(CPPFLAGS)
