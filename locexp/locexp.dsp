@@ -120,6 +120,10 @@ SOURCE=.\lxbrk.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\lxcgi.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\lxconv.c
 # End Source File
 # Begin Source File
