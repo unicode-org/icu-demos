@@ -27,8 +27,8 @@ int main(int argc , const char *argv[])
   
     char szMessage [256];
     
-    wsprintf (szMessage, "Please attach a debbuger to the process 0x%X (%s) and click OK",
-              GetCurrentProcessId(),"locexp");
+    wsprintf (szMessage, "Please attach a debugger to the process %d, 0x%X (%s) and click OK",
+              GetCurrentProcessId(), GetCurrentProcessId(),"locexp");  /* msvc 6 seems to show it in decimal */
     MessageBox(NULL, szMessage, "CGI Debug Time!",
                MB_OK|MB_SERVICE_NOTIFICATION);
     

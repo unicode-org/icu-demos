@@ -61,7 +61,7 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
+# PROP Output_Dir "..\..\icu\bin"
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -166,6 +166,10 @@ SOURCE=.\wfobject.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\locexp.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -174,39 +178,6 @@ SOURCE=.\wfobject.c
 # Begin Group "Build Scripts"
 
 # PROP Default_Filter "mk;mak"
-# Begin Source File
-
-SOURCE=.\resource\makedata.mak
-
-!IF  "$(CFG)" == "locexp - Win32 Release"
-
-# Begin Custom Build
-ProjDir=.
-InputPath=.\resource\makedata.mak
-InputName=makedata
-
-"$(ProjDir)\..\..\..\icu\source\data\locexp.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cd $(ProjDir)\resource 
-	nmake /f $(InputName).mak icup=$(ProjDir)\..\..\..\icu CFG=Release 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
-
-# Begin Custom Build
-ProjDir=.
-InputPath=.\resource\makedata.mak
-InputName=makedata
-
-"$(ProjDir)\..\..\icu\source\data\locexp.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cd $(ProjDir)\resource 
-	nmake /f $(InputName).mak icup=$(ProjDir)\..\..\..\icu CFG=Debug 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # Begin Source File
 
 SOURCE=.\resource\resfiles.mk
