@@ -7,6 +7,7 @@
 */
 
 
+#include <stdlib.h>
 #include "unicode/utypes.h"
 #include "unicode/utrnslit.h"
 #include "unicode/translit.h"
@@ -24,10 +25,10 @@
 
 /* ripped off from CPPUTILS.H */
 U_CAPI void U_EXPORT2 T_fillOutputParams(const UnicodeString* temp,
-				       UChar* result, 
-				       const int32_t resultLength,
-				       int32_t* resultLengthOut, 
-				       UErrorCode* status);
+                       UChar* result, 
+                       const int32_t resultLength,
+                       int32_t* resultLengthOut, 
+                       UErrorCode* status);
 
 /********** end ripoff */
 

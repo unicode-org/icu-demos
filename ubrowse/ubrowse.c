@@ -22,6 +22,7 @@
 extern int srl_mode;
 #endif
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
