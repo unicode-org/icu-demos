@@ -4,9 +4,10 @@
 ***********************************************************************/
 #include "unicode/translit.h"
 #include "unicode/utrans.h"
-#include "unicode/lx_utils.h"
 #include "unicode/unifilt.h"
 #include "unicode/uchar.h"
+#include "unicode/uniset.h"
+#include "unicode/lx_utils.h"
 
 class HTMLFilter : public UnicodeFilter
 {
@@ -96,4 +97,46 @@ void lx_setHTMLFilterOnTransliterator(UTransliterator *xlit, UBool doFilter)
 	{
 		((Transliterator*)xlit)->adoptFilter(new HTMLFilter());
 	}
+}
+
+/** UUSet - hopefully this won't last long enough to deserve its own 
+    file 
+ **/
+
+U_CAPI UUSet* U_EXPORT2 
+uuset_openPattern(const UChar* pattern, UErrorCode* status)
+{
+  UUSet* uset;
+  if(U_FAILURE(*status))
+  {
+    return NULL;
+  }
+
+  uset = (UUSet*) new UnicodeSet(UnicodeString(pattern), *status);
+
+  return uset;
+}
+
+U_CAPI int32_t U_EXPORT2 
+uuset_size(UUSet* _this)
+{
+  return ((UnicodeSet*)_this)->size();
+}
+
+U_CAPI UChar32 U_EXPORT2 
+uuset_charAt(UUSet* _this, int32_t index)
+{
+  return ((UnicodeSet*)_this)->charAt(index);
+}
+
+U_CAPI UBool U_EXPORT2 
+uuset_contains(UUSet* _this, UChar32 c)
+{
+  return ((UnicodeSet*)_this)->contains(c);
+}
+
+U_CAPI void U_EXPORT2
+uuset_close(UUSet* _this)
+{
+  delete ((UnicodeSet*)_this);
 }
