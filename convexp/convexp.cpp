@@ -98,7 +98,7 @@ static const char htmlHeader[]=
 
     "<table width=\"760\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
     "<tr valign=\"top\">\n"
-    "<td width=\"110\" class=\"bbg\"><a href=\"http://www.ibm.com/\"><img width=\"110\" src=\"//www.ibm.com/i/v14/t/ibm-logo.gif\" height=\"52\" border=\"0\" alt=\"IBM®\"/></a></td>\n"
+    "<td width=\"110\" class=\"bbg\"><a href=\"http://www.ibm.com/\"><img width=\"110\" src=\"//www.ibm.com/i/v14/t/ibm-logo.gif\" height=\"52\" border=\"0\" alt=\"IBM&reg;\"/></a></td>\n"
     "<td width=\"650\" class=\"mbbg\" align=\"right\">\n"
     "<table align=\"right\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
     "<tr class=\"cty-tou\">\n"
