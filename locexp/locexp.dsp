@@ -98,31 +98,11 @@ PostBuild_Cmds=copy debug\locexp.exe "c:\apacher\cgi-bin"
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\util\collectcb.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\util\decompcb.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util\devanagari.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\fontedcb.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\inscript.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\util\kangxi.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\kannada.cpp
 # End Source File
 # Begin Source File
 
@@ -134,27 +114,7 @@ SOURCE=.\util\lx_utils.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util\syriac.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\syrinput.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\translitcb.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\ures_additions.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\util\utimzone.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\util\utrnslit.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

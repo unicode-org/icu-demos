@@ -130,7 +130,7 @@ U_CAPI UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
  */
 UChar *dateAt(UDate date, const UChar *tz, UDateFormatStyle style, UErrorCode *status);
 
-typedef struct
+typedef struct _FromUBackslashContext
 {
   UConverterFromUCallback  subCallback;
   void                    *subContext;

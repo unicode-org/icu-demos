@@ -20,6 +20,7 @@
 #include "unicode/ucol.h"
 
 #include "unicode/decompcb.h"
+#include "unicode/ucnv_cb.h"
 
 #define HAVE_KANGXI
 #include "unicode/kangxi.h"

@@ -8,6 +8,7 @@
 */
 
 #include "unicode/lx_utils.h"
+#include "unicode/ucnv_cb.h"
 
 /* Realloc broken on linux????? */
 void *my_realloc(void *ptr, size_t old, size_t size)
@@ -853,7 +854,7 @@ bool_t testConverter(const char *converter,
   bool_t      worked = FALSE;  
   int8_t     *target;
   void       *oldContext;
-  UConverterFromUCallback *oldAction;
+  UConverterFromUCallback oldAction;
 
   cnv = ucnv_open(converter, &status);
   if(U_FAILURE(status))
