@@ -35,7 +35,9 @@ static const char *htmlHeader=
     "<title>Normalization Browser</title>\n"
     "</head>\n"
     "<body>\n"
-    "<h1>Normalization Browser</h1>";
+    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
+    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;<br>\n"
+    "<h1>Normalization Browser</h1>\n";
 
 static const char *htmlFooter="</body>";
 
@@ -50,7 +52,7 @@ static const char *midString=" %04x";
 static const char *endString="";
 
 static const char *startForm=
-    "<form method=\"GET\" action=\"http://oss.software.ibm.com/cgi-bin/icu/nbrowser\">\n"
+    "<form method=\"GET\" action=\"%s\">\n"
     "<p>Input string: <input size=\"80\" name=\"s\" value=\"";
 
 static const char *endForm="\"></p>\n"
@@ -64,10 +66,8 @@ static const char *endForm="\"></p>\n"
 
 static const char *startTable=
     "<table border=\"1\">\n"
-    "<tr><th>Mode</th><th>quick check</th><th>normalized</th></tr>\n"
+    "<tr><th>Mode</th><th>quick check</th><th>normalized</th><th>text</th></tr>\n"
     "<tr><th>Input</th><td>&nbsp;</td><td>";
-
-static const char *midTable="</td></tr>";
 
 static const char *endTable="</table>";
 
@@ -110,6 +110,21 @@ printTableString(const UChar *s, int32_t length) {
 }
 
 static void
+printTableText(const UChar *s, int32_t length) {
+    char buffer[1000];
+    int32_t utf8Length;
+    UErrorCode errorCode;
+
+    errorCode=U_ZERO_ERROR;
+    u_strToUTF8(buffer, sizeof(buffer), &utf8Length, s, length, &errorCode);
+    if(U_FAILURE(errorCode) || errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+        printf("<td>%s</td>", u_errorName(errorCode));
+    } else {
+        printf("<td>%s</td>", buffer);
+    }
+}
+
+static void
 printNormalized(const UChar *s, int32_t length,
                 UNormalizationMode mode, int32_t options) {
     UChar output[500];
@@ -133,9 +148,10 @@ printNormalized(const UChar *s, int32_t length,
                                  output, LENGTHOF(output),
                                  &errorCode);
     if(U_FAILURE(errorCode)) {
-        printf("<td>%s</td>", u_errorName(errorCode));
+        printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
         printTableString(output, outputLength);
+        printTableText(output, outputLength);
     }
 
     puts("</tr>");
@@ -219,7 +235,8 @@ main(int argc, const char *argv[]) {
     char buffer[1000];
     const char *endInLastArg;
     int32_t inputLength, countArgs, options;
-    UErrorCode errorCode;
+    UErrorCode errorCode = U_ZERO_ERROR;
+    const char *script=getenv("SCRIPT_NAME");   /*   "/cgi-bin/nbrowser" */
 
     puts(htmlHeader);
 
@@ -245,7 +262,7 @@ main(int argc, const char *argv[]) {
         }
     } else {
         /* get input from cgi variable */
-        const char *cgi=getenv("QUERY_STRING");
+        const char *cgi=getenv("QUERY_STRING");     /*   "s=xxxx&op0=yyyy"   */
         const char *in=strstr(cgi, "s=");
         if(in!=NULL) {
             in+=2; // skip "s="
@@ -275,7 +292,7 @@ main(int argc, const char *argv[]) {
         inputLength=0;
     }
 
-    printf(startForm);
+    printf(startForm, script ? script : "" );
     printString(input, inputLength);
     printf(endForm,
         options&1 ? "checked" : "",
@@ -284,7 +301,9 @@ main(int argc, const char *argv[]) {
 
     printf(startTable);
     printString(input, inputLength);
-    puts(midTable);
+    printf("</td>");
+    printTableText(input, inputLength);
+    puts("</tr>");
 
     printNormalized(input, inputLength, UNORM_NFD, options);
     printNormalized(input, inputLength, UNORM_NFC, options);
