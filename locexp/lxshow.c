@@ -807,6 +807,9 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     else
         exampleType = kNoExample;
 
+    tempDate[0]=0;
+    tempTime[0]=0;
+
     /* store the date now..just in case formatting takes multiple seconds! */
     now = ucal_getNow();
 
@@ -1016,21 +1019,29 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                     }
                     explainStatus(lx, exampleStatus, key);
                     u_fprintf(lx->OUT, "</td>\r\n");
-
-                    if(i == 3) /* short time */
+                    
+                    if(U_SUCCESS(exampleStatus)) {
+                      if(i == 3) /* short time */
                         u_strcpy(tempTime, tempChars);
-                    else if(i == 7) /* short date */
+                      else if(i == 7) /* short date */
                         u_strcpy(tempDate, tempChars);
+                    }
                 }
                 else
                 {
                     u_fprintf(lx->OUT, "<td>");
                     exampleStatus = U_ZERO_ERROR;
-                    if(s)
+                    if(s) {
                         if(u_formatMessage(locale, s, -1, tempChars,1024,&exampleStatus, 
                                            tempTime,
-                                           tempDate))
+                                           tempDate)) {
+                          if(U_SUCCESS(exampleStatus)) {
                             u_fprintf(lx->OUT,"%S", tempChars);
+                          } else {
+                            explainStatus(lx, exampleStatus, key);
+                          }
+                        }
+                    }
                     u_fprintf(lx->OUT, "</td>\r\n");
                 }
                 break;
