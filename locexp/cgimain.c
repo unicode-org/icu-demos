@@ -22,7 +22,7 @@ int main(const char *argv[], int argc)
  * Click OK to dismiss the message box. When the message box is dismissed, 
  * the CGI execution will resume and the break point will be hit. 
  */
-/*#if 0*/
+#if 0
 #   ifdef WIN32
   
     char szMessage [256];
@@ -33,7 +33,7 @@ int main(const char *argv[], int argc)
                MB_OK|MB_SERVICE_NOTIFICATION);
     
 #   endif
-/*#endif*/
+#endif
   initLX();
   initContext(&localContext);
   localContext.fOUT = stdout;
