@@ -23,7 +23,8 @@ BUILDING
       prefix used to build the ICU, which can be set with the
      '--prefix=' option to it's ./configure.
 
-  2. Run the configure script in the icuapps directory.  You may need
+  2. (Run 'autoconf' if there is no configure script.)
+     Run the ./configure script in the icuapps directory.  You may need
      to supply the same '--prefix=XXX' argument that was passed to the
      ICU.
 
