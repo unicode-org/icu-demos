@@ -109,7 +109,7 @@ default {
    helpgif_opt  {  "BORDER=0"  }
    inherited  {  "(inherited)"  }
    inherited_from  {  "(inherited from %U)"  }
-   introSpiel  {  "This demo illustrates the IBM International Classes for Unicode localization data.  The classes cover 45 different languages, further divided into 154 geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P> The IBM Classes for Unicode are open-source. See the <A HREF=../project>ICU Project Page</A>  for further information."  }
+   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The classes cover 45 different languages, further divided into 154 geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P> The International Components for Unicode are open-source. See the <A HREF=../project>ICU Project Page</A>  for further information."  }
    localPatternChars0  {  "Era"  }
    localPatternChars1  {  "Year"  }
    localPatternChars10  {  "Day Of Year"  }
