@@ -46,6 +46,7 @@ static const char htmlHeader[]=
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
+    "body {background-color: #FFFFFF;}\n"
     "p.value {font-family: monospace;}\n"
     "th {white-space: nowrap; background-color: #EEEEEE; text-align: left;}\n"
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
@@ -57,7 +58,7 @@ static const char htmlHeader[]=
     "/*]]>*/\n"
     "</style>\n"
     "</head>\n"
-    "<body bgcolor=\"#FFFFFF\">\n"
+    "<body>\n"
     "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
     "<tr><td>"
     "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
@@ -123,10 +124,10 @@ static void printOptions(UErrorCode *status) {
     const char *standard, *checked;
 
     if (*gCurrConverter) {
-        printf("<input type=\"HIDDEN\" name=\"conv\" value=\"%s\" checked=\"checked\" />\n", gCurrConverter);
+        printf("<input type=\"hidden\" name=\"conv\" value=\"%s\" checked=\"checked\" />\n", gCurrConverter);
     }
     if (*gStartBytes) {
-        printf("<input type=\"HIDDEN\" name=\"b\" value=\"%s\"  checked=\"checked\" />\n", gStartBytes);
+        printf("<input type=\"hidden\" name=\"b\" value=\"%s\"  checked=\"checked\" />\n", gStartBytes);
     }
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
