@@ -1316,6 +1316,7 @@ if(!tmp) /* if there was no trailing '/' ... */
 UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
 {
   UChar32 end = (startFrom-1);
+  int wrapped = 0;
   if(end > UCHAR_MAX_VALUE)
   {
     end = UCHAR_MAX_VALUE;
@@ -1324,8 +1325,12 @@ UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
   for(;startFrom != end; startFrom++)
   {
     if(startFrom > UCHAR_MAX_VALUE)
+   {
       startFrom = UCHAR_MIN_VALUE;
-    if(ublock_getCode(startFrom) == block)
+      wrapped++;
+	if(wrapped > 2) return startFrom; /* bug */ 
+   }
+   if(ublock_getCode(startFrom) == block)
       return startFrom;
   }
 
