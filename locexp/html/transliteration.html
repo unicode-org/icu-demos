@@ -1,0 +1,68 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Transliteration</title>
+</head>
+
+<body>
+
+<h1 align="left">Transliteration</h1>
+<p>Transliteration is the general process of converting characters from one 
+script to another, such as converting from Greek to Latin, or Japanese katakana 
+to Latin. It is very important to note that this transliteration is <b><i>not</i></b> 
+translation; it is simply converting the letters from one script to another, <i>not</i> 
+translating the underlying words. Here is a sample of transliteration:</p>
+<center>
+<table border="1" cellpadding="4">
+  <tr>
+    <th width="50%">Source</th>
+    <th width="50%">Transliteration to Latin</th>
+  </tr>
+  <tr>
+    <td width="50%" align="center">キャンパス</td>
+    <td width="50%" align="center">kyanpasu</td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">Αλφαβητικός Κατάλογος</td>
+    <td width="50%" align="center">Alphabêtikós Katálogos</td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">биологическом</td>
+    <td width="50%" align="center">biologichjeskom</td>
+  </tr>
+</table>
+</center>
+<p>While it may be a stretch to realize that <i>kyanpasu</i> is equivalent to 
+the English word <i>campus</i>, someone without any knowledge of Japanese will 
+have a far easier time recognizing and interpreting the text than if the letters 
+were left in the original script. This is especially useful in particular 
+instances. For example, when viewing user names that are entered in a world-wide 
+database, it is extremely helpful to be able to view and refer to them in one's 
+native script. It is also useful for product support; if a service engineer is 
+sent a program dump filled with characters from foreign scripts, it can be much 
+easier to diagnose the problem when the text is transliterated and the 
+characters are recognizable. When doing searching and indexing, it also allows 
+for retrieval of information in a different script.</p>
+<p><b>Notes:</b></p>
+<ul>
+  <li>There are many different possible transliterations between scripts. The 
+    preliminary ICU transliterations are designed to capture all of the 
+    distinctions made in the source script, and be as language-neutral as 
+    possible. ICU makes it easy to design and add additional, language-specific 
+    transliterations as well.</li>
+  <li>These transliterations follow the Japanese convention of using a single 
+    quote to disambiguate possible digraphs. For example, for Greek to Latin, <i>ψ</i> 
+    maps to <i>ps</i> while <i>πσ</i> maps to <i>p's.</i></li>
+  <li>They also follow the convention that a tilde is used for variant forms.</li>
+  <li>If you have any feedback on these transliterations, you can file bugs 
+    and/or feature requests with <a href="http://www10.software.ibm.com/developerworks/opensource/icu/bugs">jitterbug</a>.</li>
+  <li>For more information, see the ICU user guide (forthcoming).</li>
+</ul>
+
+</body>
+
+</html>

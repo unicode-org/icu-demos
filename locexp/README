@@ -147,3 +147,7 @@ xdvng.ttf into that control panel, or go to the file menu (in Fonts)
 TODO LIST for LOCEXP:
 
    - see util/README for utility TODO's
+
+   - coll rules under xliteration don't look right
+      they come out as: \u03BC , \u039C
+

@@ -832,6 +832,29 @@ UChar *dateAt(UDate adate, const UChar *tz, UDateFormatStyle style, UErrorCode *
   return s;
 }
 
+UChar* u_uastrcpy_enc(UChar *ucs1,
+          const char *s2, const char *enc )
+{
+    UErrorCode err = U_ZERO_ERROR;
+
+  UConverter *cnv = ucnv_open(enc, &err);
+  if(cnv != NULL) {
+    ucnv_toUChars(cnv,
+                    ucs1,
+                    1000,
+                    s2,
+                    strlen(s2),
+                    &err);
+    if(U_FAILURE(err)) {
+      *ucs1 = 0;
+    }
+  } else {
+    *ucs1 = 0;
+  }
+  ucnv_close(cnv);
+  return ucs1;
+}
+
 int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src)
 {
   const char *fieldLimit;
@@ -855,6 +878,41 @@ int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src)
 
   /* Now, convert it into Unicode, still escaped.. */
   u_uastrcpy(temp, tmpc);
+  
+  /* Now, de escape it.. */
+  len = u_strlen(temp);
+  len = copyWithUnescaping( dst, temp, len);
+  dst[len] = 0; /* copy with unescaping DOES NOT terminate the str */
+  
+  return len;
+}
+
+int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *src, const char *enc)
+{
+  const char *fieldLimit;
+  UChar temp[1024];
+  char tmpc[1024];
+  int32_t len;
+
+  /* make fieldLimit point to the end of the field data */
+  fieldLimit = strchr(src,'&');
+  if(!fieldLimit)
+    fieldLimit = src + strlen(src);
+
+  /* sanity [safety from buffer overruns]  */
+  if( (fieldLimit-src) > dstLen)
+    fieldLimit = src + dstLen;
+
+  /********************/
+
+  /* First off, convert the field into an 8 bit string in the user's codepage */
+  doDecodeQueryField(src,tmpc,fieldLimit-src);
+
+  /* Now, convert it into Unicode, still escaped.. */
+  if(enc == NULL)
+      u_uastrcpy(temp, tmpc);
+  else
+      u_uastrcpy_enc(temp, tmpc, enc);
   
   /* Now, de escape it.. */
   len = u_strlen(temp);

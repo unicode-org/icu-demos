@@ -1,6 +1,8 @@
 // Copyright (c) 1999, International Business Machines Corporation and
 // others. All Rights Reserved.
 // English LocaleExplorer translation resource
+// -*- coding: latin-1; -*-
+
 
 en {
    helpPrefix { "default_" } // needed to get English in the list of locales

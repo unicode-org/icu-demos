@@ -439,16 +439,12 @@ int main(const char *argv[], int argc)
 		  hadExperimentalLocales = TRUE;
 		  wasExperimental = TRUE;
 		}
-	      u_fputs(curLocale->subLocs[n].ustr, OUT);
-
+	      u_fprintf(OUT, "%U",curLocale->subLocs[n].ustr);
 	      if(wasExperimental)
 		{
 		  u_fprintf(OUT, "</FONT></I>");
 		}
-
-	      u_fprintf(OUT, "</A>");
-
-			
+              u_fprintf(OUT, "</A>");
 	    }
 	  
 	  if(hadExperimentalLocales)
@@ -558,14 +554,15 @@ int main(const char *argv[], int argc)
   
   u_fprintf(OUT, "<P><BR><P><P><BR><A NAME=\"mySettings\"></A><P><P><P><P><HR>");
   printStatusTable();
-  u_fprintf(OUT, "<I>%U</I> <A HREF=\"%U\">%U</A> * <A HREF=\"http:oss.software.ibm.com/developerworks/opensource/icu/bugs\">%U</A><BR>", 
+  u_fprintf(OUT, "<I>%U</I> <A HREF=\"http://oss.software.ibm.com/icu/\">%U</A> * <A HREF=\"http://oss.software.ibm.com/developerworks/opensource/icu/bugs\">%U</A><BR>", 
 	    FSWF("poweredby", "Powered by"),
-	    FSWF("poweredby_url", "http:oss.software.ibm.com/developerworks/opensource/icu/"),
 	    FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION),
 	    FSWF("poweredby_filebug", "Found an error? Click here!")
 	    );
 
+  printHelpTag("", FSWF("help", "Help"));
   
+  u_fprintf(OUT, "<BR>");
 
   u_fprintf(OUT, "%U", date(NULL,UDAT_FULL,&status));
   
@@ -618,6 +615,8 @@ int main(const char *argv[], int argc)
                 getenv("QUERY_STRING"),
                 FSWF("encoding_Transliterate", "Transliterate it for me!"));
   }
+  printHelpTag("transliteration", FSWF("transliterate_help", "Transliteration Help"));
+
   
   u_fprintf(OUT, "%U", FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
     
@@ -1813,12 +1812,30 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   u_fprintf(OUT, "</TD></TR><TR><TD></TD><TD>");
   
   /* Ripped off from ArrayWithDescription. COPY BACK */
-  
-  showExploreButton(rb,locale,
-		    FSWF("EXPLORE_CollationElements_sampleString","bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"),
+  {
+      const UChar *sampleString, *sampleString2;
+      UResourceBundle *sampleRB;
+      UErrorCode sampleStatus = U_ZERO_ERROR;
+
+      sampleString =  FSWF("EXPLORE_CollationElements_sampleString","bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t");
+
+
+      sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
+      if(U_SUCCESS(sampleStatus))
+      {
+          sampleString2 = ures_get(sampleRB, "EXPLORE_CollationElements_sampleString", &sampleStatus);
+          ures_close(sampleRB);
+      }
+
+      if(U_FAILURE(sampleStatus))
+      {
+          sampleString2 = sampleString; /* fallback */
+      }
+
+      showExploreButton(rb,locale, sampleString2,
 		    "CollationElements");
 
-
+  }
 
   u_fprintf(OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
@@ -3120,17 +3137,18 @@ void showSort(const char *locale, const char *b)
 
   strChars[0] = 0;
 
-  if(strcmp(uloc_getDefault(),"g7"))
+  if(strstr(locale,"g7") != NULL)
   {
       doingG7 = TRUE;
   }
 
   text = strstr(b, "EXPLORE_CollationElements");
+
   if(text)
     {
       text += 26;
 
-      unescapeAndDecodeQueryField(strChars, 1000, text);
+      unescapeAndDecodeQueryField_enc(strChars, 1000, text, chosenEncoding );
       
       p = strchr(text, '&');
       if(p) /* there is a terminating ampersand */
@@ -3141,7 +3159,7 @@ void showSort(const char *locale, const char *b)
       if(length > 1023)
 	length = 1023; /* safety ! */
 
-      strncpy(inputChars, text, length);
+      strncpy(inputChars, text, length); /* make a copy for future use */
       inputChars[length] = 0;
       /*      doDecodeQueryField(text, inputChars, length); ** length limited */
     }
@@ -3154,6 +3172,7 @@ void showSort(const char *locale, const char *b)
 
   u_fprintf(OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH=100% HEIGHT=100%><TR><TD><B>%U</B></TD>\r\n",
             FSWF("usortSource", "Source"));
+
 
   if(inputChars[0])
   {
@@ -3205,7 +3224,7 @@ void showSort(const char *locale, const char *b)
           UErrorCode status2 = U_ZERO_ERROR;
       
           /* have some text to sort */
-          unescapeAndDecodeQueryField(in, 1024, inputChars);
+          unescapeAndDecodeQueryField_enc(in, 1024, inputChars, chosenEncoding);
           u_replaceChar(in, 0x000D, 0x000A); /* CRLF */
       
           if(doingG7 == FALSE)
@@ -4177,7 +4196,5 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
       encoding = u_fgetcodepage(f);
       strcpy(chosenEncoding, encoding);
     }
-  fprintf(stderr, "DID finit the file.\n");
-  fflush(stderr);
   return f;
 }

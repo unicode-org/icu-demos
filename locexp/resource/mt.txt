@@ -1,11 +1,12 @@
-///**********************************************************************
-//*   Copyright (C) 1999, International Business Machines
+// -*- coding: latin-3; -*-
+// Please note!!!!! This file is in LATIN-3 format [iso-8859-3]!
+///***********************************************************
+//*   Copyright (C) 1999,2000 International Business Machines
 //*   Corporation and others.  All Rights Reserved.
-//***********************************************************************/
+//************************************************************/
 // Maltese translation. By Steven R. Loomis <srl@monkey.sbay.org>
 // Also by Mirka Mifsud Bonicci <mirka@pr2000.com>
 //
-// Please note!!!!! This file is in LATIN-3 format [iso-8859-3]!
 
 mt { 
 
@@ -33,7 +34,7 @@ mt {
    myConverter{ "Kodiåi ta' ittra:" }
    myLocale { "Na±:" }
    none { "Xejn" }
-   statusTableHeader  {  "G\u0127a\u017Cla:<BR><!-- Click to change -->"  }
+   statusTableHeader  {  "G±a¿la:<BR><!-- Click to change -->"  }
    usortIdentical  {  "Identiku"  }
    usortPrimary  {  "Primarju"  }
    usortSecondary  {  "Sekondarju"  }
@@ -58,6 +59,9 @@ mt {
 	Day { "õurnata" }
 	Month { "xahar" }
 
+title  {  "MER¡IBA! ICU LocaleExplorer"  }
+
+       EXPLORE_CollationElements_sampleString { "G\\u0127allem\\u000Dxog\\u0127ol\\u000Dzokkor\\u000Die\\u0126or\\u000DIemes\\u000D\\u010Bikkulata\\u000Did-dudu\\u000D\\u0120urdien\\u000Dir-ra\\u0121el\\u000DI\\u017C\\u017Cuffjetta\\u000D\\u000Dheme\\u017C\\u000D\\u0126alib\\u000Dfenek\\u000D\\u017Cmarr\\u000D\\u0127ajja\\u000D\\u0127alib\\u000DG\\u017BIRA\\u000D\\u000D\\u000D\\u000D\\u000D" }
 
 }
 

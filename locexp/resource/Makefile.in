@@ -19,7 +19,7 @@ top_builddir = ../..
 subdir = locexp/resource
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ *.res sr.txt escapeABundle
+CLEANFILES = *~ *.res  escapeABundle
 
 # DEPS = $(OBJECTS:.o=.d)
 
@@ -114,12 +114,16 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # index.txt:
 # 	genIndex.sh > index.txt
 
-sr.txt:  sr.utf16.txt escapeABundle
-	../../uconv/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt || rm -f sr.txt
+#sr.txt:  sr.utf16.txt escapeABundle
+#	../../uconv/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt || rm -f sr.txt
 
 mt.res : mt.txt
 	@echo Rebuilding $@ - latin3
 	@$(sbindir)/genrb -elatin3 $<
+
+sr.res : sr.txt
+	@echo Rebuilding $@ - utf-16le
+	@$(sbindir)/genrb -eutf-16le $<
 
 
 escapeABundle: escapeABundle.c

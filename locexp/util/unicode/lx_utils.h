@@ -103,6 +103,7 @@ void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src);
 
 /* Decode escaped query field.  returns: # chars.  dstlen is a max. src can point to the beginning of the field (after the '='), it will terminate at & or \0 */
 U_CAPI int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const char *src);
+U_CAPI int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *src, const char *enc);
 
 /* copy UChars around, WITHOUT termination, and convert \uXXXX back to the right chars */
 int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen);
