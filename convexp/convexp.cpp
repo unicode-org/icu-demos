@@ -20,7 +20,7 @@
 
 /*
 TODO:
-* Escape and unescape the converter name where needed (e.g. iscii,version=1)
+* Make printAmbiguousAliasedConverters() highlight the default converter mapping for an alias.
 
 */
 #include "unicode/ucnv.h"
