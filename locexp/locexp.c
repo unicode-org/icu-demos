@@ -1862,30 +1862,54 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   
   UErrorCode status = U_ZERO_ERROR;
   const UChar *s  = 0;
+      UChar *scopy = 0;
         UChar *comps = 0;
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
-  int32_t len;
+  int32_t len = 0, len2, i;
   UConverterFromUCallback oldCallback;
+      UCollator *coll = NULL;
 
 
   s = ures_get(rb, key, &status);
 
   if(!s || !s[0] || (status == U_MISSING_RESOURCE_ERROR))
     {
-      UCollator *coll;
 
       /* Special case this to fetch what REALLY happens in this case ! */
       status = U_ZERO_ERROR;
 
       coll = ucol_open(locale, &status);
+
+
       if(U_SUCCESS(status))
 	{
-	  s = ucol_getRules(coll, &len);
+/*
+            UChar tmp[1400];
+            int nn;
+*/
 
-	  ucol_close(coll);
+	  s = ucol_getRules(coll, &len);
+          
+
+#if 0
+          memcpy(tmp,s,len*sizeof(UChar));
+          tmp[1399] = 0;
+          u_fprintf(OUT, "<TR><TD>roolz=%d -  %p<P><U>", len, s);
+          for(nn=0;nn<1400;nn++)
+          {
+              if(u_isprint(s[nn]))
+              {
+                  u_fprintf(OUT, "%K", s[nn]);
+              }
+              else
+                  u_fprintf(OUT, "\\u%04X", (int)s[nn]);
+          }
+          u_fprintf(OUT, "</U></TD></TR>\n");
+#endif
 	}
+
 
       /* fix the status */
       if(!strcmp(locale, "default"))
@@ -1896,6 +1920,19 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   else
     len = u_strlen(s);
 
+  len2 = len;
+
+  scopy = malloc(len * sizeof(UChar));
+  memcpy(scopy,s,len*sizeof(UChar));
+  for(i=0;i<len;i++)
+  {
+      if(scopy[i] == 0x0000)
+      {
+          scopy[i] = 0x0020; /* normalizer seems to croak on nulls */
+      }
+  }
+  s = scopy;
+
   if(U_SUCCESS(status) && ( len > kShowStringCutoffSize ) )
     {
       bigString = TRUE;
@@ -1904,8 +1941,9 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 
   showKeyAndStartItemShort(key, NULL, locale, FALSE, status);
 
-  u_fprintf(OUT, "</TD></TR><TR><TD></TD><TD>");
+  u_fprintf(OUT, "&nbsp;</TD></TR><TR><TD></TD><TD>");
   
+#if 1
   /* Ripped off from ArrayWithDescription. COPY BACK */
   {
       const UChar *sampleString, *sampleString2;
@@ -1931,6 +1969,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 		    "CollationElements");
 
   }
+#endif
 
   u_fprintf(OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
@@ -1962,9 +2001,15 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 	  
 	  if(U_SUCCESS(status))
 	    {
-	      
-	      comps = malloc(sizeof(UChar) * (len*2));
 
+	      comps = malloc(sizeof(UChar) * (len*3));
+              
+              {
+                  for(i=0;i<(len*3);i++)
+                  {
+                      comps[i] = 0x0610;
+                  }
+              }
 
 	      len = u_normalize(s,
 			  len,
@@ -1972,8 +2017,19 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 				/*UCOL_DECOMP_CAN_COMP_COMPAT, */
 			  0,
 			  comps,
-			  len*2,
+			  len*3,
 			  &status);
+
+              
+              u_fprintf(OUT, "xlit: %d to %d<P>\n",
+                        len2,len);
+              if(U_FAILURE(status))
+              {
+                  u_fprintf(OUT, "xlit failed -} %s<P>\n",
+                            u_errorName(status));
+                  comps = (UChar*)s;
+                  len = len2;
+              }
 
 	      /* DO NOT collect chars from the normalization rules.
 		 Sorry, but they contain decomposed chars which mess up the codepage selection.. */
@@ -2011,6 +2067,9 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 	}
     }
   u_fprintf(OUT, "</TD>");
+  
+  free(scopy);
+  if(coll) ucol_close(coll);
   
   showKeyAndEndItem(key, locale);
 }
@@ -2379,6 +2438,11 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       exampleStatus = U_ZERO_ERROR;
       showExploreButton(rb, locale, toShow, key);
     }
+  else
+    {
+        u_fprintf(OUT, "&nbsp;");
+    }
+
 
 #ifdef LX_USE_CURRENCY
   /* Currency Converter link */
@@ -2415,10 +2479,6 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       u_fprintf(OUT, "</FORM>");
     }
 #else
-  if(!strcmp(key, "CurrencyElements"))
-    {
-        u_fprintf(OUT, "&nbsp;");
-    }
 #endif
   u_fprintf(OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
@@ -4055,14 +4115,14 @@ void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char 
           u_fprintf(OUT, " (%U)", FSWF("cumulative_notshown", "cumulative data from parent not shown"));
       }
 
-      u_fprintf(OUT," </TD><TD BGCOLOR=" kXKeyBGColor "  WIDTH=20%% VALIGN=TOP ALIGN=RIGHT>");
+      u_fprintf(OUT," </TD><TD BGCOLOR=" kXKeyBGColor "   VALIGN=TOP ALIGN=RIGHT>");
       explainStatus(showStatus, key);
 }
 
 void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus)
 {
   showKeyAndStartItemShort(key,keyName,locale, cumulative, showStatus);
-  u_fprintf(OUT,"</TD><TR><TD COLSPAN=2>\r\n");
+  u_fprintf(OUT,"&nbsp;</TD><TR><TD COLSPAN=2>\r\n");
 }
 
 void showKeyAndEndItem(const char *key, const char *locale)
