@@ -52,7 +52,7 @@ static void
 }
 
 void 
-  SubstituteWithValueHTML (UConverter * _this,
+UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML  (UConverter * _this,
 					    char **target,
 					    const char *targetLimit,
 					    const UChar ** source,
@@ -73,14 +73,14 @@ void
   UErrorCode err2 = U_ZERO_ERROR;
 
 
-  if (CONVERSION_SUCCESS (*err))
+  if (CONVERSION_U_SUCCESS (*err))
     return;
 
   ucnv_reset (&myConverter);
   ucnv_setFromUCallBack (&myConverter,
-			 (UCNV_FromUCallBack) MissingUnicodeAction_STOP,
+			 (UConverterFromUCallback) UCNV_FROM_U_CALLBACK_STOP,
 			 &err2);
-  if (FAILURE (err2))
+  if (U_FAILURE (err2))
     {
       *err = err2;
       return;
@@ -107,9 +107,9 @@ void
 		    TRUE,
 		    &err2);
 
-  if (FAILURE (err2))
+  if (U_FAILURE (err2))
     {
-      MissingUnicodeAction_SUBSTITUTE (_this,
+      UCNV_FROM_U_CALLBACK_SUBSTITUTE (_this,
 				       target,
 				       targetLimit,
 				       source,
@@ -151,7 +151,7 @@ void
 }
 
 void 
-  SubstituteWithValueEscaped (UConverter * _this,
+UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
 			      char **target,
 			      const char *targetLimit,
 			      const UChar ** source,
@@ -172,14 +172,14 @@ void
   UErrorCode err2 = U_ZERO_ERROR;
 
 
-  if (CONVERSION_SUCCESS (*err))
+  if (CONVERSION_U_SUCCESS (*err))
     return;
 
   ucnv_reset (&myConverter);
   ucnv_setFromUCallBack (&myConverter,
-			 (UCNV_FromUCallBack) MissingUnicodeAction_STOP,
+			 (UConverterFromUCallback) UCNV_FROM_U_CALLBACK_STOP,
 			 &err2);
-  if (FAILURE (err2))
+  if (U_FAILURE (err2))
     {
       *err = err2;
       return;
@@ -205,9 +205,9 @@ void
 		    TRUE,
 		    &err2);
 
-  if (FAILURE (err2))
+  if (U_FAILURE (err2))
     {
-      MissingUnicodeAction_SUBSTITUTE (_this,
+      UCNV_FROM_U_CALLBACK_SUBSTITUTE (_this,
 				       target,
 				       targetLimit,
 				       source,
@@ -653,7 +653,7 @@ void mySort(MySortable *s, UErrorCode *status, bool_t recurse)
 
   *status = U_ZERO_ERROR;
   coll = ucol_open(NULL, status);
-  if(FAILURE(*status))
+  if(U_FAILURE(*status))
     return;
 
   ucol_setStrength(coll, UCOL_PRIMARY);
@@ -664,7 +664,7 @@ void mySort(MySortable *s, UErrorCode *status, bool_t recurse)
 	mySort(p,status,recurse); /* sub sort */
       
       p->keySize = ucol_getSortKey(coll, p->ustr, -1, p->key, SORTKEYSIZE);
-      /*      if(FAILURE(*status))
+      /*      if(U_FAILURE(*status))
 	      return; */
       n++;
     }
@@ -798,7 +798,7 @@ date(const UChar *tz,
     s = (UChar*) malloc(sizeof(UChar) * (len+1));
     if(s == 0) goto finish;
     udat_format(fmt, ucal_getNow(), s, len + 1, 0, status);
-    if(FAILURE(*status)) goto finish;
+    if(U_FAILURE(*status)) goto finish;
   }
 
  finish:

@@ -215,7 +215,7 @@ const UChar *FSWF(const char *key, const char *fallback)
   if(gRB == 0)
     {
       gRB = ures_open(  myBundlePath(), NULL, &status);
-      if(FAILURE(status))
+      if(U_FAILURE(status))
 	{
 	  gRB = 0;
 	  rbErr = status;
@@ -434,7 +434,7 @@ int main(const char *argv[], int argc)
   
   u_fprintf(OUT, "<P><BR><P><P><BR><A NAME=\"mySettings\"></A><P><P><P><P><HR>");
   printStatusTable();
-  u_fprintf(OUT, "<I>%U</I> 1.3+<BR>", FSWF("poweredby", "Powered by ICU"));
+  u_fprintf(OUT, "<I>%U</I> 1.3.1+<BR>", FSWF("poweredby", "Powered by ICU"));
   u_fprintf(OUT, "%U", date(NULL,UDAT_FULL,&status));
   
   if(!gRB)
@@ -526,7 +526,7 @@ UFILE *setLocaleAndEncodingAndOpenUFILE()
       if ( *locale != 0) /* don't want 0-length locales */
 	{
 	  uloc_setDefault(locale, &status);
-	  if(FAILURE(status))
+	  if(U_FAILURE(status))
 	    {
 	      doFatal("uloc_setDefault", status);
 	      /* doesn't return */
@@ -621,7 +621,7 @@ UFILE *setLocaleAndEncodingAndOpenUFILE()
 	  if(gRB)
 	    {
 	      while( (defaultCodepage = ures_getArrayItem(gRB, "DefaultEncoding", i++, &status)) &&
-		     SUCCESS(status) )
+		     U_SUCCESS(status) )
 		{
 		  newEncoding = malloc(u_strlen(defaultCodepage) + 1);
 		  u_austrcpy((char*)newEncoding, defaultCodepage);
@@ -689,12 +689,12 @@ UFILE *setLocaleAndEncodingAndOpenUFILE()
     }
 
   /* put our special error handler in */
-  /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(f), &SubstituteWithValueHTML, &status); */
+  /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(f), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML, &status); */
 
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(f), &MissingUnicodeAction_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(f), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 
   /* Change what DECOMPOSE calls as it's last resort */
-  DECOMPOSE_lastResortCallback = SubstituteWithValueHTML;
+  DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML;
 
   return f;
 }
@@ -754,7 +754,7 @@ void writeEscaped(const UChar *s)
 {
   UErrorCode status = U_ZERO_ERROR;
 
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueEscaped, &status); 
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
 
   if(u_strchr(s, 0x00A0))
     {
@@ -773,14 +773,14 @@ void writeEscaped(const UChar *s)
   
   /* should 'get/restore' here. */
   /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &MissingUnicodeAction_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 }
 
 void writeEscapedQuery(const UChar *s)
 {
   UErrorCode status = U_ZERO_ERROR;
 
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueEscaped, &status); 
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
 
   if(u_strchr(s, 0x00A0))
     {
@@ -799,7 +799,7 @@ void writeEscapedQuery(const UChar *s)
   
   /* should 'get/restore' here. */
   /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &MissingUnicodeAction_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 }
 
 
@@ -1163,7 +1163,7 @@ void chooseConverter(const char *restored)
     
     u_fprintf(OUT,"  <LI>ID = %d, platform=%s\n",
 	      ucnv_getCCSID(u,&status),
-	      (ucnv_getPlatform(u,&status) == IBM) ? "IBM" : "other");
+	      (ucnv_getPlatform(u,&status) == UCNV_IBM) ? "IBM" : "other");
        
 	      
     u_fprintf(OUT,"  <LI>min/max chars: %d to %d\n",
@@ -1173,19 +1173,19 @@ void chooseConverter(const char *restored)
     u_fprintf(OUT,"  <LI>Type=");
     switch(ucnv_getType(u))
       {
-      case UNSUPPORTED_CONVERTER:  ts = "Unsupported"; break;
-      case SBCS: ts = "Single Byte Character Set"; break;
-      case DBCS: ts = "Double Byte Character Set"; break;
-      case MBCS: ts = "Multiple Byte Character Set (variable)"; break;
-      case LATIN_1: ts = "Latin-1"; break;
-      case UTF8: ts = "UTF-8 (8 bit unicode)"; break;
-      case UTF16_BigEndian: ts = "UTF-16 Big Endian"; break;
-      case UTF16_LittleEndian: ts = "UTF-16 Little Endian"; break;
-      case EBCDIC_STATEFUL: ts = "EBCDIC Stateful"; break;
-      case ISO_2022: ts = "iso-2022 meta-converter"; break;
-      case JIS: ts = "JIS (Japan Industrial Society?)"; break;
-      case EUC: ts = "EUC"; break; /* ? */
-      case GB: ts = "GB"; break; /* ? */
+      case UCNV_UNSUPPORTED_CONVERTER:  ts = "Unsupported"; break;
+      case UCNV_SBCS: ts = "Single Byte Character Set"; break;
+      case UCNV_DBCS: ts = "Double Byte Character Set"; break;
+      case UCNV_MBCS: ts = "Multiple Byte Character Set (variable)"; break;
+      case UCNV_LATIN_1: ts = "Latin-1"; break;
+      case UCNV_UTF8: ts = "UTF-8 (8 bit unicode)"; break;
+      case UCNV_UTF16_BigEndian: ts = "UTF-16 Big Endian"; break;
+      case UCNV_UTF16_LittleEndian: ts = "UTF-16 Little Endian"; break;
+      case UCNV_EBCDIC_STATEFUL: ts = "EBCDIC Stateful"; break;
+      case UCNV_ISO_2022: ts = "iso-2022 meta-converter"; break;
+      case UCNV_JIS: ts = "JIS (Japan Industrial Society?)"; break;
+      case UCNV_EUC: ts = "EUC"; break; /* ? */
+      case UCNV_GB: ts = "GB"; break; /* ? */
       default: ts = tmp; sprintf(tmp, "Unknown type %d", ucnv_getType(u));
       }
     u_fprintf(OUT, "%s\n", ts);
@@ -1246,7 +1246,7 @@ void listBundles(char *b)
   u_fprintf(OUT, "<TD ALIGN=left>");
   
   myRB = ures_open(NULL, locale, &status);
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT,"</TR></TABLE><B>An error occured [%d] opening that resource bundle [%s]. Perhaps it doesn't exist? </B><P><HR>\r\n",status, locale);
       return;
@@ -1541,7 +1541,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
       status = U_ZERO_ERROR;
 
       coll = ucol_open(locale, &status);
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	{
 	  s = ucol_getRules(coll, &len);
 
@@ -1557,7 +1557,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   else
     len = u_strlen(s);
 
-  if(SUCCESS(status) && ( len > kShowStringCutoffSize ) )
+  if(U_SUCCESS(status) && ( len > kShowStringCutoffSize ) )
     {
       bigString = TRUE;
       userRequested = didUserAskForKey(key, queryString);
@@ -1582,7 +1582,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   u_fprintf(OUT, "</TR><TR><TD COLSPAN=2>");
 
 
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     {
 
       if(bigString && !userRequested) /* it's hidden. */
@@ -1603,7 +1603,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 			FSWF("bigStringHide", "Hide"));
 	    }
 	  
-	  if(SUCCESS(status))
+	  if(U_SUCCESS(status))
 	    {
 	      
 	      comps = malloc(sizeof(UChar) * (len*2));
@@ -1675,7 +1675,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   
   status = U_ZERO_ERROR;
   uloc_getLanguage(locale, tempchar, 1000, &status);
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     u_fprintf(OUT, tempchar);
   else
     explainStatus(status, "LocaleCodes");
@@ -1684,7 +1684,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   
   status = U_ZERO_ERROR;
   uloc_getCountry(locale, tempchar, 1000, &status);
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     u_fprintf(OUT, tempchar);
   else
     explainStatus(status, "LocaleCodes");
@@ -1693,7 +1693,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   
   status = U_ZERO_ERROR;
   uloc_getVariant(locale, tempchar, 1000, &status);
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     u_fprintf(OUT, tempchar);
   else
     explainStatus(status, "LocaleCodes");
@@ -1707,7 +1707,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
 
   u_fprintf(OUT, "<TD>");
 
-  if(SUCCESS(langStatus))
+  if(U_SUCCESS(langStatus))
     {
       u_fprintf(OUT, "%U", lang3);
       if(langStatus != U_ZERO_ERROR)
@@ -1720,7 +1720,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
 
   u_fprintf(OUT, "</TD><TD>");
 
-  if(SUCCESS(countStatus))
+  if(U_SUCCESS(countStatus))
     {
       u_fprintf(OUT, "%U", count3);
       if(countStatus != U_ZERO_ERROR)
@@ -1761,7 +1761,7 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
 
   s = ures_get(rb, key, &status);
 
-  if(SUCCESS(status) && ( u_strlen(s) > kShowStringCutoffSize ) )
+  if(U_SUCCESS(status) && ( u_strlen(s) > kShowStringCutoffSize ) )
     {
       bigString = TRUE;
       userRequested = didUserAskForKey(key, queryString);
@@ -1770,7 +1770,7 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
   showKeyAndStartItem(key, NULL, locale, status);
 
 
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     {
 
       if(bigString && !userRequested) /* it's hidden. */
@@ -1790,7 +1790,7 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
 			FSWF("bigStringHide", "Hide"));
 	    }
 	  
-	  if(SUCCESS(status))
+	  if(U_SUCCESS(status))
 	    {
 	      if(*s == 0)
 		u_fprintf(OUT, "<I>%U</I>", FSWF("empty", "(Empty)"));
@@ -1833,7 +1833,7 @@ void showStringWithDescription(UResourceBundle *rb, const char *locale, const ch
 
   /** DON'T show the string as a string. */
   /* 
-     if(SUCCESS(status) && s)
+     if(U_SUCCESS(status) && s)
      u_fprintf(OUT, "%U<BR>\r\n", s);
   */
   if(!hidable)
@@ -1860,7 +1860,7 @@ void showStringWithDescription(UResourceBundle *rb, const char *locale, const ch
 		    FSWF("bigStringHide", "Hide"));
 	}
   
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	{
 	  u_fprintf(OUT, "<TABLE BORDER=1 WIDTH=100%>");
 	  u_fprintf(OUT, "<TR><TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD></TR>\r\n",
@@ -1909,7 +1909,7 @@ void showArray( UResourceBundle *rb, const char *locale, const char *key )
       if(!s)
 	break;
 
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	u_fprintf(OUT, "<LI> %U\r\n", s);
       else
 	{
@@ -1970,10 +1970,10 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	case kDateTimeExample:
 	  exampleStatus = U_ZERO_ERROR;
 	  exampleDF = udat_openPattern(s,-1,locale,&exampleStatus);
-	  if(SUCCESS(exampleStatus))
+	  if(U_SUCCESS(exampleStatus))
 	    {
 	      len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
-	      if(SUCCESS(exampleStatus))
+	      if(U_SUCCESS(exampleStatus))
 		{
 		  toShow = tempChars;
 		}
@@ -1983,10 +1983,10 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	case kNumberExample:
 	  toShow = (UChar[]){ 0x00B3,0x0000 }; /* # */
 	  exampleNF = unum_openPattern(s,-1,locale,&exampleStatus);
-	  if(SUCCESS(exampleStatus))
+	  if(U_SUCCESS(exampleStatus))
 	    {
 	      len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
-	      if(SUCCESS(exampleStatus))
+	      if(U_SUCCESS(exampleStatus))
 		{
 		  toShow = tempChars;
 		}
@@ -2019,7 +2019,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	firstStatus = status;
 
       
-      if(SUCCESS(status) && s)
+      if(U_SUCCESS(status) && s)
 	{
 	  toShow = s;
 
@@ -2031,11 +2031,11 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		  len = 0;
 
 		  exampleDF = udat_openPattern(s,-1,locale,&exampleStatus);
-		  if(SUCCESS(exampleStatus))
+		  if(U_SUCCESS(exampleStatus))
 		    {
 		      len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
 
-		      if(SUCCESS(exampleStatus))
+		      if(U_SUCCESS(exampleStatus))
 			{
 			  toShow = tempChars;
 			}
@@ -2048,10 +2048,10 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		d = 1234567890;
 
 	      exampleNF = unum_openPattern(s,-1,locale,&exampleStatus);
-	      if(SUCCESS(exampleStatus))
+	      if(U_SUCCESS(exampleStatus))
 		{
 		  len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
-		  if(SUCCESS(exampleStatus))
+		  if(U_SUCCESS(exampleStatus))
 		    {
 		      toShow = tempChars;
 		    }
@@ -2081,13 +2081,13 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	  {
 	    u_fprintf(OUT, "<TD>");
 
-	    if(SUCCESS(exampleStatus))
+	    if(U_SUCCESS(exampleStatus))
 	      {
 		exampleStatus = U_ZERO_ERROR; /* clear fallback info from exampleDF */
 		udat_format(exampleDF, now, tempChars, 1024, NULL, &exampleStatus);
 		udat_close(exampleDF);
 		
-		if(SUCCESS(exampleStatus))
+		if(U_SUCCESS(exampleStatus))
 		  u_fprintf(OUT, "%U", tempChars);
 
 	      }
@@ -2116,7 +2116,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	  {
 	    u_fprintf(OUT, "<TD>");
 
-	    if(SUCCESS(exampleStatus))
+	    if(U_SUCCESS(exampleStatus))
 	      {
 		exampleStatus = U_ZERO_ERROR; /* clear fallback info from exampleDF */
 
@@ -2124,7 +2124,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		  d = 1234567890;
 		unum_formatDouble(exampleNF, d, tempChars, 1024, NULL, &exampleStatus);
 		
-		if(SUCCESS(exampleStatus))
+		if(U_SUCCESS(exampleStatus))
 		  u_fprintf(OUT, "%U", tempChars);
 
 		
@@ -2135,7 +2135,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 
 		unum_formatDouble(exampleNF, -d, tempChars, 1024, NULL, &exampleStatus);
 		
-		if(SUCCESS(exampleStatus))
+		if(U_SUCCESS(exampleStatus))
 		  u_fprintf(OUT, "%U", tempChars);
 
 		unum_close(exampleNF);
@@ -2187,7 +2187,7 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
   u_fprintf(OUT, "%U ", FSWF("DateTimeElements0", "First day of the week: "));
   
 
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     {
       UChar myWkday[100];
       int32_t  firstDay;
@@ -2198,17 +2198,17 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
       /* here's something fun: try to fetch that day from the user's current locale */
       status = U_ZERO_ERROR;
       
-      if(defaultRB && SUCCESS(status))
+      if(defaultRB && U_SUCCESS(status))
 	{
 	  s = ures_getArrayItem(defaultRB, "DayNames", firstDay, &status);
-	  if(s && SUCCESS(status))
+	  if(s && U_SUCCESS(status))
 	    {
 	      u_fprintf(OUT, " = %U \r\n", s);
 	    }
 	  status = U_ZERO_ERROR;
 
 	  s = ures_getArrayItem(rb, "DayNames", firstDay , &status);
-	  if(s && SUCCESS(status))
+	  if(s && U_SUCCESS(status))
 	    {
 	      u_fprintf(OUT, " = %U \r\n", s);
 	    }
@@ -2235,7 +2235,7 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
 
   firstStatus = status;
   
-  if(SUCCESS(status))
+  if(U_SUCCESS(status))
     u_fprintf(OUT, " %U \r\n", s);
   else
     {
@@ -2288,7 +2288,7 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
       if(i==0)
 	longStatus = status;
   
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	u_fprintf(OUT, " %U ", s);
       else
 	explainStatus(status, keyStem); /* if there was an error */
@@ -2303,7 +2303,7 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
       if(i==0)
 	shortStatus = status;
   
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	u_fprintf(OUT, " %U ", s);
       else
 	explainStatus(status, keyStem); /* if there was an error */
@@ -2333,7 +2333,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 
   ures_count2dArrayItems(rb, key, &rows, &cols, &status);
 
-  if(SUCCESS(status) && ((rows > kShow2dArrayRowCutoff) || (cols > kShow2dArrayColCutoff)) )
+  if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff) || (cols > kShow2dArrayColCutoff)) )
     {
       bigString = TRUE;
       userRequested = didUserAskForKey(key, queryString);
@@ -2360,7 +2360,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 
       firstStatus = status;  /* save this for the next column.. */
 
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	{	
 
 
@@ -2389,7 +2389,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 		  /*      if((h == 0) && (v==0))
 			  firstStatus = status; */ /* Don't need to track firstStatus, countArrayItems should do that for us. */
 		  
-		  if(SUCCESS(status) && s)
+		  if(U_SUCCESS(status) && s)
 		    u_fprintf(OUT, "<TD>%U</TD>\r\n", s);
 		  else
 		    {
@@ -2424,7 +2424,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 
   rows = ures_countArrayItems(rb, key, &status);
 
-  if(SUCCESS(status) && ((rows > kShow2dArrayRowCutoff)))
+  if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff)))
     {
       bigString = TRUE;
       userRequested = didUserAskForKey(key, queryString);
@@ -2450,7 +2450,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 
       firstStatus = status;  /* save this for the next column.. */
 
-      if(SUCCESS(status))
+      if(U_SUCCESS(status))
 	{	
 	  
 
@@ -2474,7 +2474,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 	      
 	      u_fprintf(OUT,"<TR> ");
 
-	      if(SUCCESS(status))
+	      if(U_SUCCESS(status))
 		{
 		  u_fprintf(OUT, "<TD><TT>%s</TT></TD> ", tag);
 		  
@@ -2739,13 +2739,13 @@ void exploreShowPatternForm(UChar *dstPattern, const char *locale, const char *k
   u_fprintf(OUT, "<TEXTAREA ROWS=2 COLS=60 NAME=\"EXPLORE_%s\">",
 	    key);
 
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueEscaped, &status); 
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
 
   u_fprintf(OUT, "%U", dstPattern); 
 
 	    /* should 'get/restore' here. */
   /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &MissingUnicodeAction_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 
   
   u_fprintf(OUT, "</TEXTAREA><P>\r\n<INPUT TYPE=SUBMIT VALUE=Format><INPUT TYPE=RESET VALUE=Reset></FORM>\r\n");
@@ -3009,7 +3009,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
 
   /* Common handler for input errs */
 
-  if(FAILURE(status) || (now == 0))
+  if(U_FAILURE(status) || (now == 0))
     {
       status = U_ZERO_ERROR;
       u_fprintf(OUT, "%U %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
@@ -3018,7 +3018,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   status = U_ZERO_ERROR;
   /* ======================== End loading input date ================================= */
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT, "%U: [%d] <P>", FSWF("formatExample_DateTimePatterns_errorOpen", "Couldn't open the formatter"), (int) status);
       explainStatus(status, "EXPLORE_DateTimePatterns");
@@ -3036,7 +3036,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   udat_format(df,now,tempChars, 1024, 0, &locStatus);
   udat_format(df_default,now,defChars, 1024, 0, &defStatus);
   
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     u_fprintf(OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date"));
   
   explainStatus(status,"EXPLORE_DateTimePatterns");
@@ -3051,7 +3051,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
 
   /* ============ 'default' side of the table  */
 
-  if(FAILURE(defStatus))
+  if(U_FAILURE(defStatus))
     {
       u_fprintf(OUT, "%U<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
       explainStatus(status, "EXPLORE_DateTimePatterns");
@@ -3070,12 +3070,12 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
       u_fprintf(OUT, "\">\r\n");
 
       u_fprintf(OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=30>");
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueEscaped, &status); 
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
       u_fprintf(OUT, "%U", defChars); 
       
       /* should 'get/restore' here. */
       /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &MissingUnicodeAction_DECOMPOSE, &status);
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 
       status = U_ZERO_ERROR;
       
@@ -3087,7 +3087,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
 
   /* ============ 'localized' side ================================= */
 
-  if(FAILURE(locStatus))
+  if(U_FAILURE(locStatus))
     {
       u_fprintf(OUT, "%U<P>", FSWF("formatExample_errorFormatDate2", "Couldn't format the date normally"));
       explainStatus(status, "EXPLORE_DateTimePatterns");
@@ -3200,7 +3200,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
 
   nf = unum_open(UNUM_DEFAULT,locale,  &status);
   
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>%U: ", FSWF("formatExample_errorOpen", "Couldn't open the formatter"));
       explainStatus(status, "EXPLORE_NumberPattern");
@@ -3211,7 +3211,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   
   unum_toPattern(nf, FALSE, tempChars, 1024, &status);
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>  %U<P>", FSWF("formatExample_errorToPattern", "Couldn't convert the pattern [toPattern]"));
       explainStatus(status, "EXPLORE_NumberPattern");
@@ -3220,7 +3220,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
 
   nf_default = unum_open(UNUM_DEFAULT, NULL, &status);
   
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>%U<P>", FSWF("formatExample_errorOpenDefault", "Couldn't open the default number fmt"));
       explainStatus(status, "EXPLORE_NumberPattern");
@@ -3252,7 +3252,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = unum_parseDouble(nf, valueString, -1, 0, &status);
       
-      if(FAILURE(status))
+      if(U_FAILURE(status))
 	{
 	  status = U_ZERO_ERROR;
 	  localValueErr = FSWF("formatExample_errorParse_num", "Could not parse this, replaced with a default value.");
@@ -3270,7 +3270,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = unum_parseDouble(nf_default, valueString, -1, 0, &status);
       
-      if(FAILURE(status))
+      if(U_FAILURE(status))
 	{
 	  status = U_ZERO_ERROR;
 	  defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
@@ -3302,7 +3302,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
 
   unum_formatDouble(nf_default,value,tempChars, 1024, 0, &status);
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT, "%U<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
       explainStatus(status, "EXPLORE_NumberPattern");
@@ -3317,12 +3317,12 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       u_fprintf(OUT, "\">\r\n");
 
       u_fprintf(OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=20>");
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueEscaped, &status); 
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
       u_fprintf(OUT, "%U", tempChars); 
       
       /* should 'get/restore' here. */
       /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &MissingUnicodeAction_DECOMPOSE, &status);
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 
       status = U_ZERO_ERROR;
       
@@ -3336,7 +3336,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
 
   unum_formatDouble(nf,value,tempChars, 1024, 0, &status);
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       u_fprintf(OUT, "%U<P>", FSWF("formatExample_errorFormat2", "Couldn't format the number normally"));
       explainStatus(status, "EXPLORE_NumberPattern");
@@ -3386,7 +3386,7 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
   bool_t           supp   = TRUE;
 
   newRB = ures_open(myBundlePath(), locale, &status);
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     supp = FALSE;
   else
     {
@@ -3427,11 +3427,11 @@ void showFlagImage(const char *locale, const char *extra)
     flagPath[0] = 0;
 
     flagRB = ures_open(  myBundlePath(), locale, &status);
-    if(SUCCESS(status) && (status != U_USING_DEFAULT_ERROR)) /* Important! don't want default flags.. */
+    if(U_SUCCESS(status) && (status != U_USING_DEFAULT_ERROR)) /* Important! don't want default flags.. */
       {
 	flagImage = ures_get(flagRB, "flag", &status);
 	
-	if(SUCCESS(status) && (status != U_USING_DEFAULT_ERROR) && flagImage && *flagImage) /* if it's non null. Again, don't want default flags! */
+	if(U_SUCCESS(status) && (status != U_USING_DEFAULT_ERROR) && flagImage && *flagImage) /* if it's non null. Again, don't want default flags! */
 	  {
 	    u_austrcpy(flagPath, flagImage);
 	  }

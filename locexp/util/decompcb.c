@@ -17,7 +17,7 @@
 
 #include "decompcb.h"
 
-UCNV_FromUCallBack DECOMPOSE_lastResortCallback = MissingUnicodeAction_SUBSTITUTE;
+UConverterFromUCallback DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 
 static UChar block0300Subs[] =
     { 0x0060, 0x00b4, 0x005e, 0x007e, 0x007e, 0x00af, 0x0306, 0x0307, 0x00a8, 0x0309, 0x00b0, 0x0022, 0x030c, 0x0022 }; 
@@ -63,7 +63,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
   ucnv_reset(&myConverter); /* necessary???? */
 
   /*  ucnv_setFromUCallBack (&myConverter,               <-- unneeded
-			 (UCNV_FromUCallBack)  MissingUnicodeAction_DECOMPOSE,
+			 (UConverterFromUCallback)  UCNV_FROM_U_CALLBACK_DECOMPOSE,
 			 &err2);*/
   
   ucnv_fromUnicode (&myConverter,
@@ -85,7 +85,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
       /* OK hit it */
       ucnv_fromUnicode(&myConverter,
 		       &myTarget,
-		       _this->charErrorBuffer + ERROR_BUFFER_LENGTH,
+		       _this->charErrorBuffer + UCNV_ERROR_BUFFER_LENGTH,
 		       &sourceAlias,
 		       sourceLimit,
 		       NULL,
@@ -249,8 +249,8 @@ static void DECOMPOSE_uchar(UConverter * _this,
 
 }
 
-CAPI void 
-  MissingUnicodeAction_DECOMPOSE (UConverter * _this,
+U_CAPI void 
+  UCNV_FROM_U_CALLBACK_DECOMPOSE (UConverter * _this,
 					    char **target,
 					    const char *targetLimit,
 					    const UChar ** source,
@@ -262,7 +262,7 @@ CAPI void
   int32_t i;
   char   *oldTarget;
 
-  if (CONVERSION_SUCCESS (*err))
+  if (CONVERSION_U_SUCCESS (*err))
     return;
 
   for(i=0;i<_this->invalidUCharLength;i++)

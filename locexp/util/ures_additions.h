@@ -19,7 +19,7 @@
 *@see ures_get2dArrayItem
 */
 
-CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
+U_CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
 				 const char * resourceTag,
 				 int32_t *rowCount,
 				 int32_t *colCount,
@@ -40,13 +40,13 @@ CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
  *@see ures_get2dArrayItem
  */
 
-CAPI const char* U_EXPORT2 ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
+U_CAPI const char* U_EXPORT2 ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
 						       const char *resourceTag, 
 						       int32_t index,
 						       UErrorCode* status);
 
 
-CAPI void
+U_CAPI void
 unum_applyPattern(            UNumberFormat     *format,
 			      bool_t          localized,
 			      const   UChar           *pattern,

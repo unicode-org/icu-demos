@@ -3,14 +3,14 @@
 #include "ustring.h"
 #include "decimfmt.h"
 
-CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
+U_CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
 				 const char * resourceTag,
 				 int32_t *rowCount,
 				 int32_t *columnCount,
 				 UErrorCode* status)
 
 {
-  if ( FAILURE(*status)) return;
+  if ( U_FAILURE(*status)) return;
   if (!resourceBundle || !resourceTag || (rowCount == 0) || (columnCount == 0) )
     {
       *status = U_ILLEGAL_ARGUMENT_ERROR;
@@ -24,7 +24,7 @@ CAPI void ures_count2dArrayItems(const UResourceBundle *resourceBundle,
 			      *status);
 }
 
-CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
+U_CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
 						       const char *resourceTag, 
 						       int32_t index,
 						       UErrorCode* status)
@@ -33,7 +33,7 @@ CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
   UnicodeString *items;
   int32_t numItems;
 
-  if (FAILURE(*status)) return NULL;
+  if (U_FAILURE(*status)) return NULL;
   if (!resourceBundle || !resourceTag || (index < 0) )
     {
       *status = U_ILLEGAL_ARGUMENT_ERROR;
@@ -46,7 +46,7 @@ CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
 		     items,
 		     numItems,
 		     *status);
-  if (SUCCESS(*status))
+  if (U_SUCCESS(*status))
     {
       delete [] items; 
 
@@ -70,7 +70,7 @@ CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
 
 
 /* ripped off from udat_applyPattern */
-CAPI void
+U_CAPI void
 unum_applyPattern(            UNumberFormat     *format,
 			      bool_t          localized,
 			      const   UChar           *pattern,

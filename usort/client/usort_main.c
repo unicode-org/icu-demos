@@ -101,7 +101,7 @@ int main(int argc, const char *argv[])
 	      if(i<argc)
 		{
 		  uloc_setDefault(argv[i], &status);
-		  if(FAILURE(status))
+		  if(U_FAILURE(status))
 		    {
 		      fprintf(stderr, "Error %d trying to set the locale to %s\n",
 			      status, argv[i]);
@@ -124,7 +124,7 @@ int main(int argc, const char *argv[])
 
   list = usort_open(NULL, strength, TRUE, &status);
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       fprintf(stderr,"Couldn't open sortlist: %d\n", status);
       abort();
@@ -132,7 +132,7 @@ int main(int argc, const char *argv[])
   
   fromConverter = ucnv_open(fromCodepage, &status);
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       fprintf(stderr,"Couldn't open fromConverter[%s]: %d\n", fromCodepage, status);
       abort();
@@ -140,7 +140,7 @@ int main(int argc, const char *argv[])
 
   toConverter = ucnv_open(toCodepage, &status);
 
-  if(FAILURE(status))
+  if(U_FAILURE(status))
     {
       fprintf(stderr,"Couldn't open toConverter[%s]: %d\n", toCodepage, status);
       abort();

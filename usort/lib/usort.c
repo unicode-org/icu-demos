@@ -35,7 +35,7 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
   arraySize    = kPrintBufSize;
 
   /* if we failed, clean up and exit */
-  if(FAILURE(*status)) goto finish;
+  if(U_FAILURE(*status)) goto finish;
   
   /* perform the conversion */
   do {
@@ -92,13 +92,13 @@ static int usort_sortProc(const void *aa, const void *bb)
 }
 
 
-CAPI USort*
+U_CAPI USort*
 usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
            UErrorCode *status)
 {
   USort *n;
   
-  if(FAILURE(*status))
+  if(U_FAILURE(*status))
     return;
 
   n = malloc(sizeof(USort));
@@ -115,7 +115,7 @@ usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
   n->ownsText = ownText;
   n->collator = ucol_open(locale, status);
 
-  if(FAILURE(*status)) /* Failed to open the collator. */
+  if(U_FAILURE(*status)) /* Failed to open the collator. */
     {
       free(n);
       return 0;
@@ -126,7 +126,7 @@ usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
   return n;
 }
 
-CAPI void
+U_CAPI void
 usort_close(USort *usort)
 {
   if(!usort)
@@ -143,7 +143,7 @@ usort_close(USort *usort)
   free(usort);
 }
 
-CAPI void
+U_CAPI void
 usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *userData)
 {
   UErrorCode status = U_ZERO_ERROR;
@@ -210,7 +210,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
 
 }
 
-CAPI void
+U_CAPI void
 usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t escapeMode)
 {
   UConverter *newConverter = NULL;
@@ -326,7 +326,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
 	      status = U_ZERO_ERROR;
 	    } /* end U_INDEX_OUTOFBOUNDS_ERROR handler */
 
-	  if(FAILURE(status))
+	  if(U_FAILURE(status))
 	    {
 	      /* we have a fairly good calculation of where the error was. totalReadCount 
 		 has how many bytes have been successfully converted,
@@ -403,14 +403,14 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
     ucnv_close(newConverter);
 }
 
-CAPI void 
+U_CAPI void 
 usort_sort(USort *usort)
 {
   /* Too easy! */
   qsort(usort->lines, usort->count, sizeof(USortLine), &usort_sortProc);
 }
 
-CAPI void
+U_CAPI void
 usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
 {
   UConverter *newConverter = NULL;

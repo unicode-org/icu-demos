@@ -127,7 +127,7 @@ UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
 
 /* substitute with value, of the form: <B>\uXXXX</B>  */
 void
-SubstituteWithValueHTML (UConverter * _this,
+UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML (UConverter * _this,
 			 char **target,
 			 const char *targetLimit,
 			 const UChar ** source,
@@ -138,7 +138,7 @@ SubstituteWithValueHTML (UConverter * _this,
 
 /* substitute with value, of the form: \uXXXX  */
 void
-SubstituteWithValueEscaped (UConverter * _this,
+UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
 			 char **target,
 			 const char *targetLimit,
 			 const UChar ** source,
@@ -146,8 +146,6 @@ SubstituteWithValueEscaped (UConverter * _this,
 			 int32_t *offsets,
 			 bool_t flush,
 			 UErrorCode * err);
-
-#endif
 
 /**
  * Replace all instances of 'from' with 'to'.
@@ -157,3 +155,5 @@ SubstituteWithValueEscaped (UConverter * _this,
  */
 
 void u_replaceChar(UChar *str, UChar from, UChar to);
+
+#endif

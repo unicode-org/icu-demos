@@ -1,10 +1,10 @@
 
 /* #include a bunch of stuff before this file... */
 
-extern UCNV_FromUCallBack DECOMPOSE_lastResortCallback;
+extern UConverterFromUCallback DECOMPOSE_lastResortCallback;
 
-CAPI void 
-  MissingUnicodeAction_DECOMPOSE (UConverter * _this,
+U_CAPI void 
+  UCNV_FROM_U_CALLBACK_DECOMPOSE (UConverter * _this,
 					    char **target,
 					    const char *targetLimit,
 					    const UChar ** source,
@@ -15,3 +15,5 @@ CAPI void
 
 /* NOTE: returns USING_FALLBACK_ERROR instead of ZERO_ERROR if 
    decomposition occurs. (does NOT occur in INDEX_OUTOFBOUNDS cases) */
+
+

@@ -39,7 +39,7 @@ void printAllConverters()
 
     // getAvailable returns a string-table with all available codepages
     const char* const* convtable = UnicodeConverterCPP::getAvailableNames(num, err);
-    if (FAILURE(err))
+    if (U_FAILURE(err))
     {
         fprintf(stderr, "getAvailableNames failed\n");
         return;
@@ -85,14 +85,14 @@ bool convertFile(const char* fromcpage,
     // Create codepage converter. If the codepage or its aliases weren't
     // available, it returns NULL and a failure code
     convfrom = new UnicodeConverterCPP(fromcpage, err);
-    if (FAILURE(err))
+    if (U_FAILURE(err))
     {
         fprintf(stderr, "Unknown codepage: %s\n", fromcpage);
         goto error_exit;
     }
 
     convto = new UnicodeConverterCPP(tocpage, err);
-    if (FAILURE(err))
+    if (U_FAILURE(err))
     {
         fprintf(stderr, "Unknown codepage %s\n", tocpage);
         goto error_exit;
@@ -129,7 +129,7 @@ bool convertFile(const char* fromcpage,
         convfrom->toUnicode(uniiter, uniiter+buffsize, cbuffiter, cbuffiter+rd, 
                             NULL, flush, err);
             
-        if (FAILURE(err))
+        if (U_FAILURE(err))
         {
             fprintf(stderr, "Conversion to Unicode from codepage failed\n");
             goto error_exit;
@@ -154,7 +154,7 @@ bool convertFile(const char* fromcpage,
                            cuniiter, cuniiter+(size_t)(uniiter-unibuff),
                            NULL, flush, err);
             
-        if (FAILURE(err))
+        if (U_FAILURE(err))
         {
             fprintf(stderr, "Problem converting from Unicode to codepage\n");
             goto error_exit;
