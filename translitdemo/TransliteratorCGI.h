@@ -26,10 +26,8 @@ class TransliteratorCGI : public TemplateCGI {
 
  private:
 
-    const char* getInputText();
-    Transliterator* getTranslit1(UnicodeString& constructorError);
-    Transliterator* getTranslit2(UnicodeString& constructorError);
-    UnicodeString& getIntermediate();
+    static char* cleanupNewlines(const char*);
+
     Transliterator* buildUserRules(const UnicodeString& id,
                                    const UnicodeString& rules,
                                    UnicodeString& errMsg);

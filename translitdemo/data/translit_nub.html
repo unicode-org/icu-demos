@@ -36,21 +36,21 @@ function handleLoad() {
   var c = document.FORM.CALLBACK.value;
   if (c) {
     eval("parent.MAINFRAME." + c +
-         "(document.FORM.CONTEXT.value, document.FORM.OPRESULT.value)");
+         "(document.FORM.CONTEXT.value, unescape(document.FORM.OPRESULT.value))");
   }
   //document.FORM.CALLBACK.value = ""; // Should be unnecessary
 }
 
 document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
 </script>
-  <input type="hidden" name="TEMPLATE_FILE" value="data/translit_nub.html">
-  <input type="INPUT" name="OPCODE" value="$OPCODE">
+  <input type="HIDDEN" name="TEMPLATE_FILE" value="data/translit_nub.html">
+  <input type="HIDDEN" name="OPCODE" value="$OPCODE">
   <input type="HIDDEN" name="OPARG1" value="$OPARG1">
-  <input type="input" name="OPARG2" value="$OPARG2">
-  <input type="input" name="OPARG3" value="$OPARG3">
+  <input type="HIDDEN" name="OPARG2" value="$OPARG2">
+  <input type="HIDDEN" name="OPARG3" value="$OPARG3">
   <input type="HIDDEN" name="OPRESULT" value="$OPRESULT">
-  <input type="input" name="CALLBACK" value="$CALLBACK">
-  <input type="input" name="CONTEXT" value="$CONTEXT">
+  <input type="HIDDEN" name="CALLBACK" value="$CALLBACK">
+  <input type="HIDDEN" name="CONTEXT" value="$CONTEXT">
   <input type="SUBMIT" value="Submit">
 </form>
 

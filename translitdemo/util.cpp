@@ -125,18 +125,14 @@ void util_fprintf(FILE* out, const char* str, UBool inQuote) {
     for (i=0; i<n; ++i) {
         int32_t c=-1;
         switch (str[i]) {
-            // I'm disabling \n and \\ temporarily during development --
-            // they seem to muck up setting vars to hidden fields.
-            // Soon that's all we'll be doing, so it makes sense to
-            // optimize that.
         case 0x0008: c=0x0062 /*b*/; break;
         case 0x0009: c=0x0074 /*t*/; break;
-        // case 0x000A: c=0x006E /*n*/; break;
+        case 0x000A: c=0x006E /*n*/; break;
         case 0x000C: c=0x0066 /*f*/; break;
         case 0x000D: c=0x0072 /*r*/; break;
         case 0x0022: c=0x0022 /*"*/; break;
         case 0x0027: c=0x0027 /*'*/; break;
-        // case 0x005C: c=0x005C /*\*/; break;
+        case 0x005C: c=0x005C /*\*/; break;
         }
         if (c>=0) {
             fprintf(out, "\\%c", (char)c);
@@ -155,6 +151,28 @@ UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote) {
         return FALSE;
     }
     util_fprintf(out, charBuf, inQuote);
+    delete[] charBuf;
+    return TRUE;
+}
+
+/**
+ * Send the given UnicodeString to 'out' using ENCODING and
+ * JavaScript escaping for double quotes ONLY.  Good for HIDDEN fields.
+ */
+UBool util_fprintfq(FILE* out, const UnicodeString& str) {
+    char* charBuf = util_createChars(str);
+    if (charBuf == 0) {
+        return FALSE;
+    }
+    char* p = charBuf;
+    while (*p) {
+        if (*p == 0x22) {
+            fprintf(out, "%%22");
+        } else {
+            fprintf(out, "%c", *p);
+        }
+        ++p;
+    }
     delete[] charBuf;
     return TRUE;
 }

@@ -142,8 +142,9 @@ function handleSelectSource(i) {
      "GETAVAILABLETARGETS", source);
 }
 function callbackHandleSelectSource(i, targets) {
+  var s = getSelectedOption(document.FORM["SELECT_TARGET" + i]); 
   var t = targets.split(";").sort();
-  setOptions(document.FORM["SELECT_TARGET" + i], t);
+  setOptions(document.FORM["SELECT_TARGET" + i], t, s);
   _handleTransliterateButton(i);
 }
 
@@ -155,14 +156,35 @@ function handleSelectTarget(i) {
      "GETAVAILABLEVARIANTS", source, target);
 }
 function callbackHandleSelectTarget(i, variants) {
+  alert(variants);
+  var s = getSelectedOption(document.FORM["SELECT_VARIANT" + i]);
   var v = variants.split(";").sort();
-  setOptions(document.FORM["SELECT_VARIANT" + i], v);
+  setOptions(document.FORM["SELECT_VARIANT" + i], v, s);
   _handleTransliterateButton(i);
 }
 
 // Handler for a change to a transliterator VARIANT box.
 function handleSelectVariant(i) {
   _handleTransliterateButton(i);
+}
+
+// Update ourself to reflect new/deleted user IDs.
+// In practice this means modifying the ID selectors dynamically.
+// Called by edit window when user ID list has changed.
+function updateUserIDs() {
+  updateSelector(1);
+  updateSelector(2);
+}
+
+function updateSelector(i) {
+  op("callbackUpdateSelector", i, "GETAVAILABLESOURCES");
+}
+function callbackUpdateSelector(i, list) {
+  var s = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
+  document.FORM["SELECT_SOURCE" + i].selectedIndex = 0;
+  var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
+  setOptions(document.FORM["SELECT_SOURCE" + i], o.concat(list.split(";").sort()), s);
+  handleSelectSource(i);
 }
 
 // Determine the i-th ID
@@ -196,7 +218,7 @@ function _handleTransliterateButton(i) {
 }
 function callbackHandleTransliterateButton(i, result) {
   document.FORM["OUTPUT" + i].value = result;
-  if (i == 1 && result.search(/^Error: /) < 0) {
+  if (i == 1 && result.search(/^Error:/) < 0) {
     _handleTransliterateButton(2);
   }
 }
@@ -261,7 +283,7 @@ function handleInsertSamples() {
 
 // Handler for Edit Rules button
 function handleEditRules() {
-  var w = window.open(SELF + "?TEMPLATE_FILE=data/translit_rule_edit.html",
+  var w = window.open(SELF + "?TEMPLATE_FILE=data/translit_rule_main.html",
                       "_TRANSLIT_EDIT");
   w.focus();
 }
@@ -269,14 +291,6 @@ function handleEditRules() {
 // Perform a CGI operation
 function op(callback, context, opcode, arg1, arg2, arg3) {
   parent.NUBFRAME.op(callback, context, opcode, arg1, arg2, arg3);
-}
-
-// Update ourself to reflect new/deleted user IDs.
-// In practice this means modifying the ID selectors dynamically.
-// @param userIDs user IDs, separated by ";".  For some reason,
-// passing the actual array doesn't work.
-function updateUserIDs(userIDs) {
-  // TODO
 }
 </script>
 

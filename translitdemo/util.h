@@ -59,4 +59,10 @@ void util_fprintf(FILE* out, const char* str, UBool inQuote);
  */
 UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote=FALSE);
 
+/**
+ * Send the given UnicodeString to 'out' using ENCODING and
+ * JavaScript escaping for double quotes ONLY.  Good for HIDDEN fields.
+ */
+UBool util_fprintfq(FILE* out, const UnicodeString& str);
+
 #endif
