@@ -52,23 +52,31 @@ static void showICIRMenu(LXContext *lx, const char *superSection, const char *su
 static void showICIRFieldTwoggles(LXContext *lx, const char *part,const char *subpart, UErrorCode *status)
 {
 	u_fprintf(lx->OUT, "<select name=\"twg_%s_%s\" >", part, subpart);
-	u_fprintf(lx->OUT, "<option value=\"\">%S ", FSWF("icir_none",""));
+	u_fprintf(lx->OUT, "<option value=\"\">%S ", FSWF("icir_none","(no action)"));
 	u_fprintf(lx->OUT, "<option value=\"v\">%S ", FSWF("icir_v","Verified"));
 	u_fprintf(lx->OUT, "<option value=\"c\">%S ", FSWF("icir_c","Fixed"));
 	u_fprintf(lx->OUT, "<option value=\"w\">%S ", FSWF("icir_w","Incorrect"));
 	u_fprintf(lx->OUT, "</select>");
 }
 
+/**
+ * @param uChars chars in the user (display) locale
+ * @param pChars chars in en/us/Posix
+ * @param lChars chars in Localized form
+ */
+ 
 static void	showICIRFieldRow(LXContext *lx, 
 					const char *part,
 					const char *subpart,
 					const UChar *name,
 					const UChar *uChars,
+					const UChar *pChars,
 					const UChar *lChars,
 					UErrorCode *status) {
 	
     u_fprintf(lx->OUT, "<tr><td colspan=4 bgcolor=\"#666666\">&nbsp;</td></tr>\n"
 			"<tr><th align=middle bgcolor=\"#DDFFDD\">%S</th>\n", name);
+    u_fprintf(lx->OUT, "<td bgcolor=\"#FFFFDF\">%S</td>\n", pChars);
     u_fprintf(lx->OUT, "<td bgcolor=\"#DDDDFF\">%S</td>\n", uChars);
 	u_fprintf(lx->OUT, "<td bgcolor=\"#FFFFFF\"><b><input onChange=\"handleMarkChanged('c_%s_%s')\" "
 		"  name=\"c_%s_%s\" value=\"%S\" size=60>"
@@ -81,6 +89,7 @@ static void	showICIRFieldRow(LXContext *lx,
 static void showICIRloc_lng_1(LXContext *lx, const char *loc)
 {
 	UChar uChars[1024];
+	UChar pChars[1024];
 	UChar lChars[1024];
 	UErrorCode status = U_ZERO_ERROR;
 
@@ -96,11 +105,17 @@ static void showICIRloc_lng_1(LXContext *lx, const char *loc)
 			lChars,
 			sizeof(lChars)/sizeof(lChars[0]),
 			&status);
+	uloc_getDisplayLanguage(loc,
+			"en_US_POSIX",
+			pChars,
+			sizeof(pChars)/sizeof(pChars[0]),
+			&status);
 	showICIRFieldRow(lx, 
 					"language",
 					loc,
 					FSWF("LocaleCodes_Language", "Language"),
 					uChars,
+                    pChars,
 					lChars,
 					&status);
 }
@@ -108,6 +123,7 @@ static void showICIRloc_lng_1(LXContext *lx, const char *loc)
 static void showICIRloc_rgn_1(LXContext *lx, const char *loc)
 {
 	UChar uChars[1024];
+	UChar pChars[1024];
 	UChar lChars[1024];
 	UErrorCode status = U_ZERO_ERROR;
 
@@ -123,11 +139,17 @@ static void showICIRloc_rgn_1(LXContext *lx, const char *loc)
 			lChars,
 			sizeof(lChars)/sizeof(lChars[0]),
 			&status);
+	uloc_getDisplayCountry(loc,
+			"en_US_POSIX",
+			pChars,
+			sizeof(pChars)/sizeof(pChars[0]),
+			&status);
 	showICIRFieldRow(lx, 
 					"region",
 					loc,
 					FSWF("LocaleCodes_Region", "Region"),
 					uChars,
+					pChars,
 					lChars,
 					&status);
 }
@@ -137,13 +159,52 @@ static const char   *Gx_rgn[] = { "_DE", "_GB", "_US", "_CA", "_FR", "_IT", "_JP
 								NULL};
 static const char   *Gx_lng[] = { "de", "en","fr", "it", "ja", "sv",
 								NULL};
+                                
+#define ITEMS_PER_PAGE 25
+
+static void showICIRloc_lng_menu(LXContext *lx)
+{
+    const char *o;
+    UErrorCode status = U_ZERO_ERROR;
+    int n;
+    int i;
+    o=queryField(lx,"o");
+    if(o) { n = atoi(o); }
+    mySort(lx->locales, &status, TRUE); /* need the whole thing sorted */
+    /*showICIRloc_lng_1(lx, lx->curLocaleName);*/
+    u_fprintf(lx->OUT, "<form method=post action=\"%s\">", getLXBaseURL(lx, kALL_PARTS));
+    u_fprintf(lx->OUT, "<select name=o>");
+    for(i=0;i<lx->locales->nSubLocs;i+=ITEMS_PER_PAGE) {
+        u_fprintf(lx->OUT, "<option %s value=\"%d\">%S...%S", (i==n)?"SELECTED":"", i, lx->locales->subLocs[i]->ustr, 
+            lx->locales->subLocs[((i+ITEMS_PER_PAGE-1)>lx->locales->nSubLocs)
+                ?(lx->locales->nSubLocs-1):i+ITEMS_PER_PAGE-1]->ustr );
+	}
+    u_fprintf(lx->OUT, "</select>\n");
+    u_fprintf(lx->OUT,"<input type=submit value=Go></form>\n");
+}
 
 static void showICIRloc_lng(LXContext *lx)
 {
-	int i;
-	for(i=0;Gx_lng[i];i++) {
-		showICIRloc_lng_1(lx, Gx_lng[i]);
-	}
+    const char *s;
+    int o=0;
+    int i;
+    int limit;
+    if((s=queryField(lx,"o"))) {
+        o = atoi(s);
+        if((o>=lx->locales->nSubLocs) || (o<0)) {
+            o = 0;
+        }
+    }
+    if(o==0) {
+        showICIRloc_lng_1(lx, lx->curLocaleName);
+    }
+    limit=o+ITEMS_PER_PAGE;
+    if(limit>lx->locales->nSubLocs) {
+        limit = lx->locales->nSubLocs;
+    }
+    for(i=o;i<limit;i++) {
+        showICIRloc_lng_1(lx, lx->locales->subLocs[i]->str);
+    }
 }
 
 static void showICIRloc_rgn(LXContext *lx)
@@ -158,6 +219,7 @@ static void showICIRloc(LXContext *lx)
 {
 	UErrorCode resStatus = U_ZERO_ERROR;
 	UChar uChars[1024];
+	UChar pChars[1024];
 	UChar lChars[1024];
     UResourceBundle *res;
 	UErrorCode status = U_ZERO_ERROR;
@@ -168,76 +230,6 @@ static void showICIRloc(LXContext *lx)
         u_fprintf(lx->OUT, "<tr><i>error loading bundle</i></tr>"); /* TODO: localize */
         return;
     }
-	#if 0
-	u_fprintf(lx->OUT, "<tr>");
-	showLocaleCodes(lx,  res, lx->curLocaleName);
-	u_fprintf(lx->OUT, "</tr>\n");
-	#endif
-	
-	/* LANGUAGE */
-	uChars[0]=lChars[0]=0;
-	uloc_getDisplayLanguage(lx->curLocaleName,
-			lx->dispLocale,
-			uChars,
-			sizeof(uChars)/sizeof(uChars[0]),
-			&status);
-	uloc_getDisplayLanguage(lx->curLocaleName,
-			lx->curLocaleName,
-			lChars,
-			sizeof(lChars)/sizeof(lChars[0]),
-			&status);
-	showICIRFieldRow(lx, 
-					"language",
-					lx->curLocaleName,
-					FSWF("LocaleCodes_Language", "Language"),
-					uChars,
-					lChars,
-					&status);
-	/* REGION */
-	uChars[0]=lChars[0]=0;
-	uloc_getDisplayCountry(lx->curLocaleName,
-			lx->dispLocale,
-			uChars,
-			sizeof(uChars)/sizeof(uChars[0]),
-			&status);
-	uloc_getDisplayCountry(lx->curLocaleName,
-			lx->curLocaleName,
-			lChars,
-			sizeof(lChars)/sizeof(lChars[0]),
-			&status);
-	showICIRFieldRow(lx, 
-					"region",
-					lx->curLocaleName,
-					FSWF("LocaleCodes_Region", "Region"),
-					uChars,
-					lChars,
-					&status);
-
-	/* VARIANT */
-	uChars[0]=lChars[0]=0;
-	uloc_getDisplayVariant(lx->curLocaleName,
-			lx->dispLocale,
-			uChars,
-			sizeof(uChars)/sizeof(uChars[0]),
-			&status);
-	uloc_getDisplayVariant(lx->curLocaleName,
-			lx->curLocaleName,
-			lChars,
-			sizeof(lChars)/sizeof(lChars[0]),
-			&status);
-	showICIRFieldRow(lx, 
-					"region",
-					lx->curLocaleName,
-					FSWF("LocaleCodes_Variant", "Variant"),
-					uChars,
-					lChars,
-					&status);
-	
-	#if 0
-	              FSWF("LocaleCodes_Language", "Language"),
-              FSWF("LocaleCodes_Country", "Region"),
-              FSWF("LocaleCodes_Variant", "Variant"));
-	#endif
 }
 
 static void showICIRnumExample(LXContext *lx, UNumberFormat *unf, UNumberFormat *urbnf, UNumberFormat *nf, double d)
@@ -417,7 +409,7 @@ static void showICIRShortLongCalType( LXContext *lx, UResourceBundle *rb,
     for(i=0;i<stuffCount;i++) {
 	 UBool foo;
       stuff[i].bund = loadCalRes3(lx, keyStem, type, stuff[i].style, &stuff[i].isDefault, &status);
-      stuff[i].pbund = loadCalRes3x(lx, keyStem, type, stuff[i].style, &foo, lx->calPosixBundle, &status);
+      stuff[i].pbund = loadCalRes3x(lx, keyStem, "format", "abbreviated", &foo, lx->calPosixBundle, &status);
       stuff[i].dbund = loadCalRes3x(lx, keyStem, type, stuff[i].style, &foo, lx->calDisplayBundle, &status);
       stuff[i].count = ures_getSize(stuff[i].bund);
       if(stuff[i].count > maxCount) {
@@ -473,8 +465,9 @@ static void showICIRShortLongCalType( LXContext *lx, UResourceBundle *rb,
 				showICIRFieldRow(lx, 
 					part,
 					subPart,
-					u, /* n */
+					u, /*n - FIXME - # */
 					d, /* d */
+					u, /* n */
 					s,
 					&subStatus);
             } else {
@@ -569,7 +562,7 @@ void showICIR(LXContext* lx)
     u_fprintf(lx->OUT, "<hr><table><tr>\n");
     u_fprintf(lx->OUT, "<th>%S</th>\n", FSWF("icir_menu", "Section: "));
     /* Note: could use other strings here, if it's translated better elsewhere in LX. */
-    showICIRMenu(lx, superSection, subSection, "iloc", FSWF("iloc", "Locale Names"));
+    showICIRMenu(lx, superSection, subSection, "iloc", FSWF("iloc", "Display Names"));
     showICIRMenu(lx,  superSection, subSection, "inum", FSWF("inum", "Numbers"));
     showICIRMenu(lx,  superSection, subSection, "idat", FSWF("idat", "Date and Time"));
     showICIRMenu(lx,  superSection, subSection, "", FSWF(/*NOTRANSLATE*/ "icir_imain", "Return to Normal View"));
@@ -599,20 +592,12 @@ void showICIR(LXContext* lx)
 		dispBundle = ures_open(NULL,lx->dispLocale,&resStatus);
 		lx->calDisplayBundle = loadCalendarStuffFor(lx, dispBundle, lx->dispLocale, "gregorian");
 	}
-
-    u_fprintf(lx->OUT, "<form method=POST action=\"?\">");
-	u_fprintf(lx->OUT, "<input type=hidden name=x value=\"isubmit\">", lx->section);
-	u_fprintf(lx->OUT, "<input type=hidden name=ox value=\"%s\">", lx->section);
-	u_fprintf(lx->OUT, "<input type=hidden name=_ value=\"%s\">", lx->curLocaleBlob.base);
-	u_fprintf(lx->OUT, "<input type=hidden name=calendar value=\"%s\">", lx->curLocaleBlob.calendar);
-	u_fprintf(lx->OUT, "<input type=hidden name=currency value=\"%s\">", lx->curLocaleBlob.currency);
-	u_fprintf(lx->OUT, "<input type=hidden name=collator value=\"%s\">", lx->curLocaleBlob.collation);
-	u_fprintf(lx->OUT, "<input type=hidden name=d_ value=\"%s\">", lx->dispLocale);
+    
     u_fprintf(lx->OUT, "<h1>%S", FSWF(/**/superSection, "Unknown Section"));
 	u_fprintf(lx->OUT, "</h1>\n");
 	if(!strcmp(superSection, "iloc")) {
 		u_fprintf(lx->OUT, "<ul>");
-		showICIRSubMenu(lx, "iloc", FSWF("icir_Basics", "Basics"));
+		showICIRSubMenu(lx, "iloc", FSWF("icir_Misc", "Misc"));
 		showICIRSubMenu(lx, "iloc_lng", FSWF(/**/"Languages", "Languages"));
 		showICIRSubMenu(lx, "iloc_rgn", FSWF(/**/"Countries", "Regions"));
 		u_fprintf(lx->OUT, "</ul>");
@@ -624,10 +609,24 @@ void showICIR(LXContext* lx)
 		u_fprintf(lx->OUT, "</ul>");
 	}
 
+    if(!strcmp(superSection+1,"loc")) {
+		if(!strcmp(subSection,"_lng")) {
+			showICIRloc_lng_menu(lx);
+		}
+    }
 	
     u_fprintf(lx->OUT, "<i>");
     u_fprintf_u(lx->OUT, FSWF("icir_intro","Each section below has an example in %S (as determined by the 'Display Locale' setting at the bottom of the page), followed by the translation in %S.<!-- sorry, order of the %%S's is important. -->"), dispName, locName);
     u_fprintf(lx->OUT, "</i>\n");
+    u_fprintf(lx->OUT, "<form method=POST action=\"?\">");
+	u_fprintf(lx->OUT, "<input type=hidden name=x value=\"isubmit\">", lx->section);
+	u_fprintf(lx->OUT, "<input type=hidden name=ox value=\"%s\">", lx->section);
+	u_fprintf(lx->OUT, "<input type=hidden name=_ value=\"%s\">", lx->curLocaleBlob.base);
+	u_fprintf(lx->OUT, "<input type=hidden name=calendar value=\"%s\">", lx->curLocaleBlob.calendar);
+	u_fprintf(lx->OUT, "<input type=hidden name=currency value=\"%s\">", lx->curLocaleBlob.currency);
+	u_fprintf(lx->OUT, "<input type=hidden name=collator value=\"%s\">", lx->curLocaleBlob.collation);
+	u_fprintf(lx->OUT, "<input type=hidden name=d_ value=\"%s\">", lx->dispLocale);
+
     u_fprintf(lx->OUT, "<table border=0>\n");
     if(!strcmp(superSection+1,"num")) {
         showICIRnum(lx);
