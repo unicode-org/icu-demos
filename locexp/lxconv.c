@@ -263,7 +263,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 
 
         u_fprintf(lx->OUT, "%s/%s/",
-                  getenv("SCRIPT_NAME"),
+                  lx->scriptName,
                   lx->cLocale);
         u_fprintf(lx->OUT,"%s/", cnv);
         if(restored)
@@ -360,7 +360,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
         u_fprintf(lx->OUT, "%s\n", ts);
 
 #if defined(LX_UBROWSE_PATH)
-        u_fprintf(lx->OUT, "<A TARGET=unibrowse HREF=\"%U/%s/\">%U</A>\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME"), 
+        u_fprintf(lx->OUT, "<A TARGET=unibrowse HREF=\"%U/%s/\">%U</A>\r\n", getenv("SERVER_NAME"), lx->scriptName, 
                   FSWF( /* NOEXTRACT */ "ubrowse_path", LX_UBROWSE_PATH),
                   defaultMime,
                   FSWF("ubrowse", "Browse Unicode in this codepage"));

@@ -56,6 +56,7 @@ typedef struct
 {
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
+  const char *scriptName;      /* Cached results of getenv("SCRIPT_NAME") */
   char cLocale[200]; /* client locale */
 
   const char *couldNotOpenEncoding;      /* contains error string if nonnull */

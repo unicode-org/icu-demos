@@ -285,7 +285,7 @@ void printStatusTable(LXContext *lx)
 
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"%s/en/iso-8859-1/?PANICDEFAULT\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", getenv("SCRIPT_NAME"));
+        u_fprintf(lx->OUT, "<a href=\"%s/en/iso-8859-1/?PANICDEFAULT\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
     }
 
     u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */
@@ -324,7 +324,7 @@ void printStatusTable(LXContext *lx)
         {
             u_fprintf(lx->OUT, "<td><b>*%U*</b> / <a href=\"%s/%s/?%s\">%U</a></td>",
                       FSWF("on","on"),
-                      getenv("SCRIPT_NAME"),
+                      lx->scriptName,
                       lx->cLocale,
                       qs,
                       FSWF("off","off"));
@@ -332,7 +332,7 @@ void printStatusTable(LXContext *lx)
         else
         {
             u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%U</a> / <b>*%U*</b></td>",
-                      getenv("SCRIPT_NAME"),
+                      lx->scriptName,
                       lx->cLocale,
                       qs,
                       FSWF("on","on"),
@@ -521,7 +521,7 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
     fprintf(lx->fOUT, "<dd>An error of type %d occured while trying to %s.</dd><HR><P>\r\n",err,what);
     fprintf(stderr, "listrb: err %d trying to %s\n",err,what);
     fprintf(lx->fOUT, "You can try <A HREF=\"%s\">starting over</A>, or complain to srl.<P>\r\n",
-            getenv("SCRIPT_NAME"));
+            lx->scriptName);
     fflush(lx->fOUT);
     exit(0);
 }

@@ -152,7 +152,7 @@ void setupLocaleExplorer(LXContext *lx)
     if(fileObj != NULL)
     {
         writeFileObject( lx, fileObj );
-	lx->OUT = NULL; /* nothing to write */
+        lx->OUT = NULL; /* nothing to write */
         return;
     }
 
@@ -229,39 +229,8 @@ void setupLocaleExplorer(LXContext *lx)
     
 #endif
     } /* end: if have a converter */
-  
-    /* parse & sort the list of locales */
-    setupLocaleTree(lx);
-    /* Open an RB in the default locale */
-    lx->defaultRB = ures_open(NULL, lx->cLocale, &status);
 
-    if(!strcmp(lx->chosenEncoding, "transliterated"))
-    {
-	char id[200];
-	UErrorCode transStatus = U_ZERO_ERROR;
-	UTransliterator *trans;
-        sprintf(id,"Any-%s", /* lx->curLocaleName,*/ lx->cLocale);
-  	if(!strcmp(lx->cLocale, "xol")) {
-		sprintf(id, "Latn-Ital");
-	}
-        /* fprintf(stderr, "LC=[%s]\n", id);  */
-        trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
- 	if(U_FAILURE(transStatus))	
-	{
-            fprintf(stderr,"Failed to open - %s\n", u_errorName(transStatus));
-            /* blah blah balh*/
-	}
-	else
-	{
-            lx_setHTMLFilterOnTransliterator(trans, TRUE);
-            u_fflush(lx->OUT);
-            trans = u_fsettransliterator(lx->OUT, U_WRITE, trans, &transStatus);
-            if(trans != NULL)
-            {
-                utrans_close(trans);
-            }
-	}
-    }
+    lx->scriptName = getenv("SCRIPT_NAME");
 
     /* setup the time zone.. */
     if (tmp && !strncmp(tmp,"SETTZ=",6))
@@ -300,33 +269,6 @@ void setupLocaleExplorer(LXContext *lx)
         }
     }
   
-/*  u_uastrcpy(lx->newZone, "Europe/Malta"); */
-    u_uastrcpy(lx->newZone, "PST"); /* for now */
-
-
-    if(lx->newZone[0] != 0x0000)
-    {
-        UTimeZone *tz;
-
-        lx->timeZone = lx->newZone;
-
-#ifndef LX_NO_USE_UTIMZONE
-        tz = utz_open(lx->newZone); /* returns NULL for nonexistent TZ!! */
-#else
-	tz = NULL;
-#endif
-
-        if(tz)
-        {
-            utz_setDefault(tz);
-            utz_close(tz);
-        }
-    }
-    else
-    {
-        lx->timeZone = NULL;
-    }
-
     /* Print the encoding and last HTTP header... */
 
     fprintf(lx->fOUT, "Content-Type: text/html;charset=%s\r\n\r\n", lx->ourCharsetName);
@@ -344,6 +286,66 @@ void setupLocaleExplorer(LXContext *lx)
        printf("Content-Language: %s\r\n", langBuf);
        }*/
 
+
+    /* parse & sort the list of locales */
+    setupLocaleTree(lx);
+    /* Open an RB in the default locale */
+    lx->defaultRB = ures_open(NULL, lx->cLocale, &status);
+
+    if(!strcmp(lx->chosenEncoding, "transliterated"))
+    {
+        char id[200];
+        UErrorCode transStatus = U_ZERO_ERROR;
+        UTransliterator *trans;
+        sprintf(id,"Any-%s", /* lx->curLocaleName,*/ lx->cLocale);
+        if(!strcmp(lx->cLocale, "xol")) {
+            sprintf(id, "Latn-Ital");
+        }
+        /* fprintf(stderr, "LC=[%s]\n", id);  */
+        trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
+        if(U_FAILURE(transStatus))	
+        {
+            fprintf(stderr,"Failed to open - %s\n", u_errorName(transStatus));
+            /* blah blah balh*/
+        }
+        else
+        {
+            lx_setHTMLFilterOnTransliterator(trans, TRUE);
+            u_fflush(lx->OUT);
+            trans = u_fsettransliterator(lx->OUT, U_WRITE, trans, &transStatus);
+            if(trans != NULL)
+            {
+                utrans_close(trans);
+            }
+        }
+    }
+
+/*  u_uastrcpy(lx->newZone, "Europe/Malta"); */
+    u_uastrcpy(lx->newZone, "PST"); /* for now */
+
+
+    if(lx->newZone[0] != 0x0000)
+    {
+        UTimeZone *tz;
+
+        lx->timeZone = lx->newZone;
+
+#ifndef LX_NO_USE_UTIMZONE
+        tz = utz_open(lx->newZone); /* returns NULL for nonexistent TZ!! */
+#else
+        tz = NULL;
+#endif
+
+        if(tz)
+        {
+            utz_setDefault(tz);
+            utz_close(tz);
+        }
+    }
+    else
+    {
+        lx->timeZone = NULL;
+    }
 
     fflush(lx->fOUT); /* and that, as they say, is that.  All UFILE from here.. */
 }

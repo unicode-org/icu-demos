@@ -199,7 +199,7 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
     if(toOpen == TRUE)
     {
         u_fprintf(lx->OUT, "%s/%s/",
-                  getenv("SCRIPT_NAME"),
+                  lx->scriptName,
                   (char*)lx->cLocale);
         if(lx->setEncoding)
             u_fprintf(lx->OUT,"%s/", lx->chosenEncoding);	  
@@ -208,7 +208,7 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
     else
     {
         u_fprintf(lx->OUT, "%s/%s/",
-                  getenv("SCRIPT_NAME"),
+                  lx->scriptName,
                   l->str);
         if(lx->setEncoding)
             u_fprintf(lx->OUT,"%s/", lx->chosenEncoding);

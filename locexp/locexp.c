@@ -94,7 +94,7 @@ void displayLocaleExplorer(LXContext *lx)
             host = "";
         }
         u_fprintf(lx->OUT, "<base href=\"http://%s%s%s/%s/%s/\">\r\n",         host, portStr, 
-            getenv("SCRIPT_NAME"), lx->cLocale, 
+            lx->scriptName, lx->cLocale, 
             lx->chosenEncoding); /* Ensure that all relative paths have the cgi name followed by a slash.  */
     }
 
