@@ -16,7 +16,7 @@
 
 #define T_USORT_IMPLEMENTATION
 
-#include "usort.h"
+#include "unicode/usort.h"
 
 /** Utility fcn to print out chars. Ripped off badly from date/cal::uprint **/
 

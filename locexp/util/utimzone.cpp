@@ -2,7 +2,7 @@
 *   Copyright (C) 1999, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
-#include "utimzone.h"
+#include "unicode/utimzone.h"
 #include "unicode/timezone.h"
 #include "unicode/simpletz.h"
 

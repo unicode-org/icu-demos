@@ -12,7 +12,7 @@
  *  1999-oct-07  srl   Needs arg cleanup..
  */
 
-#include "usort.h"
+#include "unicode/usort.h"
 
 void usage(const char *pname, const char *msg)
 {

@@ -9,7 +9,7 @@
 #include "unicode/utypes.h"
 #include "unicode/ucnv.h"
 #include "unicode/uchar.h"
-#include "collectcb.h"
+#include "unicode/collectcb.h"
 
 U_CAPI bool_t U_EXPORT2 u_isalnum(UChar c)
 {

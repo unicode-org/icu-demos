@@ -10,8 +10,8 @@
 
 */
 
-#include "fontedcb.h"
-#include "fonted_imp.h"
+#include "unicode/fontedcb.h"
+#include "unicode/fonted_imp.h"
 
 #include "unicode/uchar.h"
 

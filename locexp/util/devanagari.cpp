@@ -12,7 +12,7 @@
     See devtables.h for more information on the data.
  */
 
-#include "devtables.h"
+#include "unicode/devtables.h"
 #include <stdio.h>
 #include "unicode/utypes.h"
 #include "unicode/ucnv.h"
@@ -29,7 +29,7 @@ void doSyriac(const UChar **p);
 
 extern "C"
 {
-#include "fonted_imp.h"
+#include "unicode/fonted_imp.h"
 }
 
 /* clone the converter, reset it, and then try to transcode the source into the

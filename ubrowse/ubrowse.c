@@ -34,7 +34,7 @@ extern int srl_mode;
 #include "unicode/uchar.h"
 #include <unicode/ustdio.h>
 
-#include "decompcb.h" /* from locexp/util */
+#include "unicode/decompcb.h" /* from locexp/util */
 
 #define HAVE_KANGXI
 #define RADICAL_LIST

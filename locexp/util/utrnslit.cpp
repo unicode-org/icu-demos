@@ -8,7 +8,7 @@
 
 
 #include "unicode/utypes.h"
-#include "utrnslit.h"
+#include "unicode/utrnslit.h"
 #include "unicode/translit.h"
 #include "unicode/rbt.h"
 /* 

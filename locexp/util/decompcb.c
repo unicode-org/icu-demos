@@ -19,10 +19,10 @@
 
 #include "unicode/ucol.h"
 
-#include "decompcb.h"
+#include "unicode/decompcb.h"
 
 #define HAVE_KANGXI
-#include "kangxi.h"
+#include "unicode/kangxi.h"
 
 UConverterFromUCallback DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 

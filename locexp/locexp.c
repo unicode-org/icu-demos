@@ -64,31 +64,31 @@
 #include "unicode/ucol.h"
 #include "unicode/ucal.h"
 #include "ctype.h"
-#include "lx_utils.h"
-#include "ures_additions.h"
-#include "decompcb.h"
+#include "unicode/lx_utils.h"
+#include "unicode/ures_additions.h"
+#include "unicode/decompcb.h"
 
 #ifdef WIN32
 #include "unicode/uchar.h"
 #include "unicode/umsg.h"
-#include "kangxi.h"
+#include "unicode/kangxi.h"
 #include "cstring.h"
 #define LXHOSTNAME "pero"
 #define URLPREFIX ""
 #endif
 
 #ifdef LX_USE_FONTED
-# include "fontedcb.h"
+# include "unicode/fontedcb.h"
 #endif
 
-#include "translitcb.h"
+#include "unicode/translitcb.h"
 
 #ifdef LX_USE_UTIMZONE
 # include "utimzone.h"
 #endif
 
-#include "collectcb.h"
-#include "usort.h"
+#include "unicode/collectcb.h"
+#include "unicode/usort.h"
 #include "unicode/ucnv.h"
 
 /********************** Some Konstants **** and structs ***************/

@@ -7,7 +7,7 @@
    Some random utilities..
 */
 
-#include "lx_utils.h"
+#include "unicode/lx_utils.h"
 
 /* Realloc broken on linux????? */
 void *my_realloc(void *ptr, size_t old, size_t size)

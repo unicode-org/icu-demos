@@ -4,7 +4,7 @@
 ***********************************************************************/
 
 
-#include "kangxi.h"
+#include "unicode/kangxi.h"
 
 /*
    Table of the Kang-Xi Radicals to the ideographs they represent

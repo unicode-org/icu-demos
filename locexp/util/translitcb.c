@@ -12,8 +12,8 @@
 
 */
 
-#include "translitcb.h"
-#include "utrnslit.h"
+#include "unicode/translitcb.h"
+#include "unicode/utrnslit.h"
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
 

@@ -24,7 +24,7 @@ Don't support: / ++ =   WHAT ARE THESE
 
 */
 
-#include "syrinput.h"
+#include "unicode/syrinput.h"
 
 void doSyriacInput(UChar *src)
 {

@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 icuuc.lib icui18n.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\icu\bin\Debug/usort.dll" /pdbtype:sept /libpath:"..\..\..\icu\lib\debug"
+# ADD LINK32 icuuc.lib icui18n.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\icu\bin\Debug\usort.dll" /pdbtype:sept /libpath:"..\..\..\icu\lib\debug"
 
 !ENDIF 
 
@@ -100,7 +100,30 @@ SOURCE=.\usort.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\usort.h
+SOURCE=.\unicode\usort.h
+
+!IF  "$(CFG)" == "usort_lib - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\unicode\usort.h
+
+"..\..\..\icu\include\unicode\usort.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy unicode\usort.h ..\..\..\icu\include\unicode\usort.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "usort_lib - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\unicode\usort.h
+
+"..\..\..\icu\include\unicode\usort.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy unicode\usort.h ..\..\..\icu\include\unicode\usort.h
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -10,7 +10,7 @@
     [Assyrian] text output.
  */
 
-#include "syrtables.h"
+#include "unicode/syrtables.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -2,7 +2,7 @@
 *   Copyright (C) 1999, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
-#include "ures_additions.h"
+#include "unicode/ures_additions.h"
 #include "unicode/resbund.h"
 #include "unicode/ustring.h"
 #include "unicode/decimfmt.h"

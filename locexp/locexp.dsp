@@ -54,7 +54,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=install to cgi-bin
-PostBuild_Cmds=copy debug\locexp.exe "c:\program files\apache group\apache\cgi-bin"
+PostBuild_Cmds=copy release\locexp.exe "c:\program files\apache group\apache\cgi-bin"
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
