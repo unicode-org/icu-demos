@@ -644,6 +644,21 @@ static void printAliasTable() {
     printf(endTable);
 }
 
+U_CDECL_BEGIN
+static int32_t U_CALLCONV
+convexp_hashPointer(const UHashTok key) {
+    /* You normally don't want to do this on os/400, which will cause a crash.
+       The data type is a 64-bit pointer, and not a 32-bit integer.
+       At this time, we doubt that we need this demo code ported to os/400. */
+    return key.integer;
+}
+
+static UBool U_CALLCONV
+convexp_comparePointer(const UHashTok key1, const UHashTok key2) {
+    return (UBool)(key1.pointer == key2.pointer);
+}
+U_CDECL_END
+
 extern int
 main(int argc, const char *argv[]) {
     int32_t inputLength;
@@ -673,7 +688,7 @@ main(int argc, const char *argv[]) {
     
 #   endif
 #endif
-    gStandardsSelected = uhash_open(uhash_hashLong, uhash_compareLong, &errorCode);
+    gStandardsSelected = uhash_open(convexp_hashPointer, convexp_comparePointer, &errorCode);
     gMaxStandards = ucnv_countStandards();
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
