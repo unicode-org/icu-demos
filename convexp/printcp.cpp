@@ -112,6 +112,7 @@ static const char *getEscapeChar(UChar32 uniVal) {
     case 0x9D:  return ISO_BEGIN "OSC" ISO_END;
     case 0x9E:  return ISO_BEGIN "PM" ISO_END;
     case 0x9F:  return ISO_BEGIN "APC" ISO_END;
+    case 0xAD:  return ISO_BEGIN "\xC2\xAD" ISO_END;
     }
     if (u_iscntrl(uniVal)) {
         return ISO_BEGIN NBSP ISO_END;
