@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -54,7 +54,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
         return;
     }
 
-    nf_default  = unum_open(UNUM_DEFAULT, NULL, 0, lx->cLocale, NULL, &status);
+    nf_default  = unum_open(UNUM_DEFAULT, NULL, 0, lx->dispLocale, NULL, &status);
     nf_spellout = unum_open(UNUM_SPELLOUT,NULL, -1, locale, NULL, &status);
   
     if(U_FAILURE(status))
@@ -82,7 +82,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
         /* Localized # */
         tmp += 7;
 
-        unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
+        unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x0020, 0x00A0);
       
 
@@ -100,7 +100,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
         /* Localized # */
         tmp += 7;
 
-        unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
+        unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x0020, 0x00A0);
 
 
@@ -116,7 +116,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     else if ((tmp = strstr(lx->queryString, "NP_SPL")))
     {
         tmp += 7;
-        unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
+        unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x00A0, 0x0020);  /* Spellout doesn't want to see NBSP's */
     
 

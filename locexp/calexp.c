@@ -1,4 +1,4 @@
-/* Copyright (c) 2000-2003 IBM, Inc. and Others, all rights reserved */
+/* Copyright (c) 2000-2003 IBM. and Others, all rights reserved */
 
 #include "locexp.h"
 #include "unicode/ustdio.h"

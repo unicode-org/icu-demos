@@ -1,4 +1,4 @@
-/* Copyright (c) 2000 IBM, Inc. and others, all rights reserved */
+/* Copyright (c) 2003 IBM. and others, all rights reserved */
 
 /* Run Locale Explorer as a CGI. */
 #include "locexp.h"
@@ -34,6 +34,15 @@ int main(int argc , const char *argv[])
     
 #   endif
 #endif
+
+#ifdef WIN32
+    if( setmode( fileno ( stdout ), O_BINARY ) == -1 ) {
+        perror ( "Cannot set stdout to binary mode" );
+        exit(-1);
+    }
+#endif
+
+
   initLX();
   initContext(&localContext);
   localContext.fOUT = stdout;

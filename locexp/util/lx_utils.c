@@ -636,7 +636,7 @@ void mySortInternal(MySortable *s, UErrorCode *status, UBool recurse, UCollator 
     int32_t n = 0;
     
     num = s->nSubLocs;
-    
+
     if(num <= 1)
         return; /* nothing to do */
     
@@ -656,7 +656,6 @@ void mySortInternal(MySortable *s, UErrorCode *status, UBool recurse, UCollator 
       p->keySize = ucol_getSortKey(coll, p->ustr, -1, p->key, SORTKEYSIZE);
       /*if(U_FAILURE(*status))
         return; */
-      n++;
     }
 
     qsort(s->subLocs, s->nSubLocs, sizeof(s->subLocs[0]), &myCompare);
@@ -944,10 +943,9 @@ UBool testConverter(const char *converter,
 		    TRUE,
 		    &status);
   
-  if(U_FAILURE(status))
-    {
-      fprintf(stderr, "cnv [%s] failed on [%04X]\r\n", converter, sample[-1]);
-    }
+  if(U_FAILURE(status)) {
+    fprintf(stderr, "cnv [%s] failed on [%04X]\r\n", converter, sample[-1]);
+  }
   
   ucnv_close(cnv);
 

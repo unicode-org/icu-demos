@@ -1,3 +1,7 @@
+/**********************************************************************
+*   Copyright (C) 1999-2003, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
 #ifndef LOCEXP_
 #define LOCEXP_
 
@@ -58,6 +62,7 @@ typedef struct
   const char *scriptName;      /* Cached results of getenv("SCRIPT_NAME") */
   const char *queryString;     /* QUERY_STRING */
   const char *acceptCharset;   /* HTTP_ACCEPT_CHARSET */
+  const char *acceptLanguage;  /* HTTP_ACCEPT_LANGUAGE */
   const char *serverName;      /* SERVER_NAME */
   char hostPort[256];          /* host:port  or just host  (if port 80) */
   const char *pathInfo;        /* PATH_INFO */
@@ -68,20 +73,24 @@ typedef struct
   /* ============= IO */
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
+  FILE  *headerOut;  /* write headers here*/
 
   /* ============= ENCODING */
   const char *couldNotOpenEncoding;      /* contains error string if nonnull */
-  const char *ourCharsetName; /* HTML friendly name of the current charset */
-  char        chosenEncoding[128];
+
+  const char *convName;      /* HTML friendly name of the current charset. was 'ourCharsetName' */
+  const char *convRequested; /* The explicit charset in the URL, or the implied (detected) charset. Was 'chosenEncoding' */
+  const char *convUsed;      /* Actual converter opened with ucnv_open() */
+  UBool       convSet;       /* set to TRUE if user specified a converter */
 
   /* ============= OTHER STATE */
-  UBool setEncoding;            /* what is our state? What's setup? */
-  UBool  inDemo;       /* are we in a 'demo' page? If so, don't show encoding/ecc options */
+  UBool  inDemo;       /* are we in a 'demo' (EXPLORER) page? If so, don't show encoding and other options */
+  const char *fileObj;    /* if set - then we're writing out a data object */
 
   /* ============= DISPLAY LOCALE */
-  char cLocale[200]; /* client locale */
-  UResourceBundle *defaultRB;        /* RB in the display locale  - CACHE*/
-  UBool setLocale; /* Display locale has been set */
+  const char      *dispLocale; /* client (display) locale - was cLocale */
+  UResourceBundle *dispRB;        /* RB in the display locale  - CACHE (was defaultRB)*/
+  UBool            dispLocaleSet; /* Display locale has been set */
 
   /* ============= SELECTED LOCALE */
   UResourceBundle *curRB;            /* RB in the current locale */ 
@@ -168,8 +177,10 @@ extern const UChar *defaultLanguageDisplayName(LXContext *lx);
  * @param leaf Which node to start printing at
  * @param current The locale that should be selected
  * @param styled Should bold tags and links be put in?
+ * @param suffix Any text to follow the URL
  */
-extern void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled);
+extern void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled, const char *suffix);
+extern void printSubLocales(LXContext *lx, const char *suffix) ;
 
 /* selection of locales and converter */
 extern void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *restored, UBool showAll);
@@ -227,7 +238,8 @@ extern void showKeyAndEndItem(LXContext *lx, const char *key, const char *locale
  * @param didSetLocale   (on return) TRUE if a locale was chosen
  * @return the new UFILE. Doesn't set any callbacks
  */
-extern UFILE *setLocaleAndEncodingAndOpenUFILE(LXContext *lx, char *chosenEncoding, UBool *didSetLocale, UBool *didSetEncoding, const char **fileObject);
+extern UFILE *openUFILE(LXContext *lx);
+extern void setLocaleAndEncoding(LXContext *lx);
 
 /* write a string in \uXXXX format */
 extern void writeEscaped(LXContext *lx, const UChar *s);

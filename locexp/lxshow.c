@@ -1,9 +1,9 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
-/* Routines that show a specific data type */
+/* Routines that show specific data types */
 
 #include "locexp.h"
 
@@ -98,34 +98,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
     u_fprintf(lx->OUT, "&nbsp;</TD></TR><TR><TD></TD><TD>");
   
-    /* Ripped off from ArrayWithDescription. COPY BACK */
-    {
-        const UChar *sampleString, *sampleString2 = NULL;
-        char *sampleChars;
-        UResourceBundle *sampleRB;
-        UErrorCode sampleStatus = U_ZERO_ERROR;
-        int32_t len;
-
-        /* samplestring will vary with label locale! */
-        sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
-
-        sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
-        if(U_SUCCESS(sampleStatus))
-        {
-            sampleString2 = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
-            ures_close(sampleRB);
-        }
-
-        if(U_FAILURE(sampleStatus))
-        {
-            sampleString2 = sampleString; /* fallback */
-        }
-
-        sampleChars = createEscapedSortList(sampleString2);
-        showExploreButtonSort(lx, rb,locale, sampleChars, "CollationElements", TRUE);
-        free(sampleChars);
-
-    }
+    showExploreButtonSort(lx, rb,locale, "", "CollationElements", TRUE);
 
     u_fprintf(lx->OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
@@ -955,7 +928,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
       
         u_fprintf(lx->OUT, "<FORM TARGET=\"_currency\" METHOD=\"POST\" ACTION=\"http:www.oanda.com/converter/travel\" ENCTYPE=\"x-www-form-encoded\"><INPUT TYPE=\"hidden\" NAME=\"result\" VALUE=\"1\"><INPUT TYPE=\"hidden\" NAME=\"lang\" VALUE=\"%s\"><INPUT TYPE=\"hidden\" NAME=\"date_fmt\" VALUE=\"us\"><INPUT NAME=\"exch\" TYPE=HIDDEN VALUE=\"%U\"><INPUT TYPE=HIDDEN NAME=\"expr\" VALUE=\"%U\">",
-                  "en", /* lx->cLocale */
+                  "en", /* lx->dispLocale */
                   curStr,
                   homeStr
             );
@@ -1154,9 +1127,9 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
 
     u_fprintf(lx->OUT, "<TABLE BORDER=2 WIDTH=\"100%\" HEIGHT=\"100%\">\r\n");
 
-    for(k=0;k<3;k++) {
+    for(k=0;k<sizeof(styles)/sizeof(styles[0]);k++) {
       u_fprintf(lx->OUT, "<tr><td colspan=2><b>%s</b></td></tr>\r\n", stylen[k]);
-      for(n=0;n<(sizeof(styles)/sizeof(styles[0]));n++) {
+      for(n=0;n<(sizeof(examples)/sizeof(examples[0]));n++) {
         status = U_ZERO_ERROR;
         tempChars[0] = 0;
         exampleNF = unum_open(styles[k],NULL, -1, locale, NULL, &status);
@@ -1220,10 +1193,10 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
         /* here's something fun: try to fetch that day from the user's current locale */
         status = U_ZERO_ERROR;
       
-        if(lx->defaultRB && U_SUCCESS(status))
+        if(lx->dispRB && U_SUCCESS(status))
         {
             /* don't use 'array' here because it's the DTE resource */
-            item = ures_getByKey(lx->defaultRB, "DayNames", item, &status);
+            item = ures_getByKey(lx->dispRB, "DayNames", item, &status);
             item = ures_getByIndex(item, firstDayIndex, item, &status);
             s    = ures_getString(item, &len, &status);
             
@@ -1535,8 +1508,8 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
             UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
             UResourceBundle *defaultTagged = NULL;
             UResourceBundle *taggedItem = NULL;
-            if(lx->defaultRB) {
-                defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
+            if(lx->dispRB) {
+                defaultTagged =  ures_getByKey(lx->dispRB, key, NULL, &status);
             }
             u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
             
@@ -1570,7 +1543,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                     
                     
                     if(compareToDisplay) {
-                        if(lx->defaultRB) {
+                        if(lx->dispRB) {
                             item = ures_getByKey(defaultTagged, tag, item, &status);
                             s = ures_getString(item, &len, &status);
                             
@@ -1701,8 +1674,8 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
       UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
       UResourceBundle *defaultTagged = NULL;
       UResourceBundle *taggedItem = NULL;
-      if(lx->defaultRB) {
-        defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
+      if(lx->dispRB) {
+        defaultTagged =  ures_getByKey(lx->dispRB, key, NULL, &status);
       }
       u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
         
@@ -1782,7 +1755,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
       }
       if(!sawDefault && cflu) {
         UBool isChoiceFormat = FALSE;
-        uint32_t len = 0;
+        int32_t len = 0;
         UErrorCode subSta = U_ZERO_ERROR;
         u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td><b>%U</b></td><td><b>%U</b></td><td>%d</td>\r\n", 
                   cflu,

@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -197,7 +197,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
     int32_t rows;
     const char *cnvMime, *defaultMime;
 
-    defaultMime = MIMECharsetName(lx->chosenEncoding);
+    defaultMime = MIMECharsetName(lx->convRequested);
   
     ncnvs = ucnv_countAvailable();
 
@@ -209,7 +209,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
     u_fprintf(lx->OUT,"<A HREF=\"?%s\"><H2>%U%s%U</H2></A>\r\n",
               restored,
               FSWF("encodingOK0", "Click here if the encoding '"),
-              lx->chosenEncoding,
+              lx->convRequested,
               FSWF("encodingOK1", "' is acceptable, or choose one from below."));
 
     u_fprintf(lx->OUT,"<I>%U</I>\r\n", 
@@ -264,7 +264,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 
         u_fprintf(lx->OUT, "%s/%s/",
                   lx->scriptName,
-                  lx->cLocale);
+                  lx->dispLocale);
         u_fprintf(lx->OUT,"%s/", cnv);
         if(restored)
             u_fprintf(lx->OUT, "?%s", restored); 
@@ -298,7 +298,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 
         u_fprintf(lx->OUT,"<HR>");
         u_fprintf(lx->OUT,"<H3>Information about <B><TT>%s</TT></B></H3>\r\n",
-                  lx->chosenEncoding);
+                  lx->convRequested);
         u_fprintf(lx->OUT,"<UL>");
     
         u_fprintf(lx->OUT,"  <LI>ID = %d, platform=%s, name=%s\n",
@@ -308,13 +308,13 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
     
         /* TODO: iterate over std names */
         status = U_ZERO_ERROR;
-        tmp2 = ucnv_getStandardName(lx->chosenEncoding, "MIME", &status);
+        tmp2 = ucnv_getStandardName(lx->convRequested, "MIME", &status);
         if(tmp2 && U_SUCCESS(status)) {
             u_fprintf(lx->OUT, "  <LI>MIME: %s\n", tmp2);
         }
 
         status = U_ZERO_ERROR;
-        tmp2 = ucnv_getStandardName(lx->chosenEncoding, "IANA", &status);
+        tmp2 = ucnv_getStandardName(lx->convRequested, "IANA", &status);
         if(tmp2 && U_SUCCESS(status)) {
             u_fprintf(lx->OUT, "  <LI>IANA: %s\n", tmp2);
         }
@@ -396,159 +396,18 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 
 
 /* ----------------- lx->setEncoding */
-UFILE *setLocaleAndEncodingAndOpenUFILE(LXContext *lx, char *chosenEncoding, UBool *didSetLocale, UBool *didsetEncoding, const char **fileObject)
+UFILE *openUFILE(LXContext *lx)
 {
-    char *pi;
-    char *tmp;
-    const char *locale = NULL;
-    const char *encoding = NULL;
     UErrorCode status = U_ZERO_ERROR;
-    char *acceptLanguage;
-    char newLocale[100];
     UFILE *f;
 
-
-
-    locale = (const char *)lx->cLocale;
-    encoding = lx->chosenEncoding; 
-
-    pi = getenv("PATH_INFO");
-    if( (pi) && (*pi && '/') )
-    {
-        pi++; /* eat first slash */
-        tmp = strchr(pi, '/');
-      
-        if(tmp)
-            *tmp = 0; /* tie off at the slash */
-
-        status = U_ZERO_ERROR;
-        locale = pi;
-
-        if ( *locale != 0) /* don't want 0-length locales */
-	{
-            strcpy(lx->cLocale, locale);
-            *didSetLocale = TRUE;
-	}
-
-        if(tmp) /* have encoding */
-	{
-  
-            tmp++; /* skip '/' */
-  
-            pi = tmp;
-  
-            if(*pi) /* don't want 0 length encodings */
-	    {
-                encoding = pi;
-
-                tmp = strchr(tmp, '/');
-                if(tmp)
-                {
-                    pi = tmp + 1;
-                    *tmp = 0;
-                }
-
-                *didsetEncoding = TRUE; 
-	    }
-	}
-    }
-
-    /* Now, did we get a file object? */
-
-    /* fprintf(stderr, "FO=%s\n", encoding); */
-
-    if(*didsetEncoding && pi && !strcmp(encoding, "_"))
-    {
-        strcpy(lx->chosenEncoding, "us-ascii");
-        *didsetEncoding = FALSE;
-        *fileObject = pi;
-        return NULL;
-    }
-
-    if(*didsetEncoding && pi && !strcmp(encoding, "_icudata"))
-    {
-        *didsetEncoding = FALSE;
-        *fileObject = pi;
-        strcpy(lx->chosenEncoding, "icudata");
-        return NULL;
-    }
-
-    if(!(*didSetLocale) && (acceptLanguage=getenv("HTTP_ACCEPT_LANGUAGE")) && acceptLanguage[0] )
-    {
-
-        /* OK, if they haven't set a locale, maybe their web browser has. */
-	if(!(tmp=strchr(acceptLanguage,','))) /* multiple item separator */
-            if(!(tmp=strchr(acceptLanguage,'='))) /* strength separator */
-                tmp = acceptLanguage + strlen(acceptLanguage);
-
-        strncpy(newLocale, acceptLanguage, my_min(100,tmp-acceptLanguage));
-        newLocale[my_min(100,tmp-acceptLanguage)] = 0;
-
-        /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight. Oh well. */
-      
-        status = U_ZERO_ERROR;
-
-        /* half hearted attempt at canonicalizing the locale string. */
-        newLocale[0] = tolower(newLocale[0]);
-        newLocale[1] = tolower(newLocale[1]);
-        if(newLocale[2] == '-')
-            newLocale[2] = '_';
-        if(newLocale[5] == '-')
-            newLocale[5] = '_';
-
-        newLocale[3] = toupper(newLocale[3]);
-        newLocale[4] = toupper(newLocale[4]);
-
-        if(isSupportedLocale(newLocale, TRUE)) /* DO NOT pick an unsupported locale from the browser's settings! */
-            strcpy(lx->cLocale, newLocale);
-
-        status = U_ZERO_ERROR;
-
-        /* that might at least get something.. It's better than defaulting to en_US */
-    }
-  
-    if(!(*didsetEncoding))
-    {
-        const char *accept;
-        const char *agent;
-
-        accept = getenv("HTTP_ACCEPT_CHARSET");
-
-        if(accept && strstr(accept, "utf-8"))
-	{
-            encoding = "utf-8"; /* use UTF8 if they have it ! */
-	}
-        else if( (agent = (const char *)getenv("HTTP_USER_AGENT")) &&
-                 (strstr(agent, "MSIE 4") || strstr(agent, "MSIE 5")) &&
-                 (strstr(agent, "Windows NT")))
-	{
-            encoding = "utf-8"; /* MSIE can handle utf8 but doesn't request it. */
-	}
-    }
-
-
-    if(encoding)
-    {
-        strcpy(lx->chosenEncoding, encoding);
-    }
-
-    /* Map transliterated/fonted : */
-    if(0==strcmp(encoding, "fonted"))
-    {
-        encoding = "usascii";
-    }
-    if(0==strcmp(encoding, "transliterated"))
-    {
-        encoding = "utf-8";
-    }
-
     /* now, open the file */
-    f = u_finit(lx->fOUT, locale, encoding);
+    f = u_finit(lx->fOUT, lx->dispLocale, lx->convUsed);
 
     if(!f)
     {
-        lx->couldNotOpenEncoding = encoding;
-        f = u_finit(lx->fOUT, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
+        lx->couldNotOpenEncoding = lx->convUsed;
+        f = u_finit(lx->fOUT, lx->dispLocale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
         if(!f)
         {
             fprintf(stderr, "Could not finit the file.\n");
@@ -557,14 +416,13 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(LXContext *lx, char *chosenEncoding, UBo
         }    
     }
 
-    /* we know that ufile won't muck withthe locale.
+    /* we know that ufile won't muck with the locale.
        But we are curious what encoding it chose, and we will propagate it. */
-    if(encoding == NULL)
+    if(lx->convUsed == NULL)
     {
-        encoding = u_fgetcodepage(f);
-        strcpy(lx->chosenEncoding, encoding);
+      lx->convUsed = strdup(u_fgetcodepage(f));
     }
 
-    FSWF_setLocale(lx->cLocale);
+    FSWF_setLocale(lx->dispLocale);
     return f;
 }

@@ -1,4 +1,3 @@
-
 /**********************************************************************
 *   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
@@ -132,8 +131,8 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
   {
     int32_t ii;
-    if(aSort  && hasQueryField(lx,"showCollKey")  ) {
-      u_fprintf(lx->OUT, "<br><font size=-2 color=\"#999999\"><tt>");
+    if(aSort  && hasQueryField(lx,"showCollKey") && lineBelow  ) {
+      u_fprintf(lx->OUT, "<br><font size=-1 color=\"#777777\"><tt>");
 
       for(ii=0;ii<aSort->lines[num].keySize;ii++) {
         u_fprintf(lx->OUT, "%02x ", aSort->lines[num].key[ii]);
@@ -285,7 +284,7 @@ void showSort(LXContext *lx, const char *locale)
     
     /* 'classic' mode- original, with customization
      */
-    kSimpleMode,   
+    kSimpleMode
   } mode = kSimpleMode;
 
   if(hasQueryField(lx,"lxCustSortOpts")) {
@@ -306,10 +305,34 @@ void showSort(LXContext *lx, const char *locale)
    */
   text = queryField(lx,"EXPLORE_CollationElements");
 
+  if(!text || !*text) {
+    /* attempt load from RB */
+    const UChar *sampleString, *sampleString2 = NULL;
+    char *sampleChars;
+    UResourceBundle *sampleRB;
+    UErrorCode sampleStatus = U_ZERO_ERROR;
+    int32_t len;
+    
+    /* samplestring will vary with label locale! */
+    sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
+    text = sampleString;
+    
+    sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
+    if(U_SUCCESS(sampleStatus))  {
+      sampleString2 = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
+      ures_close(sampleRB);
+    }
+    
+    if(U_FAILURE(sampleStatus))  {
+      sampleString2 = sampleString; /* fallback */
+    }
+    text = createEscapedSortList(sampleString2);
+  }
+
   if(text)
   {
     unescapeAndDecodeQueryField_enc(strChars, SORTSIZE,
-                                    text, lx->chosenEncoding );
+                                    text, lx->convRequested );
     
     length = strlen(text);
     
@@ -332,7 +355,7 @@ void showSort(LXContext *lx, const char *locale)
   if(text) {
 
     unescapeAndDecodeQueryField_enc(ruleChars, SORTSIZE, 
-                                    text, lx->chosenEncoding);
+                                    text, lx->convRequested);
     length = strlen(text);
       
     if(length > (SORTSIZE-1)) {
@@ -599,7 +622,7 @@ void showSort(LXContext *lx, const char *locale)
       UChar dispName[1024];
       UErrorCode stat = U_ZERO_ERROR;
       dispName[0] = 0;
-      uloc_getDisplayName(lx->curLocaleName, lx->cLocale, dispName, 1024, &stat);
+      uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
       
       u_fprintf(lx->OUT, "<input type=submit name=\"usortRulesLocale\" value=\"%U %U %U\">",
                 FSWF("usortLocaleRules1", "Load rules for"),
@@ -659,7 +682,7 @@ void showSort(LXContext *lx, const char *locale)
      {
        for(i=0;i<G7COUNT;i++) {
          UChar junk[1000];
-         uloc_getDisplayName(G7s[i], lx->cLocale, junk, 1000, &status);
+         uloc_getDisplayName(G7s[i], lx->dispLocale, junk, 1000, &status);
          u_fprintf(lx->OUT, "<TD WIDTH=\"10%\">%U</TD>",junk);
        }
      }
@@ -672,7 +695,7 @@ void showSort(LXContext *lx, const char *locale)
   u_fprintf(lx->OUT, "<TR><TD WIDTH=\"20%\">");
   
   /* the source box */
-  u_fprintf(lx->OUT, "<TEXTAREA ROWS=10 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
+  u_fprintf(lx->OUT, "<TEXTAREA ROWS=20 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
   
   writeEscaped(lx, strChars); 
   /* if(*inputChars)
@@ -697,7 +720,7 @@ void showSort(LXContext *lx, const char *locale)
     UChar in[SORTSIZE];
     
     /* have some text to sort */
-    unescapeAndDecodeQueryField_enc(in, SORTSIZE, inputChars, lx->chosenEncoding);
+    unescapeAndDecodeQueryField_enc(in, SORTSIZE, inputChars, lx->convRequested);
     u_replaceChar(in, 0x000D, 0x000A); /* CRLF */
     
     switch(mode)

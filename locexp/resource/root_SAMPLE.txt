@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Fri Jul 25 18:26:12 PDT 2003 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Thu Aug  7 19:40:43 CEST 2003 on filfla
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 

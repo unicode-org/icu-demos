@@ -1,4 +1,4 @@
-/* Copyright (c) 2002 IBM, Inc. and Others. All Rights Reserved. */
+/* Copyright (c) 2002-2003 IBM. and Others. All Rights Reserved. */
 /* Search Explorer... search the Locales looking for strings */
 
 #include "locexp.h"
@@ -191,7 +191,7 @@ extern void showExploreSearch( LXContext *lx)
         term = (tmp + strlen("EXPLORE_search="));
     }
     
-    unescapeAndDecodeQueryField_enc(valueString, 1000, term, lx->chosenEncoding);
+    unescapeAndDecodeQueryField_enc(valueString, 1000, term, lx->convRequested);
     p = strchr(term, '&');
     if(p) /* there is a terminating ampersand */
     {
@@ -231,7 +231,7 @@ extern void showExploreSearch( LXContext *lx)
     if(U_FAILURE(status)) { fprintf(lx->fOUT, " showExploreSearch() - ? %s\n", u_errorName(status));  return; }
     
     /* Set up the search.. */
-    search = usearch_open(valueString, -1, valueString, -1, lx->cLocale,  NULL, &status);
+    search = usearch_open(valueString, -1, valueString, -1, lx->dispLocale,  NULL, &status);
     if(U_FAILURE(status))
     {
         u_fprintf(lx->OUT, "Err opening search in showExploreSearch, err %s\n", u_errorName(status));           

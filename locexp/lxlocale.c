@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -187,19 +187,123 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     }
 }
 
-
-
-void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled)
+void printSubLocales(LXContext *lx, const char *suffix) 
 {
+  UErrorCode status = U_ZERO_ERROR;
+  int n;
+  UBool hadExperimentalSubLocales = FALSE;
 
+  /* look for sublocs */
+  if(lx->curLocale && lx->curLocale->nSubLocs)
+    {
+      u_fprintf(lx->OUT, "%U<BR><ul>", FSWF("sublocales", "Sublocales:"));
+      mySort(lx->curLocale, &status, FALSE);  /* Sort sub locales */
+      
+      for(n=0;n<lx->curLocale->nSubLocs;n++)  {
+        UBool wasExperimental = FALSE;
+        
+        if(n != 0) {
+          u_fprintf(lx->OUT, ", ");
+        }
+        
+        if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, " [");
+        
+        u_fprintf(lx->OUT, "<a href=\"?_=%s%s%s\">", 
+                  lx->curLocale->subLocs[n]->str,
+                  suffix?"&":"",
+                  suffix?suffix:"");
+        
+        if(isExperimentalLocale(lx->curLocale->subLocs[n]->str)) {
+          u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
+          hadExperimentalSubLocales = TRUE;
+          wasExperimental = TRUE;
+        }
+        u_fprintf_u(lx->OUT, lx->curLocale->subLocs[n]->ustr);
+        if(wasExperimental) {
+          u_fprintf(lx->OUT, "</font></i>");
+        }
+        u_fprintf(lx->OUT, "</a>");
+        
+        if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, "] ");
+      }
+      u_fprintf(lx->OUT, "</ul>");
+    }
+  
+  /* Look for cousins with the same leaf component */
+  /* For now: ONLY do for xx_YY locales */
+  if(lx->curLocale && lx->parLocale &&         /* have locale & parent found (i.e. installed) */
+     (lx->parLocale->parent == lx-> locales) ) { /* parent's parent is root */
+    int count =0;
+    int i;
+    const char *stub;
+    char buf[500];
+    /* safe 'cause all these strings come from getInstalledLocales' */
+    stub = lx->curLocale->str + strlen(lx->parLocale->str);
+    /* u_fprintf(lx->OUT,"<B>STUB is: %s</B>\n",stub); */
+    
+    /* OK, now find all children X of my grandparent,  where  (  X.parent.str + stub == X ) */
+    for(i=0;i<lx->locales->nSubLocs;i++) {
+      if(!strcmp(lx->locales->subLocs[i]->str, lx->parLocale->str)) {
+        continue; /* Don't search our parent (same language) */
+      }
+      
+      strcpy(buf, lx->locales->subLocs[i]->str);
+      strcat(buf, stub);
+      
+      if(findLocaleNonRecursive(lx->locales->subLocs[i], buf) != -1) {
+        UBool wasExperimental = FALSE;
+        
+        if((count++) > 0) {
+          u_fprintf(lx->OUT, ", ");
+        } else { /* header */
+          u_fprintf_u(lx->OUT, 
+                      FSWF("otherLanguageSameCountryLocales", "<b>%U</b> under other languages"),
+                      lx->curLocale->ustr);
+          u_fprintf(lx->OUT, ": ");
+        }
+        u_fprintf(lx->OUT, "<a href=\"?_=%s%s%s\">", 
+                  buf,suffix?"&":"", suffix?suffix:"");
+        
+        if(isExperimentalLocale(buf)) {
+          u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
+          hadExperimentalSubLocales = TRUE;
+          wasExperimental = TRUE;
+        }
+        
+        u_fprintf_u(lx->OUT, lx->locales->subLocs[i]->ustr);
+        
+        if(wasExperimental) {
+          u_fprintf(lx->OUT, "</font></i>");
+        }
+        u_fprintf(lx->OUT, "</a>");
+      }
+    }
+    if(count > 0) {
+      u_fprintf(lx->OUT, "<br>\r\n");
+    }
+  }
+  
+  
+  /* this notice covers sublocs and sibling locs */
+  if(hadExperimentalSubLocales)
+    u_fprintf(lx->OUT, "<br>%U", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
+  
+  
+}
+
+void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled, const char *suffix)
+{
+    if(!suffix) { 
+      suffix = "";
+    }
     if(!leaf) /* top level */
     {
-        if(styled) 
-            u_fprintf(lx->OUT, "<a href=\"?\">"); /* Reset */
+        if(styled && !*suffix) 
+            u_fprintf(lx->OUT, "<a href=\"?%s\">", suffix); /* Reset */
       
         u_fprintf_u(lx->OUT, FSWF("title", "ICU LocaleExplorer"));
       
-        if(styled) 
+        if(styled && !*suffix) 
             u_fprintf(lx->OUT, "</a>");
 
         return;
@@ -207,7 +311,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
 
   
     /* reverse order recursively */
-    printPath(lx, leaf->parent,current,styled);
+    printPath(lx, leaf->parent,current,styled,suffix);
 
 
     u_fprintf(lx->OUT, " &gt; ");
@@ -220,7 +324,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
         if(leaf == current)
             u_fprintf(lx->OUT, "<b>");
 
-        u_fprintf(lx->OUT, "<a href=\"?_=%s\">", leaf->str);
+        u_fprintf(lx->OUT, "<a href=\"?_=%s%s%s\">", leaf->str, *suffix?"&":"", suffix);
     }
 
 
@@ -275,9 +379,9 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
     {
         u_fprintf(lx->OUT, "%s/%s/",
                   lx->scriptName,
-                  (char*)lx->cLocale);
-        if(lx->setEncoding)
-            u_fprintf(lx->OUT,"%s/", lx->chosenEncoding);	  
+                  (char*)lx->dispLocale);
+        if(lx->convSet)
+            u_fprintf(lx->OUT,"%s/", lx->convRequested);	  
         u_fprintf(lx->OUT,"?_=%s", l->str);
     }
     else
@@ -285,8 +389,8 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
         u_fprintf(lx->OUT, "%s/%s/",
                   lx->scriptName,
                   l->str);
-        if(lx->setEncoding)
-            u_fprintf(lx->OUT,"%s/", lx->chosenEncoding);
+        if(lx->convSet)
+            u_fprintf(lx->OUT,"%s/", lx->convRequested);
       
         if(restored)
             u_fprintf(lx->OUT, "?%s", restored);
@@ -367,7 +471,7 @@ void setupLocaleTree(LXContext *lx)
     char       *loc = lx->curLocaleName;
 
     /* setup base locale */
-    lx->locales = createLocaleTree(lx->cLocale, &lx->numLocales);
+    lx->locales = createLocaleTree(lx->dispLocale, &lx->numLocales);
 
     qs = lx->queryString;
     if(   qs &&

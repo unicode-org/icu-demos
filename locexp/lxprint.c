@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -253,7 +253,7 @@ void printStatusTable(LXContext *lx)
         u_fprintf(lx->OUT, "\">");
     }
 
-    u_fprintf(lx->OUT, "<font size=+1>%s</font>", lx->ourCharsetName);
+    u_fprintf(lx->OUT, "<font size=+1>%s</font>", lx->convName);
   
     if(lx->inDemo == FALSE)
     {
@@ -271,7 +271,7 @@ void printStatusTable(LXContext *lx)
 #ifdef LX_SET_TZ
     u_fprintf(lx->OUT, "<a href=\"?SETTZ=\">");
 #endif
-    dateStr = date( NULL,UDAT_FULL, lx->cLocale,&status);
+    dateStr = date( NULL,UDAT_FULL, lx->dispLocale,&status);
     u_fprintf(lx->OUT, "%U", dateStr);
     free(dateStr);
 #ifdef LX_SET_TZ
@@ -298,7 +298,7 @@ void printStatusTable(LXContext *lx)
             u_fprintf(lx->OUT,"&%s", lx->queryString);
         u_fprintf(lx->OUT, "\">");
     }
-    uloc_getDisplayName(lx->cLocale, lx->cLocale, myChars, 1024, &status);
+    uloc_getDisplayName(lx->dispLocale, lx->dispLocale, myChars, 1024, &status);
     u_fprintf_u(lx->OUT, myChars);
     if(lx->inDemo == FALSE)
     {
@@ -315,24 +315,24 @@ void printStatusTable(LXContext *lx)
 #else
     /* Transliteration is OK */
     if(lx->inDemo == FALSE)  {
-      if(!strcmp(lx->chosenEncoding, "transliterated")) {
+      if(!strcmp(lx->convRequested, "transliterated")) {
         u_fprintf(lx->OUT, "<td><b>*%U*</b> / <a href=\"%s/%s/?%s\">%U</a></td>",
                   FSWF("on","on"),
                   lx->scriptName,
-                  lx->cLocale,
+                  lx->dispLocale,
                   lx->queryString,
                   FSWF("off","off"));
       } else {
         u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%U</a> / <b>*%U*</b></td>",
                   lx->scriptName,
-                  lx->cLocale,
+                  lx->dispLocale,
                   lx->queryString,
                   FSWF("on","on"),
                   FSWF("off","off"));
       }
     } else { /* indemo */
       u_fprintf(lx->OUT, "<td><b>%U</b></td>", 
-                (!strcmp(lx->chosenEncoding, "transliterated"))?
+                (!strcmp(lx->convRequested, "transliterated"))?
                 FSWF("on","on") :
                 FSWF("off","off"));
     }
@@ -346,9 +346,9 @@ void printStatusTable(LXContext *lx)
                 FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
     
-    if(!isSupportedLocale(lx->cLocale, TRUE)) {  /* consider it 'supported' if it's been translated. */
+    if(!isSupportedLocale(lx->dispLocale, TRUE)) {  /* consider it 'supported' if it's been translated. */
       u_fprintf(lx->OUT, "<TD COLSPAN=3 ><FONT COLOR=\"#FF0000\">");
-      u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), lx->cLocale);
+      u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), lx->dispLocale);
       u_fprintf(lx->OUT, "</FONT></TD>");
     }
 

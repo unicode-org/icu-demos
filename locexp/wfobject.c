@@ -1,4 +1,4 @@
-/* Copyright (c) 2000 IBM, Inc. all rights reserved */
+/* Copyright (c) 2000-2003 IBM all rights reserved */
 
 /* Write an object out of the LX virtual path to stdout */
 
@@ -33,7 +33,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	}
 	else
 	{
-	  char *out;
+	  uint8_t *out;
           int32_t length = 0;
           int32_t bufsz = 0;
           const UChar *up = u;
@@ -86,7 +86,7 @@ void writeFileObject( LXContext *lx, const char *path )
   UErrorCode s2 = U_ZERO_ERROR;
   const char *thePath = NULL;
 
-  if(strcmp(lx->chosenEncoding,"icudata"))
+  if(strcmp(lx->convRequested,"icudata"))
   {
     thePath = FSWF_bundlePath();
   }
@@ -95,13 +95,13 @@ void writeFileObject( LXContext *lx, const char *path )
     thePath = NULL;
   }
 
-  rb = ures_open(thePath, lx->cLocale, &status);  
+  rb = ures_open(thePath, lx->dispLocale, &status);  
 
   if(U_FAILURE(status))
   {
     printf("Content-type: text/html;charset=utf-8\r\n\r\n");
     printf("Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
-           lx->cLocale,
+           lx->dispLocale,
            (thePath==NULL)?"NULL":thePath,
            path);
     printf("Error: %s\n", u_errorName(status));
@@ -114,9 +114,9 @@ void writeFileObject( LXContext *lx, const char *path )
 
     fprintf(lx->fOUT, "Content-type: text/html;charset=utf-8\r\n\r\n");
     fprintf(lx->fOUT, "<html><head><title>bundle list for %s</title></head>\r\n",
-           lx->cLocale);
+           lx->dispLocale);
     fprintf(lx->fOUT, "<body>");
-    fprintf(lx->fOUT, "<h1>%s : %s</h1>\r\n", FSWF_bundlePath(), lx->cLocale);
+    fprintf(lx->fOUT, "<h1>%s : %s</h1>\r\n", FSWF_bundlePath(), lx->dispLocale);
     fprintf(lx->fOUT, "V: %s<p>\n", ures_getVersionNumber(rb));
     fprintf(lx->fOUT, "<ul>");
     while(ures_hasNext(rb) && U_SUCCESS(s2))
@@ -152,7 +152,7 @@ void writeFileObject( LXContext *lx, const char *path )
       fprintf(lx->fOUT, "Content-type: text/html\r\n\r\n");
       fprintf(lx->fOUT, "Error: Couldn't get [%s] in bundle [%s] in path [%s]<P>\r\n",
              path,
-             lx->cLocale,
+             lx->dispLocale,
            (thePath==NULL)?"NULL":thePath);
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
       fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
@@ -166,7 +166,7 @@ void writeFileObject( LXContext *lx, const char *path )
       fprintf(lx->fOUT, "Content-type: text/html\r\n\r\n");
       fprintf(lx->fOUT, "Error: Couldn't get binary [%s] in bundle [%s] in path [%s]<P>\r\n",
              path,
-             lx->cLocale,
+             lx->dispLocale,
              u_getDataDirectory());
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
       fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");

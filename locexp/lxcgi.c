@@ -65,6 +65,7 @@ void initCGIVariables(LXContext* lx)
   lx->acceptCharset   = getenvOrEmpty("HTTP_ACCEPT_CHARSET");
   lx->serverName      = getenvOrEmpty("SERVER_NAME");
   lx->hostName        = getenvOrEmpty("HTTP_HOST");
+  lx->acceptLanguage  = getenvOrEmpty("HTTP_ACCEPT_LANGUAGE");
 
   /* fix up hostPort */
 }

@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -29,7 +29,6 @@ void displayLocaleExplorer(LXContext *lx)
 {
     UErrorCode status = U_ZERO_ERROR;
     char portStr[100];
-    int n;
     
     /* set up the port string */
     {
@@ -52,11 +51,11 @@ void displayLocaleExplorer(LXContext *lx)
     
     u_fprintf(lx->OUT,"<html>");
     
-    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2003 IBM, Inc. and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->");
+    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2003 IBM and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->");
     
     u_fprintf(lx->OUT, "<head><title>");
     lx->backslashCtx.html = FALSE;
-    printPath(lx, lx->curLocale, lx->curLocale, FALSE);
+    printPath(lx, lx->curLocale, lx->curLocale, FALSE, NULL);
     
     if(strstr(lx->queryString, "EXPLORE"))
     {
@@ -88,8 +87,8 @@ void displayLocaleExplorer(LXContext *lx)
             host = "";
         }
         u_fprintf(lx->OUT, "<base href=\"http://%s%s%s/%s/%s/\">\r\n",         host, portStr, 
-            lx->scriptName, lx->cLocale, 
-            lx->chosenEncoding); /* Ensure that all relative paths have the cgi name followed by a slash.  */
+            lx->scriptName, lx->dispLocale, 
+            lx->convRequested); /* Ensure that all relative paths have the cgi name followed by a slash.  */
     }
 
 
@@ -101,13 +100,13 @@ void displayLocaleExplorer(LXContext *lx)
       u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
     } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
-    } else if(lx->chosenEncoding && lx->chosenEncoding[0] && !strstr(lx->chosenEncoding, "utf-8")) {
+    } else if(lx->convRequested && lx->convRequested[0] && !strstr(lx->convRequested, "utf-8")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
     } else if(strstr(lx->queryString, "_=")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
     }
-    if(lx->chosenEncoding && lx->chosenEncoding[0]) {
-      u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\">\r\n", lx->chosenEncoding);
+    if(lx->convRequested && lx->convRequested[0]) {
+      u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\">\r\n", lx->convRequested);
     }
 
     
@@ -116,43 +115,50 @@ void displayLocaleExplorer(LXContext *lx)
                      "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
               );
 
+    if(lx->queryString && lx->queryString[0]  && !lx->curLocale && (lx->queryString[0] == '_'))
+      {
+        UChar dispName[1024];
+        UErrorCode stat = U_ZERO_ERROR;
+        dispName[0] = 0;
+        uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
+        
+        u_fprintf(lx->OUT, "<ul><b>%U [%U]</b></ul>\r\n",
+                  FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
+      }
+    
+    if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] )
+      {
+        u_fprintf(lx->OUT, "<ul><b>%U</b></ul>\r\n",
+                  FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
+      }
+
     if(strstr(lx->queryString,"EXPLORE"))
     {
-        printHelpImg(lx, "display", 
-            FSWF("display_ALT", "Display Problems?"),
-            FSWF("display_GIF", "displayproblems.gif"),
-            FSWF("display_OPTIONS", "ALIGN=RIGHT"));
+      const char *suffix; /* Eventually would like ALL explorers to be able to use this logic */
+      if(queryField(lx, "EXPLORE_CollationElements")) {
+        suffix = "EXPLORE_CollationElements=";
+      }
+
+      printHelpImg(lx, "display", 
+                   FSWF("display_ALT", "Display Problems?"),
+                   FSWF("display_GIF", "displayproblems.gif"),
+                   FSWF("display_OPTIONS", "ALIGN=RIGHT"));
         
-        u_fprintf(lx->OUT, "<font size=+1>");
-        printPath(lx, lx->curLocale, lx->curLocale, FALSE);
-        u_fprintf(lx->OUT, "</font><p>");
-        
+      u_fprintf(lx->OUT, "<font size=+1>");
+      printPath(lx, lx->curLocale, lx->curLocale, suffix?TRUE:FALSE, suffix);
+      u_fprintf(lx->OUT, "</font><p>");
+      if(suffix) {
+        printSubLocales(lx, suffix);
+      }
     }
     else
     {
-        UBool hadExperimentalSubLocales = FALSE;
 
-        if(lx->queryString && lx->queryString[0]  && !lx->curLocale && (lx->queryString[0] == '_'))
-        {
-            UChar dispName[1024];
-            UErrorCode stat = U_ZERO_ERROR;
-            dispName[0] = 0;
-            uloc_getDisplayName(lx->curLocaleName, lx->cLocale, dispName, 1024, &stat);
-            
-            u_fprintf(lx->OUT, "<ul><b>%U [%U]</b></ul>\r\n",
-                FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
-        }
-      
-        if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] )
-        {
-            u_fprintf(lx->OUT, "<ul><b>%U</b></ul>\r\n",
-                FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
-        }
         
         u_fprintf(lx->OUT, "<table summary=\"%U\" width=100%%><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
         
         u_fprintf(lx->OUT, "<font size=+1>");
-        printPath(lx, lx->curLocale, lx->curLocale, TRUE);
+        printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
         u_fprintf(lx->OUT, "</font>");
         
         u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
@@ -164,165 +170,10 @@ void displayLocaleExplorer(LXContext *lx)
         
         u_fprintf(lx->OUT, "\r\n</TD></TR><TR><TD>");
         
-        
-        /* look for sublocs */
-        if(lx->curLocale && lx->curLocale->nSubLocs)
-        {
-            u_fprintf(lx->OUT, "%U<BR><ul>", FSWF("sublocales", "Sublocales:"));
-            mySort(lx->curLocale, &status, FALSE); /* Sort sub locales */
-            
-            for(n=0;n<lx->curLocale->nSubLocs;n++)
-            {
-                UBool wasExperimental = FALSE;
-
-                if(n != 0)
-                {
-                    u_fprintf(lx->OUT, ", ");
-                }
-
-                if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, " [");
-                
-                u_fprintf(lx->OUT, "<a href=\"?_=%s\">", 
-                    lx->curLocale->subLocs[n]->str);
-                
-                if(isExperimentalLocale(lx->curLocale->subLocs[n]->str))
-                {
-                    u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
-                    hadExperimentalSubLocales = TRUE;
-                    wasExperimental = TRUE;
-                }
-                u_fprintf_u(lx->OUT, lx->curLocale->subLocs[n]->ustr);
-                if(wasExperimental)
-                {
-                    u_fprintf(lx->OUT, "</font></i>");
-                }
-                u_fprintf(lx->OUT, "</a>");
-                
-                if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, "] ");
-            }
-            u_fprintf(lx->OUT, "</ul>");
-        }
-        
-        /* Look for cousins with the same leaf component */
-        /* For now: ONLY do for xx_YY locales */
-        if(lx->curLocale && lx->parLocale &&         /* have locale & parent found (i.e. installed) */
-            (lx->parLocale->parent == lx-> locales) ) /* parent's parent is root */
-        {
-            int count =0;
-            int i;
-            const char *stub;
-            char buf[500];
-            /* safe 'cause all these strings come from getInstalledLocales' */
-            stub = lx->curLocale->str + strlen(lx->parLocale->str);
-            /* u_fprintf(lx->OUT,"<B>STUB is: %s</B>\n",stub); */
-            
-            /* OK, now find all children X of my grandparent,  where  (  X.parent.str + stub == X ) */
-            for(i=0;i<lx->locales->nSubLocs;i++)
-            {
-                if(!strcmp(lx->locales->subLocs[i]->str, lx->parLocale->str))
-                {
-                    continue; /* Don't search our parent (same language) */
-                }
-                
-                strcpy(buf, lx->locales->subLocs[i]->str);
-                strcat(buf, stub);
-                
-                if(findLocaleNonRecursive(lx->locales->subLocs[i], buf) != -1)
-                {
-                    UBool wasExperimental = FALSE;
-                    
-                    if((count++) > 0)
-                    {
-                        u_fprintf(lx->OUT, ", ");
-                    }
-                    else
-                    { /* header */
-                        u_fprintf_u(lx->OUT, 
-                            FSWF("otherLanguageSameCountryLocales", "<b>%U</b> under other languages"),
-                            lx->curLocale->ustr);
-                        u_fprintf(lx->OUT, ": ");
-                    }
-                    
-                    
-                    u_fprintf(lx->OUT, "<a href=\"?_=%s\">", 
-                        buf);
-                    
-                    if(isExperimentalLocale(buf))
-                    {
-                        u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
-                        hadExperimentalSubLocales = TRUE;
-                        wasExperimental = TRUE;
-                    }
-                    
-                    u_fprintf_u(lx->OUT, lx->locales->subLocs[i]->ustr);
-                    
-                    if(wasExperimental)
-                    {
-                        u_fprintf(lx->OUT, "</font></i>");
-                    }
-                    u_fprintf(lx->OUT, "</a>");
-                }
-            }
-            if(count > 0)
-            {
-                u_fprintf(lx->OUT, "<br>\r\n");
-            }
-        }
-        
-#if 0
-        /* This code shows sibling locales */
-        if(lx->curLocale && (lx->parLocale) && (lx->locales != lx->parLocale) && (lx->parLocale->nSubLocs > 1))
-        {
-            int count =0 ;
-            /* It's not a language, and it has siblings. */
-            
-            /*	mySort(lx->parLocale, &status, FALSE);  */ /* Sorting your parent seems to be a bad idea! */
-            
-            for(n=0;n<lx->parLocale->nSubLocs;n++)
-            {
-                UBool wasExperimental = FALSE;
-                
-                u_fprintf(lx->OUT, " -%s- ", lx->parLocale->subLocs[n]->str);
-                
-                if( (&(lx->parLocale->subLocs[n]) != lx->curLocale) /* && it's not a placeholder like de_ */ )
-                {
-                    if((count++) > 0)
-                        u_fprintf(lx->OUT, ", ");
-                    
-                    u_fprintf(lx->OUT, "<a href=\"?_=%s\">", 
-                        lx->parLocale->subLocs[n]->str);
-                    
-                    if(isExperimentalLocale(lx->parLocale->subLocs[n]->str))
-                    {
-                        u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
-                        hadExperimentalSubLocales = TRUE;
-                        wasExperimental = TRUE;
-                    }
-                    u_fprintf_u(lx->OUT, lx->parLocale->subLocs[n]->ustr);
-                    if(wasExperimental)
-                    {
-                        u_fprintf(lx->OUT, "</font></i>");
-                    }
-                    u_fprintf(lx->OUT, "</a>");
-                }
-                else
-                {
-                    u_fprintf(lx->OUT, " { DUP } ", lx->parLocale->subLocs[n]->str);
-                }
-            }
-            
-            u_fprintf(lx->OUT, "</ul>");
-            
-        }
-#endif
-        
-        /* this notice covers sublocs and sibling locs */
-        if(hadExperimentalSubLocales)
-            u_fprintf(lx->OUT, "<br>%U", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
-        
+        printSubLocales(lx, NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-    }
-    
+
+    }        
     
     if ( lx->queryString == NULL )
         lx->queryString = ""; /* for sanity */
@@ -362,7 +213,7 @@ void displayLocaleExplorer(LXContext *lx)
             restored = "converter"; /* what to go on to */
         }
         
-        if(lx->setLocale)
+        if(lx->dispLocaleSet)
         {
             u_fprintf(lx->OUT, "<h4>%U</h4>\r\n", FSWF("changeLocale", "Change the Locale used for Labels"));
         }
@@ -375,7 +226,7 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "<td colspan=2 align=right>");
         printHelpTag(lx, "chooseLocale", NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-        chooseLocale(lx, FALSE, (char*)lx->cLocale, restored, (UBool)!strncmp(lx->queryString,"locale_all", 10));
+        chooseLocale(lx, FALSE, (char*)lx->dispLocale, restored, (UBool)!strncmp(lx->queryString,"locale_all", 10));
     }
     else if (!strncmp(lx->queryString,"converter", 9))  /* ?converter */
     {
@@ -429,7 +280,7 @@ void displayLocaleExplorer(LXContext *lx)
         {
             UErrorCode status = U_ZERO_ERROR;
             u_fprintf(lx->OUT, "Got zone=%U<P>\n", lx->newZone);
-            u_fprintf(lx->OUT, "Time there =%U\n", date(lx->newZone,UDAT_FULL,lx->cLocale,&status));
+            u_fprintf(lx->OUT, "Time there =%U\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&status));
         }
         
         u_fprintf(lx->OUT, "%U: <form><input name=\"SETTZ\" value=\"%U\"><input type=submit></form>\r\n", 
@@ -499,7 +350,7 @@ void displayLocaleExplorer(LXContext *lx)
 # define LXHOST ""
 #endif
     
-    if(!strcmp(lx->cLocale,"klingon"))
+    if(!strcmp(lx->dispLocale,"klingon"))
         u_fprintf(lx->OUT, "<p>Thank you for using the ICU LocaleExplorer, from %s compiled %s %s %s<p>\r\n", LXHOSTNAME, __DATE__, __TIME__, LXHOST);
     
     u_fprintf(lx->OUT, "</body></html>\r\n");
@@ -510,8 +361,8 @@ void displayLocaleExplorer(LXContext *lx)
     
     fflush(stderr);
     
-    if(lx->defaultRB)
-        ures_close(lx->defaultRB);
+    if(lx->dispRB)
+        ures_close(lx->dispRB);
 
     if(lx->curRB)
         ures_close(lx->curRB);
@@ -526,7 +377,7 @@ const UChar *defaultLanguageDisplayName(LXContext *lx)
     
     if(displayName[0] == 0x0000)
     {
-        uloc_getDisplayLanguage(lx->cLocale, lx->cLocale ,displayName, 1024, &status);
+        uloc_getDisplayLanguage(lx->dispLocale, lx->dispLocale ,displayName, 1024, &status);
     }
     
     return displayName;
@@ -585,7 +436,7 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patte
     qs++;
 
 /*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
-    unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, lx->chosenEncoding);
+    unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, lx->convRequested);
     u_replaceChar(dstPattern, 0x0020, 0x00A0);
 }
 

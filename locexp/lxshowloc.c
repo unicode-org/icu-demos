@@ -70,7 +70,7 @@ void showOneLocale(LXContext *lx)
 
 #ifdef LX_HAVE_XLITOMATIC
         u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%U</A>\r\n",
-                  lx->cLocale, lx->chosenEncoding,
+                  lx->dispLocale, lx->chosenEncoding,
                   FSWF("explore_xlitomatic", "Translit-o-matic"));
 #endif
         u_fprintf(lx->OUT, "<P></UL>\r\n");
