@@ -302,8 +302,9 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     /* If it's an odd number, ignore the last digit */
     startBytesLen = ((strlen(startBytes)>>1)<<1);
     maxCharSize = startBytesLen/2;
-	cnvMaxCharSize = ucnv_getMaxCharSize(cnv);
-	if (convType == UCNV_EBCDIC_STATEFUL || convType == UCNV_ISO_2022
+    cnvMaxCharSize = ucnv_getMaxCharSize(cnv);
+    if (convType == UCNV_EBCDIC_STATEFUL || convType == UCNV_ISO_2022
+        || convType == UCNV_IMAP_MAILBOX
         || convType == UCNV_LMBCS_1
         || convType == UCNV_LMBCS_2
         || convType == UCNV_LMBCS_3
@@ -317,9 +318,9 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         || convType == UCNV_LMBCS_18
         || convType == UCNV_LMBCS_19)
     {
-		/* Add one for the shift */
-		cnvMaxCharSize++;
-	}
+        /* Add one for the shift */
+        cnvMaxCharSize++;
+    }
     if (maxCharSize >= cnvMaxCharSize) {
         puts("<p>WARNING: startBytes > maximum number of characters. startBytes is truncated.</p>");
         maxCharSize = cnvMaxCharSize - 1;
@@ -366,7 +367,8 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
                 printUChar(targetBuffer, targetSize, uniVal, status);
             }
             else if (*status == U_TRUNCATED_CHAR_FOUND
-				|| (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0))
+                || (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0)
+                || (convType == UCNV_UTF7 && currCh == '+' && startBytesLen == 0))
             {
                 if (maxCharSize >= cnvMaxCharSize) {
                     printError();
