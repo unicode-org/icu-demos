@@ -1,0 +1,107 @@
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2003, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Makefile.in for ICU - obsolete
+## Steven  R. Loomis
+## Here, we use makefile.inc .. 
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+
+## Build directory information
+top_builddir = ..
+subdir = obsolete
+
+CXXFLAGS += $(SHAREDLIBCXXFLAGS)
+CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
+CFLAGS += $(SHAREDLIBCFLAGS)
+
+include $(top_builddir)/icuapps.mk
+
+-include $(shell $(ICU_CONFIG) --incfile) 
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~
+
+## Target information
+SO_TARGET = $(LIBICU)obsolete$(ICULIBSUFFIX)$(ICULIBSUFFIX_VERSION).$(SO)
+SO_TARGET_VERSION_MAJOR=$(LIB_VERSION_MAJOR)
+SO_TARGET_VERSION=$(LIB_VERSION)
+
+OBJECTS = bidi.o convert.o unicode.o
+HEADERS = unicode/*.h
+
+## List of phony targets
+.PHONY : all all-local install install-local clean clean-local \
+distclean distclean-local dist dist-local check check-local
+
+## List of standard targets
+all: all-local
+
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+all-local: $(FINAL_SO_TARGET)
+
+install-local: all-local install-headers install-library
+
+# only shared library supported now
+ENABLE_SHARED=1
+# ENABLE_STATIC=1
+
+install-library: all-local 
+	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)
+ifneq ($(ENABLE_STATIC),)
+	$(INSTALL-L) $(TARGET) $(DESTDIR)$(libdir)/$(TARGET)
+endif
+ifneq ($(ENABLE_SHARED),)
+	$(INSTALL-L) $(FINAL_SO_TARGET) $(DESTDIR)$(libdir)/$(FINAL_SO_TARGET)
+ifneq ($(FINAL_SO_TARGET),$(SO_TARGET))
+	cd $(DESTDIR)$(libdir) && $(RM) $(MIDDLE_SO_TARGET) && ln -s $(FINAL_SO_TARGET) $(MIDDLE_SO_TARGET)
+	cd $(DESTDIR)$(libdir) && $(RM) $(SO_TARGET) && ln -s $(FINAL_SO_TARGET) $(SO_TARGET)
+endif
+endif
+
+##	$(MKINSTALLDIRS) $(libdir)
+##	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
+
+
+install-headers:
+	$(MKINSTALLDIRS) $(includedir)
+	@list='$(HEADERS)'; for file in $$list; do \
+	 echo " $(INSTALL_DATA) $$file $(includedir)/$$file"; \
+	 $(INSTALL_DATA) $$file $(includedir)/$$file; \
+	done
+
+dist-local:
+
+clean-local:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS) $(SO_TARGET)
+
+distclean-local: clean-local
+	rm -f Makefile 
+
+check-local: install-local
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just
+#         '$(LIBS) -licu-uc -lusort' ...
+
+
+$(FINAL_SO_TARGET) : $(OBJECTS)
+	$(SHLIB.cc) -o $@ $^ $(ICULIBS)
+
+
+
+

@@ -28,7 +28,7 @@
 #include "itmajor.h"
 //%#include "tsmutex.h"
 
-#include "umutex.h"
+//#include "umutex.h"
 
 #ifdef XP_MAC_CONSOLE
 #include <console.h>
