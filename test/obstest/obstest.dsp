@@ -74,7 +74,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 icuobsd.lib icuucd.lib icuind.lib icudata.lib icutu.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\..\lib\\" /libpath:"..\..\..\icu\lib\\"
+# ADD LINK32 icuobsd.lib icuucd.lib icuind.lib icudata.lib icutud.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\..\lib\\" /libpath:"..\..\..\icu\lib\\"
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 
@@ -119,7 +120,7 @@ SOURCE=..\testdata\README.TXT
 InputPath=..\testdata\README.TXT
 
 "..\testdata\out\testdata.dat" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy     ..\..\..\icu\source\test\testdata\out\testdata.dat     ..\testdata\out\ 
+	copy      ..\..\..\icu\source\test\testdata\out\testdata.dat      ..\testdata\out\ 
 
 # End Custom Build
 
@@ -129,7 +130,7 @@ InputPath=..\testdata\README.TXT
 InputPath=..\testdata\README.TXT
 
 "..\testdata\out\testdata.dat" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy     ..\..\..\icu\source\test\testdata\out\testdata.dat     ..\testdata\out\ 
+	copy      ..\..\..\icu\source\test\testdata\out\testdata.dat      ..\testdata\out\ 
 
 # End Custom Build
 
