@@ -2099,6 +2099,7 @@ void listBundles(char *b)
 
     showLocaleScript(lx, myRB, locale);
 
+    showString(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
     
     showTaggedArray(lx, myRB, locale, b, "Languages");
     showTaggedArray(lx, myRB, locale, b, "Countries"); 
@@ -2145,7 +2146,6 @@ void listBundles(char *b)
       showArrayWithDescription(lx, myRB, locale, dtpDesc, "DateTimePatterns");
     }
     
-    showDateTimeElements(lx, myRB, locale);
     
     { 
       const UChar *zsDesc[8];
@@ -2238,6 +2238,8 @@ void listBundles(char *b)
     
     showSpelloutExample(lx, myRB, locale);
     showString(lx, myRB, locale, b, "SpelloutRules", TRUE);
+    showString(lx, myRB, locale, b, "OrdinalRules", TRUE);
+    showString(lx, myRB, locale, b, "DurationRules", TRUE);
 
                                                   /* %%%%%%%%%%%%%%%%%%%%%%%*/
                                                   /*   Collation section %%%*/
@@ -2262,6 +2264,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 {
   
   UErrorCode status = U_ZERO_ERROR;
+  UErrorCode subStatus = U_ZERO_ERROR;
   const UChar *s  = 0;
   UChar temp[UCA_LEN]={'\0'};
   UChar *scopy = 0;
@@ -2270,10 +2273,14 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
   UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len = 0, len2, i;
   UCollator *coll = NULL; /* build an actual collator */
+  UResourceBundle *array = NULL, *item = NULL;
 
-  s = ures_getStringByKey(rb, key, &len, &status);
+  array = ures_getByKey(rb, key, array, &status);
+  subStatus = status;
+  
+  s = ures_getStringByIndex(array, 2, &len, &subStatus);
 
-  if(!s || !s[0] || (status == U_MISSING_RESOURCE_ERROR))
+  if(!s || !s[0] || (status == U_MISSING_RESOURCE_ERROR) || U_FAILURE(subStatus) )
   {
 
     /* Special case this to fetch what REALLY happens in this case ! */
@@ -2294,9 +2301,19 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
       }        
 
     }
+    
+    if( (s==0) || (*s == 0) )
+    {
+      /* FALLBACK - load from root */
+      len = ucol_getRulesEx(coll,UCOL_FULL_RULES, temp,UCA_LEN);
+      s=temp;
+      status = U_USING_DEFAULT_ERROR;
+    }
   }
   else
+  {
     len = u_strlen(s);
+  }
 
   len2 = len;
 
@@ -2365,7 +2382,6 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 	  /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something 
 	     [duh, HTML numbered escape sequence] */
 	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&x#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
-	  u_fprintf(lx->OUT, "</TD><TD></TD>");
 	}
       else
 	{
@@ -2446,62 +2462,79 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 	    explainStatus_X(status, key);
 	}
     }
+
+  status = U_ZERO_ERROR;
+  s = ures_getStringByIndex(array, 1, &len, &status);
+  if(U_SUCCESS(status))
+  {
+    u_fprintf(lx->OUT, "<P><B>%U %U:</B> %U\r\n",
+	      FSWF("Collation", "Collation"),
+	      FSWF("Version","Version"),s);
+  }
+
   u_fprintf(lx->OUT, "</TD>");
   
+
   free(scopy);
   if(coll) ucol_close(coll);
   
   showKeyAndEndItem(key, locale);
+  ures_close(array);
+  ures_close(item);
 }
 
 
+/* These aren't resources anymore. */
 void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 {
   
   UErrorCode status = U_ZERO_ERROR;
   UBool bigString = FALSE; /* is it big? */
   UBool userRequested = FALSE; /* Did the user request this string? */
-  char tempchar[1000];
+  char tempctry[1000], templang[1000], tempvar[1000];
   int32_t len;
-
-  UErrorCode countStatus = U_ZERO_ERROR,langStatus = U_ZERO_ERROR;
-  const UChar *count3 = 0, *lang3 = 0;
-
-  count3 = ures_getStringByKey(rb, "ShortCountry", &len, &countStatus);
-  lang3 = ures_getStringByKey(rb, "ShortLanguage", &len, &langStatus);
+  const char *ctry3 = NULL, *lang3 = NULL;
 
   showKeyAndStartItem("LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
-
 
   u_fprintf(lx->OUT, "<TABLE BORDER=1><TR><TD></TD><TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD></TR>\r\n",
 	    FSWF("LocaleCodes_Language", "Language"),
 	    FSWF("LocaleCodes_Country", "Region"),
 	    FSWF("LocaleCodes_Variant", "Variant"));
-  u_fprintf(lx->OUT, "<TR><TD>%U</TD><TD>",
-	    FSWF("LocaleCodes_2", "2"));
+  u_fprintf(lx->OUT, "<TR><TD></TD><TD>");
   
   status = U_ZERO_ERROR;
-  uloc_getLanguage(locale, tempchar, 1000, &status);
+  uloc_getLanguage(locale, templang, 1000, &status);
   if(U_SUCCESS(status))
-    u_fprintf(lx->OUT, tempchar);
+  {
+    u_fprintf(lx->OUT, templang);
+  }
   else
+  {
     explainStatus_X(status, "LocaleCodes");
+    templang[0] = 0;
+  }
   
   u_fprintf(lx->OUT, "</TD><TD>");
   
   status = U_ZERO_ERROR;
-  uloc_getCountry(locale, tempchar, 1000, &status);
+  uloc_getCountry(locale, tempctry, 1000, &status);
   if(U_SUCCESS(status))
-    u_fprintf(lx->OUT, tempchar);
+  {
+    u_fprintf(lx->OUT, tempctry);
+  }
   else
+  {
     explainStatus_X(status, "LocaleCodes");
+    tempctry[0] = 0;
+  }
   
   u_fprintf(lx->OUT, "</TD><TD>");
   
   status = U_ZERO_ERROR;
-  uloc_getVariant(locale, tempchar, 1000, &status);
+  uloc_getVariant(locale, tempvar, 1000, &status);
   if(U_SUCCESS(status))
-    u_fprintf(lx->OUT, tempchar);
+    u_fprintf(lx->OUT, tempvar);
   else
     explainStatus_X(status, "LocaleCodes");
 
@@ -2514,29 +2547,20 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
   u_fprintf(lx->OUT, "<TD>");
 
-  if(U_SUCCESS(langStatus))
-    {
-      u_fprintf(lx->OUT, "%U", lang3);
-      if(langStatus != U_ZERO_ERROR)
-	{
-	  u_fprintf(lx->OUT, "<BR>");
-	}
-    }
 
-  explainStatus_X(langStatus, "LocaleCodes");
+  lang3 = uloc_getISO3Language(locale);
+  if(lang3)
+  {
+    u_fprintf(lx->OUT, "%s", lang3);
+  }
 
   u_fprintf(lx->OUT, "</TD><TD>");
 
-  if(U_SUCCESS(countStatus))
-    {
-      u_fprintf(lx->OUT, "%U", count3);
-      if(countStatus != U_ZERO_ERROR)
-	{
-	  u_fprintf(lx->OUT, "<BR>");
-	}
-    }
-
-  explainStatus_X(countStatus, "LocaleCodes");
+  ctry3 = uloc_getISO3Country(locale);
+  if(ctry3)
+  {
+    u_fprintf(lx->OUT, "%s", ctry3);
+  }
 
   u_fprintf(lx->OUT, "</TD><TD></TD></TR>\r\n");
   
@@ -3172,10 +3196,11 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
   UErrorCode firstStatus;
   const UChar *s  = 0;
   int32_t    len;
-  int32_t   firstDayOfWeek, minimalDaysInFirstWeek;
+  const int32_t   *elements;
+  int32_t    firstDayIndex;
+
   UResourceBundle *array = NULL, *item = NULL;
 
-    
   const char *key = "DateTimeElements";
   /*
     0: first day of the week 
@@ -3185,22 +3210,30 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
   status = U_ZERO_ERROR;
 
   array = ures_getByKey(rb, key, array, &status);
-  item  = ures_getByIndex(array, 0, item, &status);
-  firstDayOfWeek     = ures_getInt(item, &status);
+  elements = ures_getIntVector(array, &len, &status);
 
   showKeyAndStartItem(key, FSWF("DateTimeElements","Date and Time Options"), locale, FALSE, status);
 
+  if(len < 2)
+  {
+    u_fprintf(lx->OUT, "%U ", FSWF("DateTimeElements_short", "Error- resource is too short (should be 2 elements)!"));
+    ures_close(array);
+    showKeyAndEndItem(key, locale);
+    return;
+  }
+
+
   /* First day of the week ================= */
   u_fprintf(lx->OUT, "%U ", FSWF("DateTimeElements0", "First day of the week: "));
-  
+    
 
   if(U_SUCCESS(status))
     {
       int32_t  firstDayIndex;
 
-      firstDayIndex = (((firstDayOfWeek)+6)%7); 
+      firstDayIndex = (((elements[0])+6)%7); 
       
-      u_fprintf(lx->OUT, " %d \r\n", firstDayOfWeek);
+      u_fprintf(lx->OUT, " %d \r\n", elements[0]);
       /* here's something fun: try to fetch that day from the user's current locale */
       status = U_ZERO_ERROR;
       
@@ -3242,15 +3275,8 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
   /* minimal days in week ================= */
   u_fprintf(lx->OUT, "%U", FSWF("DateTimeElements1", "Minimal Days in First Week: "));
   
-  status = U_ZERO_ERROR;
-
-  item  = ures_getByIndex(array, 1, item, &status);
-  minimalDaysInFirstWeek     = ures_getInt(item, &status);
-
-  firstStatus = status;
-  
   if(U_SUCCESS(status))
-    u_fprintf(lx->OUT, " %d \r\n", minimalDaysInFirstWeek);
+    u_fprintf(lx->OUT, " %d \r\n", elements[1]);
   else
     {
       explainStatus_X(status, key);

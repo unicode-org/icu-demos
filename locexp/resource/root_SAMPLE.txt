@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c ../calexp.c ../srchexp.c on Fri Mar 15 03:20:59 CET 2002 on filfla
+// root file. Generated from ../locexp.c ../calexp.c ../srchexp.c on Sat Mar 30 00:45:13 CET 2002 on filfla
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -14,6 +14,7 @@ root {
    DateTimeElements  {  "Date and Time Options"  }
    DateTimeElements0  {  "First day of the week: "  }
    DateTimeElements1  {  "Minimal Days in First Week: "  }
+   DateTimeElements_short  {  "Error- resource is too short (should be 2 elements)!"  }
    DateTimePatterns0  {  "Full Time"  }
    DateTimePatterns1  {  "Long Time"  }
    DateTimePatterns2  {  "Medium Time"  }
@@ -40,7 +41,6 @@ root {
    EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
    EXPLORE_search_searching  {  "Searching for <B>%U</B>..."  }
    LocaleCodes  {  "Locale Codes"  }
-   LocaleCodes_2  {  "2"  }
    LocaleCodes_3  {  "3"  }
    LocaleCodes_Country  {  "Region"  }
    LocaleCodes_Language  {  "Language"  }
@@ -106,6 +106,7 @@ root {
    UCOL_UPPER_FIRST  {  "Upper first"  }
    UNKNOWN_ERROR  {  "unknown error"  }
    U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
+   Version  {  "Version"  }
    bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
    bigStringHide  {  "Hide"  }
    calexp_calTab  {  "Calendar"  }
