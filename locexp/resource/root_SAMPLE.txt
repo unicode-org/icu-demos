@@ -1,13 +1,15 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c ../calexp.c ../srchexp.c on Sat Mar 30 00:45:13 CET 2002 on filfla
+// root file. Generated from ../locexp.c ../calexp.c ../srchexp.c on Wed May 29 15:28:14 PDT 2002 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
 
 root {
 
+   ...  {  "..."  }
    AmPmMarkers0  {  "am"  }
    AmPmMarkers1  {  "pm"  }
+   Collation  {  "Collation"  }
    CurrencyElements0  {  "Currency symbol"  }
    CurrencyElements1  {  "Int'l Currency symbol"  }
    CurrencyElements2  {  "Currency separator"  }
@@ -107,8 +109,11 @@ root {
    UNKNOWN_ERROR  {  "unknown error"  }
    U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
    Version  {  "Version"  }
+   bigStringClickToExpand  {  "Truncated due to size. Click here to show. "  }
    bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
    bigStringHide  {  "Hide"  }
+   bigStringShorten  {  "Don't show all"  }
+   bigStringSize  {  "(%d of %d shown)"  }
    calexp_calTab  {  "Calendar"  }
    calexp_errGet  {  "Can't get initial date: "  }
    calexp_fieldsTab  {  "Fields"  }
@@ -193,8 +198,11 @@ root {
    otherLanguageSameCountryLocales  {  "<B>%U</B> under other languages"  }
    poweredby  {  "Powered by"  }
    poweredby_filebug  {  "File a bug"  }
+   rules  {  "Rules"  }
+   set  {  "Set"  }
    showAll  {  "Show All"  }
    showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
+   sourceFile  {  "View Locale Source"  }
    statusTableHeader  {  "Your settings:"  }
    statusTableHeaderChange  {  "(click to change)"  }
    stringClickToShow  {  "(Click here to show.)"  }
@@ -204,6 +212,7 @@ root {
    translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
    transliterate_help  {  "Transliteration Help"  }
    ubrowse  {  "Browse Unicode in this codepage"  }
+   uniset_containsSequence  {  "Note: this set may contain a sequence, such as {ch}. This is currently not supported in ICU4C's UnicodeSet, therefore the 'Set' display may be incorrect."  }
    usortOriginal  {  "Original"  }
    usortPrimary  {  "Primary only"  }
    usortSecondary  {  "Primary & Secondary"  }

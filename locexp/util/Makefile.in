@@ -1,5 +1,5 @@
 #/**********************************************************************
-#*   Copyright (C) 1999, International Business Machines
+#*   Copyright (C) 1999-2002, International Business Machines
 #*   Corporation and others.  All Rights Reserved.
 #***********************************************************************/
 ## Makefile.in for ICUAPPS - icuapps/locexp/util
@@ -7,9 +7,13 @@
 
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ../..
+subdir = locexp/util
 
 # srcdir must be set before this is included
-include @ICU_MAKEFILE@
+include $(top_builddir)/icuapps.mk
+-include $(shell $(ICU_CONFIG) --incfile) 
 
 FINAL_SO_TARGET = $(SO_TARGET).$(SO_TARGET_VERSION)
 
@@ -21,9 +25,6 @@ CFLAGS += $(SHAREDLIBCFLAGS)
 #SO_TARGET_VERSION = $(LIB_VERSION)
 #SO_TARGET_VERSION_MAJOR = $(LIB_VERSION_MAJOR)
 
-## Build directory information
-top_builddir = ../..
-subdir = locexp/util
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~

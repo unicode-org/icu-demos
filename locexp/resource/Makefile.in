@@ -12,16 +12,17 @@ LDLIBRARYPATH_ENVVAR = LD_LIBRARY_PATH
 
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ../..
+subdir = locexp/resource
 
 # srcdir must be set before this is included
-include @ICU_MAKEFILE@
+include $(top_builddir)/icuapps.mk
+-include $(shell $(ICU_CONFIG) --incfile) 
 
 # the 'locexp' directory lives inside the exported ICU data dir..
 lxdatadir= $(libdir)/$(PACKAGE)/$(VERSION)/locexp
 
-## Build directory information
-top_builddir = ../..
-subdir = locexp/resource
 
 OUT= out
 
@@ -48,7 +49,7 @@ FSWF_SRC= ../locexp.c ../calexp.c ../srchexp.c
 
 %.res : %.txt
 	@echo Rebuilding $@
-	$(INVOKE) $(sbindir)/genrb -d. $<
+	@$(INVOKE) $(GENRB) -d. $<
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
@@ -69,7 +70,7 @@ check:  check-local
 all-local: res-local root_SAMPLE.txt
 
 res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
-	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m static -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
+	$(INVOKE) $(PKGDATA) -p locexp  -m static -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
 
 Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 	sh ./detectEncodings.sh $(AUTOGENSRC)
@@ -115,8 +116,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #	../../uconv/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt || rm -f sr.txt
 
 sr.res : sr.txt
-	@echo Rebuilding $@ - utf-16le
-	@$(INVOKE)  $(sbindir)/genrb -d. -eutf-16le $<
+	echo Rebuilding $@ - utf-16le
+	$(INVOKE)  $(GENRB) -d. -eutf-16le $<
 
 escapeABundle: escapeABundle.c
 	cc -o escapeABundle escapeABundle.c

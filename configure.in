@@ -1,28 +1,34 @@
 dnl -*-m4-*-
 dnl configure.in for ICU Apps
 dnl Steven R. Loomis
-dnl copyright (c) 1999 IBM, Inc.
+dnl copyright (c) 1999-2002 IBM, Inc.
 
 dnl Process this file with autoconf to produce a configure script
+
+dnl Check a file in our files, just to make sure we have a sane setup..
 AC_INIT(usort/lib/unicode/usort.h)
-AC_PREFIX_PROGRAM(genrb)
 
-# Cross compiling is taken care of becuase you're pointing to an entire set of configuration options
-AC_CHECK_FILE($prefix/lib/icu/Makefile.inc,,AC_MSG_ERROR([Could not find the installed ICU. Re-run ./configure with --prefix=XXX where XXX is the same prefix that the ICU was configured with. ]))
-
-OLDCPPFLAGS=${CPPFLAGS}
-CPPFLAGS="${CPPFLAGS} -I$prefix/include"
-AC_CHECK_HEADERS($prefix/include/unicode/utypes.h,,AC_MSG_ERROR([Could not find the installed ICU. Re-run ./configure with --prefix=XXX where XXX is the same prefix that the ICU was configured with. ]))
-CPPFLAGS=${OLDCPPFLAGS}
+dnl Will set the variable 'ICU_CONFIG'
+CHECK_ICU_CONFIG
 
 PACKAGE="icuapps"
 AC_SUBST(PACKAGE)
 
 AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, true)
 
-ICU_MAKEFILE=$prefix/lib/icu/Makefile.inc
-AC_SUBST(ICU_MAKEFILE)
+AC_PROG_INSTALL
 
-AC_OUTPUT([Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile])
+# make sure install is relative to srcdir - if a script
+if test "$srcdir" = "."; then
+  # If srcdir isn't just ., then (srcdir) is already prepended.
+  if test "${ac_install_sh}" = "${INSTALL}"; then
+   INSTALL="\\\$(top_srcdir)/${ac_install_sh}"
+  fi
+fi
 
-dnl # calexpo/Makefile
+
+AC_OUTPUT([icuapps.mk Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile])
+
+dnl
+
+

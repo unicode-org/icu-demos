@@ -1,0 +1,56 @@
+# -*-makefile-*-
+## ******************************************************************************
+## *
+## *   Copyright (C) 2002, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+
+base_srcdir=@srcdir@
+base_top_srcdir=@top_srcdir@
+
+# For future removal of the Makefile.in's in favor of just Makefiles.
+#srcdir=$(base_srcdir)/$(subdir)
+
+ICU_CONFIG=@ICU_CONFIG@
+####################################################################
+# Load ICU information. You can copy this to other makefiles #######
+####################################################################
+CC=$(shell @ICU_CONFIG@ --cc)
+CXX=$(shell @ICU_CONFIG@ --cxx)
+CPPFLAGS=$(shell @ICU_CONFIG@ --cppflags)
+CFLAGS=$(shell @ICU_CONFIG@ --cflags)
+CXXFLAGS=$(shell @ICU_CONFIG@ --cxxflags)
+LDFLAGS =$(shell @ICU_CONFIG@ --ldflags)
+INVOKE =$(shell @ICU_CONFIG@ --invoke)
+SO =$(shell @ICU_CONFIG@ --so)
+BINDIR = $(shell @ICU_CONFIG@ --bindir)
+GENRB=$(shell @ICU_CONFIG@ --invoke=genrb)
+PKGDATA=$(shell @ICU_CONFIG@ --invoke=pkgdata)
+####################################################################
+MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~
+
+RMV=rm -rf
+
+# # Commands to compile
+# COMPILE.c=    $(CC) $(CPPFLAGS) $(CFLAGS) $(DEFS) -c
+# COMPILE.cc=   $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(DEFS) -c
+
+# # Commands to link
+# LINK.c=       $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
+# LINK.cc=      $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS)
+
+# # Commands to make a shared library
+# SHLIB.c=      $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -shared
+# SHLIB.cc=     $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -shared
+
+
+

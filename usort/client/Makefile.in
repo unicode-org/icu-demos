@@ -10,13 +10,11 @@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 
-# srcdir must be set before this is included
-include @ICU_MAKEFILE@
-
-
 ## Build directory information
 top_builddir = ../..
 subdir = usort/client
+
+include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
@@ -41,9 +39,6 @@ DEPS = $(OBJECTS:.o=.d)
 .PHONY : all all-local install install-local clean clean-local \
 distclean distclean-local dist dist-local check check-local
 
-## Clear suffix list
-.SUFFIXES :
-
 ## List of standard targets
 all: all-local
 install: install-local
@@ -58,8 +53,8 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(bindir)
-	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
+	$(MKINSTALLDIRS) $(BINDIR)
+	$(INSTALL_PROGRAM) $(TARGET) $(BINDIR)/$(TARGET)
 
 dist-local:
 
@@ -81,11 +76,9 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licu-uc -lusort' ...
 
 $(TARGET) : $(OBJECTS)
-	$(LINK.c) -o $@ $^ $(ICULIBS)
 
-ifneq ($(MAKECMDGOALS),distclean)
--include $(DEPS)
-endif
+#	$(LINK.c) -o $@ $^ $(ICULIBS)
+
 
 
 

@@ -10,9 +10,14 @@
 
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ..
+subdir = locexp
 
 # srcdir must be set before this is included
-include @ICU_MAKEFILE@
+include $(top_builddir)/icuapps.mk
+-include $(shell $(ICU_CONFIG) --incfile) 
+
 
 # See the end of this makefile for documentation on the 
 # following line.
@@ -21,9 +26,6 @@ LXOPTIONS = -DLX_USE_FONTED
 -include Makefile.local
 
 
-## Build directory information
-top_builddir = ..
-subdir = locexp
 
 DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
 DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)
@@ -44,7 +46,8 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 
 DEPS = $(OBJECTS:.o=.d)
 
-ICULIBS := -lustdio $(ICULIBS) -lusort -liculxutil  
+LXLIBS=  -L../usort/lib -lusort -L./util -liculxutil   -L./resource/out/ -llocexp
+ICULIBS := -lustdio $(ICULIBS)  $(LXLIBS)
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
