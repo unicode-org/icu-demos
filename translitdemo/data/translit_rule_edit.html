@@ -21,7 +21,7 @@ document.writeln("\x3Cscript src=\"" + JS + "/util.js\">\x3C/script>");
 
 <script>
 if ((typeof UTIL_LOADED) == "undefined" || !UTIL_LOADED) {
-  alert("Internal Error: util.js not loaded.\nThis page will not function properly.");
+  alert("Internal Error: util.js not loaded.\nThis page will not function properly.\nPlease try Refreshing/Reloading your browser window.");
 }
 
 NEW_ID = "(New Transform)";
@@ -37,8 +37,21 @@ AVAILABLE_RBT_IDS = "$AVAILABLE_RBT_IDS".split(";");
 
 AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
 
+// Case-insensitive comparison fn for sort()
+function foldcmp(a, b) {
+  var c = a.toUpperCase();
+  var d = b.toUpperCase();
+  if (c < d) {
+    return -1;
+  }
+  if (c > d) {
+    return 1;
+  }
+  return 0;
+}
+
 var s = "$USER_IDS";
-USER_IDS = (s ? s.split(";") : []);
+USER_IDS = (s ? s.split(";").sort(foldcmp) : []);
 
 // Generate options (inline) for SELECT element
 function generateSelectIDOptions() {
