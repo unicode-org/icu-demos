@@ -76,7 +76,7 @@ class TextCache {
 
     char* root; // path supplied to ct (owned copy)
 
-    ::Hashtable hash; // map of keys to CacheObjs
+    Hashtable hash; // map of keys to CacheObjs
 };
 
 #endif

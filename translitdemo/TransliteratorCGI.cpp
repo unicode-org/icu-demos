@@ -397,10 +397,11 @@ char** TransliteratorCGI::getAvailableRBTIDs() {
         UErrorCode status = U_ZERO_ERROR;
         Transliterator *t = Transliterator::createInstance(id, UTRANS_FORWARD, status);
         if (t != NULL) {
-            if (t->getDynamicClassID() ==
-                RuleBasedTransliterator::getStaticClassID()) {
+            //Comment out poor mans type checking for now
+            //if (t->getDynamicClassID() ==
+            //    RuleBasedTransliterator::getStaticClassID()) {
                 availableRBTIDs[availableRBTIDsCount++] = strdup(all[i]);
-            }
+            //}
             delete t;
         }
     }
