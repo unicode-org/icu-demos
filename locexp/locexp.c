@@ -1717,6 +1717,7 @@ void chooseConverterFrom(const char *restored, USort *list)
       case UCNV_MBCS: ts = "Multiple Byte Character Set (variable)"; break;
       case UCNV_LATIN_1: ts = "Latin-1"; break;
       case UCNV_UTF8: ts = "UTF-8 (8 bit unicode)"; break;
+      case UCNV_UTF7: ts = "UTF-7 (7 bit unicode transformation format)"; break;
       case UCNV_UTF16_BigEndian: ts = "UTF-16 Big Endian"; break;
       case UCNV_UTF16_LittleEndian: ts = "UTF-16 Little Endian"; break;
       case UCNV_EBCDIC_STATEFUL: ts = "EBCDIC Stateful"; break;
@@ -1734,11 +1735,9 @@ void chooseConverterFrom(const char *restored, USort *list)
       case UCNV_LMBCS_18: ts="UCNV_LMBCS_18"; break;
       case UCNV_LMBCS_19: ts="UCNV_LMBCS_19"; break;
 
-#if 0
-      case UCNV_JIS: ts = "JIS (Japan Industrial Society?)"; break;
-      case UCNV_EUC: ts = "EUC"; break; /* ? */
-      case UCNV_GB: ts = "GB"; break; /* ? */
-#endif
+      case UCNV_HZ: ts = "HZ Encoding"; break;
+      case UCNV_SCSU: ts = "Standard Compression Scheme for Unicode"; break; /* ? */
+      case UCNV_US_ASCII: ts = "7-bit ASCII"; break; /* ? */
 
       default: ts = tmp; sprintf(tmp, "Unknown type %d", ucnv_getType(u));
       }
@@ -3177,25 +3176,20 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
   bool_t isTZ = FALSE; /* do special TZ processing */
+  int32_t len;
 
-#if 0 /* NOT YET */
   UResourceBundle *array = ures_getByKey(rb, key, NULL, &status);
-  UResourceBundle *column = ures_getByIndex(array, 0, NULL, &status);
+  UResourceBundle *row   = ures_getByIndex(array, 0, NULL, &status);
+  UResourceBundle *item = NULL;
 
   rows = ures_getSize(array);
-  cols = ures_getSize(column);
-
-  ures_close(array);
-  ures_close(column);
-
-  /*ures_count2dArrayItems(rb, key, &rows, &cols, &status);*/
+  cols = ures_getSize(row);
 
 #ifndef LX_NO_USE_UTIMZONE
   isTZ = !strcmp(key, "zoneStrings");
   if(isTZ)
     cols = 7;
 #endif
-
 
   if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff) || (cols > kShow2dArrayColCutoff)) )
     {
@@ -3224,7 +3218,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
       firstStatus = status;  /* save this for the next column.. */
 
       if(U_SUCCESS(status))
-	{	
+      {	
 
 
 	  u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
@@ -3232,7 +3226,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 	  /* print the top row */
 	  u_fprintf(lx->OUT,"<TR><TD></TD>");
 	  for(h=0;h<cols;h++)
-	    {
+	  {
 	      if(!desc[h])
 		break;
 
@@ -3247,17 +3241,27 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
                   u_fprintf(lx->OUT, "</A>");
               }
               u_fprintf(lx->OUT, "</B></TD>\r\n");
-	    }
+          }
 	  u_fprintf(lx->OUT,"</TR>\r\n");
 	  
 	  for(v=0;v<rows;v++)
-	    {
+	  {
 	      const UChar *zn = NULL;
 	      
+              row   = ures_getByIndex(array, v, row, &status);
+
+              if(U_FAILURE(status)) {
+                u_fprintf(lx->OUT, "<TR><TD><B>ERR: ");
+                explainStatus(lx, status, NULL);
+                status = U_ZERO_ERROR;
+                continue;
+              }
+
 	      u_fprintf(lx->OUT,"<TR><TD><B>%d</B></TD>", v);
 	      for(h=0;h<cols;h++)
-		{
+	      {
 		  status = U_ZERO_ERROR;
+
 		  
 #ifndef LX_NO_USE_UTIMZONE
 		  if(isTZ && (h == 6))
@@ -3277,7 +3281,8 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 		  else
 #endif
 		    {
-		      s = ures_get2dArrayItem(rb, key, v, h, &status);
+                      item   = ures_getByIndex(row, h, item, &status);
+		      s = ures_getString(item, &len, &status);
 		    }
 
 		  if(isTZ && (h == 0)) /* save off zone for later use */
@@ -3302,8 +3307,10 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 	}
     }
 
+  ures_close(item);
+  ures_close(row);
+  ures_close(array);
   showKeyAndEndItem(key, locale);
-#endif
 }
 
 /* Show a Tagged Array  -------------------------------------------------------------------*/
