@@ -65,9 +65,9 @@ TransliteratorCGI::TransliteratorCGI() :
     availableIDsCount = 0;
     availableRBTIDs = 0;
     availableRBTIDsCount = 0;
-    isIntermediateInitialized = false;
-    isIntermediateBogus = false;
-    areUserTransliteratorsLoaded = false;
+    isIntermediateInitialized = FALSE;
+    isIntermediateBogus = FALSE;
+    areUserTransliteratorsLoaded = FALSE;
     translit1 = 0;
     translit2 = 0;
 }
@@ -131,7 +131,7 @@ char* TransliteratorCGI::cleanupNewlines(const char* text) {
  * TODO: Handle inQuote arg properly.
  */
 void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
-                                               bool inQuote) {
+                                               UBool inQuote) {
 
     if (strcmp(var, "AVAILABLE_IDS") == 0) {
         char** ids = getAvailableIDs();
@@ -325,10 +325,10 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
  *
  * Return TRUE on success.
  */
-bool TransliteratorCGI::buildUserRules(const UnicodeString& id,
+UBool TransliteratorCGI::buildUserRules(const UnicodeString& id,
                                        const UnicodeString& rules,
                                        UnicodeString& errMsg) {
-    bool success = true;
+    UBool success = TRUE;
     for (int loop=0; loop<2; ++loop) {
         UTransDirection dir = (loop == 0) ? UTRANS_FORWARD : UTRANS_REVERSE;
         UParseError err;
@@ -349,7 +349,7 @@ bool TransliteratorCGI::buildUserRules(const UnicodeString& id,
                     errMsg += err.postContext;
                 }
             }
-            success = false;
+            success = FALSE;
         }
         delete t;
     }
@@ -367,7 +367,7 @@ void TransliteratorCGI::loadUserTransliterators() {
 
     ruleCache.visitKeys(registerUserRules, this);
 
-    areUserTransliteratorsLoaded = true;
+    areUserTransliteratorsLoaded = TRUE;
 }
 
 /**

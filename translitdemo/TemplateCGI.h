@@ -6,6 +6,7 @@
 // The name of the debug output file (used if DEBUG is defined)
 #define DEBUG_HTML_FILE "translitdebug.html"
 
+#include <unicode/utypes.h>
 #ifdef DEBUG
 #include "unicode/unistr.h"
 #endif
@@ -68,7 +69,7 @@ class TemplateCGI {
      * and so on will be escaped properly.
      */
     virtual void handleTemplateVariable(FILE* out, const char* variableName,
-                                        bool inQuote);
+                                        UBool inQuote);
     
     /**
      * Subclasses may override this to specify an HTTP header.  The

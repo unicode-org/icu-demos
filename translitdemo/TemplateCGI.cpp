@@ -135,7 +135,7 @@ void TemplateCGI::handleEmitHeader(FILE* out) {
  * TemplateCGI framework method default implementation.
  */
 void TemplateCGI::handleTemplateVariable(FILE* out, const char* var,
-                                         bool inQuote) {
+                                         UBool inQuote) {
     util_fprintf(out, getParamValue(var, ""), inQuote);
 }
 
@@ -197,7 +197,7 @@ void TemplateCGI::processTemplate(FILE* in, FILE* out) {
     char last = 0;
     char buf[256];
     for (;;) {
-        char c = getc(in);
+        int c = getc(in);
         if (c == EOF) {
             break;
         } else if (c == '$') {

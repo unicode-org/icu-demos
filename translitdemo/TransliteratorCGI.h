@@ -23,13 +23,13 @@ class TransliteratorCGI : public TemplateCGI {
     void handleEmitHeader(FILE *out);
 
     // Implement TemplateCGI
-    void handleTemplateVariable(FILE* out, const char* var, bool inQuote);
+    void handleTemplateVariable(FILE* out, const char* var, UBool inQuote);
 
  private:
 
     static char* cleanupNewlines(const char*);
 
-    static bool buildUserRules(const UnicodeString& id,
+    static UBool buildUserRules(const UnicodeString& id,
                                const UnicodeString& rules,
                                UnicodeString& errMsg);
 
@@ -65,11 +65,11 @@ class TransliteratorCGI : public TemplateCGI {
     Transliterator* translit1;
     Transliterator* translit2;
 
-    bool isIntermediateInitialized;
-    bool isIntermediateBogus;
+    UBool isIntermediateInitialized;
+    UBool isIntermediateBogus;
     UnicodeString intermediate;
 
-    bool areUserTransliteratorsLoaded;
+    UBool areUserTransliteratorsLoaded;
 
     // Map of IDs to rules.  Only validated rules are stored.
     TextCache ruleCache;

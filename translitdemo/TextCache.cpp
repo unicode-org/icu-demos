@@ -37,7 +37,7 @@ TextCache::TextCache(const char* path) : lockCount(0) {
 }
 
 TextCache::~TextCache() {
-    releaseLock(true);
+    releaseLock(TRUE);
     delete[] root;
     delete[] lockPath;
 }
@@ -278,7 +278,7 @@ void TextCache::acquireLock() {
     }
 }
 
-void TextCache::releaseLock(bool allTheWay) {
+void TextCache::releaseLock(UBool allTheWay) {
     if (lockCount > 0) {
         --lockCount;
         if (allTheWay || lockCount == 0) {
@@ -287,11 +287,11 @@ void TextCache::releaseLock(bool allTheWay) {
     }
 }
 
-bool TextCache::fileExists(const char* fullpath) {
-    bool result = false;
+UBool TextCache::fileExists(const char* fullpath) {
+    UBool result = FALSE;
     FILE* file = fopen(fullpath, "r");
     if (file != NULL) {
-        result = true;
+        result = TRUE;
         fclose(file);
     }
     return result;
