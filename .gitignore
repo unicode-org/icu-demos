@@ -1,3 +1,9 @@
+XMLConverter/*.d
+XMLConverter/*.pdb
+XMLConverter/Debug
+XMLConverter/Makefile
+XMLConverter/Release
+XMLConverter/XMLConverter
 locexp/*.d
 locexp/Makefile
 locexp/Makefile.local
