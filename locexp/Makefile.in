@@ -44,7 +44,7 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 DEPS = $(OBJECTS:.o=.d)
 
 LXLIBS=  -L../usort/lib -lusort -L./util -liculxutil$(ICULIBSUFFIX)   -L./resource/out/ -llocexp
-ICULIBS := $(LDFLAGS_USTDIO) $(ICULIBS)  $(LXLIBS)
+ICULIBS := $(LDFLAGS_USTDIO) $(ICULIBS)  $(LXLIBS)  -licutoolutil
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
