@@ -24,11 +24,13 @@
 #include <stdio.h>
 
 int32_t gMaxStandards;
+UBool gShowStartBytes = FALSE;
 char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
 char gStartBytes[MAX_BYTE_SIZE] = "";
 UHashtable *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
 UBool gShowUnicodeSet = FALSE;
+UBool gShowLanguages = FALSE;
 
 const char ALL[]="ALL";
 
@@ -194,6 +196,7 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
             strncpy(gStartBytes, nextVal, nextOpt - nextVal);
             gStartBytes[sizeof(gStartBytes)-1] = 0;   // NULL terminate for safety
             gStartBytes[((strlen(gStartBytes)>>1)<<1)] = 0;// Make it an even number of chars
+            gShowStartBytes = TRUE;
             while (*strItr) {
                 if (!isxdigit(*strItr)) {
                     // Bad data! Ignore the whole thing
@@ -203,9 +206,13 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
                 strItr++;
             }
         }
-        else if (strncmp(src, "set=", 4) == 0) {
-            /* Don't care what the value is. Just show the set */
+        else if (strncmp(src, SHOW_UNICODESET, strlen(SHOW_UNICODESET)) == 0) {
+            /* Show the Unicode Set */
             gShowUnicodeSet = TRUE;
+        }
+        else if (strncmp(src, SHOW_LOCALES, strlen(SHOW_LOCALES)) == 0) {
+            /* Show the list of languages */
+            gShowLanguages = TRUE;
         }
         else {
             // Woah! I don't know what this option is.

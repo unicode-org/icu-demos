@@ -26,6 +26,8 @@ TODO:
 #include "unicode/ucnv.h"
 #include "unicode/ustring.h"
 #include "unicode/uset.h"
+#include "unicode/uloc.h"
+#include "unicode/ulocdata.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -336,6 +338,66 @@ static UBool isASCIIcompatible(UConverter *cnv) {
     return FALSE;
 }
 
+static void printLanguages(UConverter *cnv, UErrorCode *status) {
+    static UChar patBuffer[128];
+    char patBufferUTF8[1024]; /* 4 times as large as patBuffer */
+    int32_t patLen;
+    int32_t locCount = uloc_countAvailable();
+    int32_t locIndex;
+    UBool localeFound = FALSE;
+    UErrorCode myStatus = U_ZERO_ERROR;
+
+    if (U_FAILURE(*status)) {
+        return;
+    }
+    puts("<h3><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></h3>");
+    if (gShowLanguages) {
+        myStatus = U_ZERO_ERROR;
+        USet *cnvSet = uset_open(0, 0);
+        USet *locSet = uset_open(0, 0);
+        ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
+
+        for (locIndex = 0; locIndex < locCount; locIndex++) {
+            const char *locale = uloc_getAvailable(locIndex);
+            if (locale) {
+                myStatus = U_ZERO_ERROR;
+                ulocdata_getExemplarSet(locSet, locale, 0, &myStatus);
+                if (myStatus != U_USING_FALLBACK_WARNING
+                    && uset_containsAll(cnvSet, locSet))
+                {
+                    patLen = uloc_getDisplayName(locale, "en", patBuffer, sizeof(patBuffer)/sizeof(patBuffer[0]), &myStatus);
+                    if (U_SUCCESS(*status)) {
+                        /* Make sure that the string is NULL terminated in case really bad things happen. */
+                        patBuffer[sizeof(patBuffer)/sizeof(patBuffer[0])-1] = 0;
+                        patBufferUTF8[0] = 0;
+                        u_strToUTF8(patBufferUTF8, sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0]), NULL, patBuffer, patLen, &myStatus);
+                        patBufferUTF8[sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0])-1] = 0;
+                        if (!localeFound) {
+                            localeFound = TRUE;
+                            printf(startTable);
+                            printf("<tr><th class=\"standard\">Locale</th><th class=\"standard\">Locale Name</th></tr>\n");
+                        }
+                        printf("<tr><td>%s</td><td>%s</td></tr>\n", locale, patBufferUTF8);
+                    }
+                }
+            }
+        }
+        if (localeFound) {
+            printf(endTable);
+        }
+        else {
+            puts("<p>Not Available</p>\n");
+        }
+
+        uset_close(cnvSet);
+        *status = U_ZERO_ERROR;
+    }
+    else {
+        printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></p>\n",
+            gCurrConverter, getStandardOptionsURL(&myStatus));
+    }
+}
+
 static void printConverterInfo(UErrorCode *status) {
     char buffer[64];    // It would be insane if it were lager than 64 bytes
     UChar *patBuffer;
@@ -348,6 +410,8 @@ static void printConverterInfo(UErrorCode *status) {
     UConverter *cnv = ucnv_open(gCurrConverter, status);
     UConverterType convType;
     UErrorCode myStatus = U_ZERO_ERROR;
+
+    printCPTable(cnv, gStartBytes, status);
 
     puts("<h2>Information About This Converter</h2>");
     if (U_FAILURE(*status)) {
@@ -364,7 +428,12 @@ static void printConverterInfo(UErrorCode *status) {
     buffer[0] = 0;
     len = sizeof(buffer)/sizeof(buffer[0]);
     ucnv_getSubstChars(cnv, buffer, &len, status);
-    escapeBytes(buffer, len);
+    if (U_SUCCESS(*status)) {
+        escapeBytes(buffer, len);
+    }
+    else {
+        printf(NBSP);
+    }
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
         || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
         || convType == UCNV_UTF32_BigEndian || convType == UCNV_UTF32_LittleEndian )
@@ -402,7 +471,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     puts(endTable);
 
-    puts("<h2>Set of Unicode Code Points Representable By This Codepage</h2>");
+    puts("<h3><a name=\""SHOW_UNICODESET"\">Set of Unicode Code Points Representable By This Codepage</a></h3>");
     if (gShowUnicodeSet) {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
@@ -419,14 +488,17 @@ static void printConverterInfo(UErrorCode *status) {
         else {
             puts("<p>Not Available</p>");
         }
+        uset_close(cnvSet);
         free(patBuffer);
         free(patBufferUTF8);
         *status = U_ZERO_ERROR;
     }
     else {
-        printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"set=1"OPTION_SEP_STR"%s\">View Complete Set...</a></p>\n",
+        printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
             gCurrConverter, getStandardOptionsURL(&myStatus));
     }
+
+    printLanguages(cnv, status);
 
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
         || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
@@ -436,8 +508,6 @@ static void printConverterInfo(UErrorCode *status) {
              "It depends on the endianess of the platform.\n"
              "Please see the <a href=\"http://www.unicode.org/faq/utf_bom.html\">Unicode FAQ</a> for details.</p>");
     }
-
-    printCPTable(cnv, gStartBytes, status);
 
     ucnv_close(cnv);
 }
@@ -597,15 +667,17 @@ main(int argc, const char *argv[]) {
 //    if((cgi="conv=ISO_2022%2Clocale%3Dja%2Cversion0")!=NULL) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-1388&b=0e")!=NULL) {
-//    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
+//    if((cgi="conv=ISO_2022,locale=ja,version=0&b=&ShowLanguages&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=windows-1256&b=")!=NULL) {
-//    if((cgi="conv=ibm-950")!=NULL) {
+//    if((cgi="conv=ibm-950&ShowLanguages")!=NULL) {
+//    if((cgi="conv=ASCII&ShowLanguages")!=NULL) {
+//    if((cgi="conv=iso-8859-9&ShowLanguages")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
-//    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
+//    if((cgi="conv=UTF-8&ShowLanguages&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //        puts(cgi);
         parseAllOptions(cgi, &errorCode);
     }

@@ -229,6 +229,11 @@ static inline void printContinue(const char *startBytes, uint8_t currCh, UErrorC
         (uint32_t)currCh);
 }
 
+static inline void printHideContinue(uint8_t currCh) {
+    printf("<td class=\"continue\"" CELL_WIDTH ">%02X</td>\n",
+        (uint32_t)currCh);
+}
+
 static inline void printNothing() {
     puts("<td class=\"reserved\"" CELL_WIDTH ">"NBSP"</td>");
 }
@@ -246,6 +251,8 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     UChar *target;
     UChar *targetLimit;
     int8_t cnvMaxCharSize;
+    UBool hideContinueBytes = FALSE;
+    UErrorCode localStatus = U_ZERO_ERROR;
 
     if (U_FAILURE(*status)) {
         return;
@@ -294,8 +301,12 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         puts("<h2><a name=\"layout\">Codepage Layout</a></h2>");
         break;
     default:
-        puts("<p>Codepage layout information is not available for this converter at this time.</p>");
-        return;
+        if (!gShowStartBytes) {
+            puts("<p>Codepage layout information is not available for this converter at this time.</p>");
+            return;
+        }
+        puts("<h2><a name=\"layout\">Codepage Layout</a></h2>");
+        hideContinueBytes = TRUE;
     }
 
     switch (convType) {
@@ -366,22 +377,22 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             uint8_t currCh = (uint8_t)(row << 4 | col);
             int32_t targetSize = 0;
 
-            *status = U_ZERO_ERROR;
+            localStatus = U_ZERO_ERROR;
             sourceBuffer[startBytesLen/2] = currCh;
             targetBuffer[0] = 0;
             source = sourceBuffer;
             target = targetBuffer;
-            ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, TRUE, status);
+            ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, TRUE, &localStatus);
             targetSize = (target - targetBuffer);
 
-            if (convType == UCNV_UTF8 && *status == U_TRUNCATED_CHAR_FOUND && !isShortestUTF8(sourceBuffer, source - sourceBuffer))
+            if (convType == UCNV_UTF8 && localStatus == U_TRUNCATED_CHAR_FOUND && !isShortestUTF8(sourceBuffer, source - sourceBuffer))
             {
-                *status = U_ILLEGAL_CHAR_FOUND;
+                localStatus = U_ILLEGAL_CHAR_FOUND;
             }
-            if (U_SUCCESS(*status) && targetSize > 0) {
-                printUChars(targetBuffer, targetSize, status);
+            if (U_SUCCESS(localStatus) && targetSize > 0) {
+                printUChars(targetBuffer, targetSize, &localStatus);
             }
-            else if (*status == U_TRUNCATED_CHAR_FOUND
+            else if (localStatus == U_TRUNCATED_CHAR_FOUND
 //                && (convType == UCNV_DBCS && currCh != UCNV_SO && currCh != UCNV_SI)
                 || (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0)
                 || (convType == UCNV_UTF7 && currCh == '+' && startBytesLen == 0))
@@ -390,7 +401,12 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
                     printError();
                 }
                 else {
-                    printContinue(startBytes, currCh, status);
+                    if (hideContinueBytes) {
+                        printHideContinue(currCh);
+                    }
+                    else {
+                        printContinue(startBytes, currCh, &localStatus);
+                    }
                 }
             }
             else {
