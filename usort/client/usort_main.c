@@ -14,6 +14,13 @@
 
 #include "unicode/usort.h"
 
+#ifdef WIN32
+#include <stdlib.h>
+#include <fcntl.h>
+#include <io.h>
+#endif
+
+
 void usage(const char *pname, const char *msg)
 {
   fprintf(stderr, "[ Note: this list isn't current. Go bug srl. ] \r\n");
@@ -48,12 +55,14 @@ int main(int argc, const char *argv[])
   UConverter *fromConverter = NULL, *toConverter = NULL;
   const char *fromCodepage;
   const char *toCodepage;
+  const char *locale = NULL;
   bool_t useDecompose = FALSE, escapeMode = FALSE;
   USort      *list = NULL;
   UCollationStrength strength = UCOL_DEFAULT_STRENGTH;
   fromCodepage = getenv("ICU_ENCODING");
-  if(!fromCodepage)
+  if(!fromCodepage) {
     fromCodepage = "latin-1";
+  }
   
   toCodepage = fromCodepage;
 
@@ -103,13 +112,15 @@ int main(int argc, const char *argv[])
 	      i++;
 	      if(i<argc)
 		{
-		  uloc_setDefault(argv[i], &status);
+            locale = argv[i];
+		  /*uloc_setDefault(argv[i], &status);
 		  if(U_FAILURE(status))
 		    {
 		      fprintf(stderr, "Error %d trying to set the locale to %s\n",
 			      status, argv[i]);
 		      abort();
 		    }
+            */
 		}
 	      else
 		usage(argv[0], "Missing option to -L");
@@ -125,7 +136,7 @@ int main(int argc, const char *argv[])
   /***   Options loaded. Now, set up some data */
 
 
-  list = usort_open(NULL, strength, TRUE, &status);
+  list = usort_open(locale, strength, TRUE, &status);
 
   if(U_FAILURE(status))
     {
@@ -150,6 +161,14 @@ int main(int argc, const char *argv[])
     }
   
   /***     Load the data */
+
+#ifdef WIN32
+  if( setmode( fileno ( stdin ), O_BINARY ) == -1 ) {
+          perror ( "Cannot set stdin to binary mode" );
+          exit(-1);
+  }
+#endif
+
 
   /* For now only load the data from the stdin */
   usort_addLinesFromFILE( list, NULL, fromConverter, TRUE );

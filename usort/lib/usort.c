@@ -19,6 +19,12 @@
 #include <stdlib.h>
 #include "unicode/usort.h"
 
+#ifdef WIN32
+#include <stdlib.h>
+#include <fcntl.h>
+#include <io.h>
+#endif
+
 /** Utility fcn to print out chars. Ripped off badly from date/cal::uprint **/
 
 static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UErrorCode *status)
@@ -187,7 +193,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
   if(copy)
       usort->lines[usort->count].chars = malloc(sizeof(UChar)*((len)+1));
   else
-    usort->lines[usort->count].chars = line;
+    usort->lines[usort->count].chars = (UChar *)line;
 
   if(!usort->lines[usort->count].chars)
     {
@@ -428,6 +434,13 @@ usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
 
   if(file == NULL)
     file = stdout;
+
+#ifdef WIN32
+  if( setmode( fileno ( file ), O_BINARY ) == -1 ) {
+          perror ( "Cannot set file to binary mode" );
+          exit(-1);
+  }
+#endif
 
   if(toConverter == NULL)
     {
