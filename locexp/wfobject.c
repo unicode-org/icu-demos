@@ -86,7 +86,7 @@ void writeFileObject( LXContext *lx, const char *path )
   UErrorCode s2 = U_ZERO_ERROR;
   const char *thePath = NULL;
 
-  if(strcmp(lx->convRequested,"icudata"))
+  if(strcmp(lx->convRequested,"_icudata"))
   {
     thePath = FSWF_bundlePath();
   }

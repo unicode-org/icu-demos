@@ -440,7 +440,7 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
     showKeyAndEndItem(lx, key, locale);
 }
 
-/* Show a resource that's a UnicodeSeet -----------------------------------------------------*/
+/* Show a resource that's a UnicodeSet -----------------------------------------------------*/
 /**
  * Show a string.  Make it progressive disclosure if it exceeds some length !
  * @param rb the resourcebundle to pull junk out of 

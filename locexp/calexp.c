@@ -151,6 +151,12 @@ void printCalendar( LXContext *lx, UCalendar *cal )
 
 void fillFieldNames(const UChar** n)
 {
+  int32_t i;
+
+  for(i=0;i<UCAL_FIELD_COUNT;i++) {
+    n[i] = NULL; 
+  }
+
     n[UCAL_ERA] =         FSWF("UCAL_ERA", "Era field");
     n[UCAL_YEAR] =        FSWF("UCAL_YEAR", "Year field");
     n[UCAL_MONTH] =       FSWF("UCAL_MONTH", "Month field");
@@ -344,7 +350,11 @@ extern void showExploreCalendar( LXContext *lx)
             }
             u_fprintf(lx->OUT, "    </TD>\r\n");
       
-            u_fprintf(lx->OUT, "    <TD>%U</TD>\r\n", fieldNames[i]);
+            if(fieldNames[i]) {
+              u_fprintf(lx->OUT, "    <TD>%U</TD>\r\n", fieldNames[i]);
+            } else {
+              u_fprintf(lx->OUT, "    <TD>#%d</TD>\r\n", i);
+            }
             
             {
               int32_t fMin = -1;
