@@ -33,6 +33,12 @@ locexp/tools/escapeForBundle
 locexp/tools/findSame
 locexp/util/*.d
 locexp/util/Makefile
+nbrowser/*.d
+nbrowser/Debug
+nbrowser/Makefile
+nbrowser/Makefile.local
+nbrowser/Release
+nbrowser/nbrowser
 rtfcvrt/Makefile
 ubrowse/Makefile
 uconv/*.d
