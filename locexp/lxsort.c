@@ -132,7 +132,7 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
 #if 1
   if(lineAbove) { u_fprintf(lx->OUT, "<div class=\"box%d\">\r\n", (evenOdd++)%2 ); }
-  u_fprintf(lx->OUT, "<tt class=count>%02d</tt>&nbsp;%S", (aSort==NULL)?num:(int32_t)aSort->lines[num].userData, chars);
+  u_fprintf(lx->OUT, "<tt class=count>%02d:</tt>&nbsp;%S", (aSort==NULL)?num:(int32_t)aSort->lines[num].userData, chars);
 
   {
     int32_t ii;

@@ -185,7 +185,7 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
   /* if(type==thisType) */  /* LEFT tab A */
   {
     u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"20%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"" LDATA_PATH "tab_aleft.gif\">");
-    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar=%c&NP_DBL=%s\">%S</A>", 
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&x=cal&EXPLORE_Calendar=%c&NP_DBL=%s\">%S</A>", 
               lx->curLocaleName,
               thisType, num, name);
     u_fprintf(lx->OUT, "<IMG ALIGN=RIGHT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"" LDATA_PATH "tab_aright.gif\"></TD>");
@@ -332,7 +332,7 @@ extern void showExploreCalendar( LXContext *lx)
                     char num[100];
 
                     sprintf(num, "%f", ucal_getMillis(cal2, &status));
-                    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar&NP_DBL=%s\">",
+                    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&x=cal&EXPLORE_Calendar&NP_DBL=%s\">",
                               lx->curLocaleName,
                               num);
                     u_fprintf(lx->OUT, "%s", nam[j]);

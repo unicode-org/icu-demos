@@ -24,6 +24,9 @@ CPPFLAGS+=-I../../icu/source/common
 # following line.
 LXOPTIONS = -DLX_USE_FONTED
 
+ICUDIR=../../icu/source/common
+CPPFLAGS+=-I$(ICUDIR)
+AHEADER=$(ICUDIR)/uresimp.h
 
 DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
 DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)
@@ -123,7 +126,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licuuc -lusort' ...
 
-$(TARGET) : $(LXOBJ) $(CGIOBJ) 
+$(TARGET) : $(LXOBJ) $(CGIOBJ)  $(AHEADER)
 	$(LINK.cc) -o $@ $(LXOBJ) $(CGIOBJ) $(ICULIBS) -llocexp
 
 ifneq ($(MAKECMDGOALS),distclean)
@@ -194,3 +197,5 @@ treetest:  test/treetest.o  $(LXOBJ)
 
 urltest:  test/urltest.o  $(LXOBJ)
 	$(LINK.cc) -o $@ $^ $(ICULIBS) 
+
+

@@ -33,7 +33,7 @@ CLEANFILES = *~ *.res  escapeABundle
 # DEPS = $(OBJECTS:.o=.d)
 
 # source files which are generated
-GENSRC = root.txt index.txt
+GENSRC = root.txt res_index.txt
 
 # resource files
 # AUTOGEN - source whose encoding is detected
@@ -83,8 +83,8 @@ Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 root.txt: $(FSWF_SRC) root.txt.inc ../tools/extractStrings.sh
 	$(INVOKE) PATH=../tools:$(bindir):$(sbindir):$(PATH) extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
 
-index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
-	sh ../tools/genIndex.sh $(SRC) root.txt > index.txt
+res_index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
+	sh ../tools/genIndex.sh $(SRC) root.txt > $@
 
 install-local: install-res
 

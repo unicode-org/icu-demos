@@ -656,38 +656,22 @@ void setLocaleAndEncoding(LXContext *lx)
   loadLocaleFromFields(lx, &(lx->dispLocaleBlob), "d");
 
   if(!lx->dispLocale[0] && lx->acceptLanguage && *lx->acceptLanguage) {
-    char *newLocale;
-    char testLanguage[128];
-    const char *tmp2;
-    /* OK, if they haven't set a locale, maybe their web browser has. */
-    tmp = strchr(lx->acceptLanguage,',');
-    tmp2 = strchr(lx->acceptLanguage, ';');
-    if((tmp&&tmp2) && (tmp2 < tmp)) {  /* 'en;q=1, ...' */
-      tmp = tmp2;
-    } else if(tmp == NULL) {
-      tmp = lx->acceptLanguage + strlen(lx->acceptLanguage);
-    }
-    newLocale = strdup(lx->acceptLanguage);
-    newLocale[my_min(100,tmp-lx->acceptLanguage)]=0;
+    UErrorCode acceptStatus = U_ZERO_ERROR;
+    char newLocale[200];
+    int32_t newLocaleLen = -1;
+    UEnumeration *available = NULL;
+    UAcceptResult outResult;
+
     
-    /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight.  */
-    /* half hearted attempt at canonicalizing the locale string. */
-    newLocale[0] = tolower(newLocale[0]);
-    newLocale[1] = tolower(newLocale[1]);
-    if(newLocale[2] == '-')
-      newLocale[2] = '_';
-    if(newLocale[5] == '-')
-      newLocale[5] = '_';
-    
-    newLocale[3] = toupper(newLocale[3]);
-    newLocale[4] = toupper(newLocale[4]);
-    testLanguage[0]=0;
-    uloc_getLanguage(newLocale, testLanguage, 127, &status);
-    if(U_SUCCESS(status) && isSupportedLocale(testLanguage, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
+    available = ures_openAvailableLocales(FSWF_bundlePath(), &acceptStatus);
+    fprintf(stderr, "opened: [%s]->%p   %s\n=%s=\n", FSWF_bundlePath(), available, u_errorName(acceptStatus), lx->acceptLanguage);
+    newLocaleLen = uloc_acceptLanguageFromHTTP(newLocale, 200, &outResult, lx->acceptLanguage, available, &acceptStatus);
+    fprintf(stderr, "al: [%s]\n     ->%d   %s  %s\n", lx->acceptLanguage, newLocaleLen, newLocale, u_errorName(acceptStatus));
+    if(U_SUCCESS(status) && isSupportedLocale(newLocale, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
       setBlobFromLocale(lx, &lx->dispLocaleBlob, newLocale, &status);
       strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
     }
-    free(newLocale);
+    uenum_close(available);
   }
   /* that might at least get something.. It's better than defaulting to en_US */
   
