@@ -60,8 +60,13 @@
 /* UDataInfo cf. udata.h */
 static const UDataInfo dataInfo={
     sizeof(UDataInfo),
+    0,
+
     U_IS_BIG_ENDIAN,
     U_CHARSET_FAMILY,
+    sizeof(UChar),
+    0,
+
     0x75, 0x6e, 0x61, 0x6d,     /* dataFormat="unam" */
     1, 0, 0, 0,                 /* formatVersion */
     3, 0, 0, 0                  /* dataVersion */

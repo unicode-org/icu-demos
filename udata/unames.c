@@ -154,7 +154,7 @@ isAcceptable(void *context,
              const char *type, const char *name,
              UDataInfo *pInfo) {
     return
-        pInfo->size>=sizeof(UDataInfo) &&
+        pInfo->size>=20 &&
         pInfo->isBigEndian==U_IS_BIG_ENDIAN &&
         pInfo->charsetFamily==U_CHARSET_FAMILY &&
         pInfo->dataFormat[0]==0x75 &&   /* dataFormat="unam" */

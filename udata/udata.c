@@ -697,9 +697,10 @@ isCommonDataAcceptable(void *context,
                        const char *type, const char *name,
                        UDataInfo *pInfo) {
     return
-        pInfo->size>=16 &&
+        pInfo->size>=20 &&
         pInfo->isBigEndian==U_IS_BIG_ENDIAN &&
         pInfo->charsetFamily==U_CHARSET_FAMILY &&
+        pInfo->sizeofUChar==sizeof(UChar) &&
         pInfo->dataFormat[0]==0x43 &&   /* dataFormat="CmnD" */
         pInfo->dataFormat[1]==0x6d &&
         pInfo->dataFormat[2]==0x6e &&

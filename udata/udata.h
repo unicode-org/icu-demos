@@ -29,13 +29,57 @@
 /* platform.h: character set family of this platform */
 #define U_CHARSET_FAMILY 0
 
-/* information about data memory; this structure may grow in the future */
+/**
+ * Information about data memory.
+ * This structure may grow in the future, indicated by the
+ * <code>size</code> field.
+ *
+ * <p>The platform data property fields help determine if a data
+ * file can be efficiently used on a given machine.
+ * The particular fields are of importance only if the data
+ * is affected by the properties - if there is integer data
+ * with word sizes > 1 byte, char* text, or UChar* text.</p>
+ *
+ * <p>The <code>dataFormat</code> may be used to identify
+ * the kind of data, e.g. a converter table.</p>
+ *
+ * <p>The <code>formatVersion</code> field should be used to
+ * make sure that the format can be interpreted.
+ * I may be a good idea to check only for the one or two highest
+ * of the version elements to allow the data memory to
+ * get more or somewhat rearranged contents, for as long
+ * as the using code can still interpret the older contents.</p>
+ *
+ * <p>The <code>dataVersion</code> field is intended to be a
+ * common place to store the source version of the data;
+ * for data from the Unicode character database, this could
+ * reflect the Unicode version.</p>
+ */
 typedef struct {
-    uint16_t size;              /* sizeof(UDataInfo) */
+    /** @memo sizeof(UDataInfo) */
+    uint16_t size;
+
+    /** @memo unused, set to 0 */
+    uint16_t reservedWord;
+
+    /* platform data properties */
+    /** @memo 0 for little-endian machine, 1 for big-endian */
     bool_t isBigEndian;
+
+    /** @memo see U_CHARSET_FAMILY values in utypes.h */
     uint8_t charsetFamily;
+
+    /** @memo sizeof(UChar), one of { 1, 2, 4 } */
+    uint8_t sizeofUChar;
+
+    /** @memo unused, set to 0 */
+    uint8_t reservedByte;
+
+    /** @memo data format identifier */
     uint8_t dataFormat[4];
-    uint8_t formatVersion[4];   /* versions: [0] major [1] minor [2] milli [3] micro */
+
+    /** @memo versions: [0] major [1] minor [2] milli [3] micro */
+    uint8_t formatVersion[4];
     uint8_t dataVersion[4];
 } UDataInfo;
 
