@@ -17,13 +17,15 @@ subdir = ubrowse
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~
+CLEANFILES = *~ $(PKG)_* README_$(PKG).txt $(PKG).*
 
 ## Target information
 TARGET = ubrowse
 
 LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
 CPPFLAGS +=
+ITMP=icontmp
+ICONS=icons
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
@@ -33,7 +35,12 @@ CPPFLAGS +=
 # Want to make sure the usort.h dependency is not on the installed version .. 
 CPPFLAGS  += -I../locexp/util
 
-OBJECTS = ubrowse.o 
+OBJECTS = ubrowse.o icons.o $(PKG)_dat.o
+
+
+PKG=ubrowseres
+PKGMODE=static
+OUT=.
 
 ## List of standard targets
 all: all-local
@@ -56,7 +63,7 @@ dist-local:
 
 clean-local:
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) $(ITMP)
 
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
@@ -73,6 +80,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 -include local.mk
 
+
+
 # Run against HTMLTidy
 tidy: $(TARGET)
 	$(UBROWSEOPTS) $(INVOKE) ./$(TARGET) | tail +3 > ubrowse.html
@@ -81,6 +90,20 @@ tidy: $(TARGET)
 $(TARGET) : $(OBJECTS)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
 
+$(PKG)_icons.res: $(PKG)_icons.txt
+	$(INVOKE) $(GENRB) -d. --package-name $(PKG) $<
 
+$(PKG)_icons.txt: $(ICONS)/*.gif
+	echo creating $@
+	@echo "icons { " > $@
+	@for file in `cd $(ICONS) ; ls *.gif`; do \
+	  echo " $$file:import { $(ICONS)/$$file } " >> $@; \
+	done;
+	@echo "}" >> $@
 
+$(PKG).lst: Makefile.in	
+	echo "ubrowseres_icons.res" > $@
 
+$(PKG)_dat.o: $(PKG).lst $(PKG)_icons.res
+	-rm -f $@
+	-$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(PKG).lst

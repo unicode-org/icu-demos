@@ -385,7 +385,7 @@ UBool myEnumCharNamesFn(void *context,
 #if defined (UB_DEBUG)
         fprintf(stderr, "[%d] considering %s -> %s\n", n, k, nextk);
 #endif
-        if((n>0)&&(k>0)&&(k[-1]!=' ')) { /* subsequent words must be on the beginning of a word boundary */
+        if((n>0)&&(k>name)&&(k[-1]!=' ')) { /* subsequent words must be on the beginning of a word boundary */
           n--; /* retry n */
         }
         k = nextk;
@@ -424,16 +424,16 @@ UBool myEnumCharNamesFn(void *context,
 void printIconMenu(const char *alt, const char *name, ESearchMode target, ESearchMode current)
 {
   u_fprintf(gOut, "<input TYPE=image "
-         " border=0 width=32 height=32 "
-         "alt=\"%s%s%s\" value=\"%s%s%s\" "
-         "name=\"%s\" "
-         "src=\"/icu/demo/ubrowse.d/%s%s.gif\" "
-         ">",
-
-          (current==target)?"[":"", alt,  (current==target)?"]":"",
-          (current==target)?"[":"", alt,  (current==target)?"]":"",
-         name, 
-                                  alt, (current==target)?"-x":"");
+	    " border=0 width=32 height=32 "
+	    "alt=\"%s%s%s\" value=\"%s%s%s\" "
+	    "name=\"%s\" "
+	    "src=\"%s/_/%s%s.gif\" "
+	    ">",
+	    (current==target)?"[":"", alt,  (current==target)?"]":"",
+	    (current==target)?"[":"", alt,  (current==target)?"]":"",
+	    name, 
+	    getenv("SCRIPT_NAME"),
+	    alt, (current==target)?"-x":"");
 } 
 
 
@@ -663,12 +663,21 @@ main(int argc,
   chars[1] = 0;
   pi = getenv("PATH_INFO");
 
+  if(pi && !strncmp(pi, "/_/", 3)) {
+    pi += 3;
+    if(icons_init()) {
+      printf("Content-type: text/plain\n\n");
+      printf("fatal: couldn't open ubrowse data. %s\n", u_errorName(status));
+    }
+    icons_write(pi);
+    return 0;
+  }
+
   if(pi && !strcmp(pi,"/")) {
     gOurEncoding = "utf-8";
     tmp="";
   } else if(pi && *pi) {
-    pi++;
-    
+    pi++;    
     tmp = strchr(pi, '/');
     if(tmp) {
       *tmp = 0; /* terminate */
@@ -712,22 +721,9 @@ main(int argc,
 
 /*  ucnv_setDefaultName(gOurEncoding); */
 u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
-   u_fprintf(gOut, "<html>\n");
-   
-   u_fprintf(gOut, "<head>");
- 
-if(!tmp) /* if there was no trailing '/' ... */
-{
-    if(pi!=NULL) {
-        u_fprintf(gOut, "<BASE HREF=\"http://%s%s/%s/\">\n", getenv("SERVER_NAME"),
-                  getenv("SCRIPT_NAME"),
-                  pi);
-    } else {
-        u_fprintf(gOut, "<BASE HREF=\"http://%s%s/\">\n", getenv("SERVER_NAME"),
-                  getenv("SCRIPT_NAME"));
-    }
-
-}
+  u_fprintf(gOut, "<html>\n");
+  
+  u_fprintf(gOut, "<head>");
 
   /* Now, see what we're supposed to do */
   qs = getenv("QUERY_STRING");
@@ -890,7 +886,7 @@ if(!tmp) /* if there was no trailing '/' ... */
          "<a href=\"/icu/demo/\">Demo</a> &gt;\n"
          "<b>Unicode Browser</b><BR>\n");
 
-  u_fprintf(gOut, "<form action=\".\"><table summary=\"Navigation Control\" border=1 cellpadding=1 cellspacing=1><tr>");
+  u_fprintf(gOut, "<FORM ACTION=\"%s\"><table summary=\"Navigation Control\" border=1 cellpadding=1 cellspacing=1><tr>", getenv("SCRIPT_NAME"));
 
   u_fprintf(gOut, "<td >");
 
@@ -1355,7 +1351,7 @@ void showSearchMenu(UChar32 startFrom)
          "\n"
          "</td></tr><tr><td bgcolor=\"#eeeeee\">\n"
          "<table summary=\"\" cellspacing=8><tr><td align=left>Block:</td><td align=right>\n"
-         "<FORM ACTION=\".\" method=GET>\n");
+         "<FORM ACTION=\"%s\" method=GET>\n", getenv("SCRIPT_NAME"));
 
   u_fprintf(gOut, "<select name=scr>");
   for(i=0;i<(UBLOCK_COUNT-1);i++)
@@ -1372,7 +1368,7 @@ void showSearchMenu(UChar32 startFrom)
   u_fprintf(gOut, "</FORM></td>");
 
   u_fprintf(gOut, "</tr><tr><td align=left>General Category: </td><td align=right>");
-  u_fprintf(gOut, "<FORM ACTION=\".\" method=GET><select name=typ>\n");
+  u_fprintf(gOut, "<FORM ACTION=\"%s\" method=GET><select name=typ>\n", getenv("SCRIPT_NAME"));
   for(i=0;i<U_CHAR_CATEGORY_COUNT;i++) {
     u_fprintf(gOut, "  <option ");
     if(getUCharCategorySorted(i) == gSearchType)
@@ -1387,8 +1383,8 @@ void showSearchMenu(UChar32 startFrom)
   u_fprintf(gOut, "");
 
   u_fprintf(gOut, "</FORM></td></tr>");
-  u_fprintf(gOut, "<tr><td align=left>Name</td><td align=right><FORM method=GET ACTION=\".\"><input size=40 name=s value=\"%s\"> &nbsp; <input type=checkbox name=sx>Exact?<input TYPE=SUBMIT value=\"Find\">",
-         gSearchName);
+  u_fprintf(gOut, "<tr><td align=left>Name</td><td align=right><FORM method=GET ACTION=\"%s\"><input size=40 name=s value=\"%s\"> &nbsp; <input type=checkbox name=sx>Exact?<input TYPE=SUBMIT value=\"Find\">",
+         getenv("SCRIPT_NAME"), gSearchName);
   u_fprintf(gOut, "</FORM></td>\n");
 
 #ifdef RADICAL_LIST
@@ -1665,7 +1661,7 @@ void printModeSET(const char *qs, ESearchMode mode)
     }
 
     if(itemN < iCount) { /* continuation? */
-      u_fprintf(gOut, "<form method=\"GET\" action=\"?\">");
+      u_fprintf(gOut, "<form method=\"GET\" action=\"%s\">", getenv("SCRIPT_NAME"));
       u_fprintf(gOut, "<input type=hidden name=itemN value=\"%d\"><input type=hidden name=charN value=\"%d\">\n", itemN, charN);
       u_fprintf(gOut, "<input type=hidden name=us value=\"%S\">\n", usf);
       u_fprintf(gOut, "<input type=submit name=goset%c value=Next>",
