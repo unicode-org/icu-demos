@@ -64,8 +64,10 @@ THE APPS
            Uses : Conversion
 
    This program will convert data file(s) from one encoding to another
-  via Unicode.
+   via Unicode.
    
+   As of ICU 1.9, this program is now part of the main ICU build. Though
+   it is still not supported it is more convenient there.
 
 - usort    From : Steven R. Loomis
                   <srl@monkey.sbay.org>
