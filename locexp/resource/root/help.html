@@ -1,7 +1,7 @@
 <!-- -*- coding: latin-1; -*-
 
 $Version: $
-$Revision: 1.4 $
+$Revision: 1.5 $
  
 help for the DEFAULT locale, listrb [localeexplorer]
 
@@ -504,7 +504,10 @@ DEFAULT.head copied from lrb bundle src
       <li><tt>F</tt> Day of Week in Month- use one. This is 1 for the first day
       of the week, etc..</li>
 
-      <li><tt>w</tt> Week of Year - use 1 or 2.</li>
+      <li><tt>w</tt> Week of Year - use 1 or 2.
+          <ul>
+        <font size=-1>"Values calculated for the WEEK_OF_YEAR field range from 1 to 53. Week 1 for a year is the first week that contains at least getMinimalDaysInFirstWeek() days from that year. It depends on the values of getMinimalDaysInFirstWeek(), getFirstDayOfWeek(), and the day of the week of January 1. Weeks between week 1 of one year and week 1 of the following year are numbered sequentially from 2 to 52 or 53 (if needed).
+For example, January 1, 1998 was a Thursday. If getFirstDayOfWeek() is MONDAY and getMinimalDaysInFirstWeek() is 4 (these are the values reflecting ISO 8601 and many national standards), then week 1 of 1998 starts on December 29, 1997, and ends on January 4, 1998. However, if getFirstDayOfWeek() is SUNDAY, then week 1 of 1998 starts on January 4, 1998, and ends on January 10, 1998. The first three days of 1998 are then part of week 53 of 1997." (from <a href="http://oss.software.ibm.com/icu/userguide/dateCalendar.html#cal">ICU User's Guide</a>)</font></ul></li>
 
       <li><tt>W</tt> Week of month - use 1</li>
 
@@ -517,6 +520,15 @@ DEFAULT.head copied from lrb bundle src
       <li><tt>z</tt> Timezone. Use 3 for the short timezone (i.e. PST) or 4 for
       the full name (Pacific Standard Time). If there's no name for the zone,
       it'll show up as GMT+/-hh:mm.</li>
+
+      <li><tt>A</tt> Year (of "Week of Year"). [May differ from Calendar year, see comments under 'Week of Year', above.]  </li>
+
+      <li><tt>e</tt> Timezone. Use 3 for the short timezone (i.e. PST) or 4 for
+      the full name (Pacific Standard Time). If there's no name for the zone,
+      it'll show up as GMT+/-hh:mm.</li>
+
+                                                    
+
     </ul>
     <hr>
 
