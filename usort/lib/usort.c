@@ -63,9 +63,9 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
   while(*status == U_INDEX_OUTOFBOUNDS_ERROR); 
 
  finish:
-#ifdef WIN32
+
   ;
-#endif
+
   
 }
 

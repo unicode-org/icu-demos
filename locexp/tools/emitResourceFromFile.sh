@@ -14,9 +14,9 @@ fi
 echo
 echo "// From $3 ($2)"
 echo "   $1 {"
-echo -n "       \""
+echo  "       \"\c"
 uconv -f $2 -t UTF16_BigEndian $3 | escapeForBundle
-echo -n "\""
+echo  "\"\c"
 echo "   }"
 echo
 

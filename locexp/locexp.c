@@ -213,6 +213,7 @@ int main(const char *argv[], int argc)
   UChar subTitle[1024];
   int32_t n,i;
   const char  *fileObj = NULL;
+  char portStr[100];
 
   /* INIT THE LX */
   memset(lx, 0, sizeof(*lx));
@@ -225,6 +226,14 @@ int main(const char *argv[], int argc)
   lx -> numLocales = 0;
   /* END INIT LX */
 
+  if(getenv("SERVER_PORT") && strcmp(getenv("SERVER_PORT"),"80"))
+    {
+      sprintf(portStr, ":%s", getenv("SERVER_PORT"));
+    }
+  else
+    {
+      portStr[0] = 0;
+    }
 
   /* init ...... */
   uloc_setDefault("raj_NZ_EURO", &status); /* BASELINE. Don't use a real locale here - will mess up the fallback error codes [for now] */
@@ -472,7 +481,7 @@ int main(const char *argv[], int argc)
   u_fprintf(lx->OUT, "</TITLE>\r\n");
 
 /*   if(!getenv("PATH_INFO") || !(getenv("PATH_INFO")[0])) */
-  u_fprintf(lx->OUT, "<BASE HREF=\"http://%s%s/%s/%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME"), lx->cLocale, lx->chosenEncoding); /* Ensure that all relative paths have the cgi name followed by a slash.  */
+  u_fprintf(lx->OUT, "<BASE HREF=\"http://%s%s%s/%s/%s/\">\r\n", getenv("SERVER_NAME"), portStr, getenv("SCRIPT_NAME"), lx->cLocale, lx->chosenEncoding); /* Ensure that all relative paths have the cgi name followed by a slash.  */
   
   u_fprintf(lx->OUT, "%U", 
 	    FSWF ( /* NOEXTRACT */ "htmlHEAD",
@@ -2619,12 +2628,9 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 {
   UErrorCode status = U_ZERO_ERROR;
   UErrorCode firstStatus;
-#ifdef WIN32
   UChar *s  = 0, *toShow =0;
   UChar nothing[] = {(UChar)0x00B3, (UChar)0x0000};
-#else
-  const UChar *s  = 0, *toShow =0;
-#endif
+
   enum { kNoExample = 0, kDateTimeExample, kNumberExample } exampleType;
   int32_t i;
   UDate now;  /* example date */
@@ -2654,11 +2660,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 
   if(exampleType != kNoExample)
     {
-#ifdef WIN32
       toShow = nothing+1;
-#else
-      toShow = (UChar[]){ 0x0000 };
-#endif
 
       exampleStatus = U_ZERO_ERROR;
 
@@ -2679,11 +2681,9 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	  break;
 	  
 	case kNumberExample:
-#ifdef WIN32
+
       toShow = nothing;
-#else
-	  toShow = (UChar[]){ 0x00B3,0x0000 }; /* # */
-#endif
+
 	  exampleNF = unum_openPattern(s,-1,locale,&exampleStatus);
 	  if(U_SUCCESS(exampleStatus))
 	    {

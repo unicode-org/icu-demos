@@ -80,16 +80,16 @@ void printAllConverters()
 }
 
 // Convert a file from one encoding to another
-bool convertFile(const char* fromcpage, 
+UBool convertFile(const char* fromcpage, 
                  const char* tocpage, 
                  FILE* infile, 
                  FILE* outfile)
 {
-    bool ret = true;
+  UBool ret = TRUE;
     UnicodeConverter* convfrom = 0;
     UnicodeConverter* convto = 0;
     UErrorCode err = U_ZERO_ERROR;
-    bool  flush;
+    UBool  flush;
     const char* cbuffiter;
     char* buffiter;
     const size_t readsize = buffsize-1;
@@ -231,7 +231,7 @@ bool convertFile(const char* fromcpage,
 
     goto normal_exit;
   error_exit:
-    ret = true;
+    ret = TRUE;
   normal_exit:
     if (convfrom) delete convfrom;
     if (convto) delete convto;
