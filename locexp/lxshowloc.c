@@ -14,32 +14,32 @@ void showOneLocale(LXContext *lx, const char *b)
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *myRB = NULL;
     const char *qs;
-
+    
     qs = b;
-
+    
     if(*b == '_')
     {
         b++;
-      
+        
         if(*b == '=')
-	{
-	  
+        {
+            
             b++;
-	  
+            
             tmp =strchr(b,'&');
             if(tmp)
-	    { 
+            { 
                 *tmp = 0;
-	    }
-	  
+            }
+            
             locale = b;
-
+            
             if(tmp)
-	    {
+            {
                 b = tmp;
                 b++;
-	    }
-	}
+            }
+        }
     }
 
 
