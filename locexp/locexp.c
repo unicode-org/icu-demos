@@ -70,6 +70,8 @@
 #include "unicode/uchar.h"
 #include "unicode/umsg.h"
 
+# define uprv_strstr(a,b)  strstr(a,b)
+
 #ifdef WIN32
 //#include "unicode/kangxi.h"
 #define LXHOSTNAME "Win_NT"
@@ -237,7 +239,9 @@ int main(const char *argv[], int argc)
   int32_t n,i;
 
 
+#ifdef  WIN32
   u_setDataDirectory("c:\\icu\\icu\\data\\");
+#endif
 
   /** Below is useful for debugging. */
   /*  fprintf(stderr, "PID=%d\n", getpid()); */
@@ -554,10 +558,10 @@ int main(const char *argv[], int argc)
   
   u_fprintf(OUT, "<P><BR><P><P><BR><A NAME=\"mySettings\"></A><P><P><P><P><HR>");
   printStatusTable();
-  u_fprintf(OUT, "<I>%U</I> <A HREF=\"%U\">%U</A> * <A HREF=\"http:www10.software.ibm.com/developerworks/opensource/icu/bugs\">%U</A><BR>", 
+  u_fprintf(OUT, "<I>%U</I> <A HREF=\"%U\">%U</A> * <A HREF=\"http:oss.software.ibm.com/developerworks/opensource/icu/bugs\">%U</A><BR>", 
 	    FSWF("poweredby", "Powered by"),
-	    FSWF("poweredby_url", "http:www10.software.ibm.com/developerworks/opensource/icu/"),
-	    FSWF("poweredby_vers", "ICU 1.3.1 + "),
+	    FSWF("poweredby_url", "http:oss.software.ibm.com/developerworks/opensource/icu/"),
+	    FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION),
 	    FSWF("poweredby_filebug", "Found an error? Click here!")
 	    );
 

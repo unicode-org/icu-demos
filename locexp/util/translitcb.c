@@ -157,7 +157,7 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
         return loadTranslitFromCache((int)script, "Kana-Latin"); 
 
     case U_CJK_UNIFIED_IDEOGRAPHS:
-        return loadTranslitFromCache((int)script, "SChinese-Latin"); 
+        return loadTranslitFromCache((int)script, "Kanji-English"); 
 
     case U_HALFWIDTH_AND_FULLWIDTH_FORMS:
         return loadTranslitFromCache((int)script, "Halfwidth-Latin"); 

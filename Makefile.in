@@ -1,3 +1,9 @@
+#******************************************************************************
+#
+#   Copyright (C) 1999, International Business Machines
+#   Corporation and others.  All Rights Reserved.
+#
+#******************************************************************************
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 
@@ -51,6 +57,7 @@ all-recursive install-recursive clean-recursive distclean-recursive dist-recursi
 	if test "$$dot_seen" = "no"; then \
 	  $(MAKE) "$$target-local" || exit 1; \
 	fi
+
 
 all-local:
 
