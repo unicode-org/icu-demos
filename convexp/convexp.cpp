@@ -175,7 +175,7 @@ static const char htmlHeader[]=
     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
     "<strong class=\"bctl\">" PROGRAM_NAME "</strong>\n";
@@ -221,7 +221,7 @@ static const char endForm[]=
     "<tr><th colspan=\"3\" class=\"v14-header-1-small\">Related Topics</th></tr>\n"
     "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
     "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://oss.software.ibm.com/icu/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
     "<tr><td><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
     "</table>\n"
 

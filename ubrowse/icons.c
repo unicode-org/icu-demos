@@ -12,6 +12,10 @@
 
 #include <string.h>
 
+#ifndef ICU_URL
+# define ICU_URL "http://ibm.com/software/globalization/icu"
+#endif
+
 U_CFUNC char ubrowseres_dat[];
 
 int icons_init() {
@@ -44,7 +48,7 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
            (thePath==NULL)?"NULL":thePath,
            path);
     fprintf(stdout, "Error: %s\n", u_errorName(status));
-    fprintf(stdout, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+    fprintf(stdout, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
     return;
   }
 
@@ -99,7 +103,7 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
              "icons",
            (thePath==NULL)?"NULL":thePath);
       fprintf(stdout, "Error: %s\n", u_errorName(s2));
-      fprintf(stdout, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+      fprintf(stdout, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
       return;
     }
 
@@ -113,7 +117,7 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
              "icons",
              u_getDataDirectory());
       fprintf(stdout, "Error: %s\n", u_errorName(s2));
-      fprintf(stdout, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+      fprintf(stdout, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
       return ;
     }
     /* whew! */
