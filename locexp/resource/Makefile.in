@@ -86,7 +86,12 @@ tmp/locexp.lst: Makefile
 resinst: $(RES) tmp/locexp.lst
 	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m common -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
 
-install-res: res-local resinst
+
+# Force creation of locexp as a DLL
+resdllinst: $(RES) tmp/locexp.lst
+	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m dll -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
+
+install-res: res-local resdllinst
 
 dist-local:
 
