@@ -53,28 +53,32 @@ void showOneLocale(LXContext *lx)
         chooseLocale(lx, TRUE, b, "", FALSE);
 
         /* show the demos */
+#if 0
         u_fprintf(lx->OUT, "<H3>%U</H3>\r\n<UL><LI>",
                   FSWF("demos", "Demos"));
-
-        sampleChars = createEscapedSortList(FSWF("EXPLORE_CollationElements_g7sampleString","bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"));
-
-        showExploreButtonSort(lx, NULL,"g7", sampleChars, "CollationElements", FALSE);
-        
-        free(sampleChars);
-
+#endif
+        u_fprintf(lx->OUT, "<table border=0 width=\"100%%\" summary=\"--\"><tr><td valign=top>");
         u_fprintf(lx->OUT, " %U\r\n",
                   FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
-        u_fprintf(lx->OUT, "<LI>%U: ", FSWF("explore_search", "Search"));
+        showExploreButtonSort(lx, NULL,"g7", "CollationElements", FALSE);
+        
+        free(sampleChars);
+
+        u_fprintf(lx->OUT, "<td width=\"50%%\"></td><td valign=top>\r\n");
+
+        u_fprintf(lx->OUT, "<b>%U</b>:</td><td valign=top>", FSWF("explore_search", "Search"));
         showExploreSearchForm(lx, NULL);
+        u_fprintf(lx->OUT, "</td></tr></table>\r\n");
 
 #ifdef LX_HAVE_XLITOMATIC
         u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%U</A>\r\n",
                   lx->dispLocale, lx->chosenEncoding,
                   FSWF("explore_xlitomatic", "Translit-o-matic"));
 #endif
+#if 0
         u_fprintf(lx->OUT, "<P></UL>\r\n");
-
+#endif
         return; /* BREAK out */
     }
 

@@ -213,7 +213,7 @@ extern void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *rb, con
 extern void showExploreNumberPatterns  ( LXContext *lx, const char *locale);
 
 extern void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
-extern void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *sampleString, const char *key, UBool rightAlign);
+extern void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign);
 extern void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 extern void showExploreCloseButton(LXContext *lx, const char *locale, const char *frag);
 extern void showExploreCalendar(LXContext *lx); /* in calexp.c */

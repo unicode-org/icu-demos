@@ -261,7 +261,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
         if((count++) > 0) {
           u_fprintf(lx->OUT, ", ");
         } else { /* header */
-          if(suffix && *suffix) { 
+          if(suffix && *suffix && lx->curLocale->nSubLocs) { 
             u_fprintf(lx->OUT, ", ");
           }
           u_fprintf_u(lx->OUT, 

@@ -52,6 +52,7 @@ void displayLocaleExplorer(LXContext *lx)
 
     /* -------------- */
     
+    u_fprintf(lx->OUT, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> \r\n");
     u_fprintf(lx->OUT,"<html>");
     
     u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2003 IBM and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->");
@@ -118,6 +119,12 @@ void displayLocaleExplorer(LXContext *lx)
                      "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
               );
 
+    printHelpImg(lx, "display", 
+                 FSWF("display_ALT", "Display Problems?"),
+                 FSWF("display_GIF", "displayproblems.gif"),
+                 FSWF("display_OPTIONS", "valign=top ALIGN=RIGHT"));
+
+    u_fprintf(lx->OUT, "<br><hr>");
 
     {
       const char *agent;
@@ -137,13 +144,13 @@ void displayLocaleExplorer(LXContext *lx)
         dispName[0] = 0;
         uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
         
-        u_fprintf(lx->OUT, "<ul><b>%U [%U]</b></ul>\r\n",
+        u_fprintf(lx->OUT, "<blockquote><b>%U [%U]</b></blockquote>\r\n",
                   FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
       }
     
     if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] && strcmp(lx->curLocaleName,"g7"))
       {
-        u_fprintf(lx->OUT, "<ul><b>%U</b></ul>\r\n",
+        u_fprintf(lx->OUT, "<blockquote><b>%U</b></blockquote>\r\n",
                   FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
       }
 
@@ -154,13 +161,13 @@ void displayLocaleExplorer(LXContext *lx)
         suffix = "EXPLORE_CollationElements=";
       } 
 
-      printHelpImg(lx, "display", 
-                   FSWF("display_ALT", "Display Problems?"),
-                   FSWF("display_GIF", "displayproblems.gif"),
-                   FSWF("display_OPTIONS", "ALIGN=RIGHT"));
-        
       u_fprintf(lx->OUT, "<font size=+1>");
       printPath(lx, lx->curLocale, lx->curLocale, suffix?TRUE:FALSE, suffix);
+
+      if(queryField(lx, "EXPLORE_CollationElements")) {
+        u_fprintf(lx->OUT, " &gt; %U", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
+      }
+
       u_fprintf(lx->OUT, "</font><p>");
       if(suffix) {
         printSubLocales(lx, suffix);
@@ -175,11 +182,6 @@ void displayLocaleExplorer(LXContext *lx)
       u_fprintf(lx->OUT, "</font>");
       
       u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
-      
-      printHelpImg(lx, "display", 
-                   FSWF("display_ALT", "Display Problems?"),
-                   FSWF("display_GIF", "displayproblems.gif"),
-                   FSWF("display_OPTIONS", "ALIGN=RIGHT"));
       
       u_fprintf(lx->OUT, "\r\n</TD></TR><TR><TD>");
       

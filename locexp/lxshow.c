@@ -98,7 +98,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
     u_fprintf(lx->OUT, "&nbsp;</TD></TR><TR><TD></TD><TD>");
   
-    showExploreButtonSort(lx, rb,locale, "", "CollationElements", TRUE);
+    showExploreButtonSort(lx, rb,locale,  "CollationElements", TRUE);
 
     u_fprintf(lx->OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 

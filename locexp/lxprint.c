@@ -112,23 +112,13 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
               FSWF("exploreTitle", "Explore"));
 }
 
-void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *sampleString, const char *key, UBool rightAlign)
+void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign)
 {
-    if(!sampleString)
-        sampleString = "";
-
-    u_fprintf(lx->OUT, "\r\n<FORM TARGET=\"_new\" NAME=EXPLORE_%s ACTION=\"EXPLORE_%s\">"
-              "<INPUT TYPE=HIDDEN NAME=_ VALUE=\"%s\">"
-              "<INPUT TYPE=HIDDEN NAME=\"EXPLORE_%s\" VALUE=\"",
-              key, key,locale,key);
-    u_fprintf(lx->OUT, "%s", sampleString);
-    u_fprintf(lx->OUT, "\">");
-  
-    u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE VALIGN=TOP WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  %s ALT=\"%U\"   ",
+  u_fprintf(lx->OUT, "<a target=\"_new\" href=\"?_=%s&EXPLORE_%s=\">", locale, key);
+  u_fprintf(lx->OUT, "<img WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  %s ALT=\"%U\"   ",
               rightAlign?"ALIGN=RIGHT ":"",
-              FSWF("exploreTitle", "Explore") );
-    u_fprintf(lx->OUT, " VALUE=\"%U\"></FORM>",
-              FSWF("exploreTitle", "Explore"));
+            FSWF("exploreTitle", "Explore") );
+  u_fprintf(lx->OUT, "</a>\r\n");
 }
 
 void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key)
@@ -147,7 +137,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 /* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
-    u_fprintf(lx->OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
+    u_fprintf(lx->OUT, "<TABLE summary=\"%U\" BORDER=0 CELLSPACING=0 WIDTH=100%%>", keyName);
     u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
     u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s>", key);
     u_fprintf(lx->OUT,"</A>", keyName);
@@ -224,7 +214,7 @@ void printStatusTable(LXContext *lx)
     UErrorCode status = U_ZERO_ERROR;
     UChar *dateStr;
     
-    u_fprintf(lx->OUT, "<p><table border=0 cellspacing=0 width=100%%>");
+    u_fprintf(lx->OUT, "<table border=0 cellspacing=0 width=100%%>");
     u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
     u_fprintf(lx->OUT, "  <tr>\r\n   <td colspan=3 width=0 valign=top bgcolor=" kXKeyBGColor "><a name=%s><b>", "YourSettings");
     
@@ -281,7 +271,7 @@ void printStatusTable(LXContext *lx)
 
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"%s/en/iso-8859-1/?PANICDEFAULT=yes\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
+        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
     }
 
     u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */

@@ -319,8 +319,8 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
       aBundle = ures_open(NULL, locale, &sampleStatus);
 
       if(U_SUCCESS(sampleStatus)) {
-        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "DayNames", 3);
-        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "MonthNames", 3);
+        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "DayNames", 7);
+        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "MonthNames", 12);
         appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "Languages", 3);
       }
 
@@ -478,7 +478,7 @@ void showSort(LXContext *lx, const char *locale)
   u_fprintf(lx->OUT, "<TABLE id=\"main\" class=\"wide\" border=1>\r\n");
   /* the source box  =======================================================================================*/
   u_fprintf(lx->OUT, "  <td %s ><b>%U</b>\r\n", /* top is only 1 row for now */
-            isG7?" rowspan=\"2\" ":"width=\"22%%\" rowspan=\"1\" ",
+            isG7?" rowspan=\"2\" ":"width=\"22%\" rowspan=\"1\" ",
             FSWF("usortSource", "Source"));
 
   u_fprintf(lx->OUT, "<p><TEXTAREA %s ROWS=20 NAME=\"EXPLORE_CollationElements\">", 
