@@ -469,7 +469,7 @@ static void printAllAliasList(const char *canonicalName, UErrorCode *status) {
     uint16_t idx;
     uint16_t countAliases = ucnv_countAliases(canonicalName, status);
 
-    puts("<td>");
+    puts("<td class=\"alias\">");
     for (idx = 0; idx < countAliases; idx++) {
         alias = ucnv_getAlias(canonicalName, idx, status);
         printf("%s<br>\n", alias);
@@ -590,6 +590,7 @@ main(int argc, const char *argv[]) {
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
 //    if((cgi="conv=utf-16be")!=NULL) {
+//    if((cgi="conv=ISO_2022%2Clocale%3Dja%2Cversion0")!=NULL) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-1388&b=0e")!=NULL) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {

@@ -98,6 +98,53 @@ static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *s
     printf("WARNING: Ignoring unknown standard %s<br>\n", newStandard);
 }
 
+static inline int32_t
+getHexValue(char c) {
+    if('0'<=c && c<='9') {
+        return (int32_t)(c-'0');
+    } else if('a'<=c && c<='f') {
+        return (int32_t)(c-'a'+10);
+    } else if('A'<=c && c<='F') {
+        return (int32_t)(c-'A'+10);
+    } else {
+        return -1;
+    }
+}
+
+/* parse percent-escaped input into a byte array; does not NUL-terminate */
+static int32_t
+parseEscaped(const char *s, const char *sLimit, char *dest, int32_t destCapacity) {
+    int32_t i, hi, lo;
+    char c;
+
+    i=0;
+    while(s < sLimit) {
+        if(i==destCapacity) {
+            /* Gave us too much. too bad. */
+            break;
+        }
+
+        c=*(s++);
+        if (c=='%') {
+            /* Get the next two bytes, if possible */
+            if (s+1 < sLimit && (hi=getHexValue(*s))>=0 && (lo=getHexValue(s[1]))>=0) {
+                dest[i++]=(char)((hi<<4)|lo);
+                s+=2;
+            }
+            else {
+                /* This looks like garbage */
+                return 0;
+            }
+        } else if(c=='+') {
+            dest[i++]=' ';
+        } else {
+            dest[i++]=c;
+        }
+    }
+
+    return i;
+}
+
 static const char* getNextOption(const char* src, const char* srcLimit) {
     const char *nextOpt = strchr(src, OPTION_SEPARATOR);
     if (nextOpt != NULL) {
@@ -128,15 +175,19 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
         }
         else if (strncmp(src, "conv=", 5) == 0) {
             UErrorCode myStatus = U_ZERO_ERROR;
-            strncpy(gCurrConverter, nextVal, nextOpt - nextVal);
-            gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
+            int32_t len = parseEscaped(nextVal, nextOpt, gCurrConverter, sizeof(gCurrConverter)-1);
+//            strncpy(gCurrConverter, nextVal, nextOpt - nextVal);
+            gCurrConverter[len] = 0;   // NULL terminate for safety
 
-            UConverter *cnv = ucnv_open(gCurrConverter, &myStatus);
-            if (U_SUCCESS(myStatus)) {
-                strcpy(gCurrConverter, ucnv_getName(cnv, &myStatus));
-                ucnv_close(cnv);
+            if (len > 0) {
+                UConverter *cnv = ucnv_open(gCurrConverter, &myStatus);
+                if (U_SUCCESS(myStatus)) {
+                    strcpy(gCurrConverter, ucnv_getName(cnv, &myStatus));
+                    ucnv_close(cnv);
+                }
+                gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
             }
-            gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
+            /* else someone gave us garbage */
         }
         else if (strncmp(src, "b=", 2) == 0) {
             const char *strItr = gStartBytes;
