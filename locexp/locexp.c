@@ -2881,10 +2881,17 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
-
   bool_t isTZ = FALSE; /* do special TZ processing */
+  UResourceBundle *array = ures_getByKey(rb, key, NULL, &status);
+  UResourceBundle *column = ures_getByIndex(array, 0, NULL, &status);
 
-  ures_count2dArrayItems(rb, key, &rows, &cols, &status);
+  rows = ures_getSize(array);
+  cols = ures_getSize(column);
+
+  ures_close(array);
+  ures_close(column);
+
+  /*ures_count2dArrayItems(rb, key, &rows, &cols, &status);*/
 
 #ifndef LX_NO_USE_UTIMZONE
   isTZ = !strcmp(key, "zoneStrings");
@@ -3046,6 +3053,8 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 
       if(U_SUCCESS(status))
 	{	
+      UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
+      UResourceBundle *taggedItem = NULL;
 	  
 
 	  u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
@@ -3061,8 +3070,10 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 	      const char *tag;
 
 	      status = U_ZERO_ERROR;
+          taggedItem = ures_getByIndex(tagged, v, NULL, &status);
+          tag = ures_getKey(taggedItem);
 	      
-	      tag = ures_getTaggedArrayTag(rb, key, v, &status);
+	      /*tag = ures_getTaggedArrayTag(rb, key, v, &status);*/
 	      if(!tag)
 		break;
 	      
