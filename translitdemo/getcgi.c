@@ -20,6 +20,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef _WIN32
+  #define strcasecmp strcmpi
+#endif
+
 /** Convert a two-char hex string into the char it represents **/
 char x2c(char *what) {
    register char digit;

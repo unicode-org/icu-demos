@@ -7,9 +7,6 @@
 
 /**
  * A cache of text objects.  The cache is stored on disk.
- *
- * TODO Add locking so multiple processes can access the
- * cache safely.
  */
 class TextCache {
 
@@ -59,7 +56,11 @@ class TextCache {
     void readIndex();
     UBool writeIndex();
 
+ public:
+
     enum { MAX_FILENAME_LENGTH = 31 };
+
+ private:
 
     class CacheObj {
     public:

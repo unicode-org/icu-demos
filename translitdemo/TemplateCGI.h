@@ -80,6 +80,8 @@ class TemplateCGI {
 
     virtual void processTemplate(FILE* in, FILE* out);
 
+    static size_t getWord(FILE* in, char* buf, size_t buflen);
+
 #ifdef DEBUG
     UnicodeString debugLog;
 #endif

@@ -1,4 +1,5 @@
 #include "util.h"
+#include <string.h>
 #include "unicode/unistr.h"
 
 // Encoding we use
@@ -32,7 +33,7 @@ UBool util_writeTo(FILE* file, const char* data, int32_t length) {
     }
     // Write data
     written = fwrite(data, 1, length, file);
-    return written == length;
+    return written == (size_t)length;
 }
 
 /**
@@ -50,7 +51,7 @@ char* util_readFrom(FILE* file, int32_t& length) {
         return 0; // out of memory
     }
     read = fread(data, 1, length, file);
-    if (read != length) {
+    if (read != (size_t)length) {
         delete[] data;
         data = 0;
     }

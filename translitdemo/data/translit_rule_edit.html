@@ -10,9 +10,14 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 
 <script>
 // Determine our location.  Are we on OSS or a local server?
-if (location.toString().search(/oss.software.ibm.com/i) >= 0) {
+if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
   SELF = "/developerworks/opensource/icu/translitdemo";
   JS = "../icu/project/demo";
+} else if (location.toString().search(/\/\/localhost/i) >= 0 ||
+           location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
+  // We are on a local Win32 box running Apache
+  SELF = "/cgi-bin/translitdemo";
+  JS = "../js";
 } else {
   SELF = "/cgi-bin/translit";
   JS = "../js";
@@ -31,14 +36,13 @@ NEW_ID = "(New Transliterator)";
 SEPARATOR = "--------";
 IS_NEW_ID = 0;
 
-// We can get these dynamically from the CGI, but it's too slow.  Also,
-// this allows us to eliminate ones we don't want, like
-// UnicodeName-UnicodeChar.
+// We can get these dynamically from the CGI, but it may be slow.
+// Since this list is static, just hard-code the list here if needed
+// (but then update it periodically).
 
-AVAILABLE_RBT_IDS =
-"Latin-Arabic;Arabic-Latin;Latin-Cyrillic;Cyrillic-Latin;Latin-Devanagari;Devanagari-Latin;Latin-Greek;Greek-Latin;Latin-Hebrew;Hebrew-Latin;Latin-Jamo;Jamo-Latin;Latin-Kana;Kana-Latin;CurlyQuotes-StraightQuotes;StraightQuotes-CurlyQuotes;Fullwidth-Halfwidth;Halfwidth-Fullwidth;Hiragana-Katakana;Katakana-Hiragana;KeyboardEscape-Latin1".split(";");
+AVAILABLE_RBT_IDS = "$AVAILABLE_RBT_IDS".split(";");
 
-AVAILABLE_IDS = "Latin-Arabic;Arabic-Latin;Latin-Cyrillic;Cyrillic-Latin;Latin-Devanagari;Devanagari-Latin;Latin-Greek;Greek-Latin;Latin-Hangul;Hangul-Latin;Latin-Hebrew;Hebrew-Latin;Latin-Jamo;Jamo-Latin;Latin-Kana;Kana-Latin;Any-Lower;Any-Name;Name-Any;Any-Title;Any-Upper;Bengali-Devanagari;Devanagari-Bengali;Bengali-Gujarati;Gujarati-Bengali;Bengali-Gurmukhi;Gurmukhi-Bengali;Bengali-Kannada;Kannada-Bengali;Bengali-Malayalam;Malayalam-Bengali;Bengali-Oriya;Oriya-Bengali;Bengali-Tamil;Tamil-Bengali;Bengali-Telugu;Telugu-Bengali;CurlyQuotes-StraightQuotes;StraightQuotes-CurlyQuotes;Devanagari-Gujarati;Gujarati-Devanagari;Devanagari-Gurmukhi;Gurmukhi-Devanagari;Devanagari-Kannada;Kannada-Devanagari;Devanagari-Malayalam;Malayalam-Devanagari;Devanagari-Oriya;Oriya-Devanagari;Devanagari-Tamil;Tamil-Devanagari;Devanagari-Telugu;Telugu-Devanagari;Fullwidth-Halfwidth;Halfwidth-Fullwidth;Gujarati-Gurmukhi;Gurmukhi-Gujarati;Gujarati-Kannada;Kannada-Gujarati;Gujarati-Malayalam;Malayalam-Gujarati;Gujarati-Oriya;Oriya-Gujarati;Gujarati-Tamil;Tamil-Gujarati;Gujarati-Telugu;Telugu-Gujarati;Gurmukhi-Kannada;Kannada-Gurmukhi;Gurmukhi-Malayalam;Malayalam-Gurmukhi;Gurmukhi-Oriya;Oriya-Gurmukhi;Gurmukhi-Tamil;Tamil-Gurmukhi;Gurmukhi-Telugu;Telugu-Gurmukhi;Hangul-Jamo;Jamo-Hangul;Hex-Unicode;Unicode-Hex;Hiragana-Katakana;Katakana-Hiragana;Kannada-Malayalam;Malayalam-Kannada;Kannada-Oriya;Oriya-Kannada;Kannada-Tamil;Tamil-Kannada;Kannada-Telugu;Telugu-Kannada;KeyboardEscape-Latin1;Malayalam-Oriya;Oriya-Malayalam;Malayalam-Tamil;Tamil-Malayalam;Malayalam-Telugu;Telugu-Malayalam;Null;Oriya-Tamil;Tamil-Oriya;Oriya-Telugu;Telugu-Oriya;Remove;Tamil-Telugu;Telugu-Tamil;UnicodeName-UnicodeChar".split(";");
+AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
 
 // Generate options (inline) for SELECT element
 function generateSelectIDOptions() {

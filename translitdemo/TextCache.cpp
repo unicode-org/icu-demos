@@ -4,9 +4,17 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
 #include "util.h"
+
+#ifdef _WIN32
+  #include <direct.h>
+  #define mkdir(a,b) _mkdir(a)
+  #include <windows.h>
+  #define sleep(a) Sleep(a)
+#else
+  #include <unistd.h>
+#endif
 
 #define INDEX_FILENAME "index"
 #define LOCK_FILENAME "lock"
@@ -237,11 +245,28 @@ void TextCache::deleteCacheObj(void* o) {
     delete (CacheObj*) o;
 }
 
+// See below
+#ifdef _WIN32
+#define TIMEOUT 5
+#else
+#define TIMEOUT 15
+#endif
+
 void TextCache::acquireLock() {
     if (lockCount) {
         ++lockCount;
     } else {
+        // If a process crashes it can leave a lock file around.  To
+        // handle this eventuality, apply a maximum wait interval.
+        // After this interval, assume that a process crashed, and
+        // acquire the lock anyway.  On Win32, we are running locally,
+        // so make the interval short.  Otherwise have it be longer.
+        int32_t timeout = TIMEOUT;
         while (fileExists(lockPath)) {
+            if (timeout-- == 0) {
+                ++lockCount;
+                return;
+            }
             sleep(1); // 1 second
         }
         FILE* file = fopen(lockPath, "w");

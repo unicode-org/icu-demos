@@ -13,10 +13,17 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 
 <script>
 // Determine our location.  Are we on OSS or a local server?
-if (location.toString().search(/oss.software.ibm.com/i) >= 0) {
+if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
+  // We are on OSS running Apache
   SELF = "/developerworks/opensource/icu/translitdemo";
   JS = "../icu/project/demo";
+} else if (location.toString().search(/\/\/localhost/i) >= 0 ||
+           location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
+  // We are on a local Win32 box running Apache
+  SELF = "/cgi-bin/translitdemo";
+  JS = "../js";
 } else {
+  // We are on a remote UNIX box running Apache
   SELF = "/cgi-bin/translit";
   JS = "../js";
 }
@@ -60,7 +67,7 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
       <a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Samples2</a>
 </td>
       <td width="60%" align="center"><strong><big><big><big>Transliteration Demo</big></big></big></strong><br>
-<font size="-1">Running on ICU <b>$ICU_VERSION</b></font></td>
+<font size="-1">Running ICU <b>$ICU_VERSION</b> &mdash; Demo built $BUILD_TIME</font></td>
       <td width="20%" align="right">
       <a href=http://oss.software.ibm.com/icu/demo/translit_help.html target="_blank">Help</a>
       </td>

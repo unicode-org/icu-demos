@@ -6,6 +6,9 @@
  * $ICU_VERSION
  * Replaced by ICU version string.
  *
+ * $BUILD_TIME
+ * Replaced by the time and date THIS FILE was compiled.
+ *
  * $AVAILABLE_IDS
  * Replaced by semicolon delimited list of available system
  * transliterator IDs.
@@ -95,12 +98,12 @@ TransliteratorCGI::TransliteratorCGI() :
 
 TransliteratorCGI::~TransliteratorCGI() {
     delete inputText;
-
-    for (int i=0; i<availableIDsCount; ++i) {
+    int i;
+    for (i=0; i<availableIDsCount; ++i) {
         delete[] availableIDs[i];
     }
     delete[] availableIDs;
-    for (int i=0; i<availableRBTIDsCount; ++i) {
+    for (i=0; i<availableRBTIDsCount; ++i) {
         delete[] availableRBTIDs[i];
     }
     delete[] availableRBTIDs;
@@ -244,6 +247,18 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
         }
     }
 
+#ifdef _WIN32
+    // On a Win32 server we need to munge the input to avoid the
+    // insertion of spurious newlines.
+    else if (strcmp(var, "ARG_INPUT") == 0) {
+        fprintf(out, getInputText());
+    }
+#endif
+
+    else if (strcmp(var, "BUILD_TIME") == 0) {
+        fprintf(out, __TIME__ " " __DATE__);
+    }
+
     else {
         TemplateCGI::handleTemplateVariable(out, var, inQuote);
     }
@@ -258,6 +273,7 @@ const char* TransliteratorCGI::getInputText() {
     if (inputText == 0) {
         const char* s = getParamValue("ARG_INPUT");
         inputText = strdup(s ? s : "");
+#ifdef _WIN32
         // For some reason, on IE5.5/Win2K we are seeing (^M)+^J
         // Delete all ^M's
         char *p = inputText;
@@ -269,6 +285,27 @@ const char* TransliteratorCGI::getInputText() {
             ++q;
         }
         *p = 0;
+#endif
+#if 0
+        // Enable this (and disable the above block) to see what
+        // control characters the browser/server is inserting.  On
+        // Win32, it's ^M^J for every newline.
+        char *copy = (char*) malloc(strlen(inputText) * 2);
+        char *src = inputText;
+        char *dst = copy;
+        while (*src) {
+            if (*src < ' ') {
+                *dst++ = '^';
+                *dst++ = 'A'+(*src)-1;
+            } else {
+                *dst++ = *src;
+            }
+            ++src;
+        }
+        *dst = 0;
+        free(inputText);
+        inputText = copy;
+#endif
     }
     return inputText;
 }
@@ -281,10 +318,10 @@ const char* TransliteratorCGI::getInputText() {
 Transliterator* TransliteratorCGI::getTranslit1(UnicodeString& constructorError) {
     if (translit1 == 0) {
         UnicodeString id(getParamValue("ARG_ID", NULL_ID), ENCODING);
-        // We ALWAYS prepend an invisible Hex-Unicode transliterator.  This
+        // We ALWAYS prepend an invisible Hex-Any transliterator.  This
         // just makes it possible for the user to type hex escapes in the
         // input area.
-        id.insert(0, UnicodeString("Hex-Unicode;", ""));
+        id.insert(0, UnicodeString("Hex-Any;", ""));
         loadUserTransliterators();
         translit1 = Transliterator::createInstance(id);
         if (translit1 == 0) {
@@ -477,7 +514,7 @@ void TransliteratorCGI::registerUserRules(int32_t i, const UnicodeString& id,
                                                         UTRANS_FORWARD,
                                                         status);
         if (U_SUCCESS(status)) {
-            Transliterator::registerInstance(t, status);
+            Transliterator::registerInstance(t);
         } else {
             delete t;
         }

@@ -1,5 +1,9 @@
 #include "TextCache.h"
 #include "util.h"
+#ifdef _WIN32
+  #include <stdlib.h> // exit
+  #include <string.h> // strcmp
+#endif
 
 void visitor(int32_t i, const UnicodeString& key, void* ccache) {
     printf(" %ld: ", i);
