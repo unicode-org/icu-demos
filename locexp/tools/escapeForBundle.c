@@ -1,4 +1,7 @@
-/* (c) 1999 IBM, Inc.
+/* 
+   Copyright (C) 1999-2000, International Business Machines
+   Corporation and others.  All Rights Reserved.
+
    This little program takes utf16_be input and outputs 
    escaped text suitable for inclusion in a resource bundle.
 

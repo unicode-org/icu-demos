@@ -1,4 +1,6 @@
 #!/bin/sh
+##    Copyright (C) 1999-2000, International Business Machines
+##    Corporation and others.  All Rights Reserved.
 if [ $# -ne 3 ]; then
   echo 1>&2 "Usage: $0 resource_tag source_file encoding"
   exit 1

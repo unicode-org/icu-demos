@@ -1,6 +1,8 @@
 // locexp default file. Generated from locexp.c on Wed Nov 10 13:41:00 PST 1999 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the DEFAULT.* source files and rebuild.
+// Copyright (c) 1999, International Business Machines Corporation and
+// others. All Rights Reserved.
 
 
 sr {
