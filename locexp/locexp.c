@@ -111,7 +111,6 @@
 
 /********************* prototypes ***************************/
 
-int main(const char *argv[], int argc);
 
 /* setup the UFILE */
 
@@ -151,7 +150,6 @@ void show2dArrayWithDescription(UResourceBundle *rb, const char *locale, const U
 void showTaggedArray(UResourceBundle *rb, const char *locale, const char *queryString, const char *whichString);
 void showShortLong(UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);
 void showDateTimeElements(UResourceBundle *rb, const char *locale);
-void explainStatus(UErrorCode status, const char *tag); /* utility fcn to explain an errorcode. [tag = #tag ] */
 void showSort(const char *locale, const char *b);
 
 void showExploreDateTimePatterns(UResourceBundle *rb, const char *locale, const char *b);
@@ -168,7 +166,7 @@ bool_t didUserAskForKey(const char *key, const char *queryString);
 void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus);
 void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus);
 void showKeyAndEndItem(const char *key, const char *locale);
-
+void explainStatus_X( UErrorCode status, const char *tag );
 
 /**
  * (for CGI programs)
@@ -181,10 +179,6 @@ void showKeyAndEndItem(const char *key, const char *locale);
  */
 UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didSetEncoding, const char **fileObject);
 
-/**
- * dump out a file that's ina  resource bundle
- */
-void writeFileObject( LXContext *lx, const char *path );
 
 
 /* write a string in \uXXXX format */
@@ -204,8 +198,8 @@ void exploreFetchNextPattern(UChar *dstPattern, const char* qs);
 void exploreShowPatternForm(UChar *dstPattern, const char *locale, const char *key, const char* qs, double value, UNumberFormat *valueFmt);
 
 /********************** globals ********************/
-LXContext gLX;
-LXContext *lx = &gLX; /* we aren't very creative at the moment. */
+LXContext *lx = NULL; /* we aren't very creative at the moment. 
+                       move this to a local!*/
 
 
 /************************ fcns *************************/
@@ -213,7 +207,47 @@ LXContext *lx = &gLX; /* we aren't very creative at the moment. */
 
 /* main function. we write the outside html page here as well. ----------------------------*/
 
-int main(const char *argv[], int argc)
+void initContext ( LXContext *ctx )
+{
+  /* INIT THE LX */
+  memset(ctx, 0, sizeof(*ctx));
+  strcpy(ctx->cLocale, "en");
+  ctx->defaultRB = 0;
+  ctx->ourCharsetName = "iso-8859-1";
+  ctx->locales = NULL;
+  ctx->curLocale = NULL;
+  ctx->parLocale = NULL;
+  ctx -> numLocales = 0;
+  /* END INIT LX */
+  ctx->OUT = NULL;
+  ctx->fOUT = NULL;
+}
+
+void initLX()
+{
+  /* set the path for FSWF */
+  {
+    char newPath[500];
+    strcpy(newPath, u_getDataDirectory());
+
+#ifdef WIN32
+    strcat(newPath, "locexp\\");
+#else
+    strcat(newPath, "locexp");
+#endif
+
+    FSWF_setBundlePath(newPath);
+  }
+
+}
+
+void closeLX()
+{
+  FSWF_close();
+  destroyLocaleTree(lx->locales);
+}
+
+void runLocaleExplorer(LXContext *myContext)
 {
   UErrorCode status;
   char *tmp;
@@ -221,6 +255,8 @@ int main(const char *argv[], int argc)
   int32_t n,i;
   const char  *fileObj = NULL;
   char portStr[100];
+  
+  lx = myContext; /* FIXME when we are multithreaded */
 
 #ifdef WIN32
   if( setmode( fileno ( stdout ), O_BINARY ) == -1 ) {
@@ -229,33 +265,35 @@ int main(const char *argv[], int argc)
   }
 #endif
 
-  /* INIT THE LX */
-  memset(lx, 0, sizeof(*lx));
-  strcpy(lx->cLocale, "en");
-  lx->defaultRB = 0;
-  lx->ourCharsetName = "iso-8859-1";
-  lx->locales = NULL;
-  lx->curLocale = NULL;
-  lx->parLocale = NULL;
-  lx -> numLocales = 0;
-  /* END INIT LX */
+  /* set up the port string */
+  {
+    const char *port;
+    port = getenv("SERVER_PORT");
 
-  if(getenv("SERVER_PORT") && strcmp(getenv("SERVER_PORT"),"80"))
+    if(port && strcmp(port,"80"))
     {
-      sprintf(portStr, ":%s", getenv("SERVER_PORT"));
+      portStr[0] = ':';
+      strncpy(portStr+1,port,7);
+      portStr[7]=0;
     }
   else
     {
       portStr[0] = 0;
     }
+  }
 
   /* init ...... */
-  uloc_setDefault("raj_NZ_EURO", &status); /* BASELINE. Don't use a real locale here - will mess up the fallback error codes [for now] */
+/*
+  uloc_setDefault("sr_NZ_EURO", &status);
+*/ /* BASELINE. Don't use a real locale here - will mess up the fallback error codes [for now] */
 
+
+  uloc_setDefault("en_US_CALIFORNIA", &status);
 
 
 #ifdef  WIN32
-//  u_setDataDirectory("c:\\o\\icu\\source\\data\\");
+/*  u_setDataDirectory("c:\\o\\icu\\source\\data\\");
+*/ /* ONLY IF you need to force the path .... */
 #endif
 
 
@@ -280,15 +318,6 @@ int main(const char *argv[], int argc)
   lx->ourCharsetName = "iso-8859-1";
 
 
-  /* set the path for FSWF */
-  {
-    char newPath[500];
-    strcpy(newPath, u_getDataDirectory());
-
-    strcat(newPath, "locexp");
-
-    FSWF_setBundlePath(newPath);
-  }
 
 
   lx->OUT = setLocaleAndEncodingAndOpenUFILE(lx->chosenEncoding, &lx->setLocale, &lx->setEncoding, &fileObj);
@@ -296,7 +325,7 @@ int main(const char *argv[], int argc)
   if(fileObj != NULL)
   {
     writeFileObject( lx, fileObj );
-    return 0;
+    return;
   }
 
 
@@ -353,14 +382,13 @@ int main(const char *argv[], int argc)
       if(!strcmp(lx->chosenEncoding, "transliterated"))
         {
           lx->xlitCtx.html = FALSE;
-#if 0
-//          ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
-//                                UCNV_FROM_U_CALLBACK_TRANSLITERATED,
-//                                &lx->xlitCtx,
-//                                &lx->xlitCtx.subCallback,
-//                                &lx->xlitCtx.subContext,
-//                                &status);
-#endif
+          lx->xlitCtx.utf8 = NULL;
+          ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
+                                UCNV_FROM_U_CALLBACK_TRANSLITERATED,
+                                &lx->xlitCtx,
+                                &lx->xlitCtx.subCallback,
+                                &lx->xlitCtx.subContext,
+                                &status);
         }
 #if 0
       else
@@ -405,7 +433,7 @@ int main(const char *argv[], int argc)
       {
           char junk[200];
           u_austrcpy(junk, lx->newZone);
-          printf("Set-Cookie: TZ=%s;path=/;\r\n", junk);
+          fprintf(lx->fOUT,"Set-Cookie: TZ=%s;path=/;\r\n", junk);
       }
   }
 
@@ -451,8 +479,8 @@ int main(const char *argv[], int argc)
 
   /* Print the encoding and last HTTP header... */
 
-  printf("Content-Type: text/html;charset=%s\r\n\r\n", lx->ourCharsetName);
-  fflush(stdout);
+  fprintf(lx->fOUT, "Content-Type: text/html;charset=%s\r\n\r\n", lx->ourCharsetName);
+  fflush(lx->fOUT);
 
   /* 
      kore wa nandesuka?
@@ -466,7 +494,7 @@ int main(const char *argv[], int argc)
   }*/
 
 
-  fflush(stdout); /* and that, as they say, is that.  All UFILE from here.. */
+  fflush(lx->fOUT); /* and that, as they say, is that.  All UFILE from here.. */
 
 
   /* -------------- */
@@ -501,11 +529,13 @@ int main(const char *argv[], int argc)
 
   /* now see what we're gonna do */
   tmp = getenv ( "QUERY_STRING" );
+
+  u_fprintf(lx->OUT, "COMP: %s %s<BR>\r\n", __DATE__,  __TIME__);
   
   if(strstr(tmp,"EXPLORE"))
     {
       printHelpImg("display", 
-		   FSWF("display_ALT", "Display Problem?"),
+		   FSWF("display_ALT", "Display Problems?"),
 		   FSWF("display_GIF", "displayproblems.gif"),
 		   FSWF("display_OPTIONS", "ALIGN=RIGHT"));
 		  
@@ -542,7 +572,7 @@ int main(const char *argv[], int argc)
       u_fprintf(lx->OUT, "</TD><TD ROWSPAN=2 ALIGN=RIGHT VALIGN=TOP WIDTH=1>");
       
       printHelpImg("display", 
-		   FSWF("display_ALT", "Display Problem?"),
+		   FSWF("display_ALT", "Display Problems?"),
 		   FSWF("display_GIF", "displayproblems.gif"),
 		   FSWF("display_OPTIONS", "ALIGN=RIGHT"));
 		  
@@ -599,6 +629,10 @@ int main(const char *argv[], int argc)
 
 	u_fprintf(lx->OUT, "<UL>%U<P>\r\n",
 	  FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers over 45 different languages, further divided into 150+ geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."));
+        
+        u_fprintf(lx->OUT, "%U<P>\r\n",
+                  FSWF/**/(/**/"specialMessage_2000Oct30",/**/
+                       "<I>Note: Locale Explorer should be much faster, but.. there's an ongoing problem where (at least) Microsoft Internet Explorer users will be faced with a blank page or an error page.. if this occurs, please simply hit Reload and all should be corrected.</I>"));
 
 	u_fprintf(lx->OUT, "</UL>");
   }
@@ -748,19 +782,17 @@ int main(const char *argv[], int argc)
 
   u_fprintf(lx->OUT, "</BODY></HTML>\r\n");
 
-  fflush(stdout);
+  fflush(lx->fOUT);
 
   u_fclose(lx->OUT);
 
   fflush(stderr);
 
-  FSWF_close();
-
   if(lx->defaultRB)
     ures_close(lx->defaultRB);
 
 
-  return 0;
+  return;
 }
 
 const UChar *defaultLanguageDisplayName()
@@ -821,14 +853,14 @@ void setupLocaleTree()
 /* TODO: this doesn't actually work yet. Should it be localized ? probably. */
 void doFatal(const char *what, UErrorCode err)
 {
-  fprintf(stdout, "Content-type:text/html\r\n\r\n");
-  fprintf(stdout, "<TITLE>ICU LocaleExplorer: Error</TITLE>\r\n");
-  fprintf(stdout, "<H1>ICU LocaleExplorer: Error</H1>\r\n");
-  fprintf(stdout, "<UL>An error of type %d occured while trying to %s.</UL><HR><P>\r\n",err,what);
+  fprintf(lx->fOUT, "Content-type:text/html\r\n\r\n");
+  fprintf(lx->fOUT, "<TITLE>ICU LocaleExplorer: Error</TITLE>\r\n");
+  fprintf(lx->fOUT, "<H1>ICU LocaleExplorer: Error</H1>\r\n");
+  fprintf(lx->fOUT, "<UL>An error of type %d occured while trying to %s.</UL><HR><P>\r\n",err,what);
   fprintf(stderr, "listrb: err %d trying to %s\n",err,what);
-  fprintf(stdout, "You can try <A HREF=\"%s\">starting over</A>, or complain to srl.<P>\r\n",
+  fprintf(lx->fOUT, "You can try <A HREF=\"%s\">starting over</A>, or complain to srl.<P>\r\n",
 	 getenv("SCRIPT_NAME"));
-  fflush(stdout);
+  fflush(lx->fOUT);
   exit(0);
 }
 
@@ -1010,7 +1042,7 @@ void printStatusTable()
       u_fprintf(lx->OUT,"&%s", getenv("QUERY_STRING"));
     u_fprintf(lx->OUT, "\">");
   }
-  uloc_getDisplayName(NULL, NULL, myChars, 1024, &status);
+  uloc_getDisplayName(lx->cLocale, lx->cLocale, myChars, 1024, &status);
   u_fprintf(lx->OUT, "%U", myChars);
   if(lx->inDemo == FALSE)
   {
@@ -1865,7 +1897,7 @@ void listBundles(char *b)
   }
 #endif  /* srl_HRCEK */
 
-  explainStatus(status,"top");
+  explainStatus_X(status,"top");
 
   /*  showFlagImage(locale, " "); */
   /*   u_fprintf(lx->OUT, "</TD></TR><TR><TD COLSPAN=2>"); */
@@ -1916,7 +1948,10 @@ void listBundles(char *b)
     {
       showExploreNumberPatterns(locale, b);
     }
-
+  else if (strstr(b, "EXPLORE_Calendar"))
+    {
+      showExploreCalendar(lx, b);
+    }
   else if (strstr(b, "EXPLORE_CollationElements"))
     {
       showKeyAndStartItem("EXPLORE_CollationElements", 
@@ -2346,7 +2381,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 
 	    }
 	  else
-	    explainStatus(status, key);
+	    explainStatus_X(status, key);
 	}
     }
   u_fprintf(lx->OUT, "</TD>");
@@ -2388,7 +2423,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   if(U_SUCCESS(status))
     u_fprintf(lx->OUT, tempchar);
   else
-    explainStatus(status, "LocaleCodes");
+    explainStatus_X(status, "LocaleCodes");
   
   u_fprintf(lx->OUT, "</TD><TD>");
   
@@ -2397,7 +2432,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   if(U_SUCCESS(status))
     u_fprintf(lx->OUT, tempchar);
   else
-    explainStatus(status, "LocaleCodes");
+    explainStatus_X(status, "LocaleCodes");
   
   u_fprintf(lx->OUT, "</TD><TD>");
   
@@ -2406,7 +2441,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   if(U_SUCCESS(status))
     u_fprintf(lx->OUT, tempchar);
   else
-    explainStatus(status, "LocaleCodes");
+    explainStatus_X(status, "LocaleCodes");
 
   u_fprintf(lx->OUT, "</TD></TR>\r\n");
 
@@ -2426,7 +2461,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
 	}
     }
 
-  explainStatus(langStatus, "LocaleCodes");
+  explainStatus_X(langStatus, "LocaleCodes");
 
   u_fprintf(lx->OUT, "</TD><TD>");
 
@@ -2439,7 +2474,7 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
 	}
     }
 
-  explainStatus(countStatus, "LocaleCodes");
+  explainStatus_X(countStatus, "LocaleCodes");
 
   u_fprintf(lx->OUT, "</TD><TD></TD></TR>\r\n");
   
@@ -2622,7 +2657,7 @@ void showArray( UResourceBundle *rb, const char *locale, const char *key )
       else
 	{
 	  u_fprintf(lx->OUT, "<LI>");
-	  explainStatus(status, key);
+	  explainStatus_X(status, key);
 	  u_fprintf(lx->OUT, "\r\n");
 	  break;
 	}
@@ -2821,7 +2856,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       else
 	{
 	  s = 0;
-	  explainStatus(status, key);
+	  explainStatus_X(status, key);
 	  u_fprintf(lx->OUT, "\r\n");
 	  break;
 	}
@@ -2845,7 +2880,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		  u_fprintf(lx->OUT, "%U", tempChars);
 
 	      }
-	    explainStatus(exampleStatus, key);
+	    explainStatus_X(exampleStatus, key);
 	    u_fprintf(lx->OUT, "</TD>\r\n");
 
 	    if(i == 3) /* short time */
@@ -2895,7 +2930,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		unum_close(exampleNF);
 
 	      }
-	    explainStatus(exampleStatus, key);
+	    explainStatus_X(exampleStatus, key);
 	    u_fprintf(lx->OUT, "</TD>\r\n");
 	  }
 	  break;
@@ -2973,7 +3008,7 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
     }
   else
     {
-      explainStatus(status, key);
+      explainStatus_X(status, key);
       u_fprintf(lx->OUT, "\r\n");
     }
 
@@ -2993,7 +3028,7 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
     u_fprintf(lx->OUT, " %U \r\n", s);
   else
     {
-      explainStatus(status, key);
+      explainStatus_X(status, key);
       u_fprintf(lx->OUT, "\r\n");
     }
 
@@ -3022,9 +3057,9 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
   ures_getArrayItem(rb,shortKey, 0, &shortStatus);
 
   u_fprintf(lx->OUT, "<TABLE BORDER=1 WIDTH=100%% HEIGHT=100%%><TR><TD><B>#</B></TD><TD><B>%U</B> ", shortName);
-  explainStatus(shortStatus, keyStem);
+  explainStatus_X(shortStatus, keyStem);
   u_fprintf(lx->OUT, "</TD><TD><B>%U</B> ", longName);
-  explainStatus(longStatus, keyStem);
+  explainStatus_X(longStatus, keyStem);
   u_fprintf(lx->OUT, "</TD></TR>\r\n");
 
  
@@ -3045,7 +3080,7 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
       if(U_SUCCESS(status))
 	u_fprintf(lx->OUT, " %U ", s);
       else
-	explainStatus(status, keyStem); /* if there was an error */
+	explainStatus_X(status, keyStem); /* if there was an error */
 
       u_fprintf(lx->OUT, "</TD><TD>");
 
@@ -3060,7 +3095,7 @@ void showShortLong( UResourceBundle *rb, const char *locale, const char *keyStem
       if(U_SUCCESS(status))
 	u_fprintf(lx->OUT, " %U ", s);
       else
-	explainStatus(status, keyStem); /* if there was an error */
+	explainStatus_X(status, keyStem); /* if there was an error */
 
       u_fprintf(lx->OUT, "</TD></TR>");
     }
@@ -3197,7 +3232,7 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 		  else
 		    {
 		      u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
-		      explainStatus(status, key);
+		      explainStatus_X(status, key);
 		      u_fprintf(lx->OUT, "</TD>\r\n");
 		      break;
 		    }
@@ -3304,7 +3339,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 		  else
 		    {
 		      u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
-		      explainStatus(status, key);
+		      explainStatus_X(status, key);
 		      u_fprintf(lx->OUT, "</TD>\r\n");
 		    }
 		}
@@ -3321,8 +3356,14 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 
 /* Explain what the status code means --------------------------------------------------------- */
 
-void explainStatus( UErrorCode status, const char *tag )
+void explainStatus_X( UErrorCode status, const char *tag )
 {
+  explainStatus(lx, status, tag);
+}
+
+void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
+{
+
   if(tag == 0)
     tag = "_top_";
 
@@ -3928,7 +3969,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "%U: [%d] <P>", FSWF("formatExample_errorOpen", "Couldn't open the formatter"), (int) status);
-      explainStatus(status, "EXPLORE_DateTimePatterns");
+      explainStatus_X(status, "EXPLORE_DateTimePatterns");
       exploreShowPatternForm(pattern, locale, "DateTimePatterns", strstr(b,"EXPLORE_DateTimePatterns"), now, nf);
     }
   else
@@ -3946,7 +3987,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   if(U_FAILURE(status))
     u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
   
-  explainStatus(status,"EXPLORE_DateTimePatterns");
+  explainStatus_X(status,"EXPLORE_DateTimePatterns");
 
 
 
@@ -3961,7 +4002,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   if(U_FAILURE(defStatus))
     {
       u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
-      explainStatus(status, "EXPLORE_DateTimePatterns");
+      explainStatus_X(status, "EXPLORE_DateTimePatterns");
     }
   else
     {
@@ -3997,7 +4038,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   if(U_FAILURE(locStatus))
     {
       u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
-      explainStatus(status, "EXPLORE_DateTimePatterns");
+      explainStatus_X(status, "EXPLORE_DateTimePatterns");
     }
   else
     {
@@ -4110,7 +4151,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>%U: ", FSWF("formatExample_errorOpen", "Couldn't open the formatter"));
-      explainStatus(status, "EXPLORE_NumberPattern");
+      explainStatus_X(status, "EXPLORE_NumberPattern");
       return; /* ? */
     }
   
@@ -4121,7 +4162,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>  %U<P>", FSWF("formatExample_errorToPattern", "Couldn't convert the pattern [toPattern]"));
-      explainStatus(status, "EXPLORE_NumberPattern");
+      explainStatus_X(status, "EXPLORE_NumberPattern");
       return;
     }
 
@@ -4130,7 +4171,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>%U<P>", FSWF("formatExample_errorOpenDefault", "Couldn't open the default number fmt"));
-      explainStatus(status, "EXPLORE_NumberPattern");
+      explainStatus_X(status, "EXPLORE_NumberPattern");
       return;
     }
   
@@ -4212,7 +4253,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
-      explainStatus(status, "EXPLORE_NumberPattern");
+      explainStatus_X(status, "EXPLORE_NumberPattern");
     }
   else
     {
@@ -4245,7 +4286,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
-      explainStatus(status, "EXPLORE_NumberPattern");
+      explainStatus_X(status, "EXPLORE_NumberPattern");
     }
   else
     {
@@ -4358,7 +4399,7 @@ void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char 
       }
 
       u_fprintf(lx->OUT," </TD><TD BGCOLOR=" kXKeyBGColor "   VALIGN=TOP ALIGN=RIGHT>");
-      explainStatus(showStatus, key);
+      explainStatus_X(showStatus, key);
 }
 
 void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus)
@@ -4544,12 +4585,12 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
   }
 
   /* now, open the file */
-  f = u_finit(stdout, locale, encoding);
+  f = u_finit(lx->fOUT, locale, encoding);
 
   if(!f)
     {
       lx->couldNotOpenEncoding = encoding;
-      f = u_finit(stdout, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
+      f = u_finit(lx->fOUT, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
       if(!f)
       {
           fprintf(stderr, "Could not finit the file.\n");
@@ -4569,138 +4610,9 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
     }
 
 
-  /* --sigh-- FIX FSWF SO IT TAKES A LOCALE!! */
-  uloc_setDefault(lx->cLocale, &status );
-  
+  FSWF_setLocale(lx->cLocale);
 
   return f;
-}
-
-#ifdef WIN32
-const char *ures_getTag(UResourceBundle *n)
-{
-    return ures_getKey(n);
-}
-#endif
-
-void writeFileObject( LXContext *lx, const char *path )
-{
-  UResourceBundle *rb;
-  UErrorCode status = U_ZERO_ERROR;
-  UResourceBundle *n = NULL;
-  UErrorCode s2 = U_ZERO_ERROR;
-
-  rb = ures_open(FSWF_bundlePath(), lx->cLocale, &status);  
-
-  if(U_FAILURE(status))
-  {
-    printf("Content-type: text/html\r\n\r\n");
-    printf("Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
-           lx->cLocale,
-           u_getDataDirectory(),
-           FSWF_bundlePath(),
-           path);
-    printf("Error: %s\n", u_errorName(status));
-    printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
-    return;
-  }
-
-  if(!path || !(*path) || (*path == '/'))
-  {
-
-    printf("Content-type: text/html\r\n\r\n");
-    printf("<html><head><title>bundle list for %s</title></head>\r\n",
-           lx->cLocale);
-    printf("<body>");
-    printf("<h1>%s : %s</h1>\r\n", FSWF_bundlePath(), lx->cLocale);
-    printf("V: %s<p>\n", ures_getVersionNumber(rb));
-    printf("<ul>");
-    while(ures_hasNext(rb) && U_SUCCESS(s2))
-      {
-        s2 = U_ZERO_ERROR;
-        n = ures_getNextResource(rb, n, &s2);
-        printf("<li> ");
-        if(U_FAILURE(s2))
-          {
-            printf(" <B>%s</B>\n", u_errorName(s2));
-          }
-        else
-          {
-            printf("%s :", ures_getTag(n));
-            switch(ures_getType(n))
-              {
-              case RES_NONE: printf("NONE");break;
-              case RES_STRING: printf("STRING"); break;
-              case RES_BINARY: printf("<A HREF=\"./%s\">BINARY</A>", ures_getTag(n)); break;
-              case RES_TABLE: printf("TABLE"); break;
-              case RES_INT: printf("INT=%d", ures_getInt(n, &s2)); break;
-              case RES_ARRAY: printf("ARRAY"); break;
-              case RES_INT_VECTOR: printf("INT VECTOR"); break;
-              case RES_RESERVED: printf("RESERVED"); break;
-              default: printf("unknown %d", ures_getType(n)); break;
-              }
-            printf(" [%d]", ures_getSize(n));
-            printf("\n");
-          }
-      }
-    printf("</UL>");
-    printf("</BODY>");
-    printf("</HTML>");
-    
-/*    exit(0); */
-  }
-  else
-  {
-    const uint8_t *bin= NULL;
-    int32_t len;
-
-    /* have some kind of path*/
-    n = ures_getByKey(rb, path, n, &s2);
-    if(U_FAILURE(s2))
-    {
-      printf("Content-type: text/html\r\n\r\n");
-      printf("Error: Couldn't get [%s] in bundle [%s] in path [%s]<P>\r\n",
-             path,
-             lx->cLocale,
-             u_getDataDirectory());
-      printf("Error: %s\n", u_errorName(s2));
-      printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
-      return;
-    }
-
-
-    bin = ures_getBinary(n, &len, &s2);
-    if(U_FAILURE(s2))
-    {
-      printf("Content-type: text/html\r\n\r\n");
-      printf("Error: Couldn't get binary [%s] in bundle [%s] in path [%s]<P>\r\n",
-             path,
-             lx->cLocale,
-             u_getDataDirectory());
-      printf("Error: %s\n", u_errorName(s2));
-      printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
-      return ;
-    }
-    /* whew! */
-    
-    if(strstr(path, ".html"))
-      printf("Content-type: text/html\r\n");
-    else if(strstr(path, ".gif"))
-      printf("Content-type: image/gif\r\n");
-    else if(strstr(path, ".jpg"))
-      printf("Content-type: image/jpeg\r\n");
-    else
-      printf("Content-type: application/octet-stream\r\n");
-
-    printf("Content-length: %d\r\n", len);
-    printf("\r\n");
-    fflush(stdout);
-    fwrite(bin, 1, len, stdout);
-    printf("\r\n");
-    fflush(stdout);
-  }
-
-  ures_close(n);
 }
 
 
