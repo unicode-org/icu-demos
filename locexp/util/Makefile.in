@@ -77,6 +77,8 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
+-include Makefile.local
+
 all-local: $(ALL_TARGETS)
 
 install-local: all-local install-headers install-library

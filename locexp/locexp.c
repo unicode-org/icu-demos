@@ -27,8 +27,11 @@
 
 void displayLocaleExplorer(LXContext *lx)
 {
-    UErrorCode status = U_ZERO_ERROR;
-    char portStr[100];
+  const char *localeParam;
+  UErrorCode status = U_ZERO_ERROR;
+  char portStr[100];
+  
+  localeParam = queryField(lx, "_");
     
     /* set up the port string */
     {
@@ -93,7 +96,7 @@ void displayLocaleExplorer(LXContext *lx)
 
 
     /* Robot Exclusion */
-    if(strstr(lx->queryString,"PANICDEFAULT") ||  
+    if(hasQueryField(lx,"PANICDEFAULT") ||
        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
     } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
@@ -115,7 +118,17 @@ void displayLocaleExplorer(LXContext *lx)
                      "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
               );
 
-    if(lx->queryString && lx->queryString[0]  && !lx->curLocale && (lx->queryString[0] == '_'))
+
+    {
+      const char *agent;
+      agent = getenv("HTTP_USER_AGENT");
+      if(agent && strstr(agent,"MSIE")) {
+        u_fprintf(lx->OUT, "<i>%U</i><br>\r\n",
+                  FSWF("ieWarning","IE Bug: due to an apparent bug in MSIE, you may have page load errors.  Please simply press the Refresh button in this case."));
+      }
+    }
+
+    if(localeParam && *localeParam && !lx->curLocale && strcmp(lx->curLocaleName,"g7"))
       {
         UChar dispName[1024];
         UErrorCode stat = U_ZERO_ERROR;
@@ -126,7 +139,7 @@ void displayLocaleExplorer(LXContext *lx)
                   FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
       }
     
-    if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] )
+    if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] && strcmp(lx->curLocaleName,"g7"))
       {
         u_fprintf(lx->OUT, "<ul><b>%U</b></ul>\r\n",
                   FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
@@ -134,10 +147,10 @@ void displayLocaleExplorer(LXContext *lx)
 
     if(strstr(lx->queryString,"EXPLORE"))
     {
-      const char *suffix; /* Eventually would like ALL explorers to be able to use this logic */
+      const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
       if(queryField(lx, "EXPLORE_CollationElements")) {
         suffix = "EXPLORE_CollationElements=";
-      }
+      } 
 
       printHelpImg(lx, "display", 
                    FSWF("display_ALT", "Display Problems?"),
@@ -153,30 +166,28 @@ void displayLocaleExplorer(LXContext *lx)
     }
     else
     {
-
-        
-        u_fprintf(lx->OUT, "<table summary=\"%U\" width=100%%><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
-        
-        u_fprintf(lx->OUT, "<font size=+1>");
-        printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
-        u_fprintf(lx->OUT, "</font>");
-        
-        u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
-        
-        printHelpImg(lx, "display", 
-            FSWF("display_ALT", "Display Problems?"),
-            FSWF("display_GIF", "displayproblems.gif"),
-            FSWF("display_OPTIONS", "ALIGN=RIGHT"));
-        
-        u_fprintf(lx->OUT, "\r\n</TD></TR><TR><TD>");
-        
-        printSubLocales(lx, NULL);
-        u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-
-    }        
+      u_fprintf(lx->OUT, "<table summary=\"%U\" width=100%%><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
+      
+      u_fprintf(lx->OUT, "<font size=+1>");
+      printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
+      u_fprintf(lx->OUT, "</font>");
+      
+      u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
+      
+      printHelpImg(lx, "display", 
+                   FSWF("display_ALT", "Display Problems?"),
+                   FSWF("display_GIF", "displayproblems.gif"),
+                   FSWF("display_OPTIONS", "ALIGN=RIGHT"));
+      
+      u_fprintf(lx->OUT, "\r\n</TD></TR><TR><TD>");
+      
+      printSubLocales(lx, NULL);
+      u_fprintf(lx->OUT, "</td></tr></table>\r\n");
+      
+    }
     
     if ( lx->queryString == NULL )
-        lx->queryString = ""; /* for sanity */
+      lx->queryString = ""; /* for sanity */
     
     if( ( (!*lx->queryString)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
         || strstr(lx->queryString, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
@@ -336,7 +347,7 @@ void displayLocaleExplorer(LXContext *lx)
     }
 #endif
     
-    u_fprintf_u(lx->OUT, FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
+    u_fprintf(lx->OUT, "%U",  FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
     
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */

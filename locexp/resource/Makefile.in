@@ -46,8 +46,8 @@ ALLSRC = $(SRC) $(GENSRC)
 RES_SHORT = $(ALLSRC:.txt=.res)
 RES=$(RES_SHORT:%=$(PKG)_%)
 
-# C Source files to extract FSWF strings from.
-FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c
+# C Source files to extract FSWF strings from.  Remove items from here during development to not require a recompile.  
+FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c  ../srchexp.c ../wfobject.c  ../lxsort.c ../lxcgi.c
 
 $(PKG)_%.res : %.txt
 	@echo Rebuilding $@
@@ -60,6 +60,7 @@ distclean distclean-local dist dist-local check check-local res-local
 ## Clear suffix list
 .SUFFIXES :
 
+-include Makefile.local
 
 ## List of standard targets
 all:  Makefile all-local

@@ -196,7 +196,10 @@ void printSubLocales(LXContext *lx, const char *suffix)
   /* look for sublocs */
   if(lx->curLocale && lx->curLocale->nSubLocs)
     {
-      u_fprintf(lx->OUT, "%U<BR><ul>", FSWF("sublocales", "Sublocales:"));
+      u_fprintf(lx->OUT, "%U", FSWF("sublocales", "Sublocales:"));
+      if(!suffix || !*suffix) {
+        u_fprintf(lx->OUT, "<BR><ul>", FSWF("sublocales", "Sublocales:"));
+      } 
       mySort(lx->curLocale, &status, FALSE);  /* Sort sub locales */
       
       for(n=0;n<lx->curLocale->nSubLocs;n++)  {
@@ -226,7 +229,9 @@ void printSubLocales(LXContext *lx, const char *suffix)
         
         if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, "] ");
       }
-      u_fprintf(lx->OUT, "</ul>");
+      if(!suffix || !*suffix) {
+        u_fprintf(lx->OUT, "</ul>");
+      }
     }
   
   /* Look for cousins with the same leaf component */
@@ -256,6 +261,9 @@ void printSubLocales(LXContext *lx, const char *suffix)
         if((count++) > 0) {
           u_fprintf(lx->OUT, ", ");
         } else { /* header */
+          if(suffix && *suffix) { 
+            u_fprintf(lx->OUT, ", ");
+          }
           u_fprintf_u(lx->OUT, 
                       FSWF("otherLanguageSameCountryLocales", "<b>%U</b> under other languages"),
                       lx->curLocale->ustr);

@@ -164,6 +164,9 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
 
 void showExploreSearchForm(LXContext *lx, const UChar *valueString)
 {
+    UChar nulls[] = { 0x0000 } ;
+    if(valueString == NULL) { valueString = nulls; }
+
     u_fprintf(lx->OUT, "<FORM><INPUT TYPE=hidden NAME=_ VALUE=\"%s\">\r\n",
               lx->curLocaleName);
     u_fprintf(lx->OUT, "<INPUT VALUE=\"%U\" NAME=EXPLORE_search> \r\n", valueString);
@@ -179,49 +182,45 @@ extern void showExploreSearch( LXContext *lx)
     UChar valueString[1024];
     UErrorCode status = U_ZERO_ERROR;
     int32_t i;
-    const char *term = "";
+    char *term = "";
     const char *p;
-    char inputChars[1024];
+    char *inputChars = NULL;
     int length;
     int totalHits = 0; /* cumulative - for circuit breaking purposes */
     UStringSearch *search = NULL;
     
-    if((tmp = strstr(lx->queryString, "EXPLORE_search")))
-    {
-        term = (tmp + strlen("EXPLORE_search="));
-    }
+    term = (char*)queryField(lx, "EXPLORE_search");
+
+    if(term) { 
+      length = strlen(term);
     
-    unescapeAndDecodeQueryField_enc(valueString, 1000, term, lx->convRequested);
-    p = strchr(term, '&');
-    if(p) /* there is a terminating ampersand */
-    {
-        length = p - term;
-    }
-    else
-    {
-        length = strlen(term);
-    }
-    
-    if(length > (1024-1))
-    {
+      if(length > (1024-1)) {
         length = 1024-1; /* safety ! */
+        term[1024-1]=0; /* we own the result of term - for now */
+      }
+      
+      unescapeAndDecodeQueryField_enc(valueString, 1000, term, lx->convRequested);
+      inputChars = strdup(term);
+      inputChars[length] = 0;
+      for(i=0;i<length;i++)
+        if(inputChars[i]=='+') inputChars[i]=' ';
+    } else {
+      valueString[0] = 0;
     }
     
-    strncpy(inputChars, term, length); /* make a copy for future use */
-    inputChars[length] = 0;
     
-    for(i=0;i<length;i++)
-        if(inputChars[i]=='+') inputChars[i]=' ';
-    
+
+#if 0    
     if(lx->curLocale == NULL)
     {
         u_fprintf(lx->OUT, "Please click <A HREF=\"?_=root&EXPLORE_search=\">HERE</A>\r\n");
         return;
     }
+#endif
     
     showExploreSearchForm(lx, valueString);
     
-    if(u_strlen(valueString)<=0)
+    if(!valueString || u_strlen(valueString)<=0)
     {
         return;
     }
@@ -255,7 +254,8 @@ extern void showExploreSearch( LXContext *lx)
     u_fprintf_u(lx->OUT, FSWF("EXPLORE_search_searching","Searching for <B>%U</B>..."),
             valueString);
     u_fprintf(lx->OUT, "</I>\r\n<OL>\r\n");
-    doSearch(lx, valueString, lx->curLocale, &totalHits, search);
+
+    doSearch(lx, valueString, lx->curLocale?lx->curLocale:lx->locales, &totalHits, search);
     u_fprintf(lx->OUT, "</OL>\r\n");
             
     if(totalHits == 0) 

@@ -1,8 +1,17 @@
-## Copyright (c) 1999-2000, International Business Machines Corporation and
+## Copyright (c) 1999-2003, International Business Machines Corporation and
 ## others. All Rights Reserved.
 
 LOCALE EXPLORER  :  by Steven R. Loomis, IBM
 -------------------------
+TODO 8/15/2003 
+  Sort
+    * get sample data from locale  - use some long week names, translate langauge's own name, etc.
+    * fix G7
+
+  
+
+
+-------
 
 [ * NEW: see the section on HINDI/SYRIAC and TRANSLITERATION at the bottom ]
 
@@ -202,11 +211,6 @@ A couple of design points -  #1, want to do any-any transliteration, #2 need to 
                 (buffer pool mgmt) 
 
  Then, we could evne transliterate Latin-Cyrillic [ex].. because no HTML tags would be transliterated.. 
-
-==========
-Todo: 
-   * generalized URL parse!
-   * POST data - esp for sorting!
 
 ===========
 J1047

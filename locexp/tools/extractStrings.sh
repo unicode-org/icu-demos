@@ -43,13 +43,6 @@ echo
 fgrep -h 'FSWF("' $* | sed -e 's%.*FSWF("\([^"]*\)",[ ]*"\([^"]*\)".*%   \1  {  "\2"  }%' | sort | uniq
 echo 
 echo "// Special Cases"
-if [ -f root_head.html ]; then
-    emitResourceFromFile.sh htmlHEAD iso-8859-1 root_head.html || exit 1
-fi
-
-if [ -f root_tail.html ]; then
-    emitResourceFromFile.sh htmlTAIL iso-8859-1 root_tail.html || exit 1
-fi
 echo
 if [ -f root.txt.inc ]; then
     echo

@@ -153,16 +153,17 @@ void showOneLocale(LXContext *lx)
     }
     else if (strstr(b, "EXPLORE_CollationElements"))
     {
+#if 0
         showKeyAndStartItem(lx, "EXPLORE_CollationElements", 
                             FSWF("EXPLORE_CollationElements", "Collation (sorting) Example"),
                             locale,
                             FALSE,
                             U_ZERO_ERROR);
+#endif
 
-        u_fprintf(lx->OUT, "%U<P>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
         showSort(lx, locale);
-      
-        u_fprintf(lx->OUT, "</TD>");
+        
+        u_fprintf(lx->OUT, "<table width=100%%><tr>\r\n"); 
 
         u_fprintf(lx->OUT, "<TD VALIGN=TOP ALIGN=RIGHT>");
         printHelpTag(lx, "EXPLORE_CollationElements", NULL);

@@ -281,7 +281,7 @@ void printStatusTable(LXContext *lx)
 
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"%s/en/iso-8859-1/?PANICDEFAULT\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
+        u_fprintf(lx->OUT, "<a href=\"%s/en/iso-8859-1/?PANICDEFAULT=yes\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
     }
 
     u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */
