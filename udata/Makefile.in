@@ -61,6 +61,7 @@ install-local: all-local install-headers install-library generate-data install-d
 
 install-library: all-local
 	$(mkinstalldirs) $(libdir)
+	-rm -f $(libdir)/$(LIB_TARGET)
 	$(INSTALL) $(LIB_TARGET) $(libdir)/$(LIB_TARGET)
 
 
@@ -79,17 +80,18 @@ UNICODEDATA=$(ICUDATADIR)/UnicodeData-3.0.0.txt
 #################################################
 #################################################
 #           Begin data format choice
+################# MMAP VERSION #############
 #CPPFLAGS += -DUDATA_MAP=1
+#install-data:
 
 ################# DLL version #############
 CPPFLAGS += -DUDATA_DLL=1 -DUDATA_SO_SUFFIX=\".$(SO)\"
 LDFLAGS += -ldl
 
 install-data: libicudata.$(SO)
-	$(INSTALL) libicudata.$(SO) $(libdir)/$(LIB_TARGET)
+	$(INSTALL) libicudata.$(SO) $(libdir)/libicudata.$(SO)
 
 libicudata.$(SO): $(ICUDATADIR)/unames.dat ./genccode
-	-rm -f $(ICUDATADIR)/*.c
 	@for file in `ls $(ICUDATADIR)/*.dat`; do \
 	  echo genccode $$file; \
 	  ./genccode $$file; \
