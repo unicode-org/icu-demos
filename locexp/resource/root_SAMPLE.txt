@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c on Thu Jun  3 16:37:44 PDT 2004 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -211,10 +211,10 @@ root {
    localeDataLanguage  {  "No region is specified, so the data is generic to this language."  }
    localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
    localeList_Calendar  {  "Calendars"  }
-   localeList_Clear  {  "(clear)"  }
    localeList_Collation  {  "Collation"  }
    localeList_Currency  {  "Currency"  }
    localeList_Locale  {  "Languages"  }
+   localeList_None  {  "(none)"  }
    localeList_Sublocale  {  "Regions"  }
    locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
    locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported."  }
