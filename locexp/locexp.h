@@ -129,6 +129,7 @@ typedef struct
   double   longitude;
   const UChar          *timeZone;
   UChar displayName[1024];        /* Cache of current language display name */
+  UBool   noBug;                  /* Set to True to disable bug report form */ 
   
   /* current locale's default calendar */
   char             defaultCalendar[1024];

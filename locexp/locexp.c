@@ -156,19 +156,23 @@ void displayLocaleExplorer(LXContext *lx)
           UErrorCode stat = U_ZERO_ERROR;
           dispName[0] = 0;
           uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
-          
-          u_fprintf(lx->OUT, "<blockquote><b>%S [%S]</b></blockquote>\r\n",
-                    FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
-        }
-      
-    if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] && strcmp(lx->curLocaleName,"g7"))
-      {
-        u_fprintf(lx->OUT, "<blockquote><b>%S</b></blockquote>\r\n",
-                  FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
+          lx->noBug = TRUE; /* hide bug form */
+          u_fprintf(lx->OUT, "<blockquote><b>%S [%S]</b> \r\n",
+                    FSWF("warningInheritedLocale", "Note: You're viewing a locale that does not have verified data . ICU will support this with inherited information, but that information is not verified to be correct."), dispName);
+        } else if(lx->curLocaleName[0] &&
+         isExperimentalLocale(lx->curLocaleName) && 
+         strcmp(lx->curLocaleName,"g7")) {
+        lx->noBug = TRUE;
+        u_fprintf(lx->OUT, "<blockquote><b>%S</b>\r\n",
+                  FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation. &nbsp;"  ));
       }
-
-    if(strstr(lx->queryString,"EXPLORE"))
-    {
+      
+      if(lx->noBug) {
+        u_fprintf(lx->OUT, "<br><FONT COLOR=red><b>%S</b></FONT></blockquote>",
+                  FSWF("warningNoBug", "Please do not file bugs against this locale."));
+      }
+      
+   if(strstr(lx->queryString,"EXPLORE")) {
       const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
 
       u_fprintf(lx->OUT, "<font size=\"+1\">");
@@ -230,9 +234,9 @@ void displayLocaleExplorer(LXContext *lx)
       u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
       chooseLocale(lx, TRUE, (char*)lx->dispLocale, "", !strcmp(lx->section,"ka"));
     } else if (hasQueryField(lx,"converter")) {  /* ?converter */
-        char *restored;
+      const char *restored;
         
-        restored = queryField(lx, "ox");
+      restored = queryField(lx, "ox");
         
         /*
         if(lx->setEncoding)
@@ -461,20 +465,22 @@ const char *getLXBaseURL(LXContext* lx, uint32_t o) {
     strcat(lx->myURL, lx->section);
     strcat(lx->myURL, "&");
   }
-  if(!(o&kNO_COLL) && lx->curLocaleBlob.collation[0]) {
-    strcat(lx->myURL, "collation=");
-    strcat(lx->myURL, lx->curLocaleBlob.collation);
-    strcat(lx->myURL, "&");
-  }
-  if(!(o&kNO_CAL) && lx->curLocaleBlob.calendar[0]) {
-    strcat(lx->myURL, "calendar=");
-    strcat(lx->myURL, lx->curLocaleBlob.calendar);
-    strcat(lx->myURL, "&");
-  }
-  if(!(o&kNO_CURR) && lx->curLocaleBlob.currency[0]) {
-    strcat(lx->myURL, "currency=");
-    strcat(lx->myURL, lx->curLocaleBlob.currency);
-    strcat(lx->myURL, "&");
+  if(!(o&kNO_LOC)) {
+    if(!(o&kNO_COLL) && lx->curLocaleBlob.collation[0]) {
+      strcat(lx->myURL, "collation=");
+      strcat(lx->myURL, lx->curLocaleBlob.collation);
+      strcat(lx->myURL, "&");
+    }
+    if(!(o&kNO_CAL) && lx->curLocaleBlob.calendar[0]) {
+      strcat(lx->myURL, "calendar=");
+      strcat(lx->myURL, lx->curLocaleBlob.calendar);
+      strcat(lx->myURL, "&");
+    }
+    if(!(o&kNO_CURR) && lx->curLocaleBlob.currency[0]) {
+      strcat(lx->myURL, "currency=");
+      strcat(lx->myURL, lx->curLocaleBlob.currency);
+      strcat(lx->myURL, "&");
+    }
   }
   if(lx->myURL[strlen(lx->myURL)-1]=='&') {
     lx->myURL[strlen(lx->myURL)-1]=0;

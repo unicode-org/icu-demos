@@ -101,6 +101,9 @@ U_CAPI void destroyLocaleTree(MySortable *d);
 U_CAPI MySortable *findLocale(MySortable *root, const char *locale);
 
 
+U_CAPI void resetSortsInTheirLocales(MySortable *s, UErrorCode *status, UBool recurse);
+
+
 /**
  * create a MySortable list of regions (2nd level entries) - simply aliases into another 
  * locale tree

@@ -173,7 +173,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
                     if(*comps == '&')
                     {
-                        u_fprintf(lx->OUT, "<P>");
+                        u_fprintf(lx->OUT, "<P>&amp;");
                     }
                     else if(*comps == '<')
                     {
@@ -1309,12 +1309,17 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
         u_fprintf(lx->OUT, "<th>%S", stuff[i].title);
-        if(strcmp(type,"format") &&
+        if((strcmp(type,"format")||(i==0)) &&
            !strcmp(ures_getLocaleByType(stuff[i].bund,ULOC_ACTUAL_LOCALE,&status),"root") &&
            (!lx->curLocaleName[0]||strcmp(lx->curLocaleName,"root"))) {
           UChar tmp[2048]; /* FSWF is not threadsafe. Use a buffer */
           u_fprintf(lx->OUT, "<br>");
-          u_sprintf(tmp, "%S type",  FSWF("Calendar_type_format", "Formatting"));
+          if(strcmp(type,"format")) {
+            u_sprintf(tmp, "%S type",  FSWF("Calendar_type_format", "Formatting"));
+          } else if(i==0) {
+            /* narrow (0) inherits from abbreviated (1) */
+            u_strcpy(tmp, stuff[1].title);
+          }
           u_fprintf_u(lx->OUT, FSWF(/**/"inherited_from", "from: %S"), tmp);
           stuff[i].count=0;
         } if(stuff[i].isDefault) {

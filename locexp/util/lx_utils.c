@@ -1,4 +1,4 @@
-/**********************************************************************
+ /**********************************************************************
 *   Copyright (C) 1999, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
@@ -329,6 +329,81 @@ int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen)
    ===================================== MySortable stuff follows ==========
 */
 
+void setDisplayText( MySortable *s, const char *inLocale, UErrorCode *status) {
+  int32_t siz;
+  /* if( (status=U_ZERO_ERROR),(siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, status)) &&
+     (siz > 1) ) {
+     s->ustr = malloc((siz+2) * sizeof(UChar));
+     ((UChar*)(s->ustr))[0] = 0;
+     status = U_ZERO_ERROR;
+     uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, status );
+     s->ustr[siz]=0;
+     } else
+  */
+  if( (*status=U_ZERO_ERROR),(siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, status))  &&
+      (siz > 1) ) {
+    int32_t vLen = 0;
+    *status = U_ZERO_ERROR;
+    vLen = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, status);
+    if(vLen) {
+      vLen += 4;
+    }
+    s->ustr = malloc((siz+vLen+2) * sizeof(UChar));
+    ((UChar*)(s->ustr))[0] = 0;
+    *status = U_ZERO_ERROR;
+    uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, status );
+    if(vLen) {
+      int32_t nsiz = 0;
+      s->ustr[siz++] = (UChar)' ';
+      s->ustr[siz++] = (UChar)'(';
+      nsiz = uloc_getDisplayVariant(s->str, inLocale, (UChar*)(s->ustr + siz), vLen-3, status);
+      siz += nsiz;
+      s->ustr[siz++] = (UChar)')';
+    }
+    s->ustr[siz++] = (UChar)0;
+  } else if((*status=U_ZERO_ERROR),(siz == 0) && inLocale[0] == '_') {
+    s->ustr = malloc(2*2);
+    s->ustr[0] = '-';
+    s->ustr[1] = 0;
+  } else {
+    int32_t len;
+    *status = U_ZERO_ERROR;
+    if((siz = uloc_getDisplayName( s->str, inLocale, NULL, 0, status)) >1) {
+      /*       int32_t len, scriptLen; */
+      UChar *aStr; 
+      /*       if((scriptLen=uloc_getScript(s->str, NULL, 0, status))>0) { */
+      /*         siz += uloc_getDisplayScript(s->str, inLocale, NULL, 0, status) + 3; */
+      /*       } */
+      aStr = s->ustr = malloc((siz+2) *sizeof(UChar)); 
+      /*       ((UChar*)(s->ustr))[0] = 0; */
+      *status = U_ZERO_ERROR;
+      len = uloc_getDisplayName( s->str, inLocale, (UChar*)(s->ustr), siz, status );
+      /*       if(U_SUCCESS(status) && scriptLen) { */
+      /*         aStr[len]=(UChar)' '; */
+      /*               len++; */
+      /*               aStr[len]=(UChar)'['; */
+      /*               len++; */
+      /*               len += uloc_getDisplayScript ( s->str, inLocale, aStr+len, siz, status); */
+      /*               aStr[len]=(UChar)']'; */
+      /*               len++; */
+      /*       } */
+      aStr[len]=0;
+      len++;
+    }
+  }
+}
+
+void resetSortsInTheirLocales(MySortable *s, UErrorCode *status, UBool recurse)
+{
+  int32_t n;
+  for(n=0;n<s->nSubLocs;n++) {
+    if(recurse) {
+      resetSortsInTheirLocales(s->subLocs[n], status, recurse);
+    }
+    setDisplayText(s->subLocs[n], s->subLocs[n]->str, status);
+  }
+}
+
 /** 
  * Initialize a MySortable with the specified locale. Will reset all fields.
  * TODO: limit displayname to just a part (root -> English -> United States -> California, instead of   .... -> English (United States) -> ... 
@@ -341,76 +416,14 @@ int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen)
 void initSortable(MySortable *s, const char *locid, const char *inLocale, MySortable *parent)
 {
     UErrorCode status = U_ZERO_ERROR;
-    int32_t siz;
     s->str = strdup(locid);
     s->ustr=0;
 
  /*
   * Now, we want to print the 'most leaf' string.. 
   */
-   
-    status = U_ZERO_ERROR; /* check for variant */
-    
-    /* if( (status=U_ZERO_ERROR),(siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
-       (siz > 1) ) {
-       s->ustr = malloc((siz+2) * sizeof(UChar));
-       ((UChar*)(s->ustr))[0] = 0;
-       status = U_ZERO_ERROR;
-       uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-       s->ustr[siz]=0;
-    } else
-    */
-    if( (status=U_ZERO_ERROR),(siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
-               (siz > 1) ) {
-      int32_t vLen = 0;
-      status = U_ZERO_ERROR;
-      vLen = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status);
-      if(vLen) {
-        vLen += 4;
-      }
-      s->ustr = malloc((siz+vLen+2) * sizeof(UChar));
-      ((UChar*)(s->ustr))[0] = 0;
-      status = U_ZERO_ERROR;
-      uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-      if(vLen) {
-        int32_t nsiz = 0;
-        s->ustr[siz++] = (UChar)' ';
-        s->ustr[siz++] = (UChar)'(';
-        nsiz = uloc_getDisplayVariant(s->str, inLocale, (UChar*)(s->ustr + siz), vLen-3, &status);
-        siz += nsiz;
-        s->ustr[siz++] = (UChar)')';
-      }
-      s->ustr[siz++] = (UChar)0;
-    } else if((status=U_ZERO_ERROR),(siz == 0) && inLocale[0] == '_') {
-      s->ustr = malloc(2*2);
-      s->ustr[0] = '-';
-      s->ustr[1] = 0;
-    } else {
-      int32_t len;
-      status = U_ZERO_ERROR;
-      if((siz = uloc_getDisplayName( s->str, inLocale, NULL, 0, &status)) >1) {
-/*       int32_t len, scriptLen; */
-        UChar *aStr; 
-/*       if((scriptLen=uloc_getScript(s->str, NULL, 0, &status))>0) { */
-/*         siz += uloc_getDisplayScript(s->str, inLocale, NULL, 0, &status) + 3; */
-/*       } */
-        aStr = s->ustr = malloc((siz+2) *sizeof(UChar)); 
-/*       ((UChar*)(s->ustr))[0] = 0; */
-        status = U_ZERO_ERROR;
-        len = uloc_getDisplayName( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-/*       if(U_SUCCESS(status) && scriptLen) { */
-/*         aStr[len]=(UChar)' '; */
-/*               len++; */
-/*               aStr[len]=(UChar)'['; */
-/*               len++; */
-/*               len += uloc_getDisplayScript ( s->str, inLocale, aStr+len, siz, &status); */
-/*               aStr[len]=(UChar)']'; */
-/*               len++; */
-/*       } */
-        aStr[len]=0;
-        len++;
-      }
-    }
+    setDisplayText(s, inLocale, &status);
+
     s->subLocs = 0;
     s->nSubLocs = 0;
     s->parent = parent;

@@ -53,7 +53,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
             u_fprintf(lx->OUT, "(%d - %s)", (int) status,
                       u_errorName(status));
 #ifdef SRL_DEBUG
-            fprintf(stderr,"LRB: caught Unknown err- %d %s\n", status, u_errorName(status)); 
+            fprintf(stderr,"locexp: caught Unknown err- %d %s\n", status, u_errorName(status)); 
 #endif
 	}
     }
@@ -367,28 +367,33 @@ void printStatusTable(LXContext *lx)
 
     if(lx->curLocaleName[0]) {
       u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%S</A>", 
-                lx->curLocaleName,
+                lx->curLocaleBlob.base,
                 FSWF("sourceFile", "View Locale Source"));
      
-      if(!isExperimentalLocale(lx->curLocaleName)) {
-      u_fprintf(lx->OUT, " &nbsp; ");
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/xml/%s.xml\">%S</A>", 
-                lx->curLocaleName,
+      if(!isExperimentalLocale(lx->curLocaleName) && !lx->noBug) {
+        u_fprintf(lx->OUT, " &nbsp; ");
+        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/xml/%s.xml\">%S</A>", 
+                  lx->curLocaleBlob.base,
                 FSWF("XMLsource", "XML Source"));
       
       u_fprintf(lx->OUT, " &nbsp; ");
 
       u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/all_diff_xml/%s.html\">%S</A>", 
-                lx->curLocaleName,
+                lx->curLocaleBlob.base,
                 FSWF("XMLcomp", "Compare"));
       u_fprintf(lx->OUT, " &nbsp; ");
 
       }
-}
- u_fprintf(lx->OUT," &nbsp; ");
+    }
+    u_fprintf(lx->OUT," &nbsp; ");
     
-    u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%S</A>",
-              FSWF("poweredby_filebug", "File a bug"));
+    if(!lx->noBug) {
+      u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%S</A>",
+                FSWF("poweredby_filebug", "File a bug"));
+    } else {
+      u_fprintf(lx->OUT, "<FONT size=-2 COLOR=red><b>%S</b></FONT>",
+          FSWF("warningNoBug", "Please do not file bugs against this locale."));
+    }
     
     u_fprintf(lx->OUT, "</center><p>\r\n");
 
@@ -509,7 +514,7 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
     fprintf(lx->fOUT, "<TITLE>ICU LocaleExplorer: Error</TITLE>\r\n");
     fprintf(lx->fOUT, "<H1>ICU LocaleExplorer: Error</H1>\r\n");
     fprintf(lx->fOUT, "<dd>An error of type %d occured while trying to %s.</dd><HR><P>\r\n",err,what);
-    fprintf(stderr, "listrb: err %d trying to %s\n",err,what);
+    fprintf(stderr, "locexp: err %d trying to %s\n",err,what);
     fprintf(lx->fOUT, "You can try <A HREF=\"%s\">starting over</A>, or complain to srl.<P>\r\n",
             lx->scriptName);
     fflush(lx->fOUT);
@@ -666,16 +671,13 @@ void printChangeKeyword(LXContext *lx, const char *locale, const char *prefix,
     if(valBuf[0]) {
       u_fprintf(lx->OUT, "%S",  valBuf);
     } else {
-      u_fprintf(lx->OUT, "%S", FSWF("localeList_None", "(none)"));
+      u_fprintf(lx->OUT, "%S", FSWF("localeList_Default", "(default)"));
     }
     u_fprintf(lx->OUT, "</a>");
 }
 
 void printChangeA(LXContext *lx, const char *locale, const char *prefix)
 {
-  int32_t n;
-  UErrorCode status = U_ZERO_ERROR;
-
   u_fprintf(lx->OUT, "<table border=3><tr>\r\n");
   u_fprintf(lx->OUT, "<td>%s%S%s<br/>", LX_FSECTION_START, FSWF("LocaleCodes_Language", "Language"), LX_FSECTION_END);
   u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
@@ -736,6 +738,9 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
       int32_t i, j;
       /* see which languages have this region*/
       couldBold = TRUE;
+#if defined (LX_DEBUG)
+      fprintf(stderr, "rLocale = %s\n", lx->rLocale->str);
+#endif
       for(i=0;!doBold&&i<lx->locales->nSubLocs;i++) {
         if(!strcmp(str, lx->locales->subLocs[i]->str)) {
           for(j=0;!doBold&&j<lx->locales->subLocs[i]->nSubLocs;j++) {
@@ -759,8 +764,8 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
   case 'r':
     if((!prefix||(*prefix!='d')) && (lx->lLocale)) {
       const MySortable *m;
-      UErrorCode status2 =  U_ZERO_ERROR;
-      int32_t i,j;
+
+      int32_t i;
       char r1[200];
       char *rx;
       strcpy(r1,str);
@@ -825,8 +830,8 @@ static void endCell(LXContext *lx)
 
 
 void showKeywordMenu(LXContext *lx, const char *e, const char *kwVal, int32_t *n, const char *myURL, const char *prefix, char part, UErrorCode *status) {
-  char funcE[129];
-  char funcL[129];
+
+
   UEnumeration *en;
   const char *s;
 
@@ -841,7 +846,7 @@ void showKeywordMenu(LXContext *lx, const char *e, const char *kwVal, int32_t *n
   } else  {
     en = ures_getKeywordValues( "ICUDATA", e, status);
   }
-  while(s = uenum_next(en, NULL, status)) {
+  while((s = uenum_next(en, NULL, status))) {
     UChar u[1024];
     char floc[345];
     sprintf(floc, "@%s=%s", e, s);
@@ -899,6 +904,11 @@ void showChangePage(LXContext *lx)
   strcat(myURL, oxStr);
   switch (part) {
   case 'l':
+    if(isDisp) {
+      resetSortsInTheirLocales(lx->locales, &status, FALSE);
+    }
+
+    mySort(lx->locales, &status, FALSE); /* sort top level */
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Locale", "Languages"));
     startCell(lx);
     printCell(lx, myURL, prefix, part, "root", lx->locales->ustr, n, b->l);  /* Language doesn't need a 'none' - use root */
@@ -917,6 +927,7 @@ void showChangePage(LXContext *lx)
   case 'r':
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Sublocale", "Regions"));
     startCell(lx);
+    mySort(lx->regions, &status, FALSE); /* need the whole thing sorted */
     for(n=0;n<lx->regions->nSubLocs;n++) {
       int32_t len, len2; 
       char rgn[128];
@@ -943,7 +954,7 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Calendar", "Calendars"));
     startCell(lx);
     showKeywordMenu(lx, "calendar", b->calendar, &n, myURL, prefix, part, &status);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->calendar);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->calendar);
     endCell(lx);
     break;
 
@@ -951,7 +962,7 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Collation", "Collation"));
     startCell(lx);
     showKeywordMenu(lx, "collation", b->collation, &n, myURL, prefix, part, &status);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->collation);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->collation);
     endCell(lx);
     break;
 
@@ -959,7 +970,7 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Currency", "Currency"));
     startCell(lx);
     showKeywordMenu(lx, "currency", b->currency, &n, myURL, prefix, part, &status);
-    printCell(lx, myURL, prefix, part, "", FSWF("localeList_None", "(none)"), n, b->currency);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->currency);
     endCell(lx);
     break;
 

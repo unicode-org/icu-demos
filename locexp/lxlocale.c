@@ -455,7 +455,7 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
 
 void setupLocaleTree(LXContext *lx)
 {
-  const char *loc = lx->curLocaleName;
+  const char *loc = lx->curLocaleBlob.base;
 
   /* setup base locale */
   lx->locales = createLocaleTree(lx->dispLocale, &lx->numLocales);
@@ -469,7 +469,7 @@ void setupLocaleTree(LXContext *lx)
       if(lx->parLocale == lx->locales) {
         /* locale is a Language */
         lx->lLocale = lx->curLocale;
-      } else {
+      } else if(lx->curLocale != lx->locales) { /* if it's not root.. */
         /* locale is a region */
         lx->rLocale = lx->curLocale;
         lx->lLocale = lx->rLocale->parent;
