@@ -4,7 +4,7 @@
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
- * Steven R. Loomis <srl@monkey.sbay.org>
+ * Steven R. Loomis <srl@jtcsv.com>
  *
  * Main file for usort. Gives a simple 
  *   command line interface.
@@ -17,11 +17,6 @@
 
 #include <stdlib.h>
 
-
-#ifdef WIN32
-#include <fcntl.h>
-#include <io.h>
-#endif
 
 void usage(const char *pname, const char *msg)
 {
@@ -40,11 +35,13 @@ void usage(const char *pname, const char *msg)
   fprintf(stderr, "\n\t-D               \n\t\tUse Decomposition iterator\n");
 #endif
 
+  fprintf(stderr, "\n\t-F codepage      \n\t\tSet the input codepage\n");
+  fprintf(stderr, "\n\t-T codepage      \n\t\tSet the output codepage\n");
   fprintf(stderr, "\n\t-L locale        \n\t\tSet the locale to 'locale'\n");
   fprintf(stderr, "\n\t-1, -2, -3, -I   \n\t\tSet the collation strength to \n\t\tprimary, secondary, tertiary, or identical (respectively)\n");
   fprintf(stderr, "\n");
-  fprintf(stderr, "Locale sensitive sort, (c) 1999 IBM, Inc. Uses ICU.\n");
-  fprintf(stderr, "http://www.alphaWorks.ibm.com/tech/icu\n");
+  fprintf(stderr, "Locale sensitive sort, (c) 1999-2003 IBM, Inc. Uses ICU.\n");
+  fprintf(stderr, "http://oss.software.ibm.com/icu/\n");
   exit(-1);
 }
 
@@ -53,6 +50,7 @@ int main(int argc, const char *argv[])
   char tmp[200];
   /* fetch the options */
   int i;
+  int verbose = 0;
   UErrorCode status = U_ZERO_ERROR;
   UConverter *fromConverter = NULL, *toConverter = NULL;
   const char *fromCodepage;
@@ -61,14 +59,14 @@ int main(int argc, const char *argv[])
   UBool useDecompose = FALSE, escapeMode = FALSE;
   USort      *list = NULL;
   UCollationStrength strength = UCOL_DEFAULT_STRENGTH;
-  fromCodepage = getenv("ICU_ENCODING");
+
+  fromCodepage = ucnv_getDefaultName();
+
   if(!fromCodepage) {
     fromCodepage = "latin-1";
   }
   
   toCodepage = fromCodepage;
-
-  ucnv_setDefaultName(fromCodepage); /* sets OUTPUT codepage */
 
   for(i=1;i<argc;i++)
     {
@@ -85,11 +83,16 @@ int main(int argc, const char *argv[])
 	      break;
 #endif
 	      
-	    case 'T':
+ 	    case 'T':
 	      i++;
 	      toCodepage = argv[i];
 	      break;
-	      
+
+    	case 'F':
+	      i++;
+	      fromCodepage = argv[i];
+	      break;
+
 	    case 'e':
 	      escapeMode = TRUE;
 	      break;
@@ -109,6 +112,10 @@ int main(int argc, const char *argv[])
 	    case 'I':
 	      strength = UCOL_IDENTICAL;
 	      break;
+
+        case 'v':
+          verbose = 1;
+          break;
 
 	    case 'L':
 	      i++;
@@ -135,6 +142,8 @@ int main(int argc, const char *argv[])
 	}
     }
 
+  ucnv_setDefaultName(fromCodepage); /* sets OUTPUT codepage */
+
   /***   Options loaded. Now, set up some data */
 
 
@@ -145,7 +154,8 @@ int main(int argc, const char *argv[])
       fprintf(stderr,"Couldn't open sortlist: %d\n", status);
       abort();
     }
-  
+ 
+  if(verbose) fprintf(stderr, "Opening from converter %s\n",fromCodepage);
   fromConverter = ucnv_open(fromCodepage, &status);
 
   if(U_FAILURE(status))
@@ -154,6 +164,7 @@ int main(int argc, const char *argv[])
       abort();
     }
 
+  if(verbose) fprintf(stderr, "Opening 'to' converter %s\n",toCodepage);
   toConverter = ucnv_open(toCodepage, &status);
 
   if(U_FAILURE(status))
@@ -163,14 +174,6 @@ int main(int argc, const char *argv[])
     }
   
   /***     Load the data */
-
-#ifdef WIN32
-  if( setmode( fileno ( stdin ), O_BINARY ) == -1 ) {
-          perror ( "Cannot set stdin to binary mode" );
-          exit(-1);
-  }
-#endif
-
 
   /* For now only load the data from the stdin */
   usort_addLinesFromFILE( list, NULL, fromConverter, TRUE );

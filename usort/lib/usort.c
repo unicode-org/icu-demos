@@ -28,6 +28,11 @@
 #include <io.h>
 #endif
 
+#ifdef WIN32
+#include <fcntl.h>
+#include <io.h>
+#endif
+
 #ifdef SDEBUG
 
 #define BUF_SIZE 128
@@ -311,6 +316,14 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
 	 int32_t totalReadCount = 0;
          UChar *p;
 
+         
+#ifdef WIN32
+  if( setmode( fileno ( stdin ), O_BINARY ) == -1 ) {
+          perror ( "Cannot set stdin to binary mode" );
+          exit(-1);
+  }
+#endif
+
   if(fromConverter == NULL)
     {
       newConverter = ucnv_open(NULL, &status);
@@ -350,7 +363,11 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
       while(readData < inBufEnd) /* more space in the inbuf */
 	{
 	  readCount = fread((char*)readData,sizeof(char), inBufEnd - readData, f);
-	  readData += readCount;
+#ifdef SDEBUG
+      fprintf(stderr, "[%d/%d:%c]", readCount, inBufEnd-readData, feof(f)?'Y':'N'
+          );
+#endif
+      readData += readCount;
 	  if(feof(f))
 	    break; /* won't get filled. */
 	}
