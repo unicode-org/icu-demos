@@ -284,28 +284,15 @@ void
 void printBasicBlockInfo(UChar32 theChar)
 {
   char  theString[100];
-  UChar chars[5];
+  UChar chars[20];
   UErrorCode status = U_ZERO_ERROR;
   int offset = 0;
 
-  /* UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar); */
-/*  chars[offset] = 0; */
-  u_fprintf(gOut, "%K", theChar);
-/*  up_u2c(theString, chars, offset, &status); */
+  UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar); 
+  chars[offset] = 0; 
+  u_fprintf(gOut, "%U", chars);
+  u_fflush(gOut);
 
-  if(status == U_USING_FALLBACK_ERROR)
-    {
-      u_fprintf(gOut, "<FONT COLOR=\"#00DD00\"><I>");
-      anyDecompose = TRUE;
-    }
-  /*  fprintf(stderr, "%d", status); */
-
-  u_fprintf(gOut, "%s", "<FONT SIZE=+1>");
-  u_fprintf(gOut, "%s", theString);
-
-  if(status == U_USING_FALLBACK_ERROR)
-      u_fprintf(gOut, "</I></FONT>");
-  u_fprintf(gOut, "%s", "</FONT>");
 }
 
 
@@ -853,9 +840,9 @@ main(int argc,
 	      u_fprintf(gOut, "<TD><B><TT>%X</TT></B></TD>", r);
 	    }
 	}
-	printf("</TR>");
-	printf("<TR><TD COLSPAN=18 ALIGN=CENTER><I>Click on a column number to zoom in.</I></TD></TR>\r\n");
-	printf("</TABLE></TT>");
+	u_fprintf(gOut, "</TR>");
+	u_fprintf(gOut, "<TR><TD COLSPAN=18 ALIGN=CENTER><I>Click on a column number to zoom in.</I></TD></TR>\r\n");
+	u_fprintf(gOut, "</TABLE></TT>");
       u_fprintf(gOut, "<HR>\r\n");
       if(block <= 0xFFFF)
         {
@@ -1414,7 +1401,7 @@ void showSearchMenu(UChar32 startFrom)
     {
       u_fprintf(gOut, "  <OPTION ");
       if(i == gSearchBlock)
-	printf(" SELECTED ");
+	u_fprintf(gOut, " SELECTED ");
       u_fprintf(gOut, " VALUE=\"%d\">", i);
       printBlock(i);
       u_fprintf(gOut, "\r\n");
@@ -1431,7 +1418,7 @@ void showSearchMenu(UChar32 startFrom)
     {
       u_fprintf(gOut, "  <OPTION ");
       if(i == gSearchType)
-	printf(" SELECTED ");
+	u_fprintf(gOut, " SELECTED ");
       u_fprintf(gOut, " VALUE=\"%d\">", i);
       printType(i);
       u_fprintf(gOut, "\r\n");
