@@ -7,6 +7,8 @@
 #ifdef _WIN32
   #include <direct.h>
   #define getcwd _getcwd
+#else
+  #include <unistd.h>
 #endif
 
 extern "C" char **getcgivars();
