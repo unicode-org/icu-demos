@@ -30,6 +30,7 @@ U_CFUNC char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH];
 U_CFUNC char gStartBytes[MAX_BYTE_SIZE];
 U_CFUNC UHashtable *gStandardsSelected;
 U_CFUNC const char *gScriptName;
+U_CFUNC UBool gShowUnicodeSet;
 
 #define OPTION_SEPARATOR    '&' 
 #define VALUE_SEPARATOR     '='

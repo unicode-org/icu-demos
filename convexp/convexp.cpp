@@ -18,8 +18,14 @@
 *
 */
 
+/*
+TODO:
+* Escape and unescape the converter name where needed (e.g. iscii,version=1)
+
+*/
 #include "unicode/ucnv.h"
 #include "unicode/ustring.h"
+#include "unicode/uset.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -37,9 +43,10 @@ static const char htmlHeader[]=
     "<meta name=\"robots\" content=\"nofollow\">\n"
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
     "<style type=\"text/css\">\n"
+    "p.value {font-family: monospace;}\n"
     "th {white-space: nowrap; background-color: #EEEEEE; text-align: left;}\n"
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
-    "td {white-space: nowrap;}\n"
+    "td.alias {white-space: nowrap;}\n"
     "td.value {font-family: monospace;}\n"
     "td.reserved {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
     "td.continue {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
@@ -326,12 +333,16 @@ static UBool isASCIIcompatible(UConverter *cnv) {
 
 static void printConverterInfo(UErrorCode *status) {
     char buffer[64];    // It would be insane if it were lager than 64 bytes
+    UChar *patBuffer;
+    char *patBufferUTF8;
     UBool starterBufferBool[256];
     UBool ambiguousAlias = FALSE;
     char starterBuffer[sizeof(starterBufferBool)+1];    // Add one for the NULL
     int8_t len;
+    int32_t patLen;
     UConverter *cnv = ucnv_open(gCurrConverter, status);
     UConverterType convType;
+    UErrorCode myStatus = U_ZERO_ERROR;
 
     puts("<h2>Information About This Converter</h2>");
     if (U_FAILURE(*status)) {
@@ -358,7 +369,6 @@ static void printConverterInfo(UErrorCode *status) {
     printf("</td></tr>\n");
 
     if (ucnv_getType(cnv) == UCNV_MBCS) {
-        UErrorCode myStatus = U_ZERO_ERROR;
         printf("<tr><th>Starter bytes</th><td class=\"value\">");
         ucnv_getStarters(cnv, starterBufferBool, &myStatus);
         starterBuffer[0] = 0;
@@ -386,6 +396,33 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     puts(endTable);
+
+    puts("<h2>Set of Unicode Code Points Representable By This Codepage</h2>");
+    if (gShowUnicodeSet) {
+        myStatus = U_ZERO_ERROR;
+        USet *cnvSet = uset_open(0, 0);
+        ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
+        patLen = uset_toPattern(cnvSet, NULL, 0, TRUE, &myStatus) + 1;
+        patBuffer = (UChar*)malloc(patLen * sizeof(UChar));
+        patBufferUTF8 = (char*)malloc(patLen * sizeof(char) * U8_MAX_LENGTH);
+        if (U_SUCCESS(*status) && patBuffer && patBufferUTF8) {
+            myStatus = U_ZERO_ERROR;
+            patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
+            u_strToUTF8(patBufferUTF8, patLen * U8_MAX_LENGTH, NULL, patBuffer, patLen, &myStatus);
+            printf("<p class=\"value\">%s</p>\n", patBufferUTF8);
+        }
+        else {
+            puts("<p>Not Available</p>");
+        }
+        free(patBuffer);
+        free(patBufferUTF8);
+        *status = U_ZERO_ERROR;
+    }
+    else {
+        printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"set=1"OPTION_SEP_STR"%s\">View Complete Set...</a></p>\n",
+            gCurrConverter, getStandardOptionsURL(&myStatus));
+    }
+    puts("<br>");
 
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
         || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
@@ -452,7 +489,7 @@ static void printStandardAliasList(const char *canonicalName, const char *standa
     else {
         UErrorCode myStatus = U_ZERO_ERROR;
 
-        puts("<td>");
+        puts("<td class=\"alias\">");
         if (uenum_count(stdConvEnum, status) == 0) {
             printf(NBSP);
         }

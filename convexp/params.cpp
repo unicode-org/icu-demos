@@ -28,6 +28,7 @@ char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
 char gStartBytes[MAX_BYTE_SIZE] = "";
 UHashtable *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
+UBool gShowUnicodeSet = FALSE;
 
 const char ALL[]="ALL";
 
@@ -150,6 +151,10 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
                 }
                 strItr++;
             }
+        }
+        else if (strncmp(src, "set=", 4) == 0) {
+            /* Don't care what the value is. Just show the set */
+            gShowUnicodeSet = TRUE;
         }
         else {
             // Woah! I don't know what this option is.
