@@ -1,31 +1,11 @@
 created  Feb-10-2000  srl
--------------------------
+file updated Feb 11-2002 srl
+--------
 
-These are additional files that MAY be dropped into your installed ICU
-data directory.   They are used by the locale explorer.
+Removed most of this data. A lot of it is now in ICU - in much better form thank you!
 
- In addition, there are a few new locales thrown in here. They are to
-be considered in 'draft' stage. Please give them a try!  You can add
-them to your index.txt [the ICU one, not the one in the locexp
-directory] if you want them to show up in the locale explorer's list.
-Consider these a bonus:
+Left a couple of converters and transliterators. Enjoy.
 
-    mt.txt  mt_MT.txt  :  Maltese langauge locales.
-	eo.txt	 - esperanto
-	hi*.txt  - Hindi  [very experimental]
+Note the transliterators might be out of date for the new rules format.  at your own risk.
 
-do 'make' to get full instructions of what to do with this dir.
-
-Basically:
-
-	fetchOrigFiles /path/to/icu/data/        (path to the build dir)
-
-	make install-all
-
-
--------------------------
-
-this is a new build step, any feedback would be appreciated! thanks.
-
- -srl
 
