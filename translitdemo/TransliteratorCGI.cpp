@@ -186,7 +186,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             for (int32_t i=0; i<n; ++i) {
                 if (i) fprintf(out, ";");
                 util_fprintf(out, Transliterator::getAvailableSource(i, src));
-            }            
+            }
         }
 
         else if (strcmp(opcode, "GETAVAILABLETARGETS") == 0) {
@@ -197,7 +197,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             for (int32_t i=0; i<n; ++i) {
                 if (i) fprintf(out, ";");
                 util_fprintf(out, Transliterator::getAvailableTarget(i, src, trg));
-            }            
+            }
         }
 
         else if (strcmp(opcode, "GETAVAILABLEVARIANTS") == 0) {
@@ -208,8 +208,12 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             int32_t n = Transliterator::countAvailableVariants(src, trg);
             for (int32_t i=0; i<n; ++i) {
                 if (i) fprintf(out, ";");
-                util_fprintf(out, Transliterator::getAvailableVariant(i, src, trg, var));
-            }            
+                Transliterator::getAvailableVariant(i, src, trg, var);
+                if (var.length() == 0) {
+                    var = "(Default)";
+                }
+                util_fprintf(out, var);
+            }
         }
 
         else if (strcmp(opcode, "TRANSLITERATE") == 0) {
@@ -227,7 +231,9 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                 id.insert(0, UnicodeString("Hex-Any;", ""));
             }
             loadUserTransliterators();
-            Transliterator *t = Transliterator::createInstance(id, dir);
+            UErrorCode status = U_ZERO_ERROR;
+            UParseError err;
+            Transliterator *t = Transliterator::createInstance(id, dir, err, status);
             if (t != 0) {
                 char* s = cleanupNewlines(arg1);
                 text = UnicodeString(s, ENCODING);
@@ -241,7 +247,16 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                 text = "Error: Unable to create ";
                 text += (dir == UTRANS_FORWARD) ? "" : "inverse of ";
                 text += id;
-                text += "";
+                text += ", error ";
+                text += u_errorName(status);
+                if (err.preContext[0]) {
+                    text += " at ";
+                    text += err.preContext;
+                    if (err.postContext[0]) {
+                        test += " | ";
+                        test += err.postContext;
+                    }
+                }
             }
             util_fprintfq(out, text);
         }
@@ -260,7 +275,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                 fprintf(out, ok ? "" : "Error: Internal CGI failure");
             } else {
                 util_fprintf(out, errMsg, inQuote);
-            }            
+            }
         }
 
         else if (strcmp(opcode, "TORULES") == 0) {
@@ -269,7 +284,8 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             if (ruleCache.get(id, rule)) {
                 util_fprintf(out, rule);
             } else {
-                Transliterator *t = Transliterator::createInstance(id);
+                UErrorCode status = U_ZERO_ERROR;
+                Transliterator *t = Transliterator::createInstance(id, UTRANS_FORWARD, status);
                 if (t == NULL) {
                     fprintf(out, "// Cannot create ");
                     util_fprintf(out, id);
@@ -320,15 +336,20 @@ Transliterator* TransliteratorCGI::buildUserRules(const UnicodeString& id,
                                                   UnicodeString& errMsg) {
     UParseError err;
     UErrorCode status = U_ZERO_ERROR;
-    Transliterator *t = new RuleBasedTransliterator(id, rules,
+    Transliterator *t = Transliterator::createFromRules(id, rules,
                                                     UTRANS_FORWARD,
-                                                    0, err, status);
+                                                    err, status);
     if (U_FAILURE(status)) {
-        char buf[256];
-        sprintf(buf, "Error: Syntax error in the rule \"");
-        errMsg += buf;
-        errMsg += err.preContext;
-        errMsg += "\"";
+        errMsg += "Error: ";
+        errMsg += u_errorName(status);
+        if (err.preContext[0]) {
+            text += " at ";
+            text += err.preContext;
+            if (err.postContext[0]) {
+                test += " | ";
+                test += err.postContext;
+            }
+        }
         delete t;
         t = 0;
     }
@@ -373,7 +394,8 @@ char** TransliteratorCGI::getAvailableRBTIDs() {
     availableRBTIDsCount = 0;
     for (i=0; i<availableIDsCount; ++i) {
         UnicodeString id(all[i], ENCODING);
-        Transliterator *t = Transliterator::createInstance(id);
+        UErrorCode status = U_ZERO_ERROR;
+        Transliterator *t = Transliterator::createInstance(id, UTRANS_FORWARD, status);
         if (t != NULL) {
             if (t->getDynamicClassID() ==
                 RuleBasedTransliterator::getStaticClassID()) {
@@ -440,9 +462,10 @@ void TransliteratorCGI::registerUserRules(int32_t i, const UnicodeString& id,
     TransliteratorCGI* _this = (TransliteratorCGI*) context;
     if (_this->ruleCache.get(id, rules)) {
         UErrorCode status = U_ZERO_ERROR;
-        Transliterator *t = new RuleBasedTransliterator(id, rules,
-                                                        UTRANS_FORWARD,
-                                                        status);
+        UParseError err;
+        Transliterator *t = Transliterator::createFromRules(id, rules,
+                                                            UTRANS_FORWARD,
+                                                            err, status);
         if (U_SUCCESS(status)) {
             Transliterator::registerInstance(t);
         } else {
