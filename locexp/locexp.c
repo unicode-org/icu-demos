@@ -558,6 +558,10 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *qs)
 {
     /* make QS point to the first char of the field data */
     qs = strchr(qs, '=');
+    if(qs == NULL) {
+      *dstPattern = 0;
+      return;
+    }
     qs++;
 
 /*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
