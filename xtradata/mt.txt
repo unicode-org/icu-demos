@@ -1,5 +1,6 @@
 // by srl@monkey.sbay.org, thanks to Mirka Mifsud Bonnici for much of the translation
 //                         thanks to Karmenu Attard for additional help
+//                         thanks to MaxMan (Manuel) for additional help
 // Maltese locale.
 
 // Search for 'Sources' below for source abbreviations
@@ -13,10 +14,10 @@
 //
 // COMBINING MARKS:
 // There is no combining mark for the slash (h/)
-//  but, U+0307 is the DOT ABOVE needed for z., c., and g.
+//  but, U+0307 is the DOT ABOVE needed for z., c., and g. (in collation rules)
 
 mt {
-    Version { "x0.3_srl@monkey.sbay.org" } // x meaning an experimental locale
+    Version { "x0.4_srl@monkey.sbay.org" } // x meaning an experimental locale
     LocaleString { mt_MT }
     LocaleID { "9995" } // ?
     ShortLanguage { mlt }
@@ -24,8 +25,9 @@ mt {
 
 // Some of these tags look like they are in other languages, not Maltese.
  mt { Malti }
- cs { Cesky } 
- cy { Cymraeg } 
+ ar { G\u0127arbi }
+ cs { \u010Aesky } 
+ cy { \u010Aymraeg } 
  da { Dansk } 
  de { Deutsch } 
  el { Ellinika } 
@@ -57,32 +59,34 @@ mt {
 // Country tags look OK
         MT { Malta }
         AL { Albanija }
-        AD { Andorra }
+//        AD { Andorra }
         AT { Awstrija }
-        BE { Belgju }
-        BA { Boznija/Herzegovina  }
+	AU { Awstralja }
+//        AU { Awstralija }
+        BE { Bel\u0121ju }
+        BA { Bo\u017Cnija/\u0126erzegovina  }
         BG { Bulgarija }
         HR { Kroazja }
-        CY { Cipru }
-        CZ { Rep.Ceka  }
+        CY { \u010Aipru }
+        CZ { Rep. \u010Aeka  }
         DK { Danimarka  }
         EE { Estonja }
         FI { Finlandja }
         FR { Franza }
-        DE { Germanja }
-        GR { Grecja }
-        GL { Groenlandja }
+        DE { \u0120ermanja }
+        GR { \u0120re\u010Bja }
+        GL { \u0120roenlandja }
         HU { Ungerija }
         IS { Islanda }
         IE { Irlanda }
         IL { Izrael }
-        IT { Italja }
+        IT { Italja } // Should be 'Talja?'
         LV { Latvja }
-        LI { Liechtenstein }
+ //       LI { Liechtenstein }
         LT { Litwanja }
         LU { Lussemburgu }
-        MK { Macedonia }
-        MC { Monaco }
+ //       MK { Macedonia }
+//        MC { Monaco }
         NL { Olanda }
         NO { Norvegja }
         PL { Polonja }
@@ -97,13 +101,13 @@ mt {
         TR { Turkija }
         UA { Ukranja }
         GB { Gran Brittanja }
-        UK { Renju Unit }
+//        UK { Renju Unit }
         VA { Stat tal-Vatikan  }
-        YU { Yugoslavia  }
-	EG { Egittu }
-	CN { Cina }
+    //    YU { Yugoslavia  }
+        YU { Jugoslavja }
+	EG { E\u0121ittu }
+	CN { \u010Aina }
 	TW { Tajwan }
-	AU { Awstralja }
 	ZA { "Afrika t'Isfel" }
   	BO { Bolivia }	
 	CA { Kanada }
@@ -114,13 +118,13 @@ mt {
 	Marzu,
 	April,
 	Mejju,
-	Gunju,
+	\u0120unju,
 	Lulju,	
 	Awissu,
 	Settembru,
 	Ottubru,
 	Novembru,
-	Dicembru
+	Di\u010Bembru
         ""
     }
 // ?
@@ -130,13 +134,13 @@ mt {
         Mar,
         Apr,
         Mej,
-        Gun,
+        \u0120un,
         Lul,
         Awi,
         Set,
         Ott,
         Nov,
-        Dic,
+        Di\u010B,
         ""
     }
     DayNames {
@@ -239,6 +243,20 @@ mt {
 //                                                   ll       Ll         LL
 //                                                   gh       Gh         GH
 //    CollationElements { "& F < g\u0307 , G\u0307 & H < \u0127, \u0126 & N <  & X < z\u0307 , Z\u0307 " }
+
+
+// Time zone
+//CET: 
+    zoneStrings { 
+        {
+        "Europe/Malta", 
+        "\u0126in ta' L-Ewropa Centrali", 
+        "CET", 
+        "\u0126in ta' L-Ewropa Centrali ta' sajfx",
+        "CET-summer"
+        }
+    }
+
 
 }
 
