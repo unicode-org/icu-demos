@@ -13,21 +13,9 @@ select   { font-family: Arial Unicode MS; font-size: 80% }
 <font face="arial,helvetica,sanserif">
 
 <script>
-// Determine our location.  Are we on OSS or a local server?
-if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
   // We are on OSS running Apache
-  SELF = "/developerworks/opensource/icu/translitdemo";
-  JS = "../icu/project/demo";
-} else if (location.toString().search(/\/\/localhost/i) >= 0 ||
-           location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
-  // We are on a local Win32 box running Apache
-  SELF = "/cgi-bin/translitdemo";
-  JS = "../js";
-} else {
-  // We are on a remote UNIX box running Apache
-  SELF = "/cgi-bin/translit";
-  JS = "../js";
-}
+  SELF = "/cgi-bin/icu/tr";
+  JS = "/icu/demo";
 
 // Load up the js/util.js script.  This works as long as we cloak the tag.
 document.writeln("\x3Cscript src=\"" + JS + "/util.js\">\x3C/script>");

@@ -24,7 +24,7 @@ ICUPATH=
 
 ###########################################
 # HACK : TODO fix this
-ICU_INC=/usr/local/lib/icu/Makefile.inc
+ICU_INC=~/II/lib/icu/Makefile.inc
 ###########################################
 
 include $(ICU_INC)
@@ -33,14 +33,28 @@ include $(ICU_INC)
 TARGET=translit
 
 # All object files (C or C++)
-OBJECTS=TemplateCGI.o TransliteratorCGI.o getcgi.o main.o util.o \
-uhash.o TextCache.o
+#OBJECTS=TemplateCGI.o TransliteratorCGI.o getcgi.o main.o util.o \
+#uhash.o TextCache.o
+
+OBJECTS +=TemplateCGI.o
+OBJECTS += TransliteratorCGI.o
+OBJECTS += getcgi.o
+OBJECTS +=  main.o
+OBJECTS += util.o 
+#OBJECTS += uhash.o
+OBJECTS +=  TextCache.o
+
 
 CLEANFILES=*~ $(TARGET).out
 
 DEPS=$(OBJECTS:.o=.d)
 
 all: $(TARGET)
+
+zurk:
+	-rm translit
+	make translit
+	./translit 2> /dev/null
 
 .PHONY: all clean distclean check report
 

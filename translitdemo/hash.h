@@ -56,7 +56,7 @@ public:
  * Implementation
  ********************************************************************/
 
-inline ::Hashtable::Hashtable(UErrorCode& status) : hash(0) {
+inline Hashtable::Hashtable(UErrorCode& status) : hash(0) {
     if (U_FAILURE(status)) {
         return;
     }
@@ -67,7 +67,7 @@ inline ::Hashtable::Hashtable(UErrorCode& status) : hash(0) {
     }
 }
 
-inline ::Hashtable::Hashtable() : hash(0) {
+inline Hashtable::Hashtable() : hash(0) {
     UErrorCode status = U_ZERO_ERROR;
     hash = uhash_open(uhash_hashUnicodeString,
                       uhash_compareUnicodeString, &status);
@@ -76,34 +76,34 @@ inline ::Hashtable::Hashtable() : hash(0) {
     }
 }
 
-inline ::Hashtable::~Hashtable() {
+inline Hashtable::~Hashtable() {
     if (hash != 0) {
         uhash_close(hash);
         hash = 0;
     }
 }
 
-inline UObjectDeleter ::Hashtable::setValueDeleter(UObjectDeleter fn) {
+inline UObjectDeleter Hashtable::setValueDeleter(UObjectDeleter fn) {
     return uhash_setValueDeleter(hash, fn);
 }
 
-inline int32_t ::Hashtable::count() const {
+inline int32_t Hashtable::count() const {
     return uhash_count(hash);
 }
 
-inline void* ::Hashtable::put(const UnicodeString& key, void* value, UErrorCode& status) {
+inline void* Hashtable::put(const UnicodeString& key, void* value, UErrorCode& status) {
     return uhash_put(hash, new UnicodeString(key), value, &status);
 }
 
-inline void* ::Hashtable::get(const UnicodeString& key) const {
+inline void* Hashtable::get(const UnicodeString& key) const {
     return uhash_get(hash, &key);
 }
 
-inline void* ::Hashtable::remove(const UnicodeString& key) {
+inline void* Hashtable::remove(const UnicodeString& key) {
     return uhash_remove(hash, &key);
 }
 
-inline const UHashElement* ::Hashtable::nextElement(int32_t& pos) const {
+inline const UHashElement* Hashtable::nextElement(int32_t& pos) const {
     return uhash_nextElement(hash, &pos);
 }
 

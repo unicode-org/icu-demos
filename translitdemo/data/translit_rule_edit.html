@@ -11,8 +11,8 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 <script>
 // Determine our location.  Are we on OSS or a local server?
 if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
-  SELF = "/developerworks/opensource/icu/translitdemo";
-  JS = "../icu/project/demo";
+  SELF = "/cgi-bin/icu/tr";
+  JS = "/icu/demo";
 } else if (location.toString().search(/\/\/localhost/i) >= 0 ||
            location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
   // We are on a local Win32 box running Apache
