@@ -328,11 +328,11 @@ UBool myEnumCharNamesFn(void *context,
       return FALSE;
     }
 
-//    printf("<LI><A HREF=\"?k1=%04X#here\"><TT>%04X</TT> - %s\r\n",
-//           code, code, name);
-    
-//    printBasicBlockInfo( code );
-//    printf("</A>\r\n");
+/*     printf("<LI><A HREF=\"?k1=%04X#here\"><TT>%04X</TT> - %s\r\n", */
+/*            code, code, name); */
+  
+/*     printBasicBlockInfo( code ); */
+/*     printf("</A>\r\n"); */
   }
   return TRUE;
 }
@@ -359,7 +359,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 	  printf("<TR %s >", hilite);
 
           /** 0 Row # (un needed????) **/ 
-//          printf("<TD><B>%X</B></TD>", r);
+/*           printf("<TD><B>%X</B></TD>", r); */
 
           /** 1 The Char **/
 	  printf("<TD ");
@@ -508,7 +508,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 
 	  /** image - removed **/
 /*  	  printf("<TD>"); */
-/*            /* */
+
 /*                -- this works but it's kind of RUDE. -- [to link in w/o asking] */
 /*                printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n", */
 /*                   ((theChar&0x1FFF00)>>8), */
@@ -787,7 +787,7 @@ main(int argc,
              "</td></tr></table>\r\n"
              );
 
-//      printf("\r\n</td></tr><tr><td align=right>\r\n");
+/*       printf("\r\n</td></tr><tr><td align=right>\r\n"); */
       
       showSearchMenu(0x0000);
     }      
@@ -954,7 +954,7 @@ main(int argc,
       int u,stroke;
       char s[200];
 
-      printf("</td></tr></table></form>"); // closer
+      printf("</td></tr></table></form>"); /* closer */
 
       printf("<B>");
       printBasicBlockInfo(gKangXiRadicalTable[(block-1)*2]);
@@ -1019,7 +1019,7 @@ main(int argc,
       UChar32 c;
       UErrorCode status = U_ZERO_ERROR;
 
-      printf("</td></tr></table></form>"); // closer
+      printf("</td></tr></table></form>"); /* closer */
 
 
       printf("<H1>Searching for '%s'...</H1>\r\n", gSearchName);
@@ -1189,8 +1189,9 @@ void printType(int8_t type)
     case U_MODIFIER_SYMBOL: printf("Modifier Symbol"); break; 
     case U_OTHER_SYMBOL: printf("Other Symbol"); break; 
     case U_INITIAL_PUNCTUATION: printf("Initial Punctuation"); break; 
-    case U_FINAL_PUNCTUATION: printf("Final Punctuation"); break; 
-//    case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;  /* sic */
+      /*    case U_FINAL_PUNCTUATION: printf("Final Punctuation"); break; 
+    case U_GENERAL_OTHER_TYPES: printf("General Other Types"); break;       */
+
     default: printf("Unknown type %d", type); break;
     }
 }
@@ -1337,7 +1338,7 @@ void showSearchMenu(UChar32 startFrom)
 
   printf("<table border=0 cellpadding=0 cellspacing=0 qwidth=100% ><tr><td bgcolor=\"#000000\">\r\n"
          "<table border=0 cellpadding=1 cellspacing=1 qwidth=100%><tr><td bgcolor=\"#cccccc\">\r\n"
-//         "<table border=2 cellpadding=2 cellspacing=2 qwidth=100%><tr><td bgcolor=\"#cccccc\">\r\n"
+/*          "<table border=2 cellpadding=2 cellspacing=2 qwidth=100%><tr><td bgcolor=\"#cccccc\">\r\n" */
          "\r\n");
 
   printf("<b>Find</b><br>\r\n"
