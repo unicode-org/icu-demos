@@ -1,6 +1,12 @@
 #include "TextCache.h"
 #include "util.h"
 
+void visitor(int32_t i, const UnicodeString& key, void* context) {
+    printf(" %ld: \"", i);
+    util_fprintf(stdout, key);
+    printf("\"\n");
+}
+
 /**
  * A simple test for TextCache.  Invoke with and without
  * the "-put" option and inspect the files in the
@@ -32,4 +38,7 @@ int main(int argc, char* argv[]) {
     printf("gamma->");
     util_fprintf(stdout, str);
     printf("\n");
+
+    printf("index:\n");
+    cache.visitKeys(visitor, NULL);
 }
