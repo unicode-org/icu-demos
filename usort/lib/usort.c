@@ -541,6 +541,8 @@ usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
 
   if(newConverter) /* did we allocate? */
     ucnv_close(newConverter);
+
+  fflush(file);
 }
 
 
