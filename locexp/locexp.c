@@ -18,6 +18,8 @@
 *   7/14/2001    srl        Adding configurable Collation demo
 *  18/10/2001    srl        Adding RBNF.  Glad to have RBNF available again!
 *  30/10/2001    srl        Adding LocaleScript. updating RBNF.
+*   2/20/2003    srl        Adding Robot Exclusion META tags, finally 
+*                             renaming 'tmp' to something meaningful.
 ****************************************************************************
 */
 
@@ -28,7 +30,8 @@ void displayLocaleExplorer(LXContext *lx)
     UErrorCode status = U_ZERO_ERROR;
     char portStr[100];
     int n;
-    char *tmp;
+    const char *querystring;
+    const char *pathinfo;
     
     /* set up the port string */
     {
@@ -46,6 +49,11 @@ void displayLocaleExplorer(LXContext *lx)
             portStr[0] = 0;
         }
     }
+    /* -------------- Fetch Parameters */
+
+    querystring = getenv ( "QUERY_STRING" );
+    pathinfo    = getenv ( "PATH_INFO" );
+
     /* -------------- */
     
     u_fprintf(lx->OUT,"<html>");
@@ -89,16 +97,28 @@ void displayLocaleExplorer(LXContext *lx)
             getenv("SCRIPT_NAME"), lx->cLocale, 
             lx->chosenEncoding); /* Ensure that all relative paths have the cgi name followed by a slash.  */
     }
+
+
+    /* Robot Exclusion */
+    if(strstr(querystring,"PANICDEFAULT") ||  
+       (pathinfo && strstr(pathinfo,"transliterated"))) {
+      u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
+    } else if(!strncmp(querystring, "locale_all", 10) || strstr(querystring,"converter")){
+      u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
+    } else if(pathinfo && *pathinfo && pathinfo[1] && !strstr(pathinfo,"en_US")) {
+      u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
+    } else if(lx->chosenEncoding && lx->chosenEncoding[0] && !strstr(lx->chosenEncoding, "utf-8")) {
+      u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
+    } else if(strstr(querystring, "_=")) {
+      u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
+    }
     
     u_fprintf(lx->OUT, "%U", 
-        FSWF ( /* NOEXTRACT */ "htmlHEAD",
-        "</head>\r\n<body bgcolor=\"#FFFFFF\" > \r\n")
-        );
-    
-    /* now see what we're gonna do */
-    tmp = getenv ( "QUERY_STRING" );
-    
-    if(strstr(tmp,"EXPLORE"))
+              FSWF ( /* NOEXTRACT */ "htmlHEAD",
+                     "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
+              );
+
+    if(strstr(querystring,"EXPLORE"))
     {
         printHelpImg(lx, "display", 
             FSWF("display_ALT", "Display Problems?"),
@@ -113,8 +133,8 @@ void displayLocaleExplorer(LXContext *lx)
     else
     {
         UBool hadExperimentalSubLocales = FALSE;
-        
-        if(tmp && tmp[0]  && !lx->curLocale && (tmp[0] == '_'))
+
+        if(querystring && querystring[0]  && !lx->curLocale && (querystring[0] == '_'))
         {
             UChar dispName[1024];
             UErrorCode stat = U_ZERO_ERROR;
@@ -124,8 +144,8 @@ void displayLocaleExplorer(LXContext *lx)
             u_fprintf(lx->OUT, "<ul><b>%U [%U]</b></ul>\r\n",
                 FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
         }
-        
-        if(isExperimentalLocale(lx->curLocaleName) && tmp && tmp[0] )
+      
+        if(isExperimentalLocale(lx->curLocaleName) && querystring && querystring[0] )
         {
             u_fprintf(lx->OUT, "<ul><b>%U</b></ul>\r\n",
                 FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
@@ -156,12 +176,12 @@ void displayLocaleExplorer(LXContext *lx)
             for(n=0;n<lx->curLocale->nSubLocs;n++)
             {
                 UBool wasExperimental = FALSE;
-                
+
                 if(n != 0)
                 {
                     u_fprintf(lx->OUT, ", ");
                 }
-                
+
                 if(lx->curLocale->subLocs[n].isVariant) u_fprintf(lx->OUT, " [");
                 
                 u_fprintf(lx->OUT, "<a href=\"?_=%s\">", 
@@ -306,11 +326,11 @@ void displayLocaleExplorer(LXContext *lx)
     }
     
     
-    if ( tmp == NULL )
-        tmp = ""; /* for sanity */
+    if ( querystring == NULL )
+        querystring = ""; /* for sanity */
     
-    if( ( (!*tmp)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
-        || strstr(tmp, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
+    if( ( (!*querystring)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
+        || strstr(querystring, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
     {
         u_fprintf(lx->OUT, "<ul>");
         u_fprintf_u(lx->OUT, 
@@ -329,11 +349,11 @@ void displayLocaleExplorer(LXContext *lx)
     
     
     /* Logic here: */
-    if( /* !lx->setLocale || */  !strncmp(tmp,"locale", 6))     /* ?locale  or not set: pick locale */
+    if( /* !lx->setLocale || */  !strncmp(querystring,"locale", 6))     /* ?locale  or not set: pick locale */
     {
         char *restored;
         
-        restored = strchr(tmp, '&');
+        restored = strchr(querystring, '&');
         if(restored)
         {
             restored ++;
@@ -357,13 +377,13 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "<td colspan=2 align=right>");
         printHelpTag(lx, "chooseLocale", NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-        chooseLocale(lx, tmp, FALSE, (char*)lx->cLocale, restored, (UBool)!strncmp(tmp,"locale_all", 10));
+        chooseLocale(lx, querystring, FALSE, (char*)lx->cLocale, restored, (UBool)!strncmp(querystring,"locale_all", 10));
     }
-    else if (!strncmp(tmp,"converter", 9))  /* ?converter */
+    else if (!strncmp(querystring,"converter", 9))  /* ?converter */
     {
         char *restored;
         
-        restored = strchr(tmp, '&');
+        restored = strchr(querystring, '&');
         if(restored)
         {
             restored ++;
@@ -377,14 +397,14 @@ void displayLocaleExplorer(LXContext *lx)
         */
         u_fprintf(lx->OUT, "<hr>");
         
-        if(tmp[9] == '=')
+        if(querystring[9] == '=')
         {
             /* choose from encodings that match a string */
             char *sample;
             char *end;
             UChar usample[256];
             
-            sample = tmp + 10;
+            sample = querystring + 10;
             end    = strchr(sample, '&');
             
             if(end == NULL)
@@ -404,7 +424,7 @@ void displayLocaleExplorer(LXContext *lx)
             chooseConverter(lx, restored);
         }
     }
-    else if (!strncmp(tmp,"SETTZ=",6))
+    else if (!strncmp(querystring,"SETTZ=",6))
     {
         /* lx->newZone is initted early, need it for cookies :) */
         if(u_strlen(lx->newZone))
@@ -433,7 +453,7 @@ void displayLocaleExplorer(LXContext *lx)
     else
     {
         /* show an entire locale */
-        showOneLocale(lx, tmp);
+        showOneLocale(lx, querystring);
     }
     
     printStatusTable(lx);
