@@ -30,12 +30,6 @@ Package=<4>
     Project_Dep_Name EscapeABundle
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name genccode
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name gencmn
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name locexp
     End Project Dependency
     Begin Project Dependency
@@ -48,13 +42,7 @@ Package=<4>
     Project_Dep_Name uconv
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name udata
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name unescapeABundle
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name unewdata
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name usort_client
@@ -70,30 +58,6 @@ Package=<4>
 ###############################################################################
 
 Project: "dumpdat"=..\dumpdat\dumpdat.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "genccode"=..\udata\genccode.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "gencmn"=..\udata\gencmn.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -150,31 +114,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "udata"=..\udata\udata.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "unescapeABundle"=..\locexp\resource\unescapeABundle.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "unewdata"=..\udata\unewdata.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
