@@ -141,11 +141,11 @@ static void printOptions(UErrorCode *status) {
             checked = "";
         }
         if (standard && *standard) {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"%s\" id=\"%s\"%s> <label for=\"%s\">%s</label><br />\n",
+            printf("<input type=\"checkbox\" name=\"s\" value=\"%s\" id=\"%s\"%s /> <label for=\"%s\">%s</label><br />\n",
                 standard, standard, checked, standard, standard);
         }
         else {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"-\" id=\"UntaggedAliases\"%s> <label for=\"UntaggedAliases\"><em>Untagged Aliases</em></label><br />\n",
+            printf("<input type=\"checkbox\" name=\"s\" value=\"-\" id=\"UntaggedAliases\"%s /> <label for=\"UntaggedAliases\"><em>Untagged Aliases</em></label><br />\n",
                 checked);
         }
     }
