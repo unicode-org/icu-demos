@@ -24,6 +24,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     const char *tmp;
     int32_t parsePos = 0;
 
+    valueString[0]=0;
     nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, NULL, &status);
     status = U_ZERO_ERROR; /* ? */
   
@@ -70,13 +71,13 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     }
     else if((tmp = queryField(lx, "NP_LOC"))) /* Localized: pattern format input ============== */
     {
-        /* Localized # */
-
-        unescapeAndDecodeQueryField(valueString, 1000, tmp);
-        /*u_replaceChar(valueString, 0x0020, 0x00A0);  */
-
-        status = U_ZERO_ERROR;
-        now = udat_parse(df, valueString, -1, &parsePos, &status);
+      /* Localized # */
+      
+      unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convName);
+      u_replaceChar(valueString, 0x0020, 0x00A0);
+      
+      status = U_ZERO_ERROR;
+      now = udat_parse(df, valueString, -1, &parsePos, &status);
     }
 
     /* Common handler for input errs */
