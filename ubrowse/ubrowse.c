@@ -71,8 +71,8 @@
 #include "unicode/uchar.h"
 #include <unicode/ustdio.h>
 #include "unicode/uscript.h"
-
 #include "unicode/decompcb.h" /* from locexp/util */
+#include "unicode/lx_utils.h"
 
 int validate_sanity();
 
@@ -84,10 +84,7 @@ typedef enum { ECHAR, ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME, EEXACTNAM
 
 /* Protos */
 int main(int argc, char **argv);
-void doDecodeQueryField(const char *in, char *out);
- const char * up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *status);  
-const char *getUCharCategoryName(int8_t type);
-const char *getUBlockCodeName(UBlockCode block);
+
 UChar32 doSearchBlock(int32_t, UChar32 startFrom);
 UChar32 doSearchType(int8_t, UChar32 startFrom);
 void showSearchMenu(UChar32 startFrom);
@@ -103,16 +100,6 @@ void printCharName(UChar32 ch);
 void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *link);
 void printRowHeader(UBool showBlock);
 
-
-/* Just stuff */
-typedef struct {
-  const char *n; /* name */
-  int i;         /* original index */
-} EnumVal;
-
-EnumVal gUCharCategoryNames[U_CHAR_CATEGORY_COUNT];
-EnumVal gUBlockCodeNames[UBLOCK_COUNT];
-void setup_sortedNames();
 
 /* globals, current search.. */
 int32_t gSearchType = -1;
@@ -302,6 +289,7 @@ void printOneUChar32(UChar32 theChar)
   UErrorCode status = U_ZERO_ERROR;
   int offset = 0;
 
+  chars[0]=0;
   UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar); 
   chars[offset] = 0; 
   u_fprintf(gOut, "%U", chars);
@@ -360,6 +348,55 @@ void printIconMenu(const char *alt, const char *name, ESearchMode target, ESearc
 } 
 
 
+void printCanonEquivs(UChar32 block)
+{
+  UErrorCode canErr = U_ZERO_ERROR;
+  UChar ch[1024];
+  UChar buf[1024];
+  UCanonicalIterator iter = NULL;
+  int offset=0;
+  int bannered = 0;
+  
+  ch[0]=0;
+  UTF_APPEND_CHAR_UNSAFE(ch, offset, block);
+  ch[offset]=0;
+  
+  iter = ucanit_open(ch, &canErr);
+  if(!iter || U_FAILURE(canErr)) {
+    u_fprintf(gOut, "Fail opening canit: %p -> %s<P>\r\n", iter, u_errorName(canErr));
+  } else {
+    while(ucanit_next(iter, buf, 1024, &canErr) > 0) {
+      int i;
+      UChar32 c;
+      int shownComma = 0;
+      
+      if(!u_strcmp(buf,ch)) continue;
+      
+      if(!bannered) {
+	u_fprintf(gOut, "<p><b>Canonical Equivalencies:</b>\r\n");
+	u_fprintf(gOut, "<ol>\r\n");
+      }
+      
+      u_fprintf(gOut, "<li>%U<br>\r\n", buf);
+      
+      /* now show it as codepoints */
+      for(i=0;buf[i];) {
+	UTF_NEXT_CHAR_UNSAFE(buf,i, c);
+	u_fprintf(gOut, "%s <A HREF=\"?ch=%04X\">U+%04X</A> ", (shownComma++)?",":"", c, c);
+	printCharName(c);
+      }
+      u_fprintf(gOut, "<br>\r\n");
+      u_fprintf(gOut, "<br>\r\n");
+      bannered =1;
+    }
+    if(bannered) {
+      u_fprintf(gOut, "</ol>\r\n");
+    }
+    ucanit_close(iter);
+  }
+}
+
+
 void printRowHeader(UBool showBlock)
 {
   u_fprintf(gOut, "<TR>"); /* 0: column index */
@@ -374,7 +411,7 @@ void printRowHeader(UBool showBlock)
       u_fprintf(gOut, "<TD><B>Block</B></TD>"); /* 3 1/2 */
     }
   u_fprintf(gOut, "<TD><B>Script</B></TD>"); /* 3 3/4 Script */
-  u_fprintf(gOut, "<TD><B></B></TD>"); /* 4 digit */
+  u_fprintf(gOut, "<TD><B>#</B></TD>"); /* 4 digit */
   u_fprintf(gOut, "<TD><B>Wid</B></TD>"); /* 5 width */
   u_fprintf(gOut, "<TD><B>BiDi</B></TD>"); /* 6 Direction (BiDi?) */
   u_fprintf(gOut, "</TR>\r\n");
@@ -384,158 +421,147 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 {
   UBool searchedFor;
 
-	  u_fprintf(gOut, "<TR %s >", hilite);
+  u_fprintf(gOut, "<TR %s >", hilite);
 
 
-          /** 1 The Char **/
-	  u_fprintf(gOut, "<TD ");
+  /** 1 The Char **/
+  u_fprintf(gOut, "<TD ");
 
-          /* TODO: 'if matches(theChar)' */
+  /* TODO: 'if matches(theChar)' */
 
-	  u_fprintf(gOut, "%s ALIGN=CENTER>\r\n", hilite);
+  u_fprintf(gOut, "%s ALIGN=CENTER>\r\n", hilite);
 	  
-	  if((theChar == gSearchChar) && gSearchCharValid)
-	    u_fprintf(gOut, "<A NAME=here></A>");
+  if((theChar == gSearchChar) && gSearchCharValid)
+    u_fprintf(gOut, "<A NAME=here></A>");
 	  
 	  /* print the simple data (i.e. the actual char ) */
-	  printOneUChar32(theChar);
+  printOneUChar32(theChar);
 	  
-	  u_fprintf(gOut, "</TD>");
+  u_fprintf(gOut, "</TD>");
 
 
           /** 2. print the char val and name  */
-          u_fprintf(gOut, "<TD>");
-          if(link != NULL)
-          {
-            u_fprintf(gOut, "<A HREF=\"?%s=%04X#here\">", link, theChar);
-          }
-          u_fprintf(gOut, "<FONT SIZE=-1>U+%04X ", theChar);
-          printCharName(theChar);
-          u_fprintf(gOut, "</FONT>");
-          if(link != NULL)
-          {
-            u_fprintf(gOut, "</A>");
-          }
-          u_fprintf(gOut, "</TD>");
+  u_fprintf(gOut, "<TD>");
+  if(link != NULL)
+    {
+      u_fprintf(gOut, "<A HREF=\"?%s=%04X#here\">", link, theChar);
+    }
+  u_fprintf(gOut, "<FONT SIZE=-1>U+%04X ", theChar);
+  printCharName(theChar);
+  u_fprintf(gOut, "</FONT>");
+  if(link != NULL)
+    {
+      u_fprintf(gOut, "</A>");
+    }
+  u_fprintf(gOut, "</TD>");
 
           /** 3. char type */
-	  searchedFor = (u_charType(theChar) == gSearchType);
-          u_fprintf(gOut, "<td>");
-	  if(searchedFor) {
-	    u_fprintf(gOut, "<B>");
-	  }
-	  u_fprintf(gOut, "%s",
-		    getUCharCategoryName(u_charType(theChar)));
-	  if(searchedFor)
-	    u_fprintf(gOut, "</B>");
-          u_fprintf(gOut, "</td>");
+  searchedFor = (u_charType(theChar) == gSearchType);
+  u_fprintf(gOut, "<td>");
+  if(searchedFor) {
+    u_fprintf(gOut, "<B>");
+  }
+  u_fprintf(gOut, "%s",
+	    getUCharCategoryName(u_charType(theChar)));
+  if(searchedFor)
+    u_fprintf(gOut, "</B>");
+  u_fprintf(gOut, "</td>");
 
-          /** 3 1/2. optional - block */
-          if(showBlock)
-          {  
-            u_fprintf(gOut, "<TD ");
-            searchedFor = (ublock_getCode(theChar) == gSearchBlock);
+  /** 3 1/2. optional - block */
+  if(showBlock)
+    {  
+      u_fprintf(gOut, "<TD ");
+      searchedFor = (ublock_getCode(theChar) == gSearchBlock);
             
-            if(searchedFor)
-              u_fprintf(gOut, " BGCOLOR=\"#EE0000\" "); /* mark the one we were searching for */
+      if(searchedFor)
+	u_fprintf(gOut, " BGCOLOR=\"#EE0000\" "); /* mark the one we were searching for */
             
-            u_fprintf(gOut, " >");
+      u_fprintf(gOut, " >");
             
-            if(searchedFor)
-              u_fprintf(gOut, "<B>");
+      if(searchedFor)
+	u_fprintf(gOut, "<B>");
             
-            u_fprintf(gOut, "<A HREF=\"?scr=%d&b=%04X\">", (ublock_getCode(theChar)+1)%UBLOCK_COUNT, theChar);
-            u_fprintf(gOut, "%s", getUBlockCodeName(ublock_getCode(theChar)));
-            u_fprintf(gOut, "</A>");
+      u_fprintf(gOut, "<A HREF=\"?scr=%d&b=%04X\">", (ublock_getCode(theChar))%UBLOCK_COUNT, theChar);
+      u_fprintf(gOut, "%s", getUBlockCodeName(ublock_getCode(theChar)));
+      u_fprintf(gOut, "</A>");
             
-            if(searchedFor)
-              u_fprintf(gOut, "</B>");
+      if(searchedFor)
+	u_fprintf(gOut, "</B>");
             
-            u_fprintf(gOut, "</TD>");
-          }
+      u_fprintf(gOut, "</TD>");
+    }
 
-          /** 3 3/4: script **/
-          {
-            UErrorCode scriptErr = U_ZERO_ERROR;
-            UScriptCode scriptCode;
+  /** 3 3/4: script **/
+  {
+    UErrorCode scriptErr = U_ZERO_ERROR;
+    UScriptCode scriptCode;
             
-            scriptCode = uscript_getScript(theChar, &scriptErr);
-            if(U_FAILURE(scriptErr))
-            {
-              u_fprintf(gOut, "<TD BGCOLOR=\"#888888\">&nbsp;</TD>\r\n");
-            }
-            else
-            {
-              u_fprintf(gOut, "<TD>");
+    scriptCode = uscript_getScript(theChar, &scriptErr);
+    if(U_FAILURE(scriptErr))
+      {
+	u_fprintf(gOut, "<TD BGCOLOR=\"#888888\">&nbsp;</TD>\r\n");
+      }
+    else
+      {
+	u_fprintf(gOut, "<TD>");
               
-              u_fprintf(gOut, "%s", uscript_getShortName(scriptCode));
+	u_fprintf(gOut, "%s", uscript_getShortName(scriptCode));
 
-              u_fprintf(gOut, "</TD>");
-            }
-          }
+	u_fprintf(gOut, "</TD>");
+      }
+  }
 
-          /** 4: digit (optional) **/
-	  u_fprintf(gOut, "<TD>");
-	  if(u_isdigit(theChar))
-          {
-            if(u_charDigitValue(theChar) == -1)
-            {
-	      if(u_getNumericValue(theChar) != U_NO_NUMERIC_VALUE) {
-		u_fprintf(gOut, "%g", u_getNumericValue(theChar));
-	      } else {
-		u_fprintf(gOut, "-");
-	      }
-            }
-            else
-            {
-              u_fprintf(gOut, "%d", u_charDigitValue(theChar));
-            }
-          }
-	  u_fprintf(gOut, "</TD>");
+  /** 4: digit (optional) **/
+  u_fprintf(gOut, "<TD>");
+  if(u_getNumericValue(theChar) != U_NO_NUMERIC_VALUE) {
+    u_fprintf(gOut, "%g", u_getNumericValue(theChar));
+  } else {
+    u_fprintf(gOut, "-");
+  }
+  u_fprintf(gOut, "</TD>");
 
           /** 5: cell width **/
-          u_fprintf(gOut, "<TD>");
-	  switch(u_charCellWidth(theChar))
-	  {
-	    case U_ZERO_WIDTH: u_fprintf(gOut, "0"); break; 
-	    case U_HALF_WIDTH: u_fprintf(gOut, "1/2"); break; 
-	    case U_FULL_WIDTH: u_fprintf(gOut, "1"); break; 
-	    case U_NEUTRAL_WIDTH: u_fprintf(gOut, "-"); break; 
-	  }
+  u_fprintf(gOut, "<TD>");
+  switch(u_charCellWidth(theChar)) {
+  case U_ZERO_WIDTH: u_fprintf(gOut, "0"); break; 
+  case U_HALF_WIDTH: u_fprintf(gOut, "%K", 0x00BD); break;  /* 1/2 */
+  case U_FULL_WIDTH: u_fprintf(gOut, "%K", 0xFF11); break;  /* 1 */
+  case U_NEUTRAL_WIDTH: u_fprintf(gOut, "-"); break; 
+  }
 
-          u_fprintf(gOut, "</TD>");
+  u_fprintf(gOut, "</TD>");
 
           /** 6. direction **/
-          u_fprintf(gOut, "<TD>");
-	  switch(u_charDirection(theChar))
-	    {
-	    case U_LEFT_TO_RIGHT: u_fprintf(gOut, "LTR"); break; 
-	    case U_RIGHT_TO_LEFT: u_fprintf(gOut, "RTL"); break; 
-	    case U_EUROPEAN_NUMBER: u_fprintf(gOut, "European Number"); break; 
-	    case U_EUROPEAN_NUMBER_SEPARATOR: u_fprintf(gOut, "Eur. Num. Sep"); break; 
-	    case U_EUROPEAN_NUMBER_TERMINATOR: u_fprintf(gOut, "Eur. num. Term"); break; 
-	    case U_ARABIC_NUMBER: u_fprintf(gOut, "Arabic Num."); break; 
-	    case U_COMMON_NUMBER_SEPARATOR: u_fprintf(gOut, "Cmn Number Sep"); break; 
-	    case U_BLOCK_SEPARATOR: u_fprintf(gOut, "Block Sep"); break; 
-	    case U_SEGMENT_SEPARATOR: u_fprintf(gOut, "Segment Sep"); break; 
-	    case U_WHITE_SPACE_NEUTRAL: u_fprintf(gOut, "White Space Neutral"); break; 
-	    case U_OTHER_NEUTRAL: u_fprintf(gOut, "Other Neutral"); break; 
-	    case U_LEFT_TO_RIGHT_EMBEDDING: u_fprintf(gOut, "LRE"); break; 
-	    case U_LEFT_TO_RIGHT_OVERRIDE: u_fprintf(gOut, "LRO"); break; 
-	    case U_RIGHT_TO_LEFT_ARABIC: u_fprintf(gOut, "RTL-Arabic"); break; 
-	    case U_RIGHT_TO_LEFT_EMBEDDING: u_fprintf(gOut, "RLE"); break; 
-	    case U_RIGHT_TO_LEFT_OVERRIDE: u_fprintf(gOut, "RLO"); break; 
-	    case U_POP_DIRECTIONAL_FORMAT: u_fprintf(gOut, "PDF"); break; 
-	    case U_DIR_NON_SPACING_MARK: u_fprintf(gOut, "Combining Class %d", u_getCombiningClass(theChar)); break; 
-	    case U_BOUNDARY_NEUTRAL: u_fprintf(gOut, "BN"); break; 
-	    default: u_fprintf(gOut, "Unknown Dir\n");
-	    }
-          /*  put the mirrored thing here. Not so common, keeps it out of the way. */
-          if(u_isMirrored(theChar))
-          {
-            u_fprintf(gOut, " (Mirrored)");
-          }
-	  u_fprintf(gOut, "</TD>");
+  u_fprintf(gOut, "<TD>");
+  switch(u_charDirection(theChar))
+    {
+    case U_LEFT_TO_RIGHT: u_fprintf(gOut, "LTR"); break; 
+    case U_RIGHT_TO_LEFT: u_fprintf(gOut, "RTL"); break; 
+    case U_EUROPEAN_NUMBER: u_fprintf(gOut, "European Number"); break; 
+    case U_EUROPEAN_NUMBER_SEPARATOR: u_fprintf(gOut, "Eur. Num. Sep"); break; 
+    case U_EUROPEAN_NUMBER_TERMINATOR: u_fprintf(gOut, "Eur. num. Term"); break; 
+    case U_ARABIC_NUMBER: u_fprintf(gOut, "Arabic Num."); break; 
+    case U_COMMON_NUMBER_SEPARATOR: u_fprintf(gOut, "Cmn Number Sep"); break; 
+    case U_BLOCK_SEPARATOR: u_fprintf(gOut, "Block Sep"); break; 
+    case U_SEGMENT_SEPARATOR: u_fprintf(gOut, "Segment Sep"); break; 
+    case U_WHITE_SPACE_NEUTRAL: u_fprintf(gOut, "White Space Neutral"); break; 
+    case U_OTHER_NEUTRAL: u_fprintf(gOut, "Other Neutral"); break; 
+    case U_LEFT_TO_RIGHT_EMBEDDING: u_fprintf(gOut, "LRE"); break; 
+    case U_LEFT_TO_RIGHT_OVERRIDE: u_fprintf(gOut, "LRO"); break; 
+    case U_RIGHT_TO_LEFT_ARABIC: u_fprintf(gOut, "RTL-Arabic"); break; 
+    case U_RIGHT_TO_LEFT_EMBEDDING: u_fprintf(gOut, "RLE"); break; 
+    case U_RIGHT_TO_LEFT_OVERRIDE: u_fprintf(gOut, "RLO"); break; 
+    case U_POP_DIRECTIONAL_FORMAT: u_fprintf(gOut, "PDF"); break; 
+    case U_DIR_NON_SPACING_MARK: u_fprintf(gOut, "Combining Class %d", u_getCombiningClass(theChar)); break; 
+    case U_BOUNDARY_NEUTRAL: u_fprintf(gOut, "BN"); break; 
+    default: u_fprintf(gOut, "Unknown Dir\n");
+    }
+  /*  put the mirrored thing here. Not so common, keeps it out of the way. */
+  if(u_isMirrored(theChar))
+    {
+      u_fprintf(gOut, " (Mirrored)");
+    }
+  u_fprintf(gOut, "</TD>");
 
 
 	  /** image - removed **/
@@ -548,7 +574,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 /*  #error you're rude */
 /*            u_fprintf(gOut, "</TD>"); */
 
-          u_fprintf(gOut, "</TR>\r\n");
+  u_fprintf(gOut, "</TR>\r\n");
 
 }
 
@@ -568,7 +594,6 @@ main(int argc,
   UVersionInfo uvi;
   UErrorCode status = U_ZERO_ERROR;
 
-  setup_sortedNames();
   chars[1] = 0;
   pi = getenv("PATH_INFO");
   if(!pi)
@@ -600,7 +625,9 @@ main(int argc,
       return 0;
   }
 
-  validate_sanity();
+  if(lxu_validate_property_sanity()) {
+    u_fprintf(gOut, "<H1>Err, uchar.h changed without update to lx_utils.c</H1>\r\n");
+  }
 
   /* set up the converter */
   ucnv_setSubstChars(u_fgetConverter(gOut),"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
@@ -991,9 +1018,13 @@ main(int argc,
 
       u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
-      u_fprintf(gOut, "<center><table border=5 cellpadding=3 cellspacing=3><tr><td><FONT SIZE=+5>");
+      u_fprintf(gOut, "<table border=5 cellpadding=3 cellspacing=6><tr><td>&nbsp;<FONT SIZE=+5>");
       printOneUChar32(block);
-      u_fprintf(gOut, "</FONT></td></tr></table></center><P>\r\n");
+      u_fprintf(gOut, "</FONT>&nbsp;</td><td>");
+
+      printCanonEquivs(block);
+
+      u_fprintf(gOut, "</td></tr></table><P>\r\n");
 
       u_fprintf(gOut, "<table border=2>");
       printRowHeader(TRUE);
@@ -1003,12 +1034,21 @@ main(int argc,
       u_fprintf(gOut, "<table border=2>\r\n");
       u_fprintf(gOut, "<tr><td><B>#</B></td><td><B>Type</B></td><td><B>Name</B></TD><td><B>Value</B></TD></TR>\r\n");
       
+      {
+	UVersionInfo va;
+	char age[U_MAX_VERSION_STRING_LENGTH];
+	u_charAge(block, va);
+	u_versionToString(va, age);
+	u_fprintf(gOut, "<tr><td>-</td><td>%s</td><td>%s</TD><td>%s</TD></TR>\r\n",
+		  "Vers", "Derived Age", age);
+      }
+
       for(i=UCHAR_BINARY_START;i<UCHAR_BINARY_LIMIT;i++) {
 	UBool has;
 	has = u_hasBinaryProperty(block, i);
 
-	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</TD><td>%s</TD></TR>\r\n",
-		  i, "bin", "", has?"T":"f");
+	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s%s%s</TD><td>%s</TD></TR>\r\n",
+		  i, "bin", has?"<b>":"", getUPropertyName(i), has?"</b>":"",  has?"T":"f");
       }
 
       for(i=UCHAR_INT_START;i<UCHAR_INT_LIMIT;i++) {
@@ -1016,14 +1056,14 @@ main(int argc,
 	has = u_getIntPropertyValue(block, i);
 
 	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</TD><td>%ld (%ld..%ld)</TD></TR>\r\n",
-		  i, "int", "", has,
+		  i, "int", getUPropertyName(i), has,
 		  u_getIntPropertyMinValue(i),
 		  u_getIntPropertyMaxValue(i));
       }
 
       u_fprintf(gOut, "</table>\r\n");
 
-
+	
       u_fprintf(gOut, "<p><hr>\r\n");
       showSearchMenu( block + 1);
     }
@@ -1193,235 +1233,6 @@ main(int argc,
 /* still lazy evaluated. but it'll give us an alternate strcpy */
 
 
-UConverter *gConverter = NULL;
-
-const char *
-up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *cnvStatus)
-{
-  /* borrowed from udate */
-  int32_t sourceLen;
-  const UChar *mySource;
-  const UChar *mySourceEnd;
-  char *myTarget;
-  int32_t arraySize;
-  UErrorCode  status = U_ZERO_ERROR;
-
-  /*  return u_austrcpy(buf,src);*/
-
-  status = U_ZERO_ERROR;
-
-  if(gConverter == NULL) /* open just one of these */
-    {
-      /* open a default converter */
-      gConverter = ucnv_open(NULL, &status);
-      ucnv_setSubstChars(gConverter,"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
-      if(U_FAILURE(status))
-	{
-	  u_fprintf(gOut, "%s", "Could not open the default converter.");
-	}
-    }
-
-  /* set up the conversion parameters */
-  sourceLen    = len;
-  mySource     = src;
-  mySourceEnd  = mySource + sourceLen;
-  myTarget     = buf;
-  arraySize    = 0x000FFFFF; /* should be a param */
-
-  /* put our special error handler in */
-#if 0 
-/* until it is implemented for 1.6 */
-  ucnv_setFromUCallBack(gConverter, &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
-#endif
-
-
-  /*  ucnv_setFromUCallBack(gConverter, &SubstituteWithValueHTML, &status); */
-
-  /* perform the conversion */
-
-  /* perform the conversion */
-  ucnv_fromUnicode(gConverter,
-		   &myTarget,
-		   myTarget + arraySize,
-		   &mySource, 
-		   mySourceEnd, 
-		   NULL,
-		   TRUE,
-		   cnvStatus);
-
-    /* Write the converted data to the FILE* */
-
-  *myTarget = 0; /* tie it off */
-
-  return buf;
-}
-
-
-const char *getUCharCategoryName(int8_t type)
-{
-  switch(type)
-    {
-    case U_UNASSIGNED: return "Unassigned"; break;
-    case U_UPPERCASE_LETTER: return "Uppercase Letter"; break;
-    case U_LOWERCASE_LETTER:  return "Lowercase Letter"; break;
-    case U_TITLECASE_LETTER: return "Titlecase Letter"; break;
-    case U_MODIFIER_LETTER: return "Modifier Letter"; break;
-    case U_OTHER_LETTER: return "Other Letter"; break;
-    case U_NON_SPACING_MARK: return "Non-Spacing Mark"; break;
-    case U_ENCLOSING_MARK: return "Enclosing Mark"; break;
-    case U_COMBINING_SPACING_MARK: return "Combining Spacing Mark"; break;
-    case U_DECIMAL_DIGIT_NUMBER: return "Decimal Digit Number"; break;
-    case U_LETTER_NUMBER: return "Letter Number"; break;
-    case U_OTHER_NUMBER: return "Other Number"; break;
-    case U_SPACE_SEPARATOR: return "Space Separator"; break;
-    case U_LINE_SEPARATOR: return "Line Separator"; break;
-    case U_PARAGRAPH_SEPARATOR: return "Paragraph Separator"; break;
-    case U_CONTROL_CHAR: return "Control"; break;
-    case U_FORMAT_CHAR: return "Format"; break;
-    case U_PRIVATE_USE_CHAR: return "Private Use"; break;
-    case U_SURROGATE: return "Surrogate"; break;
-    case U_DASH_PUNCTUATION: return "Dash Punctuation"; break;
-    case U_START_PUNCTUATION: return "Start Punctuation"; break;
-    case U_END_PUNCTUATION: return "End Punctuation"; break;
-    case U_CONNECTOR_PUNCTUATION: return "Connector Punctuation"; break;
-    case U_OTHER_PUNCTUATION: return "Other Punctuation"; break;
-    case U_MATH_SYMBOL: return "Math Symbol"; break;
-    case U_CURRENCY_SYMBOL: return "Currency Symbol"; break;
-    case U_MODIFIER_SYMBOL: return "Modifier Symbol"; break;
-    case U_OTHER_SYMBOL: return "Other Symbol"; break;
-    case U_INITIAL_PUNCTUATION: return "Initial Punctuation"; break;
-    case U_FINAL_PUNCTUATION: return "Final Punctuation"; break;
-#define EXPECTED_U_CHAR_CATEGORY_COUNT (U_FINAL_PUNCTUATION+1)
-
-      /* case U_GENERAL_OTHER_TYPES: return "General Other Types"; break; */
-
-    default: return "Unknown type %d"; break;
-    }
-}
-
-
-const char *getUBlockCodeName(UBlockCode block)
-{
-  switch(block)
-    {
-case UBLOCK_BASIC_LATIN: return "Basic Latin"; break;
-case UBLOCK_LATIN_1_SUPPLEMENT: return "Latin-1 Supplement"; break;
-case UBLOCK_LATIN_EXTENDED_A: return "Latin Extended A"; break;
-case UBLOCK_LATIN_EXTENDED_B: return "Latin Extended B"; break;
-case UBLOCK_IPA_EXTENSIONS: return "IPA Extensions"; break;
-case UBLOCK_SPACING_MODIFIER_LETTERS: return "Spacing Modifier Letters"; break;
-case UBLOCK_COMBINING_DIACRITICAL_MARKS: return "Combining Diacritical Marks"; break;
-case UBLOCK_GREEK: return "Greek"; break;
-case UBLOCK_CYRILLIC: return "Cyrillic"; break;
-case UBLOCK_ARMENIAN: return "Armenian"; break;
-case UBLOCK_HEBREW: return "Hebrew"; break;
-case UBLOCK_ARABIC: return "Arabic"; break;
-case UBLOCK_SYRIAC: return "Syriac"; break;
-case UBLOCK_THAANA: return "Thaana"; break;
-case UBLOCK_DEVANAGARI: return "Devanagari"; break;
-case UBLOCK_BENGALI: return "Bengali"; break;
-case UBLOCK_GURMUKHI: return "Gurmukhi"; break;
-case UBLOCK_GUJARATI: return "Gujarati"; break;
-case UBLOCK_ORIYA: return "Oriya"; break;
-case UBLOCK_TAMIL: return "Tamil"; break;
-case UBLOCK_TELUGU: return "Telugu"; break;
-case UBLOCK_KANNADA: return "Kannada"; break;
-case UBLOCK_MALAYALAM: return "Malayalam"; break;
-case UBLOCK_SINHALA: return "Sinhala"; break;
-case UBLOCK_THAI: return "Thai"; break;
-case UBLOCK_LAO: return "Lao"; break;
-case UBLOCK_TIBETAN: return "Tibetan"; break;
-case UBLOCK_MYANMAR: return "Myanmar"; break;
-case UBLOCK_GEORGIAN: return "Georgian"; break;
-case UBLOCK_HANGUL_JAMO: return "Hangul-Jamo"; break;
-case UBLOCK_ETHIOPIC: return "Ethiopic"; break;
-case UBLOCK_CHEROKEE: return "Cherokee"; break;
-case UBLOCK_UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS: return "Unified Canadian Aboriginal Syllabics"; break;
-case UBLOCK_OGHAM: return "Ogham"; break;
-case UBLOCK_RUNIC: return "Runic"; break;
-case UBLOCK_KHMER: return "Khmer"; break;
-case UBLOCK_MONGOLIAN: return "Mongolian"; break;
-case UBLOCK_LATIN_EXTENDED_ADDITIONAL: return "Latin Extended Additional"; break;
-case UBLOCK_GREEK_EXTENDED: return "Greek Extended"; break;
-case UBLOCK_GENERAL_PUNCTUATION: return "General Punctuation"; break;
-case UBLOCK_SUPERSCRIPTS_AND_SUBSCRIPTS: return "Superscripts and Subscripts"; break;
-case UBLOCK_CURRENCY_SYMBOLS: return "Currency Symbols"; break;
-case UBLOCK_COMBINING_MARKS_FOR_SYMBOLS: return "Combining Marks for Symbols"; break;
-case UBLOCK_LETTERLIKE_SYMBOLS: return "Letterlike Symbols"; break;
-case UBLOCK_NUMBER_FORMS: return "Number Forms"; break;
-case UBLOCK_ARROWS: return "Arrows"; break;
-case UBLOCK_MATHEMATICAL_OPERATORS: return "Mathematical Operators"; break;
-case UBLOCK_MISCELLANEOUS_TECHNICAL: return "Miscellaneous Technical"; break;
-case UBLOCK_CONTROL_PICTURES: return "Control Pictures"; break;
-case UBLOCK_OPTICAL_CHARACTER_RECOGNITION: return "Optical Character Recognition"; break;
-case UBLOCK_ENCLOSED_ALPHANUMERICS: return "Enclosed Alphanumerics"; break;
-case UBLOCK_BOX_DRAWING: return "Box Drawing"; break;
-case UBLOCK_BLOCK_ELEMENTS: return "Block Elements"; break;
-case UBLOCK_GEOMETRIC_SHAPES: return "Geometric Shapes"; break;
-case UBLOCK_MISCELLANEOUS_SYMBOLS: return "Miscellaneous Symbols"; break;
-case UBLOCK_DINGBATS: return "Dingbats"; break;
-case UBLOCK_BRAILLE_PATTERNS: return "Braille Patterns"; break;
-case UBLOCK_CJK_RADICALS_SUPPLEMENT: return "CJK Radicals Supplement"; break;
-case UBLOCK_KANGXI_RADICALS: return "KangXi Radicals"; break;
-case UBLOCK_IDEOGRAPHIC_DESCRIPTION_CHARACTERS: return "Ideographic Description Characters"; break;
-case UBLOCK_CJK_SYMBOLS_AND_PUNCTUATION: return "CJK Symbols and Punctuation"; break;
-case UBLOCK_HIRAGANA: return "Hiragana"; break;
-case UBLOCK_KATAKANA: return "Katakana"; break;
-case UBLOCK_BOPOMOFO: return "Bopomofo"; break;
-case UBLOCK_HANGUL_COMPATIBILITY_JAMO: return "Hangul Compatibility Jamo"; break;
-case UBLOCK_KANBUN: return "Kanbun"; break;
-case UBLOCK_BOPOMOFO_EXTENDED: return "Bopomofo Extended"; break;
-case UBLOCK_ENCLOSED_CJK_LETTERS_AND_MONTHS: return "Enclosed CJK Letters and Months"; break;
-case UBLOCK_CJK_COMPATIBILITY: return "CJK Compatibility"; break;
-case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A: return "CJK Unified Ideographs Extension A"; break;
-case UBLOCK_CJK_UNIFIED_IDEOGRAPHS: return "CJK Unified Ideographs"; break;
-case UBLOCK_YI_SYLLABLES: return "Yi Syllables"; break;
-case UBLOCK_YI_RADICALS: return "Yi Radicals"; break;
-case UBLOCK_HANGUL_SYLLABLES: return "Hangul Syllables"; break;
-case UBLOCK_HIGH_SURROGATES: return "High Surrogates"; break;
-case UBLOCK_HIGH_PRIVATE_USE_SURROGATES: return "High Private-Use Surrogates"; break;
-case UBLOCK_LOW_SURROGATES: return "Low Surrogates"; break;
-case UBLOCK_PRIVATE_USE_AREA /* PRIVATE_USE */: return "Private Use Area"; break;
-case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS: return "CJK Compatibility Ideographs"; break;
-case UBLOCK_ALPHABETIC_PRESENTATION_FORMS: return "Alphabetic Presentation Forms"; break;
-case UBLOCK_ARABIC_PRESENTATION_FORMS_A: return "Arabic Presentation Forms A"; break;
-case UBLOCK_COMBINING_HALF_MARKS: return "Combining Half Marks"; break;
-case UBLOCK_CJK_COMPATIBILITY_FORMS: return "CJK Compatibility Forms"; break;
-case UBLOCK_SMALL_FORM_VARIANTS: return "Small Form Variants"; break;
-case UBLOCK_ARABIC_PRESENTATION_FORMS_B: return "Arabic Presentation Forms B"; break;
-case UBLOCK_SPECIALS: return "Specials"; break;
-case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS: return "Halfwidth and Fullwidth Forms"; break;
-    case UBLOCK_OLD_ITALIC: return "Old Italic"; break;
-    case UBLOCK_GOTHIC: return "Gothic"; break;
-    case UBLOCK_DESERET: return "Deseret"; break;
-    case UBLOCK_BYZANTINE_MUSICAL_SYMBOLS: return "Byzantine Musical Symbols"; break;
-    case UBLOCK_MUSICAL_SYMBOLS: return "Musical Symbols"; break;
-    case UBLOCK_MATHEMATICAL_ALPHANUMERIC_SYMBOLS: return "Mathematical Alphanumeric Symbols"; break;
-    case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B: return "CJK Unified Ideographs, Extension B"; break;
-    case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT: return "CJK Compatibility Ideographs, Supplement"; break;
-    case UBLOCK_TAGS: return "Tags"; break;
-      /* ICU 2.2: (Unicode 3.2) */
-    case UBLOCK_CYRILLIC_SUPPLEMENTARY: return "Cyrillic Supplementary"; break;
-    case UBLOCK_TAGALOG: return "Tagalog"; break;
-    case UBLOCK_HANUNOO: return "Hanunoo"; break;
-    case UBLOCK_BUHID: return "Buhid"; break;
-    case UBLOCK_TAGBANWA: return "Tagbanwa"; break;
-    case UBLOCK_MISCELLANEOUS_MATHEMATICAL_SYMBOLS_A: return "Miscellaneous Mathematical Symbols A"; break;
-    case UBLOCK_SUPPLEMENTAL_ARROWS_A: return "Supplemental Arrows A"; break;
-    case UBLOCK_SUPPLEMENTAL_ARROWS_B: return "Supplemental Arrows B"; break;
-    case UBLOCK_MISCELLANEOUS_MATHEMATICAL_SYMBOLS_B: return "Miscellaneous Mathematical Symbols B"; break;
-    case UBLOCK_SUPPLEMENTAL_MATHEMATICAL_OPERATORS: return "Supplemental Mathematical Operators"; break;
-    case UBLOCK_KATAKANA_PHONETIC_EXTENSIONS: return "Katakana Phonetic Extensions"; break;
-    case UBLOCK_VARIATION_SELECTORS: return "Variation Selectors"; break;
-    case UBLOCK_SUPPLEMENTARY_PRIVATE_USE_AREA_A: return "Supplementary Private Use Area A"; break;
-    case UBLOCK_SUPPLEMENTARY_PRIVATE_USE_AREA_B: return "Supplementary Private Use Area B"; break;
-
-#define EXPECTED_UBLOCK_COUNT (UBLOCK_SUPPLEMENTARY_PRIVATE_USE_AREA_B+1)
-
-    default: return "Unknown block "; break;
-    }
-}
-
 UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
 {
   UChar32 end = (startFrom-1);
@@ -1494,9 +1305,9 @@ void showSearchMenu(UChar32 startFrom)
   for(i=0;i<UBLOCK_COUNT;i++)
     {
       u_fprintf(gOut, "  <OPTION ");
-      if(i == gSearchBlock)
+      if(getUBlockCodeSorted(i) == gSearchBlock)
 	u_fprintf(gOut, " SELECTED ");
-      u_fprintf(gOut, " VALUE=\"%d\">%s", gUBlockCodeNames[i].i, gUBlockCodeNames[i].n);
+      u_fprintf(gOut, " VALUE=\"%d\">%s", getUBlockCodeSorted(i), getUBlockCodeSortedName(i));
       u_fprintf(gOut, "\r\n");
     }
   u_fprintf(gOut, "</SELECT>\r\n");
@@ -1510,9 +1321,9 @@ void showSearchMenu(UChar32 startFrom)
   for(i=0;i<U_CHAR_CATEGORY_COUNT;i++)
     {
       u_fprintf(gOut, "  <OPTION ");
-      if(i == gSearchType)
+      if(getUCharCategorySorted(i) == gSearchType)
 	u_fprintf(gOut, " SELECTED ");
-      u_fprintf(gOut, " VALUE=\"%d\">%s", gUCharCategoryNames[i].i, gUCharCategoryNames[i].n);
+      u_fprintf(gOut, " VALUE=\"%d\">%s", getUCharCategorySorted(i), getUCharCategorySortedName(i));
       u_fprintf(gOut, "\r\n");
     }
   u_fprintf(gOut, "</SELECT>\r\n");
@@ -1539,47 +1350,3 @@ void showSearchMenu(UChar32 startFrom)
 
 }
 
-int validate_sanity()
-{
-  int insane = 0;
-
-  if(U_CHAR_CATEGORY_COUNT != EXPECTED_U_CHAR_CATEGORY_COUNT) {
-    u_fprintf(gOut, "<B>U_CHAR_CATEGORY_COUNT=%d, expected %d</B><BR>\r\n", 
-	      U_CHAR_CATEGORY_COUNT, EXPECTED_U_CHAR_CATEGORY_COUNT);
-    insane=1;
-  }
-
-  if(UBLOCK_COUNT != EXPECTED_UBLOCK_COUNT) {
-    u_fprintf(gOut, "<B>UBLOCK_COUNT=%d, expected %d</B><BR>\r\n", 
-	      UBLOCK_COUNT, EXPECTED_UBLOCK_COUNT);
-    insane=1;
-  }
-  if(insane>0) {
-    u_fprintf(gOut, "<H1>ERROR! utypes.h has changed since ubrowse.c was updated! Some values will be out of date!</H1>\r\n");
-  }
-}
-
-static int compnames_proc(const void *aa, const void *bb)
-{
-  EnumVal *a = (EnumVal*)aa;
-  EnumVal *b = (EnumVal*)bb;
-  return strcmp(a->n, b->n);
-}
-
-void setup_sortedNames()
-{
-  int i;
-  /* first, the block names */
-  for(i=0;i<UBLOCK_COUNT;i++) {
-    gUBlockCodeNames[i].n = getUBlockCodeName(i);
-    gUBlockCodeNames[i].i = i;
-  }
-  qsort(gUBlockCodeNames, UBLOCK_COUNT, sizeof(gUBlockCodeNames[0]), &compnames_proc);
-
-  for(i=0;i<U_CHAR_CATEGORY_COUNT;i++) {
-    gUCharCategoryNames[i].n = getUCharCategoryName(i);
-    gUCharCategoryNames[i].i = i;
-  }
-
-  qsort(gUCharCategoryNames, U_CHAR_CATEGORY_COUNT, sizeof(gUCharCategoryNames[0]), &compnames_proc);
-}
