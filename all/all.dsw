@@ -123,18 +123,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "tools"=..\locexp\tools\tools.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "ubrowse"=..\ubrowse\ubrowse.dsp - Package Owner=<4>
 
 Package=<5>
@@ -194,24 +182,6 @@ Package=<5>
 
 Package=<4>
 {{{
-}}}
-
-###############################################################################
-
-Project: "usort"=..\usort\usort.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name usort_client
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name usort_lib
-    End Project Dependency
 }}}
 
 ###############################################################################
