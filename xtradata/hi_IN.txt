@@ -2,21 +2,22 @@
 // Hindi locale. Need to work on unicodizing more of the text..
 
 hi_IN {
-    LocaleString { hi_IN }
+    ShortCountry { IND }
+
     CurrencyElements {
-        "Rup",
-        RUP,
+        "\u0930\u0942",
+        RUP,  // Rs. ? No.
         "."
     }
     DateTimePatterns {
-        "h:mm:ss \u092c\u091c\u094b a z",
-        "h:mm:ss a z",
-        "h:mm:ss a",
-        "h:mm a",
-        "EEEE, MMMM dd, yyyy",
-        "MMMM d, yyyy",
-        "dd-MMM-yy",
-        "M/d/yy",
+        "hh:mm:ss \u092c\u091c\u094b a z",
+        "hh:mm:ss a z",
+        "hh:mm:ss a",
+        "hh:mm a",
+        "EEEE d MMMM yyyy",
+        "d MMMM yyyy",
+        "dd mm yyyy",
+        "d m yy",
         "{1} {0}"
     }
     DateTimeElements {

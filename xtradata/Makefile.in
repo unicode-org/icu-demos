@@ -1,4 +1,4 @@
-RESFILESSRC=index.txt default.txt eo.txt mt.txt mt_MT.txt hi.txt hi_IN.txt id.txt
+RESFILESSRC=index.txt default.txt eo.txt mt.txt mt_MT.txt hi.txt hi_IN.txt id.txt ta.txt
 RESFILES=$(RESFILESSRC:.txt=.res)
     
 srcdir=@srcdir@

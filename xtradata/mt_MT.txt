@@ -1,7 +1,7 @@
 // Just some Malta-specific things
 
 mt_MT {
- Version { "x0.1_srl@monkey.sbay.org" }
+ Version { "x0.5_srl@monkey.sbay.org" }
           LocaleString { mt_MT }
 	  ShortCountry { MALTA }
     CurrencyElements {
