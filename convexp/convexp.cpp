@@ -36,6 +36,15 @@ TODO:
 #include "printcp.h"
 #include "params.h"
 
+/*
+IANA states that an alias may be up to 40 characters.
+The only ones that fails this specification are
+    1) Extended_UNIX_Code_Packed_Format_for_Japanese
+    2) Extended_UNIX_Code_Fixed_Width_for_Japanese
+We wrap such unusually long names onto multiple lines.
+*/
+#define MAX_NOWRAP_ALIAS 40
+
 static const char htmlHeader[]=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
@@ -71,8 +80,6 @@ static const char htmlHeader[]=
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
     "p.value {font-family: monospace;}\n"
-    "th {white-space: nowrap; background-color: #EEEEEE; text-align: left;}\n"
-    "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
     "td.alias {white-space: nowrap;}\n"
     "td.value {font-family: monospace;}\n"
     "td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
@@ -164,6 +171,8 @@ static const char htmlHeader[]=
 
     "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
     "<tr><td>"
+    "<a href=\"//www.ibm.com/software/\">Software</a> &gt;\n"
+    "<a href=\"//www.ibm.com/software/globalization/\">Globalization</a> &gt;\n"
     "<a href=\"//www.ibm.com/software/globalization/icu/\">ICU</a> &gt;\n"
     "<a href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a> &gt;";
 
@@ -180,8 +189,7 @@ static const char navigationEndHeader[]=
     "<a href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">Help</a>"
     "</td></tr>\n"
     "</table>\n"
-    "<hr />\n"
-    "<h1>ICU " PROGRAM_NAME "</h1>\n";
+    "<h1><br />ICU " PROGRAM_NAME "</h1>\n";
 
 static const char aliasHeader[]=
     "<h2><br />List of Converter Aliases</h2>";
@@ -481,7 +489,7 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
                         if (!localeFound) {
                             localeFound = TRUE;
                             printf(startTable);
-                            printf("<tr><th class=\"standard\">Locale</th><th class=\"standard\">Locale Name</th></tr>\n");
+                            puts("<tr><th class=\"hil\" style=\"text-align: center\">Locale</th><th class=\"hil\" style=\"text-align: center\">Locale Name</th></tr>");
                         }
                         printf("<tr><td>%s</td><td>%s</td></tr>\n", locale, patBufferUTF8);
                     }
@@ -526,11 +534,11 @@ static void printConverterInfo(UErrorCode *status) {
     }
     puts(startTable);
     convType = ucnv_getType(cnv);
-    printf("<tr><th>Type of converter</th><td class=\"value\">%s</td></tr>\n", getConverterType(convType));
-    printf("<tr><th>Minimum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMinCharSize(cnv));
-    printf("<tr><th>Maximum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
+    printf("<tr><th class=\"hil\">Type of converter</th><td class=\"value\">%s</td></tr>\n", getConverterType(convType));
+    printf("<tr><th class=\"hil\">Minimum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMinCharSize(cnv));
+    printf("<tr><th class=\"hil\">Maximum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
 
-    printf("<tr><th>Substitution character</th><td class=\"value\">");
+    printf("<tr><th class=\"hil\">Substitution character</th><td class=\"value\">");
     buffer[0] = 0;
     len = sizeof(buffer)/sizeof(buffer[0]);
     ucnv_getSubstChars(cnv, buffer, &len, status);
@@ -549,7 +557,7 @@ static void printConverterInfo(UErrorCode *status) {
     printf("</td></tr>\n");
 
     if (ucnv_getType(cnv) == UCNV_MBCS) {
-        printf("<tr><th>Starter bytes</th><td class=\"value\">");
+        printf("<tr><th class=\"hil\">Starter bytes</th><td class=\"value\">");
         ucnv_getStarters(cnv, starterBufferBool, &myStatus);
         starterBuffer[0] = 0;
         len = 0;
@@ -564,13 +572,13 @@ static void printConverterInfo(UErrorCode *status) {
         printf("</td></tr>\n");
     }
 
-    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th>Is ASCII [\\u0020-\\u007E] irregular?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th class=\"hil\">Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th class=\"hil\">Is ASCII [\\u0020-\\u007E] irregular?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
 
     ambiguousAlias = containsAmbiguousAliases();
-    printf("<tr><th>Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
+    printf("<tr><th class=\"hil\">Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
     if (ambiguousAlias) {
-        puts("<tr><th>Converters with conflicting aliases</th><td>");
+        puts("<tr><th class=\"hil\">Converters with conflicting aliases</th><td>");
         printAmbiguousAliasedConverters();
         puts("</td></tr>");
     }
@@ -622,7 +630,7 @@ static void printStandardHeaders(UErrorCode *status) {
     int32_t i;
     const char *standard;
 
-    puts("<tr><th class=\"standard\">Internal<br />Converter Name</th>");
+    puts("<tr><th class=\"hil\" style=\"text-align: center\">Internal<br />Converter Name</th>");
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
         standard = ucnv_getStandard((uint16_t)i, status);
@@ -631,17 +639,37 @@ static void printStandardHeaders(UErrorCode *status) {
         }
         if (uhash_find(gStandardsSelected, standard) != NULL) {
             if (*standard) {
-                printf("<th class=\"standard\">%s</th>\n", standard);
+                printf("<th class=\"hil\" style=\"text-align: center\">%s</th>\n", standard);
             }
             else {
-                puts("<th class=\"standard\"><em>Untagged Aliases</em></th>");
+                puts("<th class=\"hil\" style=\"text-align: center\"><em>Untagged Aliases</em></th>");
             }
         }
     }
     if (uhash_find(gStandardsSelected, ALL) != NULL) {
-        puts("<th class=\"standard\"><em>All Aliases</em></th>");
+        puts("<th class=\"hil\" style=\"text-align: center\"><em>All Aliases</em></th>");
     }
     puts("</tr>");
+}
+
+static inline void printAlias(const char *alias, UBool isFinal) {
+    if (strlen(alias) > MAX_NOWRAP_ALIAS) {
+        char *nextUnderscore = (char *)alias;
+        puts("<!-- This alias is way too long. So we do special formatting so that the browser can word wrap. -->");
+        printf("<span style=\"font-style: italic\" title=\"%s\">", alias);
+        while ((nextUnderscore = strchr(nextUnderscore, '_'))) {
+            printf("%.*s<br />\n"NBSP NBSP NBSP NBSP, nextUnderscore-alias, alias);
+            alias = nextUnderscore;
+            nextUnderscore++; // Skip the current '_'
+        }
+        printf("%s</span>", alias);
+    }
+    else {
+        printf("%s", alias);
+    }
+    if (!isFinal) { /* Don't print a break after the last item. */
+        puts("<br />");
+    }
 }
 
 static void printAllAliasList(const char *canonicalName, UErrorCode *status) {
@@ -652,12 +680,7 @@ static void printAllAliasList(const char *canonicalName, UErrorCode *status) {
     puts("<td class=\"alias\">");
     for (idx = 0; idx < countAliases; idx++) {
         alias = ucnv_getAlias(canonicalName, idx, status);
-        if (idx + 1 == countAliases) {
-            printf("%s", alias); /* Don't print a break after the last item. */
-        }
-        else {
-            printf("%s<br />\n", alias);
-        }
+        printAlias(alias, (UBool)(idx + 1 == countAliases));
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getAlias() -> %s\n", u_errorName(*status));
         }
@@ -680,12 +703,7 @@ static void printStandardAliasList(const char *canonicalName, const char *standa
             printf(NBSP);
         }
         while ((alias = uenum_next(stdConvEnum, NULL, &myStatus))) {
-            if (--aliasCount == 0) {
-                printf("%s", alias); /* Don't print a break after the last item. */
-            }
-            else {
-                printf("%s<br />\n", alias);
-            }
+            printAlias(alias, (UBool)(--aliasCount == 0));
         }
         puts("</td>");
     }
@@ -732,15 +750,19 @@ static void printAliasTable() {
                 continue;
             }
             if (*gCurrConverter) {
-                printf("<tr>\n<th>%s</th>\n", canonicalName);
+                printf("<tr>\n<th style=\"white-space: nowrap\">%s</th>\n", canonicalName);
             }
             else {
-                printf("<tr>\n<th><a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
+                printf("<tr>\n<th style=\"white-space: nowrap\"><a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
                     gScriptName, canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
             status = U_ZERO_ERROR;
             printAliases(canonicalName, &status);
             puts("</tr>\n");
+            if (*gCurrConverter) {
+                // We were only looking for one converter. There is no need to look further.
+                break;
+            }
         }
         uenum_close(convEnum);
     }

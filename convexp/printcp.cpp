@@ -37,7 +37,7 @@ static void printHeader() {
     int32_t idx;
     puts("<tr><td></td>");
     for (idx = 0; idx < 16; idx++) {
-        printf("<th class=\"standard\"" CELL_WIDTH ">%02X</th>", idx);
+        printf("<th class=\"hil\" style=\"text-align: center\"" CELL_WIDTH ">%02X</th>", idx);
     }
     puts("<td></td></tr>");
 }
@@ -371,7 +371,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
 
     for (row = 0; row < 16; row++) {
         puts("<tr>");
-        printf("<th class=\"standard\">%X0</th>\n", row);
+        printf("<th class=\"hil\" style=\"text-align: center\">%X0</th>\n", row);
         for (col = 0; col < 16; col++) {
             ucnv_resetToUnicode(cnv);
             uint8_t currCh = (uint8_t)(row << 4 | col);
@@ -414,7 +414,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
                 printNothing();
             }
         }
-        printf("<th class=\"standard\">%X0</th>\n", row);
+        printf("<th class=\"hil\" style=\"text-align: center\">%X0</th>\n", row);
         puts("</tr>");
     }
 
