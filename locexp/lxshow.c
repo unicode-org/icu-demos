@@ -2194,10 +2194,10 @@ void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale)
     charDescs[17] = FSWF("localPatternChars17", "Timezone");
     charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
     charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)"); 
-    charDescs[20] = FSWF("localPatternChars20",/**/ "extended year");
-    charDescs[21] = FSWF("localPatternChars21",/**/ "julian day");
-    charDescs[22] = FSWF("localPatternChars22",/**/ "millis in day");
-    charDescs[23] = FSWF("localPatternChars23",/**/ "timezone rfc");
+    charDescs[20] = FSWF(/**/"localPatternChars20", "extended year");
+    charDescs[21] = FSWF(/**/"localPatternChars21", "julian day");
+    charDescs[22] = FSWF(/**/"localPatternChars22", "millis in day");
+    charDescs[23] = FSWF(/**/"localPatternChars23", "timezone rfc");
     charDescs[24] = 0;
     
     showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", TRUE); /* calendrical? */
