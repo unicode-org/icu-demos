@@ -11,6 +11,11 @@ top_srcdir=@top_srcdir@
 # srcdir must be set before this is included
 include @ICU_MAKEFILE@
 
+FINAL_SO_TARGET = $(SO_TARGET).$(SO_TARGET_VERSION)
+
+SO=dylib
+SO_TARGET_VERSION = $(LIB_VERSION)
+SO_TARGET_VERSION_MAJOR = $(LIB_VERSION_MAJOR)
 
 ## Build directory information
 top_builddir = ../..
@@ -18,17 +23,26 @@ subdir = locexp/util
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
-
+ICUPREFIX = icu
+LIBICU = lib$(ICUPREFIX)
 ## Target information
-TARGET = liblxutil.$(SO)
+SO_TARGET = $(LIBICU)lxutil$(ICULIBSUFFIX).$(SO)
+ALL_SO_TARGETS = $(SO_TARGET)
+ALL_TARGETS =  $(ALL_SO_TARGETS)
 
-OBJECTS =  lx_utils.o ures_additions.o kangxi.o 
+
+DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
+DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)
+DYNAMICCXXFLAGS = $(SHAREDLIBCXXFLAGS)
+
+
+OBJECTS =  lx_utils.o ures_additions.o kangxi.o  lx_cpputils.o
 OBJECTS += decompcb.o
 OBJECTS += translitcb.o
 
 #OBJECTS +=  collectcb.o translitcb.o  kannada.o
 
-HADERS = unicode/decompcb.h unicode/lx_utils.h unicode/ures_additions.h unicode/kangxi.h unicode/collectcb.h unicode/translitcb.h 
+HEADERS = unicode/decompcb.h unicode/lx_utils.h unicode/ures_additions.h unicode/kangxi.h unicode/collectcb.h unicode/translitcb.h 
 
 ## fontedcd  support
 #OBJECTS += fontedcb.o devanagari.o
@@ -47,6 +61,7 @@ distclean distclean-local dist dist-local check check-local
 ## Clear suffix list
 .SUFFIXES :
 
+
 ## List of standard targets
 all: all-local
 install: install-local
@@ -55,13 +70,13 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(TARGET)
+all-local: $(ALL_TARGETS)
 
 install-local: all-local install-headers install-library
 
 install-library: all-local
 	$(MKINSTALLDIRS) $(libdir)
-	$(INSTALL) $(TARGET) $(libdir)/$(TARGET)
+	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
 
 
 install-headers:
@@ -90,12 +105,16 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licu-uc -lusort' ...
-$(TARGET) : $(OBJECTS)
-	$(SHLIB.c) -o $@ $^ $(ICULIBS)
+$(SO_TARGET): $(OBJECTS)
+	$(SHLIB.cc) $(LD_SONAME) -o $@ $^ $(ICULIBS)
 
-ifneq ($(MAKECMDGOALS),distclean)
+#$(TARGET) : $(OBJECTS)
+#	$(LINK.cc) -o $@ $^ $(ICULIBS)
+
+ifeq (,$(MAKECMDGOALS))
+-include $(DEPS)
+else
+ifneq ($(patsubst %clean,,$(MAKECMDGOALS)),)
 -include $(DEPS)
 endif
-
-
-
+endif

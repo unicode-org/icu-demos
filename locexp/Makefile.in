@@ -26,6 +26,10 @@ CPPFLAGS += $(LXOPTIONS)
 top_builddir = ..
 subdir = locexp
 
+DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
+DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)
+DYNAMICCXXFLAGS = $(SHAREDLIBCXXFLAGS)
+
 SUBDIRS=tools util resource
 
 ## Extra files to remove for 'make clean'
@@ -41,14 +45,14 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 
 DEPS = $(OBJECTS:.o=.d)
 
-ICULIBS += -lusort -llxutil -lustdio
+ICULIBS := -lustdio $(ICULIBS) -lusort -liculxutil 
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
 LDFLAGS += -L../usort/lib -L./util 
 
 # get the hostname the code is built on
-CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"@host@\"
+CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"$(host)\"
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
@@ -117,7 +121,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licuuc -lusort' ...
 
 $(TARGET) : $(LXOBJ) $(CGIOBJ)
-	$(LINK.c) -o $@ $^ $(ICULIBS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
@@ -180,4 +184,4 @@ iflx: flx
 
 # fast locale explorer itself 
 flx: $(LXOBJ) fcgimain.o
-	$(LINK.c) -o $@ $^ $(ICULIBS) -lfcgi
+	$(LINK.cc) -o $@ $^ $(ICULIBS) -lfcgi

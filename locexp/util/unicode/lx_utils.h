@@ -62,6 +62,7 @@ U_CAPI void mySort(MySortable *root, UErrorCode *err, UBool recurse);
  * @return index into toSort.subLocs[], or -1 if not found
  */
 
+U_CAPI
 int32_t findLocaleNonRecursive(MySortable *toSort, const char *locale);
 
 /** 
@@ -73,6 +74,7 @@ int32_t findLocaleNonRecursive(MySortable *toSort, const char *locale);
  * @param parent parent locale of the node
  */
 
+U_CAPI
 void initSortable(MySortable *s, const char *locid, const char *inLocale, MySortable *parent);
 
 /**
@@ -211,6 +213,9 @@ U_CAPI const char *FSWF_bundlePath();
 
 /* Set the path for FSWF. Default: icudata/FSWF/ */
 U_CAPI void FSWF_setBundlePath(char *newPath);
+
+U_CAPI
+void lx_setHTMLFilterOnTransliterator(UTransliterator *xlit, UBool doFilter);
 
 #endif
 

@@ -13,6 +13,9 @@ top_srcdir=@top_srcdir@
 # srcdir must be set before this is included
 include @ICU_MAKEFILE@
 
+CXXFLAGS += $(SHAREDLIBCXXFLAGS)
+CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
+CFLAGS += $(SHAREDLIBCFLAGS)
 
 ## Build directory information
 top_builddir = ../..
@@ -22,7 +25,8 @@ subdir = usort/lib
 CLEANFILES = *~
 
 ## Target information
-TARGET = libusort.$(SO)
+SO_TARGET = libusort.$(SO)
+SO_TARGET_VERSION_MAJOR=20
 
 OBJECTS = usort.o 
 HEADERS = unicode/usort.h
@@ -44,13 +48,13 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(TARGET)
+all-local: $(SO_TARGET)
 
 install-local: all-local install-headers install-library
 
 install-library: all-local
 	$(MKINSTALLDIRS) $(libdir)
-	$(INSTALL) $(TARGET) $(libdir)/$(TARGET)
+	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
 
 
 install-headers:
@@ -65,7 +69,7 @@ dist-local:
 
 clean-local:
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(SO_TARGET)
 
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
@@ -79,8 +83,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licu-uc -lusort' ...
-$(TARGET) : $(OBJECTS)
-	$(SHLIB.c) -o $@ $^ $(ICULIBS)
+$(SO_TARGET) : $(OBJECTS)
+	$(SHLIB.cc) -o $@ $^ $(ICULIBS)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)

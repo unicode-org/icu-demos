@@ -5,7 +5,7 @@
 
 /*--------------------------------------------------------------------------
 *
-* File listrb.c
+* File locexp.c
 *
 * Modification History:
 *
@@ -59,6 +59,8 @@
 #include "unicode/umsg.h"
 #include "unicode/uscript.h"
 
+#include "unicode/ushape.h"
+
 #ifdef WIN32  /** Need file control to fix stdin/stdout issues **/
 # include <fcntl.h>
 # include <io.h>
@@ -66,7 +68,7 @@
 
 #include "locexp.h"
 
-#include "unicode/translitcb.h"
+#include "unicode/utrans.h"
 #include "unicode/utimzone.h"
 /* #include "unicode/collectcb.h" */
 #include "unicode/usort.h"
@@ -352,8 +354,9 @@ void runLocaleExplorer(LXContext *myContext)
                           &status);
     
     /* To do: install more cb's later. */
-    
-      if(!strcmp(lx->chosenEncoding, "transliterated"))
+      
+#if 0
+if(!strcmp(lx->chosenEncoding, "transliterated"))
         {
           memset(&lx->xlitCtx, sizeof(lx->xlitCtx), 0);
           lx->xlitCtx.html = FALSE;
@@ -364,6 +367,9 @@ void runLocaleExplorer(LXContext *myContext)
                                 &lx->xlitCtx.subContext,
                                 &status);
         }
+
+#endif
+
 #if 0
       else
         
@@ -386,11 +392,30 @@ void runLocaleExplorer(LXContext *myContext)
   /* Open an RB in the default locale */
   lx->defaultRB = ures_open(NULL, lx->cLocale, &status);
 
-      if(!strcmp(lx->chosenEncoding, "transliterated"))
-        {
-          sprintf(lx->xlitCtx.locale,"%s-%s", lx->curLocaleName, lx->cLocale);
-          fprintf(stderr, "LC=[%s]\n", lx->xlitCtx.locale); 
-        }
+  if(!strcmp(lx->chosenEncoding, "transliterated"))
+  {
+	char id[200];
+	UErrorCode transStatus = U_ZERO_ERROR;
+	UTransliterator *trans;
+        sprintf(id,"%s-%s", lx->curLocaleName, lx->cLocale);
+        fprintf(stderr, "LC=[%s]\n", id);
+        trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
+ 	if(U_FAILURE(transStatus))	
+	{
+		fprintf(stderr,"Failed to open - %s\n", u_errorName(transStatus));
+		/* blah blah balh*/
+	}
+	else
+	{
+		lx_setHTMLFilterOnTransliterator(trans, TRUE);
+		u_fflush(lx->OUT);
+		trans = u_fsettransliterator(lx->OUT, U_WRITE, trans, &transStatus);
+		if(trans != NULL)
+		  {
+		    utrans_close(trans);
+		  }
+	}
+  }
 
   /* setup the time zone.. */
   if (!strncmp(tmp,"SETTZ=",6))
@@ -883,7 +908,7 @@ void runLocaleExplorer(LXContext *myContext)
 
   u_fprintf(lx->OUT, "</BODY></HTML>\r\n");
 
-  fflush(lx->fOUT);
+  u_fflush(lx->OUT);
 
   u_fclose(lx->OUT);
 
@@ -1241,6 +1266,7 @@ void printStatusTable()
     u_fprintf(lx->OUT,"<TR><TD COLSPAN=2><FONT COLOR=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</FONT></TD></TR>\r\n", lx->couldNotOpenEncoding); 
   }
 
+#if 0
   if(!strcmp(lx->chosenEncoding, "transliterated") && U_FAILURE(lx->xlitCtx.transerr))
   {
     u_fprintf(lx->OUT,"<B>%U (%s)- %s</B><P>\r\n", 
@@ -1248,6 +1274,7 @@ void printStatusTable()
               lx->xlitCtx.locale,
               u_errorName(lx->xlitCtx.transerr));
   }
+#endif
 
 }
 
@@ -3545,7 +3572,26 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 		  s = ures_getString(taggedItem, &len, &status);
 
 		  if(s)
-		    u_fprintf(lx->OUT, "<TD>%U</TD>", s);
+		  {
+		    UChar junk[8192];
+		    UErrorCode she=U_ZERO_ERROR;
+		    int32_t dstl;
+		    int32_t j;
+		    UChar temp;
+
+		    dstl=u_shapeArabic(s, u_strlen(s), junk, 8192, U_SHAPE_LETTERS_SHAPE, &she);
+		    junk[dstl]=0;
+		    /* Reverses the string */
+		    for (j = 0; j < (dstl / 2); j++){
+		      temp = junk[(dstl-1) - j];
+		      junk[(dstl-1) - j] = junk[j];
+		      junk[j] = temp;
+		    }
+
+		    
+		    u_fprintf(lx->OUT, "<TD>%U [a]</TD>", junk);
+		    //		    u_fprintf(lx->OUT, "<TD>%U</TD>", s);
+		  }
 		  else
 		    {
 		      u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
@@ -3735,7 +3781,8 @@ void exploreFetchNextPattern(UChar *dstPattern, const char *qs)
   qs = strchr(qs, '=');
   qs++;
 
-  unescapeAndDecodeQueryField(dstPattern, 1000, qs);
+/*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
+  unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, lx->chosenEncoding);
   u_replaceChar(dstPattern, 0x0020, 0x00A0);
 }
 
@@ -5145,40 +5192,39 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, UBool *didSetLocal
     }
 
   /* Map transliterated/fonted : */
-  if((0==strcmp(encoding, "transliterated")) ||
-     (0==strcmp(encoding, "fonted"))) 
+  if(0==strcmp(encoding, "fonted"))
   {
     encoding = "usascii";
+  }
+  if(0==strcmp(encoding, "transliterated"))
+  {
+    encoding = "utf-8";
   }
 
   /* now, open the file */
   f = u_finit(lx->fOUT, locale, encoding);
 
   if(!f)
+  {
+    lx->couldNotOpenEncoding = encoding;
+    f = u_finit(lx->fOUT, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
+    if(!f)
     {
-      lx->couldNotOpenEncoding = encoding;
-      f = u_finit(lx->fOUT, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
-      if(!f)
-      {
-          fprintf(stderr, "Could not finit the file.\n");
-          fflush(stderr);
-    	return f; /* :( */
-      }
-    }
-
-
+        fprintf(stderr, "Could not finit the file.\n");
+        fflush(stderr);
+  	return f; /* :( */
+    }    
+  }
 
   /* we know that ufile won't muck withthe locale.
      But we are curious what encoding it chose, and we will propagate it. */
   if(encoding == NULL)
-    {
-      encoding = u_fgetcodepage(f);
-      strcpy(lx->chosenEncoding, encoding);
-    }
-
+  {
+    encoding = u_fgetcodepage(f);
+    strcpy(lx->chosenEncoding, encoding);
+  }
 
   FSWF_setLocale(lx->cLocale);
-
   return f;
 }
 
