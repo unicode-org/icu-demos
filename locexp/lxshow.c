@@ -1626,7 +1626,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len;
   const char *key = "Currencies";
-  const UChar  cflu[9] = { 0, 0, };
+  UChar  cflu[9] = { 0, 0, };
   char cfl[4] = {0};
   UBool sawDefault = FALSE;
 
@@ -1643,7 +1643,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
     UErrorCode defCurSt = U_ZERO_ERROR;
     ucurr_forLocale(locale, cflu, sizeof(cflu)-1, &defCurSt);
     if(U_FAILURE(defCurSt) || !cflu[0]) {
-      u_fprintf(lx->OUT, "%U: ", FSWF("currNoDefault", "No Default Currency"));
+      u_fprintf(lx->OUT, "%U: <!-- for %s -->", FSWF("currNoDefault", "No Default Currency"), locale);
       explainStatus(lx,defCurSt,key);
       u_fprintf(lx->OUT, "<BR>\r\n");
     } else {
@@ -1682,6 +1682,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         
       for(v=0;v<rows;v++) {
         const char *tag;
+	UBool isDefault = FALSE;
           
         status = U_ZERO_ERROR;
         taggedItem = ures_getByIndex(tagged, v, NULL, &status);
@@ -1689,16 +1690,20 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           
         if(!tag)
           break;
+
+	if(!strcmp(tag,cfl)) {
+		isDefault = TRUE;
+	}
           
         u_fprintf(lx->OUT,"<tr> ");
           
         if(U_SUCCESS(status)) {
           u_fprintf(lx->OUT, "<TD><TT>%s%s%s</TT></TD> ", 
-                    !strcmp(tag,cfl)?"<b>":"",
+                    isDefault?"<b>":"",
                     tag,
-                    !strcmp(tag,cfl)?"</b>":"");
+                    isDefault?"</b>":"");
                     
-          if(!strcmp(tag,cfl)) {
+          if(isDefault) {
             sawDefault = TRUE;
           }
             
@@ -1744,7 +1749,12 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           u_charsToUChars(tag, ucn,4);
           u_fprintf(lx->OUT, "<td>%d</td>", ucurr_getDefaultFractionDigits(ucn));
         }
-          
+
+        if(isDefault) {
+            u_fprintf(lx->OUT, "<td><B>%U</B></td>",
+              FSWF("currDefault","Default Currency for this locale"));
+        }
+
         u_fprintf(lx->OUT, "</TR>\r\n");
       }
       if(!sawDefault && cflu[0]) {
@@ -1762,7 +1772,9 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           explainStatus(lx, subSta, key);
           u_fprintf(lx->OUT, "</td>");
         }
-        u_fprintf(lx->OUT, "<td><i>%U</i></td>\r\n", FSWF("currNotInLoc", "Note: This Currency was not found in this locale"));
+        u_fprintf(lx->OUT, "<td><B>%U</B><br>",
+              FSWF("currDefault","Default Currency for this locale"));
+        u_fprintf(lx->OUT, "<i>%U</i></td>\r\n", FSWF("currNotInLoc", "Note: localization for this currency was not found in this locale"));
         u_fprintf(lx->OUT, "</tr>\r\n");
       }
       u_fprintf(lx->OUT, "</table>\r\n<br>");
