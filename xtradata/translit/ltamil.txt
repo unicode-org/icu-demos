@@ -172,7 +172,7 @@ ltamil {
         "rh>{wr};"
         "lh>{wl};"
         "e>{we};"
-        "e>{wee};"
+        "E>{wee};"
         "o>{wo};"
         "a>{wa};"
 
@@ -235,7 +235,7 @@ ltamil {
         "{virama}rh>{rh};"
         "{virama}lh>{lh};"
         "{virama}e>{e};"
-        "{virama}ee>{ee};"
+        "{virama}E>{ee};"
         "{virama}o>{o};"
         "{virama}a>;"
 
@@ -252,7 +252,7 @@ ltamil {
         "{virama}''rh>{wr};"
         "{virama}''lh>{wl};"
         "{virama}''e>{we};"
-        "{virama}''ee>{wee};"
+        "{virama}''E>{wee};"
         "{virama}''o>{wo};"
         "{virama}''a>{wa};"
 
@@ -380,7 +380,7 @@ ltamil {
         "rh<{rh};"
         "lh<{lh};"
         "e<{e};"
-        "ee<{ee};"
+        "E<{ee};"
         "o<{o};"
 
         // independent vowels (when following consonants)
@@ -403,7 +403,7 @@ ltamil {
         "''rh<%){wr};"
         "''lh<%){wl};"
         "''e<%){we};"
-        "''ee<%){wee};"
+        "''E<%){wee};"
         "''o<%){wo};"
         "''a<a){wa};"
         "''a<%){wa};"
@@ -422,7 +422,7 @@ ltamil {
         "rh<{wr};"
         "lh<{wl};"
         "e<{we};"
-        "ee<{wee};"
+        "E<{wee};"
         "o<{wo};"
         "a<{wa};"
 

@@ -1,6 +1,6 @@
 --- index.txt.orig	Thu Feb 24 12:45:21 2000
 +++ index.txt	Fri Mar 24 00:13:42 2000
-@@ -42,5 +42,14 @@
+@@ -42,5 +42,15 @@
                "quotes" }
          { "KeyboardEscape-Latin1", "", "kbdescl1" }
          { "UnicodeName-UnicodeChar", "", "ucname" }
@@ -12,6 +12,7 @@
 +        { "Latin-Maltese", "Maltese-Latin", "lmaltese" }
 +        { "HTMLEntities-Unicode", "Unicode-HTMLEntities", "htmlent" }
 +        { "Latin-Tamil", "Tamil-Latin", "ltamil" }
++        { "TamilKeyboard", "", "tamilkb" }
 +
      }
  }
