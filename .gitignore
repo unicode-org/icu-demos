@@ -15,6 +15,11 @@ convexp/Makefile.local
 convexp/Release
 convexp/convexp
 dumpdat/Makefile
+genjp/Debug
+genjp/genjp.ncb
+genjp/genjp.opt
+genjp/genjp.plg
+genjp/genjp.positions
 locexp/*.d
 locexp/Makefile
 locexp/Makefile.local
