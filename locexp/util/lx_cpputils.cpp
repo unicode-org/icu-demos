@@ -8,6 +8,7 @@
 #include "unicode/uchar.h"
 #include "unicode/uniset.h"
 #include "unicode/lx_utils.h"
+#include "unicode/caniter.h"
 
 class HTMLFilter : public UnicodeFilter
 {
@@ -145,4 +146,60 @@ U_CAPI void U_EXPORT2
 uuset_close(UUSet* _this)
 {
   delete ((UnicodeSet*)_this);
+}
+
+/************************/
+U_CAPI UCanonicalIterator ucanit_open(const UChar *str, UErrorCode *status)
+{
+  CanonicalIterator *iter;
+
+  if(!status || U_FAILURE(*status)) return NULL;
+  
+  iter = new CanonicalIterator(UnicodeString(str), *status);
+
+  if(!iter || U_FAILURE(*status)) {
+    delete iter;
+    return NULL;
+  }
+
+  return iter;
+}
+
+/**
+ * see UCanonicalIterator::next
+ * @param iter the iterator
+ * @param buffer the output buffer. Alwyas null ternimated.
+ * @param len Length of buffer
+ * @param status Error code.  U_BUFFER_OVERFLOW_ERROR if buffer is full.
+ * @return actual size of string.  0 if done. 
+ */
+U_CAPI int32_t ucanit_next(UCanonicalIterator *iter, UChar *buffer, int32_t len, UErrorCode *status)
+{
+  UnicodeString res;
+  int32_t reslen;
+
+  if(!iter || !status || U_FAILURE(*status)) {
+    return -1;
+  }
+
+  res = ((CanonicalIterator*)iter)->next();
+
+  if(res.isBogus() || !res.length()) {
+    return 0;
+  }
+
+  if(buffer) {
+    reslen = res.extract(buffer, res.length(), *status);
+    buffer[reslen]=0;
+    if(len) {
+      buffer[len-1]=0;
+    }
+  }
+
+  return res.length();
+}
+
+U_CAPI void ucanit_close(UCanonicalIterator *iter)
+{
+  delete ((CanonicalIterator*)iter);
 }

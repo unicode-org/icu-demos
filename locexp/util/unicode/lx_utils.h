@@ -25,6 +25,7 @@
 #include "unicode/ucol.h"
 #include "string.h"
 #include "unicode/ucal.h"
+#include "unicode/uchar.h"
 #include "ctype.h"
 
 
@@ -236,6 +237,37 @@ uuset_contains(UUSet *_this, UChar32 c);
 U_CAPI void U_EXPORT2
 uuset_close(UUSet *_this);
 
+/** Blocks & Property names **/
+U_CAPI const char *getUCharCategoryName(int8_t type);
+U_CAPI const char *getUBlockCodeName(UBlockCode block);
+U_CAPI const char *getUPropertyName(UProperty u);
+
+U_CAPI const char *getUCharCategorySortedName(int32_t n);
+U_CAPI const char *getUBlockCodeSortedName(int32_t n);
+U_CAPI const char *getUPropertySortedName(int32_t n);
+
+U_CAPI UCharCategory getUCharCategorySorted(int32_t n);
+U_CAPI UBlockCode    getUBlockCodeSorted(int32_t n);
+U_CAPI UProperty     getUPropertySorted(int32_t n);
+
+U_CAPI int lxu_validate_property_sanity();
+
+/** CanonIter **/
+
+typedef void *UCanonicalIterator;
+U_CAPI UCanonicalIterator ucanit_open(const UChar *str, UErrorCode *status);
+
+/**
+ * see UCanonicalIterator::next
+ * @param iter the iterator
+ * @param buffer the output buffer. Alwyas null ternimated.
+ * @param len Length of buffer
+ * @param status Error code.  U_BUFFER_OVERFLOW_ERROR if buffer is full.
+ * @return actual size of string.  0 if done. 
+ */
+U_CAPI int32_t ucanit_next(UCanonicalIterator *iter, UChar *buffer, int32_t len, UErrorCode *status);
+
+U_CAPI void ucanit_close(UCanonicalIterator *iter);
 
 #endif
 
