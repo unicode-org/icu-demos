@@ -1,0 +1,4 @@
+1999-oct-07  srl@monkey.sbay.org    [first version:  content-free README]
+
+ This sample library (and client) demonstrate locale sensitive
+sort. To build, simply type 'make'. 
