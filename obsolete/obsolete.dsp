@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 icuuc.lib icuin.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26.pdb" /machine:I386 /out:"../bin/icuob26.dll" /implib:"..\lib\icuobs.lib" /libpath:"..\..\..\icu\lib\\"
+# ADD LINK32 icuuc.lib icuin.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26.pdb" /machine:I386 /out:"../bin/icuob26.dll" /implib:"..\lib\icuobs.lib" /libpath:"..\..\icu\lib\\"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "obsolete - Win32 Debug"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 icuucd.lib icuind.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26d.pdb" /debug /machine:I386 /out:"../bin/icuob26d.dll" /implib:"..\lib\icuobsd.lib" /pdbtype:sept /libpath:"..\..\..\icu\lib\\"
+# ADD LINK32 icuucd.lib icuind.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../bin/icuob26d.pdb" /debug /machine:I386 /out:"../bin/icuob26d.dll" /implib:"..\lib\icuobsd.lib" /pdbtype:sept /libpath:"..\..\icu\lib\\"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
