@@ -101,6 +101,13 @@ UTransliterator *getTransliteratorForScript(UBlockCode script)
     case UBLOCK_DEVANAGARI:
         return loadTranslitFromCache((int)script, "Devanagari-Latin");
 
+        /* the following two work, but leave little dev. chars all over */
+/*    case U_TAMIL:
+        return loadTranslitFromCache((int)script, "Tamil-Devanagari;Devanagari-Latin"); */
+
+/*    case U_TELUGU:
+        return loadTranslitFromCache((int)script, "Telugu-Devanagari;Devanagari-Latin"); */
+
     case UBLOCK_TAMIL:
         return loadTranslitFromCache((int)script, "Tamil-Latin");
         

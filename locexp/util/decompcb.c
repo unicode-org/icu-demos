@@ -255,7 +255,7 @@ static void DECOMPOSE_uchar (void *context,
 }
 
 U_CAPI void 
-UCNV_FROM_U_CALLBACK_DECOMPOSE  (void *context,
+UCNV_FROM_U_CALLBACK_DECOMPOSE  (const void *context,
                                  UConverterFromUnicodeArgs *fromUArgs,
                                  const UChar* codeUnits,
                                  int32_t length,

@@ -344,13 +344,13 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
      uloc_getDisplayName( (s->str) , inLocale, (UChar*)(s->ustr), siz, &status);
   * Now, we want to print the 'most leaf' string.. 
   */
-  
+   
   status = U_ZERO_ERROR; /* check for variant */
 
   if( (siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
       (siz > 1) )
     {
-      s->ustr = malloc((siz+1) * sizeof(UChar));
+      s->ustr = calloc((siz+2) , sizeof(UChar));
       ((UChar*)(s->ustr))[0] = 0;
       status = U_ZERO_ERROR;
       uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
@@ -361,7 +361,7 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
       if( (siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
 	  (siz > 1) )
 	{
-	  s->ustr = malloc((siz+1) * sizeof(UChar));
+	  s->ustr = calloc((siz+2) , sizeof(UChar));
 	  ((UChar*)(s->ustr))[0] = 0;
 	  status = U_ZERO_ERROR;
 	  uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
@@ -372,7 +372,7 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
 	  if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
 	      (siz > 1) )
 	    {
-	      s->ustr = malloc((siz+1) * sizeof(UChar));
+	      s->ustr = calloc((siz+2) , sizeof(UChar));
 	      ((UChar*)(s->ustr))[0] = 0;
 	      status = U_ZERO_ERROR;
 	      uloc_getDisplayLanguage( s->str, inLocale, (UChar*)(s->ustr), siz, &status );

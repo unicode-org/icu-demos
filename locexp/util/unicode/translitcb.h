@@ -23,12 +23,14 @@
 typedef struct
 {
   UConverterFromUCallback  subCallback;
-  void                    *subContext;
 
-  /* special data here */
-  UConverter *utf8;
-  UBool       html;
+  /* PUBLIC */
+  const void    *subContext;  /* For Chaining */
+  const char    *locale;      /* source locale, will translit  locale-Latin */
+  UBool          html;
 
+  /* PRIVATE */
+  UConverter *utf8; 
 } FromUTransliteratorContext;
 
 

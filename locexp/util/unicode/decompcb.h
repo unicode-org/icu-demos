@@ -18,7 +18,7 @@
 typedef struct
 {
   UConverterFromUCallback  subCallback;
-  void                    *subContext;
+  const void                    *subContext;
 
   /* special data here */
 } FromUDecomposeContext;
