@@ -34,7 +34,7 @@ CLEANFILES = *~
 
 ## Target information
 SO_TARGET = libusort.$(SO)
-SO_TARGET_VERSION_MAJOR=20
+SO_TARGET_VERSION_MAJOR=26
 
 OBJECTS = usort.o 
 HEADERS = unicode/usort.h
@@ -86,6 +86,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licu-uc -lusort' ...
+ICULIBS += $(LDFLAGS_TOOLUTIL)
 
 
 $(SO_TARGET) : $(OBJECTS)
