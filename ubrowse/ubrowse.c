@@ -291,7 +291,7 @@ void printOneUChar32(UChar32 theChar)
   chars[0]=0;
   UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar); 
   chars[offset] = 0; 
-  u_fprintf(gOut, "%U", chars);
+  u_fprintf(gOut, "%S", chars);
   u_fflush(gOut);
 
 }
@@ -418,7 +418,7 @@ void printCanonEquivs(UChar32 block)
         u_fprintf(gOut, "<ol>\n");
       }
       
-      u_fprintf(gOut, "<li>%U<br>\n", buf);
+      u_fprintf(gOut, "<li>%S<br>\n", buf);
       
       /* now show it as codepoints */
       for(i=0;buf[i];) {
