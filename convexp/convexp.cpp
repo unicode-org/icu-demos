@@ -476,7 +476,7 @@ static void printConverterInfo(UErrorCode *status) {
     ucnv_getSubstChars(cnv, buffer, &len, status);
     escapeBytes(buffer, len);
     if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
-        printf(" <strong><em>(Note: This byte sequence is platform dependent)</em></strong>");
+        printf(" <strong><em>(See note below)</em></strong>\n");
     }
     printf("</td></tr>\n");
 
@@ -509,6 +509,12 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     puts(endTable);
+
+    if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
+        puts("<p><strong><em>Note:</em></strong> The substitution byte sequence is platform dependent.\n"
+             "It depends on the endianess of the platform.\n"
+             "Please see the <a href=\"http://www.unicode.org/faq/utf_bom.html\">Unicode FAQ</a> for details.</p>");
+    }
 
     ucnv_close(cnv);
 }
