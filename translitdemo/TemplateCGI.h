@@ -59,8 +59,16 @@ class TemplateCGI {
      * name.  That is, $FOO is filled in with the value of
      * getParamValue("FOO", "").  Subclasses may invoke the default
      * implemenation using TemplateCGI::handleTemplateVariable().
+     *
+     * @param inQuote if TRUE, then this variable is being output
+     * into a double-quoted string.  We detect this only in the case
+     * of "$FOO..."; that is, we only look at the immediately preceding
+     * character.  The JavaScript code must be aware of this.  When
+     * in a double-quoted string, double quotes, backslashes, newlines,
+     * and so on will be escaped properly.
      */
-    virtual void handleTemplateVariable(FILE* out, const char* variableName);
+    virtual void handleTemplateVariable(FILE* out, const char* variableName,
+                                        bool inQuote);
     
     /**
      * Subclasses may override this to specify an HTTP header.  The

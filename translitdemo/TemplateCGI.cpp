@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "TemplateCGI.h"
+#include "util.h"
 
 extern "C" char **getcgivars();
 
@@ -99,12 +100,13 @@ void TemplateCGI::handleEmitHeader(FILE* out) {
 /**
  * TemplateCGI framework method default implementation.
  */
-void TemplateCGI::handleTemplateVariable(FILE* out, const char* var) {
-    fprintf(out, "%s", getParamValue(var, ""));
+void TemplateCGI::handleTemplateVariable(FILE* out, const char* var,
+                                         bool inQuote) {
+    util_fprintf(out, getParamValue(var, ""), inQuote);
 }
 
 void TemplateCGI::processTemplate(FILE* in, FILE* out) {
-
+    char last = 0;
     for (;;) {
         char c = getc(in);
         if (c == EOF) {
@@ -135,10 +137,11 @@ void TemplateCGI::processTemplate(FILE* in, FILE* out) {
                 }
             } else {
                 ungetc(c, in); // ungetc ignores EOF
-                handleTemplateVariable(out, varName);
+                handleTemplateVariable(out, varName, last=='"');
             }
         } else {
             fprintf(out, "%c", c);
+            last = c;
         }
     }
 }

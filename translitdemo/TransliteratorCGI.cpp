@@ -129,8 +129,10 @@ void TransliteratorCGI::handleEmitHeader(FILE* out) {
 
 /**
  * TemplateCGI framework method to fill in variables.
+ * TODO: Handle inQuote arg properly.
  */
-void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
+void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
+                                               bool inQuote) {
 
     if (strcmp(var, "AVAILABLE_IDS") == 0) {
         char** ids = getAvailableIDs();
@@ -170,7 +172,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
         // has entered that contain a syntax error.
         const char* opcode = getParamValue("ARG_OPERATION", "");
         if (strcmp(opcode, "COMPILE") == 0) {
-            TemplateCGI::handleTemplateVariable(out, var);
+            TemplateCGI::handleTemplateVariable(out, var, inQuote);
             return;
         }
 
@@ -231,16 +233,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
                 UBool ok = ruleCache.put(id, rules);
                 fprintf(out, ok ? "OK" : "INTERNAL ERROR");
             } else {
-                // Escape double quotes and backslashes by prepending
-                // them with backslashes.
-                int32_t i;
-                for (i=0; i<errMsg.length(); ++i) {
-                    if (errMsg[i] == 0x0022 || errMsg[i] == 0x005C) {
-                        errMsg.insert(i, (UChar)0x005C);
-                        ++i;
-                    }
-                }
-                util_fprintf(out, errMsg);
+                util_fprintf(out, errMsg, inQuote);
             }
         }
 
@@ -252,7 +245,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
     }
 
     else {
-        TemplateCGI::handleTemplateVariable(out, var);
+        TemplateCGI::handleTemplateVariable(out, var, inQuote);
     }
 }
 

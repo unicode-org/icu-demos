@@ -22,7 +22,7 @@ class TransliteratorCGI : public TemplateCGI {
     void handleEmitHeader(FILE *out);
 
     // Implement TemplateCGI
-    void handleTemplateVariable(FILE* out, const char* var);
+    void handleTemplateVariable(FILE* out, const char* var, bool inQuote);
 
  private:
 
