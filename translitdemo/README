@@ -48,8 +48,18 @@ directory, and the ICU libraries (e.g. libicuuc.so.18) are in
   /usr/local/lib
   to the file /etc/ld.so.conf, then run /sbin/ldconfig (as root).
 
+Permissions
+-----------
+
+The CGI wants to write to the file system.  To make this possible,
+the directory cgi-bin/data/ must have world-writable permissions.
+There may be a more secure way to do this also.
+
 HTTP Server
 -----------
+
+Update: The following shouldn't be necessary; Apache should be
+set up this way already.
 
 Make sure that the http server is configured for JavaScript (.js)
 include files.  In Apache, this means adding the line:
