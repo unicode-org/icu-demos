@@ -14,46 +14,46 @@ static const UChar sLongPat [] = { 0x004D, 0x004D, 0x004D, 0x004D, 0x0020,
 
 void printCalendar( LXContext *lx, UCalendar *cal )
 {
-  UErrorCode status = U_ZERO_ERROR;
-  int dayCount = 0;
-  int monthCount = 0;
-  int fdow;
-
-    int32_t width, pad, i, day;
+    UErrorCode status = U_ZERO_ERROR;
+    int dayCount = 0;
+    int monthCount = 0;
+    int fdow;
+    
+    /*int32_t width, pad, i, day;
     int32_t lens [10];
     int32_t firstday, current;
-    UNumberFormat *nfmt;
+    UNumberFormat *nfmt;*/
     UDateFormat *dfmt;
     UChar s [BUF_SIZE];
     const int useLongNames = 1;
     const UChar *pat = (useLongNames ? sLongPat : sShortPat);
     int32_t len = (useLongNames ? 9 : 8);
-
-  dayCount = ucal_getLimit(cal, UCAL_DAY_OF_WEEK, UCAL_MAXIMUM, &status);
-  monthCount = ucal_getLimit(cal, UCAL_MONTH, UCAL_MAXIMUM, &status);
-
-  fdow = ucal_getAttribute(cal, UCAL_FIRST_DAY_OF_WEEK);
-  
-  
-  u_fprintf(lx->OUT, "%d days, %d months<P>\r\n", dayCount, monthCount);
-
-  /* Set up the day names */
-  /* --get_days(days, useLongNames, fdow, status); --*/
-
-        /* Print the calendar for the month */
-/* --        print_month(c, days, useLongNames, fdow, status); -- */
-
-
-  /* Open a formatter with a month and year only pattern */
-  dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,NULL,NULL,0,pat, len,&status);
-
-  udat_format(dfmt, ucal_getMillis(cal, &status), s, BUF_SIZE, 0, &status);
-
-  u_fprintf(lx->OUT, "<table border=3><tr><td colspan=%d><h1>%U</h1></td></tr>\r\n",
-            dayCount, s);
-  
-
-  u_fprintf(lx->OUT, "</table>\r\n");
+    
+    dayCount = ucal_getLimit(cal, UCAL_DAY_OF_WEEK, UCAL_MAXIMUM, &status);
+    monthCount = ucal_getLimit(cal, UCAL_MONTH, UCAL_MAXIMUM, &status);
+    
+    fdow = ucal_getAttribute(cal, UCAL_FIRST_DAY_OF_WEEK);
+    
+    
+    u_fprintf(lx->OUT, "%d days, %d months<P>\r\n", dayCount, monthCount);
+    
+    /* Set up the day names */
+    /* --get_days(days, useLongNames, fdow, status); --*/
+    
+    /* Print the calendar for the month */
+    /* --        print_month(c, days, useLongNames, fdow, status); -- */
+    
+    
+    /* Open a formatter with a month and year only pattern */
+    dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,NULL,NULL,0,pat, len,&status);
+    
+    udat_format(dfmt, ucal_getMillis(cal, &status), s, BUF_SIZE, 0, &status);
+    
+    u_fprintf(lx->OUT, "<table border=3><tr><td colspan=%d><h1>%U</h1></td></tr>\r\n",
+        dayCount, s);
+    
+    
+    u_fprintf(lx->OUT, "</table>\r\n");
 }
 
 void fillFieldNames(const UChar** n)

@@ -44,7 +44,7 @@ static UChar block0390Subs[] =
 };
 
 /* called for each char */
-static void DECOMPOSE_uchar (void *context,
+static void DECOMPOSE_uchar (const void *context,
                              UConverterFromUnicodeArgs *fromUArgs,
                              const UChar* codeUnits,
                              int32_t length,

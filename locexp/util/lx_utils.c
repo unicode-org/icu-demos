@@ -330,10 +330,10 @@ int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen)
 
 void initSortable(MySortable *s, const char *locid, const char *inLocale, MySortable *parent)
 {
-  UErrorCode status = U_ZERO_ERROR;
-  int32_t siz;
-  s->str = strdup(locid);
-  s->ustr=0;
+    UErrorCode status = U_ZERO_ERROR;
+    int32_t siz;
+    s->str = strdup(locid);
+    s->ustr=0;
   /*
    * OLD CODE:
 
@@ -345,56 +345,58 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
   * Now, we want to print the 'most leaf' string.. 
   */
    
-  status = U_ZERO_ERROR; /* check for variant */
-
-  if( (siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
-      (siz > 1) )
+    status = U_ZERO_ERROR; /* check for variant */
+    
+    if( (siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
+        (siz > 1) )
     {
-      s->ustr = calloc((siz+2) , sizeof(UChar));
-      ((UChar*)(s->ustr))[0] = 0;
-      status = U_ZERO_ERROR;
-      uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+        s->ustr = calloc((siz+2) , sizeof(UChar));
+        ((UChar*)(s->ustr))[0] = 0;
+        status = U_ZERO_ERROR;
+        uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
     }
-  else
+    else
     {
-      status = U_ZERO_ERROR;
-      if( (siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
-	  (siz > 1) )
-	{
-	  s->ustr = calloc((siz+2) , sizeof(UChar));
-	  ((UChar*)(s->ustr))[0] = 0;
-	  status = U_ZERO_ERROR;
-	  uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-	}
-      else
-	{
-          if((siz == 0) && inLocale[0] == '_')
-          {
-            s->ustr = calloc(2,1);
-            s->ustr[0] = '-';
-            s->ustr[1] = 0;
-          }
-          else
-          {
+        status = U_ZERO_ERROR;
+        if( (siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
+            (siz > 1) )
+        {
+            s->ustr = calloc((siz+2) , sizeof(UChar));
+            ((UChar*)(s->ustr))[0] = 0;
             status = U_ZERO_ERROR;
-            if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
-                (siz > 1) )
-	    {
-	      s->ustr = calloc((siz+2) , sizeof(UChar));
-	      ((UChar*)(s->ustr))[0] = 0;
-	      status = U_ZERO_ERROR;
-	      uloc_getDisplayLanguage( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-	    }
-	  else
-	    s->ustr = 0;
-          }
+            uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+        }
+        else
+        {
+            if((siz == 0) && inLocale[0] == '_')
+            {
+                s->ustr = calloc(2,1);
+                s->ustr[0] = '-';
+                s->ustr[1] = 0;
+            }
+            else
+            {
+                status = U_ZERO_ERROR;
+                if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
+                    (siz > 1) )
+                {
+                    s->ustr = calloc((siz+2) , sizeof(UChar));
+                    ((UChar*)(s->ustr))[0] = 0;
+                    status = U_ZERO_ERROR;
+                    uloc_getDisplayLanguage( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+                }
+                else
+                    s->ustr = 0;
+            }
         }
     }
-  s->subLocs = 0;
-  s->nSubLocs = 0;
-  s->parent = parent;
-  s->subLocsSize = 0;
-  s->isVariant=0;
+    s->subLocs = 0;
+    s->nSubLocs = 0;
+    s->parent = parent;
+    s->subLocsSize = 0;
+    s->isVariant=0;
+    s->keySize=0;
+    memset(s->key, 0, SORTKEYSIZE);
 }
 
 
@@ -408,75 +410,72 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
  
 MySortable *addSubLocaleTo(MySortable *root, const char *thisLocale, const char *inLocale, int32_t *localeCount)
 {
-
-  if( (root->nSubLocs) >= root->subLocsSize)
+    if( (root->nSubLocs) >= root->subLocsSize)
     {
-      if(root->subLocsSize)
-	root->subLocsSize *= 2;
-      else
-	root->subLocsSize = 10;
-      
-      root->subLocs = 
-	my_realloc(root->subLocs,sizeof(MySortable)*(root->nSubLocs), sizeof(MySortable) * (root->subLocsSize));
+        if(root->subLocsSize)
+            root->subLocsSize *= 2;
+        else
+            root->subLocsSize = 10;
+        
+        root->subLocs = 
+            my_realloc(root->subLocs,sizeof(MySortable)*(root->nSubLocs), sizeof(MySortable) * (root->subLocsSize));
     }
-      
-  initSortable(&(root->subLocs[root->nSubLocs]), thisLocale, inLocale, root);
-
-  localeCount++;
-  
-  root->nSubLocs++;
-
-  return &(root->subLocs[root->nSubLocs-1]);
+    
+    initSortable(&(root->subLocs[root->nSubLocs]), thisLocale, inLocale, root);
+    
+    localeCount++;
+    
+    root->nSubLocs++;
+    
+    return &(root->subLocs[root->nSubLocs-1]);
 }
 
 void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level, const char *inLocale, int32_t *localeCount)
 {
-  char        curStub[128]; /* current stub (next section to add) */
-  const char *curStubLimit; /* ptr to end of the current 'stub' (sublocale section) */
-  int32_t     j;
-
-  curStubLimit = strchr(level, '_');
-  if(!curStubLimit)
-    curStubLimit = thisLoc + strlen(thisLoc); /* end of the string */
-
-  /* curStubLimit points after the end of the current level of locale.   (so:  en*_US) */
-
-  strncpy(curStub, thisLoc, curStubLimit-thisLoc);  /* curStub = "en" */
-  curStub[curStubLimit-thisLoc] = 0;
-
-  if((level[0]=='_') && (!strchr(level+1,'_'))) {
-    strcpy(curStub,thisLoc);
-    curStubLimit=thisLoc+strlen(thisLoc);
-  }
-
-  /* OK, find the stub.. */
-  j = findLocaleNonRecursive(root, curStub); /* search for 'en' */
-  
-  /* advance the root to point to the parent of the next item to search in */
-  if(j == -1) {
-    root = addSubLocaleTo(root, strdup(curStub), inLocale, localeCount);
-    if(level[0]=='_') {
-      root->isVariant=1;
+    char        curStub[128]; /* current stub (next section to add) */
+    const char *curStubLimit; /* ptr to end of the current 'stub' (sublocale section) */
+    int32_t     j;
+    
+    curStubLimit = strchr(level, '_');
+    if(!curStubLimit)
+        curStubLimit = thisLoc + strlen(thisLoc); /* end of the string */
+    
+    /* curStubLimit points after the end of the current level of locale.   (so:  en*_US) */
+    
+    strncpy(curStub, thisLoc, curStubLimit-thisLoc);  /* curStub = "en" */
+    curStub[curStubLimit-thisLoc] = 0;
+    
+    if((level[0]=='_') && (!strchr(level+1,'_'))) {
+        strcpy(curStub,thisLoc);
+        curStubLimit=thisLoc+strlen(thisLoc);
     }
-    *localeCount++;
-  } else {
-    root = &(root->subLocs[j]);
-  }
-  
-  if(*curStubLimit) /* We're not at the end yet. CSL points to _. */
-  {
-    addLocaleRecursive(root, thisLoc, ++curStubLimit, inLocale, localeCount);
-  }
-  else
-  {
-    /*
-      if *curStubLimit == 0, that means that curStub==thisLoc
-      
-      therefore, we just added the original locale we were trying
-      
-      to add. 
-    */
-  }
+    
+    /* OK, find the stub.. */
+    j = findLocaleNonRecursive(root, curStub); /* search for 'en' */
+    
+    /* advance the root to point to the parent of the next item to search in */
+    if(j == -1) {
+        root = addSubLocaleTo(root, strdup(curStub), inLocale, localeCount);
+        if(level[0]=='_') {
+            root->isVariant=1;
+        }
+        *localeCount++;
+    } else {
+        root = &(root->subLocs[j]);
+    }
+    
+    if(*curStubLimit) /* We're not at the end yet. CSL points to _. */
+    {
+        addLocaleRecursive(root, thisLoc, ++curStubLimit, inLocale, localeCount);
+    }
+    else
+    {
+        /*
+        if *curStubLimit == 0, that means that curStub==thisLoc
+        therefore, we just added the original locale we were trying
+        to add. 
+        */
+    }
 }
 
 /**
@@ -584,84 +583,84 @@ int myCompare(const void *aa, const void *bb)
 
 int32_t findLocaleNonRecursive(MySortable *toSort, const char *locale)
 {
-  int32_t j;
-  int32_t numTopLocs = toSort->nSubLocs;
-  MySortable *s = toSort->subLocs;
-
-  for(j=0;j<numTopLocs;j++)
+    int32_t j;
+    int32_t numTopLocs = toSort->nSubLocs;
+    MySortable *s = toSort->subLocs;
+    
+    for(j=0;j<numTopLocs;j++)
     {
-      if(!strcmp(s[j].str, locale))
-	{
-	  return j;
-	}
+        if(!strcmp(s[j].str, locale))
+        {
+            return j;
+        }
     }
-  
-  return -1; /* not found */
+    
+    return -1; /* not found */
 }
 
 MySortable *findLocale(MySortable *root, const char *locale)
 {
-  int32_t    n;
-  MySortable *found;
-
-  if(!root)
-    return NULL;
-  
-  if(!strcmp(root->str,locale))
+    int32_t    n;
+    MySortable *found;
+    
+    if(!root)
+        return NULL;
+    
+    if(!strcmp(root->str,locale))
     {
-      return root;
+        return root;
     }
-  
-  /* Right now very stupid DFS. Let's forget that we actually know that if we're searching for fr_BF that we should look under the fr node. */
-  for(n=0;n<root->nSubLocs;n++)
+    
+    /* Right now very stupid DFS. Let's forget that we actually know that if we're searching for fr_BF that we should look under the fr node. */
+    for(n=0;n<root->nSubLocs;n++)
     {
-      if(!strcmp(root->subLocs[n].str,locale))
-	{
-	  return &(root->subLocs[n]);
-	}
-      
-      if(found = findLocale(&(root->subLocs[n]),locale)) /* if found at a sublevel */
-	return found;
+        if(!strcmp(root->subLocs[n].str,locale))
+        {
+            return &(root->subLocs[n]);
+        }
+        
+        if(found = findLocale(&(root->subLocs[n]),locale)) /* if found at a sublevel */
+            return found;
     }
-  
-  return NULL; /* not found */
+    
+    return NULL; /* not found */
 }
 
 /* Sort an array of sortables --------------------------------------------------------*/
 /* terminated with s->str being null */
 void mySort(MySortable *s, UErrorCode *status, UBool recurse)
 {
-  UCollator *coll;
-  MySortable *p;
-  int32_t num;
-  int32_t n = 0;
-
-  num = s->nSubLocs;
-
-  if(num <= 1)
-    return; /* nothing to do */
-
-  *status = U_ZERO_ERROR;
-  coll = ucol_open(NULL, status);
-  if(U_FAILURE(*status))
-    return;
-
-  ucol_setStrength(coll, UCOL_PRIMARY);
-  /* First, fill in the keys */
-  for(p=(s->subLocs);n < num;p++)
+    UCollator *coll;
+    MySortable *p;
+    int32_t num;
+    int32_t n = 0;
+    
+    num = s->nSubLocs;
+    
+    if(num <= 1)
+        return; /* nothing to do */
+    
+    *status = U_ZERO_ERROR;
+    coll = ucol_open(NULL, status);
+    if(U_FAILURE(*status))
+        return;
+    
+    ucol_setStrength(coll, UCOL_PRIMARY);
+    /* First, fill in the keys */
+    for(p=(s->subLocs);n < num;p++)
     {
-      if(recurse)
-	mySort(p,status,recurse); /* sub sort */
-      
-      p->keySize = ucol_getSortKey(coll, p->ustr, -1, p->key, SORTKEYSIZE);
-      /*      if(U_FAILURE(*status))
-	      return; */
-      n++;
+        if(recurse)
+            mySort(p,status,recurse); /* sub sort */
+        
+        p->keySize = ucol_getSortKey(coll, p->ustr, -1, p->key, SORTKEYSIZE);
+        /*      if(U_FAILURE(*status))
+        return; */
+        n++;
     }
-  
-  ucol_close(coll); /* don't need it now */
-
-  qsort(s->subLocs, n, sizeof(MySortable), &myCompare);
+    
+    ucol_close(coll); /* don't need it now */
+    
+    qsort(s->subLocs, n, sizeof(MySortable), &myCompare);
 
 }
 
@@ -695,27 +694,27 @@ const char *MIMECharsetName(const char *n)
 
 void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src)
 {
-  while(*src)
+    while(*src)
     {
-  
-      if(  ((*src) > 0x007F)
-	|| !( isalnum(*src) || (*src==',') || (*src==':') || (*src == '.')))
-	{
-	  *(urlQuery++) = '%';
-	  *(urlQuery++) = '5';
-	  *(urlQuery++) = 'C';
-	  *(urlQuery++) = 'u';
-	  *(urlQuery++) = ToOffset( ((*src) & 0xF000) >> 12);
-	  *(urlQuery++) = ToOffset( ((*src) & 0x0F00) >>  8);
-	  *(urlQuery++) = ToOffset( ((*src) & 0x00F0) >>  4);
-	  *(urlQuery++) = ToOffset( ((*src) & 0x000F) >>  0);
-	}
-      else
-	*(urlQuery++) = (char)*src;
-
-      src++;
+        
+        if(  ((*src) > 0x007F)
+            || !( isalnum(*src) || (*src==',') || (*src==':') || (*src == '.')))
+        {
+            *(urlQuery++) = '%';
+            *(urlQuery++) = '5';
+            *(urlQuery++) = 'C';
+            *(urlQuery++) = 'u';
+            *(urlQuery++) = ToOffset( ((*src) & 0xF000) >> 12);
+            *(urlQuery++) = ToOffset( ((*src) & 0x0F00) >>  8);
+            *(urlQuery++) = ToOffset( ((*src) & 0x00F0) >>  4);
+            *(urlQuery++) = ToOffset( ((*src) & 0x000F) >>  0);
+        }
+        else
+            *(urlQuery++) = (char)*src;
+        
+        src++;
     }
-  *urlQuery = 0; 
+    *urlQuery = 0; 
 }
 
 
@@ -736,23 +735,23 @@ date(const UChar *tz,
 
 UChar *dateAt(UDate adate, const UChar *tz, UDateFormatStyle style, const char *locale, UErrorCode *status)
 {
-  UChar *s = 0;
-  int32_t len = 0;
-  UDateFormat *fmt;
-
-  fmt = udat_open(style, style, locale, tz, -1, NULL, 0, status);
-  len = udat_format(fmt, ucal_getNow(), 0, len, 0, status);
-  if(*status == U_BUFFER_OVERFLOW_ERROR) {
-    *status = U_ZERO_ERROR;
-    s = (UChar*) malloc(sizeof(UChar) * (len+1));
-    if(s == 0) goto finish;
-    udat_format(fmt, adate, s, len + 1, 0, status);
-    if(U_FAILURE(*status)) goto finish;
-  }
-
- finish:
-  udat_close(fmt);
-  return s;
+    UChar *s = 0;
+    int32_t len = 0;
+    UDateFormat *fmt;
+    
+    fmt = udat_open(style, style, locale, tz, -1, NULL, 0, status);
+    len = udat_format(fmt, ucal_getNow(), 0, len, 0, status);
+    if(*status == U_BUFFER_OVERFLOW_ERROR) {
+        *status = U_ZERO_ERROR;
+        s = (UChar*) malloc(sizeof(UChar) * (len+1));
+        if(s == 0) goto finish;
+        udat_format(fmt, adate, s, len + 1, 0, status);
+        if(U_FAILURE(*status)) goto finish;
+    }
+    
+finish:
+    udat_close(fmt);
+    return s;
 }
 
 UChar* u_uastrcpy_enc(UChar *ucs1,
@@ -1103,30 +1102,30 @@ static int compnames_proc(const void *aa, const void *bb)
 
 void setup_sortedNames()
 {
-  int i;
+    int i;
     int32_t v;
     int32_t minVal, maxVal;
-  /* first, the block names */
-  i=0;
-  minVal = u_getIntPropertyMinValue(UCHAR_BLOCK);
-  maxVal = u_getIntPropertyMaxValue(UCHAR_BLOCK);
-  for(v=1;v<=maxVal;v++) {
-    gUBlockCodeNames[i].n = getUBlockCodeName(v);
-    gUBlockCodeNames[i].i = v;
-    if(v != -1) {
-        i++;
+    /* first, the block names */
+    i=0;
+    minVal = u_getIntPropertyMinValue(UCHAR_BLOCK);
+    maxVal = u_getIntPropertyMaxValue(UCHAR_BLOCK);
+    for(v=1;v<=maxVal;v++) {
+        gUBlockCodeNames[i].n = getUBlockCodeName(v);
+        gUBlockCodeNames[i].i = v;
+        if(v != -1) {
+            i++;
+        }
     }
-  }
-
-  qsort(gUBlockCodeNames, i, sizeof(gUBlockCodeNames[0]), &compnames_proc);
-
-  for(i=0;i<U_CHAR_CATEGORY_COUNT;i++) {
-    gUCharCategoryNames[i].n = getUCharCategoryName(i);
-    gUCharCategoryNames[i].i = i;
-  }
-
-  qsort(gUCharCategoryNames, U_CHAR_CATEGORY_COUNT, sizeof(gUCharCategoryNames[0]), &compnames_proc);
-  sortedNames=1;
+    
+    qsort(gUBlockCodeNames, i, sizeof(gUBlockCodeNames[0]), &compnames_proc);
+    
+    for(i=0;i<U_CHAR_CATEGORY_COUNT;i++) {
+        gUCharCategoryNames[i].n = getUCharCategoryName((int8_t)i);
+        gUCharCategoryNames[i].i = i;
+    }
+    
+    qsort(gUCharCategoryNames, U_CHAR_CATEGORY_COUNT, sizeof(gUCharCategoryNames[0]), &compnames_proc);
+    sortedNames=1;
 }
 
 const char *getUCharCategorySortedName(int32_t n)

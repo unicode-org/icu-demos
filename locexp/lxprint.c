@@ -81,7 +81,7 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
 
 void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-    u_fprintf(lx->OUT, "<A HREF=\"../_/help.html#%s\" TARGET=\"icu_lx_help\"><IMG %U SRC=\"../_/%U\" ALT=\"%U\"></A>",
+    u_fprintf(lx->OUT, "<a href=\"../_/help.html#%s\" target=\"icu_lx_help\"><img %U src=\"../_/%U\" alt=\"%U\"></a>",
               helpTag, 
               options, src, alt);
 }
@@ -99,15 +99,14 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
     if(!sampleString)
         sampleString = nullString;
 
-    u_fprintf(lx->OUT, "\r\n<FORM TARGET=\"_new\" NAME=EXPLORE_%s ACTION=\"#EXPLORE_%s\">"
-              "<INPUT TYPE=HIDDEN NAME=_ VALUE=\"%s\">"
-              "<INPUT TYPE=HIDDEN NAME=\"EXPLORE_%s\" VALUE=\"",
+    u_fprintf(lx->OUT, "\r\n<form target=\"_new\" name=EXPLORE_%s action=\"#EXPLORE_%s\">\r\n"
+              "<input type=hidden name=_ value=\"%s\">\r\n"
+              "<input type=hidden name=\"EXPLORE_%s\" value=\"",
               key, key,locale,key);
     writeEscaped(lx, sampleString);
-    u_fprintf(lx->OUT, "\">");
+    u_fprintf(lx->OUT, "\">\r\n");
   
-    u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE VALIGN=TOP WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  ALIGN=RIGHT   ");
-    u_fprintf(lx->OUT, " VALUE=\"%U\"></FORM>",
+    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"../_/explore.gif\" align=right value=\"%U\"></form>",
               FSWF("exploreTitle", "Explore"));
 }
 
@@ -220,16 +219,21 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
 void printStatusTable(LXContext *lx)
 {
     UChar myChars[1024];
-    UErrorCode status;
+    UErrorCode status = U_ZERO_ERROR;
+    UChar *dateStr;
+    const char *qs = getenv("QUERY_STRING");
+
+    if (qs == NULL)
+    {
+        qs = "";
+    }
     
-    status = U_ZERO_ERROR;
-    
-    u_fprintf(lx->OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
-    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#0F080F\" COLSPAN=3><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
-    u_fprintf(lx->OUT, "  <TR>\r\n   <TD COLSPAN=3 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s><B>", "YourSettings");
+    u_fprintf(lx->OUT, "<p><table border=0 cellspacing=0 width=100%%>");
+    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
+    u_fprintf(lx->OUT, "  <tr>\r\n   <td colspan=3 width=0 valign=top bgcolor=" kXKeyBGColor "><a name=%s><b>", "YourSettings");
     
     /* PrintHelpTag */
-    u_fprintf(lx->OUT, "%U",   FSWF("statusTableHeader", "Your settings:"));
+    u_fprintf_u(lx->OUT, FSWF("statusTableHeader", "Your settings:"));
 
     if(!lx->inDemo)
     {
@@ -237,78 +241,80 @@ void printStatusTable(LXContext *lx)
     }
 
     /* /PrintHelpTag */
-    u_fprintf(lx->OUT, "</B></A></TD>\r\n"
-              "  </TR>\r\n"
-              "  <TR>\r\n"
-              "   <TD>");
-    u_fprintf(lx->OUT, "<B>%U</B></TD>\r\n", FSWF("myConverter", "Encoding:"));
-    u_fprintf(lx->OUT, "   <TD>");
+    u_fprintf(lx->OUT, "</b></a></td>\r\n"
+              "  </tr>\r\n"
+              "  <tr>\r\n"
+              "   <td>");
+    u_fprintf(lx->OUT, "<b>%U</b></td>\r\n", FSWF("myConverter", "Encoding:"));
+    u_fprintf(lx->OUT, "   <td>");
     /* now encoding */
 
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<A HREF=\"?converter");
-        if(strncmp(getenv("QUERY_STRING"), "converter",9))
-            u_fprintf(lx->OUT,"&%s", getenv("QUERY_STRING"));
+        u_fprintf(lx->OUT, "<a href=\"?converter");
+        if(strncmp(qs, "converter",9))
+            u_fprintf(lx->OUT,"&%s", qs);
         u_fprintf(lx->OUT, "\">");
     }
 
-    u_fprintf(lx->OUT, "<FONT SIZE=+1>%s</FONT>", lx->ourCharsetName);
+    u_fprintf(lx->OUT, "<font size=+1>%s</font>", lx->ourCharsetName);
   
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "</A>\r\n");
+        u_fprintf(lx->OUT, "</a>\r\n");
     }
   
-    u_fprintf(lx->OUT, "</TD>\r\n");
+    u_fprintf(lx->OUT, "</td>\r\n");
 
-    u_fprintf(lx->OUT, "<TD ALIGN=RIGHT ROWSPAN=3>\r\n"); /* ====== begin right hand thingy ======== */
+    u_fprintf(lx->OUT, "<td align=right rowspan=3>\r\n"); /* ====== begin right hand thingy ======== */
 
-    u_fprintf(lx->OUT, "<A HREF=\"http://oss.software.ibm.com/icu/\"><I>%U</I> %U</A><BR>",
+    u_fprintf(lx->OUT, "<a href=\"http://oss.software.ibm.com/icu/\"><i>%U</i> %U</a><br>",
               FSWF("poweredby", "Powered by"),
               FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION) );
 
 #ifdef LX_SET_TZ
-    u_fprintf(lx->OUT, "<A HREF=\"?SETTZ=\">");
+    u_fprintf(lx->OUT, "<a href=\"?SETTZ=\">");
 #endif
-    u_fprintf(lx->OUT, "%U", date( NULL,UDAT_FULL, lx->cLocale,&status));
+    dateStr = date( NULL,UDAT_FULL, lx->cLocale,&status);
+    u_fprintf(lx->OUT, "%U", dateStr);
+    free(dateStr);
 #ifdef LX_SET_TZ
-    u_fprintf(lx->OUT, "</A>");
+    u_fprintf(lx->OUT, "</a>");
 #endif
-    u_fprintf(lx->OUT, "<BR>\r\n");
+    u_fprintf(lx->OUT, "<br>\r\n");
 
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<A HREF=\"%s/en/iso-8859-1/?PANICDEFAULT\"><IMG SRC=\"../_/incorrect.gif\" ALT=\"Click here if text displays incorrectly\"></A>", getenv("SCRIPT_NAME"));
+        u_fprintf(lx->OUT, "<a href=\"%s/en/iso-8859-1/?PANICDEFAULT\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", getenv("SCRIPT_NAME"));
     }
 
-    u_fprintf(lx->OUT, "</TD></TR>\r\n"); /* end little right hand thingy */
+    u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */
 
     /* === Begin line 4 - display locale == */
-    u_fprintf(lx->OUT, "<TR><TD><B>%U</B></TD>\r\n", FSWF("myLocale", "Label Locale:"));
+    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td>\r\n", FSWF("myLocale", "Label Locale:"));
 
-    u_fprintf(lx->OUT, "<TD>");
+    u_fprintf(lx->OUT, "<td>");
   
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<A HREF=\"?locale");
-        if(strncmp(getenv("QUERY_STRING"), "locale",6))
-            u_fprintf(lx->OUT,"&%s", getenv("QUERY_STRING"));
+        u_fprintf(lx->OUT, "<a href=\"?locale");
+        if(strncmp(qs, "locale",6))
+            u_fprintf(lx->OUT,"&%s", qs);
         u_fprintf(lx->OUT, "\">");
     }
     uloc_getDisplayName(lx->cLocale, lx->cLocale, myChars, 1024, &status);
-    u_fprintf(lx->OUT, "%U", myChars);
+    u_fprintf_u(lx->OUT, myChars);
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "</A>");
+        u_fprintf(lx->OUT, "</a>");
     }
-    u_fprintf(lx->OUT, "</TD></TR>\r\n");
+    u_fprintf(lx->OUT, "</td></tr>\r\n");
 
-    u_fprintf(lx->OUT, "<TR><TD><B>%U</B></TD>\r\n",
+    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td>\r\n",
               FSWF("encoding_translit_setting", "Transliteration:"));
 
 #if 0  /* Set to 1 if transliteration isn't working. */
-    u_fprintf(lx->OUT, "<TD><I>%U</I></TD>",
+    u_fprintf(lx->OUT, "<td><i>%U</i></td>",
               FSWF("off", "off"));
 #else
     /* Transliteration is OK */
@@ -316,12 +322,7 @@ void printStatusTable(LXContext *lx)
     {
         if(!strcmp(lx->chosenEncoding, "transliterated"))
         {
-            const char *qs;
-            qs = getenv("QUERY_STRING");
-            if(qs == NULL)
-                qs = "";
-        
-            u_fprintf(lx->OUT, "<TD><B>*%U*</B> / <A HREF=\"%s/%s/?%s\">%U</A></TD>",
+            u_fprintf(lx->OUT, "<td><b>*%U*</b> / <a href=\"%s/%s/?%s\">%U</a></td>",
                       FSWF("on","on"),
                       getenv("SCRIPT_NAME"),
                       lx->cLocale,
@@ -330,12 +331,7 @@ void printStatusTable(LXContext *lx)
         }
         else
         {
-            const char *qs;
-            qs = getenv("QUERY_STRING");
-            if(qs == NULL)
-                qs = "";
-      
-            u_fprintf(lx->OUT, "<TD><A HREF=\"%s/%s/transliterated/?%s\">%U</A> / <B>*%U*</B></TD>",
+            u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%U</a> / <b>*%U*</b></td>",
                       getenv("SCRIPT_NAME"),
                       lx->cLocale,
                       qs,
@@ -345,14 +341,14 @@ void printStatusTable(LXContext *lx)
     }
     else
     { /* indemo */
-        u_fprintf(lx->OUT, "<TD><B>%U</B></TD>", 
+        u_fprintf(lx->OUT, "<td><b>%U</b></td>", 
                   (!strcmp(lx->chosenEncoding, "transliterated"))?
                   FSWF("on","on") :
                   FSWF("off","off"));
     }
 #endif  
   
-    u_fprintf(lx->OUT, "</TR>\r\n");
+    u_fprintf(lx->OUT, "</tr>\r\n");
 
     if(!FSWF_getBundle())
     {
@@ -369,11 +365,11 @@ void printStatusTable(LXContext *lx)
     }
 
 
-    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=3><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#AFA8AF\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></TD></TR>\r\n");
 
-    u_fprintf(lx->OUT, "</TABLE>\r\n");
+    u_fprintf(lx->OUT, "</table>\r\n");
 
-    u_fprintf(lx->OUT, "<CENTER>\r\n");
+    u_fprintf(lx->OUT, "<center>\r\n");
 
     printHelpTag(lx, "", FSWF("help", "Help"));
   
@@ -385,7 +381,7 @@ void printStatusTable(LXContext *lx)
 
     if(lx->curLocaleName[0])
     {
-        u_fprintf(lx->OUT, "<A TARGET=\"_new\" HREF=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
+        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
                   lx->curLocaleName,
                   FSWF("sourceFile", "View Locale Source"));
 
@@ -393,21 +389,21 @@ void printStatusTable(LXContext *lx)
     }
 
 
-    u_fprintf(lx->OUT, "<A TARGET=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%U</A>",
+    u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%U</A>",
               FSWF("poweredby_filebug", "File a bug"));
   
-    u_fprintf(lx->OUT, "</CENTER><P>\r\n");
+    u_fprintf(lx->OUT, "</center><p>\r\n");
 
     if(lx->couldNotOpenEncoding)
     {
         /* Localize this when it actually works! */
-        u_fprintf(lx->OUT,"<TR><TD COLSPAN=2><FONT COLOR=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</FONT></TD></TR>\r\n", lx->couldNotOpenEncoding); 
+        u_fprintf(lx->OUT,"<tr><td colspan=2><font color=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</font></td></tr>\r\n", lx->couldNotOpenEncoding); 
     }
 
 #if 0
     if(!strcmp(lx->chosenEncoding, "transliterated") && U_FAILURE(lx->xlitCtx.transerr))
     {
-        u_fprintf(lx->OUT,"<B>%U (%s)- %s</B><P>\r\n", 
+        u_fprintf(lx->OUT,"<b>%U (%s)- %s</b><p>\r\n", 
                   FSWF("translit_CantOpenPair", "Warning: Could not open the transliterator for the locale pair."),
                   lx->xlitCtx.locale,
                   u_errorName(lx->xlitCtx.transerr));

@@ -19,13 +19,13 @@
 /* look up a char in the Assyrian table */
 char syrLookupChar(UChar uch)
 {
-  for(int i=0;AssyrianBasic[i].uch;i++)
+    for(int i=0;AssyrianBasic[i].uch;i++)
     {
-      if(AssyrianBasic[i].uch == uch)
-	return AssyrianBasic[i].ch;
+        if(AssyrianBasic[i].uch == uch)
+            return AssyrianBasic[i].ch;
     }
-  
-  return 0xAE; /* substitute char */
+    
+    return (char)0xAE; /* substitute char */
 }
 
 /* print out the 8 bit string in reverse form. Should probably do the FONT emitting here. */
