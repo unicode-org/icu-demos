@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xliff SYSTEM "./xliff.dtd" >
+<!--DOCTYPE xliff SYSTEM "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd"--> 
+<xliff version = "1.0">
+    <file xml:space = "preserve" source-language = "en" datatype = "text" original = "es.txt" tool = "genrb" date = "2004-03-31T03:35:40Z">
+        <header></header>
+        <body>
+            <group restype = "table" xml:space = "preserve" id = "es" >
+                <group restype = "array" xml:space = "preserve" id = "es_fortunes" resname="fortunes">
+                    <trans-unit xml:space = "preserve" id = "es_fortunes_0">
+                        <source xml:lang= "en"> </source>
+                        <target xml:lang = "es">Todo lo que no tiene solución no se soluciona, y lo que la tiene tampoco.
+
+		-- Bill Gates. (1952?) Fundador de Microsoft. Del manual de Windows 95. </target>
+                    </trans-unit>
+                    <trans-unit xml:space = "preserve" id = "es_fortunes_1">
+                        <source xml:lang= "en"> </source>
+                        <target xml:lang = "es">El hombre todavía puede apagar el ordenador. Sin embargo, tendremos que esforzarnos mucho para conservar este privilegio.
+
+		-- J. Weizembaum. Sociólogo norteamericano experto en ordenadores. </target>
+                    </trans-unit>
+                    <trans-unit xml:space = "preserve" id = "es_fortunes_2">
+                        <source xml:lang= "en"> </source>
+                        <target xml:lang = "es">El ordenador ha sido hasta ahora el producto más genial de la vagancia humana.
+
+		-- Slogan de IBM. </target>
+                    </trans-unit>
+                    <trans-unit xml:space = "preserve" id = "es_fortunes_3">
+                        <source xml:lang= "en"> </source>
+                        <target xml:lang = "es">La página WEB es el soporte interactivo ideal para ofrecer un servicio, facilitar información, hacer negocio, etc de un modo más completo y directo que cualquier otro.
+
+		-- Vinton Cerf. (1934) Padre de Internet. (Fundador de Internet Society). </target>
+                    </trans-unit>
+                 </group>
+            </group>
+        </body>
+    </file>
+</xliff>

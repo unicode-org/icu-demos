@@ -1,0 +1,4 @@
+ufortuneRes_root.res
+ufortuneRes_te.res
+ufortuneRes_de.res
+ufortuneRes_es.res
