@@ -297,6 +297,44 @@ void printOneUChar32(UChar32 theChar)
 
 }
 
+int words_count = 0;
+char words[16][50];
+
+void myEnumCharNamesFn_setup()
+{
+    const char *p, *q;
+    int32_t len;
+    p = gSearchName;
+    
+    while(isspace(*p)) p++;
+    words_count = 0;
+    while(p && *p)
+    {
+        q = strchr(p, ' ');
+        if(q == NULL)  /* last one */
+        {
+            strncpy(words[words_count], p, 48);
+        }
+        else
+        {
+            len = q - p;
+            if(len>48) 
+            {
+                len = 48;
+            }
+            strncpy(words[words_count], p, len);
+            q++;
+        }
+        words[words_count][49]=0;
+        words_count++;
+        p = q;
+        while(isspace(*p)) p++;
+        if(words_count >= 16) {
+            return;
+        }
+    }
+    
+}
 
 UBool myEnumCharNamesFn(void *context,
                         UChar32 code,
@@ -574,7 +612,17 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 /*  #error you're rude */
 /*            u_fprintf(gOut, "</TD>"); */
 
-  u_fprintf(gOut, "</TR>\r\n");
+          
+#if 0  /* 8+ - space */
+          u_fprintf(gOut, "<TD>");
+          u_fprintf(gOut, "%c%c%c",
+                    !u_isspace(theChar)      ?'-':'S',
+                    !u_isWhitespace(theChar) ?'-':'W',
+                    !u_isUWhiteSpace(theChar)?'-':'U');
+          u_fprintf(gOut, "</TD>");
+#endif
+
+          u_fprintf(gOut, "</TR>\r\n");
 
 }
 
@@ -630,7 +678,12 @@ main(int argc,
   }
 
   /* set up the converter */
-  ucnv_setSubstChars(u_fgetConverter(gOut),"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
+  {
+     UConverter *cnv;
+     cnv = u_fgetConverter(gOut);
+     if(cnv)
+ 	 ucnv_setSubstChars(cnv,"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
+  }
 #if 0 
 /* until it is implemented for 1.6 (!!!) */
   ucnv_setFromUCallBack(gConverter, &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
@@ -1032,7 +1085,7 @@ main(int argc,
       u_fprintf(gOut, "</table>\r\n<P>\r\n");
 
       u_fprintf(gOut, "<table border=2>\r\n");
-      u_fprintf(gOut, "<tr><td><B>#</B></td><td><B>Type</B></td><td><B>Name</B></TD><td><B>Value</B></TD></TR>\r\n");
+                u_fprintf(gOut, "<tr><td><B>#</B></td><td><B>Type</B></td><td><B>Name</B></TD><td><B>Number</B></TD><td><B>Value</B></TD></TR>\r\n");
       
       {
 	UVersionInfo va;
@@ -1047,18 +1100,19 @@ main(int argc,
 	UBool has;
 	has = u_hasBinaryProperty(block, i);
 
-	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s%s%s</TD><td>%s</TD></TR>\r\n",
-		  i, "bin", has?"<b>":"", getUPropertyName(i), has?"</b>":"",  has?"T":"f");
+	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s%s%s</TD><td>%s</TD><td>%s</td></TR>\r\n",
+           i, "bin", has?"<b>":"", getUPropertyName(i), has?"</b>":"",  has?"T":"f", u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
       }
 
       for(i=UCHAR_INT_START;i<UCHAR_INT_LIMIT;i++) {
 	int32_t has;
 	has = u_getIntPropertyValue(block, i);
 
-	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</TD><td>%ld (%ld..%ld)</TD></TR>\r\n",
+	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</TD><td>%ld (%ld..%ld)</TD><td>%s</td></TR>\r\n",
 		  i, "int", getUPropertyName(i), has,
 		  u_getIntPropertyMinValue(i),
-		  u_getIntPropertyMaxValue(i));
+           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+
       }
 
       u_fprintf(gOut, "</table>\r\n");
@@ -1124,7 +1178,7 @@ main(int argc,
       u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
 
       /* "Be careful what you search for, you just might find it"
-	 (and 0x10FFFF of it's close friends!)
+	 (and 0x10FFFE of it's close friends!)
       */
 
       if(block == 0)
@@ -1137,6 +1191,8 @@ main(int argc,
       }
       
       u_fprintf(gOut, "<table border=1>");
+      
+      myEnumCharNamesFn_setup(); /* break apart words */
 
       u_enumCharNames(block, UCHAR_MAX_VALUE,
                       myEnumCharNamesFn,
@@ -1302,13 +1358,12 @@ void showSearchMenu(UChar32 startFrom)
          "\r\n");
 
   u_fprintf(gOut, "<SELECT NAME=scr>");
-  for(i=0;i<UBLOCK_COUNT;i++)
+  for(i=0;i<(UBLOCK_COUNT-1);i++)
     {
       u_fprintf(gOut, "  <OPTION ");
       if(getUBlockCodeSorted(i) == gSearchBlock)
 	u_fprintf(gOut, " SELECTED ");
       u_fprintf(gOut, " VALUE=\"%d\">%s", getUBlockCodeSorted(i), getUBlockCodeSortedName(i));
-      u_fprintf(gOut, "\r\n");
     }
   u_fprintf(gOut, "</SELECT>\r\n");
   u_fprintf(gOut, "<INPUT TYPE=hidden NAME=b VALUE=%04X>\r\n", startFrom);
