@@ -68,7 +68,7 @@ static const char navigationMainHeader[]=
     "<strong>" PROGRAM_NAME "</strong>\n";
 
 static const char navigationSubHeader[]=
-    "<a href=\"" CGI_NAME "?%s\">" PROGRAM_NAME "</a> &gt;\n"
+    "<a href=\"%s?%s\">" PROGRAM_NAME "</a> &gt;\n"
     "<strong>%s</strong>\n";
 
 static const char navigationEndHeader[]=
@@ -284,8 +284,8 @@ static void printAmbiguousAliasedConverters() {
                 }
                 canonicalName = ucnv_getCanonicalName(alias, standard, &status);
                 if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
-                    printf("<a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"%s\">%s</a> %s { %s }<br />\n",
-                        canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
+                    printf("<a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a> %s { %s }<br />\n",
+                        gScriptName, canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
                 }
             }
         }
@@ -396,8 +396,8 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
         *status = U_ZERO_ERROR;
     }
     else {
-        printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></p>\n",
-            gCurrConverter, getStandardOptionsURL(&myStatus));
+        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></p>\n",
+            gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
     }
 }
 
@@ -497,8 +497,8 @@ static void printConverterInfo(UErrorCode *status) {
         *status = U_ZERO_ERROR;
     }
     else {
-        printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
-            gCurrConverter, getStandardOptionsURL(&myStatus));
+        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
+            gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
     }
 
     printLanguages(cnv, status);
@@ -632,8 +632,8 @@ static void printAliasTable() {
                 printf("<tr>\n<th>%s</th>\n", canonicalName);
             }
             else {
-                printf("<tr>\n<th><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
-                    canonicalName, getStandardOptionsURL(&status), canonicalName);
+                printf("<tr>\n<th><a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
+                    gScriptName, canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
             status = U_ZERO_ERROR;
             printAliases(canonicalName, &status);
@@ -709,7 +709,7 @@ main(int argc, const char *argv[]) {
     }
 
     if (*gCurrConverter) {
-        printf(navigationSubHeader, getStandardOptionsURL(&errorCode), gCurrConverter);
+        printf(navigationSubHeader, gScriptName, getStandardOptionsURL(&errorCode), gCurrConverter);
     }
     else {
         printf(navigationMainHeader);

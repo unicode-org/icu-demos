@@ -223,8 +223,8 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
 }
 
 static inline void printContinue(const char *startBytes, uint8_t currCh, UErrorCode *status) {
-    printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s#layout\">%02X</a></td>\n",
-        gCurrConverter, startBytes, (uint32_t)currCh,
+    printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"%s?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s#layout\">%02X</a></td>\n",
+        gScriptName, gCurrConverter, startBytes, (uint32_t)currCh,
         getStandardOptionsURL(status),
         (uint32_t)currCh);
 }

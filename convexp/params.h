@@ -39,11 +39,6 @@ U_CFUNC UBool gShowLanguages;
 #define OPTION_SEP_STR      "&amp;"
 #define NBSP                "\xC2\xA0"  /* UTF-8 &nbsp; */
 #define PROGRAM_NAME        "Converter Explorer"
-#ifdef WIN32
-#define CGI_NAME            "convexp.exe"
-#else
-#define CGI_NAME            "convexp"
-#endif
 #define SHOW_LOCALES        "ShowLocales"
 #define SHOW_UNICODESET     "ShowSet"
 
