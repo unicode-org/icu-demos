@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Mon Aug 12 11:03:26 PDT 2002 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Fri Nov  8 19:10:43 PST 2002 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -92,6 +92,7 @@ root {
    UCOL_CASE_FIRST  {  "Case first"  }
    UCOL_CASE_LEVEL  {  "Case level"  }
    UCOL_FRENCH_COLLATION  {  "French collation"  }
+   UCOL_HIRAGANA__QUATERNARY_MODE  {  "Hiragana Quaternary Mode"  }
    UCOL_IDENTICAL  {  "Identical"  }
    UCOL_LOWER_FIRST  {  "Lower first"  }
    UCOL_NON_IGNORABLE  {  "Non-ignorable"  }
@@ -115,6 +116,11 @@ root {
    bigStringShorten  {  "Don't show all"  }
    bigStringSize  {  "(%d of %d shown)"  }
    calexp_calTab  {  "Calendar"  }
+   calexp_chg  {  "Change buttons:"  }
+   calexp_chg_roll_decr  {  "Roll down"  }
+   calexp_chg_roll_incr  {  "Roll up"  }
+   calexp_chg_set_decr  {  "Decrement"  }
+   calexp_chg_set_incr  {  "Increment"  }
    calexp_errGet  {  "Can't get initial date: "  }
    calexp_fieldsTab  {  "Fields"  }
    changeEncoding  {  "Change Your Encoding"  }

@@ -194,7 +194,7 @@ es
     on { "Prendido" }    // Difficult to translate
     otherLanguageSameCountryLocales { "<B>%U</B> bajo otras idiomas" }
     poweredby { "Accionado por" }
-    poweredby_filebug { "Archive un insecto" }   // I'm guessing this is right
+    poweredby_filebug { "Notifica un error" }   // I'm guessing this is right
     rules { "Reglas" }
     set { "Sistema" }    // This is a math set [a-z]
     showAll { "Exhibición Todos" }
