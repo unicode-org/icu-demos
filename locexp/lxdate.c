@@ -57,7 +57,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         status = U_ZERO_ERROR;
         now = unum_parseDouble(nf, valueString, -1, &parsePos, &status);
     }
-    else if(tmp = strstr(b, "NP_DEF")) /* Default: 'display' format input ============== */
+    else if((tmp = strstr(b, "NP_DEF"))) /* Default: 'display' format input ============== */
     {
 
         /* Localized # */
@@ -70,7 +70,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
       
         now = udat_parse(df_default, valueString, -1, &parsePos, &status);
     }
-    else if(tmp = strstr(b, "NP_LOC")) /* Localized: pattern format input ============== */
+    else if((tmp = strstr(b, "NP_LOC"))) /* Localized: pattern format input ============== */
     {
 
 
@@ -205,7 +205,14 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         unum_close(nf);
 
     u_fprintf(lx->OUT, "<P><P>");
-
+    
+    {
+      char f[300];
+      sprintf(f, "%f", now);
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar&NP_DBL=%s\">Calendar Demo...</A><br>\r\n",
+                locale, f);
+    }
+      
     showExploreCloseButton(lx, locale, "DateTimePatterns");
 
     u_fprintf(lx->OUT, "</TD><TD ALIGN=LEFT VALIGN=TOP>");

@@ -8,9 +8,9 @@
 #   include "windows.h"
 #endif
 
-int main(const char *argv[], int argc);
+int main(int argc, const char *argv[]);
 
-int main(const char *argv[], int argc)
+int main(int argc , const char *argv[])
 {
     
   LXContext  localContext;

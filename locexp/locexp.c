@@ -49,8 +49,8 @@ void displayLocaleExplorer(LXContext *lx)
     /* -------------- */
     
     u_fprintf(lx->OUT,"<HTML>");
-    
-    u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer (c) 1999-2002 IBM, Inc. and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->");
+   
+    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2002 IBM, Inc. and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->");
     
     u_fprintf(lx->OUT, "<HEAD><TITLE>");
     lx->backslashCtx.html = FALSE;
@@ -162,6 +162,8 @@ void displayLocaleExplorer(LXContext *lx)
                     u_fprintf(lx->OUT, ", ");
                 }
 
+                if(lx->curLocale->subLocs[n].isVariant) u_fprintf(lx->OUT, " [");
+
                 u_fprintf(lx->OUT, "<A HREF=\"?_=%s\">", 
                           lx->curLocale->subLocs[n].str);
 		
@@ -177,6 +179,8 @@ void displayLocaleExplorer(LXContext *lx)
                     u_fprintf(lx->OUT, "</FONT></I>");
 		}
                 u_fprintf(lx->OUT, "</A>");
+
+                if(lx->curLocale->subLocs[n].isVariant) u_fprintf(lx->OUT, "] ");
 	    }
             u_fprintf(lx->OUT, "</ul>");
 	}

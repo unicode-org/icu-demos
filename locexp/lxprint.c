@@ -465,8 +465,6 @@ char *createEscapedSortList(const UChar *source)
 }
 void writeEscaped(LXContext *lx, const UChar *s)
 {
-    UErrorCode status = U_ZERO_ERROR;
-
     lx->backslashCtx.html = FALSE;
 
     if(u_strchr(s, 0x00A0))
@@ -490,8 +488,6 @@ void writeEscaped(LXContext *lx, const UChar *s)
 
 void writeEscapedQuery(LXContext *lx, const UChar *s)
 {
-    UErrorCode status = U_ZERO_ERROR;
-
     lx->backslashCtx.html = FALSE;
 
     if(u_strchr(s, 0x00A0))

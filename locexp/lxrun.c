@@ -152,6 +152,7 @@ void setupLocaleExplorer(LXContext *lx)
     if(fileObj != NULL)
     {
         writeFileObject( lx, fileObj );
+	lx->OUT = NULL; /* nothing to write */
         return;
     }
 
@@ -240,7 +241,10 @@ void setupLocaleExplorer(LXContext *lx)
 	UErrorCode transStatus = U_ZERO_ERROR;
 	UTransliterator *trans;
         sprintf(id,"Any-%s", /* lx->curLocaleName,*/ lx->cLocale);
-        fprintf(stderr, "LC=[%s]\n", id);
+  	if(!strcmp(lx->cLocale, "xol")) {
+		sprintf(id, "Latn-Ital");
+	}
+        fprintf(stderr, "LC=[%s]\n", id); 
         trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
  	if(U_FAILURE(transStatus))	
 	{
@@ -348,5 +352,7 @@ void setupLocaleExplorer(LXContext *lx)
 void runLocaleExplorer(LXContext *lx)
 {
     setupLocaleExplorer(lx);
-    displayLocaleExplorer(lx);
+    if(lx->OUT) {
+    	displayLocaleExplorer(lx);
+    }
 }

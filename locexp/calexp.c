@@ -3,6 +3,59 @@
 #include "locexp.h"
 #include "unicode/ustdio.h"
 
+/* Patterm string - "MMM yyyy" */
+static const UChar sShortPat [] = { 0x004D, 0x004D, 0x004D, 0x0020, 
+0x0079, 0x0079, 0x0079, 0x0079 };
+/* Pattern string - "MMMM yyyy" */
+static const UChar sLongPat [] = { 0x004D, 0x004D, 0x004D, 0x004D, 0x0020, 
+0x0079, 0x0079, 0x0079, 0x0079 };
+
+#define BUF_SIZE 1024
+
+void printCalendar( LXContext *lx, UCalendar *cal )
+{
+  UErrorCode status = U_ZERO_ERROR;
+  int dayCount = 0;
+  int monthCount = 0;
+  int fdow;
+
+    int32_t width, pad, i, day;
+    int32_t lens [10];
+    int32_t firstday, current;
+    UNumberFormat *nfmt;
+    UDateFormat *dfmt;
+    UChar s [BUF_SIZE];
+    const int useLongNames = 1;
+    const UChar *pat = (useLongNames ? sLongPat : sShortPat);
+    int32_t len = (useLongNames ? 9 : 8);
+
+  dayCount = ucal_getLimit(cal, UCAL_DAY_OF_WEEK, UCAL_MAXIMUM, &status);
+  monthCount = ucal_getLimit(cal, UCAL_MONTH, UCAL_MAXIMUM, &status);
+
+  fdow = ucal_getAttribute(cal, UCAL_FIRST_DAY_OF_WEEK);
+  
+  
+  u_fprintf(lx->OUT, "%d days, %d months<P>\r\n", dayCount, monthCount);
+
+  /* Set up the day names */
+  /* --get_days(days, useLongNames, fdow, status); --*/
+
+        /* Print the calendar for the month */
+/* --        print_month(c, days, useLongNames, fdow, status); -- */
+
+
+  /* Open a formatter with a month and year only pattern */
+  dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,NULL,NULL,0,pat, len,&status);
+
+  udat_format(dfmt, ucal_getMillis(cal, &status), s, BUF_SIZE, 0, &status);
+
+  u_fprintf(lx->OUT, "<table border=3><tr><td colspan=%d><h1>%U</h1></td></tr>\r\n",
+            dayCount, s);
+  
+
+  u_fprintf(lx->OUT, "</table>\r\n");
+}
+
 void fillFieldNames(const UChar** n)
 {
     n[UCAL_ERA] =         FSWF("UCAL_ERA", "Era field");
@@ -33,7 +86,8 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
     /* if(type==thisType) */  /* LEFT tab A */
     {
         u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"5%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aleft.gif\">");
-        u_fprintf(lx->OUT, "<A HREF=\"?_=x-klingon&EXPLORE_Calendar=%c&NP_DBL=%s\">%U</A>", 
+        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar=%c&NP_DBL=%s\">%U</A>", 
+                  lx->cLocale,
                   thisType, num, name);
         u_fprintf(lx->OUT, "<IMG WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aright.gif\"></TD>");
 
@@ -135,9 +189,9 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
     switch(type)
     {
     case 'c':
-        u_fprintf(lx->OUT, "CAL<P>\r\n");
-        break;
-
+      printCalendar( lx, cal );
+      break;
+        
     case 'f':
     default:
 
@@ -149,6 +203,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
         static const char    *nam [NR_ITEMS] =  { "&lt;", "-"  , "+"  , "&gt;"};
 
         u_fprintf(lx->OUT, "<TABLE BORDER=2>\r\n");
+        u_fprintf(lx->OUT, "<tr><td><b>val</b></td><td><b>chg</b></td><td><b>name</b></td><td><b>range</b></td></tr>\r\n");
         for (i=0;i<UCAL_FIELD_COUNT;i++)
         {
             int32_t  val;
@@ -207,6 +262,17 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
             u_fprintf(lx->OUT, "    </TD>\r\n");
       
             u_fprintf(lx->OUT, "    <TD>%U</TD>\r\n", fieldNames[i]);
+            
+            {
+              int32_t fMin = -1;
+              int32_t fMax = -1;
+              
+              fMin = ucal_getLimit(cal, i, UCAL_MINIMUM, &status);
+              fMax = ucal_getLimit(cal, i, UCAL_MAXIMUM, &status);
+
+              u_fprintf(lx->OUT, "<TD>%d..%d</TD>\r\n", fMin, fMax);
+            }
+            
             u_fprintf(lx->OUT, "  </TR>\r\n");
         }
         if(U_FAILURE(status))
@@ -215,6 +281,14 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
                       u_errorName(status));
         }
         u_fprintf(lx->OUT, "</TABLE>\r\n");
+
+        u_fprintf(lx->OUT, "<P><B>%U</B><BR>&lt; %U<BR>- %U<BR>+ %U<BR>&gt; %U<BR><P>\r\n",
+                  FSWF("calexp_chg","Change buttons:"),
+                  FSWF("calexp_chg_roll_decr", "Roll down"),
+                  FSWF("calexp_chg_set_decr", "Decrement"),
+                  FSWF("calexp_chg_set_incr", "Increment"),
+                  FSWF("calexp_chg_roll_incr", "Roll up"));
+
     } /* end calendar table [f] */
     break;
 

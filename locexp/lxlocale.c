@@ -122,12 +122,14 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
 
     u_fprintf(lx->OUT, " &gt; ");
   
+    if(leaf->isVariant) u_fprintf(lx->OUT, " [");
 
 
     if(styled)
     {
         if(leaf == current)
             u_fprintf(lx->OUT, "<B>");
+
 
         u_fprintf(lx->OUT, "<A HREF=\"?_=%s\">", leaf->str);
     }
@@ -146,6 +148,8 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
             u_fprintf(lx->OUT, "</B>");
 
     }
+
+    if(leaf->isVariant) u_fprintf(lx->OUT, "] ");
 }
 
 
@@ -232,7 +236,9 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
     int32_t n;
 
 
+    if(l->isVariant) u_fprintf(lx->OUT, "[");
     printLocaleLink(lx, toOpen,l,current,restored, hadUnsupportedLocales);
+    if(l->isVariant) u_fprintf(lx->OUT, "]");
   
     /* SRL todo: cull unsupported locales!  */
     if(l->nSubLocs)

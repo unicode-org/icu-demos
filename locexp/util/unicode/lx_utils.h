@@ -49,6 +49,7 @@ typedef struct mysortable
   struct mysortable *parent;
   int32_t        nSubLocs;
   int32_t        subLocsSize;
+  int isVariant;
 } MySortable;
 
 

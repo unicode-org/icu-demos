@@ -100,7 +100,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
   
     /* Ripped off from ArrayWithDescription. COPY BACK */
     {
-        const UChar *sampleString, *sampleString2;
+        const UChar *sampleString, *sampleString2 = NULL;
         char *sampleChars;
         UResourceBundle *sampleRB;
         UErrorCode sampleStatus = U_ZERO_ERROR;
@@ -1430,7 +1430,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
 /* Show a Tagged Array  -------------------------------------------------------------------*/
 
-void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *key )
+void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *key, UBool compareToDisplay )
 {
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode firstStatus;
@@ -1479,9 +1479,15 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
             u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
 	  
             /* print the top row */
-            u_fprintf(lx->OUT,"<TR><TD><B>%U</B></TD><TD><I>%U</I></TD><TD><B>%U</B></TD></TR>",
-                      FSWF("taggedarrayTag", "Tag"),
-                      defaultLanguageDisplayName(lx),
+            u_fprintf(lx->OUT,"<TR><TD><B>%U</B></TD>",
+                      FSWF("taggedarrayTag", "Tag"));
+
+            if(compareToDisplay) {
+              u_fprintf(lx->OUT, "<TD><I>%U</I></TD>",
+                        defaultLanguageDisplayName(lx));
+            }
+
+            u_fprintf(lx->OUT, "<TD><B>%U</B></TD></TR>",
                       lx->curLocale ? lx->curLocale->ustr : FSWF("none","None"));
 	  
             for(v=0;v<rows;v++)
@@ -1502,19 +1508,22 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 		{
                     u_fprintf(lx->OUT, "<TD><TT>%s</TT></TD> ", tag);
 		  
-                    if(lx->defaultRB)
-		    {
+
+                    if(compareToDisplay) {
+                      if(lx->defaultRB)
+                      {
                         item = ures_getByKey(defaultTagged, tag, item, &status);
                         s = ures_getString(item, &len, &status);
-
+                        
                         if(s)
-                            u_fprintf(lx->OUT, "<TD><I>%U</I></TD>", s);
+                          u_fprintf(lx->OUT, "<TD><I>%U</I></TD>", s);
                         else
-                            u_fprintf(lx->OUT, "<TD></TD>");
-		    }
-                    else
+                          u_fprintf(lx->OUT, "<TD></TD>");
+                      }
+                      else
 			u_fprintf(lx->OUT, "<TD></TD>");
-		  
+                    }
+
                     status = U_ZERO_ERROR;
 
                     s = ures_getString(taggedItem, &len, &status);

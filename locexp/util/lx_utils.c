@@ -333,7 +333,7 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
   UErrorCode status = U_ZERO_ERROR;
   int32_t siz;
   s->str = strdup(locid);
-
+  s->ustr=0;
   /*
    * OLD CODE:
 
@@ -394,6 +394,7 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
   s->nSubLocs = 0;
   s->parent = parent;
   s->subLocsSize = 0;
+  s->isVariant=0;
 }
 
 
@@ -436,39 +437,46 @@ void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level
 
   curStubLimit = strchr(level, '_');
   if(!curStubLimit)
-    curStubLimit = thisLoc + strlen(thisLoc);
+    curStubLimit = thisLoc + strlen(thisLoc); /* end of the string */
 
-  strncpy(curStub, thisLoc, curStubLimit-thisLoc);
+  /* curStubLimit points after the end of the current level of locale.   (so:  en*_US) */
+
+  strncpy(curStub, thisLoc, curStubLimit-thisLoc);  /* curStub = "en" */
   curStub[curStubLimit-thisLoc] = 0;
 
+  if((level[0]=='_') && (!strchr(level+1,'_'))) {
+    strcpy(curStub,thisLoc);
+    curStubLimit=thisLoc+strlen(thisLoc);
+  }
+
   /* OK, find the stub.. */
-  j = findLocaleNonRecursive(root, curStub);
+  j = findLocaleNonRecursive(root, curStub); /* search for 'en' */
   
   /* advance the root to point to the parent of the next item to search in */
-  if(j == -1)
-    {
-      root = addSubLocaleTo(root, strdup(curStub), inLocale, localeCount);
-      *localeCount++;
+  if(j == -1) {
+    root = addSubLocaleTo(root, strdup(curStub), inLocale, localeCount);
+    if(level[0]=='_') {
+      root->isVariant=1;
     }
-  else
-    {
-      root = &(root->subLocs[j]);
-    }
-
+    *localeCount++;
+  } else {
+    root = &(root->subLocs[j]);
+  }
+  
   if(*curStubLimit) /* We're not at the end yet. CSL points to _. */
-    {
-      addLocaleRecursive(root, thisLoc, ++curStubLimit, inLocale, localeCount);
-    }
+  {
+    addLocaleRecursive(root, thisLoc, ++curStubLimit, inLocale, localeCount);
+  }
   else
-    {
-      /*
-	if *curStubLimit == 0, that means that curStub==thisLoc
-	
-	therefore, we just added the original locale we were trying
-	
-	to add. 
-      */
-    }
+  {
+    /*
+      if *curStubLimit == 0, that means that curStub==thisLoc
+      
+      therefore, we just added the original locale we were trying
+      
+      to add. 
+    */
+  }
 }
 
 /**

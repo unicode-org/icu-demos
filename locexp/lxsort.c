@@ -19,6 +19,7 @@ const UChar *showSort_attributeName(UColAttribute attrib)
     case UCOL_CASE_LEVEL: return FSWF("UCOL_CASE_LEVEL","Case level");
     case UCOL_NORMALIZATION_MODE: return FSWF("UCOL_NORMALIZATION_MODE","Normalization mode");
     case UCOL_STRENGTH: return FSWF("UCOL_STRENGTH","Strength");
+    case UCOL_HIRAGANA_QUATERNARY_MODE: return FSWF("UCOL_HIRAGANA__QUATERNARY_MODE","Hiragana Quaternary Mode");
     default:  return nulls;
   }
 }
@@ -51,11 +52,16 @@ const UChar *showSort_attributeVal(UColAttributeValue val)
 /**
  * Show attributes of the collator 
  */
-void showSort_attrib(LXContext *lx, const char *locale)
+void showSort_attrib(LXContext *lx, const char *locale, UCollator *ourCollator)
 {
   UErrorCode  subStatus = U_ZERO_ERROR;
 
-  UCollator *ourCollator = ucol_open(locale, &subStatus);
+  UCollator *newCollator = NULL;
+
+  if(ourCollator==NULL) {
+    newCollator = ucol_open(locale, &subStatus);
+    ourCollator = newCollator;
+  }
 
   /* ------------------------------------ */
   
@@ -81,7 +87,7 @@ void showSort_attrib(LXContext *lx, const char *locale)
                       showSort_attributeVal(val));
           }
         u_fprintf(lx->OUT, "</UL>\r\n");
-        ucol_close(ourCollator);
+        ucol_close(newCollator);
       }
 }
   
@@ -183,7 +189,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   {
     case kSimpleMode:
     {
-       showSort_attrib(lx, locale);
+      showSort_attrib(lx, locale, NULL);
        
        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&%s&cust=\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, b, FSWF("usort_Custom","Customize..."));
     }
@@ -212,44 +218,8 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=cust VALUE=>");
       
       /* begin customizables */
-
-      /* -------------------------- UCOL_STRENGTH ----------------------------------- */
-      status = U_ZERO_ERROR;
-      attribute = UCOL_STRENGTH;
-      customStrength = ucol_getAttribute(customCollator, attribute, &status);
-      if(ss = strstr(b, "strength="))
-      {
-        ss += 9; /* skip 'strength=' */
-        nn = atoi(ss);
-        if( (nn || (*ss=='0'))  && /* choice is a number and.. */
-            (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
-        {
-          customStrength = nn; 
-        }
-      }
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, customStrength, &status);
-      if(U_FAILURE(status))
-      {
-        explainStatus(lx, status, NULL);
-        status = U_ZERO_ERROR;
-      }
-
       
-      u_fprintf(lx->OUT, "%U: <select name=strength>\r\n", showSort_attributeName(attribute) );
-
-      for(value = UCOL_PRIMARY; value < UCOL_STRENGTH_LIMIT; value++)
-      {
-        if(showSort_attributeVal(value)[0] != 0x0000)  /* If it's a named attribute, try it */
-        {  
-          u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
-                    (customStrength==value)?"selected":"",
-                    value,
-                    showSort_attributeVal(value));
-        }
-      }
-      u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
-
+      u_fprintf(lx->OUT, "<TABLE BORDER=0><TR><TD>");
       /* ------------------------------- UCOL_FRENCH_COLLATION ------------------------------------- */
       attribute = UCOL_FRENCH_COLLATION;
       status = U_ZERO_ERROR;
@@ -272,6 +242,43 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       ucol_setAttribute(customCollator, attribute, value, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
       
+      /* ----------------- ALT HANDLING ------------ */
+      attribute = UCOL_ALTERNATE_HANDLING;
+      status = U_ZERO_ERROR;
+      value = ucol_getAttribute(customCollator, attribute, &status);
+      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+      if(strstr(b, "&shft="))
+      {
+        value = UCOL_SHIFTED;
+      }
+
+      u_fprintf(lx->OUT, "<input type=checkbox %s name=shft> %U <BR>\r\n",
+                (value==UCOL_SHIFTED)?"checked":"",  showSort_attributeName(attribute));
+      status = U_ZERO_ERROR;
+      ucol_setAttribute(customCollator, attribute, value, &status);
+      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+
+      /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
+      attribute = UCOL_CASE_FIRST;
+      status = U_ZERO_ERROR;
+      value = ucol_getAttribute(customCollator, attribute, &status);
+      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+      if(strstr(b, "&cas1=")) 
+      {
+        value = UCOL_ON;
+      } 
+#if 1 
+      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
+      else
+      {
+        value = UCOL_OFF;
+      }
+#endif
+      u_fprintf(lx->OUT, "<input type=checkbox %s name=cas1> %U <BR>\r\n",
+                (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
+      status = U_ZERO_ERROR;
+      ucol_setAttribute(customCollator, attribute, value, &status);
+      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
 
       /* ------------------------------- UCOL_CASE_LEVEL ------------------------------------- */
       attribute = UCOL_CASE_LEVEL;
@@ -319,11 +326,78 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
       
 
+      /* -------------------------- UCOL_STRENGTH ----------------------------------- */
+      status = U_ZERO_ERROR;
+      attribute = UCOL_STRENGTH;
+      customStrength = ucol_getAttribute(customCollator, attribute, &status);
+      if((ss = strstr(b, "strength=")))
+      {
+        ss += 9; /* skip 'strength=' */
+        nn = atoi(ss);
+        if( (nn || (*ss=='0'))  && /* choice is a number and.. */
+            (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
+        {
+          customStrength = nn; 
+        }
+      }
+      status = U_ZERO_ERROR;
+      ucol_setAttribute(customCollator, attribute, customStrength, &status);
+      if(U_FAILURE(status))
+      {
+        explainStatus(lx, status, NULL);
+        status = U_ZERO_ERROR;
+      }
+
+      
+      u_fprintf(lx->OUT, "%U: <select name=strength>\r\n", showSort_attributeName(attribute) );
+
+      for(value = UCOL_PRIMARY; value < UCOL_STRENGTH_LIMIT; value++)
+      {
+        if(showSort_attributeVal(value)[0] != 0x0000)  /* If it's a named attribute, try it */
+        {  
+          u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
+                    (customStrength==value)?"selected":"",
+                    value,
+                    showSort_attributeVal(value));
+        }
+      }
+      u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
+
+      /* ------------------------------- UCOL_HIRAGANA_QUATERNARY_MODE ------------------------------------- */
+      attribute = UCOL_HIRAGANA_QUATERNARY_MODE;
+      status = U_ZERO_ERROR;
+      value = ucol_getAttribute(customCollator, attribute, &status);
+      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+      if(strstr(b, "&hira=")) 
+      {
+        value = UCOL_ON;
+      } 
+#if 1 
+      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
+      else
+      {
+        value = UCOL_OFF;
+      }
+#endif
+      u_fprintf(lx->OUT, "<input type=checkbox %s name=hira> %U <BR>\r\n",
+                (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
+      status = U_ZERO_ERROR;
+      ucol_setAttribute(customCollator, attribute, value, &status);
+      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+
+
       /* end customizables ---------------------------------------------------------- */
+    u_fprintf(lx->OUT, "</TD><TD>");
+    showSort_attrib(lx, locale, customCollator);
+    u_fprintf(lx->OUT, "</TD></TR></TABLE>");
+
       u_fprintf(lx->OUT, "<input type=submit value=Change></FORM>\r\n");
       
        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_CollationElements=%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/opened.gif\" ALT=\"\">%U</A>\r\n<P>", locale, inputChars, FSWF("usort_CustomClose","Remove Customization"));
     }
+
+
+
     break;
   } 
 
@@ -398,7 +472,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     int n;
     
     UChar in[SORTSIZE];
-    UErrorCode status2 = U_ZERO_ERROR;
     
     /* have some text to sort */
     unescapeAndDecodeQueryField_enc(in, SORTSIZE, inputChars, lx->chosenEncoding);
@@ -480,7 +553,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       case kCustomMode: 
       {
           USort *aSort;
-          UErrorCode sortErr = U_ZERO_ERROR;
           UChar *first, *next;
           int32_t i, count=0;
           

@@ -12,7 +12,6 @@ void showOneLocale(LXContext *lx, char *b)
     char *tmp, *locale = NULL;
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *myRB = NULL;
-    UBool doShowSort = FALSE;
     const char *qs;
 
     qs = b;
@@ -182,8 +181,8 @@ void showOneLocale(LXContext *lx, char *b)
         showUnicodeSet(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
         /*    showString(lx, myRB, locale, b, "ExemplarCharacters", FALSE); */
     
-        showTaggedArray(lx, myRB, locale, b, "Languages");
-        showTaggedArray(lx, myRB, locale, b, "Countries"); 
+        showTaggedArray(lx, myRB, locale, b, "Languages", TRUE);
+        showTaggedArray(lx, myRB, locale, b, "Countries", TRUE); 
     
       
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
@@ -277,6 +276,7 @@ void showOneLocale(LXContext *lx, char *b)
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*     Numbers section %%%*/
 
+        u_fprintf(lx->OUT, "<table cellpadding=0 cellspacing=0 width=\"100%%\"><tr><td VALIGN=\"TOP\">");
         {
             const UChar *currDesc[4];
             currDesc[0] = FSWF("CurrencyElements0", "Currency symbol");
@@ -286,6 +286,9 @@ void showOneLocale(LXContext *lx, char *b)
       
             showArrayWithDescription(lx, myRB, locale, currDesc, "CurrencyElements");
         }
+        u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
+        showTaggedArray(lx, myRB, locale, b, "Currencies", FALSE);
+        u_fprintf(lx->OUT, "</td></tr></table>");
     
     
         { /*from dcfmtsym */
