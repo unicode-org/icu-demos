@@ -85,7 +85,7 @@ static const char htmlHeader[]=
     "td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
     "td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
     "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
-    "div.glyph {font-size: 200%; font-family: serif;}\n"
+    "div.glyph {font-size: 160%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
     "<script src=\"//www.ibm.com/common/v14/detection.js\" language=\"JavaScript\" type=\"text/javascript\">\n"
@@ -170,8 +170,8 @@ static const char htmlHeader[]=
 
     "<div style=\"font-size: 6px\">"NBSP"</div>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
