@@ -313,8 +313,8 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
       UResourceBundle *b1 = NULL;
       UResourceBundle *b2 = NULL;
 
-      someTextLen = u_strlen(sampleString) + 8800;
-      someText = malloc(someTextLen);
+      someTextLen = u_strlen(sampleString) + 1024;
+      someText = malloc(someTextLen * sizeof(someText[0]));
       sampleStatus = U_ZERO_ERROR;
       aBundle = ures_open(NULL, locale, &sampleStatus);
 
@@ -341,7 +341,7 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
     }
   }
 
-  if(text)
+  if(text && *text)
   {
     unescapeAndDecodeQueryField_enc(strChars, SORTSIZE,
                                     text, lx->convRequested );
@@ -357,6 +357,8 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
   else
   {
     inputChars[0] = 0;  /* no text to process */
+    strChars[0] =0;
+	text=0;
   }
 
   return text;
