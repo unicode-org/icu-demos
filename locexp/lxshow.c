@@ -10,6 +10,13 @@
 #include "unicode/uset.h"
 #include "unicode/ucurr.h"
 
+/* Move Along.. nothing to see here.. */ 
+U_CAPI UResourceBundle* U_EXPORT2 
+ures_getByKeyWithFallback(const UResourceBundle *resB, 
+                          const char* inKey, 
+                          UResourceBundle *fillIn, 
+                          UErrorCode *status);
+
 /* Show a resource that's a collation rule list -----------------------------------------------------*/
 /**
  * Show a string.  Make it progressive disclosure if it exceeds some length !
@@ -468,6 +475,15 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
   
     s = ures_getStringByKey(rb, key, &rulesLen, &status);
 
+#if defined (LX_UBROWSE_PATH)
+    u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"%s\">\n", LX_UBROWSE_PATH);
+    u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=GO><INPUT TYPE=hidden NAME=us VALUE=\"%S\"><input type=hidden name=gosetn value=\"\">\n", s);
+    u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"" LDATA_PATH "explore.gif\"  ALIGN=RIGHT   ");
+    u_fprintf(lx->OUT, " VALUE=\"%S\"></FORM>",
+              FSWF("exploreTitle", "Explore"));
+    u_fprintf(lx->OUT, "</FORM>");
+#endif
+    
     uset = uset_openPattern(s, rulesLen, &status);
 
     showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
@@ -796,8 +812,8 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     UChar tempChars[1024];
     UChar tempDate[1024]; /* for Date-Time */
     UChar tempTime[1024]; /* for Date-Time */
-    const char *realKey;
-    char   key2[1024];
+    /*const char *realKey;
+      char   key2[1024];*/
     UBool isDefault = FALSE;
     /* figure out what example to use */
     if(!strcmp(key,"DateTimePatterns"))
@@ -1246,7 +1262,7 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
   char *q;
   strcpy(aKeyStem, keyStem);
   aKeyStem[0]=toupper(aKeyStem[0]);
-  if(q = strstr(aKeyStem, "Names")) {
+  if((q = strstr(aKeyStem, "Names"))) {
     *q = 0;
   }
   /* dayNames -> Day,  monthNames -> Month 
@@ -1268,11 +1284,11 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
 void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const char *type )
 {
     UErrorCode status = U_ZERO_ERROR;
-    UErrorCode shortStatus = U_ZERO_ERROR, longStatus = U_ZERO_ERROR;
-    char       shortKey[100], longKey[100];
-    UResourceBundle *item = NULL;
-     int32_t len;
-    const UChar *s  = 0;
+    /*UErrorCode shortStatus = U_ZERO_ERROR, longStatus = U_ZERO_ERROR;*/
+    /*char       shortKey[100], longKey[100];*/
+    /*UResourceBundle *item = NULL;*/
+    /*int32_t len;*/
+    /*const UChar *s  = 0;*/
     int i,j;
     int stuffCount;
     int maxCount = 0;
@@ -1339,7 +1355,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
           if(i>=stuff[i].count) {
             u_fprintf(lx->OUT, "<td></td>");
           } else {
-            UChar *s;
+            const UChar *s;
             int32_t len;
             UErrorCode subStatus = U_ZERO_ERROR;
             s = ures_getStringByIndex(stuff[i].bund, j, &len, &subStatus);
@@ -1957,7 +1973,7 @@ UResourceBundle *loadCalRes3(LXContext *lx, const char *keyStem, const char *typ
 void calPrintDefaultWarning(LXContext *lx) {
   UErrorCode status = U_ZERO_ERROR;
 
-    UChar keyBuf[1024];
+  /*UChar keyBuf[1024];*/
     UChar valBuf[1024];
     char loc[1024];
 /*     keyBuf[0]=0; */
@@ -1979,7 +1995,7 @@ void calPrintDefaultWarning(LXContext *lx) {
 }
 
 void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale) {
-  const char *urlCal = lx->curLocaleBlob.calendar;
+  /*const char *urlCal = lx->curLocaleBlob.calendar;*/
   UErrorCode status = U_ZERO_ERROR;
   UResourceBundle *fillin1 = NULL;
   UResourceBundle *fillin2 = NULL;
@@ -2053,10 +2069,10 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
 void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
 {
   UErrorCode status = U_ZERO_ERROR;
-  UBool typeFallback = FALSE;
+  /*UBool typeFallback = FALSE;*/
   UResourceBundle *calBundle = NULL; /* "calendar" */
-  UResourceBundle *myBundle = NULL; /* 'type' */
-  UResourceBundle *fbBundle = NULL; /* gregorian */
+  /*UResourceBundle *myBundle = NULL;*/ /* 'type' */
+  /*UResourceBundle *fbBundle = NULL;*/ /* gregorian */
     
   /* %%%%%%%%%%%%%%%%%%%%%%%*/
   /*   Date/Time section %%%*/
@@ -2149,10 +2165,14 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
     
     show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");  /* not calendrical */
   }
-  
-  /* locale pattern chars */
-  {
-    const UChar *charDescs[22];
+  showLPC(lx, myRB, locale);
+  showDateTimeElements(lx, myRB, locale); /* not calendrical? */
+}
+
+/* locale pattern chars */
+void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale)
+{
+    const UChar *charDescs[24];
     
     charDescs[0] = FSWF("localPatternChars0", "Era");
     charDescs[1] = FSWF("localPatternChars1", "Year");
@@ -2173,10 +2193,12 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
     charDescs[16] = FSWF("localPatternChars16", "Hour 0"); 
     charDescs[17] = FSWF("localPatternChars17", "Timezone");
     charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
-    charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
-    charDescs[20] = 0;
+    charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)"); 
+    charDescs[20] = FSWF("localPatternChars20",/**/ "extended year");
+    charDescs[21] = FSWF("localPatternChars21",/**/ "julian day");
+    charDescs[22] = FSWF("localPatternChars22",/**/ "millis in day");
+    charDescs[23] = FSWF("localPatternChars23",/**/ "timezone rfc");
+    charDescs[24] = 0;
     
     showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", TRUE); /* calendrical? */
-  }
-  showDateTimeElements(lx, myRB, locale); /* not calendrical? */
 }

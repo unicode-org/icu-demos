@@ -172,12 +172,12 @@ void showExploreSearchForm(LXContext *lx, const UChar *valueString)
 /* This is the entrypoint from Locale Explorer */
 extern void showExploreSearch( LXContext *lx)
 {
-    char *tmp;
+  /*char *tmp;*/
     UChar valueString[1024];
     UErrorCode status = U_ZERO_ERROR;
     int32_t i;
     char *term = "";
-    const char *p;
+    /*const char *p;*/
     char *inputChars = NULL;
     int length;
     int totalHits = 0; /* cumulative - for circuit breaking purposes */

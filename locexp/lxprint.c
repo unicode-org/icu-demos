@@ -870,7 +870,7 @@ void showChangePage(LXContext *lx)
   const char *ox;
   const char *baseU;
   int32_t n =0;
-  UBool selected = FALSE;
+  /*UBool selected = FALSE;*/
   LocaleBlob *b;
   UErrorCode status = U_ZERO_ERROR;
   int32_t adds = 0;

@@ -9,7 +9,7 @@
 
 void showOneLocale(LXContext *lx)
 {
-    char *tmp;
+  /*char *tmp;*/
     const char *locale = NULL;
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *myRB = NULL;

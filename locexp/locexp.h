@@ -243,6 +243,7 @@ extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *loca
 extern void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const char *type);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
+extern void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale);
 extern void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale);
 
 extern void showDefaultCalendar(LXContext *lx, UResourceBundle *rb, const char *locale);

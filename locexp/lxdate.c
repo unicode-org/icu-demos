@@ -223,32 +223,5 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     /* ========= Show LPC's for reference ================= */
 
     /* ..... */
-    /* locale pattern chars */
-    {
-	const UChar *charDescs[22];
-
-	charDescs[0] = FSWF("localPatternChars0", "Era");
-	charDescs[1] = FSWF("localPatternChars1", "Year");
-	charDescs[2] = FSWF("localPatternChars2", "Month");
-	charDescs[3] = FSWF("localPatternChars3", "Day of Month");
-	charDescs[4] = FSWF("localPatternChars4", "Hour Of Day 1");
-	charDescs[5] = FSWF("localPatternChars5", "Hour Of Day 0"); 
-	charDescs[6] = FSWF("localPatternChars6", "Minute");
-	charDescs[7] = FSWF("localPatternChars7", "Second");
-	charDescs[8] = FSWF("localPatternChars8", "Millisecond");
-	charDescs[9] = FSWF("localPatternChars9", "Day Of Week");
-	charDescs[10] = FSWF("localPatternChars10", "Day Of Year");
-	charDescs[11] = FSWF("localPatternChars11", "Day Of Week In Month");
-	charDescs[12] = FSWF("localPatternChars12", "Week Of Year");
-	charDescs[13] = FSWF("localPatternChars13", "Week Of Month");
-	charDescs[14] = FSWF("localPatternChars14", "Am/Pm");
-	charDescs[15] = FSWF("localPatternChars15", "Hour 1");
-	charDescs[16] = FSWF("localPatternChars16", "Hour 0");
-	charDescs[17] = FSWF("localPatternChars17", "Timezone");
-        charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
-        charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
-        charDescs[20] = 0;
-	
-        showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", FALSE);
-    }
+    showLPC(lx, myRB, locale);
 }
