@@ -78,6 +78,12 @@ THE APPS
     * a command line example program (usort) which will sort lines
       from the console or the file, similar to UNIX 'sort'. 
 
+- locexp   From : Steven R. Loomis
+                  <srl@monkey.sbay.org>
+
+           Uses : Conversion, Collation, Chartypes, Formatting,
+                  Resource Bundles,  ...
+                  uconv & usort [above]
 
 - Your contribution could be here too! Write: <icu4c@us.ibm.com>
 
