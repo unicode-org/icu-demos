@@ -23,7 +23,7 @@
 #endif
 
 #include <string.h>
-#include "cstring.h"
+//#include "cstring.h"
 
 #ifdef _WIN32
 #  include <windows.h>
@@ -656,7 +656,7 @@ long convertFirstLine( FILE* inF, char* inEncName,
         }
 
         const char* tempString    = " encoding=";
-        char* dupFLB        = uprv_strdup(pFLB);
+        char* dupFLB        = strdup(pFLB);
         int stringTwoLength = 0;
 
         /* build up the length */
