@@ -278,7 +278,9 @@ void showOneLocale(LXContext *lx, char *b)
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*     Numbers section %%%*/
 
+#if 0
         u_fprintf(lx->OUT, "<table cellpadding=0 cellspacing=0 width=\"100%%\"><tr><td VALIGN=\"TOP\">");
+
         {
             const UChar *currDesc[4];
             currDesc[0] = FSWF("CurrencyElements0", "Currency symbol");
@@ -289,8 +291,11 @@ void showOneLocale(LXContext *lx, char *b)
             showArrayWithDescription(lx, myRB, locale, currDesc, "CurrencyElements");
         }
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
-        showTaggedArray(lx, myRB, locale, b, "Currencies", FALSE);
+#endif
+        showCurrencies(lx, myRB, locale, b );
+#if 0
         u_fprintf(lx->OUT, "</td></tr></table>");
+#endif
     
     
         { /*from dcfmtsym */

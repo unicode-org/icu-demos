@@ -166,6 +166,7 @@ extern void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, c
 extern void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString);
 extern void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *queryString, const char *whichString);
 extern void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *whichString, UBool compareToDisplay);
+extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString);
 extern void showShortLong( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showSort( LXContext *lx, const char *locale, const char *b);

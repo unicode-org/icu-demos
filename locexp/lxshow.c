@@ -8,6 +8,7 @@
 #include "locexp.h"
 
 #include "unicode/uset.h"
+#include "unicode/ucurr.h"
 
 /* Show a resource that's a collation rule list -----------------------------------------------------*/
 /**
@@ -1432,140 +1433,297 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
 void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *key, UBool compareToDisplay )
 {
-    UErrorCode status = U_ZERO_ERROR;
-    UErrorCode firstStatus;
-    const UChar *s  = 0;
-    int32_t v;
-    int32_t rows;
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
-    int32_t len;
-    UResourceBundle *item = NULL;
+  UErrorCode status = U_ZERO_ERROR;
+  UErrorCode firstStatus;
+  const UChar *s  = 0;
+  int32_t v;
+  int32_t rows;
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
+  int32_t len;
+  UResourceBundle *item = NULL;
 
-    rows = ures_countArrayItems(rb, key, &status);
+  rows = ures_countArrayItems(rb, key, &status);
 
-    if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff)))
-    {
-        bigString = TRUE;
-        userRequested = didUserAskForKey(key, queryString);
+  if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff))) {
+    bigString = TRUE;
+    userRequested = didUserAskForKey(key, queryString);
+  }
+
+  showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
+
+  if(bigString && !userRequested) /* it's hidden. */  {
+    /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+  } else {
+    if(bigString) {
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+                locale,
+                key,
+                FSWF("bigStringHide", "Hide"));
     }
 
-    showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
+    firstStatus = status;  /* save this for the next column.. */
 
-    if(bigString && !userRequested) /* it's hidden. */
-    {
-        /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    if(U_SUCCESS(status)) {	
+      UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
+      UResourceBundle *defaultTagged = NULL;
+      UResourceBundle *taggedItem = NULL;
+      if(lx->defaultRB) {
+        defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
+      }
+      u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
+	  
+      /* print the top row */
+      u_fprintf(lx->OUT,"<TR><TD><B>%U</B></TD>",
+                FSWF("taggedarrayTag", "Tag"));
+
+      if(compareToDisplay) {
+        u_fprintf(lx->OUT, "<TD><I>%U</I></TD>",
+                  defaultLanguageDisplayName(lx));
+      }
+
+      u_fprintf(lx->OUT, "<TD><B>%U</B></TD></TR>",
+                lx->curLocale ? lx->curLocale->ustr : FSWF("none","None"));
+	  
+      for(v=0;v<rows;v++) {
+        const char *tag;
+              
+        status = U_ZERO_ERROR;
+        taggedItem = ures_getByIndex(tagged, v, NULL, &status);
+        tag = ures_getKey(taggedItem);
+              
+        /*tag = ures_getTaggedArrayTag(rb, key, v, &status);*/
+        if(!tag)
+          break;
+              
+        u_fprintf(lx->OUT,"<TR> ");
+              
+        if(U_SUCCESS(status)) {
+          u_fprintf(lx->OUT, "<TD><TT>%s</TT></TD> ", tag);
+                
+                
+          if(compareToDisplay) {
+            if(lx->defaultRB) {
+              item = ures_getByKey(defaultTagged, tag, item, &status);
+              s = ures_getString(item, &len, &status);
+                    
+              if(s)
+                u_fprintf(lx->OUT, "<TD><I>%U</I></TD>", s);
+              else
+                u_fprintf(lx->OUT, "<TD></TD>");
+            } else {
+              u_fprintf(lx->OUT, "<TD></TD>");
+            }
+          }
+
+          status = U_ZERO_ERROR;
+          switch(ures_getType(taggedItem)) {
+
+          case URES_STRING:
+            s = ures_getString(taggedItem, &len, &status);
+            
+            if(s) {
+#if 0
+              UChar junk[8192];
+              UErrorCode she=U_ZERO_ERROR;
+              int32_t dstl;
+              int32_t j;
+              UChar temp;
+              
+              dstl=u_shapeArabic(s, u_strlen(s), junk, 8192, U_SHAPE_LETTERS_SHAPE, &she);
+              junk[dstl]=0;
+              /* Reverses the string */
+              for (j = 0; j < (dstl / 2); j++){
+                temp = junk[(dstl-1) - j];
+                junk[(dstl-1) - j] = junk[j];
+                junk[j] = temp;
+              }
+              u_fprintf(lx->OUT, "<TD>%U [a]</TD>", junk);
+#else
+              u_fprintf(lx->OUT, "<TD>%U</TD>", s);
+#endif
+            } else {
+              u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
+              explainStatus(lx, status, key);
+              u_fprintf(lx->OUT, "</TD>\r\n");
+            }
+            break;
+
+          case URES_ARRAY:
+            {
+              UResourceBundle *subItem = NULL;
+              while((s = ures_getNextString(taggedItem, &len, NULL, &status)) && U_SUCCESS(status)) {
+                  u_fprintf(lx->OUT, "<td>%U</td>", s);
+              }
+              
+              if(U_FAILURE(status) && (status != U_INDEX_OUTOFBOUNDS_ERROR)) {
+                u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
+                explainStatus(lx, status, key);
+                u_fprintf(lx->OUT, "</TD>\r\n");
+              }
+              ures_close(subItem);
+            }
+            break;
+            
+          default:
+            u_fprintf(lx->OUT, "<TD><i>unknown resource type=%d</i></TD>", ures_getType(taggedItem));
+          } /* switch */
+        }
+        u_fprintf(lx->OUT, "</TR>\r\n");
+      }
+      u_fprintf(lx->OUT, "</TABLE>\r\n<BR>");
+      ures_close(taggedItem); /* todo: mem. management? */
     }
-    else
-    {
-        if(bigString)
-        {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
-                      locale,
-                      key,
-                      FSWF("bigStringHide", "Hide"));
+  }
+
+  u_fprintf(lx->OUT, "</TD>");
+  showKeyAndEndItem(lx, key, locale);
+}
+
+
+void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString )
+{
+  UErrorCode status = U_ZERO_ERROR;
+  UErrorCode firstStatus;
+  const UChar *s  = 0;
+  int32_t v;
+  int32_t rows;
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
+  int32_t len;
+  UResourceBundle *item = NULL;
+  const char *key = "Currencies";
+  const UChar  *cflu = NULL;
+  char cfl[4] = {0};
+  UBool sawDefault = FALSE;
+
+  rows = ures_countArrayItems(rb, key, &status);
+
+  if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff))) {
+    bigString = TRUE;
+    userRequested = didUserAskForKey(key, queryString);
+  }
+
+  showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
+
+  if(U_SUCCESS(status)) {
+    UErrorCode defCurSt = U_ZERO_ERROR;
+    cflu = ucurr_forLocale(locale, &defCurSt);
+    if(U_FAILURE(defCurSt) || !cflu) {
+      u_fprintf(lx->OUT, "%U: ", FSWF("currNoDefault", "No Default Currency"));
+      explainStatus(lx,defCurSt,key);
+      u_fprintf(lx->OUT, "<BR>\r\n");
+    } else {
+      u_UCharsToChars(cflu, cfl, 4);
+      cfl[3]=0;
+    }
+  }
+
+  if(bigString && !userRequested) /* it's hidden. */  {
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+  } else {
+    if(bigString) {
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+                locale,
+                key,
+                FSWF("bigStringHide", "Hide"));
+    }
+
+    firstStatus = status;  /* save this for the next column.. */
+
+    if(U_SUCCESS(status)) {	
+      UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
+      UResourceBundle *defaultTagged = NULL;
+      UResourceBundle *taggedItem = NULL;
+      if(lx->defaultRB) {
+        defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
+      }
+      u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
+	  
+      /* print the top row */
+      u_fprintf(lx->OUT,"<TR><TH>%U</TH><TH>%U</TH><TH>%U</TH><TH>%U</TH>",
+                FSWF("currCode", "Code"),
+                FSWF("currSymbol", "Symbol"),
+                FSWF("currName", "Name"),
+                FSWF("currDigits", "Decimal Digits"));
+	  
+      for(v=0;v<rows;v++) {
+        const char *tag;
+              
+        status = U_ZERO_ERROR;
+        taggedItem = ures_getByIndex(tagged, v, NULL, &status);
+        tag = ures_getKey(taggedItem);
+              
+        if(!tag)
+          break;
+              
+        u_fprintf(lx->OUT,"<TR> ");
+              
+        if(U_SUCCESS(status)) {
+          u_fprintf(lx->OUT, "<TD><TT>%s%s%s</TT></TD> ", 
+                    !strcmp(tag,cfl)?"<b>":"",
+                    tag,
+                    !strcmp(tag,cfl)?"</b>":"");
+          
+          if(!strcmp(tag,cfl)) {
+            sawDefault = TRUE;
+          }
+                
+          status = U_ZERO_ERROR;
+          switch(ures_getType(taggedItem)) {
+
+          case URES_STRING:  /* old format ICU data */
+            s = ures_getString(taggedItem, &len, &status);
+            
+            if(s) {
+              u_fprintf(lx->OUT, "<TD>%U</TD>", s);
+            } else {
+              u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
+              explainStatus(lx, status, key);
+              u_fprintf(lx->OUT, "</TD>\r\n");
+            }
+            break;
+
+          case URES_ARRAY:
+            {
+              UResourceBundle *subItem = NULL;
+              while((s = ures_getNextString(taggedItem, &len, NULL, &status)) && U_SUCCESS(status)) {
+                  u_fprintf(lx->OUT, "<td>%U</td>", s);
+              }
+              
+              if(U_FAILURE(status) && (status != U_INDEX_OUTOFBOUNDS_ERROR)) {
+                u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
+                explainStatus(lx, status, key);
+                u_fprintf(lx->OUT, "</TD>\r\n");
+              }
+              ures_close(subItem);
+            }
+            break;
+            
+          default:
+            u_fprintf(lx->OUT, "<TD><i>unknown resource type=%d</i></TD>", ures_getType(taggedItem));
+          } /* switch */
         }
 
-        firstStatus = status;  /* save this for the next column.. */
+        /* Currency additions */
+        {
+          UChar ucn[8];
+          u_charsToUChars(tag, ucn,4);
+          u_fprintf(lx->OUT, "<td>%d</td>", ucurr_getDefaultFractionDigits(ucn));
+        }
 
-        if(U_SUCCESS(status))
-        {	
-            UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
-            UResourceBundle *defaultTagged = NULL;
-            UResourceBundle *taggedItem = NULL;
-            if(lx->defaultRB)
-                defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
-            u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
-	  
-            /* print the top row */
-            u_fprintf(lx->OUT,"<TR><TD><B>%U</B></TD>",
-                      FSWF("taggedarrayTag", "Tag"));
-
-            if(compareToDisplay) {
-              u_fprintf(lx->OUT, "<TD><I>%U</I></TD>",
-                        defaultLanguageDisplayName(lx));
-            }
-
-            u_fprintf(lx->OUT, "<TD><B>%U</B></TD></TR>",
-                      lx->curLocale ? lx->curLocale->ustr : FSWF("none","None"));
-	  
-            for(v=0;v<rows;v++)
-	    {
-                const char *tag;
-
-                status = U_ZERO_ERROR;
-                taggedItem = ures_getByIndex(tagged, v, NULL, &status);
-                tag = ures_getKey(taggedItem);
-	      
-                /*tag = ures_getTaggedArrayTag(rb, key, v, &status);*/
-                if(!tag)
-                    break;
-	      
-                u_fprintf(lx->OUT,"<TR> ");
-
-                if(U_SUCCESS(status))
-		{
-                    u_fprintf(lx->OUT, "<TD><TT>%s</TT></TD> ", tag);
-		  
-
-                    if(compareToDisplay) {
-                      if(lx->defaultRB)
-                      {
-                        item = ures_getByKey(defaultTagged, tag, item, &status);
-                        s = ures_getString(item, &len, &status);
-                        
-                        if(s)
-                          u_fprintf(lx->OUT, "<TD><I>%U</I></TD>", s);
-                        else
-                          u_fprintf(lx->OUT, "<TD></TD>");
-                      }
-                      else
-			u_fprintf(lx->OUT, "<TD></TD>");
-                    }
-
-                    status = U_ZERO_ERROR;
-
-                    s = ures_getString(taggedItem, &len, &status);
-
-                    if(s)
-                    {
-#if 0
-                        UChar junk[8192];
-                        UErrorCode she=U_ZERO_ERROR;
-                        int32_t dstl;
-                        int32_t j;
-                        UChar temp;
-
-                        dstl=u_shapeArabic(s, u_strlen(s), junk, 8192, U_SHAPE_LETTERS_SHAPE, &she);
-                        junk[dstl]=0;
-                        /* Reverses the string */
-                        for (j = 0; j < (dstl / 2); j++){
-                            temp = junk[(dstl-1) - j];
-                            junk[(dstl-1) - j] = junk[j];
-                            junk[j] = temp;
-                        }
-
-		    
-                        u_fprintf(lx->OUT, "<TD>%U [a]</TD>", junk);
-#else
-                        u_fprintf(lx->OUT, "<TD>%U</TD>", s);
-#endif
-                    }
-                    else
-		    {
-                        u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
-                        explainStatus(lx, status, key);
-                        u_fprintf(lx->OUT, "</TD>\r\n");
-		    }
-		}
-                u_fprintf(lx->OUT, "</TR>\r\n");
-	    }
-            u_fprintf(lx->OUT, "</TABLE>\r\n<BR>");
-            ures_close(taggedItem); /* todo: mem. management? */
-	}
+        u_fprintf(lx->OUT, "</TR>\r\n");
+      }
+      if(!sawDefault && cflu) {
+        u_fprintf(lx->OUT, "<tr><td><b>%U</b></td></tr>\r\n", cflu);
+      }
+      u_fprintf(lx->OUT, "</TABLE>\r\n<BR>");
+      ures_close(taggedItem); /* todo: mem. management? */
     }
+  }
 
-    u_fprintf(lx->OUT, "</TD>");
-    showKeyAndEndItem(lx, key, locale);
+  u_fprintf(lx->OUT, "</TD>");
+  showKeyAndEndItem(lx, key, locale);
 }
+
