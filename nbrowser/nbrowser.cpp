@@ -335,7 +335,7 @@ main(int argc, const char *argv[]) {
         // get input from cgi variable, e.g. t=a\\u0308%EA%B0%81&s=0061+0308&op1=on
         const char *in;
 
-        if((in=strstr(cgi, "t="))!=NULL) {
+        if((in=strstr(cgi, "t="))!=NULL && in[2]!='&' && in[2]!=0) {
             inputIsUTF8=TRUE;
             in+=2; // skip "t="
             inputLength=parseEscaped(in, buffer, sizeof(buffer), errorCode);
@@ -350,7 +350,7 @@ main(int argc, const char *argv[]) {
             if(errorCode==U_STRING_NOT_TERMINATED_WARNING) {
                 errorCode=U_BUFFER_OVERFLOW_ERROR;
             }
-        } else if((in=strstr(cgi, "s="))!=NULL) {
+        } else if((in=strstr(cgi, "s="))!=NULL && in[2]!='&' && in[2]!=0) {
             in+=2; // skip "s="
             inputLength=parseInput(&in, 1,
                                    countArgs, endInLastArg,
