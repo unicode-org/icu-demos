@@ -138,7 +138,6 @@ udata_finish(UNewDataMemory *pData, UErrorCode *pErrorCode) {
 U_CAPI void U_EXPORT2
 udata_write8(UNewDataMemory *pData, uint8_t byte) {
     if(pData!=NULL && pData->file!=NULL) {
-uint32_t top=ftell(pData->file);
         fwrite(&byte, 1, 1, pData->file);
     }
 }
@@ -146,7 +145,6 @@ uint32_t top=ftell(pData->file);
 U_CAPI void U_EXPORT2
 udata_write16(UNewDataMemory *pData, uint16_t word) {
     if(pData!=NULL && pData->file!=NULL) {
-uint32_t top=ftell(pData->file);
         fwrite(&word, 2, 1, pData->file);
     }
 }
@@ -154,7 +152,6 @@ uint32_t top=ftell(pData->file);
 U_CAPI void U_EXPORT2
 udata_write32(UNewDataMemory *pData, uint32_t wyde) {
     if(pData!=NULL && pData->file!=NULL) {
-uint32_t top=ftell(pData->file);
         fwrite(&wyde, 4, 1, pData->file);
     }
 }
@@ -163,7 +160,6 @@ U_CAPI void U_EXPORT2
 udata_writeBlock(UNewDataMemory *pData, const void *s, UTextOffset length) {
     if(pData!=NULL && pData->file!=NULL) {
         if(length>0) {
-uint32_t top=ftell(pData->file);
             fwrite(s, 1, length, pData->file);
         }
     }
@@ -176,7 +172,6 @@ udata_writeString(UNewDataMemory *pData, const char *s, UTextOffset length) {
             length=icu_strlen(s);
         }
         if(length>0) {
-uint32_t top=ftell(pData->file);
             fwrite(s, 1, length, pData->file);
         }
     }
@@ -189,7 +184,6 @@ udata_writeUString(UNewDataMemory *pData, const UChar *s, UTextOffset length) {
             length=u_strlen(s);
         }
         if(length>0) {
-uint32_t top=ftell(pData->file);
             fwrite(s, 2, length, pData->file);
         }
     }
