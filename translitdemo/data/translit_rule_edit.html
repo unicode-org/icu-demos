@@ -62,6 +62,10 @@ function handleSave() {
     handleSaveAs();
     return;
   }
+  if (arrayContainsString(AVAILABLE_IDS, id, 1)) {
+    alert(id + " is a system transliterator.  Please choose a different ID.");
+    return;
+  }
   document.FORM.ARG_OPERATION.value = "COMPILE";
   document.FORM.ARG_ID.value = id;
   document.FORM.ARG_RULES.value = document.FORM.RULE_SOURCE.value;
