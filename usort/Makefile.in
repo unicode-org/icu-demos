@@ -12,7 +12,7 @@ include @ICU_MAKEFILE@
 top_builddir = ..
 subdir = usort
 
-SUBDIRS= client lib
+SUBDIRS= lib client
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
