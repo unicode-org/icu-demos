@@ -175,13 +175,31 @@ static UBool isShortestUTF8(char *source, int32_t size) {
     return TRUE;
 }
 
-static inline void printUChar(const UChar *targetBuffer, int32_t targetSize, UChar32 uniVal, UErrorCode *status) {
+static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UErrorCode *status) {
     int32_t utf8Size;
     static char utf8[128];
-    static char uniName[256];
-    const char *escapedChar = getEscapeChar(uniVal);
+    static char uniName[1024];
+    int32_t uniNameLen = 0;
+    int32_t idx = 0;
+    UChar32 uniVal;
+    const char *escapedChar = NULL;
 
-    u_charName(uniVal, U_EXTENDED_CHAR_NAME, uniName, sizeof(uniName), status);
+    // Make it easy to hover the mouse cursor over a cell to see the actual names of the characters.
+    for (idx = 0; idx < targetSize; ) {
+        if (idx != 0) {
+            uniName[uniNameLen++] = '\n';
+            uniName[uniNameLen++] = ' ';
+            uniName[uniNameLen++] = '+';
+            uniName[uniNameLen++] = ' ';
+        }
+        U16_NEXT(targetBuffer, idx, targetSize, uniVal);
+        uniNameLen += u_charName(uniVal, U_EXTENDED_CHAR_NAME,
+                                 uniName + uniNameLen,
+                                 sizeof(uniName) + uniNameLen, status);
+    }
+
+    // Print a visual representation of the character
+    escapedChar = getEscapeChar(uniVal);  // Maybe this needs to go into the loop above
     if (!escapedChar) {
         u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
         printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br>",
@@ -190,7 +208,17 @@ static inline void printUChar(const UChar *targetBuffer, int32_t targetSize, UCh
     else {
         printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">%s", uniName, escapedChar);
     }
-    printf("<font size=\"-2\">%04X</font></td>\n", uniVal);
+
+    // Print the Unicode codepoint values
+    printf("<font size=\"-2\">");
+    for (idx = 0; idx < targetSize; ) {
+        if (idx != 0) {
+            puts("<br>");
+        }
+        U16_NEXT(targetBuffer, idx, targetSize, uniVal);
+        printf("%04X", uniVal);
+    }
+    puts("</font></td>");
 }
 
 static inline void printContinue(const char *startBytes, uint8_t currCh, UErrorCode *status) {
@@ -216,7 +244,6 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     UChar *targetBuffer;
     UChar *target;
     UChar *targetLimit;
-    UChar32 uniVal;
     int8_t cnvMaxCharSize;
 
     if (U_FAILURE(*status)) {
@@ -292,7 +319,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     case UCNV_UTF7:
     case UCNV_BOCU1:
     case UCNV_IMAP_MAILBOX:
-        puts("<p>WARNING: This is a stateful encoding. Some states may be missing. Some of information on the layout of this codepage may be incorrect.</p>");
+        puts("<p>WARNING: This is a stateful encoding. Some states may be missing. Some information on the layout of this codepage may be incorrect.</p>");
         break;
     default:
         break;
@@ -303,22 +330,10 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     startBytesLen = ((strlen(startBytes)>>1)<<1);
     maxCharSize = startBytesLen/2;
     cnvMaxCharSize = ucnv_getMaxCharSize(cnv);
-    if (convType == UCNV_EBCDIC_STATEFUL || convType == UCNV_ISO_2022
-        || convType == UCNV_IMAP_MAILBOX
-        || convType == UCNV_LMBCS_1
-        || convType == UCNV_LMBCS_2
-        || convType == UCNV_LMBCS_3
-        || convType == UCNV_LMBCS_4
-        || convType == UCNV_LMBCS_5
-        || convType == UCNV_LMBCS_6
-        || convType == UCNV_LMBCS_8
-        || convType == UCNV_LMBCS_11
-        || convType == UCNV_LMBCS_16
-        || convType == UCNV_LMBCS_17
-        || convType == UCNV_LMBCS_18
-        || convType == UCNV_LMBCS_19)
+    if (convType == UCNV_ISO_2022
+        || convType == UCNV_UTF8)
     {
-        /* Add one for the shift */
+        /* Add one for the shift (or one byte for UTF-8 supplementary chars) */
         cnvMaxCharSize++;
     }
     if (maxCharSize >= cnvMaxCharSize) {
@@ -363,10 +378,10 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
                 *status = U_ILLEGAL_CHAR_FOUND;
             }
             if (U_SUCCESS(*status) && targetSize > 0) {
-                U16_GET(targetBuffer, 0, 0, targetSize, uniVal);
-                printUChar(targetBuffer, targetSize, uniVal, status);
+                printUChars(targetBuffer, targetSize, status);
             }
             else if (*status == U_TRUNCATED_CHAR_FOUND
+//                && (convType == UCNV_DBCS && currCh != UCNV_SO && currCh != UCNV_SI)
                 || (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0)
                 || (convType == UCNV_UTF7 && currCh == '+' && startBytesLen == 0))
             {

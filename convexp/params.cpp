@@ -34,24 +34,24 @@ const char ALL[]="ALL";
 
 U_CFUNC const char *getStandardOptionsURL(UErrorCode *status) {
     static char optionsURL[1024] = "\x00\x00\x00";
-	static char *standards = NULL;
+    static char *standards = NULL;
 
-	if (!standards) {
-		int32_t pos = -1;
-		const UHashElement *e;
-		const char *standard;
-		int32_t len = 0;
+    if (!standards) {
+        int32_t pos = -1;
+        const UHashElement *e;
+        const char *standard;
+        int32_t len = 0;
 
-		while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
-			standard = (const char*) e->value.pointer;
-			len += sprintf(optionsURL+len, OPTION_SEP_STR"s=%s", standard);
-			if (*standard == 0) {
-				/* Special case for when browsers are too smart, like Opera */
-				len += sprintf(optionsURL+len, "-");
-			}
-		}
-		standards = optionsURL;
-	}
+        while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
+            standard = (const char*) e->value.pointer;
+            len += sprintf(optionsURL+len, OPTION_SEP_STR"s=%s", standard);
+            if (*standard == 0) {
+                /* Special case for when browsers are too smart, like Opera */
+                len += sprintf(optionsURL+len, "-");
+            }
+        }
+        standards = optionsURL;
+    }
 
     return optionsURL+1;
 }
@@ -235,3 +235,4 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
     }
 }
 */
+

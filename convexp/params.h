@@ -32,9 +32,9 @@ U_CFUNC UHashtable *gStandardsSelected;
 U_CFUNC const char *gScriptName;
 U_CFUNC UBool gShowUnicodeSet;
 
-#define OPTION_SEPARATOR    ';' 
+#define OPTION_SEPARATOR    '&'
 #define VALUE_SEPARATOR     '='
-#define OPTION_SEP_STR      ";" 
+#define OPTION_SEP_STR      "&"
 #define NBSP                "\xC2\xA0"  /* UTF-8 &nbsp; */
 #define PROGRAM_NAME        "Converter Explorer"
 #define CGI_NAME            "convexp"
