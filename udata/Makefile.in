@@ -1,7 +1,0 @@
-#
-all:
-	@echo
-	@echo
-	@echo " This project [udata] is obsolete. Use and enjoy"
-	@echo " the udata api's which are already in the ICU!"
-	@echo
