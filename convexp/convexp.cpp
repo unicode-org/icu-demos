@@ -182,7 +182,7 @@ static const char navigationSubHeader[]=
     "<strong>%s</strong>\n";
 
 static const char navigationEndHeader[]=
-    "<h1><br />ICU " PROGRAM_NAME "</h1>\n";
+    "<h1>ICU " PROGRAM_NAME "</h1>\n";
 
 static const char aliasHeader[]=
     "<h2><br />List of Converter Aliases</h2>";
