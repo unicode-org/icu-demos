@@ -12,7 +12,6 @@
 static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *str, MySortable *loc,
         int *totalHits,  char * lastTag, UStringSearch *search, UErrorCode *status)
 {
-  int n;
   UResourceBundle *sub = NULL;
   UErrorCode s2 = U_ZERO_ERROR;
   const char *key;
@@ -44,11 +43,11 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
         
         if(len  > 0)
         {
-            if(U_FAILURE(s2)) { fprintf(lx->fOUT, " Err %s\n", u_errorName(s2));  return; }
+            if(U_FAILURE(s2)) { fprintf(lx->fOUT, " Err %s\n", u_errorName(s2));  return FALSE; }
             
             
             usearch_setText(     search,u,len,status);
-            if(U_FAILURE(*status)) { fprintf(lx->fOUT, " Err on setText %s\n", u_errorName(*status));  return; }
+            if(U_FAILURE(*status)) { fprintf(lx->fOUT, " Err on setText %s\n", u_errorName(*status));  return FALSE; }
             for (pos = usearch_first(search, status); 
                                         pos != USEARCH_DONE; 
                                         pos = usearch_next(search, status))
@@ -119,7 +118,6 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
 static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *totalHits, UStringSearch *search)
 {
   int i;
-  int count;
   UResourceBundle *r = NULL;
   UErrorCode status = U_ZERO_ERROR;
   
@@ -164,24 +162,33 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
   ures_close(r);
 }
 
+void showExploreSearchForm(LXContext *lx, const UChar *valueString)
+{
+    u_fprintf(lx->OUT, "<FORM><INPUT TYPE=hidden NAME=_ VALUE=\"%s\">\r\n",
+              lx->curLocaleName);
+    u_fprintf(lx->OUT, "<INPUT VALUE=\"%U\" NAME=EXPLORE_search> \r\n", valueString);
+    u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\">\r\n", FSWF("explore_search", "Search"));
+    u_fprintf(lx->OUT, "</FORM>\r\n");
+}
+
+
 /* This is the entrypoint from Locale Explorer */
 extern void showExploreSearch( LXContext *lx, const char *qs)
 {
     char *tmp;
     UChar valueString[1024];
     UErrorCode status = U_ZERO_ERROR;
-    int32_t i, j;
+    int32_t i;
     const char *term = "";
     const char *p;
     char inputChars[1024];
     int length;
     int totalHits = 0; /* cumulative - for circuit breaking purposes */
     UStringSearch *search = NULL;
-    UCollator *col = NULL;
     
-    if(tmp = strstr(qs, "EXPLORE_search"))
+    if((tmp = strstr(qs, "EXPLORE_search")))
     {
-    term = (tmp + strlen("EXPLORE_search="));
+        term = (tmp + strlen("EXPLORE_search="));
     }
     
     unescapeAndDecodeQueryField_enc(valueString, 1000, term, lx->chosenEncoding);
@@ -212,11 +219,7 @@ extern void showExploreSearch( LXContext *lx, const char *qs)
         return;
     }
     
-    u_fprintf(lx->OUT, "<FORM><INPUT TYPE=hidden NAME=_ VALUE=\"%s\">\r\n",
-                lx->curLocaleName);
-    u_fprintf(lx->OUT, "<INPUT VALUE=\"%U\" NAME=EXPLORE_search> \r\n", valueString);
-    u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\">\r\n", FSWF("explore_search", "Search"));
-    u_fprintf(lx->OUT, "</FORM>\r\n");
+    showExploreSearchForm(lx, valueString);
     
     if(u_strlen(valueString)<=0)
     {

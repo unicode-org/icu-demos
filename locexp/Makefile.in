@@ -23,9 +23,6 @@ include $(top_builddir)/icuapps.mk
 # following line.
 LXOPTIONS = -DLX_USE_FONTED
 
--include Makefile.local
-
-
 
 DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
 DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)
@@ -39,7 +36,7 @@ CLEANFILES = *~
 ## Target information
 TARGET = locexp
 
-LXOBJ = locexp.o wfobject.o calexp.o srchexp.o
+LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o
 CGIOBJ = cgimain.o
 # FCGIOBJ = fcgimain.o
 OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
@@ -75,6 +72,7 @@ distclean : distclean-recursive distclean-local
 dist: dist-recursive dist-local
 check: check-recursive check-local
 
+-include Makefile.local
 
 ## Recursive targets
 all-recursive install-recursive clean-recursive distclean-recursive dist-recursive check-recursive:

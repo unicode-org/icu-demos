@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c ../calexp.c ../srchexp.c on Wed May 29 15:28:14 PDT 2002 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Wed Aug  7 10:12:50 PDT 2002 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -124,6 +124,7 @@ root {
    charNum  {  "#"  }
    chooseEncoding  {  "Choose Your Encoding"  }
    chooseLocale  {  "Choose Your Locale."  }
+   chooseLocale_summary  {  "Choose Locale"  }
    convERR  {  "AN error occured trying to sort the converters.\n"  }
    converter_matchesTo  {  "Looking for matches to these chars: "  }
    converter_searching  {  "Searching for converters which match .."  }
@@ -212,7 +213,6 @@ root {
    translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
    transliterate_help  {  "Transliteration Help"  }
    ubrowse  {  "Browse Unicode in this codepage"  }
-   uniset_containsSequence  {  "Note: this set may contain a sequence, such as {ch}. This is currently not supported in ICU4C's UnicodeSet, therefore the 'Set' display may be incorrect."  }
    usortOriginal  {  "Original"  }
    usortPrimary  {  "Primary only"  }
    usortSecondary  {  "Primary & Secondary"  }
@@ -240,12 +240,12 @@ root {
 
 // From root_head.html (iso-8859-1)
    htmlHEAD {
-       "<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. --srl -->\u000A<!-- Copyright (c) 2000 IBM, Inc. and others .. -->\u000A\u000A<style type=\u0022text/cXss\u0022>\u000A<!--\u000A.barTitles {  font-size: 9pt; font-weight: 700; letter-spacing: 1px; color: #FFFFFF; font-family: HELVETICA, HELV, ARIAL}\u000A-->\u000A</style>\u000A<style TYPE=\u0022text/cXss\u0022>\u000A    .input {background:#FFFFFF;color:#000000;font-weight:normal;}\u000A    .iconNames {font-weight:600;font-size:9pt;}\u000A    .iconBlurb {font-weight:400;font-size:8pt;}\u000A    .barTitles {font-weight:700;font-size:9pt;letter-spacing:1px;}\u000A    .boxCaption {font-weight:600;font-size:9pt;}\u000A    .boxBlurb {font-weight:400;font-size:8pt;}\u000A    .zoneSection {font-weight:600;font-size:10pt;}\u000A</style>\u000A\u000A</head>\u000A<body text=\u0022#000000\u0022 bgcolor=\u0022#FFFFFF\u0022 TOPMARGIN=\u00222\u0022 LEFTMARGIN=\u00222\u0022 MARGINWIDTH=\u00222\u0022 MARGINHEIGHT=\u00222\u0022>\u000A&nbsp;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu\u0022>ICU</A> &gt;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu/demo\u0022>Demo</A> &gt;\u000A<B>Locale Explorer</B><BR>\u000A<HR>\u000A"   }
+       ""   }
 
 
 // From root_tail.html (iso-8859-1)
    htmlTAIL {
-       "<!-- DEFAULT.htmlTAIL -->\u000A\u000A<!-- DEFAULT.htmlTAIL -->\u000A"   }
+       ""   }
 
 
 

@@ -92,6 +92,7 @@ off { "Mitfi" }
 on { "Mixgħul" }
 poweredby  {  "Miġjub minn"  }
 poweredby_filebug  {  "Irraporta Żball"  }
+rules { "Regolament" }
 statusTableHeader  {  "Għażla: "  }
 statusTableHeaderChange { "(Ikklikkja biex turi)" }
 stringClickToShow { "(Ikklikja hawn biex taraha.)" }

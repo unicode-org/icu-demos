@@ -2,6 +2,9 @@
 
 echo Rebuilding Makefile.res
 
+PKG=$1
+shift
+
 echo "# Rebuild by $0 from $*" `date` > Makefile.res
 for FILE in $*; do
     CODING=`fgrep '*- Coding:' $FILE | sed -e 's/^.*Coding: \([^ ;]*\).*/\1/' | sed -e 's/euc-jp/ibm-954/'` 
@@ -12,9 +15,9 @@ for FILE in $*; do
 #         echo "# $FILE : $CODING"
          RES=`echo $FILE | sed -e 's/\.txt/.res/'`
          (
-            echo "$RES : $FILE Makefile.res"
-            echo '	@echo Rebuilding $@ - '$CODING
-            echo '	@$(INVOKE) $(GENRB) -d . -e '$CODING' $<'
+            echo "$PKG_$RES : $FILE Makefile.res"
+            echo '	@echo SUPER Rebuilding $@ - '$CODING
+            echo '	@$(INVOKE) $(GENRB) --package-name '$PKG' -d . -e '$CODING' $<'
             echo
          ) >> Makefile.res
     fi

@@ -38,7 +38,6 @@ int main(const char *argv[], int argc)
   initContext(&localContext);
   localContext.fOUT = stdout;
   runLocaleExplorer(&localContext);
-  closeLX();
-  
+  closeLX(&localContext);
   return 0;
 }
