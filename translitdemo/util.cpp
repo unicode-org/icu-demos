@@ -125,14 +125,18 @@ void util_fprintf(FILE* out, const char* str, UBool inQuote) {
     for (i=0; i<n; ++i) {
         int32_t c=-1;
         switch (str[i]) {
+            // I'm disabling \n and \\ temporarily during development --
+            // they seem to muck up setting vars to hidden fields.
+            // Soon that's all we'll be doing, so it makes sense to
+            // optimize that.
         case 0x0008: c=0x0062 /*b*/; break;
         case 0x0009: c=0x0074 /*t*/; break;
-        case 0x000A: c=0x006E /*n*/; break;
+        // case 0x000A: c=0x006E /*n*/; break;
         case 0x000C: c=0x0066 /*f*/; break;
         case 0x000D: c=0x0072 /*r*/; break;
         case 0x0022: c=0x0022 /*"*/; break;
         case 0x0027: c=0x0027 /*'*/; break;
-        case 0x005C: c=0x005C /*\*/; break;
+        // case 0x005C: c=0x005C /*\*/; break;
         }
         if (c>=0) {
             fprintf(out, "\\%c", (char)c);

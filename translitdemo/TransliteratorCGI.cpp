@@ -13,6 +13,15 @@
  * Replaced by semicolon delimited list of available system
  * transliterator IDs.
  *
+ * $AVAILABLE_SOURCES
+ * Replaced by semicolon delimited list of available system
+ * source specs.
+ *
+ * $AVAILABLE_TARGETS
+ * Replaced by semicolon delimited list of available system
+ * targets for ARG_SOURCE.  If the latter is empty, this will
+ * be empty.
+ *
  * $AVAILABLE_RBT_IDS
  * Replaced by semicolon delimited list of available system
  * RuleBasedTransliterator IDs.  This is an SLOW call because
@@ -54,6 +63,7 @@
  * ARG_INPUT
  * ARG_OPERATION
  * ARG_RULES
+ * ARG_SOURCE
  *
  * QUOTING:
  * All of the strings are output raw, with no escaping, unless otherwise
@@ -118,7 +128,7 @@ TransliteratorCGI::~TransliteratorCGI() {
 const char* TransliteratorCGI::getTemplateFile() {
     const char* c = getParamValue("TEMPLATE_FILE");
     if (!c || !*c) {
-        c = "data/translit_template.html";
+        c = "data/translit_main.html";
     }
     return c;
 }
@@ -128,6 +138,28 @@ const char* TransliteratorCGI::getTemplateFile() {
  */
 void TransliteratorCGI::handleEmitHeader(FILE* out) {
 	fprintf(out, "Content-type: text/html; charset=UTF-8\n\n");
+}
+
+// TODO
+// Move this into class scope
+char* cleanup(const char* text) {
+#ifdef _WIN32
+    char* newtext = new char[1+strlen(text ? text : "")];
+    // For some reason, on IE5.5/Win2K we are seeing (^M)+^J
+    // Delete all ^M's
+    const char *src = text;
+    char *dst = newtext;
+    while (*src) {
+        if (*src != 13) {
+            *dst++ = *src;
+        }
+        ++src;
+    }
+    *dst = 0;
+    return newtext;
+#else
+    return strdup(text ? text : "");
+#endif
 }
 
 /**
@@ -153,6 +185,27 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             int i;
             for (i=0; i<availableRBTIDsCount; ++i) {
                 fprintf(out, ((i==0)?"%s":";%s"), ids[i]);
+            }
+        }
+    }
+
+    else if (strcmp(var, "AVAILABLE_SOURCES") == 0) {
+        UnicodeString src;
+        int32_t n = Transliterator::countAvailableSources();
+        for (int32_t i=0; i<n; ++i) {
+            if (i) fprintf(out, ";");
+            util_fprintf(out, Transliterator::getAvailableSource(i, src));
+        }
+    }
+
+    else if (strcmp(var, "AVAILABLE_TARGETS") == 0) {
+        const char* source = getParamValue("ARG_SOURCE", "");
+        if (*source) {
+            UnicodeString trg;
+            int32_t n = Transliterator::countAvailableTargets(source);
+            for (int32_t i=0; i<n; ++i) {
+                if (i) fprintf(out, ";");
+                util_fprintf(out, Transliterator::getAvailableTarget(i, source, trg));
             }
         }
     }
@@ -247,6 +300,68 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
         }
     }
 
+    else if (strcmp(var, "OPRESULT") == 0) {
+        const char* opcode = getParamValue("OPCODE", "");
+        const char* arg1 = getParamValue("OPARG1", "");
+        const char* arg2 = getParamValue("OPARG2", "");
+        const char* arg3 = getParamValue("OPARG3", "");
+
+        if (strcmp(opcode, "GETAVAILABLETARGETS") == 0) {
+            UnicodeString src(arg1, ENCODING);
+            UnicodeString trg;
+            int32_t n = Transliterator::countAvailableTargets(src);
+            for (int32_t i=0; i<n; ++i) {
+                if (i) fprintf(out, ";");
+                util_fprintf(out, Transliterator::getAvailableTarget(i, src, trg));
+            }            
+        }
+
+        else if (strcmp(opcode, "GETAVAILABLEVARIANTS") == 0) {
+            UnicodeString src(arg1, ENCODING);
+            UnicodeString trg(arg2, ENCODING);
+            UnicodeString var;
+            int32_t n = Transliterator::countAvailableVariants(src, trg);
+            for (int32_t i=0; i<n; ++i) {
+                if (i) fprintf(out, ";");
+                util_fprintf(out, Transliterator::getAvailableVariant(i, src, trg, var));
+            }            
+        }
+
+        else if (strcmp(opcode, "TRANSLITERATE") == 0) {
+            UnicodeString text;
+            UnicodeString id(arg2, ENCODING);
+            UTransDirection dir = UTRANS_FORWARD;
+            // Leading ' indicates inverse
+            if (id.charAt(0) == 39) {
+                id.remove(0,1);
+                dir = UTRANS_REVERSE;
+            } else {
+                // We prepend an invisible Hex-Any transliterator.
+                // This just makes it possible for the user to type
+                // hex escapes in the input area.
+                id.insert(0, UnicodeString("Hex-Any;", ""));
+            }
+            loadUserTransliterators();
+            Transliterator *t = Transliterator::createInstance(id, dir);
+            if (t != 0) {
+                char* s = cleanup(arg1);
+                text = UnicodeString(s, ENCODING);
+                delete[] s;
+                t->transliterate(text);
+            } else {
+                UnicodeString id(arg2, ENCODING);
+                if (id.charAt(0) == 39) {
+                    id.remove(0,1);
+                }
+                text = "Error: Unable to create ";
+                text += (dir == UTRANS_FORWARD) ? "" : "inverse of ";
+                text += id;
+                text += "";
+            }
+            util_fprintf(out, text, inQuote);
+        }
+    }
+
 #ifdef _WIN32
     // On a Win32 server we need to munge the input to avoid the
     // insertion of spurious newlines.
@@ -263,7 +378,6 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
         TemplateCGI::handleTemplateVariable(out, var, inQuote);
     }
 }
-
 
 /**
  * Return the input text in its original encoding.  This is computed

@@ -142,6 +142,7 @@ function setOptions(select, options, selection) {
  * or if the value is empty, the text.
  */
 function getSelectedOption(select) {
+    if (select.selectedIndex < 0) { return ""; }
     var o = select.options[select.selectedIndex];
     return o.value ? o.value : o.text;
 }

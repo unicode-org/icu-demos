@@ -5,6 +5,7 @@
 <style type="text/css">
 .wide    { width: 100% }
 textarea { font-family: Arial Unicode MS; font-size: 100% }
+select   { font-family: Arial Unicode MS; font-size: 80% }
 </style>
 </head>
 
@@ -38,27 +39,19 @@ if ((typeof UTIL_LOADED) == "undefined" || !UTIL_LOADED) {
 }
 
 // Load available IDs from CGI and populate select elems
-AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
-USER_IDS = "$USER_IDS".split(";");
-SEPARATOR = "--------";
+AVAILABLE_SOURCES = "$AVAILABLE_SOURCES".split(";").sort();
 
-// Generate options (inline) for a SELECT_ID element
-function generateSelectIDOptions(i) {
+function generateSelectSourceOptions(i) {
   var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
-  generateOptions(o.concat(USER_IDS).concat([SEPARATOR]).concat(AVAILABLE_IDS),
-                  document.FORM["_SELECT_ID_SELECTION"+i].value);
+  generateOptions(o.concat(AVAILABLE_SOURCES));
 }
+
 </script>
 
 <script>
 document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
 </script>
   <input type="hidden" name="TEMPLATE_FILE" value="data/translit_template.html">
-  <input type="hidden" name="ARG_ID">
-  <input type="hidden" name="ARG_ID2">
-  <input type="hidden" name="ARG_DIRECTION2">
-  <input type="hidden" name="_SELECT_ID_SELECTION1" value="$_SELECT_ID_SELECTION1">
-  <input type="hidden" name="_SELECT_ID_SELECTION2" value="$_SELECT_ID_SELECTION2">
 
   <table width="100%">
     <tr>
@@ -67,30 +60,46 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
       <a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Samples2</a>
 </td>
       <td width="60%" align="center"><strong><big><big><big>Transliteration Demo</big></big></big></strong><br>
-<font size="-1">Running ICU <b>$ICU_VERSION</b> &mdash; Demo built $BUILD_TIME</font></td>
+<font size="-1">Running <b>ICU $ICU_VERSION</b> &mdash; Demo Built $BUILD_TIME</font></td>
       <td width="20%" align="right">
       <a href=http://oss.software.ibm.com/icu/demo/translit_help.html target="_blank">Help</a>
       </td>
     </tr>
   </table>
+
   <hr>
+
   <table width="100%">
     <tr>
       <td width="34%" align="center"><strong><big>Input</strong></td>
-      <td width="33%" align="center"><strong><big>Output 1</strong></td>
-      <td width="33%" align="center"><strong><big>Output 2</big></strong></td>
+      <td width="33%" align="center" colspan="3"><strong><big>Output 1</strong></td>
+      <td width="33%" align="center" colspan="3"><strong><big>Output 2</big></strong></td>
     </tr>
     <tr>
-      <td><input type="submit" value="Transliterate" name="SUBMIT"
+      <td><input type="button" value="Transliterate" name="SUBMIT"
            onclick="handleTransliterateButton()" class="wide">
           </td>
-      <td><select name="SELECT_ID1" size="1"
-           onChange="handleSelectID(1)" class="wide">
-          <script>generateSelectIDOptions(1);</script>
+
+      <td><select name="SELECT_SOURCE1" size="1"
+           onChange="handleSelectSource(1)" class="wide">
+          <script>generateSelectSourceOptions(1);</script>
       </select></td>
-      <td><select name="SELECT_ID2" size="1"
-           onChange="handleSelectID(2)" class="wide">
-          <script>generateSelectIDOptions(2);</script>
+      <td><select name="SELECT_TARGET1" size="1"
+           onChange="handleSelectTarget(1)" class="wide">
+      </select></td>
+      <td><select name="SELECT_VARIANT1" size="1"
+           onChange="handleSelectVariant(1)" class="wide">
+      </select></td>
+
+      <td><select name="SELECT_SOURCE2" size="1"
+           onChange="handleSelectSource(2)" class="wide">
+          <script>generateSelectSourceOptions(2);</script>
+      </select></td>
+      <td><select name="SELECT_TARGET2" size="1"
+           onChange="handleSelectTarget(2)" class="wide">
+      </select></td>
+      <td><select name="SELECT_VARIANT2" size="1"
+           onChange="handleSelectVariant(2)" class="wide">
       </select></td>
     </tr>
     <tr>
@@ -98,10 +107,10 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
       <input type="button" value="Edit Rules" name="NEW"
        onclick="handleEditRules();" class="wide">
       </td>
-      <td rowspan="2"><textarea rows="2" name="COMPOUND_ID1" class="wide"
+      <td rowspan="2" colspan="3"><textarea rows="2" name="COMPOUND_ID1" class="wide"
            onKeyPress="handleCompoundIDKeyPress(1)">$COMPOUND_ID1</textarea>
       </td>
-      <td rowspan="2"><textarea rows="2" name="COMPOUND_ID2" class="wide"
+      <td rowspan="2" colspan="3"><textarea rows="2" name="COMPOUND_ID2" class="wide"
            onKeyPress="handleCompoundIDKeyPress(2)">$COMPOUND_ID2</textarea>
       </td>
     </tr>
@@ -112,62 +121,91 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
     </tr>
     <tr>
       <td><textarea rows="16" name="ARG_INPUT" class="wide">$ARG_INPUT</textarea></td>
-      <td><textarea rows="16" name="OUTPUT1" readonly class="wide">$OUTPUT1</textarea></td>
-      <td><textarea rows="16" name="OUTPUT2" readonly class="wide">$OUTPUT2</textarea></td>
+      <td colspan="3"><textarea rows="16" name="OUTPUT1" readonly class="wide">$OUTPUT1</textarea></td>
+      <td colspan="3"><textarea rows="16" name="OUTPUT2" readonly class="wide">$OUTPUT2</textarea></td>
     </tr>
+    <!-- debug row
+    <tr>
+      <td><input type="button" value="Debug:" class="wide" onclick="alert(eval(document.FORM.DEBUGINPUT.value));"></td>
+      <td colspan="6"><input type="input" name="DEBUGINPUT" class="wide"></td>
+    </tr>
+    -->
   </table>
 </form>
 </font>
 
 <script>
-// Set things up for form submission.  This is invoked
-// by either the Transliterate button or by the SELECT id elements.
-// The argument is either 1 or 2 for the SELECT id elements,
-// or something else for the Transliterate button.
-function _submit(i) {
-  var id1 = getSelectedOption(document.FORM.SELECT_ID1);
-  var id2 = getSelectedOption(document.FORM.SELECT_ID2);
-  if (id1 == SEPARATOR && i==1) {
-    document.FORM.SELECT_ID1.selectedIndex = 0;
-    return;
-  }
-  if (id2 == SEPARATOR && i==2) {
-    document.FORM.SELECT_ID2.selectedIndex = 0;
-    return;
-  }
-  if (id1 == '(Compound)') {
-    if (i==1) return; // Ignore selection of (Compound)
-    id1 = document.FORM.COMPOUND_ID1.value;
-  }
-  if (id2 == '(Compound)') {
-    if (i==2) return; // Ignore selection of (Compound)
-    id2 = document.FORM.COMPOUND_ID2.value;
-  }
-  document.FORM._SELECT_ID_SELECTION1.value = id1;
-  document.FORM._SELECT_ID_SELECTION2.value = id2;
-  var isInverse = (id2 == '(Inverse)');
-  document.FORM.ARG_ID.value = id1;
-  document.FORM.ARG_ID2.value = isInverse ? id1 : id2;
-  document.FORM.ARG_DIRECTION2.value = isInverse ? "REVERSE" : "";
-  document.FORM.submit();
+// Handler for a change to a transliterator SOURCE box.
+function handleSelectSource(i) {
+  var source = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
+  op("callbackHandleSelectSource", i,
+     "GETAVAILABLETARGETS", source);
+}
+function callbackHandleSelectSource(i, targets) {
+  var t = targets.split(";").sort();
+  setOptions(document.FORM["SELECT_TARGET" + i], t);
+  _handleTransliterateButton(i);
 }
 
-// Handler for a change to a transliterator ID box.
-function handleSelectID(i) {
-  _submit(i);
+// Handler for a change to a transliterator TARGET box.
+function handleSelectTarget(i) {
+  var source = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
+  var target = getSelectedOption(document.FORM["SELECT_TARGET" + i]);
+  op("callbackHandleSelectTarget", i,
+     "GETAVAILABLEVARIANTS", source, target);
+}
+function callbackHandleSelectTarget(i, variants) {
+  var v = variants.split(";").sort();
+  setOptions(document.FORM["SELECT_VARIANT" + i], v);
+  _handleTransliterateButton(i);
+}
+
+// Handler for a change to a transliterator VARIANT box.
+function handleSelectVariant(i) {
+  _handleTransliterateButton(i);
+}
+
+// Determine the i-th ID
+function getID(i) {
+  var src = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
+  if (src == "(Compound)") {
+    return document.FORM["COMPOUND_ID" + i].value;
+  }
+  if (src == "(Inverse)") {
+    return "'" + getID(1); // leading ' indicates inverse
+  }
+  var trg = getSelectedOption(document.FORM["SELECT_TARGET" + i]);
+  var vrt = getSelectedOption(document.FORM["SELECT_VARIANT" + i]);
+  if (vrt) {
+    vrt = "/" + vrt;
+  }
+  return src + "-" + trg + vrt;
 }
 
 // Handler for Transliterate button
 function handleTransliterateButton() {
-  _submit(-1);
+  _handleTransliterateButton(1);
+}
+function _handleTransliterateButton(i) {
+  var id = getID(i);
+  op("callbackHandleTransliterateButton", i,
+     "TRANSLITERATE",
+     (i == 1) ? document.FORM.ARG_INPUT.value
+              : document.FORM.OUTPUT1.value,
+     id);
+}
+function callbackHandleTransliterateButton(i, result) {
+  document.FORM["OUTPUT" + i].value = result;
+  if (i == 1 && result.search(/^Error: /) < 0) {
+    _handleTransliterateButton(2);
+  }
 }
 
 // Handler for compound type-in box.  This handler switches
 // the corresponding pop-up box to "(Compound)".
 // This is assumed to be the index 0.
 function handleCompoundIDKeyPress(i) {
-  x = document.FORM["SELECT_ID" + i];
-  x.selectedIndex = 0;
+  document.FORM["SELECT_SOURCE" + i].selectedIndex = 0;
 }
 
 // Handler to insert some sample text into the INPUT area
@@ -211,25 +249,26 @@ function handleInsertSamples() {
     "\u039a\u03bf\u03bd\u03c4\u03bf\u03b3\u03b9\u03b1\u03bd\u03bd\u03ac\u03c4\u03bf\u03c2, \u0392\u03b1\u03c3\u03af\u03bb\u03b7\u03c2";
 
   document.FORM.OUTPUT1.value = "(Press the Transliterate button to see results.)";
-  document.FORM.SELECT_ID1.selectedIndex = 0; // (Compound)
+  document.FORM.SELECT_SOURCE1.selectedIndex = 0; // (Compound)
   document.FORM.COMPOUND_ID1.value =
-    "Hangul-Latin; Kana-Latin; Cyrillic-Latin; Greek-Latin; Any-Title";
+    "Hangul-Latin; Kana-Latin; Cyrillic-Latin; Greek-Latin; Title()";
 
   document.FORM.OUTPUT2.value = "";
-  document.FORM.SELECT_ID2.selectedIndex = 0; // (Compound)
+  document.FORM.SELECT_SOURCE2.selectedIndex = 0; // (Compound)
   document.FORM.COMPOUND_ID2.value =
     "Latin-Greek";
 }
 
 // Handler for Edit Rules button
 function handleEditRules() {
-  _getEditor().focus();
+  var w = window.open(SELF + "?TEMPLATE_FILE=data/translit_rule_edit.html",
+                      "_TRANSLIT_EDIT");
+  w.focus();
 }
 
-// Return the editor window
-function _getEditor() {
-  return open(SELF + "?TEMPLATE_FILE=data/translit_rule_edit.html",
-              "_TRANSLIT_EDIT");
+// Perform a CGI operation
+function op(callback, context, opcode, arg1, arg2, arg3) {
+  parent.NUBFRAME.op(callback, context, opcode, arg1, arg2, arg3);
 }
 
 // Update ourself to reflect new/deleted user IDs.
@@ -237,14 +276,7 @@ function _getEditor() {
 // @param userIDs user IDs, separated by ";".  For some reason,
 // passing the actual array doesn't work.
 function updateUserIDs(userIDs) {
-  USER_IDS = userIDs.split(";");
-  var ids = USER_IDS.concat(AVAILABLE_IDS);
-  setOptions(document.FORM.SELECT_ID1,
-             ['(Compound)'].concat(ids),
-             document.FORM._SELECT_ID_SELECTION1.value);
-  setOptions(document.FORM.SELECT_ID2,
-             ['(Compound)','(Inverse)'].concat(ids),
-             document.FORM._SELECT_ID_SELECTION2.value);  
+  // TODO
 }
 </script>
 

@@ -1,0 +1,58 @@
+<html>
+<head><title>Transliteration Demo Nub</title></head>
+<body onload="handleLoad()">
+
+<script>
+// Determine our location.  Are we on OSS or a local server?
+if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
+  // We are on OSS running Apache
+  SELF = "/developerworks/opensource/icu/translitdemo";
+} else if (location.toString().search(/\/\/localhost/i) >= 0 ||
+           location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
+  // We are on a local Win32 box running Apache
+  SELF = "/cgi-bin/translitdemo";
+} else {
+  // We are on a remote UNIX box running Apache
+  SELF = "/cgi-bin/translit";
+}
+
+// Invoke the CGI with opcode, arg1, and arg2.  Then invoke the
+// callback as: callback(context, result), where result is the
+// result of the CGI opcode call.  callback and context should
+// be STRINGS that will be eval'ed.  callback will have
+// "parent.MAINFRAME." prepended to it.
+function op(callback, context, opcode, arg1, arg2, arg3) {
+  document.FORM.OPCODE.value = opcode;
+  document.FORM.OPARG1.value = arg1;
+  document.FORM.OPARG2.value = arg2;
+  document.FORM.OPARG3.value = arg3;
+  document.FORM.CALLBACK.value = callback;
+  document.FORM.CONTEXT.value = context;
+  document.FORM.submit();
+}
+
+// Called when after a submit() when the page is fully loaded.
+function handleLoad() {
+  var c = document.FORM.CALLBACK.value;
+  if (c) {
+    eval("parent.MAINFRAME." + c +
+         "(document.FORM.CONTEXT.value, document.FORM.OPRESULT.value)");
+  }
+  //document.FORM.CALLBACK.value = ""; // Should be unnecessary
+}
+
+document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
+</script>
+  <input type="hidden" name="TEMPLATE_FILE" value="data/translit_nub.html">
+  <input type="INPUT" name="OPCODE" value="$OPCODE">
+  <input type="HIDDEN" name="OPARG1" value="$OPARG1">
+  <input type="input" name="OPARG2" value="$OPARG2">
+  <input type="input" name="OPARG3" value="$OPARG3">
+  <input type="HIDDEN" name="OPRESULT" value="$OPRESULT">
+  <input type="input" name="CALLBACK" value="$CALLBACK">
+  <input type="input" name="CONTEXT" value="$CONTEXT">
+  <input type="SUBMIT" value="Submit">
+</form>
+
+</body>
+</html>
