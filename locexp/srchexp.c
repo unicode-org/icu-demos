@@ -140,8 +140,8 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
     {
         p = "";
     }
-    u_fprintf(lx->OUT, "<li><A HREF=\"?_=%s\">%U</A> :", loc->str, loc->ustr);
-    u_fprintf(lx->OUT, " <A HREF=\"?_=%s#%s\">%U</A>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
+    u_fprintf(lx->OUT, "<li><A HREF=\"?_=%s\">%S</A> :", loc->str, loc->ustr);
+    u_fprintf(lx->OUT, " <A HREF=\"?_=%s#%s\">%S</A>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
     u_fprintf(lx->OUT, "%s%s\r\n", p, q);
   }
   
@@ -163,8 +163,8 @@ void showExploreSearchForm(LXContext *lx, const UChar *valueString)
 
     u_fprintf(lx->OUT, "<FORM><INPUT TYPE=hidden NAME=_ VALUE=\"%s\">\r\n",
               lx->curLocaleName);
-    u_fprintf(lx->OUT, "<INPUT VALUE=\"%U\" NAME=EXPLORE_search> \r\n", valueString);
-    u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\">\r\n", FSWF("explore_search", "Search"));
+    u_fprintf(lx->OUT, "<INPUT VALUE=\"%S\" NAME=EXPLORE_search> \r\n", valueString);
+    u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%S\">\r\n", FSWF("explore_search", "Search"));
     u_fprintf(lx->OUT, "</FORM>\r\n");
 }
 
@@ -235,7 +235,7 @@ extern void showExploreSearch( LXContext *lx)
     
     /* Do the actual search */
     u_fprintf(lx->OUT, "<I>");
-    u_fprintf_u(lx->OUT, FSWF("EXPLORE_search_searching","Searching for <B>%U</B>..."),
+    u_fprintf_u(lx->OUT, FSWF("EXPLORE_search_searching","Searching for <B>%S</B>..."),
             valueString);
     u_fprintf(lx->OUT, "</I>\r\n<OL>\r\n");
 
@@ -244,12 +244,12 @@ extern void showExploreSearch( LXContext *lx)
             
     if(totalHits == 0) 
     {
-      u_fprintf(lx->OUT, "%U\r\n",  FSWF("EXPLORE_search_notfound", "Sorry, nothing was found."));
+      u_fprintf(lx->OUT, "%S\r\n",  FSWF("EXPLORE_search_notfound", "Sorry, nothing was found."));
     }
     else
     {
       u_fprintf_u(lx->OUT, FSWF("EXPLORE_search_found", "%d items were found."), totalHits);
-      u_fprintf(lx->OUT, " %U\r\n", FSWF("EXPLORE_search_oneperlocale", "Note that only the first match in each locale is shown."));
+      u_fprintf(lx->OUT, " %S\r\n", FSWF("EXPLORE_search_oneperlocale", "Note that only the first match in each locale is shown."));
     }
 
     usearch_close(search);

@@ -36,7 +36,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
                         FSWF("EXPLORE_DateTimePatterns", "Explore &gt; Date/Time"),
                         locale, FALSE, U_ZERO_ERROR);
 
-    u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_What","This example demonstrates the formatting of date and time patterns in this locale."));
+    u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_DateTimePatterns_What","This example demonstrates the formatting of date and time patterns in this locale."));
   
     /* fetch the current pattern */
     exploreFetchNextPattern(lx,pattern, strstr(lx->queryString,"EXPLORE_DateTimePatterns"));
@@ -88,7 +88,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     if(U_FAILURE(status) || (now == 0))
     {
-        u_fprintf(lx->OUT, "%U %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
+        u_fprintf(lx->OUT, "%S %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
         explainStatus(lx,status,"EXPLORE_DateTimePatterns");
         status = U_ZERO_ERROR;
         now = ucal_getNow();
@@ -98,7 +98,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%U: [%d] <P>", FSWF("formatExample_errorOpen", "Couldn't open the formatter"), (int) status);
+        u_fprintf(lx->OUT, "%S: [%d] <P>", FSWF("formatExample_errorOpen", "Couldn't open the formatter"), (int) status);
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
         exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(lx->queryString,"EXPLORE_DateTimePatterns"), now, nf);
     }
@@ -115,7 +115,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     udat_format(df_default,now,defChars, 1024, 0, &defStatus);
   
     if(U_FAILURE(status))
-        u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
+        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
   
     explainStatus(lx, status,"EXPLORE_DateTimePatterns");
 
@@ -131,13 +131,13 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     if(U_FAILURE(defStatus))
     {
-        u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
+        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
     }
     else
     {
       
-        u_fprintf(lx->OUT, "<B><I>%U</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
+        u_fprintf(lx->OUT, "<B><I>%S</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
         u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_DateTimePatterns\">\r\n");
         u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
         u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_DateTimePatterns VALUE=\"");
@@ -147,12 +147,12 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=50>");
 
         lx->backslashCtx.html = FALSE;
-        u_fprintf(lx->OUT, "%U", defChars); 
+        u_fprintf(lx->OUT, "%S", defChars); 
         lx->backslashCtx.html = TRUE;
       
         status = U_ZERO_ERROR;
       
-        u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
     }
   
     u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG src=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
@@ -161,13 +161,13 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     if(U_FAILURE(locStatus))
     {
-        u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
+        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
     }
     else
     {
         /*  === local side */
-        u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%U</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
+        u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
         u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_DateTimePatterns\">\r\n");
         u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
         u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_DateTimePatterns VALUE=\"");
@@ -176,7 +176,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
       
         u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_LOC ROWS=1 COLS=50>");
         writeEscaped(lx, tempChars);
-        u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
     }
     /*  ============== End of the default/localized split =============== */
 

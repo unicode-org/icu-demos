@@ -109,13 +109,13 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
         if(bigString && !userRequested) /* it's hidden. */
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
         }
         else
         {
             if(bigString)
             {
-                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                     locale,
                     key,
                     FSWF("bigStringHide", "Hide"));
@@ -166,7 +166,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 */
                 if(*comps == 0)
                 {
-                    u_fprintf(lx->OUT, "<I>%U</I>", FSWF("empty", "(Empty)"));
+                    u_fprintf(lx->OUT, "<I>%S</I>", FSWF("empty", "(Empty)"));
                 }
                 else while(len--)
                 {
@@ -210,7 +210,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
     s = ures_getStringByKey(array, "Version", &len, &status);
     if(U_SUCCESS(status))
     {
-        u_fprintf(lx->OUT, "<P><B>%U %U:</B> %U\r\n",
+        u_fprintf(lx->OUT, "<P><B>%S %S:</B> %S\r\n",
                   FSWF("Collation", "Collation"),
                   FSWF("Version","Version"),s);
     }
@@ -236,7 +236,7 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
     showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "<table summary=\"%U\" border=1><tr><td></td><td><b>%U</b></td><td><b>%U</b></td><td><b>%U</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<table summary=\"%S\" border=1><tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleCodes", "Locale Codes"),
               FSWF("LocaleCodes_Language", "Language"),
               FSWF("LocaleCodes_Country", "Region"),
@@ -282,7 +282,7 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
     /* 3 letter line */
 
-    u_fprintf(lx->OUT, "<tr><td>%U</td>",
+    u_fprintf(lx->OUT, "<tr><td>%S</td>",
               FSWF("LocaleCodes_3", "3"));
 
     u_fprintf(lx->OUT, "<td>");
@@ -323,9 +323,9 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
 
     showKeyAndStartItem(lx, "LocaleScript", FSWF("LocaleScript", "Locale Script"), locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "<table summary=\"%U\" border=1>\r\n",
+    u_fprintf(lx->OUT, "<table summary=\"%S\" border=1>\r\n",
               FSWF("LocaleScript", "Locale Script"));
-    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td><b>%U</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleScriptAbbreviations", "Short Names"),
               FSWF("LocaleScriptNames", "Long Names")
         );
@@ -408,13 +408,13 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
 
         if(bigString && !userRequested) /* it's hidden. */
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
         }
         else
         {
             if(bigString)
             {
-                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                     locale,
                     key,
                     FSWF("bigStringHide", "Hide"));
@@ -426,7 +426,7 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
                     u_fprintf(lx->OUT, "<PRE>");
 
                 if(*s == 0)
-                    u_fprintf(lx->OUT, "<I>%U</I>", FSWF("empty", "(Empty)"));
+                    u_fprintf(lx->OUT, "<I>%S</I>", FSWF("empty", "(Empty)"));
                 {
                     writeEscaped(lx, s);
                 }
@@ -489,7 +489,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 
         if(userRequested) /* it's not hidden. */
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                       locale,
                       key,
                       FSWF("bigStringShorten", "Don't show all"));
@@ -497,7 +497,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     }
 
     /** RULES **/
-    u_fprintf(lx->OUT, "<table border=1 summary=\"Rules\" cellpadding=3 cellspacing=3><tr><td><b>%U</b></td><td>\r\n",
+    u_fprintf(lx->OUT, "<table border=1 summary=\"Rules\" cellpadding=3 cellspacing=3><tr><td><b>%S</b></td><td>\r\n",
               FSWF("rules", "Rules"));
 
     /* Always do this loop */
@@ -519,8 +519,8 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 
     if(len != rulesLen)
     {
-        u_fprintf(lx->OUT, "%U", FSWF("...", "..."));
-        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%U</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+        u_fprintf(lx->OUT, "%S", FSWF("...", "..."));
+        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%S</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
         u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), len, rulesLen);
         u_fprintf(lx->OUT, " </A>\r\n");
     }
@@ -529,7 +529,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 
     /** Set **/
 
-    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td>\r\n",
+    u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td>\r\n",
               FSWF("set", "Set"));
   
     for(i=0;i<uset_getItemCount(uset);i++)
@@ -588,14 +588,14 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
                 u_fprintf(lx->OUT, ", ");
             }
             buf[n]=0;
-            u_fprintf(lx->OUT, "\"%U\"", buf);
+            u_fprintf(lx->OUT, "\"%S\"", buf);
         }
     }
 
     if(!userRequested && (howManyChars >= kShowUnicodeSetCutoffSize))
     {
-        u_fprintf(lx->OUT, "%U", FSWF("...", "..."));
-        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%U</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+        u_fprintf(lx->OUT, "%S", FSWF("...", "..."));
+        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%S</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
         u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), kShowUnicodeSetCutoffSize, howManyChars);
         u_fprintf(lx->OUT, " </A>\r\n");
     }
@@ -638,7 +638,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
     /** DON'T show the string as a string. */
     /* 
        if(U_SUCCESS(status) && s)
-       u_fprintf(lx->OUT, "%U<BR>\r\n", s);
+       u_fprintf(lx->OUT, "%S<BR>\r\n", s);
     */
     if(!hidable)
     {
@@ -649,14 +649,14 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
 
     if(bigString && !userRequested) /* it's hidden. */
     {
-        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
+        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
         u_fprintf(lx->OUT, "<P>");
     }
     else
     {
         if(bigString)
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -665,7 +665,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
         if(U_SUCCESS(status))
         {
             u_fprintf(lx->OUT, "<table summary=\"String\" BORDER=1 WIDTH=100%%>");
-            u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td><b>%U</b></td><td><b>%U</b></td></tr>\r\n",
+            u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
                 FSWF("charNum", "#"),
                 FSWF("char", "Char"),
                 FSWF("charMeaning", "Meaning"));
@@ -676,7 +676,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
                 if(!s[i])
                     break;
 
-                u_fprintf(lx->OUT, "<TR><TD WIDTH=5>%d</TD><TD>%K</TD><TD>%U</TD></TR>\r\n",
+                u_fprintf(lx->OUT, "<TR><TD WIDTH=5>%d</TD><TD>%K</TD><TD>%S</TD></TR>\r\n",
                     i,
                     s[i],
                     desc[i]);
@@ -739,7 +739,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
         }
 
         if((i > 10) && !userRequested) {
-          u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+          u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
           break;
         }
 
@@ -750,7 +750,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
             break;
 
         if(U_SUCCESS(status))
-            u_fprintf(lx->OUT, "<LI> %U\r\n", s);
+            u_fprintf(lx->OUT, "<LI> %S\r\n", s);
         else
         {
             u_fprintf(lx->OUT, "<LI>");
@@ -762,7 +762,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     }
     u_fprintf(lx->OUT, "</OL>");
     if((i>=10) && userRequested) {
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -922,14 +922,14 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
         */
 
       
-        u_fprintf(lx->OUT, "<FORM TARGET=\"_currency\" METHOD=\"POST\" ACTION=\"http:www.oanda.com/converter/travel\" ENCTYPE=\"x-www-form-encoded\"><INPUT TYPE=\"hidden\" NAME=\"result\" VALUE=\"1\"><INPUT TYPE=\"hidden\" NAME=\"lang\" VALUE=\"%s\"><INPUT TYPE=\"hidden\" NAME=\"date_fmt\" VALUE=\"us\"><INPUT NAME=\"exch\" TYPE=HIDDEN VALUE=\"%U\"><INPUT TYPE=HIDDEN NAME=\"expr\" VALUE=\"%U\">",
+        u_fprintf(lx->OUT, "<FORM TARGET=\"_currency\" METHOD=\"POST\" ACTION=\"http:www.oanda.com/converter/travel\" ENCTYPE=\"x-www-form-encoded\"><INPUT TYPE=\"hidden\" NAME=\"result\" VALUE=\"1\"><INPUT TYPE=\"hidden\" NAME=\"lang\" VALUE=\"%s\"><INPUT TYPE=\"hidden\" NAME=\"date_fmt\" VALUE=\"us\"><INPUT NAME=\"exch\" TYPE=HIDDEN VALUE=\"%S\"><INPUT TYPE=HIDDEN NAME=\"expr\" VALUE=\"%S\">",
                   "en", /* lx->dispLocale */
                   curStr,
                   homeStr
             );
 
         u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  ALIGN=RIGHT   ");
-        u_fprintf(lx->OUT, " VALUE=\"%U\"></FORM>",
+        u_fprintf(lx->OUT, " VALUE=\"%S\"></FORM>",
                   FSWF("exploreTitle", "Explore"));
         u_fprintf(lx->OUT, "</FORM>");
     }
@@ -941,7 +941,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     for(i=0;desc[i];i++)
     {
       
-        u_fprintf(lx->OUT, "<tr><td width=5>%d</td><td>%U</td><td>",
+        u_fprintf(lx->OUT, "<tr><td width=5>%d</td><td>%S</td><td>",
                   i, desc[i]);
 
         status = U_ZERO_ERROR;
@@ -996,7 +996,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 ;
             }
 
-            u_fprintf(lx->OUT, "%U\r\n", toShow);
+            u_fprintf(lx->OUT, "%S\r\n", toShow);
         }
         else
         {
@@ -1022,7 +1022,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                         udat_close(exampleDF);
 
                         if(U_SUCCESS(exampleStatus))
-                            u_fprintf(lx->OUT, "%U", tempChars);
+                            u_fprintf(lx->OUT, "%S", tempChars);
 
                     }
                     explainStatus(lx, exampleStatus, key);
@@ -1041,7 +1041,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                         if(u_formatMessage(locale, s, -1, tempChars,1024,&exampleStatus, 
                                            tempTime,
                                            tempDate))
-                            u_fprintf(lx->OUT,"%U", tempChars);
+                            u_fprintf(lx->OUT,"%S", tempChars);
                     u_fprintf(lx->OUT, "</td>\r\n");
                 }
                 break;
@@ -1059,7 +1059,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                     unum_formatDouble(exampleNF, d, tempChars, 1024, NULL, &exampleStatus);
 
                     if(U_SUCCESS(exampleStatus))
-                        u_fprintf(lx->OUT, "%U", tempChars);
+                        u_fprintf(lx->OUT, "%S", tempChars);
 
 
                     u_fprintf(lx->OUT, "</TD><TD>");
@@ -1070,7 +1070,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                     unum_formatDouble(exampleNF, -d, tempChars, 1024, NULL, &exampleStatus);
 
                     if(U_SUCCESS(exampleStatus))
-                        u_fprintf(lx->OUT, "%U", tempChars);
+                        u_fprintf(lx->OUT, "%S", tempChars);
 
                     unum_close(exampleNF);
 
@@ -1129,7 +1129,7 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
         tempChars[0] = 0;
         exampleNF = unum_open(styles[k],NULL, -1, locale, NULL, &status);
         unum_formatDouble(exampleNF, examples[n], tempChars, 1024,0, &status);
-        u_fprintf(lx->OUT, "<tr><td>%f</td><td>%U", examples[n], tempChars);
+        u_fprintf(lx->OUT, "<tr><td>%f</td><td>%S", examples[n], tempChars);
         unum_close(exampleNF);
         if(U_FAILURE(status)) {
           u_fprintf(lx->OUT, " ");
@@ -1169,14 +1169,14 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
     if(len < 2)
     {
-        u_fprintf(lx->OUT, "%U ", FSWF("DateTimeElements_short", "Error- resource is too short (should be 2 elements)!"));
+        u_fprintf(lx->OUT, "%S ", FSWF("DateTimeElements_short", "Error- resource is too short (should be 2 elements)!"));
         ures_close(array);
         showKeyAndEndItem(lx, key, locale);
         return;
     }
 
     /* First day of the week ================= */
-    u_fprintf(lx->OUT, "%U ", FSWF("DateTimeElements0", "First day of the week: "));
+    u_fprintf(lx->OUT, "%S ", FSWF("DateTimeElements0", "First day of the week: "));
 
     if(U_SUCCESS(status))
     {
@@ -1197,7 +1197,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
             
             if(s && U_SUCCESS(status))
             {
-                u_fprintf(lx->OUT, " = %U \r\n", s);
+                u_fprintf(lx->OUT, " = %S \r\n", s);
             }
             status = U_ZERO_ERROR;
 
@@ -1207,7 +1207,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
             if(s && U_SUCCESS(status))
             {
-                u_fprintf(lx->OUT, " = %U \r\n", s);
+                u_fprintf(lx->OUT, " = %S \r\n", s);
             }
         }
         status = U_ZERO_ERROR;
@@ -1221,7 +1221,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
     u_fprintf(lx->OUT, "<BR>\r\n");
 
     /* minimal days in week ================= */
-    u_fprintf(lx->OUT, "%U", FSWF("DateTimeElements1", "Minimal Days in First Week: "));
+    u_fprintf(lx->OUT, "%S", FSWF("DateTimeElements1", "Minimal Days in First Week: "));
   
     if(U_SUCCESS(status))
         u_fprintf(lx->OUT, " %d \r\n", elements[1]);
@@ -1261,9 +1261,9 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
     item       = ures_getByIndex(shortArray, 0, item, &shortStatus);
     item       = ures_getByIndex(longArray, 0, item, &longStatus);
 
-    u_fprintf(lx->OUT, "<table border=1 width=\"100%%\"><tr><td><b>#</b></td><td><b>%U</b> ", shortName);
+    u_fprintf(lx->OUT, "<table border=1 width=\"100%%\"><tr><td><b>#</b></td><td><b>%S</b> ", shortName);
     explainStatus(lx, shortStatus, keyStem);
-    u_fprintf(lx->OUT, "</td><td><b>%U</b> ", longName);
+    u_fprintf(lx->OUT, "</td><td><b>%S</b> ", longName);
     explainStatus(lx, longStatus, keyStem);
     u_fprintf(lx->OUT, "</td></tr>\r\n");
 
@@ -1284,7 +1284,7 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
             longStatus = status;
   
         if(U_SUCCESS(status))
-            u_fprintf(lx->OUT, " %U ", s);
+            u_fprintf(lx->OUT, " %S ", s);
         else
             explainStatus(lx, status, keyStem); /* if there was an error */
 
@@ -1300,7 +1300,7 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
             shortStatus = status;
   
         if(U_SUCCESS(status))
-            u_fprintf(lx->OUT, " %U ", s);
+            u_fprintf(lx->OUT, " %S ", s);
         else
             explainStatus(lx, status, keyStem); /* if there was an error */
 
@@ -1355,13 +1355,13 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
     if(bigString && !userRequested) /* it's hidden. */
     {
         /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
     }
     else
     {
         if(bigString)
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1385,7 +1385,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
                 {
                     u_fprintf(lx->OUT, "<a target=lx_tz href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/docs/tz.htm?content-type=text/html\">");
                 }
-                u_fprintf(lx->OUT,"%U", desc[h]);
+                u_fprintf(lx->OUT,"%S", desc[h]);
                 if(h == 0)
                 {
                     u_fprintf(lx->OUT, "</a>");
@@ -1442,7 +1442,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
                             firstStatus = status; */ /* Don't need to track firstStatus, countArrayItems should do that for us. */
 
                     if(U_SUCCESS(status) && s)
-                        u_fprintf(lx->OUT, "<td>%U</td>\r\n", s);
+                        u_fprintf(lx->OUT, "<td>%S</td>\r\n", s);
                     else
                     {
                         u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
@@ -1488,10 +1488,10 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 
   if(bigString && !userRequested) /* it's hidden. */  {
     /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1509,15 +1509,15 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
             u_fprintf(lx->OUT,"<table border=1>\r\n");
             
             /* print the top row */
-            u_fprintf(lx->OUT,"<tr><td><b>%U</b></td>",
+            u_fprintf(lx->OUT,"<tr><td><b>%S</b></td>",
                 FSWF("taggedarrayTag", "Tag"));
             
             if(compareToDisplay) {
-                u_fprintf(lx->OUT, "<td><i>%U</i></td>",
+                u_fprintf(lx->OUT, "<td><i>%S</i></td>",
                     defaultLanguageDisplayName(lx));
             }
             
-            u_fprintf(lx->OUT, "<td><b>%U</b></td></tr>",
+            u_fprintf(lx->OUT, "<td><b>%S</b></td></tr>",
                 lx->curLocale ? lx->curLocale->ustr : FSWF("none","None"));
             
             for(v=0;v<rows;v++) {
@@ -1543,7 +1543,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                             s = ures_getString(item, &len, &status);
                             
                             if(s)
-                                u_fprintf(lx->OUT, "<td><i>%U</i></td>", s);
+                                u_fprintf(lx->OUT, "<td><i>%S</i></td>", s);
                             else
                                 u_fprintf(lx->OUT, "<td></td>");
                         } else {
@@ -1574,9 +1574,9 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                                 junk[(dstl-1) - j] = junk[j];
                                 junk[j] = temp;
                             }
-                            u_fprintf(lx->OUT, "<td>%U [a]</td>", junk);
+                            u_fprintf(lx->OUT, "<td>%S [a]</td>", junk);
 #else
-                            u_fprintf(lx->OUT, "<td>%U</td>", s);
+                            u_fprintf(lx->OUT, "<td>%S</td>", s);
 #endif
                         } else {
                             u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
@@ -1589,7 +1589,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                         {
                             UResourceBundle *subItem = NULL;
                             while((s = ures_getNextString(taggedItem, &len, NULL, &status)) && U_SUCCESS(status)) {
-                                u_fprintf(lx->OUT, "<td>%U</td>", s);
+                                u_fprintf(lx->OUT, "<td>%S</td>", s);
                             }
                             
                             if(U_FAILURE(status) && (status != U_INDEX_OUTOFBOUNDS_ERROR)) {
@@ -1645,7 +1645,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
     UErrorCode defCurSt = U_ZERO_ERROR;
     ucurr_forLocale(locale, cflu, sizeof(cflu)-1, &defCurSt);
     if(U_FAILURE(defCurSt) || !cflu[0]) {
-      u_fprintf(lx->OUT, "%U: <!-- for %s -->", FSWF("currNoDefault", "No Default Currency"), locale);
+      u_fprintf(lx->OUT, "%S: <!-- for %s -->", FSWF("currNoDefault", "No Default Currency"), locale);
       explainStatus(lx,defCurSt,key);
       u_fprintf(lx->OUT, "<BR>\r\n");
     } else {
@@ -1655,10 +1655,10 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   }
 
   if(bigString && !userRequested) /* it's hidden. */  {
-    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1676,7 +1676,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
       u_fprintf(lx->OUT,"<table border=1>\r\n");
         
       /* print the top row */
-      u_fprintf(lx->OUT,"<tr><th>%U</th><th>%U</th><th>%U</th><th>%U</th>",
+      u_fprintf(lx->OUT,"<tr><th>%S</th><th>%S</th><th>%S</th><th>%S</th>",
                 FSWF("currCode", "Code"),
                 FSWF("currSymbol", "Symbol"),
                 FSWF("currName", "Name"),
@@ -1716,7 +1716,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
             s = ures_getString(taggedItem, &len, &status);
               
             if(s) {
-              u_fprintf(lx->OUT, "<td>%U</td>", s);
+              u_fprintf(lx->OUT, "<td>%S</td>", s);
             } else {
               u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
               explainStatus(lx, status, key);
@@ -1728,7 +1728,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
             {
               UResourceBundle *subItem = NULL;
               while((s = ures_getNextString(taggedItem, &len, NULL, &status)) && U_SUCCESS(status)) {
-                u_fprintf(lx->OUT, "<td>%U</td>", s);
+                u_fprintf(lx->OUT, "<td>%S</td>", s);
               }
                 
               if(U_FAILURE(status) && (status != U_INDEX_OUTOFBOUNDS_ERROR)) {
@@ -1753,7 +1753,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         }
 
         if(isDefault) {
-            u_fprintf(lx->OUT, "<td><B>%U</B></td>",
+            u_fprintf(lx->OUT, "<td><B>%S</B></td>",
               FSWF("currDefault","Default Currency for this locale"));
         }
 
@@ -1763,7 +1763,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         UBool isChoiceFormat = FALSE;
         int32_t len = 0;
         UErrorCode subSta = U_ZERO_ERROR;
-        u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td><b>%U</b></td><td><b>%U</b></td><td>%d</td>\r\n", 
+        u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td><td>%d</td>\r\n", 
                   cflu,
                   ucurr_getName(cflu,locale,UCURR_SYMBOL_NAME,&isChoiceFormat,&len,&subSta),
                   ucurr_getName(cflu,locale,UCURR_LONG_NAME,&isChoiceFormat,&len,&subSta),
@@ -1774,9 +1774,9 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           explainStatus(lx, subSta, key);
           u_fprintf(lx->OUT, "</td>");
         }
-        u_fprintf(lx->OUT, "<td><B>%U</B><br>",
+        u_fprintf(lx->OUT, "<td><B>%S</B><br>",
               FSWF("currDefault","Default Currency for this locale"));
-        u_fprintf(lx->OUT, "<i>%U</i></td>\r\n", FSWF("currNotInLoc", "Note: localization for this currency was not found in this locale"));
+        u_fprintf(lx->OUT, "<i>%S</i></td>\r\n", FSWF("currNotInLoc", "Note: localization for this currency was not found in this locale"));
         u_fprintf(lx->OUT, "</tr>\r\n");
       }
       u_fprintf(lx->OUT, "</table>\r\n<br>");

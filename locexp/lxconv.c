@@ -25,7 +25,7 @@ void chooseConverter(LXContext *lx, const char *restored)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%U<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+        u_fprintf(lx->OUT, "%S<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
         explainStatus(lx, status, NULL);
         return;
     }
@@ -113,11 +113,11 @@ void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%U<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+        u_fprintf(lx->OUT, "%S<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
         return;
     }
 
-    u_fprintf(lx->OUT, "%U<BR>\r\n",
+    u_fprintf(lx->OUT, "%S<BR>\r\n",
               FSWF("converter_searching", "Searching for converters which match .."));
 
 
@@ -189,13 +189,13 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
     if(!restored)
 	restored = "";
 
-    u_fprintf(lx->OUT,"<A HREF=\"?%s\"><H2>%U%s%U</H2></A>\r\n",
+    u_fprintf(lx->OUT,"<A HREF=\"?%s\"><H2>%S%s%S</H2></A>\r\n",
               restored,
               FSWF("encodingOK0", "Click here if the encoding '"),
               lx->convRequested,
               FSWF("encodingOK1", "' is acceptable, or choose one from below."));
 
-    u_fprintf(lx->OUT,"<I>%U</I>\r\n", 
+    u_fprintf(lx->OUT,"<I>%S</I>\r\n", 
               FSWF("encoding_mime","Note (ICU 1.6 release): This list has been pared down to only show MIME aliases that browsers would understand. I'll add a 'show all' button later.<!--If you translate this, remember it'll go away soon -->"));
     rows = (naliases / COLS) + 1;
 
@@ -253,7 +253,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
             u_fprintf(lx->OUT, "?%s", restored); 
       
         u_fprintf(lx->OUT,"\">");
-        u_fprintf(lx->OUT, "%U", list->lines[theCell].chars);
+        u_fprintf(lx->OUT, "%S", list->lines[theCell].chars);
         /*       theCnvale.getDisplayName(o.GetLocale(),tmp); */
         u_fprintf(lx->OUT,"</A>\n");
       
@@ -343,7 +343,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
         u_fprintf(lx->OUT, "%s\n", ts);
 
 #if defined(LX_UBROWSE_PATH)
-        u_fprintf(lx->OUT, "<A TARGET=unibrowse HREF=\"%U/%s/\">%U</A>\r\n", getenv("SERVER_NAME"), lx->scriptName, 
+        u_fprintf(lx->OUT, "<A TARGET=unibrowse HREF=\"%S/%s/\">%S</A>\r\n", getenv("SERVER_NAME"), lx->scriptName, 
                   FSWF( /* NOEXTRACT */ "ubrowse_path", LX_UBROWSE_PATH),
                   defaultMime,
                   FSWF("ubrowse", "Browse Unicode in this codepage"));

@@ -52,19 +52,19 @@ void showOneLocale(LXContext *lx)
 
         /* show the demos */
         u_fprintf(lx->OUT, "<table border=0 width=\"100%%\" summary=\"--\"><tr><td valign=top>");
-        u_fprintf(lx->OUT, " %U\r\n",
+        u_fprintf(lx->OUT, " %S\r\n",
                   FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
         showExploreButtonSort(lx, NULL,"g7", "CollationElements", FALSE);
 
         u_fprintf(lx->OUT, "<td width=\"50%%\"></td><td valign=top>\r\n");
 
-        u_fprintf(lx->OUT, "<b>%U</b>:</td><td valign=top>", FSWF("explore_search", "Search"));
+        u_fprintf(lx->OUT, "<b>%S</b>:</td><td valign=top>", FSWF("explore_search", "Search"));
         showExploreSearchForm(lx, NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
 
 #ifdef LX_HAVE_XLITOMATIC
-        u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%U</A>\r\n",
+        u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%S</A>\r\n",
                   lx->dispLocale, lx->chosenEncoding,
                   FSWF("explore_xlitomatic", "Translit-o-matic"));
 #endif
@@ -88,31 +88,31 @@ void showOneLocale(LXContext *lx)
 
 #if 0
     /* "friendly" messages */
-    u_fprintf(lx->OUT, "%U", FSWF("localeDataWhat", "This page shows the localization data for the locale listed at left. "));
+    u_fprintf(lx->OUT, "%S", FSWF("localeDataWhat", "This page shows the localization data for the locale listed at left. "));
 
     if(strlen(locale)==2) /* just the language */
     {
-        u_fprintf(lx->OUT, " %U",FSWF("localeDataLanguage","No region is specified, so the data is generic to this language."));
+        u_fprintf(lx->OUT, " %S",FSWF("localeDataLanguage","No region is specified, so the data is generic to this language."));
     }
     else if(!strcmp(locale,"root"))
     {
-        u_fprintf(lx->OUT, " %U", FSWF("localeDataDefault", "This is the default localization data, which will be used if no other installed locale is specified."));
+        u_fprintf(lx->OUT, " %S", FSWF("localeDataDefault", "This is the default localization data, which will be used if no other installed locale is specified."));
     }
     else if(locale[2] == '_')
     {
         if(strlen(locale) == 5)
 	{
-            u_fprintf(lx->OUT, " %U", FSWF("localeDataLangCountry", "This Locale contains data for this language, as well as conventions for this particular region."));
+            u_fprintf(lx->OUT, " %S", FSWF("localeDataLangCountry", "This Locale contains data for this language, as well as conventions for this particular region."));
         }
         else
         {
-            u_fprintf(lx->OUT, " %U", FSWF("localeDataLangCountryVariant", "This Locale contains data for this language, as well as conventions for a variant within this particular region."));
+            u_fprintf(lx->OUT, " %S", FSWF("localeDataLangCountryVariant", "This Locale contains data for this language, as well as conventions for a variant within this particular region."));
 	}
     }
 
     if(strstr(locale, "_EURO"))
     {
-        u_fprintf(lx->OUT, " %U", FSWF("localeDataEuro", "This Locale contains currency formatting information for use with the Euro currency."));
+        u_fprintf(lx->OUT, " %S", FSWF("localeDataEuro", "This Locale contains currency formatting information for use with the Euro currency."));
     }
 #endif
   
@@ -139,7 +139,7 @@ void showOneLocale(LXContext *lx)
     else if (strstr(b, "EXPLORE_srl"))
     {
         UChar ustr[] = { 0x0394, 0x03b5, 0x03c5, 0x03c4, 0x03ad, 0x03c1, 0x03b1, 0x0000 };
-        u_fprintf(lx->OUT, "<HR>GRK: %U<BR><HR>\n", ustr);
+        u_fprintf(lx->OUT, "<HR>GRK: %S<BR><HR>\n", ustr);
     }
     else if (strstr(b, "EXPLORE_Break"))
     {

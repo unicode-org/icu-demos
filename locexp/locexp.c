@@ -66,7 +66,7 @@ void displayLocaleExplorer(LXContext *lx)
     if(strstr(lx->queryString, "EXPLORE"))
     {
         lx->inDemo = TRUE;
-        u_fprintf(lx->OUT, " &gt; %U", FSWF("exploreTitle", "Explore"));
+        u_fprintf(lx->OUT, " &gt; %S", FSWF("exploreTitle", "Explore"));
     }
     else
     {
@@ -117,7 +117,7 @@ void displayLocaleExplorer(LXContext *lx)
 
     showSortStyle(lx);
     
-    u_fprintf(lx->OUT, "%U", 
+    u_fprintf(lx->OUT, "%S", 
               FSWF ( /* NOEXTRACT */ "htmlHEAD",
                      "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
               );
@@ -136,7 +136,7 @@ void displayLocaleExplorer(LXContext *lx)
       agent = getenv("HTTP_USER_AGENT");
       server = getenv("SERVER_SOFTWARE");
       if(agent && strstr(agent,"MSIE") && (!server || strncmp(server,"Null",4))) {
-        u_fprintf(lx->OUT, "<i>%U</i><br>\r\n",
+        u_fprintf(lx->OUT, "<i>%S</i><br>\r\n",
                   FSWF("ieWarning","IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."));
       }
     }
@@ -149,13 +149,13 @@ void displayLocaleExplorer(LXContext *lx)
         dispName[0] = 0;
         uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
         
-        u_fprintf(lx->OUT, "<blockquote><b>%U [%U]</b></blockquote>\r\n",
+        u_fprintf(lx->OUT, "<blockquote><b>%S [%S]</b></blockquote>\r\n",
                   FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
       }
     
     if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] && strcmp(lx->curLocaleName,"g7"))
       {
-        u_fprintf(lx->OUT, "<blockquote><b>%U</b></blockquote>\r\n",
+        u_fprintf(lx->OUT, "<blockquote><b>%S</b></blockquote>\r\n",
                   FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
       }
 
@@ -170,7 +170,7 @@ void displayLocaleExplorer(LXContext *lx)
       printPath(lx, lx->curLocale, lx->curLocale, suffix?TRUE:FALSE, suffix);
 
       if(queryField(lx, "EXPLORE_CollationElements")) {
-        u_fprintf(lx->OUT, " &gt; %U", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
+        u_fprintf(lx->OUT, " &gt; %S", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
       }
 
       u_fprintf(lx->OUT, "</font><p>");
@@ -180,7 +180,7 @@ void displayLocaleExplorer(LXContext *lx)
     }
     else
     {
-      u_fprintf(lx->OUT, "<table summary=\"%U\" width=\"100%%\"><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
+      u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\"><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
       
       u_fprintf(lx->OUT, "<font size=\"+1\">");
       printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
@@ -208,7 +208,7 @@ void displayLocaleExplorer(LXContext *lx)
             (double)(uloc_countAvailable()-(lx->locales->nSubLocs)));
         u_fprintf(lx->OUT, "</p>\r\n");
 #if 0
-        u_fprintf(lx->OUT, "<p>%U</p>\r\n",
+        u_fprintf(lx->OUT, "<p>%S</p>\r\n",
             FSWF/**/(/**/"specialMessage_2000Oct30",/**/
             "<i>Note: Locale Explorer should be much faster, but.. there's an ongoing problem where (at least) Microsoft Internet Explorer users will be faced with a blank page or an error page.. if this occurs, please simply hit Reload and all should be corrected.</i>"));
 #endif
@@ -235,14 +235,14 @@ void displayLocaleExplorer(LXContext *lx)
         
         if(lx->dispLocaleSet)
         {
-            u_fprintf(lx->OUT, "<h4>%U</h4>\r\n", FSWF("changeLocale", "Change the Locale used for Labels"));
+            u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("changeLocale", "Change the Locale used for Labels"));
         }
         else
         {
-            u_fprintf(lx->OUT, "<h4>%U</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
+            u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
         }
         
-        u_fprintf(lx->OUT, "<table summary=\"%U\" WIDTH=\"70%%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
+        u_fprintf(lx->OUT, "<table summary=\"%S\" WIDTH=\"70%%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
         u_fprintf(lx->OUT, "<td colspan=2 align=right>");
         printHelpTag(lx, "chooseLocale", NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
@@ -260,9 +260,9 @@ void displayLocaleExplorer(LXContext *lx)
         
         /*
         if(lx->setEncoding)
-        u_fprintf(lx->OUT, ": %U</H2>\r\n", FSWF("changeEncoding", "Change Your Encoding"));
+        u_fprintf(lx->OUT, ": %S</H2>\r\n", FSWF("changeEncoding", "Change Your Encoding"));
         else
-        u_fprintf(lx->OUT, ": %U</H2>\r\n", FSWF("chooseEncoding", "Choose Your Encoding"));
+        u_fprintf(lx->OUT, ": %S</H2>\r\n", FSWF("chooseEncoding", "Choose Your Encoding"));
         */
         u_fprintf(lx->OUT, "<hr>");
         
@@ -284,7 +284,7 @@ void displayLocaleExplorer(LXContext *lx)
             unescapeAndDecodeQueryField(usample, 256, sample);
             
             *end = 0;
-            u_fprintf(lx->OUT, "%U: %s<p>\r\n", FSWF("converter_matchesTo", "Looking for matches to these chars: "), sample);
+            u_fprintf(lx->OUT, "%S: %s<p>\r\n", FSWF("converter_matchesTo", "Looking for matches to these chars: "), sample);
             chooseConverterMatching(lx, restored, usample);
         }
         else
@@ -299,14 +299,14 @@ void displayLocaleExplorer(LXContext *lx)
         if(u_strlen(lx->newZone))
         {
             UErrorCode status = U_ZERO_ERROR;
-            u_fprintf(lx->OUT, "Got zone=%U<P>\n", lx->newZone);
-            u_fprintf(lx->OUT, "Time there =%U\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&status));
+            u_fprintf(lx->OUT, "Got zone=%S<P>\n", lx->newZone);
+            u_fprintf(lx->OUT, "Time there =%S\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&status));
         }
         
-        u_fprintf(lx->OUT, "%U: <form><input name=\"SETTZ\" value=\"%U\"><input type=submit></form>\r\n", 
+        u_fprintf(lx->OUT, "%S: <form><input name=\"SETTZ\" value=\"%S\"><input type=submit></form>\r\n", 
             FSWF("zone_set", "Set timezone to:"),
             lx->newZone);
-        u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%U</i></div>\r\n", 
+        u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%S</i></div>\r\n", 
             FSWF("zone_warn","Note: only works if you have cookies turned on."));
         
         {
@@ -335,11 +335,11 @@ void displayLocaleExplorer(LXContext *lx)
         
         oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(lx->OUT)));
         
-        u_fprintf(lx->OUT, "<table width=\"100%%\" border=1><tr><td>%U<br>", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
+        u_fprintf(lx->OUT, "<table width=\"100%%\" border=1><tr><td>%S<br>", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
         
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_ESCAPE, &status2);
         
-        u_fprintf(lx->OUT, "%U", COLLECT_getChars());
+        u_fprintf(lx->OUT, "%S", COLLECT_getChars());
         
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), oldCallback, &status2);
         
@@ -349,14 +349,14 @@ void displayLocaleExplorer(LXContext *lx)
         if(strncmp(lx->queryString, "converter",9)) /* TODO: FIXME */
             u_fprintf(lx->OUT,"&%s", lx->queryString);
         u_fprintf(lx->OUT, "\">");
-        u_fprintf(lx->OUT, "%U</a>\r\n",
+        u_fprintf(lx->OUT, "%S</a>\r\n",
             FSWF("encoding_PickABetter", "Click here to search for a better encoding"));
         
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
     }
 #endif
     
-    u_fprintf(lx->OUT, "%U",  FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
+    u_fprintf(lx->OUT, "%S",  FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
     
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */

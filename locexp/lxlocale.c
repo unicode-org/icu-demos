@@ -107,11 +107,11 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     u_fprintf(lx->OUT, "<table border=2 cellpadding=2 cellspacing=2>\r\n");
 
-    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td><b>%U</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("localeList_Locale", "Languages"),
               FSWF("localeList_Sublocale", "Regions"));
 
-    u_fprintf(lx->OUT, "<tr><td colspan=2><a href=\"?_=%s\">%U</a></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><td colspan=2><a href=\"?_=%s\">%S</a></td></tr>\r\n",
               lx->locales->str, lx->locales->ustr); /* default */ 
 
     mySort(lx->locales, &status, TRUE); /* need the whole thing sorted */
@@ -181,7 +181,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     if(showAll == FALSE && toOpen == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"../_/closed.gif\" alt=\"\">%U</A>\r\n<BR>",
+        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"../_/closed.gif\" alt=\"\">%S</A>\r\n<BR>",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }
@@ -196,7 +196,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
   /* look for sublocs */
   if(lx->curLocale && lx->curLocale->nSubLocs)
     {
-      u_fprintf(lx->OUT, "%U", FSWF("sublocales", "Sublocales:"));
+      u_fprintf(lx->OUT, "%S", FSWF("sublocales", "Sublocales:"));
       if(!suffix || !*suffix) {
         u_fprintf(lx->OUT, "<br><div style=\"margin-left: 2.5em; margin-top: 1em; margin-bottom: 1em\">", FSWF("sublocales", "Sublocales:"));
       } 
@@ -265,7 +265,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
             u_fprintf(lx->OUT, ", ");
           }
           u_fprintf_u(lx->OUT, 
-                      FSWF("otherLanguageSameCountryLocales", "<b>%U</b> under other languages"),
+                      FSWF("otherLanguageSameCountryLocales", "<b>%S</b> under other languages"),
                       lx->curLocale->ustr);
           u_fprintf(lx->OUT, ": ");
         }
@@ -294,7 +294,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
   
   /* this notice covers sublocs and sibling locs */
   if(hadExperimentalSubLocales)
-    u_fprintf(lx->OUT, "<br>%U", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
+    u_fprintf(lx->OUT, "<br>%S", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
   
   
 }

@@ -30,7 +30,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
         if(lx->parLocale && lx->parLocale->str)
 	{
             u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\">", lx->parLocale->str, tag);
-            u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %U)"), lx->parLocale->ustr); 
+            u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->parLocale->ustr); 
 	}
         else
 	{
@@ -43,14 +43,14 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 
     case U_USING_DEFAULT_WARNING:
 	u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
-        u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %U)"), lx->locales->ustr); 
+        u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->locales->ustr); 
         u_fprintf(lx->OUT, "</A>");
         break;
 
     default:
         if(status != U_ZERO_ERROR)
 	{
-            u_fprintf(lx->OUT, "(%U %d - %s)", FSWF("UNKNOWN_ERROR", "unknown error"), (int) status,
+            u_fprintf(lx->OUT, "(%S %d - %s)", FSWF("UNKNOWN_ERROR", "unknown error"), (int) status,
                       u_errorName(status));
 #ifdef SRL_DEBUG
             fprintf(stderr,"LRB: caught Unknown err- %d %s\n", status, u_errorName(status)); 
@@ -77,13 +77,13 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
 
     }
 
-    u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"../_/help.html#%s\">%U</A>",
+    u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"../_/help.html#%s\">%S</A>",
               helpTag,str);
 }
 
 void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-    u_fprintf(lx->OUT, "<a href=\"../_/help.html#%s\" target=\"icu_lx_help\"><img %U src=\"../_/%U\" alt=\"%U\"></a>",
+    u_fprintf(lx->OUT, "<a href=\"../_/help.html#%s\" target=\"icu_lx_help\"><img %S src=\"../_/%S\" alt=\"%S\"></a>",
               helpTag, 
               options, src, alt);
 }
@@ -108,14 +108,14 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
     writeEscaped(lx, sampleString);
     u_fprintf(lx->OUT, "\">\r\n");
   
-    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"../_/explore.gif\" align=right value=\"%U\"></form>",
+    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"../_/explore.gif\" align=right value=\"%S\"></form>",
               FSWF("exploreTitle", "Explore"));
 }
 
 void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign)
 {
   u_fprintf(lx->OUT, "<a target=\"_new\" href=\"?_=%s&EXPLORE_%s=\">", locale, key);
-  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"../_/explore.gif\" %s ALT=\"%U\">",
+  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"../_/explore.gif\" %s ALT=\"%S\">",
               rightAlign?"ALIGN=RIGHT ":"",
             FSWF("exploreTitle", "Explore") );
   u_fprintf(lx->OUT, "</a>\r\n");
@@ -137,7 +137,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 /* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
-    u_fprintf(lx->OUT, "<TABLE summary=\"%U\" BORDER=0 CELLSPACING=0 WIDTH=\"100%%\">", keyName);
+    u_fprintf(lx->OUT, "<TABLE summary=\"%S\" BORDER=0 CELLSPACING=0 WIDTH=\"100%%\">", keyName);
     u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
     u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s>", key);
     u_fprintf(lx->OUT,"</A>", keyName);
@@ -150,7 +150,7 @@ void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyNa
 
     if(cumulative == TRUE )
     {
-        u_fprintf(lx->OUT, " (%U)", FSWF("cumulative_notshown", "cumulative data from parent not shown"));
+        u_fprintf(lx->OUT, " (%S)", FSWF("cumulative_notshown", "cumulative data from parent not shown"));
     }
 
     u_fprintf(lx->OUT," </TD><TD BGCOLOR=" kXKeyBGColor "   VALIGN=TOP ALIGN=RIGHT>");
@@ -188,7 +188,7 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
         u_fprintf(lx->OUT, "<INPUT NAME=NP_DBL TYPE=HIDDEN VALUE=\"");
         tmp[0] = 0;
         unum_formatDouble(valueFmt, value, tmp, 1000, 0, &status);
-        u_fprintf(lx->OUT, "%U\">", tmp);
+        u_fprintf(lx->OUT, "%S\">", tmp);
     }
     u_fprintf(lx->OUT, "<TEXTAREA ROWS=2 COLS=60 NAME=\"EXPLORE_%s\">",
               key);
@@ -196,7 +196,7 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
 
     lx->backslashCtx.html = FALSE;
 
-    u_fprintf(lx->OUT, "%U", dstPattern); 
+    u_fprintf(lx->OUT, "%S", dstPattern); 
 
     lx->backslashCtx.html = TRUE;
   
@@ -223,7 +223,7 @@ void printStatusTable(LXContext *lx)
 
     if(!lx->inDemo)
     {
-        u_fprintf(lx->OUT, " %U",   FSWF("statusTableHeaderChange", "(click to change)"));
+        u_fprintf(lx->OUT, " %S",   FSWF("statusTableHeaderChange", "(click to change)"));
     }
 
     /* /PrintHelpTag */
@@ -231,7 +231,7 @@ void printStatusTable(LXContext *lx)
               "  </tr>\r\n"
               "  <tr>\r\n"
               "   <td>");
-    u_fprintf(lx->OUT, "<b>%U</b></td>\r\n", FSWF("myConverter", "Encoding:"));
+    u_fprintf(lx->OUT, "<b>%S</b></td>\r\n", FSWF("myConverter", "Encoding:"));
     u_fprintf(lx->OUT, "   <td>");
     /* now encoding */
 
@@ -254,7 +254,7 @@ void printStatusTable(LXContext *lx)
 
     u_fprintf(lx->OUT, "<td align=right rowspan=3>\r\n"); /* ====== begin right hand thingy ======== */
 
-    u_fprintf(lx->OUT, "<a href=\"http://oss.software.ibm.com/icu/\"><i>%U</i> %U</a><br>",
+    u_fprintf(lx->OUT, "<a href=\"http://oss.software.ibm.com/icu/\"><i>%S</i> %S</a><br>",
               FSWF("poweredby", "Powered by"),
               FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION) );
 
@@ -262,7 +262,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "<a href=\"?SETTZ=\">");
 #endif
     dateStr = date( NULL,UDAT_FULL, lx->dispLocale,&status);
-    u_fprintf(lx->OUT, "%U", dateStr);
+    u_fprintf(lx->OUT, "%S", dateStr);
     free(dateStr);
 #ifdef LX_SET_TZ
     u_fprintf(lx->OUT, "</a>");
@@ -277,7 +277,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */
 
     /* === Begin line 4 - display locale == */
-    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td>\r\n", FSWF("myLocale", "Label Locale:"));
+    u_fprintf(lx->OUT, "<tr><td><b>%S</b></td>\r\n", FSWF("myLocale", "Label Locale:"));
 
     u_fprintf(lx->OUT, "<td>");
   
@@ -296,24 +296,24 @@ void printStatusTable(LXContext *lx)
     }
     u_fprintf(lx->OUT, "</td></tr>\r\n");
 
-    u_fprintf(lx->OUT, "<tr><td><b>%U</b></td>\r\n",
+    u_fprintf(lx->OUT, "<tr><td><b>%S</b></td>\r\n",
               FSWF("encoding_translit_setting", "Transliteration:"));
 
 #if 0  /* Set to 1 if transliteration isn't working. */
-    u_fprintf(lx->OUT, "<td><i>%U</i></td>",
+    u_fprintf(lx->OUT, "<td><i>%S</i></td>",
               FSWF("off", "off"));
 #else
     /* Transliteration is OK */
     if(lx->inDemo == FALSE)  {
       if(!strcmp(lx->convRequested, "transliterated")) {
-        u_fprintf(lx->OUT, "<td><b>*%U*</b> / <a href=\"%s/%s/?%s\">%U</a></td>",
+        u_fprintf(lx->OUT, "<td><b>*%S*</b> / <a href=\"%s/%s/?%s\">%S</a></td>",
                   FSWF("on","on"),
                   lx->scriptName,
                   lx->dispLocale,
                   lx->queryString,
                   FSWF("off","off"));
       } else {
-        u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%U</a> / <b>*%U*</b></td>",
+        u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%S</a> / <b>*%S*</b></td>",
                   lx->scriptName,
                   lx->dispLocale,
                   lx->queryString,
@@ -321,7 +321,7 @@ void printStatusTable(LXContext *lx)
                   FSWF("off","off"));
       }
     } else { /* indemo */
-      u_fprintf(lx->OUT, "<td><b>%U</b></td>", 
+      u_fprintf(lx->OUT, "<td><b>%S</b></td>", 
                 (!strcmp(lx->convRequested, "transliterated"))?
                 FSWF("on","on") :
                 FSWF("off","off"));
@@ -353,19 +353,19 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, " &nbsp; ");
 
     if(lx->curLocaleName[0]) {
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%S</A>", 
                 lx->curLocaleName,
                 FSWF("sourceFile", "View Locale Source"));
      
       if(!isExperimentalLocale(lx->curLocaleName)) {
       u_fprintf(lx->OUT, " &nbsp; ");
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/xml/%s.xml\">%U</A>", 
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/xml/%s.xml\">%S</A>", 
                 lx->curLocaleName,
                 FSWF("XMLsource", "XML Source"));
       
       u_fprintf(lx->OUT, " &nbsp; ");
 
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/all_diff_xml/%s.html\">%U</A>", 
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/all_diff_xml/%s.html\">%S</A>", 
                 lx->curLocaleName,
                 FSWF("XMLcomp", "Compare"));
       u_fprintf(lx->OUT, " &nbsp; ");
@@ -374,7 +374,7 @@ void printStatusTable(LXContext *lx)
 }
  u_fprintf(lx->OUT," &nbsp; ");
     
-    u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%U</A>",
+    u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%S</A>",
               FSWF("poweredby_filebug", "File a bug"));
     
     u_fprintf(lx->OUT, "</center><p>\r\n");
@@ -386,7 +386,7 @@ void printStatusTable(LXContext *lx)
     
 #if 0
     if(!strcmp(lx->chosenEncoding, "transliterated") && U_FAILURE(lx->xlitCtx.transerr)) {
-      u_fprintf(lx->OUT,"<b>%U (%s)- %s</b><p>\r\n", 
+      u_fprintf(lx->OUT,"<b>%S (%s)- %s</b><p>\r\n", 
                 FSWF("translit_CantOpenPair", "Warning: Could not open the transliterator for the locale pair."),
                 lx->xlitCtx.locale,
                 u_errorName(lx->xlitCtx.transerr));
@@ -458,7 +458,7 @@ void writeEscaped(LXContext *lx, const UChar *s)
 	}
     }
     else
-        u_fprintf(lx->OUT, "%U", s); 
+        u_fprintf(lx->OUT, "%S", s); 
 
     /* should 'get/restore' here. */
     lx->backslashCtx.html = TRUE;
@@ -481,7 +481,7 @@ void writeEscapedQuery(LXContext *lx, const UChar *s)
 	}
     }
     else
-        u_fprintf(lx->OUT, "%U", s); 
+        u_fprintf(lx->OUT, "%S", s); 
 
     lx->backslashCtx.html = TRUE;
 }
