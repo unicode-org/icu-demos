@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -59,7 +59,6 @@ void showOneLocale(LXContext *lx)
     /*   u_fprintf(lx->OUT, "</TD></TR><TR><TD COLSPAN=2>"); */
 
     /* analyze what kind of locale we've got.  Should this be a little smarter? */
-
 #if 0
     /* "friendly" messages */
     u_fprintf(lx->OUT, "%S", FSWF("localeDataWhat", "This page shows the localization data for the locale listed at left. "));
@@ -97,7 +96,6 @@ void showOneLocale(LXContext *lx)
     {
         showExploreDateTimePatterns(lx, myRB, locale);
     }
-
     else if (!strcmp(lx->section, "num"))
     {
       showExploreNumberPatterns(lx, locale);
@@ -131,8 +129,16 @@ void showOneLocale(LXContext *lx)
 
         showKeyAndEndItem(lx, "EXPLORE_CollationElements", locale);
     }
+    else if(lx->section[0]=='i')
+    {
+        showICIR(lx);
+    }
     else /* ================================= Normal ShowXXXXX calls ===== */
     {
+    u_fprintf(lx->OUT, "<a href=\"%s&x=iloc\">%S</a><br>",
+		getLXBaseURL(lx, kNO_SECT),
+		FSWF("icirView", "Switch to Survey View"));
+
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   LOCALE ID section %%%*/
         u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%%\"><tr><td valign=TOP>");

@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #ifndef LOCEXP_
@@ -334,6 +334,8 @@ const char *getLXBaseURL(LXContext* lx, uint32_t o);
 
 /* lxurl */
 /* find start of field from a query like string */
+typedef void* UUrlIter;
+
 extern const char *fieldInQuery(LXContext* lx, const char *query, const char *field);
 extern const char *queryField(LXContext* lx, const char *field);
 extern UBool hasQueryField(LXContext* lx, const char *field);
@@ -341,6 +343,29 @@ extern const char *cookieField(LXContext* lx, const char *field);
 extern UBool hasCookieField(LXContext* lx, const char *field);
 extern double parseDoubleFromField(LXContext* lx, UNumberFormat* nf, const char *key, double defVal);
 extern double parseDoubleFromString(LXContext* lx, UNumberFormat* nf, const char *str, double defVal);
+
+/**
+ * usage:
+ * UUrlIter *u;
+ * const char *field;
+ * const char *val;
+ * u = uurl_open(lx);
+ * while(field = uurl_next(u)) {
+ *   puts(field);
+ *   if(!strcmp(field,"aField")) {
+ *     val = uurl_value(u);
+ *     printf("val=%s\n", val); 
+ *   }
+ * }
+ * uurl_close(u);
+ */
+
+extern UUrlIter *uurl_open(LXContext *lx);
+extern const char *uurl_next(UUrlIter *u);
+extern const char *uurl_value(UUrlIter *u);
+extern void uurl_close(UUrlIter *u);
+
+
 /* header management */
 /**
  * Add a header to the list.  Do not add trailing cr/lf.
@@ -349,6 +374,12 @@ extern double parseDoubleFromString(LXContext* lx, UNumberFormat* nf, const char
  * @param fmt stdio (host, not unicode!) format string + params (e.g. "text/plain; charset=%s", "btf-5") 
  */
 extern void appendHeader(LXContext* lx, const char *header, const char *fmt, ...);
+
+/**
+ * ICIR mode    
+ * @param lx the context
+ */
+extern void showICIR(LXContext* lx);
 
 /* Astro - only defined if LX_ASTRO is defined, else stubbed out. */
 

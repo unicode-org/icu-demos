@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
@@ -312,3 +312,128 @@ double parseDoubleFromString(LXContext* lx, UNumberFormat* nf, const char *str, 
   }
   return val;
 }
+
+typedef struct {
+	LXContext *lx;
+	const char *qs; /* query string */
+	const char *pd; /* post data */
+	char *field;
+	char fldBuf[256];
+	char *val;
+	char valBuf[1024];
+} UURLITER;
+
+UUrlIter *uurl_open(LXContext *lx)
+{
+	UURLITER *n;
+	n = malloc(sizeof(UURLITER));
+	memset((void*)n,0,sizeof(UURLITER));
+	if(lx->postData) {
+		n->pd = lx->postData;
+	}
+	if(lx->queryString) {
+		n->qs = lx->queryString;
+	}
+	n->lx = lx;
+	return(UUrlIter*)n;
+}
+
+static const char *uurl_next_priv(UUrlIter *u, const char **buf)
+{
+	const char *j;
+	UURLITER* n = (UURLITER*)u;
+	if(buf&&*buf&&**buf) {
+		while(**buf == '&') {
+			(*buf)++;
+		}
+		if(!(**buf)) {
+			return NULL;
+		}
+		j=strchr((*buf),'=');
+		if(!j) {
+			j = (*buf)+strlen(*buf);
+		}
+		
+		if((j-(*buf)) > (((sizeof((n->fldBuf))/sizeof(n->fldBuf[0]))-1) )) {
+			n->field = malloc(j-(*buf)+1);
+		} else {
+			n->field = n->fldBuf;
+		}
+		
+		strncpy(n->field, (*buf),j-(*buf));
+		n->field[j-(*buf)]=0;
+		*buf = j;
+		if(**buf == '=') {
+			(*buf)++;
+		}
+		/* get value .. */
+		j=strchr((*buf),'&');
+		if(!j) {
+			j = (*buf)+strlen(*buf);
+		}
+		
+		if((j-(*buf)) > (((sizeof((n->valBuf))/sizeof(n->valBuf[0]))-1) )) {
+			n->val = malloc(j-(*buf)+1);
+		} else {
+			n->val = n->valBuf;
+		}
+		strncpy(n->val, (*buf),j-(*buf));
+		n->val[j-(*buf)]=0;
+		*buf = j;
+		if(**buf == '&') {
+			(*buf)++;
+		}
+		return n->field;
+	}
+	return NULL;
+}
+#if 0
+  const char *q = query;
+  int32_t len   = strlen(field);
+  while (*q && (q = strstr(q, field))) {  /* look for an occurance of the field */
+
+    /* fprintf(stderr, "trine %s>%s<\n", field, q); */
+    if(((q==query) || (q[-1]=='&')) && /* beginning, or field boundary */
+       (q[len]=='=')) {   /* end with = sign */
+      return q+len+1; 
+    }
+    q++;
+  }
+  return NULL;
+#endif
+
+const char *uurl_next(UUrlIter *u)
+{
+	UURLITER* n = (UURLITER*)u;
+	const char *f = NULL;
+	
+	if(n->val && (n->val != n->valBuf)) {
+		free(n->val);
+	}
+	n->val=NULL;
+	if(n->field && (n->field != n->valBuf)) {
+		free(n->field);
+	}
+	n->field=NULL;
+	
+	if(n->pd) {
+		f =  uurl_next_priv(u, &(n->pd));
+	}
+	
+	if(!f && n->qs) {
+		f = uurl_next_priv(u, &(n->qs));
+	}
+	
+	return f;
+}
+
+const char *uurl_value(UUrlIter *u)
+{
+	return ((UURLITER*)u)->val;
+}
+
+void uurl_close(UUrlIter *u)
+{
+	free((UURLITER*)u);
+}
+
