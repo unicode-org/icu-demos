@@ -95,7 +95,7 @@ main(int argc, char *argv[]) {
     /* open the data outside the mutex block */
     data=udata_openChoice(NULL, argv[1], argv[2], isAcceptable, NULL, &errorCode);
         if(U_FAILURE(errorCode)) {
-            fprintf(stderr, "%s: error %s [%d]\n", argv[0],errorName(errorCode),
+            fprintf(stderr, "%s: error %s [%d]\n", argv[0],u_errorName(errorCode),
 		    (int)errorCode);
 	    return errorCode;
         }
