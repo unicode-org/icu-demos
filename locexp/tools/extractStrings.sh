@@ -33,7 +33,7 @@
 ##
 ## Note: FSWF means Fetch String with Fallback.   see locexp.c
 export INVOKE_UCONV
-echo "// root file. Generated from $* on `date` on `hostname`"
+echo "// root file. Generated from $*"
 echo "// It's probably not a good idea to change this file."
 echo "// Better to change locexp.c or the ROOT.* source files and rebuild."
 echo
