@@ -1,5 +1,5 @@
 
-// Copyright (c) 2000-2001 IBM, Inc. and others.
+// Copyright (c) 2000-2004 IBM, Inc. and others.
 /**
  * The CGI interacts with the template file by filling in variables of
  * the form $FOO and reading text from fields.  Here is a complete
@@ -275,7 +275,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             if (buildUserRules(id, rules, errMsg)) {
                 // We have a validated rule set; save it
                 UBool ok = ruleCache.put(id, rules);
-                fprintf(out, ok ? "" : "Error: Internal CGI failure");
+                fprintf(out, ok ? "" : "Error: Unable to write to cache directory");
             } else {
                 util_fprintf(out, errMsg, inQuote);
             }
