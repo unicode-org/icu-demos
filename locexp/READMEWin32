@@ -22,6 +22,11 @@ Locexp is automatically built by using using the provided locexp.dsw
 work space in this directory, or by using all.dsw workspace in ..\all
 directory. 
 
+A copy of locexp.exe file will be made in cgi-bin directory. If your
+cgi-bin dir differs from "c:\program files\apache group\apache\cgi-bin"
+you will want to change post-build step "install to cgi-bin" so that it
+reflects your situation.
+
 When you build locexp, you should get an executable file locexp.exe in
 your debug or release directory, depending on the type of build.
 
