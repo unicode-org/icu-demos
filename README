@@ -52,4 +52,34 @@ BUILDING
      the ICU include and lib directories.
 
 
+==========================================
+==========================================
+THE APPS
 
+
+- uconv    From : Jonas Utterstrom 
+                  <jonas.utterstrom@vittran.norrnod.se>
+           Uses : Conversion
+
+   This program will convert data file(s) from one encoding to another
+  via Unicode.
+   
+
+- usort    From : Steven R. Loomis
+                  <srl@monkey.sbay.org>
+
+           Uses : Conversion, Collation
+
+   There are two parts here.
+
+    * a shared library (libusort) which makes it simple to sort lines
+      of text.
+
+    * a command line example program (usort) which will sort lines
+      from the console or the file, similar to UNIX 'sort'. 
+
+
+- Your contribution could be here too! Write: <icu4c@us.ibm.com>
+
+-----------------
+(c) 1999 IBM, Inc. and others
