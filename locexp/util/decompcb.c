@@ -263,8 +263,6 @@ UCNV_FROM_U_CALLBACK_DECOMPOSE  (void *context,
                                  UConverterCallbackReason reason,
                                  UErrorCode *err)
 {
-  int32_t i;
-  char   *oldTarget;
 
   if((reason > UCNV_IRREGULAR) || (length <= 0))
   {

@@ -48,7 +48,7 @@ Although it is a requirement for running and building ICU, for some reason web
 server do not transfer this environment variable. 
 
 If you are using Apache for Win32 you should add the line:
-SetEnv ICU_DATA c:\icu\icu\data\ #or whatever is the path to your icu\data dir
+SetEnv ICU_DATA c:\icu\source\data\ #or whatever is the path to your icu\source\data dir
 to the end of httpd.conf file.
 
 2) Copy file icudt17l.dll from icu data directory to any directory on PATH. 

@@ -227,8 +227,7 @@ void runLocaleExplorer(LXContext *myContext)
 {
   UErrorCode status;
   char *tmp;
-  UChar subTitle[1024];
-  int32_t n,i;
+  int32_t n;
   const char  *fileObj = NULL;
   char portStr[100];
   
@@ -1375,7 +1374,6 @@ void chooseConverter(const char *restored)
 {
   int32_t  ncnvs, naliases;
   int32_t i;
-  int32_t j;
 
   USort *mysort;
 
@@ -1554,7 +1552,7 @@ void chooseConverterMatching(const char *restored, UChar *sample)
 void chooseConverterFrom(const char *restored, USort *list)
 {
   int32_t naliases, ncnvs;
-  int32_t  i, j;
+  int32_t  i;
   int32_t  COLS = 4; /* number of columns */
   int32_t rows;
   const char *cnvMime, *defaultMime;
@@ -1763,7 +1761,6 @@ void chooseConverterFrom(const char *restored, USort *list)
 void listBundles(char *b)
 {
   char *tmp, *locale = NULL;
-  UChar myChars[1024];
   UErrorCode status = U_ZERO_ERROR;
   UResourceBundle *myRB = NULL;
   bool_t doShowSort = FALSE;
@@ -2159,9 +2156,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   UChar *comps = 0;
   bool_t bigString     = FALSE; /* is it too big to show automatically? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
-  const char *tmp1, *tmp2;
   int32_t len = 0, len2, i;
-  UConverterFromUCallback oldCallback;  /* for push/pop of special callbacks */
   UCollator *coll = NULL; /* build an actual collator */
 
   s = ures_getStringByKey(rb, key, &len, &status);
@@ -2356,7 +2351,6 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
   UErrorCode status = U_ZERO_ERROR;
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
-  const char *tmp1, *tmp2;
   char tempchar[1000];
   int32_t len;
 
@@ -2460,7 +2454,6 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
   const UChar *s  = 0;
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
-  const char *tmp1, *tmp2;
   int32_t len;
 
   s = ures_getStringByKey(rb, key, &len, &status);
@@ -2523,7 +2516,6 @@ void showStringWithDescription(UResourceBundle *rb, const char *locale, const ch
   const UChar *s  = 0;
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
-  const char *tmp1, *tmp2;
   int32_t i;
   int32_t len;
 
@@ -2689,7 +2681,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 
 	case kDateTimeExample:
 	  exampleStatus = U_ZERO_ERROR;
-	  exampleDF = udat_openPattern(s,-1,locale,&exampleStatus);
+	  exampleDF = udat_open(UDAT_IGNORE,UDAT_IGNORE,locale,NULL, 0, s,-1,&exampleStatus);
 	  if(U_SUCCESS(exampleStatus))
 	    {
 	      len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
@@ -2704,7 +2696,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 
       toShow = nothing;
 
-	  exampleNF = unum_openPattern(s,-1,locale,&exampleStatus);
+	  exampleNF = unum_open(0, s,-1,locale,NULL, &exampleStatus);
 	  if(U_SUCCESS(exampleStatus))
 	    {
 	      len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
@@ -2800,7 +2792,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		{
 		  len = 0;
 
-		  exampleDF = udat_openPattern(s,-1,locale,&exampleStatus);
+		  exampleDF = udat_open(UDAT_IGNORE, UDAT_IGNORE, locale,NULL, 0, s,-1,&exampleStatus);
 		  if(U_SUCCESS(exampleStatus))
 		    {
 		      len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
@@ -2817,7 +2809,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 	      if(i == 3) /* scientific */
 		d = 1234567890;
 
-	      exampleNF = unum_openPattern(s,-1,locale,&exampleStatus);
+	      exampleNF = unum_open(0, s,-1,locale, NULL, &exampleStatus);
 	      if(U_SUCCESS(exampleStatus))
 		{
 		  len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
@@ -2946,7 +2938,6 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
   UResourceBundle *array = NULL, *item = NULL;
 
   const char *key = "DateTimeElements";
-  int i;
   /*
     0: first day of the week 
     1: minimaldaysinfirstweek 
@@ -2966,7 +2957,6 @@ void showDateTimeElements( UResourceBundle *rb, const char *locale)
 
   if(U_SUCCESS(status))
     {
-      UChar myWkday[100];
       int32_t  firstDay;
 
       firstDay = (((s[0] & 0x000F)+6)%7); /* REVISIT: parse */
@@ -3125,7 +3115,6 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   int32_t rows,cols;
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
-  const char *tmp1, *tmp2;
   bool_t isTZ = FALSE; /* do special TZ processing */
   int32_t len;
 
@@ -3271,12 +3260,10 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
   UErrorCode status = U_ZERO_ERROR;
   UErrorCode firstStatus;
   const UChar *s  = 0;
-  UChar displayName[1024];
   int32_t v;
   int32_t rows;
   bool_t bigString = FALSE; /* is it big? */
   bool_t userRequested = FALSE; /* Did the user request this string? */
-  const char *tmp1, *tmp2;
   int32_t len;
   UResourceBundle *item = NULL;
 
@@ -3560,8 +3547,6 @@ void exploreFetchNextPattern(UChar *dstPattern, const char *qs)
 
 void exploreShowPatternForm(UChar *dstPattern, const char *locale, const char *key, const char* qs, double value, UNumberFormat *valueFmt)
 {
-  UChar *p;
-  int32_t len;
   UErrorCode status = U_ZERO_ERROR;
   UChar tmp[1024];
 
@@ -3686,7 +3671,6 @@ void showSort_attrib(LXContext *lx, const char *locale)
 void showSort(const char *locale, const char *b)
 {
   char   inputChars[SORTSIZE];
-  char   tmpChars[SORTSIZE];
   char *text;
   char *p;
   int32_t length;
@@ -3980,12 +3964,10 @@ void showSort(const char *locale, const char *b)
   /* ========== Do the actual sort ======== */
   if(inputChars[0] != 0)
   {
-    FILE *sortpipe;
     UCollationStrength sortTypes[] = { UCOL_IDENTICAL /* not used */, UCOL_DEFAULT, UCOL_SECONDARY, UCOL_PRIMARY };
     int n;
     
     UChar in[SORTSIZE];
-    int32_t inLen, outLen;
     UErrorCode status2 = U_ZERO_ERROR;
     
     /* have some text to sort */
@@ -4234,10 +4216,10 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   char *tmp;
   int32_t parsePos = 0;
 
-  nf = unum_openPattern(FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, &status);
+  nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, NULL, &status);
   status = U_ZERO_ERROR; /* ? */
   
-  df_default = udat_open(UDAT_SHORT, UDAT_SHORT, NULL, NULL, -1,  &status);
+  df_default = udat_open(UDAT_SHORT, UDAT_SHORT, NULL, NULL, -1, NULL, 0, &status);
   status = U_ZERO_ERROR; /* ? */
 
   now = ucal_getNow();
@@ -4251,7 +4233,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   /* fetch the current pattern */
   exploreFetchNextPattern(pattern, strstr(b,"EXPLORE_DateTimePatterns"));
 
-  df = udat_open(0,0,locale, NULL, -1, &status);
+  df = udat_open(0,0,locale, NULL, -1, NULL, 0, &status);
   udat_applyPattern(df, TRUE, pattern, -1);
 
   status = U_ZERO_ERROR;
@@ -4269,8 +4251,6 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
     }
   else if(tmp = strstr(b, "NP_DEF")) /* Default: 'display' format input ============== */
     {
-      int32_t q;
-      UChar patn[1024];
 
       /* Localized # */
       tmp += 7;
@@ -4303,8 +4283,6 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
   else if(tmp = strstr(b, "NP_LOC")) /* Localized: pattern format input ============== */
     {
 
-      int32_t q;
-      UChar patn[1024];
 
       /* Localized # */
       tmp += 7;
@@ -4390,7 +4368,6 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
     }
   else
     {
-      UConverterFromUCallback oldCallback;
       
       u_fprintf(lx->OUT, "<B><I>%U</I></B><BR>\r\n", defaultLanguageDisplayName());
 #if 0
@@ -4514,15 +4491,13 @@ void showExploreNumberPatterns(const char *locale, const char *b)
   UNumberFormat  *nf = NULL; /* numfmt in the current locale */
   UNumberFormat  *nf_default = NULL; /* numfmt in the default locale */
   UErrorCode   status = U_ZERO_ERROR;
-  int32_t i;
   double   value;
-  char encodedPattern[1024];
   UChar valueString[1024];
   
   const UChar *defaultValueErr = 0,
               *localValueErr   = 0;
   
-  const char *tmp, *tmpLimit;
+  const char *tmp;
   
   showKeyAndStartItem("EXPLORE_NumberPatterns", FSWF("EXPLORE_NumberPatterns", "Explore &gt; Numbers"), locale, FALSE, U_ZERO_ERROR);
 
@@ -4530,7 +4505,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
 
   exploreFetchNextPattern(pattern, strstr(b,"EXPLORE_NumberPatterns")); 
 
-  nf = unum_open(UNUM_DEFAULT,locale,  &status);
+  nf = unum_open(UNUM_DEFAULT,NULL, 0, locale, NULL, &status);
   
   if(U_FAILURE(status))
     {
@@ -4539,7 +4514,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       return; /* ? */
     }
   
-  unum_applyPattern(nf, TRUE, pattern, -1);
+  unum_applyPattern(nf, TRUE, pattern, -1, NULL, NULL);
   
   unum_toPattern(nf, FALSE, tempChars, 1024, &status);
 
@@ -4550,7 +4525,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       return;
     }
 
-  nf_default = unum_open(UNUM_DEFAULT, NULL, &status);
+  nf_default = unum_open(UNUM_DEFAULT, NULL, 0, NULL, NULL, &status);
   
   if(U_FAILURE(status))
     {
@@ -4560,7 +4535,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
     }
   
   /* Load the default with a simplistic pattern .. */
-  unum_applyPattern(nf_default, FALSE, FSWF("EXPLORE_NumberPatterns_defaultPattern", "#,###.###############"), -1);
+  unum_applyPattern(nf_default, FALSE, FSWF("EXPLORE_NumberPatterns_defaultPattern", "#,###.###############"), -1, NULL, NULL);
       
   /* Allright. we've got 'nf' which is our custom pattern in the target 
      locale, and we've got 'nf_default' which is a pattern that we hope is
@@ -4641,7 +4616,6 @@ void showExploreNumberPatterns(const char *locale, const char *b)
     }
   else
     {
-      UConverterFromUCallback oldCallback;
       
       u_fprintf(lx->OUT, "<B><I>%U</I></B><BR>\r\n", defaultLanguageDisplayName());
       u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_NumberPatterns\">\r\n");
@@ -4812,7 +4786,6 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
   char *acceptLanguage;
   char newLocale[100];
   UFILE *f;
-  UChar x[2];
 
 
 
@@ -4906,7 +4879,6 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
     {
       const char *accept;
       const char *agent;
-            char *newEncoding;
 
       accept = getenv("HTTP_ACCEPT_CHARSET");
 

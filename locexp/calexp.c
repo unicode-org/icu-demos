@@ -91,7 +91,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
     type = *(tmp + strlen("EXPLORE_Calendar="));
   }
 
-  nf = unum_openPattern(FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, &status);
+  nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, NULL, &status);
   status = U_ZERO_ERROR; /* ? */
 
     if (tmp = strstr(qs,"NP_DBL")) /* Double: UDate format input ============= */
@@ -147,7 +147,6 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
     static const  UBool   roll[NR_ITEMS] =  {   TRUE, FALSE, FALSE, TRUE };
     static const  int32_t amt [NR_ITEMS] =  {    -1 ,  -1  ,  1   ,  1   };
     static const char    *nam [NR_ITEMS] =  { "&lt;", "-"  , "+"  , "&gt;"};
-    double d;
 
     u_fprintf(lx->OUT, "<TABLE BORDER=2>\r\n");
     for (i=0;i<UCAL_FIELD_COUNT;i++)

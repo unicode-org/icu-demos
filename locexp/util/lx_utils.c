@@ -399,7 +399,6 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
  
 MySortable *addSubLocaleTo(MySortable *root, const char *thisLocale, const char *inLocale, int32_t *localeCount)
 {
-  int32_t n;
 
   if( (root->nSubLocs) >= root->subLocsSize)
     {
@@ -479,7 +478,7 @@ MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount)
   int32_t     nlocs;  /* ICU-specified total locales */
   
   /* temps */
-  int32_t     i,j;
+  int32_t     i;
 
   root = malloc(sizeof(MySortable));
 
@@ -724,7 +723,7 @@ UChar *dateAt(UDate adate, const UChar *tz, UDateFormatStyle style, UErrorCode *
   int32_t len = 0;
   UDateFormat *fmt;
 
-  fmt = udat_open(style, style, NULL, tz, -1, status);
+  fmt = udat_open(style, style, NULL, tz, -1, NULL, 0, status);
   len = udat_format(fmt, ucal_getNow(), 0, len, 0, status);
   if(*status == U_BUFFER_OVERFLOW_ERROR) {
     *status = U_ZERO_ERROR;

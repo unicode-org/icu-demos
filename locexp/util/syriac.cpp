@@ -54,8 +54,6 @@ void doSyriac(const UChar **parentLoc)
   
   const UChar* c = *parentLoc;
   const UChar* p;
-  UChar buf[kBufLen];
-  int32_t typ[kBufLen];
   int32_t n = 0;
   bool_t  sawLiveConsonant = FALSE;
   char tmp[300];

@@ -61,10 +61,4 @@ U_CAPI const char* U_EXPORT2 ures_getTaggedArrayTag(const UResourceBundle *resou
 						       UErrorCode* status);
 
 
-U_CAPI void
-unum_applyPattern(            UNumberFormat     *format,
-			      bool_t          localized,
-			      const   UChar           *pattern,
-			      int32_t         patternLength);
-
 #endif

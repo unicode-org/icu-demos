@@ -56,22 +56,4 @@ U_CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
 }
 
 
-/* ripped off from udat_applyPattern */
-U_CAPI void
-unum_applyPattern(UNumberFormat     *format,
-                  bool_t          localized,
-                  const UChar      *pattern,
-                  int32_t     patternLength)
-{
-  int32_t len = (patternLength == -1 ? u_strlen(pattern) : patternLength);
-  const UnicodeString pat((UChar*)pattern, len, len);
-  UErrorCode status = U_ZERO_ERROR;
-  
-  if(localized)
-    ((DecimalFormat*)format)->applyLocalizedPattern(pat, status);
-  else
-    ((DecimalFormat*)format)->applyPattern(pat, status);
-}
-
-
 

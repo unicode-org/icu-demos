@@ -44,13 +44,13 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
   UErrorCode status = U_ZERO_ERROR;
   if(!gTR[n])
     {
-      gTR[n] = utrans_open(id, UTRANS_FORWARD, &status);
+      gTR[n] = utrans_open(id, UTRANS_FORWARD, NULL, 0, NULL, &status);
       /* fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]);  */
     }
   
   if(!gTR[n] || U_FAILURE(status))
     {
-        gTR[n] = utrans_open("Null", UTRANS_FORWARD, &status);
+        gTR[n] = utrans_open("Null", UTRANS_FORWARD, NULL, 0, NULL, &status);
     }
     
 
@@ -76,8 +76,8 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
 U_STRING_DECL(beginMark, _beginMark, 18 );
 U_STRING_DECL(  endMark, _endMark,   7);
 
-
-UTransliterator *getTransliteratorForScript(UCharScript script)
+/* TODO: Use the real scriptRun APIs instead of UCharBlock */
+UTransliterator *getTransliteratorForScript(UCharBlock script)
 {
     int i;
 
@@ -86,47 +86,47 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
         U_STRING_INIT(beginMark, _beginMark, 18);
         U_STRING_INIT(  endMark, _endMark, 7);
 
-        gTR = (UTransliterator**) malloc(sizeof(UTransliterator*)*U_CHAR_SCRIPT_COUNT);
-        for(i=0;i<U_CHAR_SCRIPT_COUNT;i++)
+        gTR = (UTransliterator**) malloc(sizeof(UTransliterator*)*U_SCRIPT_BLOCK_COUNT);
+        for(i=0;i<U_SCRIPT_BLOCK_COUNT;i++)
             gTR[i] = 0;
     }
 
     switch(script)
     {
-    case U_LATIN_EXTENDED_A:
+    case U_LATIN_EXTENDED_A_BLOCK:
         return loadTranslitFromCache((int)script, "Maltese-Latin");
 
-    case U_DEVANAGARI:
+    case U_DEVANAGARI_BLOCK:
         return loadTranslitFromCache((int)script, "Devanagari-Latin");
 
-    case U_TAMIL:
+    case U_TAMIL_BLOCK:
         return loadTranslitFromCache((int)script, "Tamil-Latin");
         
-    case U_GREEK:
+    case U_GREEK_BLOCK:
         return loadTranslitFromCache((int)script, "Greek-Latin");
 
-    case U_ARABIC:
+    case U_ARABIC_BLOCK:
         return loadTranslitFromCache((int)script, "Arabic-Latin");
 
-    case U_CYRILLIC:
+    case U_CYRILLIC_BLOCK:
         return loadTranslitFromCache((int)script, "Cyrillic-Latin"); /* Cyrillic != Russian, but.. */
 
-    case U_HEBREW:
+    case U_HEBREW_BLOCK:
         return loadTranslitFromCache((int)script, "Hebrew-Latin"); 
 
-    case U_KATAKANA:
-    case U_HIRAGANA:
+    case U_KATAKANA_BLOCK:
+    case U_HIRAGANA_BLOCK:
         return loadTranslitFromCache((int)script, "Kana-Latin"); 
 
-    case U_CJK_UNIFIED_IDEOGRAPHS:
+    case U_CJK_UNIFIED_IDEOGRAPHS_BLOCK:
         return loadTranslitFromCache((int)script, "Kanji-English"); 
 
-    case U_HALFWIDTH_AND_FULLWIDTH_FORMS:
+    case U_HALFWIDTH_AND_FULLWIDTH_FORMS_BLOCK:
         return loadTranslitFromCache((int)script, "Halfwidth-Latin"); 
 
 
-    case U_HANGUL_JAMO:
-    case U_HANGUL_SYLLABLES:
+    case U_HANGUL_JAMO_BLOCK:
+    case U_HANGUL_SYLLABLES_BLOCK:
         return loadTranslitFromCache((int)script, "Hangul-Jamo;Jamo-Latin"); 
 
 
@@ -148,9 +148,8 @@ U_CAPI void
 {
     int32_t len;
     UErrorCode status2 = U_ZERO_ERROR;
-    int32_t i;
     UTransliterator *myTrans;
-    UCharScript script;
+    UCharBlock scriptBlock;
     int srclen;
     FromUTransliteratorContext *ctx;
     UConverter *oC = NULL;
@@ -158,7 +157,6 @@ U_CAPI void
     int n = 0;
 
     UChar totrans[300];
-    UChar tmpbuf[300];
     
     ctx = (FromUTransliteratorContext*) context;
    
@@ -169,8 +167,8 @@ U_CAPI void
  
     *err = U_ZERO_ERROR; /* so that we get called in a loop */
 
-    script =  u_charScript(codePoint);
-    myTrans = getTransliteratorForScript(script);
+    scriptBlock =  u_charScript(codePoint);
+    myTrans = getTransliteratorForScript(scriptBlock);
 
     u_strncpy(totrans,codeUnits, length);
 
@@ -209,7 +207,7 @@ U_CAPI void
     while(fromUArgs->source < fromUArgs->sourceLimit)
     {
       /* TODO: UTF-16 support */
-        for(srclen=0; (fromUArgs->source+srclen)<fromUArgs->sourceLimit && u_charScript( fromUArgs->source[srclen] ) == script  ; srclen++);
+        for(srclen=0; (fromUArgs->source+srclen)<fromUArgs->sourceLimit && u_charScript( fromUArgs->source[srclen] ) == scriptBlock  ; srclen++);
        
         if(srclen > 0)
         {
@@ -241,7 +239,7 @@ U_CAPI void
 
           n = 0; /* reset */
         }
-        script = u_charScript(fromUArgs->source[srclen]);
+        scriptBlock = u_charScript(fromUArgs->source[srclen]);
 
         break;
     }
