@@ -8,6 +8,81 @@
 /* routines having to do with locales and trees */
 
 
+/* Is a locale supported by Locale Explorer? We use the presence of the 'helpPrefix' tag, to tell us */
+UBool isSupportedLocale(const char *locale, UBool includeChildren)
+{
+    UResourceBundle *newRB;
+    UErrorCode       status = U_ZERO_ERROR;
+    UBool           supp   = TRUE;
+
+    newRB = ures_open(FSWF_bundlePath(), locale, &status);
+
+    if(U_FAILURE(status))
+    {
+        supp = FALSE;
+    }
+    else
+    {
+        if(status == U_USING_DEFAULT_WARNING)
+        {
+            supp = FALSE;
+        }
+        else if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
+        {
+            supp = FALSE;
+        }
+        else
+        {
+            int32_t len;
+
+            status = U_ZERO_ERROR;
+            ures_getStringByKey(newRB, "helpPrefix", &len, &status);
+
+            if(status == U_USING_DEFAULT_WARNING)
+            {
+                supp = FALSE;
+            }
+            else
+            {
+                if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
+                {
+                    supp = FALSE;
+                }
+            }
+        }
+        ures_close(newRB);
+    }
+
+    return supp;
+}
+
+
+/* Is the locale experimental? It is if its version starts with 'x'. */
+UBool isExperimentalLocale(const char *locale)
+{
+    UResourceBundle *newRB;
+    UErrorCode       status = U_ZERO_ERROR;
+    UBool           supp   = FALSE;
+    int32_t len;
+
+    newRB = ures_open(NULL, locale, &status);
+    if(U_FAILURE(status) || (status == U_USING_FALLBACK_WARNING) || (status == U_USING_DEFAULT_WARNING)) {
+        supp = TRUE;
+    }
+    else
+    {
+        const UChar *s = ures_getStringByKey(newRB, "Version", &len, &status);
+      
+        if(*s == 0x0078) /* If it starts with an 'x'.. */
+            supp = TRUE;
+
+        ures_close(newRB);
+    }
+
+    return supp;
+}
+
+
 /* chooselocale --------------------------------------------------------------------------- */
 void chooseLocale(LXContext *lx, const char *qs, UBool toOpen, const char *current, const char *restored, UBool showAll)
 {
@@ -284,82 +359,6 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
         u_fprintf(lx->OUT, "&nbsp;</font>]");
     }
 }
-
-
-/* Is a locale supported by Locale Explorer? We use the presence of the 'helpPrefix' tag, to tell us */
-UBool isSupportedLocale(const char *locale, UBool includeChildren)
-{
-    UResourceBundle *newRB;
-    UErrorCode       status = U_ZERO_ERROR;
-    UBool           supp   = TRUE;
-
-    newRB = ures_open(FSWF_bundlePath(), locale, &status);
-
-    if(U_FAILURE(status))
-    {
-        supp = FALSE;
-    }
-    else
-    {
-        if(status == U_USING_DEFAULT_WARNING)
-        {
-            supp = FALSE;
-        }
-        else if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
-        {
-            supp = FALSE;
-        }
-        else
-        {
-            int32_t len;
-
-            status = U_ZERO_ERROR;
-            ures_getStringByKey(newRB, "helpPrefix", &len, &status);
-
-            if(status == U_USING_DEFAULT_WARNING)
-            {
-                supp = FALSE;
-            }
-            else
-            {
-                if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
-                {
-                    supp = FALSE;
-                }
-            }
-        }
-        ures_close(newRB);
-    }
-
-    return supp;
-}
-
-
-/* Is the locale experimental? It is if its version starts with 'x'. */
-UBool isExperimentalLocale(const char *locale)
-{
-    UResourceBundle *newRB;
-    UErrorCode       status = U_ZERO_ERROR;
-    UBool           supp   = FALSE;
-    int32_t len;
-
-    newRB = ures_open(NULL, locale, &status);
-    if(U_FAILURE(status) || (status == U_USING_FALLBACK_WARNING) || (status == U_USING_DEFAULT_WARNING)) {
-        supp = TRUE;
-    }
-    else
-    {
-        const UChar *s = ures_getStringByKey(newRB, "Version", &len, &status);
-      
-        if(*s == 0x0078) /* If it starts with an 'x'.. */
-            supp = TRUE;
-
-        ures_close(newRB);
-    }
-
-    return supp;
-}
-
 
 
 void setupLocaleTree(LXContext *lx)
