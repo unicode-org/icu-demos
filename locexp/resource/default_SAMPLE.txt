@@ -1,5 +1,5 @@
 // Generated copy of default.txt. Also look at 'en.txt'.
-// locexp default file. Generated from locexp.c on Fri Dec 10 12:39:18 PST 1999 on daphne
+// locexp default file. Generated from locexp.c on Thu Dec 16 15:12:00 PST 1999 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the DEFAULT.* source files and rebuild.
 

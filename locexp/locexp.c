@@ -1064,7 +1064,7 @@ void chooseConverter(const char *restored)
 
       /*      fprintf(stderr, "c%d] %s : ", i, name); */
       
-/*      for(j=0;U_SUCCESS(err);j++) */ j = 0; /* ?????? */
+      for(j=0;U_SUCCESS(err);j++)
 	{
 	  alias = ucnv_io_getAlias(name, j, &err);
 
