@@ -37,6 +37,7 @@ extern int srl_mode;
 #include "decompcb.h" /* from locexp/util */
 
 #define HAVE_KANGXI
+#define RADICAL_LIST
 #include <kangxi.h> /* Kang-Xi Radical mapping table */
 
 /* Protos */
@@ -353,39 +354,32 @@ main(int argc,
   printf("<BODY BGCOLOR=\"#FFFFFF\" link=\"green\" vlink=\"brown\">\r\n");
   
   printf("<table border=0><tr><td>"
-         "<!-- boink -->\r\n"
          "<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
-         "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n"
-         "<!-- /boink -->\r\n");
+         "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n");
+
 
 
   printf("<B>Encoding: %s.</B><BR>\r\n", pi);
 
-  printf("<!-- boink -->\r\n"
-         "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
-         "<!-- /boink -->\r\n");
+  printf("</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n");
+
 
   printf("<TABLE><TR><TD><FORM>Jump to Unicode block: (hex) <INPUT NAME=n VALUE=\"%04X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM></TD><TD><FORM><INPUT TYPE=SUBMIT NAME=n VALUE=\"Show All\"></FORM></TD></TR></TABLE>\r\n", block);
 
-  printf("<!-- boink -->\r\n"
-         "</td></tr></table>\r\n"
-         "</td></tr></table>\r\n"
-         "<!-- /boink -->\r\n");
+  printf("</td></tr></table>\r\n"
+         "</td></tr></table>\r\n");
 
   printf("</td></tr><tr><td>\r\n");
 
 
   if(mode == ETOP) /* top level list of blocks */
     {
-        printf("<!-- boink -->\r\n"
-               "<table border=0 cellpadding=0 cellspacing=0><tr><td bgcolor=\"#000000\">\r\n"
-               "<table border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\r\n"
-               "<!-- /boink -->\r\n");
+        printf("<table border=0 cellpadding=0 cellspacing=0><tr><td bgcolor=\"#000000\">\r\n"
+               "<table border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\r\n");
 
       printf("<b>Unicode Browser</b> - Click on a block to view it in more detail<br>\r\n");
-      printf("<!-- boink -->\r\n"
-             "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
-             "<!-- /boink -->\r\n");
+      printf("</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
+             );
 
       printf("<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
       for(n = 0;n<0x10;n++)
@@ -400,10 +394,10 @@ main(int argc,
 	}
       printf("<BR></TT>\r\n");
 
-      printf("<!-- boink -->\r\n"
+      printf(
              "</td></tr></table>\r\n"
              "</td></tr></table>\r\n"
-             "<!-- /boink -->\r\n");
+             );
 
       printf("\r\n</td></tr><tr><td align=right>\r\n");
       
@@ -607,9 +601,17 @@ main(int argc,
 	  printCharName(theChar);
 	  printf("</TD>");
 	  printf("<TD><FONT SIZE=-1>U+%04X</FONT>", theChar);
-          printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n",
+          
+          /*
+              -- this works but it's kind of RUDE. --
+              
+              printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n",
                  ((theChar&0xFF00)>>8),
                  theChar);
+
+#error you're rude
+          */
+
           printf("</TD></TR>");
 	}
       
@@ -712,8 +714,8 @@ main(int argc,
     }
   
 
-  printf("</td></tr></table>\r\n"
-         "<!-- /boink -->\r\n\r\n");
+  printf("</td></tr></table>\r\n\r\n");
+
 
 
   if(anyDecompose)
@@ -957,16 +959,15 @@ void showSearchMenu(UChar startFrom)
 {
   int32_t i;
 
-  printf("<!-- boink -->\r\n"
-         "<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
+  printf("<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
          "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n"
-         "<!-- boink -->\r\n");
+         "\r\n");
 
   printf("<b>Search</b><br>\r\n"
-         "<!-- boink -->\r\n"
+         "\r\n"
          "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
          "<table border=0><tr><td>\r\n"
-         "<!-- /boink -->\r\n");
+         "\r\n");
 
   printf("By Script: <FORM METHOD=GET>");
   printf("<SELECT NAME=scr>\r\n");
@@ -1006,7 +1007,7 @@ void showSearchMenu(UChar startFrom)
   printf("<A HREF=\"?radlst=1\">Radicals</A><P>");
 #endif
   
-  printf("<!-- boink -->\r\n"
+  printf("\r\n"
          "</td></tr></table>\r\n"
          "</td></tr></table>\r\n");
 
