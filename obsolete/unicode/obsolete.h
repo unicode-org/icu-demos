@@ -26,4 +26,22 @@
 #define U_OBSOLETE_API  U_IMPORT
 #endif
 
+#ifdef ICU_UERRORCODE_USE_DEPRECATES
+
+/* These UErrorCode constants were renamed to ones with a _WARNING suffix. (from utypes.h) */
+enum {
+    /** @obsolete ICU 2.4. Use the enum that ends in _WARNING instead since this API will be removed in that release. */
+    U_USING_FALLBACK_ERROR    = -128,
+    /** @obsolete ICU 2.4. Use the enum that ends in _WARNING instead since this API will be removed in that release. */
+    U_ERROR_INFO_START        = U_ERROR_WARNING_START,
+    /** @obsolete ICU 2.4. Use the enum that ends in _WARNING instead since this API will be removed in that release. */
+    U_USING_DEFAULT_ERROR     = -127,
+    /** @obsolete ICU 2.4. Use the enum that ends in _WARNING instead since this API will be removed in that release. */
+    U_SAFECLONE_ALLOCATED_ERROR = -126,
+    /** @obsolete ICU 2.4. Use the enum that ends in _WARNING instead since this API will be removed in that release. */
+    U_ERROR_INFO_LIMIT        = U_ERROR_WARNING_LIMIT,
+};
+
+#endif /* ICU_UERRORCODE_USE_DEPRECATES */
+
 #endif

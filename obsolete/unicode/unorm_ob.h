@@ -59,6 +59,13 @@ enum {
   UCOL_DECOMP_COMPAT_COMP_CAN =5
 };
 
+/**
+ * The function u_normalize() has been renamed to unorm_normalize()
+ * for consistency. The old name is obsolete.
+ * @obsolete ICU 2.2. Use unorm_normalize instead since this API will be removed in that release.
+ */
+#define u_normalize unorm_normalize
+
 #endif /* ICU_UNORM_USE_DEPRECATES */
 
 #endif
