@@ -475,14 +475,6 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
   
     s = ures_getStringByKey(rb, key, &rulesLen, &status);
 
-#if defined (LX_UBROWSE_PATH)
-    u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"%s\">\n", LX_UBROWSE_PATH);
-    u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=GO><INPUT TYPE=hidden NAME=us VALUE=\"%S\"><input type=hidden name=gosetn value=\"\">\n", s);
-    u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"" LDATA_PATH "explore.gif\"  ALIGN=RIGHT   ");
-    u_fprintf(lx->OUT, " VALUE=\"%S\"></FORM>",
-              FSWF("exploreTitle", "Explore"));
-    u_fprintf(lx->OUT, "</FORM>");
-#endif
     
     uset = uset_openPattern(s, rulesLen, &status);
 
@@ -495,6 +487,14 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
         return;
     }
 
+#if defined (LX_UBROWSE_PATH)
+    u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"%s\">\n", LX_UBROWSE_PATH);
+    u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=GO><INPUT TYPE=hidden NAME=us VALUE=\"%S\"><input type=hidden name=gosetn value=\"\">\n", s);
+    u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"" LDATA_PATH "explore.gif\"  ALIGN=RIGHT   ");
+    u_fprintf(lx->OUT, " VALUE=\"%S\"></FORM>",
+              FSWF("exploreTitle", "Explore"));
+    u_fprintf(lx->OUT, "</FORM>");
+#endif
     setLen = uset_size(uset);
 
     if( (rulesLen > kShowUnicodeSetCutoffSize ) ||
