@@ -480,8 +480,6 @@ static void printConverterInfo(UErrorCode *status) {
     }
     printf("</td></tr>\n");
 
-    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-
     if (ucnv_getType(cnv) == UCNV_MBCS) {
         UErrorCode myStatus = U_ZERO_ERROR;
         printf("<tr><th>Starter bytes</th><td class=\"value\">");
@@ -499,7 +497,9 @@ static void printConverterInfo(UErrorCode *status) {
         printf("</td></tr>\n");
     }
 
+    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
     printf("<tr><th>Is converter ambiguous?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+
     ambiguousAlias = containsAmbiguousAliases();
     printf("<tr><th>Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
     if (ambiguousAlias) {
