@@ -371,7 +371,7 @@ void displayLocaleExplorer(LXContext *lx)
 #endif
     
     if(!strcmp(lx->dispLocale,"klingon"))
-        u_fprintf(lx->OUT, "<p>Thank you for using the ICU LocaleExplorer, from %s compiled %s %s %s<p>\r\n", LXHOSTNAME, __DATE__, __TIME__, LXHOST);
+        u_fprintf(lx->OUT, "<p>Thank you for using the ICU LocaleExplorer, from %s compiled %s on %s<p>\r\n", LXHOSTNAME, lx_version(), LXHOST);
     
     u_fprintf(lx->OUT, "</body></html>\r\n");
     

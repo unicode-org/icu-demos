@@ -96,6 +96,7 @@ typedef struct
 
   /* ============= SELECTED LOCALE */
   UResourceBundle *curRB;            /* RB in the current locale */ 
+  UResourceBundle *colRB;            /* collation RB in the current locale */ 
 
   MySortable      *curLocale;     /* Current locale */
   MySortable      *parLocale;     /* Parent locale of current */
@@ -148,6 +149,8 @@ static const char   G7s[G7COUNT][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr
 /********************* prototypes ***************************/
 /********************* prototypes ***************************/
 /********************* prototypes ***************************/
+
+extern const char *lx_version();
 
 /**
  * dump out a file that's ina  resource bundle
@@ -263,6 +266,7 @@ extern void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char 
 
 /* get bundle for current locale */
 extern UResourceBundle *getCurrentBundle(LXContext* lx, UErrorCode *status);
+extern UResourceBundle *getCollationBundle(LXContext* lx, UErrorCode *status);
 /* get bundle for display locale */
 extern UResourceBundle *getDisplayBundle(LXContext* lx, UErrorCode *status);
 

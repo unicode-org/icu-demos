@@ -36,7 +36,7 @@ CLEANFILES = *~
 ## Target information
 TARGET = locexp
 
-LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o lxbrk.o lxcgi.o
+LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o lxbrk.o lxcgi.o version.o
 CGIOBJ = cgimain.o
 # FCGIOBJ = fcgimain.o
 OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)

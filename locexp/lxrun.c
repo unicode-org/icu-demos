@@ -384,6 +384,25 @@ void runLocaleExplorer(LXContext *lx)
 #endif
 }    
 
+UResourceBundle *getCollationBundle(LXContext *lx, UErrorCode *status) 
+{
+    if(U_FAILURE(*status)) {
+        return NULL;
+    }
+
+    if(lx->curRB) {
+        return(lx->curRB); 
+    }
+
+    if(!*(lx->curLocaleName)) {
+        /* illegal arg */
+        return NULL;
+    }
+    lx->curRB = ures_open(U_ICUDATA_NAME "/coll", lx->curLocaleName, status);
+
+    return lx->curRB;
+}
+
 UResourceBundle *getCurrentBundle(LXContext *lx, UErrorCode *status) 
 {
     if(U_FAILURE(*status)) {

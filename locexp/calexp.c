@@ -117,7 +117,7 @@ void printCalendar( LXContext *lx, UCalendar *cal )
 
       unum_format(nfmt, day, buf, BUF_SIZE,0,&status);
       u_fprintf(lx->OUT, " <td %s>%U</td>",
-                (day==day1)?"bgcolor=\"00DDFF\"":"", /* current day */
+                (day==day1)?"bgcolor=\"#00DDFF\"":"", /* current day */
                 buf);
       
       ++current;

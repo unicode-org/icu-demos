@@ -938,15 +938,17 @@ void showSort(LXContext *lx, const char *locale)
       UResourceBundle *bund, *array = NULL;
       const UChar *s = 0;
       int32_t len;
+	const char *comp="?";
 
-      bund = getCurrentBundle(lx, &err);
-      if(bund) array = ures_getByKey(bund, "CollationElements", NULL, &err);
-      if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);
+      bund = getCollationBundle(lx, &err); if(U_SUCCESS(err)) comp = "bundle";
+      if(bund) array = ures_getByKey(bund, "collations", NULL, &err); if(U_SUCCESS(err)) comp = "collations";
+      if(array) array = ures_getByKey(array, "standard", NULL, &err);  if(U_SUCCESS(err)) comp = "standard";
+      if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);  if(U_SUCCESS(err)) comp = "Sequence";
       if(U_SUCCESS(err) && s && *s) {
         u_fprintf(lx->OUT, "# %s.txt Rules\r\n\r\n", lx->curLocaleName, queryField(lx,"usortRulesLocale"));
         printRuleString(lx,s);
       } else { 
-        u_fprintf(lx->OUT, "# err %s\r\n", u_errorName(err));
+        u_fprintf(lx->OUT, "# err %s - failed after %s\r\n", u_errorName(err), comp);
         if(err == U_USING_DEFAULT_WARNING) {
           u_fprintf(lx->OUT, "# ( problem loading Root (UCA) rules \n");
         }
