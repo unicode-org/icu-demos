@@ -20,6 +20,18 @@ TARGET = dumpdat
 
 OBJECTS = dumpdat.o
 
+# enable the following if you have some kind of readline function
+#####
+#CPPFLAGS += -DHAVE_READLINE -I/sw/include
+#LDFLAGS += -L/sw/lib -lreadline 
+#####
+
+# Enable the following if you have dlopen()
+#####
+#CPPFLAGS += -DHAVE_DL -I/sw/include
+#LDFLAGS += -L/sw/lib -ldl -bind_at_load
+####
+
 ## List of standard targets
 all: all-local
 install: install-local
