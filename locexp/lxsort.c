@@ -318,6 +318,8 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
       sampleStatus = U_ZERO_ERROR;
       aBundle = ures_open(NULL, locale, &sampleStatus);
 
+      someText[0] =0 ;
+
       if(U_SUCCESS(sampleStatus)) {
         appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "DayNames", 7);
         appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "MonthNames", 12);
