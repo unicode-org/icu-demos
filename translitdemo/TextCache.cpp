@@ -9,8 +9,9 @@
 #include "util.h"
 
 #define INDEX_FILENAME "index"
+#define LOCK_FILENAME "lock"
 
-TextCache::TextCache(const char* path) {
+TextCache::TextCache(const char* path) : lockCount(0) {
     root = new char[4+strlen(path)]; // 1 for zero byte, 3 for extra stuff
     strcpy(root, path);
     if (root[strlen(root)-1] != '/') {
@@ -18,19 +19,26 @@ TextCache::TextCache(const char* path) {
     }
     mkdir(root, 0777);
 
+    lockPath = new char[8+strlen(root)];
+    strcpy(lockPath, root);
+    strcat(lockPath, LOCK_FILENAME);
+
     hash.setValueDeleter(deleteCacheObj);
 
     readIndex();
 }
 
 TextCache::~TextCache() {
+    releaseLock(true);
     delete[] root;
+    delete[] lockPath;
 }
 
 void TextCache::readIndex() {
     char path[256];
     strcpy(path, root);
     strcat(path, INDEX_FILENAME);
+    acquireLock();
     FILE *indexFile = fopen(path, "rb");
     if (indexFile != NULL) {
         UErrorCode status = U_ZERO_ERROR;
@@ -67,12 +75,14 @@ void TextCache::readIndex() {
         }
         fclose(indexFile);
     }
+    releaseLock();
 }
 
 UBool TextCache::writeIndex() {
     char path[256];
     strcpy(path, root);
     strcat(path, INDEX_FILENAME);
+    acquireLock();
     FILE *indexFile = fopen(path, "w+b");
     UBool success = TRUE;
     if (indexFile == NULL) {
@@ -93,6 +103,7 @@ UBool TextCache::writeIndex() {
         success &= util_writeTo(indexFile, empty); // empty string is end mark
         fclose(indexFile);
     }
+    releaseLock();
     return success;
 }
 
@@ -121,7 +132,9 @@ UBool TextCache::put(const UnicodeString& key, const UnicodeString& value) {
     }
     obj->isLoaded = TRUE;
     obj->text = value;
+    acquireLock();
     UBool result = obj->save(root);
+    releaseLock();
     if (doUpdateIndex) {
         result &= writeIndex();
     }
@@ -133,7 +146,10 @@ UBool TextCache::get(const UnicodeString& key, UnicodeString& value) {
     if (obj == 0) {
         return FALSE;
     }
-    if (!obj->load(root)) {
+    acquireLock();
+    UBool loadOk = obj->load(root);
+    releaseLock();
+    if (!loadOk) {
         return FALSE;
     }
     value = obj->text;
@@ -146,7 +162,9 @@ void TextCache::remove(const UnicodeString& key) {
         char path[256];
         strcpy(path, root);
         strcat(path, obj->filename);
+        acquireLock();
         unlink(path);
+        releaseLock();
         hash.remove(key);
         writeIndex();
     }
@@ -203,11 +221,9 @@ void TextCache::CacheObj::generateFilename(const char* root) {
         for (pos=0; pos<4; ++pos) {
             p[pos] = FILENAMECHARS[code[pos]];
         }
-        FILE* file = fopen(path, "r");
-        if (file == NULL) {
+        if (!fileExists(path)) {
             break;
         }
-        fclose(file);
         for (pos=3; pos>=0; --pos) {
             ++code[pos];
             if (code[pos] < 36) break;
@@ -221,3 +237,36 @@ void TextCache::deleteCacheObj(void* o) {
     delete (CacheObj*) o;
 }
 
+void TextCache::acquireLock() {
+    if (lockCount) {
+        ++lockCount;
+    } else {
+        while (fileExists(lockPath)) {
+            sleep(1); // 1 second
+        }
+        FILE* file = fopen(lockPath, "w");
+        if (file != NULL) {
+            fclose(file);
+        }
+        ++lockCount;
+    }
+}
+
+void TextCache::releaseLock(bool allTheWay) {
+    if (lockCount > 0) {
+        --lockCount;
+        if (allTheWay || lockCount == 0) {
+            unlink(lockPath);
+        }
+    }
+}
+
+bool TextCache::fileExists(const char* fullpath) {
+    bool result = false;
+    FILE* file = fopen(fullpath, "r");
+    if (file != NULL) {
+        result = true;
+        fclose(file);
+    }
+    return result;
+}

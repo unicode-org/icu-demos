@@ -37,6 +37,23 @@ class TextCache {
 
  private:
 
+    // Multiple process contention is handled in a simple-minded
+    // fashion with a lock file.  The semantics of acquire and
+    // release are that they must be balanced.  A call to acquire
+    // where the lock is already held simply increments the lockCount
+    // and returns.
+    // LOCKING IS FOR BETWEEN DIFFERENT PROCESSES, NOT multiple
+    // threads within one process.
+    // TODO: Add timeout param?
+    int32_t lockCount;
+    char* lockPath;
+    void acquireLock();
+    // @param allTheWay if true, automatically balance ALL previous
+    // calls to acquireLock (delete the lock file)
+    void releaseLock(bool allTheWay=false);
+
+    static bool fileExists(const char* fullpath);
+
     static void deleteCacheObj(void* o);
 
     void readIndex();
@@ -54,6 +71,7 @@ class TextCache {
         UBool save(const char* root);
         void generateFilename(const char* root);
     };
+    friend class CacheObj;
 
     char* root; // path supplied to ct (owned copy)
 
