@@ -217,5 +217,25 @@ U_CAPI void FSWF_setBundlePath(char *newPath);
 U_CAPI
 void lx_setHTMLFilterOnTransliterator(UTransliterator *xlit, UBool doFilter);
 
+/** UUSet, a mutant C api to UnicodeSet **/
+
+typedef void *UUSet;
+
+U_CAPI UUSet* U_EXPORT2 
+uuset_openPattern(const UChar* pattern, UErrorCode* status);
+
+U_CAPI int32_t U_EXPORT2 
+uuset_size(UUSet *_this);
+
+U_CAPI UChar32 U_EXPORT2 
+uuset_charAt(UUSet *_this, int32_t index);
+
+U_CAPI UBool U_EXPORT2 
+uuset_contains(UUSet *_this, UChar32 c);
+
+U_CAPI void U_EXPORT2
+uuset_close(UUSet *_this);
+
+
 #endif
 
