@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -19,6 +19,10 @@
 *
 *   This code works only if compiled and run with an ASCII-based charset!
 */
+
+#ifndef ICU_URL
+# define ICU_URL "http://ibm.com/software/globalization/icu"
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,8 +45,8 @@ static const char *htmlHeader=
     "<title>Normalization Browser</title>\n"
     "</head>\n"
     "<body>\n"
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;<br>\n"
+    "<a href=\"" ICU_URL "\">ICU</a> &gt;\n"
+    "<a href=\"" ICU_URL "/chartsdemostools.jsp\">Demo</a> &gt;<br>\n"
     "<h1>Normalization Browser</h1>\n";
 
 static const char *htmlFooter=
@@ -110,7 +114,7 @@ static const char *qcNames[]={ "NO", "YES", "MAYBE" };
 
 static const char *versions=
     "<p>Unicode version %s &mdash; "
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> %s</p>\n";
+    "<a href=\"" ICU_URL "\">ICU</a> %s</p>\n";
 
 static void
 printString(const UChar *s, int32_t length) {

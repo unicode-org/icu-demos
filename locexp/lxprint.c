@@ -279,7 +279,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "<tr><td></td><td></td>");
     u_fprintf(lx->OUT, "<td align=right rowspan=3>\r\n"); /* ====== begin right hand thingy ======== */
 
-    u_fprintf(lx->OUT, "<a href=\"http://oss.software.ibm.com/icu/\"><i>%S</i> %S</a><br>",
+    u_fprintf(lx->OUT, "<a href=\"" ICU_URL "\"><i>%S</i> %S</a><br>",
               FSWF("poweredby", "Powered by"),
               FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION) );
 
@@ -375,10 +375,11 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, " &nbsp; ");
 
     if(lx->curLocaleName[0]) {
+#if defined(ICU_HAVE_WEBCVS)
       u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%S</A>", 
                 lx->curLocaleBlob.base,
                 FSWF("sourceFile", "View Locale Source"));
-     
+#endif      
       if(!isExperimentalLocale(lx->curLocaleName) && !lx->noBug) {
         u_fprintf(lx->OUT, " &nbsp; ");
         u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/%s/%s.xml\">%S</A>", 

@@ -106,7 +106,7 @@ void writeFileObject( LXContext *lx, const char *path )
            (thePath==NULL)?"NULL":thePath,
            path);
     fprintf(lx->fOUT, "Error: %s\n", u_errorName(status));
-    fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+    fprintf(lx->fOUT, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
     return;
   }
 
@@ -158,7 +158,7 @@ void writeFileObject( LXContext *lx, const char *path )
              lx->dispLocale,
            (thePath==NULL)?"NULL":thePath);
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
-      fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+      fprintf(lx->fOUT, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
       return;
     }
 
@@ -172,7 +172,7 @@ void writeFileObject( LXContext *lx, const char *path )
              lx->dispLocale,
              u_getDataDirectory());
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
-      fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+      fprintf(lx->fOUT, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
       return ;
     }
     /* whew! */

@@ -235,7 +235,7 @@ static const char endTable[]="</table>";
 
 static const char versions[]=
     "<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0\">Powered by "
-    "<a href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a> %s</p><br />\n";
+    "<a href=\"//www.ibm.com/software/globalization/icu\">ICU</a> %s</p><br />\n";
 
 static void printOptions(UErrorCode *status) {
     int32_t i;

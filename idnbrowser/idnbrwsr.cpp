@@ -54,8 +54,8 @@ static const char *htmlHeader=
     " 1px solid  blue; border-right: 1px solid blue}.word {background-color:#DDFFFF}.num"
     " {background-color:#FFDDFF} body  {font-size: 12pt}\n"
     "</style>\n"
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;<br><hr>\n"
+    "<a href=\"http://ibm.com/software/globalization/icu\">ICU</a> &gt;\n"
+    "<a href=\"http://ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a> &gt;<br><hr>\n"
     "<h1>IDNA Demo</h1>\n";
 
 static const char *htmlFooter=
@@ -87,8 +87,8 @@ static const char *helpText=
     " You can also copy some interesting Unicode text samples from the following pages:\n"
     " <ul>\n"
     " 	<li><a href=\"http://www.unicode.org/standard/WhatIsUnicode.html\">What is Unicode? </a> </li>\n"
-    "	<li><a href=\"http://oss.software.ibm.com/cgi-bin/icu/ub\">Unicode Browser </a></li>\n"
-    "<li><a href=\"http://oss.software.ibm.com/cgi-bin/icu/lx\">Locale Explorer </a></li>\n"
+    "	<li><a href=\"/software/globalization/icu/demo/unicode\">Unicode Browser </a></li>\n"
+    "<li><a href=\"/software/globalization/icu/demo/locales\">Locale Explorer </a></li>\n"
     " </ul>\n" 
     "<hr>";
 
@@ -128,7 +128,7 @@ static const char *modeNames[]={ "(null)", "(None)", "ToASCII(input)", "ToUnicod
 
 static const char *versions=
     "<p>Unicode version used by IDNA %s &mdash; "
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> %s</p>\n";
+    "<a href=\"http://ibm.com/software/globalization/icu/\">ICU</a> %s</p>\n";
 
 static const char *samples[] = { "www.&#x65E5;&#x672C;&#x5E73;.jp","www.&#x30CF;&#x30F3;&#x30C9;&#x30DC;&#x30FC;&#x30EB;&#x30B5;&#x30E0;&#x30BA;.com","www.f&#x00E4;rgbolaget.nu","www.b&#x00FC;cher.de","www.br&#x00E6;ndendek&#x00E6;rlighed.com","www.r&#x00E4;ksm&#x00F6;rg&#x00E5;s.se",  "www.&#xC608;&#xBE44;&#xAD50;&#xC0AC;.com", "&#x7406;&#x5BB9;&#x30CA;&#x30AB;&#x30E0;&#x30E9;.com", "&#x3042;&#x30FC;&#x308B;&#x3044;&#x3093;.com", "www.f&#xE4;rjestadsbk.net", "www.m&#xE4;kitorppa.com", NULL };
 

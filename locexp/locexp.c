@@ -58,7 +58,7 @@ void displayLocaleExplorer(LXContext *lx)
     uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
     u_fprintf(lx->OUT,"<html lang=\"%s\">", langName);
     
-    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer %s \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->\r\n",
+    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer %s \r\n  " ICU_URL "  \r\n\r\n-->\r\n",
               U_COPYRIGHT_STRING);
     
     u_fprintf(lx->OUT, "<head><title>");

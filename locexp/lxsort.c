@@ -996,7 +996,7 @@ void showSort(LXContext *lx, const char *locale)
 
   u_fprintf(lx->OUT, "<P>\r\n");
   u_fprintf(lx->OUT, "%S\r\n",  FSWF(/*NOEXTRACT*/"sortHelp",""));
-  u_fprintf(lx->OUT, "%S <a href=\"http://oss.software.ibm.com/icu/userguide/Collate_Intro.html\">%S</a><p>\r\n",
+  u_fprintf(lx->OUT, "%S <a href=\"http://icu.sourceforge.net/userguide/Collate_Intro.html\">%S</a><p>\r\n",
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
             FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));
 

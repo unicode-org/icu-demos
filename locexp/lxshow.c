@@ -1517,7 +1517,9 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
                 u_fprintf(lx->OUT, "<td><b>");
                 if(h == 0)
                 {
+#if defined(ICU_HAVE_WEBCVS)
                     u_fprintf(lx->OUT, "<a target=lx_tz href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/docs/tz.htm?content-type=text/html\">");
+#endif
                 }
                 u_fprintf(lx->OUT,"%S", desc[h]);
                 if(h == 0)

@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-* Copyright (C) 1996-2004, International Business Machines Corporation and    *
+* Copyright (C) 1996-2005, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 *******************************************************************************
 * HTML Design by Josh Mast <josh@hivehaus.org>                                *
@@ -19,6 +19,11 @@
 *   06/16/2001  srl         More design updates.. added incremental search by name.
 *******************************************************************************
 */
+
+#ifndef ICU_URL
+# define ICU_URL "http://ibm.com/software/globalization/icu"
+#endif
+
 
 /*
    Short list of todo's:
@@ -882,8 +887,8 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
 
   u_fprintf(gOut, "<body bgcolor=\"#FFFFFF\" link=\"#00AA00\" vlink=\"#884400\">\n");
 
-  u_fprintf(gOut, "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
-         "<a href=\"/icu/demo/\">Demo</a> &gt;\n"
+  u_fprintf(gOut, "<a href=\"" ICU_URL "\">ICU</a> &gt;\n"
+         "<a href=\"" ICU_URL "/chartsdemostools.jsp\">Demo</a> &gt;\n"
          "<b>Unicode Browser</b><BR>\n");
 
   u_fprintf(gOut, "<FORM ACTION=\"%s\"><table summary=\"Navigation Control\" border=1 cellpadding=1 cellspacing=1><tr>", getenv("SCRIPT_NAME"));
@@ -1269,7 +1274,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
   }
   u_fprintf(gOut, "</a>\n");
 
-  u_fprintf(gOut, "<BR>Powered by <a href=\"http://oss.software.ibm.com/icu/\">ICU %s</a>\n", U_ICU_VERSION);
+  u_fprintf(gOut, "<BR>Powered by <a href=\"" ICU_URL "\">ICU %s</a>\n", U_ICU_VERSION);
   
   u_fprintf(gOut, "</BODY><!-- SFCBugibba design 12 ta' Mejju 2001 --></HTML>\n");
 
