@@ -21,19 +21,6 @@ char* util_createChars(const UnicodeString& str) {
 }
 
 /**
- * Send the given UnicodeString to 'out' using ENCODING.
- */
-UBool util_fprintf(FILE* out, const UnicodeString& str) {
-    char* charBuf = util_createChars(str);
-    if (charBuf == 0) {
-        return FALSE;
-    }
-    fprintf(out, "%s", charBuf);
-    delete[] charBuf;
-    return TRUE;
-}
-
-/**
  * Write the given bytes out to the given file.  The
  * inverse of this operation is util_readFrom().
  */
@@ -120,4 +107,49 @@ void util_escapeJavaScriptString(UnicodeString& str) {
             i += 2;
         }
     }
+}
+
+/**
+ * Write the given string to the given FILE*, escaping certain
+ * characters assuming we are within a JavaScript double quoted string
+ * if inQuote is true.
+ */
+void util_fprintf(FILE* out, const char* str, UBool inQuote) {
+    if (!inQuote) {
+        fprintf(out, "%s", str);
+        return;
+    }
+    int32_t i;
+    int32_t n = strlen(str);
+    for (i=0; i<n; ++i) {
+        int32_t c=-1;
+        switch (str[i]) {
+        case 0x0008: c=0x0062 /*b*/; break;
+        case 0x0009: c=0x0074 /*t*/; break;
+        case 0x000A: c=0x006E /*n*/; break;
+        case 0x000C: c=0x0066 /*f*/; break;
+        case 0x000D: c=0x0072 /*r*/; break;
+        case 0x0022: c=0x0022 /*"*/; break;
+        case 0x0027: c=0x0027 /*'*/; break;
+        case 0x005C: c=0x005C /*\*/; break;
+        }
+        if (c>=0) {
+            fprintf(out, "\\%c", (char)c);
+        } else {
+            fprintf(out, "%c", str[i]);
+        }
+    }
+}
+
+/**
+ * Send the given UnicodeString to 'out' using ENCODING.
+ */
+UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote) {
+    char* charBuf = util_createChars(str);
+    if (charBuf == 0) {
+        return FALSE;
+    }
+    util_fprintf(out, charBuf, inQuote);
+    delete[] charBuf;
+    return TRUE;
 }

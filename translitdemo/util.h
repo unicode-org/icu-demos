@@ -17,11 +17,6 @@ class UnicodeString;
 char* util_createChars(const UnicodeString& str);
 
 /**
- * Send the given UnicodeString to 'out' using ENCODING.
- */
-UBool util_fprintf(FILE* out, const UnicodeString& str);
-
-/**
  * Write the given bytes out to the given file.  The
  * inverse of this operation is util_readFrom().
  */
@@ -49,5 +44,19 @@ UBool util_readFrom(FILE* file, UnicodeString& key);
  * function recovers the original string.  Modifies the string in place.
  */
 void util_escapeJavaScriptString(UnicodeString& str);
+
+/**
+ * Write the given string to the given FILE*, escaping certain
+ * characters assuming we are within a JavaScript double quoted string
+ * if inQuote is true.
+ */
+void util_fprintf(FILE* out, const char* str, UBool inQuote);
+
+/**
+ * Write the given string to the given FILE*, using ENCODING, escaping
+ * certain characters assuming we are within a JavaScript double
+ * quoted string if inQuote is true.
+ */
+UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote=FALSE);
 
 #endif
