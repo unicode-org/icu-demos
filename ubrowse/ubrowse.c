@@ -376,7 +376,7 @@ UBool myEnumCharNamesFn(void *context,
 void printIconMenu(const char *alt, const char *name, ESearchMode target, ESearchMode current)
 {
   u_fprintf(gOut, "<input TYPE=image "
-         " border=0 width=16 height=16 "
+         " border=0 width=32 height=32 "
          "alt=\"%s%s%s\" value=\"%s%s%s\" "
          "name=\"%s\" "
          "src=\"/icu/demo/ubrowse.d/%s%s.gif\" "
