@@ -145,7 +145,8 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
 void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *sampleString, const char *key);
 void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 void showExploreCloseButton(const char *locale, const char *frag);
-void showExploreCalendar( LXContext *lx, const char *qs);
+void showExploreCalendar( LXContext *lx, const char *qs); /* in calexp.c */
+void showExploreSearch( LXContext *lx, const char *qs);   /* in srchexp.c */
 void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale);
 
 
@@ -1077,9 +1078,9 @@ void printStatusTable()
     /* PrintHelpTag */
     u_fprintf(lx->OUT, "%U",   FSWF("statusTableHeader", "Your settings:"));
 
-    if(lx->inDemo == FALSE)
+    if(!lx->inDemo)
     {
-      u_fprintf(lx->OUT, "%U",   FSWF("statusTableHeaderChange", "(click to change)"));
+      u_fprintf(lx->OUT, " %U",   FSWF("statusTableHeaderChange", "(click to change)"));
     }
 
     /* /PrintHelpTag */
@@ -1936,6 +1937,8 @@ void listBundles(char *b)
       u_fprintf(lx->OUT, "%U</A>\r\n",
                 FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
+      u_fprintf(lx->OUT, "<LI><A HREF=\"?_=root&EXPLORE_search=\">%U</A>\r\n",
+		FSWF("explore_search", "Search"));
 
 #ifdef LX_HAVE_XLITOMATIC
       u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%U</A>\r\n",
@@ -2054,6 +2057,10 @@ void listBundles(char *b)
     {
       showExploreCalendar(lx, b);
     }
+  else if (strstr(b, "EXPLORE_search"))
+    {
+      showExploreSearch(lx, b);
+    }
   else if (strstr(b, "EXPLORE_CollationElements"))
     {
       showKeyAndStartItem("EXPLORE_CollationElements", 
@@ -2062,12 +2069,6 @@ void listBundles(char *b)
                           FALSE,
 			  U_ZERO_ERROR);
 
-#if 0
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#usort\"><IMG border=0 width=16 height=16 SRC=\"../_/c.gif\" ALT=\"\"> %U</A>\r\n",
-		locale,
-		FSWF("usortHide", "Hide this example"));
-#endif
-      
       u_fprintf(lx->OUT, "%U<P>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
       showSort(lx, locale, b);
       
@@ -2076,19 +2077,6 @@ void listBundles(char *b)
       u_fprintf(lx->OUT, "<TD VALIGN=TOP ALIGN=RIGHT>");
       printHelpTag("EXPLORE_CollationElements", NULL);
       u_fprintf(lx->OUT, "</TD>");
-
-#if 0
-      if(!strstr(usort))
-	{
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&usort&x#usort\"><IMG border=0 width=16 height=16 SRC=\"../_/closed.gif\" ALT=\"\"> %U</A>\r\n",
-		    locale,
-		    FSWF("usortShow", "Show this example"));
-	  
-	  
-	  u_fprintf(lx->OUT, "<BR>%U</TD>",
-		    FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
-	}
-#endif
 
       showKeyAndEndItem("EXPLORE_CollationElements", locale);
     }
@@ -3197,8 +3185,10 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
   UErrorCode firstStatus;
   const UChar *s  = 0;
   int32_t    len;
+  int32_t   firstDayOfWeek, minimalDaysInFirstWeek;
   UResourceBundle *array = NULL, *item = NULL;
 
+    
   const char *key = "DateTimeElements";
   /*
     0: first day of the week 
@@ -3209,7 +3199,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
   array = ures_getByKey(rb, key, array, &status);
   item  = ures_getByIndex(array, 0, item, &status);
-  s     = ures_getString(item, &len, &status);
+  firstDayOfWeek     = ures_getInt(item, &status);
 
   showKeyAndStartItem(key, FSWF("DateTimeElements","Date and Time Options"), locale, FALSE, status);
 
@@ -3219,11 +3209,11 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
   if(U_SUCCESS(status))
     {
-      int32_t  firstDay;
+      int32_t  firstDayIndex;
 
-      firstDay = (((s[0] & 0x000F)+6)%7); /* REVISIT: parse */
+      firstDayIndex = (((firstDayOfWeek)+6)%7); 
       
-      u_fprintf(lx->OUT, " %U \r\n", s);
+      u_fprintf(lx->OUT, " %d \r\n", firstDayOfWeek);
       /* here's something fun: try to fetch that day from the user's current locale */
       status = U_ZERO_ERROR;
       
@@ -3231,7 +3221,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 	{
           /* don't use 'array' here because it's the DTE resource */
           item = ures_getByKey(lx->defaultRB, "DayNames", item, &status);
-          item = ures_getByIndex(item, firstDay, item, &status);
+          item = ures_getByIndex(item, firstDayIndex, item, &status);
           s    = ures_getString(item, &len, &status);
             
 	  if(s && U_SUCCESS(status))
@@ -3241,7 +3231,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 	  status = U_ZERO_ERROR;
 
           item = ures_getByKey(rb, "DayNames", item, &status);
-          item = ures_getByIndex(item, firstDay, item, &status);
+          item = ures_getByIndex(item, firstDayIndex, item, &status);
           s    = ures_getString(item, &len, &status);
 
 	  if(s && U_SUCCESS(status))
@@ -3267,13 +3257,13 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
   
   status = U_ZERO_ERROR;
 
-  item = ures_getByIndex(array, 1, item, &status);
-  s = ures_getString(item, &len, &status);
+  item  = ures_getByIndex(array, 1, item, &status);
+  minimalDaysInFirstWeek     = ures_getInt(item, &status);
 
   firstStatus = status;
   
   if(U_SUCCESS(status))
-    u_fprintf(lx->OUT, " %U \r\n", s);
+    u_fprintf(lx->OUT, " %d \r\n", minimalDaysInFirstWeek);
   else
     {
       explainStatus_X(status, key);
