@@ -21,7 +21,7 @@ ICU_CONFIG=icu-config
 ICU_INC=$(shell $(ICU_CONFIG) --incfile)
 BINDIR=$(shell $(ICU_CONFIG) --bindir)
 
-# Must find uhash.h
+# Must find uhash.h and hash.h
 ICU_COMMON_HEADERS=../../icu/source/common
 ###########################################
 
@@ -33,21 +33,20 @@ TARGET=translit
 
 # All object files (C or C++)
 #OBJECTS=TemplateCGI.o TransliteratorCGI.o getcgi.o main.o util.o \
-#uhash.o TextCache.o
+# TextCache.o
 
 OBJECTS +=TemplateCGI.o
 OBJECTS += TransliteratorCGI.o
 OBJECTS += getcgi.o
 OBJECTS +=  main.o
 OBJECTS += util.o 
-#OBJECTS += uhash.o
 OBJECTS +=  TextCache.o
 
 CPPFLAGS += -I$(ICU_COMMON_HEADERS)
 
 CLEANFILES=*~ $(TARGET).out
 
-all: $(ICU_COMMON_HEADERS)/uhash.h $(TARGET)
+all: $(ICU_COMMON_HEADERS)/hash.h $(ICU_COMMON_HEADERS)/uhash.h $(TARGET)
 
 
 .PHONY: all clean distclean check report
@@ -77,6 +76,11 @@ install: all
 $(ICU_INC):
 	@echo "Please read the directions at the top of this file (Makefile)"
 	@echo "Can't open $(ICU_INC)"
+	@false
+
+$(ICU_COMMON_HEADERS)/hash.h:
+	@echo "Need to find hash.h, was not found in $(ICU_COMMON_HEADERS)"
+	@echo "Please change ICU_COMMON_HEADERS in this makefile."
 	@false
 
 $(ICU_COMMON_HEADERS)/uhash.h:
