@@ -20,7 +20,6 @@ LXOPTIONS = -DLX_USE_FONTED
 
 -include Makefile.local
 
-CPPFLAGS += $(LXOPTIONS) 
 
 ## Build directory information
 top_builddir = ..
@@ -49,10 +48,11 @@ ICULIBS := -lustdio $(ICULIBS) -lusort -liculxutil
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
-LDFLAGS += -L../usort/lib -L./util 
+LDFLAGS += -L../usort/lib -L./util -L./resource/out/ -llocexp
 
 # get the hostname the code is built on
 CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"$(host)\"
+CPPFLAGS += $(LXOPTIONS) -DLX_STATIC
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \

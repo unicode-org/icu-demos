@@ -23,6 +23,8 @@ lxdatadir= $(libdir)/$(PACKAGE)/$(VERSION)/locexp
 top_builddir = ../..
 subdir = locexp/resource
 
+OUT= out
+
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~ *.res  escapeABundle
 
@@ -66,7 +68,8 @@ check:  check-local
 
 all-local: res-local root_SAMPLE.txt
 
-res-local: Makefile.res $(RES)
+res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
+	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m static -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
 
 Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 	sh ./detectEncodings.sh $(AUTOGENSRC)
@@ -81,32 +84,23 @@ root.txt: $(FSWF_SRC) root.txt.inc ../tools/extractStrings.sh
 index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
 	sh ../tools/genIndex.sh $(SRC) root.txt > index.txt
 
-
 install-local: install-res
 
-tmp/locexp.lst: Makefile
-	@$(MKINSTALLDIRS) tmp
+$(OUT)/locexp.lst: Makefile
+	@$(MKINSTALLDIRS) $(OUT)
 	@-$(RMV) $@
 	@for file in $(RES); do \
 	  echo `pwd`/$$file >> $@; \
 	done;
 
-resinst: $(RES) tmp/locexp.lst
-	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m common -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
-
-
-# Force creation of locexp as a DLL
-resdllinst: $(RES) tmp/locexp.lst
-	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m dll -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
-
-install-res: res-local resinst
-#install-res: res-local resdllinst
+install-res:
 
 dist-local:
 
 clean-local:
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 	rm -f $(GENSRC)
+	rm -rf $(OUT)
 
 distclean-local: clean-local
 	rm -f Makefile 

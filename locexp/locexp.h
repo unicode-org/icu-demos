@@ -12,7 +12,7 @@ typedef struct
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
   char cLocale[200]; /* client locale */
-  
+
   const char *couldNotOpenEncoding;      /* contains error string if nonnull */
   const char *ourCharsetName; /* HTML friendly name of the current charset */
   char        chosenEncoding[128];

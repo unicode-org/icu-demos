@@ -61,6 +61,14 @@
 
 #include "unicode/ushape.h"
 
+/* for data */
+#ifdef LX_STATIC
+#include "unicode/utypes.h"
+#include "unicode/udata.h"
+U_CFUNC char locexp_dat[];
+#endif
+/* end data */
+
 #ifdef WIN32  /** Need file control to fix stdin/stdout issues **/
 # include <fcntl.h>
 # include <io.h>
@@ -216,15 +224,22 @@ void initContext ( LXContext *ctx )
 void initLX()
 {
   /* set the path for FSWF */
-  {
     char newPath[500];
+    UErrorCode myError = U_ZERO_ERROR;
+
+#ifdef LX_STATIC
+    /* try static data first .. then fall back to individual files */
+    udata_setAppData( "locexp", (const void*) locexp_dat, &myError);
+    if(U_SUCCESS(myError))
+    {
+      FSWF_setBundlePath("locexp");
+      return;
+    }
+#endif
+
     strcpy(newPath, u_getDataDirectory());
-
     strcat(newPath, "locexp");
-
     FSWF_setBundlePath(newPath);
-  }
-
 }
 
 void closeLX()
@@ -3573,6 +3588,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 
 		  if(s)
 		  {
+#if 0
 		    UChar junk[8192];
 		    UErrorCode she=U_ZERO_ERROR;
 		    int32_t dstl;
@@ -3590,7 +3606,9 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 
 		    
 		    u_fprintf(lx->OUT, "<TD>%U [a]</TD>", junk);
-		    //		    u_fprintf(lx->OUT, "<TD>%U</TD>", s);
+#else
+		    u_fprintf(lx->OUT, "<TD>%U</TD>", s);
+#endif
 		  }
 		  else
 		    {
