@@ -1,0 +1,87 @@
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2003, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Makefile.in for ICU - nbrowser
+## Steven  R. Loomis, Feb 17, 2003
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ..
+subdir = nbrowser
+
+# srcdir must be set before this is included
+include $(top_builddir)/icuapps.mk
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~
+
+## Target information
+TARGET = nbrowser
+
+#LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
+LDFLAGS += $(LDFLAGS_TOOLUTIL)
+CPPFLAGS += -I$(ICU_SOURCE)/common -I$(ICU_SOURCE)/tools/toolutil
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
+# -ldl is needed for DLL version
+#ICULIBS    +=  -lustdio 
+
+# Want to make sure the usort.h dependency is not on the installed version .. 
+CPPFLAGS  += -I../locexp/util
+
+OBJECTS = nbrowser.o 
+
+## List of standard targets
+all: all-local
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+all-local: $(TARGET)
+
+install-local: all-local install-target
+
+
+install-target: all-local
+	$(MKINSTALLDIRS) $(BINDIR)
+	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+
+dist-local:
+
+clean-local:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET)
+
+distclean-local: clean-local
+	rm -f Makefile $(DEPS)
+
+check-local:
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just
+#         '$(LIBS) -licuuc -lusort' ...
+
+-include local.mk
+
+# Run against HTMLTidy
+tidy: $(TARGET)
+	$(NBROWSEROPTS) $(INVOKE) ./$(TARGET) | tail +3 > nbrowser.html
+	tidy -utf8 -q nbrowser.html 2>&1 | sed -e "s%^nbrowser.html%"`pwd`"/nbrowser.html%g"
+
+$(TARGET) : $(OBJECTS)
+	$(LINK.c) -o $@ $^ $(ICULIBS)
+
+
+
+
