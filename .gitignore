@@ -1,0 +1,5 @@
+locexp/resource/*.res
+locexp/resource/Makefile
+locexp/resource/Makefile.res
+locexp/resource/default.txt
+locexp/resource/index.txt
