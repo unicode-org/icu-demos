@@ -20,25 +20,26 @@
 
 #include "unicode/ucnv.h"
 
+typedef struct
+{
+  UConverterFromUCallback  subCallback;
+  void                    *subContext;
 
-/* probably not needed */
-#ifdef WIN32
-UConverterFromUCallback TRANSLITERATED_lastResortCallback;
-#else
-extern UConverterFromUCallback TRANSLITERATED_lastResortCallback;
-extern bool_t TRANSLITERATED_tagWithHTML;
-#endif
+  /* special data here */
+  UConverter *utf8;
+  UBool       html;
+
+} FromUTransliteratorContext;
+
 
 U_CAPI void 
-  UCNV_FROM_U_CALLBACK_TRANSLITERATED (UConverter * _this,
-			       char **target,
-					    const char *targetLimit,
-					    const UChar ** source,
-					    const UChar * sourceLimit,
-					    int32_t *offsets,
-					    bool_t flush,
-					    UErrorCode * err);
-
+  UCNV_FROM_U_CALLBACK_TRANSLITERATED  (void *context,
+                                UConverterFromUnicodeArgs *fromUArgs,
+                                const UChar* codeUnits,
+                                int32_t length,
+                                UChar32 codePoint,
+                                UConverterCallbackReason reason,
+                                UErrorCode *err);
 
 #endif
 

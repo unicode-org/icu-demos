@@ -13,7 +13,7 @@
 */
 
 #include "unicode/translitcb.h"
-#include "unicode/utrnslit.h"
+#include "unicode/utrans.h"
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
 
@@ -23,68 +23,10 @@ UConverterFromUCallback TRANSLITERATED_lastResortCallback = UCNV_FROM_U_CALLBACK
 
 UTransliterator  **gTR;
 
-UConverter *gTR_utf8 = NULL;
 
-/* clone the converter, reset it, and then try to transcode the source into the
-   target. If it fails, then transcode into the error buffer. 
-
-   source isn't modified because this fcn is expected to deal with all of it.
-   
-   This would be a very useful function for other callbacks. Needs some more
-   design,
-*/
-static void convertIntoTargetOrErrChars(UConverter *_this,
-					char **target,
-					const char *targetLimit,
-					const UChar *source,
-					const UChar *sourceLimit,
-					UErrorCode *err)
-{
-  const UChar      *sourceAlias = source;
-  UErrorCode subErr = U_ZERO_ERROR;   
-  char       *myTarget;
-
-  if(gTR_utf8 == NULL)
-  {
-      gTR_utf8 = ucnv_open("utf-8", &subErr);
-      ucnv_setFromUCallBack (gTR_utf8,
-                             (UConverterFromUCallback)  TRANSLITERATED_lastResortCallback,
-                             &subErr);
-  }
-  
-  ucnv_fromUnicode (gTR_utf8,
-		    target,
-		    targetLimit,
-		    &sourceAlias,
-		    sourceLimit,
-		    NULL,
-		    TRUE,
-		    &subErr); /* pass them the real error. */
-  
-  if(subErr == U_INDEX_OUTOFBOUNDS_ERROR)
-    {
-      /* it didn't fit. */
-      subErr = U_ZERO_ERROR;
-
-      myTarget = _this->charErrorBuffer + _this->charErrorBufferLength;
-
-      /* OK hit it */
-      ucnv_fromUnicode(gTR_utf8,
-		       &myTarget,
-		       _this->charErrorBuffer + UCNV_ERROR_BUFFER_LENGTH,
-		       &sourceAlias,
-		       sourceLimit,
-		       NULL,
-		       TRUE,
-		       &subErr);
-      /* fix the charBufferLength */
-
-      /* **todo: check err here! */
-      _this->charErrorBufferLength = ((unsigned char *)myTarget - _this->charErrorBuffer);
-
-      *err = U_INDEX_OUTOFBOUNDS_ERROR;
-    }
-}
+/*    if(gTR_utf8 == NULL) */
+/*    { */
+/*        gTR_utf8 = ucnv_open("utf-8", &subErr); */
 
 /*
 1: Arabic-Latin
@@ -99,19 +41,20 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 
 UTransliterator loadTranslitFromCache(int n, const char *id)
 {
-    if(!gTR[n])
+  UErrorCode status = U_ZERO_ERROR;
+  if(!gTR[n])
     {
-        gTR[n] = utrns_open(id);
-//        fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]); 
+      gTR[n] = utrans_open(id, UTRANS_FORWARD, &status);
+      //        fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]); 
     }
-
-    if(!gTR[n])
+  
+  if(!gTR[n] || U_FAILURE(status))
     {
-        gTR[n] = utrns_open("Null");
+        gTR[n] = utrans_open("Null", UTRANS_FORWARD, &status);
     }
     
 
-    return gTR[n];
+  return gTR[n];
 }
 
 
@@ -136,7 +79,7 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
         U_STRING_INIT(beginMark, _beginMark, 18);
         U_STRING_INIT(  endMark, _endMark, 7);
 
-        gTR = malloc(sizeof(UTransliterator*)*U_CHAR_SCRIPT_COUNT);
+        gTR = (UTransliterator*) malloc(sizeof(UTransliterator*)*U_CHAR_SCRIPT_COUNT);
         for(i=0;i<U_CHAR_SCRIPT_COUNT;i++)
             gTR[i] = 0;
     }
@@ -188,14 +131,13 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
 
 
 U_CAPI void 
-  UCNV_FROM_U_CALLBACK_TRANSLITERATED (UConverter * _this,
-					    char **target,
-					    const char *targetLimit,
-					    const UChar ** source,
-					    const UChar * sourceLimit,
-					    int32_t *offsets,
-					    bool_t flush,
-					    UErrorCode * err)
+  UCNV_FROM_U_CALLBACK_TRANSLITERATED  (void *context,
+                                UConverterFromUnicodeArgs *fromUArgs,
+                                const UChar* codeUnits,
+                                int32_t length,
+                                UChar32 codePoint,
+                                UConverterCallbackReason reason,
+                                UErrorCode *err)
 {
     int32_t len;
     UErrorCode status2 = U_ZERO_ERROR;
@@ -203,29 +145,36 @@ U_CAPI void
     UTransliterator *myTrans;
     UCharScript script;
     int srclen;
+    FromUTransliteratorContext *ctx;
 
     int n = 0;
 
     UChar totrans[300];
     UChar tmpbuf[300];
     
-#ifdef WIN32
-  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
-#else
-    if (CONVERSION_U_SUCCESS (*err))
-        return;
-#endif
+    ctx = (FromUTransliteratorContext*) context;
+   
+    if(reason > UCNV_IRREGULAR)
+    {
+      return;
+    }
+ 
     *err = U_ZERO_ERROR; /* so that we get called in a loop */
 
-    script =  u_charScript(_this->invalidUCharBuffer[0]);
+    script =  u_charScript(codePoint);
     myTrans = getTransliteratorForScript(script);
 
-    totrans[n++]= _this->invalidUCharBuffer[0];
+    u_strncpy(totrans,codeUnits, length);
+
+    n = length;
 
     /* the <FONT> thing */
-    if(TRANSLITERATED_tagWithHTML == TRUE)
+    if(ctx->html == TRUE)
       {
-        convertIntoTargetOrErrChars(_this, target, targetLimit, beginMark, beginMark+u_strlen(beginMark), err);  
+        const UChar *mySource;
+        mySource = beginMark;
+        *err = U_ZERO_ERROR;
+        ucnv_cbFromUWriteUChars(fromUArgs, &mySource, mySource+u_strlen(beginMark), 0, err);
       }
 
     /* len = utrns_transliterate(myTrans, _this->invalidUCharBuffer, _this->invalidUCharLength, tmpbuf, 300, &status2);*/
@@ -236,26 +185,35 @@ U_CAPI void
 
     /* Look for any more chars with the same script.*/
     
-    while((*source) < sourceLimit)
+    while(fromUArgs->source < fromUArgs->sourceLimit)
     {
-        for(srclen=0; ((*source)+srclen)<sourceLimit && u_charScript( (*source)[srclen] ) == script  ; srclen++);
+      /* TODO: UTF-16 support */
+        for(srclen=0; (fromUArgs->source+srclen)<fromUArgs->sourceLimit && u_charScript( fromUArgs->source[srclen] ) == script  ; srclen++);
        
         if(srclen > 0)
         {
-            u_strncpy(totrans+n, *source, srclen);
+            u_strncpy(totrans+n, fromUArgs->source, srclen);
             n += srclen;
         }
  
         /* If we found any, xliterate them */
         if(n > 0)
         {
-            len = utrns_transliterate(myTrans, totrans, n, tmpbuf, 300, &status2);
-            convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err);
-            (*source) += srclen; /* if any of the actual source was found */
+          const UChar *mySource;
+          utrns_transUChars(myTrans, totrans,  n, tmpbuf, 300, &status2);
+          mySource = tmpbuf;
 
-            n = 0; /* reset */
+          ucnv_cbFromUWriteUChars(fromUArgs,
+                                  &mySource,
+                                  mySource+len,
+                                  0,
+                                  err);
+
+          fromUArgs->source += srclen; /* if any of the actual source was found */
+
+          n = 0; /* reset */
         }
-        script = u_charScript((*source)[srclen]);
+        script = u_charScript(fromUArgs->source[srclen]);
 
         break;
     }
@@ -263,19 +221,29 @@ U_CAPI void
     /* handle single char case */
     if(n > 0)
     {
-        len = utrns_transliterate(myTrans, totrans, n, tmpbuf, 300, &status2);
-        convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err);
-        (*source) += srclen; /* if any of the actual source was found */
-        
-        n = 0; /* reset */
+      const UChar *mySource;
+
+      len = utrns_transliterate(myTrans, totrans, n, tmpbuf, 300, &status2);
+      mySource = tmpbuf;
+  
+
+      ucnv_cbFromUWriteUChars(fromUArgs,
+                              &mySource,
+                              mySource+len,
+                              0,
+                              err);
+      fromUArgs->source += srclen; /* if any of the actual source was found */
+      n = 0; /* reset */
     }
     
-    if(TRANSLITERATED_tagWithHTML == TRUE)
+    if(ctx->html == TRUE)
       {
-        convertIntoTargetOrErrChars(_this, target, targetLimit, endMark, endMark+u_strlen(endMark), err); 
+        const UChar *mySource;
+        mySource = endMark;
+        ucnv_cbFromUWriteUChars(fromUArgs, &mySource, mySource+u_strlen(beginMark), 0, err);
       }
-
 }
+
 
 
 

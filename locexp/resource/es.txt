@@ -1,5 +1,6 @@
 // -*- Coding: iso-8859-1 -*-
 // some spanish words
+// Copyright (c) 2000 IBM, Inc. and Others
 
 es
 {

@@ -1,3 +1,4 @@
+
 /**********************************************************************
 *   Copyright (C) 1999-2000, International Business Machines
 *   Corporation and others.  All Rights Reserved.
@@ -24,6 +25,7 @@
 *   8/16/1999    srl        Display overhaul - locale status at bottom, etc.
 *  10/14/1999    srl        Update for ICU1.3+, prepare for checkin!!
 *   8/17/2000    srl        Update for 1.6
+*  10/09/2000    srl        Put .gifs and .htmls, etc into resource bundles
 ****************************************************************************
 */
 
@@ -62,6 +64,8 @@
 #include "unicode/decompcb.h"
 #include "unicode/uchar.h"
 #include "unicode/umsg.h"
+#include "stdlib.h"
+#include "string.h"
 /* #include "unicode/fontedcb.h" */
 
 #include "locexp.h"
@@ -73,7 +77,7 @@
 #define URLPREFIX ""
 #endif
 
-/* #include "unicode/translitcb.h" */
+#include "unicode/translitcb.h"
 
 #include "unicode/utimzone.h"
 
@@ -82,15 +86,6 @@
 #include "unicode/ucnv.h"
 
 /********************** Some Konstants **** and structs ***************/
-
-#ifndef URLPREFIX
-# define kStaticURLPrefix "/developerworks/opensource/icu/project"
-#else
-# define kStaticURLPrefix  URLPREFIX
-#endif
-
-/* #define kStaticURLPrefix ""  */
-
 
 /* Define the following to enable 'demonstrate collation' */
 
@@ -112,7 +107,6 @@
 int main(const char *argv[], int argc);
 
 /* setup the UFILE */
-UFILE *setLocaleAndEncodingAndOpenUFILE();
 
 /* Setup the 'locales' structure */
 void   setupLocaleTree();
@@ -178,8 +172,12 @@ void showKeyAndEndItem(const char *key, const char *locale);
  * @param didSetLocale   (on return) TRUE if a locale was chosen
  * @return the new UFILE. Doesn't set any callbacks
  */
-UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didSetEncoding);
+UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didSetEncoding, const char **fileObject);
 
+/**
+ * dump out a file that's ina  resource bundle
+ */
+void writeFileObject( LXContext *lx, const char *path );
 
 
 /* write a string in \uXXXX format */
@@ -214,6 +212,7 @@ int main(const char *argv[], int argc)
   char *tmp;
   UChar subTitle[1024];
   int32_t n,i;
+  const char  *fileObj = NULL;
 
   /* INIT THE LX */
   memset(lx, 0, sizeof(*lx));
@@ -262,17 +261,24 @@ int main(const char *argv[], int argc)
   {
     char newPath[500];
     strcpy(newPath, u_getDataDirectory());
+
 #ifdef WIN32
-	strcat(newPath, "locexp\\");
+    strcat(newPath, "locexp\\");
 #else
-    strcat(newPath, "locexp/");
+    strcat(newPath, "locexp");
 #endif
 
     FSWF_setBundlePath(newPath);
   }
 
 
-  lx->OUT = setLocaleAndEncodingAndOpenUFILE(lx->chosenEncoding, &lx->setLocale, &lx->setEncoding);
+  lx->OUT = setLocaleAndEncodingAndOpenUFILE(lx->chosenEncoding, &lx->setLocale, &lx->setEncoding, &fileObj);
+
+  if(fileObj != NULL)
+  {
+    writeFileObject( lx, fileObj );
+    return 0;
+  }
 
 
   if(!lx->OUT)
@@ -283,61 +289,78 @@ int main(const char *argv[], int argc)
   /** Setup the callbacks **/
   /* put our special error handler in */
 
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
-                        UCNV_FROM_U_CALLBACK_BACKSLASH,
-                        &lx->backslashCtx,
-                        &lx->backslashCtx.subCallback,
-                        &lx->backslashCtx.subContext,
-                        &status);
+  if(u_fgetConverter(lx->OUT) == NULL)
+  {
+    fprintf(stdout,"content-type: text/plain\r\n");
+    fprintf(stdout,"\r\nFatal: can't open ICU Data (%s)\r\n", u_getDataDirectory());
+    exit(0);
 
-
-  lx->backslashCtx.html = TRUE;
-
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
-                        UCNV_FROM_U_CALLBACK_DECOMPOSE,
-                        &lx->decomposeCtx,
-                        &lx->decomposeCtx.subCallback,
-                        &lx->decomposeCtx.subContext,
-                        &status);
-
-  /* To do: install more cb's later. */
-
+    lx->couldNotOpenEncoding = lx->chosenEncoding; /* uhoh */
+  }
+  else
+  {
+    ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
+                          UCNV_FROM_U_CALLBACK_BACKSLASH,
+                          &lx->backslashCtx,
+                          &lx->backslashCtx.subCallback,
+                          &lx->backslashCtx.subContext,
+                          &status);
+    
+    
+    lx->backslashCtx.html = TRUE;
+    
+    ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
+                          UCNV_FROM_U_CALLBACK_DECOMPOSE,
+                          &lx->decomposeCtx,
+                          &lx->decomposeCtx.subCallback,
+                          &lx->decomposeCtx.subContext,
+                          &status);
+    
+    /* To do: install more cb's later. */
+    
 #if 0
-  COLLECT_alnum = TRUE; /* only char about alphanumerics. */
-  COLLECT_setSize(16);
-
-  if(!strcmp(lx->chosenEncoding, "fonted"))
+    COLLECT_alnum = TRUE; /* only char about alphanumerics. */
+    COLLECT_setSize(16);
+    
+    if(!strcmp(lx->chosenEncoding, "fonted"))
     {
       ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_FONTED, &status);
       FONTED_lastResortCallback   =  UCNV_FROM_U_CALLBACK_COLLECT;
       COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
     }
-  else
-  if(!strcmp(lx->chosenEncoding, "transliterated"))
-    {
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_TRANSLITERATED, &status);
-      TRANSLITERATED_lastResortCallback   =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
-      COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
-    }
-  else
-
-    {
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_COLLECT, &status);
-      COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
-    }
-
+    else
+#endif
+      if(!strcmp(lx->chosenEncoding, "transliterated"))
+        {
+          lx->xlitCtx.html = FALSE;
+#if 0
+//          ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
+//                                UCNV_FROM_U_CALLBACK_TRANSLITERATED,
+//                                &lx->xlitCtx,
+//                                &lx->xlitCtx.subCallback,
+//                                &lx->xlitCtx.subContext,
+//                                &status);
+#endif
+        }
+#if 0
+      else
+        
+        {
+          ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_COLLECT, &status);
+          COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
+        }
+    
 
 #ifdef LX_USE_NAMED
-  /* overrides */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_NAMED, &status);
+    /* overrides */
+    ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_NAMED, &status);
 #endif
-
-  /* Change what DECOMPOSE calls as it's last resort */
-  DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML;
+    
 #endif
-
-  /* parse & sort the list of locales */
- setupLocaleTree();
+  } /* end: if have a converter */
+  
+    /* parse & sort the list of locales */
+  setupLocaleTree();
   /* Open an RB in the default locale */
   lx->defaultRB = ures_open(NULL, lx->cLocale, &status);
 
@@ -448,8 +471,8 @@ int main(const char *argv[], int argc)
 
   u_fprintf(lx->OUT, "</TITLE>\r\n");
 
-  if(!getenv("PATH_INFO") || !getenv("PATH_INFO")[0])
-      u_fprintf(lx->OUT, "<BASE HREF=\"http://%s%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME")); /* Ensure that all relative paths have the cgi name followed by a slash.  */
+/*   if(!getenv("PATH_INFO") || !(getenv("PATH_INFO")[0])) */
+  u_fprintf(lx->OUT, "<BASE HREF=\"http://%s%s/%s/%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME"), lx->cLocale, lx->chosenEncoding); /* Ensure that all relative paths have the cgi name followed by a slash.  */
   
   u_fprintf(lx->OUT, "%U", 
 	    FSWF ( /* NOEXTRACT */ "htmlHEAD",
@@ -716,6 +739,7 @@ int main(const char *argv[], int argc)
   if(lx->defaultRB)
     ures_close(lx->defaultRB);
 
+
   return 0;
 }
 
@@ -795,7 +819,7 @@ char *createEscapedSortList(const UChar *source)
   int32_t i, inlen;
   int32_t len;
   int32_t maxlen;
-  char *out;
+  char *out, *p;
 
   inlen = u_strlen(source);
 
@@ -804,20 +828,35 @@ char *createEscapedSortList(const UChar *source)
   
   /* sputid imp. */
   out = malloc(maxlen);
+  p = out;
   
   for(i=0;i<inlen;i++)
   {
     if(source[i] == '|')
       {
-        strcpy(out+(i*6), "\\u");
-        sprintf(out+(i*6)+2, "%04X", 0x000D);
+        strcpy(p, "\\u");
+        p += 2;
+        sprintf(p, "%04X", 0x000D);
+        p += 4;
+      }
+    else if((source[i] == '\\') && (source[i+1] == 'u'))
+      {
+        int togo = 6; /* copy the next 6 */
+        for(;(i<inlen) && (togo--);i++)
+        {
+          *p++ = source[i];
+        }
+        i--; 
       }
     else
       {
-        strcpy(out+(i*6), "\\u");
-        sprintf(out+(i*6)+2, "%04X", source[i]);
+        strcpy(p, "\\u");
+        p += 2;
+        sprintf(p, "%04X", source[i]);
+        p += 4;
       }
   }
+  *p = 0; /* null */
   return out;
 }
 void writeEscaped(const UChar *s)
@@ -880,7 +919,7 @@ void printStatusTable()
     status = U_ZERO_ERROR;
     
     u_fprintf(lx->OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
-    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#0F080F\" COLSPAN=3><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#0F080F\" COLSPAN=3><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
     u_fprintf(lx->OUT, "  <TR>\r\n   <TD COLSPAN=3 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s><B>", "YourSettings");
     
     /* PrintHelpTag */
@@ -934,7 +973,7 @@ void printStatusTable()
 
   if(lx->inDemo == FALSE)
   {
-    u_fprintf(lx->OUT, "<A HREF=\"%s/en/iso-8859-1/?PANICDEFAULT\"><IMG SRC=\"%s/localeexplorer/incorrect.gif\" ALT=\"Click here if text displays incorrectly\"></A>", getenv("SCRIPT_NAME"), kStaticURLPrefix);
+    u_fprintf(lx->OUT, "<A HREF=\"%s/en/iso-8859-1/?PANICDEFAULT\"><IMG SRC=\"../_/incorrect.gif\" ALT=\"Click here if text displays incorrectly\"></A>", getenv("SCRIPT_NAME"));
   }
 
   u_fprintf(lx->OUT, "</TD></TR>\r\n"); /* end little right hand thingy */
@@ -1023,7 +1062,7 @@ void printStatusTable()
     }
 
 
-    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=3><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=3><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
 
   u_fprintf(lx->OUT, "</TABLE>\r\n");
 
@@ -1804,7 +1843,7 @@ void listBundles(char *b)
   }
 #endif
   }
-#endif
+#endif  /* srl_HRCEK */
 
   explainStatus(status,"top");
 
@@ -1867,9 +1906,8 @@ void listBundles(char *b)
 			  U_ZERO_ERROR);
 
 #if 0
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#usort\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/opened.gif\" ALT=\"\"> %U</A>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#usort\"><IMG border=0 width=16 height=16 SRC=\"../_/c.gif\" ALT=\"\"> %U</A>\r\n",
 		locale,
-		kStaticURLPrefix,
 		FSWF("usortHide", "Hide this example"));
 #endif
       
@@ -1885,9 +1923,8 @@ void listBundles(char *b)
 #if 0
       if(!strstr(usort))
 	{
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&usort&_#usort\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/closed.gif\" ALT=\"\"> %U</A>\r\n",
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&usort&_#usort\"><IMG border=0 width=16 height=16 SRC=\"../_/closed.gif\" ALT=\"\"> %U</A>\r\n",
 		    locale,
-		    kStaticURLPrefix,
 		    FSWF("usortShow", "Show this example"));
 	  
 	  
@@ -2175,8 +2212,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
       UErrorCode sampleStatus = U_ZERO_ERROR;
 
       /* samplestring will vary with label locale! */
-      sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t");
-
+      sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
 
       sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
       if(U_SUCCESS(sampleStatus))
@@ -2211,17 +2247,16 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 	{
 	  /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something 
 	     [duh, HTML numbered escape sequence] */
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"%s/localeexplorer/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, kStaticURLPrefix, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
 	  u_fprintf(lx->OUT, "</TD><TD></TD>");
 	}
       else
 	{
 	  if(bigString)
 	    {
-	      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+	      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
 			locale,
 			key,
-			kStaticURLPrefix,
 			FSWF("bigStringHide", "Hide"));
 	    }
 	  
@@ -2432,16 +2467,15 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
 	{
 	  /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something 
 	     [duh, HTML numbered escape sequence] */
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"%s/localeexplorer/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, kStaticURLPrefix, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
 	}
       else
 	{
 	  if(bigString)
 	    {
-	      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+	      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
 			locale,
 			key,
-			kStaticURLPrefix,
 			FSWF("bigStringHide", "Hide"));
 	    }
 	  
@@ -2501,17 +2535,16 @@ void showStringWithDescription(UResourceBundle *rb, const char *locale, const ch
   if(bigString && !userRequested) /* it's hidden. */
     {
       /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"%s/localeexplorer/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, kStaticURLPrefix, FSWF("stringClickToShow","(Click here to show.)"));
+	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
 	u_fprintf(lx->OUT, "<P>");
     }
   else
     {
       if(bigString)
 	{
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
 		    locale,
 		    key,
-		kStaticURLPrefix,
 		    FSWF("bigStringHide", "Hide"));
 	}
   
@@ -2701,7 +2734,7 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
 		homeStr
 		);
 
-      u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=/developerworks/opensource/icu/project/localeexplorer/explore.gif  ALIGN=RIGHT   ");
+      u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  ALIGN=RIGHT   ");
       u_fprintf(lx->OUT, " VALUE=\"%U\"></FORM>",
 	    FSWF("exploreTitle", "Explore"));
       u_fprintf(lx->OUT, "</FORM>");
@@ -3071,16 +3104,15 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   if(bigString && !userRequested) /* it's hidden. */
     {
       /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"%s/localeexplorer/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, kStaticURLPrefix, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
     }
   else
     {
       if(bigString)
 	{
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
 		    locale,
 		    key,
-		    kStaticURLPrefix,
 		    FSWF("bigStringHide", "Hide"));
 	}
 
@@ -3195,16 +3227,15 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
   if(bigString && !userRequested) /* it's hidden. */
     {
       /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"%s/localeexplorer/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, kStaticURLPrefix, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s&_#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
     }
   else
     {
       if(bigString)
 	{
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"%s/localeexplorer/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
 		    locale,
 		    key,
-		    kStaticURLPrefix,
 		    FSWF("bigStringHide", "Hide"));
 	}
 
@@ -3368,19 +3399,15 @@ void printHelpTag(const char *helpTag, const UChar *str)
 
     }
 
-  u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"%s/localeexplorer/%Uhelp.html#%s\" TARGET=\"help\">%U</A>",
-	    kStaticURLPrefix,
-	    FSWF("helpPrefix", "default_"),
+  u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"../_/help.html#%s\" TARGET=\"help\">%U</A>",
 	    helpTag,str);
 }
 
 void printHelpImg(const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-  u_fprintf(lx->OUT, "<A HREF=\"%s/localeexplorer/%Uhelp.html#%s\" TARGET=\"icu_lx_help\"><IMG %U SRC=\"%s/localeexplorer/%U\" ALT=\"%U\"></A>",
-	    kStaticURLPrefix,
-	    FSWF("helpPrefix", "default_"),
+  u_fprintf(lx->OUT, "<A HREF=\"../_/help.html#%s\" TARGET=\"icu_lx_help\"><IMG %U SRC=\"../_/%U\" ALT=\"%U\"></A>",
 	    helpTag, 
-	    options, kStaticURLPrefix, src, alt);
+	    options, src, alt);
 }
 
 void showExploreCloseButton(const char *locale, const char *frag)
@@ -3403,7 +3430,7 @@ void showExploreButton(UResourceBundle *rb, const char *locale, const UChar *sam
   writeEscaped(sampleString);
   u_fprintf(lx->OUT, "\">");
   
-  u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE VALIGN=TOP WIDTH=48 HEIGHT=20 BORDER=0 SRC=/developerworks/opensource/icu/project/localeexplorer/explore.gif  ALIGN=RIGHT   ");
+  u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE VALIGN=TOP WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  ALIGN=RIGHT   ");
   u_fprintf(lx->OUT, " VALUE=\"%U\"></FORM>",
 	    FSWF("exploreTitle", "Explore"));
 }
@@ -3420,7 +3447,7 @@ void showExploreButtonSort(UResourceBundle *rb, const char *locale, const char *
   u_fprintf(lx->OUT, "%s", sampleString);
   u_fprintf(lx->OUT, "\">");
   
-  u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE VALIGN=TOP WIDTH=48 HEIGHT=20 BORDER=0 SRC=/developerworks/opensource/icu/project/localeexplorer/explore.gif  ALIGN=RIGHT   ");
+  u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE VALIGN=TOP WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  ALIGN=RIGHT   ");
   u_fprintf(lx->OUT, " VALUE=\"%U\"></FORM>",
 	    FSWF("exploreTitle", "Explore"));
 }
@@ -3546,7 +3573,7 @@ void showSort(const char *locale, const char *b)
 
   u_fprintf(lx->OUT, "%U<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted."));
 
-  u_fprintf(lx->OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH=100% HEIGHT=100%><TR><TD><B>%U</B></TD>\r\n",
+  u_fprintf(lx->OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH=100% HEIGHT=100%><TR><TD WIDTH=\"20%\"><B>%U</B></TD>\r\n",
             FSWF("usortSource", "Source"));
 
 
@@ -3554,11 +3581,11 @@ void showSort(const char *locale, const char *b)
   {
       if(doingG7 == FALSE)
       {
-          u_fprintf(lx->OUT, "<TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD>",
+          u_fprintf(lx->OUT, "<TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD>",
                     FSWF("usortOriginal", "Original"),
-                    FSWF("usortPrimary", "Primary"),
-                    FSWF("usortSecondary", "Secondary"),
-                    FSWF("usortTertiary", "Tertiary"));
+                    FSWF("usortTertiary", "Primary-Tertiary"),
+                    FSWF("usortSecondary", "Primary & Secondary"),
+                    FSWF("usortPrimary", "Primary only"));
       }
       else
       {
@@ -3566,14 +3593,17 @@ void showSort(const char *locale, const char *b)
           {
               UChar junk[1000];
               uloc_getDisplayName(G7s[i], lx->cLocale, junk, 1000, &status);
-              u_fprintf(lx->OUT, "<TD>%U</TD>",junk);
+              u_fprintf(lx->OUT, "<TD WIDTH=\"10%\">%U</TD>",junk);
           }
                         
       }
   }
       
-  u_fprintf(lx->OUT, "</TR><TR><TD VALIGN=TOP>");
+  u_fprintf(lx->OUT, "</TR>\r\n");
   
+  u_fprintf(lx->OUT, "<TR><TD WIDTH=\"20%\">");
+  
+  /* the source box */
   u_fprintf(lx->OUT, "<FORM ACTION=\"#EXPLORE_CollationElements\" METHOD=GET>\r\n");
   u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"_\" VALUE=\"%s\">\r\n", locale);
   u_fprintf(lx->OUT, "<TEXTAREA ROWS=10 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
@@ -3586,13 +3616,14 @@ void showSort(const char *locale, const char *b)
   
   u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM><P>\r\n",
             FSWF("EXPLORE_CollationElements_Sort", "Sort"));
-  
-  u_fprintf(lx->OUT, "</TD>");
-  
+
+  /* END source box */
+  u_fprintf(lx->OUT, "</TD>\r\n");
+
   if(inputChars[0] != 0)
       {
           FILE *sortpipe;
-          UCollationStrength sortTypes[] = { UCOL_IDENTICAL /* not used */, UCOL_PRIMARY, UCOL_SECONDARY, UCOL_TERTIARY };
+          UCollationStrength sortTypes[] = { UCOL_IDENTICAL /* not used */, UCOL_TERTIARY, UCOL_SECONDARY, UCOL_PRIMARY };
           int n;
 
           UChar in[SORTSIZE];
@@ -3649,7 +3680,22 @@ void showSort(const char *locale, const char *b)
                   
                   for(i=0;i<aSort->count;i++)
                   {
-                      u_fprintf(lx->OUT, "%02d.%U<BR>\n", (int32_t)aSort->lines[i].userData, aSort->lines[i].chars);
+                    UBool doUnderline = TRUE;
+
+                    if( ((i+1)<aSort->count) &&
+                        (aSort->lines[i].keySize == aSort->lines[i+1].keySize) &&
+                        !memcmp(aSort->lines[i].key,
+                                aSort->lines[i+1].key,
+                                aSort->lines[i].keySize))
+                      {
+                        doUnderline = FALSE;
+                      }
+
+                    u_fprintf(lx->OUT, "%s%02d.%U%s<BR>\n",
+                              (doUnderline?"<U>":""),
+                                (int32_t)aSort->lines[i].userData, aSort->lines[i].chars,
+                              (doUnderline?"</U>":"")
+                              );
                   }
                   
                   u_fprintf(lx->OUT, "</TD>");	  
@@ -3700,7 +3746,22 @@ void showSort(const char *locale, const char *b)
                   
                   for(i=0;i<aSort->count;i++)
                   {
-                      u_fprintf(lx->OUT, "%02d.%U<BR>\n", (int32_t)aSort->lines[i].userData, aSort->lines[i].chars);
+                    UBool doUnderline = TRUE;
+                    
+                    if( ((i+1)<aSort->count) &&
+                        (aSort->lines[i].keySize == aSort->lines[i+1].keySize) &&
+                        !memcmp(aSort->lines[i].key,
+                                aSort->lines[i+1].key,
+                                aSort->lines[i].keySize))
+                      {
+                        doUnderline = FALSE;
+                      }
+
+                    u_fprintf(lx->OUT, "%s%02d.%U%s<BR>\n",
+                              doUnderline?"<U>":"",
+                              (int32_t)aSort->lines[i].userData, aSort->lines[i].chars,
+                              doUnderline?"</U>":""
+                              );
                   }
                   
                   u_fprintf(lx->OUT, "</TD>");	  
@@ -3712,7 +3773,7 @@ void showSort(const char *locale, const char *b)
       u_fprintf(lx->OUT, "</TR></TABLE><P>");
 
       if(doingG7 == FALSE)
-          u_fprintf(lx->OUT, "<P><P>%U", FSWF("EXPLORE_CollationElements_strength", "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."));
+          u_fprintf(lx->OUT, "<P><P>%U", FSWF("EXPLORE_CollationElements_strength", "You see four different columns as output. The first is the original text for comparison. The lines are numbered to show their original position. The remaining columns show sorting by different strengths (available as a parameter to the collation function). Groups of lines that sort precisely the same are separated by an underline. Since collation treats these lines as identical, lines in the same group could appear in any order (depending on the precise sorting algorithm used). "));
 
   u_fprintf(lx->OUT, "<P>\r\n");
   showExploreCloseButton(locale, "CollationElements");
@@ -3918,7 +3979,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
 #endif
     }
   
-  u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+  u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG src=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
   /* ============ 'localized' side ================================= */
 
@@ -4164,7 +4225,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       
     }
   
-  u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+  u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
   /* ============ 'localized' side ================================= */
 
@@ -4270,7 +4331,7 @@ bool_t isExperimentalLocale(const char *locale)
 void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus)
 {
       u_fprintf(lx->OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
-      u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+      u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
       u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s><B>", key);
 
       if(keyName == NULL)
@@ -4302,7 +4363,7 @@ void showKeyAndEndItem(const char *key, const char *locale)
 
 
 /* ----------------- lx->setEncoding */
-UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didsetEncoding)
+UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didsetEncoding, const char **fileObject)
 {
   char *pi;
   char *tmp;
@@ -4343,19 +4404,30 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
 	  tmp++; /* skip '/' */
   
 	  pi = tmp;
-
-	  tmp = strchr(tmp, '/');
-	  if(tmp)
-	    *tmp = 0;
   
 	  if(*pi) /* don't want 0 length encodings */
 	    {
 	      encoding = pi;
-	      *didsetEncoding = TRUE; 
 
+              tmp = strchr(tmp, '/');
+              if(tmp)
+              {
+                pi = tmp + 1;
+                *tmp = 0;
+              }
+
+	      *didsetEncoding = TRUE; 
 	    }
 	}
     }
+
+  /* Now, did we get a file object? */
+  if(*didsetEncoding && pi && !strcmp(encoding, "_"))
+  {
+    *didsetEncoding = FALSE;
+    *fileObject = pi;
+    return NULL;
+  }
 
   if(!(*didSetLocale) && (acceptLanguage=getenv("HTTP_ACCEPT_LANGUAGE")) && acceptLanguage[0] )
     {
@@ -4494,7 +4566,125 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
 }
 
 
+void writeFileObject( LXContext *lx, const char *path )
+{
+  UResourceBundle *rb;
+  UErrorCode status = U_ZERO_ERROR;
+  UResourceBundle *n = NULL;
+  UErrorCode s2 = U_ZERO_ERROR;
 
+  rb = ures_open(FSWF_bundlePath(), lx->cLocale, &status);  
+
+  if(U_FAILURE(status))
+  {
+    printf("Content-type: text/html\r\n\r\n");
+    printf("Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
+           lx->cLocale,
+           u_getDataDirectory(),
+           FSWF_bundlePath(),
+           path);
+    printf("Error: %s\n", u_errorName(status));
+    printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+    return;
+  }
+
+  if(!path || !(*path) || (*path == '/'))
+  {
+
+    printf("Content-type: text/html\r\n\r\n");
+    printf("<html><head><title>bundle list for %s</title></head>\r\n",
+           lx->cLocale);
+    printf("<body>");
+    printf("<h1>%s : %s</h1>\r\n", FSWF_bundlePath(), lx->cLocale);
+    printf("V: %s<p>\n", ures_getVersionNumber(rb));
+    printf("<ul>");
+    while(ures_hasNext(rb) && U_SUCCESS(s2))
+      {
+        s2 = U_ZERO_ERROR;
+        n = ures_getNextResource(rb, n, &s2);
+        printf("<li> ");
+        if(U_FAILURE(s2))
+          {
+            printf(" <B>%s</B>\n", u_errorName(s2));
+          }
+        else
+          {
+            printf("%s :", ures_getTag(n));
+            switch(ures_getType(n))
+              {
+              case RES_NONE: printf("NONE");break;
+              case RES_STRING: printf("STRING"); break;
+              case RES_BINARY: printf("<A HREF=\"./%s\">BINARY</A>", ures_getTag(n)); break;
+              case RES_TABLE: printf("TABLE"); break;
+              case RES_INT: printf("INT=%d", ures_getInt(n, &s2)); break;
+              case RES_ARRAY: printf("ARRAY"); break;
+              case RES_INT_VECTOR: printf("INT VECTOR"); break;
+              case RES_RESERVED: printf("RESERVED"); break;
+              default: printf("unknown %d", ures_getType(n)); break;
+              }
+            printf(" [%d]", ures_getSize(n));
+            printf("\n");
+          }
+      }
+    printf("</UL>");
+    printf("</BODY>");
+    printf("</HTML>");
+    
+/*    exit(0); */
+  }
+  else
+  {
+    const uint8_t *bin= NULL;
+    int32_t len;
+
+    /* have some kind of path*/
+    n = ures_getByKey(rb, path, n, &s2);
+    if(U_FAILURE(s2))
+    {
+      printf("Content-type: text/html\r\n\r\n");
+      printf("Error: Couldn't get [%s] in bundle [%s] in path [%s]<P>\r\n",
+             path,
+             lx->cLocale,
+             u_getDataDirectory());
+      printf("Error: %s\n", u_errorName(s2));
+      printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+      return;
+    }
+
+
+    bin = ures_getBinary(n, &len, &s2);
+    if(U_FAILURE(s2))
+    {
+      printf("Content-type: text/html\r\n\r\n");
+      printf("Error: Couldn't get binary [%s] in bundle [%s] in path [%s]<P>\r\n",
+             path,
+             lx->cLocale,
+             u_getDataDirectory());
+      printf("Error: %s\n", u_errorName(s2));
+      printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+      return ;
+    }
+    /* whew! */
+    
+    if(strstr(path, ".html"))
+      printf("Content-type: text/html\r\n");
+    else if(strstr(path, ".gif"))
+      printf("Content-type: image/gif\r\n");
+    else if(strstr(path, ".jpg"))
+      printf("Content-type: image/jpeg\r\n");
+    else
+      printf("Content-type: application/octet-stream\r\n");
+
+    printf("Content-length: %d\r\n", len);
+    printf("\r\n");
+    fflush(stdout);
+    fwrite(bin, 1, len, stdout);
+    printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+    fflush(stdout);
+  }
+
+  ures_close(n);
+}
 
 
 

@@ -1,21 +1,24 @@
 * text=auto !eol
-locexp/html/c.gif -text
-locexp/html/closed.gif -text
-locexp/html/default_help.html svneol=native#text/html
-locexp/html/displayproblems.gif -text
-locexp/html/explore.gif -text
-locexp/html/explore_.gif -text
-locexp/html/foot-extra.gif -text
-locexp/html/globals2.gif -text
-locexp/html/help.gif -text
-locexp/html/incorrect.gif -text
-locexp/html/opened.gif -text
-locexp/html/transliteration.html svneol=native#text/html
-locexp/icudata.tgz -text
+locexp/resource/fr/lx.jpg -text svneol=unset#image/jpeg
+locexp/resource/root/c.gif -text
+locexp/resource/root/closed.gif -text
+locexp/resource/root/displayproblems.gif -text
+locexp/resource/root/explore.gif -text
+locexp/resource/root/help.gif -text
+locexp/resource/root/help.html svneol=native#text/html
+locexp/resource/root/incorrect.gif -text
+locexp/resource/root/lx.jpg -text svneol=unset#image/jpeg
+locexp/resource/root/lxbar_dev.jpg -text svneol=unset#image/jpeg
+locexp/resource/root/lxbar_g.gif -text
+locexp/resource/root/lxbar_ibm.jpg -text svneol=unset#image/jpeg
+locexp/resource/root/lxbar_icu.jpg -text svneol=unset#image/jpeg
+locexp/resource/root/opened.gif -text
+locexp/resource/root/transliteration.html svneol=native#text/html
 locexp/resource/root_head.html svneol=native#text/html
 locexp/resource/root_tail.html svneol=native#text/html
 locexp/resource/sr.txt -text
 locexp/resource/sr.utf16.txt -text svneol=unset#application/octet-stream
+locexp/resource/sr/lx.jpg -text svneol=unset#image/jpeg
 uconv/charset/ISO-8859-2.txt -text svneol=unset#application/octet-stream
 uconv/charset/ISO-8859-3.txt -text svneol=unset#application/octet-stream
 uconv/charset/danish-ISO-8859-1.txt -text svneol=unset#application/octet-stream

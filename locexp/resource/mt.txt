@@ -66,7 +66,8 @@ mt {
   on { "Mixg±ul" }
   off { "Mitfi" }
    poweredby  {  "Miõjub minn"  }
-  statusTableHeader  {  "G±a¿la:<BR><!-- Click to change -->"  }
+  statusTableHeader  {  "G±a¿la: "  }
+  statusTableHeaderChange { "(Ikklikkja biex turi)" }
   title  {  "MER¡BA! ICU LocaleExplorer"  }
   usortIdentical  {  "Identiku"  }
   usortPrimary  {  "Primarju"  }

@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c on Wed Aug 23 16:24:58 PDT 2000 on daphne
+// root file. Generated from ../locexp.c on Mon Oct  9 22:32:46 PDT 2000 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -29,7 +29,7 @@ root {
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
    EXPLORE_CollationElements_Sort  {  "Sort"  }
    EXPLORE_CollationElements_g7sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
-   EXPLORE_CollationElements_strength  {  "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."  }
+   EXPLORE_CollationElements_strength  {  "You see four different columns as output. The first is the original text for comparison. The lines are numbered to show their original position. The remaining columns show sorting by different strengths (available as a parameter to the collation function). Groups of lines that sort precisely the same are separated by an underline. Since collation treats these lines as identical, lines in the same group could appear in any order (depending on the precise sorting algorithm used). "  }
    EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
    EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
    EXPLORE_NumberPatterns  {  "Explore &gt; Numbers"  }
@@ -103,7 +103,6 @@ root {
    formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
    formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
    help  {  "Help"  }
-   helpPrefix  {  "default_"  }
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "BORDER=0"  }
    inherited  {  "(inherited)"  }
@@ -155,11 +154,11 @@ root {
    ubrowse  {  "Browse Unicode in this codepage"  }
    usortHide  {  "Hide this example"  }
    usortOriginal  {  "Original"  }
-   usortPrimary  {  "Primary"  }
-   usortSecondary  {  "Secondary"  }
+   usortPrimary  {  "Primary only"  }
+   usortSecondary  {  "Primary & Secondary"  }
    usortShow  {  "Show this example"  }
    usortSource  {  "Source"  }
-   usortTertiary  {  "Tertiary"  }
+   usortTertiary  {  "Primary-Tertiary"  }
    usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
    warningExperimentalLocale  {  "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>"  }
    warningInheritedLocale  {  "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"  }
@@ -186,6 +185,24 @@ root {
        "<!-- DEFAULT.htmlTAIL -->\u000A\u000A<!-- DEFAULT.htmlTAIL -->\u000A"   }
 
 
+
+ // Imported from: root.txt.inc 
+
+// [root.txt.inc] Copyright (c) 2000 IBM, Inc. and Others, all rights reserved
+   c.gif:import { "root/c.gif" }
+   opened.gif:import { "root/opened.gif" }
+   closed.gif:import { "root/closed.gif" }
+   help.html:import  { "root/help.html" }
+	transliteration.html:import { "root/transliteration.html" }
+   displayproblems.gif:import { "root/displayproblems.gif" }
+   explore.gif:import { "root/explore.gif" }
+   help.gif:import { "root/help.gif" }
+   incorrect.gif:import { "root/incorrect.gif" }
+   lx.jpg:import { "root/lx.jpg" }
+   lxbar_dev.jpg:import { "root/lxbar_dev.jpg" }
+   lxbar_g.gif:import { "root/lxbar_g.gif" }
+   lxbar_ibm.jpg:import { "root/lxbar_ibm.jpg" }
+   lxbar_icu.jpg:import { "root/lxbar_icu.jpg" }
 
 }
 

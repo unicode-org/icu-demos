@@ -1,6 +1,8 @@
 locale explorer utils readme
 ----------------------------
 
+[Oct 9, 2000]  - removed utrnslit
+
 [Thu, Dec 9, 1999]
 
  What can I say.  Anything that seemed too general to go into Locale
@@ -16,7 +18,7 @@ work.
    * Do you have any ideas for new functionality?
    * How are you using these routines in your own programs?
 
-<icu4c@us.ibm.com>
+<icu@jtcsv.com>
 
 ------------
 
@@ -27,7 +29,6 @@ kangxi.h    - table of the KangXi radicals
 
 * the C API's that never were [yet]
 utimzone.h  - TimeZone       wrapper
-utrnslit.h  - Transliterator wrapper
 
 * C api additions
 ures_additions.h - a couple of functions on resource bundles, and one

@@ -1,5 +1,8 @@
 <!-- -*- coding: latin-1; -*-
 
+$Version: $
+$Revision: 1.1 $
+ 
 help for the DEFAULT locale, listrb [localeexplorer]
 
  (c) 1999, 2000 IBM, Inc. All rights reserved.
@@ -32,79 +35,8 @@ DEFAULT.head copied from lrb bundle src
     .boxBlurb {font-weight:400;font-size:8pt;}
     .zoneSection {font-weight:600;font-size:10pt;}
 </style>
-<script LANGUAGE="JavaScript">
-<!--
-/* sitemap and content window creator [from alphaworks --srl] */
-function openNavWin(navURL) {
-	var navWin = null;
-	navWin = window.open(navURL , "lxWin" , "WIDTH=440 , HEIGHT=400 , toolbar=yes , location=no , status=yes , scrollbars=yes , resizable=yes , copyhistory=no");
-	if (navigator.appName == "Netscape") { navWin.focus()};
-}
 
-function openHelpWin(navURL, frag) {
-	var navWin = null;
-	if(navWin == null)
-		navWin = window.open(navURL , "helpWin" , "scrollbars=yes,toolbar=yes,WIDTH=440,HEIGHT=400,location=yes,copyhistory=no,alwaysRaised=yes");
-	if (navigator.appName == "Netscape") { navWin.focus()};
-	navWin.location.hash = frag;
-// Bug: wish the window would pop up on subsequent calls. Maybe it would be best to kill the window and re open it!
-}
-//	navWin = window.open(navURL , "lxWin" , "WIDTH=440 , HEIGHT=400 , toolbar=yes , location=yes , status=yes , scrollbars=yes , resizable=yes , copyhistory=no");
-
-function nav_pulldown(list) {top.document.location.href = list.options[list.selectedIndex].value;}
-function wB(){var br="BR";if((navigator.userAgent.indexOf('Mozilla')!= -1)&&((navigator.userAgent.indexOf('Spoofer')==-1)&&(navigator.userAgent.indexOf('compatible')==-1))){br="NS"}return br}
-function wV(br){var bv=0;bv=navigator.appVersion.substring(0,1);if(br=="IE"){(parseInt(bv));}if(br=="NS"){(parseInt(bv));}return bv;}
-function wP(){var os="OS";if(navigator.userAgent.indexOf("OS/2")!=-1){os='os/2'}return os;}b=wB();v=wV(b);o=wP();
-function change_bgColor() {if (b=="NS" && v==2 && o != "os/2"){document.bgColor="#999999"}}
-function gotosite() {var L = document.formSpinbox.pickWW.selectedIndex; location.href = document.formSpinbox.pickWW.options[L].value; return false;}
-// end the hiding comment --> 
-</script>
-<!-- <BODY ONLOAD="change_bgColor()" BGCOLOR="#FFFFFF" TEXT="#000000"> -->
-<!-- begin masthead table -->
-<!--#include virtual="/general/warning.inc" -->
-<!--#include virtual="/general/warning.inc" -->
-</head>
-<body text="#000000" bgcolor="#FFFFFF" TOPMARGIN="2" LEFTMARGIN="2" MARGINWIDTH="2" MARGINHEIGHT="2">
-&nbsp;
-<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT VALIGN=TOP WIDTH="451" BGCOLOR="#0033CC"><a href="http://www.ibm.com/"><img SRC="/developerworks/opensource/icu/project/ibm_logo.gif" ALT="IBM" BORDER=0 height=24 width=57></a><img SRC="/developerworks/opensource/icu/project/logo_sp.gif" ALT="" BORDER=0 height=24 width=394></td>
-
-<td ROWSPAN="2" WIDTH="49"><a href="http://www.ibm.com/shop/"><img SRC="/developerworks/opensource/icu/project/i_shopibm.gif" ALT="ShopIBM" BORDER=0 height=45 width=49></a></td>
-
-<td ROWSPAN="2" WIDTH="45"><a href="http://www.ibm.com/support/"><img SRC="/developerworks/opensource/icu/project/i_support.gif" ALT="Support" BORDER=0 height=45 width=45></a></td>
-
-<td ROWSPAN="2" WIDTH="54"><a href="http://www.ibm.com/download/"><img SRC="/developerworks/opensource/icu/project/i_download.gif" ALT="Download" BORDER=0 height=45 width=54></a></td>
-
-<td WIDTH="100%" BGCOLOR="#0033CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
-</tr>
-
-<tr>
-<td ALIGN=LEFT WIDTH="451" BGCOLOR="#000000"><a href="http://www.ibm.com/"><img SRC="/developerworks/opensource/icu/project/n_home.gif" ALT="Home" BORDER=0 height=21 width=38></a><a href="http://www.ibm.com/news/"><img SRC="/developerworks/opensource/icu/project/n_news.gif" ALT="News" BORDER=0 height=21 width=34></a><a href="http://www.ibm.com/products/"><img SRC="/developerworks/opensource/icu/project/n_products.gif" ALT="Products" BORDER=0 height=21 width=52></a><a href="http://www.ibm.com/services/"><img SRC="/developerworks/opensource/icu/project/n_services.gif" ALT="services" BORDER=0 height=21 width=51></a><a href="http://www.ibm.com/solutions/"><img SRC="/developerworks/opensource/icu/project/n_solutions.gif" ALT="Solutions" BORDER=0 height=21 width=54></a><a href="http://www.ibm.com/ibm/"><img SRC="/developerworks/opensource/icu/project/n_about.gif" ALT="About IBM" BORDER=0 height=21 width=59></a><img SRC="/developerworks/opensource/icu/project/n_sp.gif" ALT="" BORDER=0 height=21 width=163></td>
-
-<td WIDTH="100%" BGCOLOR="#000000"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
-</tr>
-</table>
-
-<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
-<caption><!-- borders of search area, left-top-right-->
-<br><!-- search area--></caption>
-
-<tr>
-<td ROWSPAN="2" WIDTH="1" BGCOLOR="#003366"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
-
-<td BGCOLOR="#FFFFFF"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=598></td>
-
-<td ROWSPAN="2" WIDTH="1" BGCOLOR="#9999CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
-</tr>
-
-
-<!-- <tr>
-<td COLSPAN="3" BGCOLOR="#9999CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
-</tr>
--->
-
-</table>
+<IMG alt="Locale Explorer Help" border="0" height="50" hspace="0" src="lx.jpg" vspace="0" width="620"><BR><IMG alt="" border="0" height="17" hspace="0" src="lxbar_g.gif" vspace="0" width="200"><A href="http://oss.software.ibm.com/icu" target="new"><IMG alt="oss.software.ibm.com/icu" border="0" height="17" hspace="0" name="icu_" src="lxbar_icu.jpg" vspace="0" width="140"></A><A href="http://oss.software.ibm.com/icu" target="new"><IMG alt="www.ibm.com/developer" border="0" height="17" hspace="0" name="dev" src="lxbar_dev.jpg" vspace="0" width="140"></A><A href="http://www.ibm.com" target="new"><IMG alt="www.ibm.com" border="0" height="17" hspace="0" name="ibm" src="lxbar_ibm.jpg" vspace="0" width="140"></A><BR>
 
 <H1><A HREF="http://oss.software.ibm.com/icu/">ICU</A> Locale Explorer &gt; Help</H1>
 
@@ -434,6 +366,70 @@ characters, the number of characters specifies the field width. For example, if 
 
 <HR><A NAME="EXPLORE_CollationElements"><H2>Collation (sorting) Example</H2></A><UL> 
 
+This example demonstrates sorting 
+      (collation) in this locale. Type in some 
+      lines of text to be sorted, and click the <STRONG>Sort</STRONG> button. 
+      (The notes below explain what happens).
+
+
+You see four different columns as output. The first 
+is the original text for comparison. The lines are numbered to show their 
+original position. The&nbsp;remaining columns show sorting by different 
+strengths (available as a parameter to the collation function).&nbsp;Groups of 
+lines that sort&nbsp;precisely the same are separated by an&nbsp;underline. 
+Since collation treats these lines as identical, lines in the same group could 
+appear in any order (depending on the precise sorting algorithm used).
+<P>The demo shows three different strengths used when 
+comparing any two strings:
+<UL>
+  <LI><FONT face=Arial size=2><EM>Primary Only</EM>&nbsp;means that only major 
+  differences are considered, such as different base letters (e.g. <EM>A vs 
+  B</EM>).</FONT></LI>
+  <LI><FONT face=Arial size=2><EM>Primary &amp; Secondary</EM> means that a 
+  second level of differences is also considered, such as accents 
+  (e.g.&nbsp;<EM>A vs Á</EM>). However, these are only relevant if there are 
+  <EM>no</EM> primary differences anywhere else in the strings.</FONT></LI><FONT 
+  face=Arial size=2>
+  <LI><FONT face=Arial size=2><EM>Primary - Tertiary </EM>means that a third 
+  level of differences is also considered, such as case (e.g. <EM>A vs a</EM>). 
+  However, these are only relevant if there are <EM>no</EM> primary differences 
+  and no secondary differences anywhere else in the 
+strings.</FONT></LI></FONT></UL>
+<DIV><FONT face=Arial size=2><EM>Primary - Tertiary</EM> is the only collation 
+people will normally use; however, these levels are also used in searching, for 
+a "loose" match. In some languages, such as French, secondary differences are 
+counted from the <EM>end</EM> of the strings. You see this if you look at the 
+difference in sorting between English and French for 
+the&nbsp;lines:&nbsp;"côté", "coté", "côte", and "cote".</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+  <DIV><FONT face=Arial size=2><STRONG>Note:</STRONG> if you want to enter a 
+  character for sorting that is not available from your keyboard, you can type 
+  it in by character code using "\u" notation: for example, "ä" is \u00E4, or 
+  paste it in from&nbsp;a unicode chart page,&nbsp;such as here&nbsp;[link <A 
+  href="http://www.macchiato.com/unicode/charts.html">http://www.macchiato.com/unicode/charts.html</A>].&nbsp;</FONT></DIV></BLOCKQUOTE>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><STRONG>References.</STRONG> For more information, 
+see </FONT></DIV>
+<UL><FONT face=Arial size=2>
+  <LI><FONT face=Arial size=2>the <EM>UTS #10 Unicode Collation Algorithm 
+  </EM>[link <A 
+  href="http://www.unicode.org/unicode/reports/tr10/Sample/">http://www.unicode.org/unicode/reports/tr10/Sample/</A>)]</FONT></LI>
+  <LI><FONT face=Arial size=2>the UCA demo (link to <A 
+  href="http://www.unicode.org/unicode/reports/tr10/Sample/">http://www.unicode.org/unicode/reports/tr10/Sample/</A>)</FONT></LI>
+  <LI>the Draft ICU User Guide</FONT></LI>
+  <UL>
+    <LI><FONT face=Arial size=2>Collation (link <A 
+    href="http://oss.software.ibm.com/developerworks/opensource/icu/project/userguide/collatorOverview.html"><EM>http://oss.software.ibm.com/developerworks/opensource/icu/project/userguide/collatorOverview.html</EM></A><EM>)</EM></FONT></LI></UL>
+  <LI><FONT face=Arial size=2>the Draft ICU API documentation on 
+  Collation</FONT></LI>
+  <UL>
+    <LI><FONT face=Arial size=2>Collator (link <A 
+    href="http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_collator.html#_details">http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_collator.html#_details</A>)</FONT></LI>
+    <LI><FONT face=Arial size=2>RuleBasedCollator (link <A 
+    href="http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_rulebasedcollator.html#_details">http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_rulebasedcollator.html#_details</A>)</FONT></LI></UL></UL>
+
+<!-- 
  This example demonstrates how the ICU can sort text in a
  locale-specific way.  Type some lines of text into the box provided,
  and click sort. The text will be sorted according to the collation
@@ -445,7 +441,9 @@ characters, the number of characters specifies the field width. For example, if 
  which is at Unicode code point U+0416.
 <P>
  For more information, see the ICU Documentation and <A TARGET="unicode.org" HREF="http://www.unicode.org/unicode/reports/tr10/">Unicode Technical Report #10: Unicode Collation Algorithm</A>.
+-->
 </UL>
+
 
 <HR><A NAME="EXPLORE_NumberPatterns"><H2>Number Pattern Demo</H2></A><UL> 
 
@@ -511,19 +509,8 @@ characters, the number of characters specifies the field width. For example, if 
 <HR>
 <B>End of help</B>
 
+<HR>
+<I>Copyright (c) 2000 IBM, Inc. and Others</I>
 
-
-
-<!-- DEFAULT.htmlTAIL -->
-
-<!-- replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->
-
-<br>&nbsp;
-<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
-<tr>
-<td COLSPAN="1" WIDTH="0%"><a href="http://www.ibm.com/Privacy/"><img SRC="/developerworks/opensource/icu/project/privacy.gif" ALT="Privacy" BORDER=0 height=19 width=53></a><a href="http://www.ibm.com/Legal/"><img SRC="/developerworks/opensource/icu/project/legal.gif" ALT="Legal" BORDER=0 height=19 width=41></a><a href="http://www.ibm.com/Contact/"><img SRC="/developerworks/opensource/icu/project/contact.gif" ALT="Contact" BORDER=0 height=19 width=56></a></TD><TD BGCOLOR WIDTH=100%><img SRC="/developerworks/opensource/icu/project/localeexplorer/foot-extra.gif" ALT="---" height=19 WIDTH="100%" ></td>
-</tr>
-</table>
-<!-- DEFAULT.htmlTAIL -->
 
 </BODY></HTML>

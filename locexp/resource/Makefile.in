@@ -28,7 +28,7 @@ GENSRC = root.txt index.txt
 
 # resource files
 # AUTOGEN - source whose encoding is detected
-AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt 
+AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt zh.txt
 SRC    = sr.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)
@@ -36,7 +36,7 @@ RES = $(ALLSRC:.txt=.res)
 
 %.res : %.txt
 	@echo Rebuilding $@
-	$(sbindir)/genrb -v -d. $<
+	$(INVOKE) $(sbindir)/genrb -v -d. $<
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
@@ -63,9 +63,10 @@ Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 
 -include Makefile.res
 
+
 mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
-root.txt: ../locexp.c
+root.txt: ../locexp.c root.txt.inc ../tools/extractStrings.sh
 	env PATH=../tools:../../uconv:$(PATH) extractStrings.sh ../locexp.c > ../resource/root.txt || ( rm -f root.txt ; false )
 
 index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
@@ -74,9 +75,17 @@ index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
 
 install-local: install-res
 
-install-res: res-local
-	$(mkinstalldirs) $(lxdatadir)
-	$(INSTALL) $(ALLSRC) $(RES) $(lxdatadir)
+tmp/locexp.lst: Makefile
+	@$(mkinstalldirs) tmp
+	@-$(RMV) $@
+	@for file in $(RES); do \
+	  echo `pwd`/$$file >> $@; \
+	done;
+
+resinst: $(RES) tmp/locexp.lst
+	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m dll -v -c -d $(datadir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
+
+install-res: res-local resinst
 
 dist-local:
 
@@ -98,7 +107,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 sr.res : sr.txt
 	@echo Rebuilding $@ - utf-16le
-	@$(sbindir)/genrb -d. -eutf-16le $<
+	@$(INVOKE)  $(sbindir)/genrb -d. -eutf-16le $<
 
 escapeABundle: escapeABundle.c
 	cc -o escapeABundle escapeABundle.c

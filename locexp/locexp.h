@@ -5,6 +5,7 @@
 #include "unicode/ustdio.h"
 #include "unicode/lx_utils.h"
 #include "unicode/decompcb.h"
+#include "unicode/translitcb.h"
 
 typedef struct 
 {
@@ -38,6 +39,7 @@ typedef struct
   /* === Context information for callbacks.. woo hoo ! */
   FromUBackslashContext   backslashCtx;
   FromUDecomposeContext   decomposeCtx;
+  FromUTransliteratorContext   xlitCtx;
   
 } LXContext;
 

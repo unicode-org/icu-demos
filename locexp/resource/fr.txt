@@ -7,6 +7,9 @@ fr
 {
         EXPLORE_CollationElements_sampleString { "déjà|Meme|deja|même|dejà|bpef|b\u0153g|Boef|Mémé|b\u0153f|boef|bnef|pêche|pèché|pêché|pêche|pêché" }
 
+  // images
+     lx.jpg:import { "fr/lx.jpg" }
+
 // ==  Keys  ==
    LocaleID      { "Identificateur de locale de Windows" }
    Version { "Version des données d'ICU" }

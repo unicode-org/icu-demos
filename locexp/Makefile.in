@@ -20,7 +20,7 @@ LXOPTIONS = -DLX_USE_FONTED
 
 -include Makefile.local
 
-CPPFLAGS += $(LXOPTIONS) -DINSURE
+CPPFLAGS += $(LXOPTIONS) 
 
 ## Build directory information
 top_builddir = ..
@@ -51,7 +51,7 @@ CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(C
 .PHONY : all all-local install install-local clean clean-local \
 distclean distclean-local dist dist-local check check-local all-recursive \
  install-recursive clean-recursive distclean-recursive dist-recursive \
- distclean-recursive check-recursive icudata-dir  icudata-res icudata-conv icudata-clean icudata-dir 
+ distclean-recursive check-recursive 
 
 ## Clear suffix list
 .SUFFIXES :
@@ -85,7 +85,7 @@ all-recursive install-recursive clean-recursive distclean-recursive dist-recursi
 	fi
 
 
-all-local: $(TARGET) icudata-dir
+all-local: $(TARGET) 
 
 install-local: install-target
 
@@ -120,23 +120,6 @@ $(TARGET) : $(OBJECTS)
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
 endif
-
-icudata-all: icudata-dir icudata-res icudata-conv
-
-icudata-dir:
-	@test -d icudata || tar xvfpz icudata.tgz
-
-icudata-res: icudata-dir
-	$(sbindir)/genrb icudata/*.txt
-
-icudata-conv: icudata-dir
-	$(sbindir)/makeconv icudata/*.ucm
-
-icudata-clean: icudata-dir
-	-rm -f icudata/*.cnv icudata/*.res icudata/*~
-
-icudata-tgz: icudata-clean
-	tar cvfpz icudata.tgz icudata/
 
 #  
 #   You can put your own settings for locale explorer

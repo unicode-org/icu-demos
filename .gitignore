@@ -9,8 +9,10 @@ locexp/resource/escapeABundle
 locexp/resource/index.txt
 locexp/resource/root.txt
 locexp/resource/root_SAMPLE.txt
+locexp/resource/tmp
 locexp/tools/*.d
 locexp/tools/Makefile
 locexp/tools/escapeForBundle
+locexp/tools/findSame
 locexp/util/*.d
 locexp/util/Makefile

@@ -1,0 +1,11 @@
+// -*- Coding: latin1; -*-
+// Copyright (c) 2000 IBM, Inc. All Rights Reserved
+
+
+zh
+{
+helpPrefix { "default_" }
+localeList_Locale { "\u570B\u5BB6" }
+localeList_Sublocale { "\u8A9E\u8A00" }
+
+}

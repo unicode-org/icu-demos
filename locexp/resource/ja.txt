@@ -1,12 +1,14 @@
-// -*- Coding: shift_jis -*-
+// -*- Coding: latin1 -*-
+// -*- Cxding: shift_jis -*-
 // Copyright (c) 1999, International Business Machines Corporation and
 // others. All Rights Reserved.
 // Japanese. by Steven R. Loomis
 
 ja 
 {
-	DefaultEncoding
-	{
-		{ "shift_jis" }
-	}
+   localeList_Locale  {  "\u3052\u3093\u8a9E"  } //‚°‚ñ‚²
+   localeList_Sublocale  {  "\u304F\u306B"  }    // ‚­‚É
+   
+
+
 }

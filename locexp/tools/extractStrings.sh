@@ -51,6 +51,11 @@ if [ -f root_tail.html ]; then
     emitResourceFromFile.sh htmlTAIL iso-8859-1 root_tail.html || exit 1
 fi
 echo
+if [ -f root.txt.inc ]; then
+    echo
+    echo " // Imported from: root.txt.inc "
+    cat root.txt.inc
+fi
 echo
 echo "}"
 echo
