@@ -247,8 +247,19 @@ function handleTransformButton() {
   _handleTransformButton(1);
 }
 function _handleTransformButton(i) {
-  document.FORM.STATUS.value = "Busy...";
   var id = getID(i);
+  if (id.search(/\S/) < 0) {
+    // Nothing to do!  Don't call the CGI.
+    document.FORM["OUTPUT" + i].value = "";
+    if (i == 1) {
+      document.FORM.OUTPUT2.value = "";
+    }
+    document.FORM.STATUS.value = "Done";
+    return;
+  }
+  document.FORM.STATUS.value = "Busy...";
+  // Prepend an unescape ONLY for Input>Output1
+  if (i == 1) { id = "Hex-Any;" + id };
   op("callbackHandleTransliterateButton", i,
      "TRANSLITERATE",
      (i == 1) ? document.FORM.ARG_INPUT.value
@@ -261,6 +272,8 @@ function callbackHandleTransliterateButton(i, result) {
     document.FORM.STATUS.value = "Error";
     return;
   }
+    document.FORM.STATUS.value = "Done";
+    return;
   if (i == 1) {
     _handleTransformButton(2);
   } else {
