@@ -2169,12 +2169,13 @@ void listBundles(char *b)
  * @param queryString the querystring of the request.
  * @param key the key we're listing
  */
-
+#define UCA_LEN 110000
 void showCollationElements( UResourceBundle *rb, const char *locale, const char *queryString, const char *key )
 {
   
   UErrorCode status = U_ZERO_ERROR;
   const UChar *s  = 0;
+  UChar temp[UCA_LEN]={'\0'};
       UChar *scopy = 0;
         UChar *comps = 0;
   bool_t bigString = FALSE; /* is it big? */
@@ -2202,9 +2203,13 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
             UChar tmp[1400];
             int nn;
 */
-
-	  s = ucol_getRules(coll, &len);
-          
+          if(strcmp(locale,"root")==0){
+            len = ucol_getRulesEx(coll,UCOL_FULL_RULES, temp,UCA_LEN);
+            s=temp;
+          }
+          else{
+              s = ucol_getRules(coll,&len);
+          }        
 
 #if 0
           memcpy(tmp,s,len*sizeof(UChar));
