@@ -222,7 +222,7 @@ void displayLocaleExplorer(LXContext *lx)
             u_fprintf(lx->OUT, "<h4>%U</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
         }
         
-        u_fprintf(lx->OUT, "<table summary=\"%U\" WIDTH=\"70%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
+        u_fprintf(lx->OUT, "<table summary=\"%U\" WIDTH=\"70%%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
         u_fprintf(lx->OUT, "<td colspan=2 align=right>");
         printHelpTag(lx, "chooseLocale", NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");

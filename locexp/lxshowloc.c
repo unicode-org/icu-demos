@@ -174,7 +174,7 @@ void showOneLocale(LXContext *lx)
     {
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   LOCALE ID section %%%*/
-        u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%\"><tr><td valign=TOP>");
+        u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%%\"><tr><td valign=TOP>");
         showLocaleCodes(lx, myRB, locale);
         u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
 
@@ -228,7 +228,7 @@ void showOneLocale(LXContext *lx)
                       FSWF("MonthAbbreviations", "Short Names"),
                       FSWF("MonthNames", "Long Names"), 12);
 
-        u_fprintf(lx->OUT, "&nbsp;<table cellpadding=0 cellspacing=0 width=\"100%\"><tr><td VALIGN=\"TOP\">");
+        u_fprintf(lx->OUT, "&nbsp;<table cellpadding=0 cellspacing=0 width=\"100%%\"><tr><td VALIGN=\"TOP\">");
     
         {
             const UChar *ampmDesc[3];

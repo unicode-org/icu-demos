@@ -671,7 +671,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
   
         if(U_SUCCESS(status))
         {
-            u_fprintf(lx->OUT, "<TABLE summary=\"String\" BORDER=1 WIDTH=100%>");
+            u_fprintf(lx->OUT, "<TABLE summary=\"String\" BORDER=1 WIDTH=100%%>");
             u_fprintf(lx->OUT, "<TR><TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD></TR>\r\n",
                 FSWF("charNum", "#"),
                 FSWF("char", "Char"),
@@ -941,7 +941,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 #endif
     u_fprintf(lx->OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
-    u_fprintf(lx->OUT, "</TR><TR><TD COLSPAN=2><TABLE BORDER=2 WIDTH=\"100%\" HEIGHT=\"100%\">\r\n");
+    u_fprintf(lx->OUT, "</TR><TR><TD COLSPAN=2><TABLE BORDER=2 WIDTH=\"100%%\" HEIGHT=\"100%%\">\r\n");
 
     for(i=0;desc[i];i++)
     {
@@ -1125,7 +1125,7 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
     if(exampleNF) unum_close(exampleNF);
 
-    u_fprintf(lx->OUT, "<TABLE BORDER=2 WIDTH=\"100%\" HEIGHT=\"100%\">\r\n");
+    u_fprintf(lx->OUT, "<TABLE BORDER=2 WIDTH=\"100%%\" HEIGHT=\"100%%\">\r\n");
 
     for(k=0;k<sizeof(styles)/sizeof(styles[0]);k++) {
       u_fprintf(lx->OUT, "<tr><td colspan=2><b>%s</b></td></tr>\r\n", stylen[k]);
