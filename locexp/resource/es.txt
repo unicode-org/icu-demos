@@ -1,0 +1,12 @@
+// -*- Coding: iso-8859-1 -*-
+// some spanish words
+
+es
+{
+   localeList_Locale  {  "Lenguages"  }
+   localeList_Sublocale  {  "Paises"  }
+   Day { "Dia" }
+   Month { "Mes" }
+//  helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
+
+}

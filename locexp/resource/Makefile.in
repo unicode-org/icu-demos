@@ -28,7 +28,7 @@ GENSRC = default.txt index.txt
 
 # resource files
 # AUTOGEN - source whose encoding is detected
-AUTOGENSRC = en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt
+AUTOGENSRC = en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt
 SRC    = sr.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)

@@ -1,5 +1,16 @@
+locexp/*.d
+locexp/Makefile
+locexp/Makefile.local
+locexp/locexp
 locexp/resource/*.res
 locexp/resource/Makefile
 locexp/resource/Makefile.res
 locexp/resource/default.txt
+locexp/resource/default_SAMPLE.txt
+locexp/resource/escapeABundle
 locexp/resource/index.txt
+locexp/tools/*.d
+locexp/tools/Makefile
+locexp/tools/escapeForBundle
+locexp/util/*.d
+locexp/util/Makefile

@@ -57,24 +57,9 @@ const char *utrns_getAvailableID(int32_t i)
 UTransliterator * 
 utrns_open(const char *id)
 {
-/*
-
-    int c = Transliterator::countAvailableIDs();
-    int i;
-
-    
-      for(i=0;i<c;i++)
-      {
-          UnicodeString n = Transliterator::getAvailableID(i);
-          char ch[200];
-      
-          u_austrcpy(ch, n.getUChars());
-          fprintf(stderr, "%d: %s\n", i, ch);
-          fflush(stderr);
-      }
-    
-*/
-    return (UTransliterator*) Transliterator::createInstance(UnicodeString(id, ""));
+  UTransliterator* u = (UTransliterator*) Transliterator::createInstance(UnicodeString(id, ""));
+  /*  fprintf(stderr, "utrns_open(%s) => %p\n", id, u); */
+  return u;
 }
 
 int32_t utrns_transliterate(UTransliterator *_this, 
@@ -85,6 +70,9 @@ int32_t utrns_transliterate(UTransliterator *_this,
                             UErrorCode *status)
 {
     if(U_FAILURE(*status)) return -1;
+
+    /*    fprintf(stderr, "utrns_transliterate(%p)\n", _this);
+          fflush(stderr);*/
 
     int32_t actLen;
 
@@ -115,4 +103,5 @@ utrns_close(UTransliterator *t)
 {
     if(t) 
        delete (Transliterator*)t;
+    /*    fprintf(stderr, "utrns_close(%p)\n"); fflush(stderr); */
 }

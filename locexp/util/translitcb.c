@@ -17,6 +17,7 @@
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
 
+bool_t TRANSLITERATED_tagWithHTML = TRUE;
 
 UConverterFromUCallback TRANSLITERATED_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 
@@ -222,7 +223,10 @@ U_CAPI void
     totrans[n++]= _this->invalidUCharBuffer[0];
 
     /* the <FONT> thing */
-    convertIntoTargetOrErrChars(_this, target, targetLimit, beginMark, beginMark+u_strlen(beginMark), err);  
+    if(TRANSLITERATED_tagWithHTML == TRUE)
+      {
+        convertIntoTargetOrErrChars(_this, target, targetLimit, beginMark, beginMark+u_strlen(beginMark), err);  
+      }
 
     /* len = utrns_transliterate(myTrans, _this->invalidUCharBuffer, _this->invalidUCharLength, tmpbuf, 300, &status2);*/
     
@@ -266,7 +270,10 @@ U_CAPI void
         n = 0; /* reset */
     }
     
-    convertIntoTargetOrErrChars(_this, target, targetLimit, endMark, endMark+u_strlen(endMark), err); 
+    if(TRANSLITERATED_tagWithHTML == TRUE)
+      {
+        convertIntoTargetOrErrChars(_this, target, targetLimit, endMark, endMark+u_strlen(endMark), err); 
+      }
 
 }
 

@@ -26,6 +26,7 @@
 UConverterFromUCallback TRANSLITERATED_lastResortCallback;
 #else
 extern UConverterFromUCallback TRANSLITERATED_lastResortCallback;
+extern bool_t TRANSLITERATED_tagWithHTML;
 #endif
 
 U_CAPI void 

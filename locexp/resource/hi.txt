@@ -1,0 +1,17 @@
+// -*- Coding: utf-8 -*-
+
+// some Hindi sort words
+
+hi
+
+{
+	EXPLORE_CollationElements_sampleString
+	{
+		"हिमालया|"
+		"अरून्धती|"
+		"हिन्दी|"   // Hindi
+		"स्टिवेन|"    
+		"महाभारात|" // epic of Hindu religion
+		"रामायण"   // epic of Hindu religion
+	}
+}

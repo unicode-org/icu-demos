@@ -353,7 +353,11 @@ int main(const char *argv[], int argc)
 
       lx->timeZone = lx->newZone;
 
+#ifndef LX_NO_USE_UTIMZONE
       tz = utz_open(lx->newZone); /* returns NULL for nonexistent TZ!! */
+#else
+	tz = NULL;
+#endif
 
       if(tz)
       {

@@ -22,8 +22,8 @@ CLEANFILES = *~
 ## Target information
 TARGET = liblxutil.$(SO)
 
-OBJECTS = decompcb.o lx_utils.o ures_additions.o kangxi.o collectcb.o translitcb.o utrnslit.o
-HEADERS = decompcb.h lx_utils.h ures_additions.h kangxi.h collectcb.h translitcb.h unicode/utrnslit.h
+OBJECTS = decompcb.o lx_utils.o ures_additions.o kangxi.o collectcb.o translitcb.o utrnslit.o kannada.o
+HEADERS = unicode/decompcb.h unicode/lx_utils.h unicode/ures_additions.h unicode/kangxi.h unicode/collectcb.h unicode/translitcb.h unicode/utrnslit.h
 
 ## fontedcd  support
 OBJECTS += fontedcb.o devanagari.o

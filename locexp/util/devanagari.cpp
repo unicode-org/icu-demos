@@ -154,7 +154,7 @@ void flushDevanagari(const UChar *buf, const int32_t *typ,
       
       if(typ[i] == dv_CD)
 	{
-	  str = convTableHalf[buf[i] & 0x7f];
+          str = convTableHalf[buf[i] & 0x7f];
 	}
       else
 	{
@@ -170,9 +170,9 @@ void flushDevanagari(const UChar *buf, const int32_t *typ,
 	    }
 	  *(*target) = *str;
 	  str++;
-	  fprintf(stderr, "t=%08x, ", *target);fflush(stderr);
+          // fprintf(stderr, "t=%08x, ", *target);fflush(stderr);
 	  *target = *target + 1;
-	  fprintf(stderr, "t=%08x\n", *target);fflush(stderr);
+	  //fprintf(stderr, "t=%08x\n", *target);fflush(stderr);
 	  //	  (*target)++;
 
 	}
@@ -199,17 +199,21 @@ U_CAPI bool_t
   unsigned char tmp[99];
 
   const UChar *mysrc = *source;
-  UChar  p;
+  UChar  p, nextp;
   bool_t shouldAdvanceSource = FALSE;
 
   for(mysrc = (*source - 1);mysrc < sourceLimit;mysrc++)
   {
     if(mysrc == (*source - 1))
-      p = _this->invalidUCharBuffer[0];
+      {
+        p = _this->invalidUCharBuffer[0];
+        nextp = *mysrc;
+      }
     else
       {
         shouldAdvanceSource = TRUE;
         p = *mysrc;
+        nextp = mysrc[1];
       }
   
 #if 0
@@ -303,13 +307,14 @@ U_CAPI bool_t
 	  n = 0;
 	}
 	 
-	 if(((p+1)) == dv_VIRAMA)
+	 if(nextp == dv_VIRAMA)
 	   {
-	     //		*this << "<font face=arial>VIR</font>";
 	     buf[n] = p;
 	     typ[n] = dv_CD;
 	     n++; // one more out
-	     p ++; // skip the virama
+             (*source)++;
+
+ 	     mysrc ++; // skip the virama
 	   }
 	 else
 	   {

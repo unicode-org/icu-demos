@@ -9,6 +9,7 @@
   Steven R. Loomis <srl@monkey.sbay.org>
 
 */
+#include <stdio.h>
 
 #include "unicode/fontedcb.h"
 #include "unicode/fonted_imp.h"
@@ -72,9 +73,17 @@ U_CAPI void
   u  = _this->invalidUCharBuffer[0];
 
   /* Todo: register handlers here */
+  fprintf(stderr, "_p=%04X\n", u);
   if((u >= U_FONTED_DEVANAGARI_START) && (u <= U_FONTED_DEVANAGARI_END))
     {
+      fprintf(stderr, "-->D\n");
       handled = fonted_devanagari(_this, target, targetLimit, source, sourceLimit, offsets, flush, err);
+    }
+
+  else if((u >= U_FONTED_KANNADA_START) && (u <= U_FONTED_KANNADA_END))
+    {
+      fprintf(stderr, "-->K\n");
+      handled = fonted_kannada(_this, target, targetLimit, source, sourceLimit, offsets, flush, err);
     }
       
   if(!handled)

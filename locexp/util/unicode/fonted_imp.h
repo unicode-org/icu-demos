@@ -29,5 +29,18 @@ U_CAPI bool_t
 		     bool_t flush,
 		     UErrorCode * err);
 
+#define U_FONTED_KANNADA_START 0x0C80
+#define U_FONTED_KANNADA_END   0x0CEF
+
+U_CAPI bool_t
+  fonted_kannada    (UConverter * _this,
+		     unsigned char **target,
+		     const unsigned char *targetLimit,
+		     const UChar ** source,
+		     const UChar * sourceLimit,
+		     int32_t *offsets,
+		     bool_t flush,
+		     UErrorCode * err);
+
 
 #endif
