@@ -141,6 +141,9 @@ function handleSelectSource(i) {
   if (source.charAt(0) == '(') {
     setOptions(document.FORM["SELECT_TARGET" + i], []);
     setOptions(document.FORM["SELECT_VARIANT" + i], []);
+    if (source == "(Inverse)") {
+      _handleTransliterateButton(2);
+    }
   } else {
     op("callbackHandleSelectSource", i,
        "GETAVAILABLETARGETS", source);
@@ -183,18 +186,14 @@ function updateUserIDs() {
 }
 
 function updateSelector(i) {
-  alert("updateSelector " + i);
   op("callbackUpdateSelector", i, "GETAVAILABLESOURCES");
 }
 function callbackUpdateSelector(i, list) {
-  alert("callbackUpdateSelector " + i);
   var s = getSelectedOption(document.FORM["SELECT_SOURCE" + i]);
   document.FORM["SELECT_SOURCE" + i].selectedIndex = 0;
   var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
   setOptions(document.FORM["SELECT_SOURCE" + i], o.concat(list.split(";").sort()), s);
-  alert("Calling hss" + i);
   handleSelectSource(i);
-  alert("Called hss" + i);
   if (i == 1) {
     updateSelector(2);
   }
