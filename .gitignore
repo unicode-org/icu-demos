@@ -8,6 +8,12 @@ XMLConverter/XMLConverter
 /config.cache
 /config.log
 /config.status
+convexp/*.d
+convexp/Debug
+convexp/Makefile
+convexp/Makefile.local
+convexp/Release
+convexp/convexp
 dumpdat/Makefile
 locexp/*.d
 locexp/Makefile
