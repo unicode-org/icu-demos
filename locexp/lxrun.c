@@ -3,7 +3,7 @@
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
-
+#include <unicode/udata.h>
 
 /************************ fcns *************************/
 /** Called functions from the main() module **/
@@ -98,8 +98,45 @@ void setupLocaleExplorer(LXContext *lx)
 
     if((tmp=getenv("QUERY_STRING")) == NULL)
     {
+        static char ho_str[1024];
+        static char pi_str[1024];
+        static char qs_str[1024];
+        static char sn_str[1024];
+        static char sp_str[1024];
+        
         fprintf(stderr, "This program is designed to be run as a CGI-BIN.  QUERY_STRING is undefined.");
-        exit(1);
+
+        strcpy(ho_str, "HTTP_HOST=host.moc");
+        strcpy(pi_str, "PATH_INFO=");
+        strcpy(qs_str, "QUERY_STRING=");
+        strcpy(sn_str, "SCRIPT_NAME=/cgi-bin/locexp");
+        strcpy(sp_str, "SERVER_PORT=80");
+        
+        puts("");
+        /* path info */
+        printf(pi_str);
+        if(fgets(pi_str+strlen(pi_str),1000, stdin)) 
+        {
+            pi_str[strlen(pi_str)-1] = 0;
+        }
+
+        printf(qs_str);
+        fgets(qs_str+strlen(qs_str),1000, stdin);
+
+
+
+        puts(ho_str);
+        puts(pi_str);
+        puts(qs_str);
+        puts(sn_str);
+        puts(sp_str);
+
+        putenv(ho_str);
+        putenv(pi_str);
+        putenv(qs_str);
+        putenv(sn_str);
+        putenv(sp_str);
+
     }
 
 
@@ -202,7 +239,7 @@ void setupLocaleExplorer(LXContext *lx)
 	char id[200];
 	UErrorCode transStatus = U_ZERO_ERROR;
 	UTransliterator *trans;
-        sprintf(id,"%s-%s", lx->curLocaleName, lx->cLocale);
+        sprintf(id,"Any-%s", /* lx->curLocaleName,*/ lx->cLocale);
         fprintf(stderr, "LC=[%s]\n", id);
         trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
  	if(U_FAILURE(transStatus))	
@@ -223,7 +260,7 @@ void setupLocaleExplorer(LXContext *lx)
     }
 
     /* setup the time zone.. */
-    if (!strncmp(tmp,"SETTZ=",6))
+    if (tmp && !strncmp(tmp,"SETTZ=",6))
     {
         const char *start = (tmp+6);
         const char *end;

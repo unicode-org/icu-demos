@@ -36,7 +36,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
     array = ures_getByKey(rb, key, array, &status);
     subStatus = status;
   
-    s = ures_getStringByIndex(array, 2, &len, &subStatus);
+    s = ures_getStringByKey(array, "Sequence", &len, &subStatus);
 
     if(!s || !s[0] || (status == U_MISSING_RESOURCE_ERROR) || U_FAILURE(subStatus) )
     {
@@ -76,13 +76,15 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
     len2 = len;
 
     scopy = malloc(len * sizeof(UChar));
-    memcpy(scopy,s,len*sizeof(UChar));
+    memcpy(scopy, s, len*sizeof(UChar));
+
     for(i=0;i<len;i++)
     {
         if(scopy[i] == 0x0000)
         {
             scopy[i] = 0x0020; /* normalizer seems to croak on nulls */
         }
+
     }
     s = scopy;
 
@@ -127,10 +129,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
     u_fprintf(lx->OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
-
-
     u_fprintf(lx->OUT, "</TR><TR><TD COLSPAN=2>");
-
 
     if(U_SUCCESS(status))
     {
@@ -237,7 +236,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
     }
 
     status = U_ZERO_ERROR;
-    s = ures_getStringByIndex(array, 1, &len, &status);
+    s = ures_getStringByKey(array, "Version", &len, &status);
     if(U_SUCCESS(status))
     {
         u_fprintf(lx->OUT, "<P><B>%U %U:</B> %U\r\n",
@@ -256,16 +255,12 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
     ures_close(item);
 }
 
-
 /* These aren't resources anymore. */
 void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 {
   
     UErrorCode status = U_ZERO_ERROR;
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
     char tempctry[1000], templang[1000], tempvar[1000];
-    int32_t len;
     const char *ctry3 = NULL, *lang3 = NULL;
 
     showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
@@ -321,7 +316,6 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
     u_fprintf(lx->OUT, "<TD>");
 
-
     lang3 = uloc_getISO3Language(locale);
     if(lang3)
     {
@@ -350,20 +344,9 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
 {
   
     UErrorCode status = U_ZERO_ERROR;
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
-    char tempchar[1000];
 
     UScriptCode  list[16];
     int32_t len, i;
-
-    UErrorCode countStatus = U_ZERO_ERROR,langStatus = U_ZERO_ERROR;
-    const UChar *count3 = 0, *lang3 = 0;
-
-/*
-  count3 = ures_getStringByKey(rb, "ShortCountry", &len, &countStatus);
-  lang3 = ures_getStringByKey(rb, "ShortLanguage", &len, &langStatus);
-*/
 
     len = uscript_getCode(locale, list, sizeof(list)/sizeof(list[0]), &status);
 
@@ -388,7 +371,6 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
     showKeyAndEndItem(lx, "LocaleScript", locale);
 }
 
-
 /* Show a resource that's a simple integer -----------------------------------------------------*/
 /**
  * Show an integer
@@ -404,12 +386,10 @@ void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale, const 
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *res = NULL;
     int32_t i;
-    int32_t len;
 
     res = ures_getByKey(rb, key, res, &status);
     i = ures_getInt(res, &status);
     showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
-
 
     if(U_SUCCESS(status))
     {
@@ -452,7 +432,6 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
     }
 
     showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
-
 
     if(U_SUCCESS(status))
     {
@@ -509,7 +488,6 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     UBool bigString = FALSE; /* is it big? */
     UBool userRequested = FALSE; /* Did the user request this string? */
     int32_t setLen = 0, rulesLen = 0, len;
-    UChar32 c;
     int32_t i;
     USet *uset;
     UChar *buf  = NULL;
@@ -798,7 +776,6 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     ures_close(array);
 }
 
-
 /* Show a resource that's an array, wiht an explanation ------------------------------- */
 
 void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *key )
@@ -887,7 +864,6 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
         u_fprintf(lx->OUT, "&nbsp;");
     }
 
-
 #ifdef LX_USE_CURRENCY
     /* Currency Converter link */
     if(!strcmp(key, "CurrencyElements"))
@@ -904,7 +880,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
             item = ures_getByIndex(item, 1, item, &curStatus);
             curStr  = ures_getString(item, &len, &curStatus);
 
-/*	homeStr = ures_getArrayItem(lx->defaultRB, key, 1, &curStatus); */
+            /* homeStr = ures_getArrayItem(lx->defaultRB, key, 1, &curStatus); */
         }
         else
             homeStr = (const UChar[]){0x0000};
@@ -931,7 +907,6 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     }
 #endif
     u_fprintf(lx->OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
-
 
     u_fprintf(lx->OUT, "</TR><TR><TD COLSPAN=2><TABLE BORDER=2 WIDTH=\"100%\" HEIGHT=\"100%\">\r\n");
 
@@ -1091,8 +1066,6 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
     u_fprintf(lx->OUT, "</TABLE>");
 
-    /*  if(exampleType == kNumberExample )  */
-
     u_fprintf(lx->OUT, "</TD>");
 
     showKeyAndEndItem(lx, key, locale);
@@ -1137,18 +1110,14 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     showKeyAndEndItem(lx, key, locale);
 }
 
-
-
 /* show the DateTimeElements string *------------------------------------------------------*/
 
 void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale)
 {
     UErrorCode status = U_ZERO_ERROR;
-    UErrorCode firstStatus;
     const UChar *s  = 0;
     int32_t    len;
     const int32_t   *elements;
-    int32_t    firstDayIndex;
 
     UResourceBundle *array = NULL, *item = NULL;
 
@@ -1173,10 +1142,8 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
         return;
     }
 
-
     /* First day of the week ================= */
     u_fprintf(lx->OUT, "%U ", FSWF("DateTimeElements0", "First day of the week: "));
-    
 
     if(U_SUCCESS(status))
     {
@@ -1209,8 +1176,6 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 	    {
                 u_fprintf(lx->OUT, " = %U \r\n", s);
 	    }
-
-
 	}
         status = U_ZERO_ERROR;
     }
@@ -1219,7 +1184,6 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
         explainStatus(lx, status, key);
         u_fprintf(lx->OUT, "\r\n");
     }
-
 
     u_fprintf(lx->OUT, "<BR>\r\n");
 
@@ -1355,7 +1319,6 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
     showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
 
-
     if(bigString && !userRequested) /* it's hidden. */
     {
         /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
@@ -1375,8 +1338,6 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
         if(U_SUCCESS(status))
         {	
-
-
             u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
 	  
             /* print the top row */
@@ -1446,21 +1407,21 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 		  
                     /*      if((h == 0) && (v==0))
                             firstStatus = status; */ /* Don't need to track firstStatus, countArrayItems should do that for us. */
-		  
+
                     if(U_SUCCESS(status) && s)
                         u_fprintf(lx->OUT, "<TD>%U</TD>\r\n", s);
                     else
-		    {
+                    {
                         u_fprintf(lx->OUT, "<TD BGCOLOR=" kStatusBG " VALIGN=TOP>");
                         explainStatus(lx, status, key);
                         u_fprintf(lx->OUT, "</TD>\r\n");
                         break;
-		    }
-		}
+                    }
+                }
                 u_fprintf(lx->OUT, "</TR>\r\n");
-	    }
+            }
             u_fprintf(lx->OUT, "</TABLE>\r\n<BR>");
-	}
+        }
     }
 
     ures_close(item);
@@ -1496,30 +1457,27 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
     if(bigString && !userRequested) /* it's hidden. */
     {
         /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-	u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
     }
     else
     {
         if(bigString)
-	{
+        {
             u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
                       locale,
                       key,
                       FSWF("bigStringHide", "Hide"));
-	}
+        }
 
         firstStatus = status;  /* save this for the next column.. */
 
         if(U_SUCCESS(status))
-	{	
+        {	
             UResourceBundle *tagged =  ures_getByKey(rb, key, NULL, &status);
             UResourceBundle *defaultTagged = NULL;
             UResourceBundle *taggedItem = NULL;
             if(lx->defaultRB)
                 defaultTagged =  ures_getByKey(lx->defaultRB, key, NULL, &status);
-
-	  
-
             u_fprintf(lx->OUT,"<TABLE BORDER=1>\r\n");
 	  
             /* print the top row */

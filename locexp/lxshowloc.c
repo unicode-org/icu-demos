@@ -140,6 +140,11 @@ void showOneLocale(LXContext *lx, char *b)
     {
         showExploreSearch(lx, b);
     }
+    else if (strstr(b, "EXPLORE_srl"))
+    {
+        UChar ustr[] = { 0x0394, 0x03b5, 0x03c5, 0x03c4, 0x03ad, 0x03c1, 0x03b1, 0x0000 };
+        u_fprintf(lx->OUT, "<HR>GRK: %U<BR><HR>\n", ustr);
+    }
     else if (strstr(b, "EXPLORE_CollationElements"))
     {
         showKeyAndStartItem(lx, "EXPLORE_CollationElements", 
