@@ -1,64 +1,27 @@
 /**********************************************************************
-*   Copyright (C) 1999, International Business Machines
+*   Copyright (C) 1999-2001, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
-#include <stdio.h>
-
 /*
 
   'transliterating' callback. render using the translit framework..
 
-  Steven R. Loomis <srl@monkey.sbay.org>
+  New scheme:   Translate using "xx_YY-Latin" where xx_YY is a locale.
+  Not caching transliterators, anymore.
+
+  Steven R. Loomis <srl@jtcsv.com>
+
+//        gTR[n] = utrans_open("Null", UTRANS_FORWARD, NULL, 0, NULL, &status);
 
 */
 
+#include <stdio.h>
 #include "unicode/translitcb.h"
 #include "unicode/utrans.h"
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
 #include "unicode/ucnv_cb.h"
 #include <stdlib.h>
-
-UBool TRANSLITERATED_tagWithHTML = TRUE;
-
-UConverterFromUCallback TRANSLITERATED_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
-
-UTransliterator  **gTR;
-
-
-/*    if(gTR_utf8 == NULL) */
-/*    { */
-/*        gTR_utf8 = ucnv_open("utf-8", &subErr); */
-
-/*
-1: Arabic-Latin
-3: Devanagari-Latin
-5: Greek-Latin
-7: Hebrew-Latin
-9: Russian-Latin
-11: Halfwidth-Latin
-13: Kana-Latin
-
-*/
-
-UTransliterator loadTranslitFromCache(int n, const char *id)
-{
-  UErrorCode status = U_ZERO_ERROR;
-  if(!gTR[n])
-    {
-      gTR[n] = utrans_open(id, UTRANS_FORWARD, NULL, 0, NULL, &status);
-      /* fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]);  */
-    }
-  
-  if(!gTR[n] || U_FAILURE(status))
-    {
-        gTR[n] = utrans_open("Null", UTRANS_FORWARD, NULL, 0, NULL, &status);
-    }
-    
-
-  return gTR[n];
-}
-
 
 #define _beginMark "<FONT COLOR=green>"   /* 18 */
 #define _endMark   "</FONT>"              /* 7  */
@@ -74,75 +37,27 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
 #endif
 
 
-
 U_STRING_DECL(beginMark, _beginMark, 18 );
 U_STRING_DECL(  endMark, _endMark,   7);
 
-/* TODO: Use the real scriptRun APIs instead of UCharBlock */
-UTransliterator *getTransliteratorForScript(UBlockCode script)
+static void TRANSLITERATED_LoadTransliteratorIfNotLoaded(FromUTransliteratorContext *ctx)
 {
-    int i;
+  UErrorCode status = U_ZERO_ERROR;
+  char id[200];
 
-    if(gTR == NULL)
-    {
-        U_STRING_INIT(beginMark, _beginMark, 18);
-        U_STRING_INIT(  endMark, _endMark, 7);
+  sprintf(id,"%s", ctx->locale);
 
-        gTR = (UTransliterator**) malloc(sizeof(UTransliterator*)*UBLOCK_COUNT);
-        for(i=0;i<UBLOCK_COUNT;i++)
-            gTR[i] = 0;
-    }
+  if(ctx->trans == 0)
+  {
+    ctx->transerr = U_ZERO_ERROR;
+    ctx->trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &ctx->transerr);
+//     fprintf(stderr, "TR[%d:%s]=%p [%s]\n", 9133, id, ctx->trans, u_errorName(status)); 
+  }
 
-    switch(script)
-    {
-    case UBLOCK_LATIN_EXTENDED_A:
-        return loadTranslitFromCache((int)script, "Maltese-Latin");
-
-    case UBLOCK_DEVANAGARI:
-        return loadTranslitFromCache((int)script, "Devanagari-Latin");
-
-        /* the following two work, but leave little dev. chars all over */
-/*    case U_TAMIL:
-        return loadTranslitFromCache((int)script, "Tamil-Devanagari;Devanagari-Latin"); */
-
-/*    case U_TELUGU:
-        return loadTranslitFromCache((int)script, "Telugu-Devanagari;Devanagari-Latin"); */
-
-    case UBLOCK_TAMIL:
-        return loadTranslitFromCache((int)script, "Tamil-Latin");
-        
-    case UBLOCK_GREEK:
-        return loadTranslitFromCache((int)script, "Greek-Latin");
-
-    case UBLOCK_ARABIC:
-        return loadTranslitFromCache((int)script, "Arabic-Latin");
-
-    case UBLOCK_CYRILLIC:
-        return loadTranslitFromCache((int)script, "Cyrillic-Latin"); /* Cyrillic != Russian, but.. */
-
-    case UBLOCK_HEBREW:
-        return loadTranslitFromCache((int)script, "Hebrew-Latin"); 
-
-    case UBLOCK_KATAKANA:
-    case UBLOCK_HIRAGANA:
-        return loadTranslitFromCache((int)script, "Kana-Latin"); 
-
-    case UBLOCK_CJK_UNIFIED_IDEOGRAPHS:
-        return loadTranslitFromCache((int)script, "Kanji-English"); 
-
-    case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS:
-        return loadTranslitFromCache((int)script, "Halfwidth-Latin"); 
-
-
-    case UBLOCK_HANGUL_JAMO:
-    case UBLOCK_HANGUL_SYLLABLES:
-        return loadTranslitFromCache((int)script, "Hangul-Jamo;Jamo-Latin"); 
-
-
-    default:
-        return loadTranslitFromCache((int)0, "Null");
-        
-    }
+  if(!ctx->trans || U_FAILURE(status))
+  {
+    ctx->trans = utrans_open("Null", UTRANS_FORWARD, NULL, 0, NULL, &status);
+  }
 }
 
 
@@ -157,7 +72,6 @@ U_CAPI void
 {
     int32_t len;
     UErrorCode status2 = U_ZERO_ERROR;
-    UTransliterator *myTrans;
     UBlockCode scriptBlock;
     int srclen;
     FromUTransliteratorContext *ctx;
@@ -168,16 +82,42 @@ U_CAPI void
     UChar totrans[300];
     
     ctx = (FromUTransliteratorContext*) context;
-   
-    if(reason > UCNV_IRREGULAR)
+  
+    if(reason == UCNV_RESET) 
     {
+        if(ctx->utf8)
+        {
+            ucnv_reset(ctx->utf8);
+        }
+        return;
+    }
+    else if(reason == UCNV_CLOSE)
+    {
+      if(ctx->trans)
+      {
+        utrans_close(ctx->trans);
+      }
+      if(ctx->utf8)
+      {
+        ucnv_close(ctx->utf8);
+      }
       return;
     }
- 
+    else if(reason > UCNV_IRREGULAR)
+    {
+      return; /* ? */
+    }
+
     *err = U_ZERO_ERROR; /* so that we get called in a loop */
 
-    scriptBlock =  u_charScript(codePoint);
-    myTrans = getTransliteratorForScript(scriptBlock);
+    if(ctx->locale == NULL)
+    {
+      /* I guess they don't want anything, yet. */
+      return;
+    }
+
+    TRANSLITERATED_LoadTransliteratorIfNotLoaded(ctx);
+
 
     u_strncpy(totrans,codeUnits, length);
 
@@ -196,16 +136,23 @@ U_CAPI void
       ctx->utf8 = ucnv_open("utf-8", &u8err);
     }
 
+    /* FATAL ERR .......... */
+    if( (ctx->utf8==NULL) || (ctx->trans==NULL) )
+    {
+      *err = U_INTERNAL_PROGRAM_ERROR;
+      return;
+    }
+
     /* the <FONT> thing */
     if(ctx->html == TRUE)
-      {
+    {
         const UChar *mySource;
         mySource = beginMark;
         *err = U_ZERO_ERROR;
         ucnv_cbFromUWriteUChars(fromUArgs, &mySource, mySource+u_strlen(beginMark), 0, err);
-      }
+    }
 
-    /* len = utrns_transliterate(myTrans, _this->invalidUCharBuffer, _this->invalidUCharLength, tmpbuf, 300, &status2);*/
+    /* len = utrns_transliterate(ctx->trans, _this->invalidUCharBuffer, _this->invalidUCharLength, tmpbuf, 300, &status2);*/
     
     /* convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err); */
 
@@ -230,7 +177,7 @@ U_CAPI void
           const UChar *mySource; 
           len = n;
 
-          utrans_transUChars(myTrans, totrans,  &n, 300, 0, &len, &status2);
+          utrans_transUChars(ctx->trans, totrans,  &n, 300, 0, &len, &status2);
           mySource = totrans;
 
           oC = fromUArgs->converter;
@@ -261,7 +208,7 @@ U_CAPI void
       len = n;
       srclen = 0;
 
-      utrans_transUChars(myTrans, totrans, &n, 300, 0, &len, &status2);
+      utrans_transUChars(ctx->trans, totrans, &n, 300, 0, &len, &status2);
       mySource = totrans;
   
       oC = fromUArgs->converter;
@@ -280,11 +227,11 @@ U_CAPI void
     }
     
     if(ctx->html == TRUE)
-      {
+    {
         const UChar *mySource;
         mySource = endMark;
         ucnv_cbFromUWriteUChars(fromUArgs, &mySource, mySource+u_strlen(beginMark), 0, err);
-      }
+    }
 }
 
 

@@ -19,6 +19,7 @@
 #define TRANSLITCB_H
 
 #include "unicode/ucnv.h"
+#include "unicode/utrans.h"
 
 typedef struct
 {
@@ -26,11 +27,13 @@ typedef struct
 
   /* PUBLIC */
   const void    *subContext;  /* For Chaining */
-  const char    *locale;      /* source locale, will translit  locale-Latin */
+  char locale[256];      /* source locale, will translit  locale-Latin */
+  UErrorCode     transerr;
   UBool          html;
 
   /* PRIVATE */
-  UConverter *utf8; 
+  UConverter       *utf8; 
+  UTransliterator  *trans;
 } FromUTransliteratorContext;
 
 

@@ -119,7 +119,7 @@ U_CAPI void doDecodeQueryField(const char *in, char *out, uint32_t length);
  * @param status [returned] status of formatting, etc.
  * @return pointer to the formatted chars. Caller must dispose of them.
  */
-U_CAPI UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
+U_CAPI UChar *date(const UChar *tz, UDateFormatStyle style, const char *locale, UErrorCode *status);
 
 /**
  * Format a date in the given style
@@ -129,7 +129,7 @@ U_CAPI UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
  * @param status [returned] status of formatting, etc.
  * @return pointer to the formatted chars. Caller must dispose of them.
  */
-UChar *dateAt(UDate date, const UChar *tz, UDateFormatStyle style, UErrorCode *status);
+UChar *dateAt(UDate date, const UChar *tz, UDateFormatStyle style, const char *locale, UErrorCode *status);
 
 typedef struct _FromUBackslashContext
 {

@@ -712,18 +712,19 @@ void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src)
 UChar *
 date(const UChar *tz,
      UDateFormatStyle style,
+     const char *locale,
      UErrorCode *status)
 {
-  return dateAt(ucal_getNow(), tz, style, status);
+  return dateAt(ucal_getNow(), tz, style, locale, status);
 }
 
-UChar *dateAt(UDate adate, const UChar *tz, UDateFormatStyle style, UErrorCode *status)
+UChar *dateAt(UDate adate, const UChar *tz, UDateFormatStyle style, const char *locale, UErrorCode *status)
 {
   UChar *s = 0;
   int32_t len = 0;
   UDateFormat *fmt;
 
-  fmt = udat_open(style, style, NULL, tz, -1, NULL, 0, status);
+  fmt = udat_open(style, style, locale, tz, -1, NULL, 0, status);
   len = udat_format(fmt, ucal_getNow(), 0, len, 0, status);
   if(*status == U_BUFFER_OVERFLOW_ERROR) {
     *status = U_ZERO_ERROR;
