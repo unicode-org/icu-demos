@@ -64,7 +64,7 @@ typedef struct {
 
     /* platform data properties */
     /** @memo 0 for little-endian machine, 1 for big-endian */
-    bool_t isBigEndian;
+    uint8_t isBigEndian;
 
     /** @memo see U_CHARSET_FAMILY values in utypes.h */
     uint8_t charsetFamily;
