@@ -41,7 +41,6 @@
                          -- Steven R. Loomis
 
 */
-   
 
 #include "stdio.h"
 #include "stddef.h"
@@ -60,6 +59,7 @@
 #include "unicode/decompcb.h"
 #include "unicode/uchar.h"
 #include "unicode/umsg.h"
+#include "unicode/fontedcb.h"
 
 #include "locexp.h"
 
@@ -67,12 +67,9 @@
 
 #ifdef WIN32
 //#include "unicode/kangxi.h"
+//	extern void printMessage();
 #define LXHOSTNAME "Win_NT"
 #define URLPREFIX ""
-#endif
-
-#ifdef LX_USE_FONTED
-# include "unicode/fontedcb.h"
 #endif
 
 #include "unicode/translitcb.h"
@@ -106,6 +103,7 @@
 #define kShowStringCutoffSize 200
 #define kShow2dArrayRowCutoff 5
 #define kShow2dArrayColCutoff 5
+
 
 
 /********************* prototypes ***************************/
@@ -215,10 +213,9 @@ int main(const char *argv[], int argc)
   char *tmp;
   UChar subTitle[1024];
   int32_t n,i;
-
-
+  
   /* INIT THE LX */
-  strcpy(lx->cLocale, "sr");
+  strcpy(lx->cLocale, "en");
   lx->defaultRB = 0;
   lx->ourCharsetName = "iso-8859-1";
   lx->locales = NULL;
@@ -230,8 +227,9 @@ int main(const char *argv[], int argc)
   /* init ...... */
   uloc_setDefault("nl", &status); /* BASELINE */
 
+
 #ifdef  WIN32
-  u_setDataDirectory("c:\\icu\\icu\\data\\");
+  u_setDataDirectory("c:\\dev\\icu\\data\\");
 #endif
 
   /** Below is useful for debugging. */
@@ -256,8 +254,12 @@ int main(const char *argv[], int argc)
   {
     char newPath[500];
     strcpy(newPath, u_getDataDirectory());
+#ifdef WIN32
+	strcat(newPath, "locexp\\");
+#else
     strcat(newPath, "locexp/");
-    
+#endif
+
     FSWF_setBundlePath(newPath);
   }
 
