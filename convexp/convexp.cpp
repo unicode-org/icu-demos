@@ -76,16 +76,17 @@ static const char htmlHeader[]=
     "<link rel=\"stylesheet\" type=\"text/css\" href=\"//www.ibm.com/common/v14/main.css\" />\n"
     "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"//www.ibm.com/common/v14/screen.css\" />\n"
     "<link rel=\"stylesheet\" type=\"text/css\" media=\"print\" href=\"//www.ibm.com/common/v14/print.css\" />\n"
+    "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen,print\" href=\"//www.ibm.com/common/v14/table.css\" />\n"
     // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
     "p.value {font-family: monospace;}\n"
-    "td.alias {white-space: nowrap;}\n"
-    "td.value {font-family: monospace;}\n"
-    "td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
-    "td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
-    "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
-    "div.glyph {font-size: 160%; font-family: serif;}\n"
+    "table.data-table-2 caption {border-bottom:#fff solid 0px;}\n"
+    "table.data-table-2 td.alias {white-space: nowrap;}\n"
+    "table.data-table-2 td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
+    "table.data-table-2 td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
+    "table.data-table-2 div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
+    "table.data-table-2 div.glyph {font-size: 160%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
     "<script src=\"//www.ibm.com/common/v14/detection.js\" language=\"JavaScript\" type=\"text/javascript\">\n"
@@ -175,17 +176,14 @@ static const char htmlHeader[]=
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
-    "<strong>" PROGRAM_NAME "</strong>\n";
+    "<strong class=\"bctl\">" PROGRAM_NAME "</strong>\n";
 
 static const char navigationSubHeader[]=
     "<a class=\"bctl\" href=\"%s?%s\">" PROGRAM_NAME "</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<strong>%s</strong>\n";
+    "<strong class=\"bctl\">%s</strong>\n";
 
 static const char navigationEndHeader[]=
     "<h1>ICU " PROGRAM_NAME "</h1>\n";
-
-static const char aliasHeader[]=
-    "<h2><br />List of Converter Aliases</h2>";
 
 static const char htmlFooter[]=
     "</body>\n"
@@ -203,12 +201,11 @@ static const char startUCharEscape[]="\\u%04X";
 static const char trailingUCharEscape[]="\\u%04X";
 
 static const char startForm[]=
-    "<table width=\"760\" border=\"0\" cellspacing=\"5\" cellpadding=\"2\">\n"
+    "<table width=\"745\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 1em\">\n"
     "<tr><td style=\"white-space: nowrap\">\n"
     "<form method=\"get\" action=\"%s\">\n"
     "<p>Select a standard to view:<br />\n"
     "<br />\n"
-//    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"164\" value=\"%s\">\n"
     "\n";
 
 static const char endForm[]=
@@ -235,8 +232,8 @@ static const char startTable[]=
 static const char endTable[]="</table>";
 
 static const char versions[]=
-    "<p>Powered by "
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> %s</p>\n";
+"<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0\">Powered by "
+    "<a href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a> %s</p><br />\n";
 
 static void printOptions(UErrorCode *status) {
     int32_t i;
@@ -365,21 +362,6 @@ static void escapeBytes(const char *source, int8_t len) {
     }
 }
 
-/*static void escapeUChars(const UChar *source, int8_t len) {
-    if (len > 0) {
-        printf(startUCharEscape, (uint8_t)*(source++));
-    }
-    else {
-        printf(NBSP);
-        printf("<!-- Nothing to escape -->");
-    }
-    len--;
-    while (len-- > 0) {
-        printf(trailingUCharEscape, (uint8_t)*(source++));
-    }
-}
-*/
-
 static void printAmbiguousAliasedConverters() {
     UErrorCode status = U_ZERO_ERROR;
     const char *alias;
@@ -472,8 +454,13 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
     if (U_FAILURE(*status)) {
         return;
     }
-    puts("<h2><br /><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></h2>");
-    if (gShowLanguages) {
+    puts("<br /><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\" style=\"margin: 1em\">\n");
+    puts("<caption><em><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></em></caption>\n");
+    if (!gShowLanguages) {
+        printf("<tr><td><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></td></tr>\n",
+            gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
+    }
+    else {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
         USet *locSet = uset_open(0, 0);
@@ -496,28 +483,21 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
                         patBufferUTF8[sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0])-1] = 0;
                         if (!localeFound) {
                             localeFound = TRUE;
-                            printf(startTable);
-                            puts("<tr><th class=\"hil\" style=\"text-align: center\">Locale</th><th class=\"hil\" style=\"text-align: center\">Locale Name</th></tr>");
+                            puts("<tr><th>Locale</th><th>Locale Name</th></tr>");
                         }
                         printf("<tr><td>%s</td><td>%s</td></tr>\n", locale, patBufferUTF8);
                     }
                 }
             }
         }
-        if (localeFound) {
-            printf(endTable);
-        }
-        else {
-            puts("<p>Not Available</p>\n");
+        if (!localeFound) {
+            puts("<tr><td>Not Available</td></tr>\n");
         }
 
         uset_close(cnvSet);
         *status = U_ZERO_ERROR;
     }
-    else {
-        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></p>\n",
-            gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
-    }
+    printf(endTable);
 }
 
 static void printConverterInfo(UErrorCode *status) {
@@ -535,18 +515,20 @@ static void printConverterInfo(UErrorCode *status) {
 
     printCPTable(cnv, gStartBytes, status);
 
-    puts("<h2><br />Information About This Converter</h2>");
+    puts("<br />\n");
     if (U_FAILURE(*status)) {
+        puts("<h2>Information About This Converter</h2>");
         printf("<p>Warning: Nothing is known about this converter.</p>");
         return;
     }
-    puts(startTable);
+    puts("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\" style=\"margin: 1em\">\n");
+    puts("<caption><em>Information About This Converter</em></caption>\n");
     convType = ucnv_getType(cnv);
-    printf("<tr><th class=\"hil\">Type of converter</th><td class=\"value\">%s</td></tr>\n", getConverterType(convType));
-    printf("<tr><th class=\"hil\">Minimum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMinCharSize(cnv));
-    printf("<tr><th class=\"hil\">Maximum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
+    printf("<tr><th>Type of converter</th><td>%s</td></tr>\n", getConverterType(convType));
+    printf("<tr><th>Minimum number of bytes</th><td>%d</td></tr>\n", ucnv_getMinCharSize(cnv));
+    printf("<tr><th>Maximum number of bytes</th><td>%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
 
-    printf("<tr><th class=\"hil\">Substitution character</th><td class=\"value\">");
+    printf("<tr><th>Substitution character</th><td>");
     buffer[0] = 0;
     len = sizeof(buffer)/sizeof(buffer[0]);
     ucnv_getSubstChars(cnv, buffer, &len, status);
@@ -565,7 +547,7 @@ static void printConverterInfo(UErrorCode *status) {
     printf("</td></tr>\n");
 
     if (ucnv_getType(cnv) == UCNV_MBCS) {
-        printf("<tr><th class=\"hil\">Starter bytes</th><td class=\"value\">");
+        printf("<tr><th>Starter bytes</th><td>");
         ucnv_getStarters(cnv, starterBufferBool, &myStatus);
         starterBuffer[0] = 0;
         len = 0;
@@ -580,20 +562,22 @@ static void printConverterInfo(UErrorCode *status) {
         printf("</td></tr>\n");
     }
 
-    printf("<tr><th class=\"hil\">Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th class=\"hil\">Is ASCII [\\u0020-\\u007E] irregular?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\u0020-\\u007E] irregular?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
 
     ambiguousAlias = containsAmbiguousAliases();
-    printf("<tr><th class=\"hil\">Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
+    printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
     if (ambiguousAlias) {
-        puts("<tr><th class=\"hil\">Converters with conflicting aliases</th><td>");
+        puts("<tr><th>Converters with conflicting aliases</th><td>");
         printAmbiguousAliasedConverters();
         puts("</td></tr>");
     }
 
     puts(endTable);
 
-    puts("<h2><br /><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
+    printLanguages(cnv, status);
+
+    puts("<br /><h2 style=\"margin: 1em\"><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
     if (gShowUnicodeSet) {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
@@ -605,10 +589,10 @@ static void printConverterInfo(UErrorCode *status) {
             myStatus = U_ZERO_ERROR;
             patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
             u_strToUTF8(patBufferUTF8, patLen * U8_MAX_LENGTH, NULL, patBuffer, patLen, &myStatus);
-            printf("<p class=\"value\">%s</p>\n", patBufferUTF8);
+            printf("<p class=\"value\" style=\"margin: 1em\">%s</p>\n", patBufferUTF8);
         }
         else {
-            puts("<p>Not Available</p>");
+            puts("<p style=\"margin: 1em\">Not Available</p>");
         }
         uset_close(cnvSet);
         free(patBuffer);
@@ -616,11 +600,9 @@ static void printConverterInfo(UErrorCode *status) {
         *status = U_ZERO_ERROR;
     }
     else {
-        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
+        printf("<p style=\"margin: 1em\"><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
             gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
     }
-
-    printLanguages(cnv, status);
 
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
         || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
@@ -638,7 +620,7 @@ static void printStandardHeaders(UErrorCode *status) {
     int32_t i;
     const char *standard;
 
-    puts("<tr><th class=\"hil\" style=\"text-align: center\">Internal<br />Converter Name</th>");
+    puts("<tr><th style=\"text-align: center\">Internal<br />Converter Name</th>");
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
         standard = ucnv_getStandard((uint16_t)i, status);
@@ -647,15 +629,15 @@ static void printStandardHeaders(UErrorCode *status) {
         }
         if (uhash_find(gStandardsSelected, standard) != NULL) {
             if (*standard) {
-                printf("<th class=\"hil\" style=\"text-align: center\">%s</th>\n", standard);
+                printf("<th style=\"text-align: center\">%s</th>\n", standard);
             }
             else {
-                puts("<th class=\"hil\" style=\"text-align: center\"><em>Untagged Aliases</em></th>");
+                puts("<th style=\"text-align: center\"><em>Untagged Aliases</em></th>");
             }
         }
     }
     if (uhash_find(gStandardsSelected, ALL) != NULL) {
-        puts("<th class=\"hil\" style=\"text-align: center\"><em>All Aliases</em></th>");
+        puts("<th style=\"text-align: center\"><em>All Aliases</em></th>");
     }
     puts("</tr>");
 }
@@ -741,7 +723,8 @@ static void printAliasTable() {
     UErrorCode status = U_ZERO_ERROR;
     UEnumeration *convEnum;
 
-    printf(startTable);
+    puts("<br /><table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\" style=\"margin: 1em\">\n");
+    puts("<caption><em>List of Converter Aliases</em></caption>");
     printStandardHeaders(&status);
 
     convEnum = ucnv_openAllNames(&status);
@@ -871,16 +854,11 @@ main(int argc, const char *argv[]) {
 
     printf(endForm);
 
-    puts(aliasHeader);
-
     printAliasTable();
 
     if (*gCurrConverter) {
         printConverterInfo(&errorCode);
     }
-
-
-    puts("<br />\n<hr />");
 
     char icuVString[16];
     UVersionInfo icuVer;

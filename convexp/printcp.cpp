@@ -35,11 +35,11 @@
 
 static void printHeader() {
     int32_t idx;
-    puts("<tr><td></td>");
+    puts("<tr><td style=\"text-align: center\">" NBSP "</td>");
     for (idx = 0; idx < 16; idx++) {
-        printf("<th class=\"hil\" style=\"text-align: center\"" CELL_WIDTH ">%02X</th>", idx);
+        printf("<th style=\"text-align: center\"" CELL_WIDTH ">%02X</th>", idx);
     }
-    puts("<td></td></tr>");
+    puts("<td style=\"text-align: center\">" NBSP "</td></tr>");
 }
 
 static const char *getEscapeChar(UChar32 uniVal) {
@@ -298,20 +298,22 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
 //    case UCNV_UTF32:
 //    case UCNV_CESU8:
 //    case UCNV_IMAP_MAILBOX:
-        puts("<h2><br /><a name=\"layout\">Codepage Layout</a></h2>");
-        break;
+        break;  // This is an easy encoding to display.
     default:
         if (!gShowStartBytes) {
-            puts("<p>Codepage layout information is not available for this converter at this time.</p>");
+            puts("<br /><p style=\"margin: 1em\">Codepage layout information is not available for this converter at this time.</p>");
             return;
         }
-        puts("<h2><br /><a name=\"layout\">Codepage Layout</a></h2>");
         hideContinueBytes = TRUE;
     }
+    puts("<br /><br />\n"
+        "<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\" summary=\"A 16 by 16 table with headers on each side of the table representing the nibble of a byte.\">\n"
+        "<caption><em><a name=\"layout\">Codepage Layout</a></em></caption>");
+    printf("<tr><td colspan=\"18\">");
 
     switch (convType) {
 //    case UCNV_MBCS:
-    case UCNV_EBCDIC_STATEFUL:
+//    case UCNV_EBCDIC_STATEFUL:
     case UCNV_ISO_2022:
     case UCNV_LMBCS_1:
     case UCNV_LMBCS_2: 
@@ -366,12 +368,12 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     targetLimit = targetBuffer + maxCharSize;
     parseAndCopy(sourceBuffer, startBytes, startBytesLen);
 
-    puts("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the layout of the codepage\">");
+    puts("</td></tr>");
     printHeader();
 
     for (row = 0; row < 16; row++) {
         puts("<tr>");
-        printf("<th class=\"hil\" style=\"text-align: center\">%X0</th>\n", row);
+        printf("<th style=\"text-align: center\">%X0</th>\n", row);
         for (col = 0; col < 16; col++) {
             ucnv_resetToUnicode(cnv);
             uint8_t currCh = (uint8_t)(row << 4 | col);
@@ -414,7 +416,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
                 printNothing();
             }
         }
-        printf("<th class=\"hil\" style=\"text-align: center\">%X0</th>\n", row);
+        printf("<th style=\"text-align: center\">%X0</th>\n", row);
         puts("</tr>");
     }
 
