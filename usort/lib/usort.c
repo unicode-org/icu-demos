@@ -10,6 +10,9 @@
  * Implementation for the USort library
  */
 
+/* Turn on debugging */
+/* #define SDEBUG 1 */
+
 #define kInBufSize     30  /* Just the input buffer chunk size. */
 #define kOutBufSize    1024 /* expected line length in chars. [mem usage: 2x ] */
 #define kPrintBufSize  1024
@@ -23,6 +26,66 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <io.h>
+#endif
+
+#ifdef SDEBUG
+
+#define BUF_SIZE 128
+
+/* Print a ustring to the specified FILE* in the default codepage */
+void
+uprint(const UChar *s,
+       FILE *f,
+       UErrorCode *status)
+{
+  /* converter */
+  UConverter *converter;
+  char buf [BUF_SIZE];
+  int32_t sourceLen;
+  const UChar *mySource;
+  const UChar *mySourceEnd;
+  char *myTarget;
+  int32_t arraySize;
+
+  if(s == 0) return;
+
+  /* set up the conversion parameters */
+  sourceLen    = u_strlen(s);
+  mySource     = s;
+  mySourceEnd  = mySource + sourceLen;
+  myTarget     = buf;
+  arraySize    = BUF_SIZE;
+
+  /* open a default converter */
+  converter = ucnv_open(0, status);
+  
+  /* if we failed, clean up and exit */
+  if(U_FAILURE(*status)) goto finish;
+  
+  /* perform the conversion */
+  do {
+    /* reset the error code */
+    *status = U_ZERO_ERROR;
+
+    /* perform the conversion */
+    ucnv_fromUnicode(converter, &myTarget, myTarget + arraySize,
+             &mySource, mySourceEnd, NULL,
+             TRUE, status);
+
+    /* Write the converted data to the FILE* */
+    fwrite(buf, sizeof(char), myTarget - buf, f);
+
+    /* update the conversion parameters*/
+    myTarget     = buf;
+    arraySize    = BUF_SIZE;
+  }
+  while(*status == U_BUFFER_OVERFLOW_ERROR); 
+
+ finish:
+  
+  /* close the converter */
+  ucnv_close(converter);
+}
 #endif
 
 /** Utility fcn to print out chars. Ripped off badly from date/cal::uprint **/
@@ -188,7 +251,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
 	  abort();
 	}
 #ifdef SDEBUG
-      fprintf(stderr,"realloc linelist from %d to %d lines\n", lineSize, newSize);
+      fprintf(stderr,"realloc linelist from %d to %d lines\n", usort->size, newSize);
 #endif
       usort->lines = newList;
       usort->size = newSize;
@@ -222,8 +285,8 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
 
 
 #ifdef SDEBUG
-  fprintf(stderr, "Line %d added, keysize %d\n", lineCount, lineList[lineCount].keySize);
-  uprint(lineList[lineCount].chars, stderr, &status);
+  fprintf(stderr, "Line %d added, keysize %d\n", usort->count, usort->lines[usort->count].keySize);
+  uprint(usort->lines[usort->count].chars, stderr, &status);
   fprintf(stderr, "\n");
 #endif
 	 
@@ -243,7 +306,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
   char  *inBuf     = NULL; /* input char buffer */
   const char *inBufEnd  = NULL; /* end of inbuf, just for convenience */
   const  char  *source    = NULL; /* beginning of data to convert */
-  const  char  *readData  = NULL; /* end of data in inputBuffer */
+         char  *readData  = NULL; /* end of data in inputBuffer */
 	 int32_t readCount;
 	 int32_t totalReadCount = 0;
          UChar *p;
@@ -369,7 +432,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
 	      if( *p == 0x000A ) /* <------- REVISIT should be, LINE_SEPARATOR or something */
 		{
 		  /* OK! got a line. */
-#ifdef SDEBUG		  
+#ifdef SDEBUG		
 		  fprintf(stderr, "** LINE: >");
 		  *p = 0; /* term */
 		  uprint(outBuf, stderr, &status);		  
