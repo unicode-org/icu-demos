@@ -51,6 +51,11 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 icuuc.lib icui18n.lib ustdio_static.lib util.lib usort.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\icu\lib\release" /libpath:"..\..\..\icu\lib\release"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Desc=install to cgi-bin
+PostBuild_Cmds=copy debug\locexp.exe "c:\program files\apache group\apache\cgi-bin"
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
 
@@ -76,6 +81,11 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 icuuc.lib icui18n.lib ustdio.lib usort.lib util.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcd.lib" /pdbtype:sept /libpath:"..\..\icu\lib\debug"
 # SUBTRACT LINK32 /nodefaultlib
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Desc=install to cgi-bin
+PostBuild_Cmds=copy debug\locexp.exe "c:\program files\apache group\apache\cgi-bin"
+# End Special Build Tool
 
 !ENDIF 
 
