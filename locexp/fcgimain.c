@@ -1,4 +1,6 @@
-/* Copyright (c) 2000 IBM, Inc. and Others */
+#error update this file before use - see cgimain.c
+
+/* Copyright (c) 2003 IBM, Inc. and Others */
 
 /* Run locexp as a fastcgi..    http://www.fastcgi.com/
 

@@ -11,7 +11,7 @@
  *  Explorer for dates
  */
     
-void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const char *locale, const char *b)
+void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const char *locale)
 {
     UChar pattern[1024];
     UChar tempChars[1024];
@@ -39,14 +39,14 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_DateTimePatterns_What","This example demonstrates the formatting of date and time patterns in this locale."));
   
     /* fetch the current pattern */
-    exploreFetchNextPattern(lx,pattern, strstr(b,"EXPLORE_DateTimePatterns"));
+    exploreFetchNextPattern(lx,pattern, strstr(lx->queryString,"EXPLORE_DateTimePatterns"));
 
     df = udat_open(0,0,locale, NULL, -1, NULL, 0, &status);
     udat_applyPattern(df, TRUE, pattern, -1);
 
     status = U_ZERO_ERROR;
   
-    if ((tmp = strstr(b,"NP_DBL"))) /* Double: UDate format input ============= */
+    if ((tmp = strstr(lx->queryString,"NP_DBL"))) /* Double: UDate format input ============= */
     {
         /* Localized # */
         tmp += 7;
@@ -57,7 +57,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         status = U_ZERO_ERROR;
         now = unum_parseDouble(nf, valueString, -1, &parsePos, &status);
     }
-    else if((tmp = strstr(b, "NP_DEF"))) /* Default: 'display' format input ============== */
+    else if((tmp = strstr(lx->queryString, "NP_DEF"))) /* Default: 'display' format input ============== */
     {
 
         /* Localized # */
@@ -70,7 +70,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
       
         now = udat_parse(df_default, valueString, -1, &parsePos, &status);
     }
-    else if((tmp = strstr(b, "NP_LOC"))) /* Localized: pattern format input ============== */
+    else if((tmp = strstr(lx->queryString, "NP_LOC"))) /* Localized: pattern format input ============== */
     {
 
 
@@ -100,13 +100,13 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
         u_fprintf(lx->OUT, "%U: [%d] <P>", FSWF("formatExample_errorOpen", "Couldn't open the formatter"), (int) status);
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
-        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(b,"EXPLORE_DateTimePatterns"), now, nf);
+        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(lx->queryString,"EXPLORE_DateTimePatterns"), now, nf);
     }
     else
     {
       
         /* now display the form */
-        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(b,"EXPLORE_DateTimePatterns"), now, nf);
+        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(lx->queryString,"EXPLORE_DateTimePatterns"), now, nf);
       
     }
   
@@ -248,10 +248,10 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 	charDescs[15] = FSWF("localPatternChars15", "Hour 1");
 	charDescs[16] = FSWF("localPatternChars16", "Hour 0");
 	charDescs[17] = FSWF("localPatternChars17", "Timezone");
-    charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
-    charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
-    charDescs[20] = 0;
+        charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
+        charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
+        charDescs[20] = 0;
 	
-	showStringWithDescription(lx, myRB, locale, "SHOWlocalPatternChars", charDescs, "localPatternChars", FALSE);
+        showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", FALSE);
     }
 }

@@ -173,7 +173,7 @@ void showExploreSearchForm(LXContext *lx, const UChar *valueString)
 
 
 /* This is the entrypoint from Locale Explorer */
-extern void showExploreSearch( LXContext *lx, const char *qs)
+extern void showExploreSearch( LXContext *lx)
 {
     char *tmp;
     UChar valueString[1024];
@@ -186,7 +186,7 @@ extern void showExploreSearch( LXContext *lx, const char *qs)
     int totalHits = 0; /* cumulative - for circuit breaking purposes */
     UStringSearch *search = NULL;
     
-    if((tmp = strstr(qs, "EXPLORE_search")))
+    if((tmp = strstr(lx->queryString, "EXPLORE_search")))
     {
         term = (tmp + strlen("EXPLORE_search="));
     }

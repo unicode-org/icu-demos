@@ -54,26 +54,39 @@ U_CFUNC char locexp_dat[];
 
 typedef struct 
 {
+  /* ============= HTTP input - to be set up by context initializer */
+  const char *scriptName;      /* Cached results of getenv("SCRIPT_NAME") */
+  const char *queryString;     /* QUERY_STRING */
+  const char *acceptCharset;   /* HTTP_ACCEPT_CHARSET */
+  const char *serverName;      /* SERVER_NAME */
+  char hostPort[256];          /* host:port  or just host  (if port 80) */
+  const char *pathInfo;        /* PATH_INFO */
+  uint16_t    port;            /* SERVER_PORT */
+  const char *hostName;        /* HTTP_HOST */
+  
+
+  /* ============= IO */
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
-  const char *scriptName;      /* Cached results of getenv("SCRIPT_NAME") */
-  char cLocale[200]; /* client locale */
 
+  /* ============= ENCODING */
   const char *couldNotOpenEncoding;      /* contains error string if nonnull */
   const char *ourCharsetName; /* HTML friendly name of the current charset */
   char        chosenEncoding[128];
-  
+
+  /* ============= OTHER STATE */
   UBool setEncoding;            /* what is our state? What's setup? */
-  UBool setLocale;
-
-  UResourceBundle *defaultRB;        /* RB in the display locale  - CACHE*/
-  UResourceBundle *curRB;            /* RB in the current locale */ 
-
   UBool  inDemo;       /* are we in a 'demo' page? If so, don't show encoding/ecc options */
 
-  /* ====== locale navigation ===== */
+  /* ============= DISPLAY LOCALE */
+  char cLocale[200]; /* client locale */
+  UResourceBundle *defaultRB;        /* RB in the display locale  - CACHE*/
+  UBool setLocale; /* Display locale has been set */
+
+  /* ============= SELECTED LOCALE */
+  UResourceBundle *curRB;            /* RB in the current locale */ 
+
   MySortable      *curLocale;     /* Current locale */
-  const char *locale; /* user's locale */
   MySortable      *parLocale;     /* Parent locale of current */
   char             curLocaleName[128];
   UChar           newZone[300];          /* Timezone to set to */
@@ -159,46 +172,46 @@ extern const UChar *defaultLanguageDisplayName(LXContext *lx);
 extern void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled);
 
 /* selection of locales and converter */
-extern void chooseLocale(LXContext *lx, const char *qs, UBool toOpen, const char *current, const char *restored, UBool showAll);
+extern void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *restored, UBool showAll);
 extern void chooseConverter(LXContext *lx, const char *restored);
 
 extern void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample);
 
 extern void chooseConverterFrom(LXContext *lx, const char *restored, USort *list);
-extern void showOneLocale(LXContext *lx, const char *b);
-void showExploreBreak(LXContext *lx, const char *locale, const char *b);
+extern void showOneLocale(LXContext *lx);
+void showExploreBreak(LXContext *lx, const char *locale);
 
 /* fcns for dumping the contents of a particular rb */
-extern void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString);
-extern void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, UBool PREformatted);
-extern void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, UBool PREformatted);
+extern void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString);
+extern void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, UBool PREformatted);
+extern void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, UBool PREformatted);
 extern void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, int radix);
 extern void showLocaleCodes(LXContext *lx, UResourceBundle *myRB, const char *locale);
 extern void showLocaleScript(LXContext *lx, UResourceBundle *myRB, const char *locale);
-extern void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *whichString, UBool hidable);
-extern void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, ECal isCal);
+extern void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString, UBool hidable);
+extern void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, ECal isCal);
 extern void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString, ECal);
-extern void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *queryString, const char *whichString);
-extern void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString, const char *whichString, UBool compareToDisplay);
-extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale, const char *queryString);
+extern void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString);
+extern void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, UBool compareToDisplay);
+extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
-extern void showSort( LXContext *lx, const char *locale, const char *b);
+extern void showSort( LXContext *lx, const char *locale);
 
-extern void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *rb, const char *locale, const char *b);
-extern void showExploreNumberPatterns  ( LXContext *lx, const char *locale, const char *b);
+extern void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *rb, const char *locale);
+extern void showExploreNumberPatterns  ( LXContext *lx, const char *locale);
 
 extern void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 extern void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *sampleString, const char *key, UBool rightAlign);
 extern void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 extern void showExploreCloseButton(LXContext *lx, const char *locale, const char *frag);
-extern void showExploreCalendar(LXContext *lx, const char *qs); /* in calexp.c */
-extern void showExploreSearch(LXContext *lx, const char *qs);   /* in srchexp.c */
+extern void showExploreCalendar(LXContext *lx); /* in calexp.c */
+extern void showExploreSearch(LXContext *lx);   /* in srchexp.c */
 void showExploreSearchForm(LXContext *lx, const UChar *valueString);
 extern void showSpelloutExample(LXContext *lx, UResourceBundle *rb, const char *locale);
 
 
-extern UBool didUserAskForKey(const char *key, const char *queryString);
+extern UBool didUserAskForKey(LXContext *lx, const char *key);
 
 /*  Pluggable UI.  Put these before and after each item. */
 extern void showKeyAndStartItem(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus);
@@ -230,13 +243,25 @@ extern void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str);
 /* ex: printHelpImg("coffee", L"[coffee help symbol]", L"coffee-help.gif", L"BORDER=3"); */
 extern void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *img, const UChar *options);
 
-extern void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char* qs);
-extern void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale, const char *key, const char* qs, double value, UNumberFormat *valueFmt);
+extern void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern,const char *patternText);
+extern void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale, const char *key, const char *patternText, double value, UNumberFormat *valueFmt);
 
 /* get bundle for current locale */
 extern UResourceBundle *getCurrentBundle(LXContext* lx, UErrorCode *status);
 /* get bundle for display locale */
 extern UResourceBundle *getDisplayBundle(LXContext* lx, UErrorCode *status);
+
+/* CGI (or CGI-like) helper functions */
+void initCGIVariables(LXContext* lx);
+void initPOSTFromFILE(LXContext* lx, FILE *f);
+void closeCGIVariables(LXContext* lx);
+void closePOSTFromFILE(LXContext* lx);
+
+/* lxurl */
+/* find start of field from a query like string */
+const char *fieldInQuery(LXContext* lx, const char *query, const char *field);
+char *queryField(LXContext* lx, const char *field);
+
 
 #endif
 

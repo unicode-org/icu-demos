@@ -12,7 +12,7 @@
  * Explorer for #'s
  */
 
-void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
+void showExploreNumberPatterns(LXContext *lx, const char *locale)
 {
     UChar pattern[1024];
     UChar tempChars[1024];
@@ -32,7 +32,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
 
     u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_NumberPatterns_What","This example demonstrates formatting of numbers in this locale."));
 
-    exploreFetchNextPattern(lx, pattern, strstr(b,"EXPLORE_NumberPatterns")); 
+    exploreFetchNextPattern(lx, pattern, strstr(lx->queryString,"EXPLORE_NumberPatterns")); 
 
     nf = unum_open(UNUM_DEFAULT,NULL, 0, locale, NULL, &status);
   
@@ -77,7 +77,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
     value = 12345.6789; /* for now */
 
     /* Now, see if the user is trying to change the value. */
-    if((tmp = strstr(b,"NP_LOC"))) /* localized numbre */
+    if((tmp = strstr(lx->queryString,"NP_LOC"))) /* localized numbre */
     {
         /* Localized # */
         tmp += 7;
@@ -95,7 +95,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
             localValueErr = FSWF("formatExample_errorParse_num", "Could not parse this, replaced with a default value.");
 	}
     }
-    else if ((tmp = strstr(b,"NP_DEF")) || (tmp = strstr(b,"NP_DBL")))
+    else if ((tmp = strstr(lx->queryString,"NP_DEF")) || (tmp = strstr(lx->queryString,"NP_DBL")))
     { /* Default side, or number (NP_DBL) coming from somewhere else */
         /* Localized # */
         tmp += 7;
@@ -113,7 +113,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
             defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
         }
     }
-    else if ((tmp = strstr(b, "NP_SPL")))
+    else if ((tmp = strstr(lx->queryString, "NP_SPL")))
     {
         tmp += 7;
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
@@ -144,7 +144,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
     /* NOW we are ready ! */
 
     /* display the FORM, and fetch the current pattern */
-    exploreShowPatternForm(lx, pattern, locale, "NumberPatterns", strstr(b,"EXPLORE_NumberPatterns"), value, nf_default); 
+    exploreShowPatternForm(lx, pattern, locale, "NumberPatterns", strstr(lx->queryString,"EXPLORE_NumberPatterns"), value, nf_default); 
 
 
     /* Now, display the results in <default> and in their locale */
@@ -225,7 +225,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
     u_fprintf(lx->OUT, "<B>%U</B> ", FSWF("Spellout", "Spellout"));
 
 
-    if(strstr(b, "NP_SPL"))
+    if(strstr(lx->queryString, "NP_SPL"))
     {  
         u_fprintf(lx->OUT, "<BR>%U<BR>\r\n", valueString);
     }

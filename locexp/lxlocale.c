@@ -84,7 +84,7 @@ UBool isExperimentalLocale(const char *locale)
 
 
 /* chooselocale --------------------------------------------------------------------------- */
-void chooseLocale(LXContext *lx, const char *qs, UBool toOpen, const char *current, const char *restored, UBool showAll)
+void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *restored, UBool showAll)
 {
     UBool  hit = FALSE;
     int32_t n, j;
@@ -182,7 +182,7 @@ void chooseLocale(LXContext *lx, const char *qs, UBool toOpen, const char *curre
     if(showAll == FALSE && toOpen == FALSE)
     {
         u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"../_/closed.gif\" alt=\"\">%U</A>\r\n<BR>",
-                  (qs&&strlen(qs)>7)?(qs+7):"",
+                  (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }
 }
@@ -369,7 +369,7 @@ void setupLocaleTree(LXContext *lx)
     /* setup base locale */
     lx->locales = createLocaleTree(lx->cLocale, &lx->numLocales);
 
-    qs = getenv("QUERY_STRING");
+    qs = lx->queryString;
     if(   qs &&
           (*(qs++) == '_') &&
           (*(qs++) == '='))
@@ -395,6 +395,5 @@ void setupLocaleTree(LXContext *lx)
         if(lx->curLocale)
             lx->parLocale = lx->curLocale->parent;
         
-        lx->locale = loc;
     }
 }

@@ -37,7 +37,11 @@ int main(int argc , const char *argv[])
   initLX();
   initContext(&localContext);
   localContext.fOUT = stdout;
+  initCGIVariables(&localContext);
+  initPOSTFromFILE(&localContext, stdin);
   runLocaleExplorer(&localContext);
+  closeCGIVariables(&localContext);
+  closePOSTFromFILE(&localContext);
   closeLX(&localContext);
   return 0;
 }

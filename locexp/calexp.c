@@ -53,7 +53,7 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     
     
     /* Open a formatter with a month and year only pattern */
-    dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,lx->locale,NULL,0,pat, -1,&status);
+    dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,lx->curLocaleName,NULL,0,pat, -1,&status);
     
     udat_format(dfmt, d, s, BUF_SIZE, 0, &status);
     
@@ -92,7 +92,7 @@ void printCalendar( LXContext *lx, UCalendar *cal )
 
     firstday -= (fdow+1);
     
-    nfmt = unum_open(UNUM_DECIMAL, NULL, 0, lx->locale, NULL, &status);
+    nfmt = unum_open(UNUM_DECIMAL, NULL, 0, lx->curLocaleName, NULL, &status);
 
     if(U_FAILURE(status)) {
       u_fprintf(lx->OUT, "</table>\r\n");
@@ -216,7 +216,7 @@ void printCalMenuBar( LXContext *lx, const char *num, char type )
 }
 
 
-extern void showExploreCalendar( LXContext *lx, const char *qs)
+extern void showExploreCalendar( LXContext *lx)
 {
     UNumberFormat *nf = NULL; /* for formatting the number */
     char *tmp;
@@ -233,15 +233,15 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
     /* fill out field names */
     fillFieldNames(fieldNames);
 
-    if((tmp = strstr(qs, "EXPLORE_Calendar")))
+    if((tmp = strstr(lx->queryString, "EXPLORE_Calendar")))
     {
         type = *(tmp + strlen("EXPLORE_Calendar="));
     }
 
-    nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, lx-> locale, NULL, &status);
+    nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, lx-> curLocaleName, NULL, &status);
     status = U_ZERO_ERROR; /* ? */
 
-    if ((tmp = strstr(qs,"NP_DBL"))) /* Double: UDate format input ============= */
+    if ((tmp = strstr(lx->queryString,"NP_DBL"))) /* Double: UDate format input ============= */
     {
         /* Localized # */
         tmp += 7;
@@ -265,7 +265,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
 
     u_fprintf(lx->OUT, "[%D %T]<P>", now, now );
 
-    cal = ucal_open(lx->timeZone, -1, lx->locale, UCAL_TRADITIONAL, &status);
+    cal = ucal_open(lx->timeZone, -1, lx->curLocaleName, UCAL_TRADITIONAL, &status);
     ucal_setMillis(cal, now, &status);
 
     if(U_FAILURE(status))
@@ -308,7 +308,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
             status = U_ZERO_ERROR;
             for(j=0;j<NR_ITEMS;j++)
             {
-                cal2 = ucal_open(lx->timeZone, -1, lx->locale, UCAL_TRADITIONAL, &status);
+                cal2 = ucal_open(lx->timeZone, -1, lx->curLocaleName, UCAL_TRADITIONAL, &status);
                 ucal_setMillis(cal2, now, &status);
                 if(U_SUCCESS(status))
                 {

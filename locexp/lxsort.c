@@ -49,7 +49,7 @@ void printRuleString(LXContext *lx, const UChar*s)
  * @param num the index into the USort. (ignored if sort == NULL)
  * @param chars NULL terminated UChars to be output for this word
  */
-void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* chars, const char *queryString)
+void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* chars)
 {
   UBool lineAbove;  /* Show box above the current line? */
   UBool lineBelow;  /* Show box below current line? */
@@ -97,7 +97,7 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
   {
     int32_t ii;
-    if(aSort  && strstr(queryString,"showCollKey")  ) {
+    if(aSort  && strstr(lx->queryString,"showCollKey")  ) {
       u_fprintf(lx->OUT, "<br><font size=-2 color=\"#999999\"><tt>");
 
       for(ii=0;ii<aSort->lines[num].keySize;ii++) {
@@ -215,10 +215,9 @@ void showSort_attrib(LXContext *lx, const char *locale, UCollator *ourCollator)
  *    - EXPLORE_CollationElements= takes the text to be tested, in display codepage BUT with \u format supported.
  *       Ex:  '%5Cu0064'  ==>  \u0064 = 'd'
  * @param locale The view locale.
- * @param b The remainder of the query string, for the sort code to consume
  */
 
-void showSort(LXContext *lx, const char *locale, const char *b)
+void showSort(LXContext *lx, const char *locale)
 {
   char   inputChars[SORTSIZE];
   char   ruleUrlChars[SORTSIZE] = "";
@@ -253,7 +252,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     kSimpleMode,   
   } mode = kSimpleMode;
 
-  if(strstr(b, "lxCustSortOpts=")) {
+  if(strstr(lx->queryString, "lxCustSortOpts=")) {
     lxCustSortOpts = TRUE;
   }
 
@@ -269,7 +268,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   /* pull out the text to be sorted. Note, should be able to access this 
      as a POST
    */
-  text = strstr(b, "EXPLORE_CollationElements=");
+  text = strstr(lx->queryString, "EXPLORE_CollationElements=");
 
   if(text)
   {
@@ -298,7 +297,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
 
   /* look for custom rules */
   ruleChars[0] = 0;
-  text = strstr(b, "usortRules=");
+  text = strstr(lx->queryString, "usortRules=");
 
   if(text) {
     text += strlen("usortRules=");
@@ -407,7 +406,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(b, "&fr=")) 
+      if(strstr(lx->queryString, "&fr=")) 
       {
         value = UCOL_ON;
       } 
@@ -427,7 +426,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(b, "&shft="))
+      if(strstr(lx->queryString, "&shft="))
       {
         value = UCOL_SHIFTED;
       } else  if(lxCustSortOpts) /* if we came from the form.. */
@@ -449,7 +448,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           status = U_ZERO_ERROR;
           value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if((ss=strstr(b, "&cas1=")))
+          if((ss=strstr(lx->queryString, "&cas1=")))
           {
               value = atoi(ss+strlen("&cas1="));
           }
@@ -478,7 +477,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(b, "&case=")) 
+      if(strstr(lx->queryString, "&case=")) 
       {
         value = UCOL_ON;
       } 
@@ -498,7 +497,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(b, "&dcmp=")) 
+      if(strstr(lx->queryString, "&dcmp=")) 
       {
         value = UCOL_ON;
       } 
@@ -518,7 +517,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR;
       attribute = UCOL_STRENGTH;
       customStrength = ucol_getAttribute(customCollator, attribute, &status);
-      if((ss = strstr(b, "strength=")))
+      if((ss = strstr(lx->queryString, "strength=")))
       {
         ss += 9; /* skip 'strength=' */
         nn = atoi(ss);
@@ -556,7 +555,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(b, "&hira=")) 
+      if(strstr(lx->queryString, "&hira=")) 
       {
         value = UCOL_ON;
       } 
@@ -590,7 +589,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     u_fprintf(lx->OUT, "<br>\r\n");
     u_fprintf(lx->OUT, "<textarea name=\"usortRules\" rows=5 cols=50 columns=50>");
     
-    if(strstr(b,"usortRulesLocale=")) {
+    if(strstr(lx->queryString,"usortRulesLocale=")) {
       UErrorCode err = U_ZERO_ERROR;
       UResourceBundle *bund, *array = NULL;
       const UChar *s = 0;
@@ -725,7 +724,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
           for(i=0;i<aSort->count;i++) {
-            showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars,b);
+            showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars);
           }
 
           u_fprintf(lx->OUT, "</TD>");	  
@@ -778,7 +777,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
           for(i=0;i<aSort->count;i++) {
-            showSort_outputWord(lx, aSort, i, aSort->lines[i].chars,b);
+            showSort_outputWord(lx, aSort, i, aSort->lines[i].chars);
           }
           
           u_fprintf(lx->OUT, "</TD>");	  

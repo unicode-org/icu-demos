@@ -93,53 +93,6 @@ void setupLocaleExplorer(LXContext *lx)
 
     status = U_ZERO_ERROR; 
 
-
-    /* ------- END INIT ----------*/
-
-    if((tmp=getenv("QUERY_STRING")) == NULL)
-    {
-        static char ho_str[1024];
-        static char pi_str[1024];
-        static char qs_str[1024];
-        static char sn_str[1024];
-        static char sp_str[1024];
-        
-        fprintf(stderr, "This program is designed to be run as a CGI-BIN.  QUERY_STRING is undefined.");
-
-        strcpy(ho_str, "HTTP_HOST=host.moc");
-        strcpy(pi_str, "PATH_INFO=");
-        strcpy(qs_str, "QUERY_STRING=");
-        strcpy(sn_str, "SCRIPT_NAME=/cgi-bin/locexp");
-        strcpy(sp_str, "SERVER_PORT=80");
-        
-        puts("");
-        /* path info */
-        printf(pi_str);
-        if(fgets(pi_str+strlen(pi_str),1000, stdin)) 
-        {
-            pi_str[strlen(pi_str)-1] = 0;
-        }
-
-        printf(qs_str);
-        fgets(qs_str+strlen(qs_str),1000, stdin);
-
-
-
-        puts(ho_str);
-        puts(pi_str);
-        puts(qs_str);
-        puts(sn_str);
-        puts(sp_str);
-
-        putenv(ho_str);
-        putenv(pi_str);
-        putenv(qs_str);
-        putenv(sn_str);
-        putenv(sp_str);
-
-    }
-
-
     /* Set up some initial values, just in case something goes wrong later. */
     strcpy(lx->chosenEncoding, "utf-8");
     lx->ourCharsetName = "utf-8";
@@ -229,8 +182,6 @@ void setupLocaleExplorer(LXContext *lx)
     
 #endif
     } /* end: if have a converter */
-
-    lx->scriptName = getenv("SCRIPT_NAME");
 
     /* setup the time zone.. */
     if (tmp && !strncmp(tmp,"SETTZ=",6))
@@ -369,8 +320,8 @@ UResourceBundle *getCurrentBundle(LXContext *lx, UErrorCode *status)
     return(lx->curRB); 
   }
 
-  if((lx->locale == NULL)|| !*(lx->locale)) { /* illegal arg */ return NULL; }
-  lx->curRB = ures_open(NULL, lx->locale, status);
+  if(!*(lx->curLocaleName)) { /* illegal arg */ return NULL; }
+  lx->curRB = ures_open(NULL, lx->curLocaleName, status);
 
   return lx->curRB;
 }

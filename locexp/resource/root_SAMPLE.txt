@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Thu Jul 10 16:29:12 PDT 2003 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Fri Jul 18 09:59:56 PDT 2003 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -31,6 +31,7 @@ root {
    EXPLORE_CollationElements  {  "Collation (sorting) Example"  }
    EXPLORE_CollationElements_Defaults  {  "Defaults"  }
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
+   EXPLORE_CollationElements_ShowCollKey  {  "Show Collation Key"  }
    EXPLORE_CollationElements_Sort  {  "Sort"  }
    EXPLORE_CollationElements_g7sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
    EXPLORE_CollationElements_moreInfo1  {  "For more information, see the"  }

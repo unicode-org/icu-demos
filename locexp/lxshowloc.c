@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -7,16 +7,18 @@
 
 /*  Main function for dumping the contents of a particular locale ---------------------------- */
 
-void showOneLocale(LXContext *lx, const char *b)
+void showOneLocale(LXContext *lx)
 {
     char *tmp;
     const char *locale = NULL;
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *myRB = NULL;
     const char *qs;
-    
-    qs = b;
-    
+    const char *b;
+
+    b = strdup(lx->queryString); /* TODO: FIXME */
+    qs = lx->queryString;
+
     if(*b == '_')
     {
         b++;
@@ -48,7 +50,7 @@ void showOneLocale(LXContext *lx, const char *b)
         char *sampleChars;
 
         /* show the 'choose a locale' page */
-        chooseLocale(lx, qs, TRUE, b, "", FALSE);
+        chooseLocale(lx, TRUE, b, "", FALSE);
 
         /* show the demos */
         u_fprintf(lx->OUT, "<H3>%U</H3>\r\n<UL><LI>",
@@ -125,20 +127,20 @@ void showOneLocale(LXContext *lx, const char *b)
     /* Show the explore.. things first. ======================*/
     if(strstr(b,"EXPLORE_DateTimePatterns"))
     {
-        showExploreDateTimePatterns(lx, myRB, locale, b);
+        showExploreDateTimePatterns(lx, myRB, locale);
     }
 
     else if (strstr(b, "EXPLORE_NumberPatterns"))
     {
-        showExploreNumberPatterns(lx, locale, b);
+      showExploreNumberPatterns(lx, locale);
     }
     else if (strstr(b, "EXPLORE_Calendar"))
     {
-        showExploreCalendar(lx, b);
+      showExploreCalendar(lx);
     }
     else if (strstr(b, "EXPLORE_search"))
     {
-        showExploreSearch(lx, b);
+      showExploreSearch(lx);
     }
     else if (strstr(b, "EXPLORE_srl"))
     {
@@ -147,7 +149,7 @@ void showOneLocale(LXContext *lx, const char *b)
     }
     else if (strstr(b, "EXPLORE_Break"))
     {
-        showExploreBreak(lx, locale, b);
+        showExploreBreak(lx, locale);
     }
     else if (strstr(b, "EXPLORE_CollationElements"))
     {
@@ -158,7 +160,7 @@ void showOneLocale(LXContext *lx, const char *b)
                             U_ZERO_ERROR);
 
         u_fprintf(lx->OUT, "%U<P>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
-        showSort(lx, locale, b);
+        showSort(lx, locale);
       
         u_fprintf(lx->OUT, "</TD>");
 
@@ -181,22 +183,22 @@ void showOneLocale(LXContext *lx, const char *b)
         showKeyAndEndItem(lx, "LocaleID", locale);
 
         u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
-        showString(lx, myRB, locale, b, "Version", FALSE);
+        showString(lx, myRB, locale, "Version", FALSE);
         u_fprintf(lx->OUT, "</td></tr></table>");
 
         showLocaleScript(lx, myRB, locale);
         u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
 
-        showUnicodeSet(lx, myRB, locale, b, "ExemplarCharacters", FALSE);
-        /*    showString(lx, myRB, locale, b, "ExemplarCharacters", FALSE); */
+        showUnicodeSet(lx, myRB, locale, "ExemplarCharacters", FALSE);
+        /*    showString(lx, myRB, locale, "ExemplarCharacters", FALSE); */
     
-        showTaggedArray(lx, myRB, locale, b, "Languages", TRUE);
-        showTaggedArray(lx, myRB, locale, b, "Countries", TRUE); 
+        showTaggedArray(lx, myRB, locale, "Languages", TRUE);
+        showTaggedArray(lx, myRB, locale, "Countries", TRUE); 
     
       
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   Date/Time section %%%*/
-        showString(lx, myRB, locale, b, "DefaultCalendar", FALSE);
+        showString(lx, myRB, locale,  "DefaultCalendar", FALSE);
 
         {
           int32_t len;
@@ -237,7 +239,7 @@ void showOneLocale(LXContext *lx, const char *b)
             showArrayWithDescription(lx, myRB, locale, ampmDesc, "AmPmMarkers", kCal);
         }
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
-        showArray(lx, myRB, locale, b, "Eras", kCal);
+        showArray(lx, myRB, locale, "Eras", kCal);
         u_fprintf(lx->OUT, "</td></tr></table>");
     
     
@@ -273,7 +275,7 @@ void showOneLocale(LXContext *lx, const char *b)
 #endif
             zsDesc[7] = 0;
       
-            show2dArrayWithDescription(lx, myRB, locale, zsDesc, b, "zoneStrings");  /* not calendrical */
+            show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");  /* not calendrical */
         }
     
         /* locale pattern chars */
@@ -302,7 +304,7 @@ void showOneLocale(LXContext *lx, const char *b)
             charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
             charDescs[20] = 0;
       
-            showStringWithDescription(lx, myRB, locale, b, charDescs, "localPatternChars", TRUE); /* calendrical? */
+            showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", TRUE); /* calendrical? */
         }
         showDateTimeElements(lx, myRB, locale); /* not calendrical? */
 
@@ -323,7 +325,7 @@ void showOneLocale(LXContext *lx, const char *b)
         }
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
 #endif
-        showCurrencies(lx, myRB, locale, b );
+        showCurrencies(lx, myRB, locale);
 #if 0
         u_fprintf(lx->OUT, "</td></tr></table>");
 #endif
@@ -359,14 +361,14 @@ void showOneLocale(LXContext *lx, const char *b)
         }
     
         showSpelloutExample(lx, myRB, locale);
-        showString(lx, myRB, locale, b, "SpelloutRules", TRUE);
-        showString(lx, myRB, locale, b, "OrdinalRules", TRUE);
-        showString(lx, myRB, locale, b, "DurationRules", TRUE);
+        showString(lx, myRB, locale, "SpelloutRules", TRUE);
+        showString(lx, myRB, locale, "OrdinalRules", TRUE);
+        showString(lx, myRB, locale, "DurationRules", TRUE);
 
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   Collation section %%%*/
 
-        showCollationElements(lx, myRB, locale, b, "CollationElements");
+        showCollationElements(lx, myRB, locale, "CollationElements");
     }
 
     ures_close(myRB);

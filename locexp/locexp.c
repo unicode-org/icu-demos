@@ -30,8 +30,6 @@ void displayLocaleExplorer(LXContext *lx)
     UErrorCode status = U_ZERO_ERROR;
     char portStr[100];
     int n;
-    const char *querystring;
-    const char *pathinfo;
     
     /* set up the port string */
     {
@@ -49,10 +47,6 @@ void displayLocaleExplorer(LXContext *lx)
             portStr[0] = 0;
         }
     }
-    /* -------------- Fetch Parameters */
-
-    querystring = getenv ( "QUERY_STRING" );
-    pathinfo    = getenv ( "PATH_INFO" );
 
     /* -------------- */
     
@@ -64,7 +58,7 @@ void displayLocaleExplorer(LXContext *lx)
     lx->backslashCtx.html = FALSE;
     printPath(lx, lx->curLocale, lx->curLocale, FALSE);
     
-    if(strstr(getenv("QUERY_STRING"), "EXPLORE"))
+    if(strstr(lx->queryString, "EXPLORE"))
     {
         lx->inDemo = TRUE;
         u_fprintf(lx->OUT, " &gt; %U", FSWF("exploreTitle", "Explore"));
@@ -77,7 +71,7 @@ void displayLocaleExplorer(LXContext *lx)
     lx->backslashCtx.html =TRUE;
     u_fprintf(lx->OUT, "</title>\r\n");
     
-    /* if(!getenv("PATH_INFO") || !(getenv("PATH_INFO")[0])) */
+    /* if(!lx->pathInfo || !(lx->pathInfo[0])) */
     {
         const char *host;
         host = getenv("LX_FORCE_HOST");  /* special variable - to force the hostname */
@@ -100,16 +94,16 @@ void displayLocaleExplorer(LXContext *lx)
 
 
     /* Robot Exclusion */
-    if(strstr(querystring,"PANICDEFAULT") ||  
-       (pathinfo && strstr(pathinfo,"transliterated"))) {
+    if(strstr(lx->queryString,"PANICDEFAULT") ||  
+       (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
-    } else if(!strncmp(querystring, "locale_all", 10) || strstr(querystring,"converter")){
+    } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
       u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
-    } else if(pathinfo && *pathinfo && pathinfo[1] && !strstr(pathinfo,"en_US")) {
+    } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
     } else if(lx->chosenEncoding && lx->chosenEncoding[0] && !strstr(lx->chosenEncoding, "utf-8")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
-    } else if(strstr(querystring, "_=")) {
+    } else if(strstr(lx->queryString, "_=")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
     }
     if(lx->chosenEncoding && lx->chosenEncoding[0]) {
@@ -122,7 +116,7 @@ void displayLocaleExplorer(LXContext *lx)
                      "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
               );
 
-    if(strstr(querystring,"EXPLORE"))
+    if(strstr(lx->queryString,"EXPLORE"))
     {
         printHelpImg(lx, "display", 
             FSWF("display_ALT", "Display Problems?"),
@@ -138,7 +132,7 @@ void displayLocaleExplorer(LXContext *lx)
     {
         UBool hadExperimentalSubLocales = FALSE;
 
-        if(querystring && querystring[0]  && !lx->curLocale && (querystring[0] == '_'))
+        if(lx->queryString && lx->queryString[0]  && !lx->curLocale && (lx->queryString[0] == '_'))
         {
             UChar dispName[1024];
             UErrorCode stat = U_ZERO_ERROR;
@@ -149,7 +143,7 @@ void displayLocaleExplorer(LXContext *lx)
                 FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
         }
       
-        if(isExperimentalLocale(lx->curLocaleName) && querystring && querystring[0] )
+        if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] )
         {
             u_fprintf(lx->OUT, "<ul><b>%U</b></ul>\r\n",
                 FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
@@ -330,11 +324,11 @@ void displayLocaleExplorer(LXContext *lx)
     }
     
     
-    if ( querystring == NULL )
-        querystring = ""; /* for sanity */
+    if ( lx->queryString == NULL )
+        lx->queryString = ""; /* for sanity */
     
-    if( ( (!*querystring)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
-        || strstr(querystring, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
+    if( ( (!*lx->queryString)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
+        || strstr(lx->queryString, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
     {
         u_fprintf(lx->OUT, "<ul>");
         u_fprintf_u(lx->OUT, 
@@ -353,11 +347,11 @@ void displayLocaleExplorer(LXContext *lx)
     
     
     /* Logic here: */
-    if( /* !lx->setLocale || */  !strncmp(querystring,"locale", 6))     /* ?locale  or not set: pick locale */
+    if( /* !lx->setLocale || */  !strncmp(lx->queryString,"locale", 6))     /* ?locale  or not set: pick locale */
     {
         char *restored;
         
-        restored = strchr(querystring, '&');
+        restored = strchr(lx->queryString, '&');
         if(restored)
         {
             restored ++;
@@ -381,13 +375,13 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "<td colspan=2 align=right>");
         printHelpTag(lx, "chooseLocale", NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-        chooseLocale(lx, querystring, FALSE, (char*)lx->cLocale, restored, (UBool)!strncmp(querystring,"locale_all", 10));
+        chooseLocale(lx, FALSE, (char*)lx->cLocale, restored, (UBool)!strncmp(lx->queryString,"locale_all", 10));
     }
-    else if (!strncmp(querystring,"converter", 9))  /* ?converter */
+    else if (!strncmp(lx->queryString,"converter", 9))  /* ?converter */
     {
         char *restored;
         
-        restored = strchr(querystring, '&');
+        restored = strchr(lx->queryString, '&');
         if(restored)
         {
             restored ++;
@@ -401,14 +395,14 @@ void displayLocaleExplorer(LXContext *lx)
         */
         u_fprintf(lx->OUT, "<hr>");
         
-        if(querystring[9] == '=')
+        if(lx->queryString[9] == '=')
         {
             /* choose from encodings that match a string */
             char *sample;
             char *end;
             UChar usample[256];
             
-            sample = strdup(querystring + 10);
+            sample = strdup(lx->queryString + 10);
             end    = strchr(sample, '&');
             
             if(end == NULL)
@@ -428,7 +422,7 @@ void displayLocaleExplorer(LXContext *lx)
             chooseConverter(lx, restored);
         }
     }
-    else if (!strncmp(querystring,"SETTZ=",6))
+    else if (!strncmp(lx->queryString,"SETTZ=",6))
     {
         /* lx->newZone is initted early, need it for cookies :) */
         if(u_strlen(lx->newZone))
@@ -456,8 +450,8 @@ void displayLocaleExplorer(LXContext *lx)
     }
     else
     {
-        /* show an entire locale */
-        showOneLocale(lx, querystring);
+      /* show an entire locale */
+      showOneLocale(lx);
     }
     
     printStatusTable(lx);
@@ -481,8 +475,8 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "<br><a href=\"?converter=");
         writeEscaped(lx, COLLECT_getChars());
         
-        if(strncmp(getenv("QUERY_STRING"), "converter",9))
-            u_fprintf(lx->OUT,"&%s", getenv("QUERY_STRING"));
+        if(strncmp(lx->queryString, "converter",9)) /* TODO: FIXME */
+            u_fprintf(lx->OUT,"&%s", lx->queryString);
         u_fprintf(lx->OUT, "\">");
         u_fprintf(lx->OUT, "%U</a>\r\n",
             FSWF("encoding_PickABetter", "Click here to search for a better encoding"));
@@ -538,13 +532,13 @@ const UChar *defaultLanguageDisplayName(LXContext *lx)
     return displayName;
 }
 
-UBool didUserAskForKey(const char *key, const char *queryString)
+UBool didUserAskForKey(LXContext *lx, const char *key)
 {
     const char *start, *limit, *tmp1, *tmp2;
     
     
     /* look to see if they asked for it */
-    start = queryString;
+    start = lx->queryString;
     while( (start = strstr(start, "SHOW")) )
     {
         start += 4;
@@ -580,10 +574,10 @@ UBool didUserAskForKey(const char *key, const char *queryString)
 }
 
 
-void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *qs)
+void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patternText)
 {
     /* make QS point to the first char of the field data */
-    qs = strchr(qs, '=');
+    const char *qs = strchr(patternText, '=');
     if(qs == NULL) {
       *dstPattern = 0;
       return;

@@ -221,12 +221,6 @@ void printStatusTable(LXContext *lx)
     UChar myChars[1024];
     UErrorCode status = U_ZERO_ERROR;
     UChar *dateStr;
-    const char *qs = getenv("QUERY_STRING");
-
-    if (qs == NULL)
-    {
-        qs = "";
-    }
     
     u_fprintf(lx->OUT, "<p><table border=0 cellspacing=0 width=100%%>");
     u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
@@ -252,8 +246,8 @@ void printStatusTable(LXContext *lx)
     if(lx->inDemo == FALSE)
     {
         u_fprintf(lx->OUT, "<a href=\"?converter");
-        if(strncmp(qs, "converter",9))
-            u_fprintf(lx->OUT,"&%s", qs);
+        if(strncmp(lx->queryString, "converter",9)) /* fixme */
+            u_fprintf(lx->OUT,"&%s", lx->queryString);
         u_fprintf(lx->OUT, "\">");
     }
 
@@ -298,8 +292,8 @@ void printStatusTable(LXContext *lx)
     if(lx->inDemo == FALSE)
     {
         u_fprintf(lx->OUT, "<a href=\"?locale");
-        if(strncmp(qs, "locale",6))
-            u_fprintf(lx->OUT,"&%s", qs);
+        if(strncmp(lx->queryString, "locale",6))
+            u_fprintf(lx->OUT,"&%s", lx->queryString);
         u_fprintf(lx->OUT, "\">");
     }
     uloc_getDisplayName(lx->cLocale, lx->cLocale, myChars, 1024, &status);
@@ -318,103 +312,86 @@ void printStatusTable(LXContext *lx)
               FSWF("off", "off"));
 #else
     /* Transliteration is OK */
-    if(lx->inDemo == FALSE)
-    {
-        if(!strcmp(lx->chosenEncoding, "transliterated"))
-        {
-            u_fprintf(lx->OUT, "<td><b>*%U*</b> / <a href=\"%s/%s/?%s\">%U</a></td>",
-                      FSWF("on","on"),
-                      lx->scriptName,
-                      lx->cLocale,
-                      qs,
-                      FSWF("off","off"));
-        }
-        else
-        {
-            u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%U</a> / <b>*%U*</b></td>",
-                      lx->scriptName,
-                      lx->cLocale,
-                      qs,
-                      FSWF("on","on"),
-                      FSWF("off","off"));
-        }
-    }
-    else
-    { /* indemo */
-        u_fprintf(lx->OUT, "<td><b>%U</b></td>", 
-                  (!strcmp(lx->chosenEncoding, "transliterated"))?
-                  FSWF("on","on") :
+    if(lx->inDemo == FALSE)  {
+      if(!strcmp(lx->chosenEncoding, "transliterated")) {
+        u_fprintf(lx->OUT, "<td><b>*%U*</b> / <a href=\"%s/%s/?%s\">%U</a></td>",
+                  FSWF("on","on"),
+                  lx->scriptName,
+                  lx->cLocale,
+                  lx->queryString,
                   FSWF("off","off"));
+      } else {
+        u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%U</a> / <b>*%U*</b></td>",
+                  lx->scriptName,
+                  lx->cLocale,
+                  lx->queryString,
+                  FSWF("on","on"),
+                  FSWF("off","off"));
+      }
+    } else { /* indemo */
+      u_fprintf(lx->OUT, "<td><b>%U</b></td>", 
+                (!strcmp(lx->chosenEncoding, "transliterated"))?
+                FSWF("on","on") :
+                FSWF("off","off"));
     }
 #endif  
   
     u_fprintf(lx->OUT, "</tr>\r\n");
 
-    if(!FSWF_getBundle())
-    {
-        /* No reason to use FSWF, this error means we have nothing to fetch strings from! */
-        u_fprintf(lx->OUT, "<TR><TD COLSPAN=3><B><I>Note: Could not open our private resource bundle %s </I></B><P> - [%s]</TD></TR>\r\n",
-                  FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
+    if(!FSWF_getBundle()) {
+      /* No reason to use FSWF, this error means we have nothing to fetch strings from! */
+      u_fprintf(lx->OUT, "<TR><TD COLSPAN=3><B><I>Note: Could not open our private resource bundle %s </I></B><P> - [%s]</TD></TR>\r\n",
+                FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
-
-    if(!isSupportedLocale(lx->cLocale, TRUE))  /* consider it 'supported' if it's been translated. */
-    {
-        u_fprintf(lx->OUT, "<TD COLSPAN=3 ><FONT COLOR=\"#FF0000\">");
-        u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), lx->cLocale);
-        u_fprintf(lx->OUT, "</FONT></TD>");
+    
+    if(!isSupportedLocale(lx->cLocale, TRUE)) {  /* consider it 'supported' if it's been translated. */
+      u_fprintf(lx->OUT, "<TD COLSPAN=3 ><FONT COLOR=\"#FF0000\">");
+      u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), lx->cLocale);
+      u_fprintf(lx->OUT, "</FONT></TD>");
     }
 
 
     u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#AFA8AF\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></TD></TR>\r\n");
-
+    
     u_fprintf(lx->OUT, "</table>\r\n");
-
     u_fprintf(lx->OUT, "<center>\r\n");
-
     printHelpTag(lx, "", FSWF("help", "Help"));
-  
     u_fprintf(lx->OUT, " &nbsp; ");
-
     printHelpTag(lx, "transliteration", FSWF("transliterate_help", "Transliteration Help"));
-
     u_fprintf(lx->OUT, " &nbsp; ");
 
-    if(lx->curLocaleName[0])
-    {
-        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
-                  lx->curLocaleName,
-                  FSWF("sourceFile", "View Locale Source"));
-
-        u_fprintf(lx->OUT, " &nbsp; ");
-        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/icu/xml/%s.xml\">%U</A>", 
-                  lx->curLocaleName,
-                  FSWF("LDMLsourceFile", "View LDML Source"));
-
-        u_fprintf(lx->OUT, " &nbsp; ");
+    if(lx->curLocaleName[0]) {
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
+                lx->curLocaleName,
+                FSWF("sourceFile", "View Locale Source"));
+      
+      u_fprintf(lx->OUT, " &nbsp; ");
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/icu/xml/%s.xml\">%U</A>", 
+                lx->curLocaleName,
+                FSWF("LDMLsourceFile", "View LDML Source"));
+      
+      u_fprintf(lx->OUT, " &nbsp; ");
     }
 
-
+    
     u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%U</A>",
               FSWF("poweredby_filebug", "File a bug"));
-  
+    
     u_fprintf(lx->OUT, "</center><p>\r\n");
 
-    if(lx->couldNotOpenEncoding)
-    {
-        /* Localize this when it actually works! */
-        u_fprintf(lx->OUT,"<tr><td colspan=2><font color=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</font></td></tr>\r\n", lx->couldNotOpenEncoding); 
+    if(lx->couldNotOpenEncoding) {
+      /* Localize this when it actually works! */
+      u_fprintf(lx->OUT,"<tr><td colspan=2><font color=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</font></td></tr>\r\n", lx->couldNotOpenEncoding); 
     }
-
+    
 #if 0
-    if(!strcmp(lx->chosenEncoding, "transliterated") && U_FAILURE(lx->xlitCtx.transerr))
-    {
-        u_fprintf(lx->OUT,"<b>%U (%s)- %s</b><p>\r\n", 
-                  FSWF("translit_CantOpenPair", "Warning: Could not open the transliterator for the locale pair."),
-                  lx->xlitCtx.locale,
-                  u_errorName(lx->xlitCtx.transerr));
+    if(!strcmp(lx->chosenEncoding, "transliterated") && U_FAILURE(lx->xlitCtx.transerr)) {
+      u_fprintf(lx->OUT,"<b>%U (%s)- %s</b><p>\r\n", 
+                FSWF("translit_CantOpenPair", "Warning: Could not open the transliterator for the locale pair."),
+                lx->xlitCtx.locale,
+                u_errorName(lx->xlitCtx.transerr));
     }
 #endif
-
 }
 
 /* convert from unicode format with the pipe (|) character as the separator,
