@@ -88,7 +88,7 @@ bool convertFile(const char* fromcpage,
 
     const UChar* cuniiter;
     UChar* uniiter;
-    UChar* unibuff;
+    UChar* unibuff = 0;
 
     size_t rd, totbuffsize;
 
@@ -193,12 +193,12 @@ bool convertFile(const char* fromcpage,
   error_exit:
     ret = true;
   normal_exit:
-    delete convfrom;
-    delete convto;
+    if (convfrom) delete convfrom;
+    if (convto) delete convto;
 
     // Close the created converters
-    delete [] buff;
-    delete [] unibuff;
+    if (buff) delete [] buff;
+    if (unibuff) delete [] unibuff;
     return ret;
 }
 
