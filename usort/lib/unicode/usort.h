@@ -80,11 +80,7 @@ typedef struct
 {
   uint8_t     *key;     /* Opaque key for this line. 0wned. */
   int32_t      keySize; /* size of above struct */
-#ifdef WIN32
-  /*const*/ UChar *chars;   /* Null terminated string. Can be 0wned. */
-#else
-  const UChar *chars;   /* Null terminated string. Can be 0wned. */
-#endif
+  UChar *chars;   /* Null terminated string. Can be 0wned. */
   void        *userData;/* User data */
 } USortLine;
 

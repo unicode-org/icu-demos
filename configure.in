@@ -4,7 +4,7 @@ dnl Steven R. Loomis
 dnl copyright (c) 1999 IBM, Inc.
 
 dnl Process this file with autoconf to produce a configure script
-AC_INIT(usort/lib/usort.h)
+AC_INIT(usort/lib/unicode/usort.h)
 AC_PREFIX_PROGRAM(genrb)
 
 # Cross compiling is taken care of becuase you're pointing to an entire set of configuration options
@@ -23,6 +23,6 @@ AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, true)
 ICU_MAKEFILE=$prefix/share/icu/Makefile.inc
 AC_SUBST(ICU_MAKEFILE)
 
-AC_OUTPUT([Makefile  uconv/Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xtradata/Makefile xlitomatic/Makefile])
+AC_OUTPUT([Makefile  uconv/Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xtradata/Makefile xlitomatic/Makefile rtfcvrt/Makefile])
 
 dnl # calexpo/Makefile
