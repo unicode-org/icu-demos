@@ -564,58 +564,11 @@ fi
 fi
 
 
-ac_aux_dir=
-for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
-  if test -f $ac_dir/install-sh; then
-    ac_aux_dir=$ac_dir
-    ac_install_sh="$ac_aux_dir/install-sh -c"
-    break
-  elif test -f $ac_dir/install.sh; then
-    ac_aux_dir=$ac_dir
-    ac_install_sh="$ac_aux_dir/install.sh -c"
-    break
-  fi
-done
-if test -z "$ac_aux_dir"; then
-  { echo "configure: error: can not find install-sh or install.sh in $srcdir $srcdir/.. $srcdir/../.." 1>&2; exit 1; }
-fi
-ac_config_guess=$ac_aux_dir/config.guess
-ac_config_sub=$ac_aux_dir/config.sub
-ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
-
-
-# Make sure we can run config.sub.
-if ${CONFIG_SHELL-/bin/sh} $ac_config_sub sun4 >/dev/null 2>&1; then :
-else { echo "configure: error: can not run $ac_config_sub" 1>&2; exit 1; }
-fi
-
-echo $ac_n "checking host system type""... $ac_c" 1>&6
-echo "configure:594: checking host system type" >&5
-
-host_alias=$host
-case "$host_alias" in
-NONE)
-  case $nonopt in
-  NONE)
-    if host_alias=`${CONFIG_SHELL-/bin/sh} $ac_config_guess`; then :
-    else { echo "configure: error: can not guess host type; you must specify one" 1>&2; exit 1; }
-    fi ;;
-  *) host_alias=$nonopt ;;
-  esac ;;
-esac
-
-host=`${CONFIG_SHELL-/bin/sh} $ac_config_sub $host_alias`
-host_cpu=`echo $host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
-host_vendor=`echo $host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
-host_os=`echo $host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
-echo "$ac_t""$host" 1>&6
-
-
 # Cross compiling is taken care of becuase you're pointing to an entire set of configuration options
 # Extract the first word of "gcc", so it can be a program name with args.
 set dummy gcc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:619: checking for $ac_word" >&5
+echo "configure:572: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -645,7 +598,7 @@ if test -z "$CC"; then
   # Extract the first word of "cc", so it can be a program name with args.
 set dummy cc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:649: checking for $ac_word" >&5
+echo "configure:602: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -696,7 +649,7 @@ fi
       # Extract the first word of "cl", so it can be a program name with args.
 set dummy cl; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:700: checking for $ac_word" >&5
+echo "configure:653: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -728,7 +681,7 @@ fi
 fi
 
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:732: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
+echo "configure:685: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -739,12 +692,12 @@ cross_compiling=$ac_cv_prog_cc_cross
 
 cat > conftest.$ac_ext << EOF
 
-#line 743 "configure"
+#line 696 "configure"
 #include "confdefs.h"
 
 main(){return(0);}
 EOF
-if { (eval echo configure:748: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:701: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   ac_cv_prog_cc_works=yes
   # If we can't run a trivial program, we are probably using a cross compiler.
   if (./conftest; exit) 2>/dev/null; then
@@ -770,12 +723,12 @@ if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:774: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo "configure:727: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
 echo $ac_n "checking whether we are using GNU C""... $ac_c" 1>&6
-echo "configure:779: checking whether we are using GNU C" >&5
+echo "configure:732: checking whether we are using GNU C" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_gcc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -784,7 +737,7 @@ else
   yes;
 #endif
 EOF
-if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:788: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:741: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
   ac_cv_prog_gcc=yes
 else
   ac_cv_prog_gcc=no
@@ -803,7 +756,7 @@ ac_test_CFLAGS="${CFLAGS+set}"
 ac_save_CFLAGS="$CFLAGS"
 CFLAGS=
 echo $ac_n "checking whether ${CC-cc} accepts -g""... $ac_c" 1>&6
-echo "configure:807: checking whether ${CC-cc} accepts -g" >&5
+echo "configure:760: checking whether ${CC-cc} accepts -g" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_cc_g'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -837,7 +790,7 @@ fi
 
 ac_safe=`echo "$prefix/lib/icu/Makefile.inc" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $prefix/lib/icu/Makefile.inc""... $ac_c" 1>&6
-echo "configure:841: checking for $prefix/lib/icu/Makefile.inc" >&5
+echo "configure:794: checking for $prefix/lib/icu/Makefile.inc" >&5
 if eval "test \"`echo '$''{'ac_cv_file_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -863,7 +816,7 @@ fi
 OLDCPPFLAGS=${CPPFLAGS}
 CPPFLAGS="${CPPFLAGS} -I$prefix/include"
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
-echo "configure:867: checking how to run the C preprocessor" >&5
+echo "configure:820: checking how to run the C preprocessor" >&5
 # On Suns, sometimes $CPP names a directory.
 if test -n "$CPP" && test -d "$CPP"; then
   CPP=
@@ -878,13 +831,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 882 "configure"
+#line 835 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:888: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:841: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -895,13 +848,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 899 "configure"
+#line 852 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:905: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:858: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -912,13 +865,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -nologo -E"
   cat > conftest.$ac_ext <<EOF
-#line 916 "configure"
+#line 869 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:922: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:875: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -946,17 +899,17 @@ for ac_hdr in $prefix/include/unicode/utypes.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:950: checking for $ac_hdr" >&5
+echo "configure:903: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 955 "configure"
+#line 908 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:960: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:913: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -991,7 +944,7 @@ PACKAGE="icuapps"
 # Extract the first word of "autoconf", so it can be a program name with args.
 set dummy autoconf; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:995: checking for $ac_word" >&5
+echo "configure:948: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_AUTOCONF'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1134,7 +1087,7 @@ done
 
 ac_given_srcdir=$srcdir
 
-trap 'rm -fr `echo "Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xtradata/Makefile xlitomatic/Makefile rtfcvrt/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1167,11 +1120,6 @@ s%@oldincludedir@%$oldincludedir%g
 s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@GENRB@%$GENRB%g
-s%@host@%$host%g
-s%@host_alias@%$host_alias%g
-s%@host_cpu@%$host_cpu%g
-s%@host_vendor@%$host_vendor%g
-s%@host_os@%$host_os%g
 s%@CC@%$CC%g
 s%@CPP@%$CPP%g
 s%@PACKAGE@%$PACKAGE%g
@@ -1218,7 +1166,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xtradata/Makefile xlitomatic/Makefile rtfcvrt/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile  usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
