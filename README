@@ -96,15 +96,18 @@ THE APPS
 
     * Browse the Unicode UCS-2 code space.
 
-- udata    From  : Markus Scherer
-                   <schererm@us.ibm.com>
-           
-            Uses : Conversion, Chartypes
-    * Provides an abstraction for accessing data
-     (data could be implemented as: dll, mem-mapped file, plain file, ...)
 
-    * Example use : a library for accessing Unicode character names
-    * Implemented : raw files 'fopen()',  Win32 mapped files, POSIX mmap()
+- dumpdat     From : Steven R. Loomis
+                  <srl@monkey.sbay.org>
+
+           Uses : UData
+
+    * A way to look at the version and info headers on a udata
+      file
+
+
+- udata    *** OBSOLETE - now part of udata [part of the ICU]
+
 
 - Your contribution could be here too! Write: <icu4c@us.ibm.com>
 

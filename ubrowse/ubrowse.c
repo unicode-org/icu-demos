@@ -1,15 +1,12 @@
 /*
 *******************************************************************************
-*                                                                             *
-* COPYRIGHT:                                                                  *
-*   (C) Copyright International Business Machines Corporation, 1998, 1999     *
-*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
-*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
-*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
-*                                                                             *
+* Copyright (C) 1996-1999, International Business Machines Corporation and    *
+* others. All Rights Reserved.                                                *
+*******************************************************************************
+* HTML Design by Josh Mast <josh@hivehaus.org>                                *
 *******************************************************************************
 *
-* File date.c
+* File ubrowse.c
 *
 * Modification History:
 *
@@ -17,6 +14,7 @@
 *   06/11/99    stephen     Creation.
 *   06/16/99    stephen     Modified to use uprint.
 *   08/02/1999  srl         Unibrowse
+*   12/02/1999  srl         Integrated design changes from Josh Mast
 *******************************************************************************
 */
 
@@ -352,28 +350,62 @@ main(int argc,
 
   printf("</HEAD>\r\n");
   
-  printf("<BODY BGCOLOR=\"#FFFFFF\">\r\n");
+  printf("<BODY BGCOLOR=\"#FFFFFF\" link=\"green\" vlink=\"brown\">\r\n");
   
-  printf("(Encoding: %s.)<P>\n", pi);
-  printf("<TABLE><TR><TD><FORM>Jump to Unicode block: (hex) <INPUT NAME=n VALUE=\"%04X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM></TD><TD><FORM><INPUT TYPE=SUBMIT NAME=n VALUE=\"Show All\"></FORM></TD></TR></TABLE><P>\r\n", block);
+  printf("<table border=0><tr><td>"
+         "<!-- boink -->\r\n"
+         "<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
+         "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n"
+         "<!-- /boink -->\r\n");
+
+
+  printf("<B>Encoding: %s.</B><BR>\r\n", pi);
+
+  printf("<!-- boink -->\r\n"
+         "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
+         "<!-- /boink -->\r\n");
+
+  printf("<TABLE><TR><TD><FORM>Jump to Unicode block: (hex) <INPUT NAME=n VALUE=\"%04X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM></TD><TD><FORM><INPUT TYPE=SUBMIT NAME=n VALUE=\"Show All\"></FORM></TD></TR></TABLE>\r\n", block);
+
+  printf("<!-- boink -->\r\n"
+         "</td></tr></table>\r\n"
+         "</td></tr></table>\r\n"
+         "<!-- /boink -->\r\n");
+
+  printf("</td></tr><tr><td>\r\n");
+
 
   if(mode == ETOP) /* top level list of blocks */
     {
-      printf("<H1>Unicode Browser</H1>\r\n");
-      printf("<B>Click on a block to view it in more detail</B><P>\r\n");
-      printf("<TT><TABLE><TR><TD></TD>");
+        printf("<!-- boink -->\r\n"
+               "<table border=0 cellpadding=0 cellspacing=0><tr><td bgcolor=\"#000000\">\r\n"
+               "<table border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\r\n"
+               "<!-- /boink -->\r\n");
+
+      printf("<b>Unicode Browser</b> - Click on a block to view it in more detail<br>\r\n");
+      printf("<!-- boink -->\r\n"
+             "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
+             "<!-- /boink -->\r\n");
+
+      printf("<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
       for(n = 0;n<0x10;n++)
 	{
-	  printf("<TD><B>_%X__</B></TD>", n);
+	  printf("<B>_%X__</B> ", n);
 	}
       for(n = 0x0000; n <= 0xFF00; n += 0x0100)
 	{
 	  if( (n% 0x1000) == (0x0000) )
-	    printf("\r\n</TR><TR><TD><B>%04X</B></TD>", n);
-	  printf("<TD><A HREF=\"?n=%04X\">%04X</A></TD>", n, n);
+	    printf("<BR>\r\n<B>%04X</B> ", n);
+	  printf("<A HREF=\"?n=%04X\">%04X</A> ", n, n);
 	}
-      printf("</TR></TABLE></TT>");
-      printf("<P><HR>\r\n");
+      printf("<BR></TT>\r\n");
+
+      printf("<!-- boink -->\r\n"
+             "</td></tr></table>\r\n"
+             "</td></tr></table>\r\n"
+             "<!-- /boink -->\r\n");
+
+      printf("\r\n</td></tr><tr><td align=right>\r\n");
       
       showSearchMenu(0x0000);
     }      
@@ -420,6 +452,7 @@ main(int argc,
 	printf("<TR><TD COLSPAN=18 ALIGN=CENTER><I>Click on a column number to zoom in.</I></TD></TR>\r\n");
 	printf("</TABLE></TT>");
       printf("<HR>\r\n");
+      printf("<A HREF=\"http://charts.unicode.org/Unicode.charts/normal/U%04X.html#Glyphs\">this block on charts.unicode.org</A>\r\n", block);
       showSearchMenu( block + 0x0100);
     }
   else if(mode == ECOLUMN )
@@ -573,7 +606,11 @@ main(int argc,
 	  printf("<TD>");
 	  printCharName(theChar);
 	  printf("</TD>");
-	  printf("<TD><FONT SIZE=-1>U+%04X</FONT></TD></TR>", theChar);
+	  printf("<TD><FONT SIZE=-1>U+%04X</FONT>", theChar);
+          printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n",
+                 ((theChar&0xFF00)>>8),
+                 theChar);
+          printf("</TD></TR>");
 	}
       
 
@@ -675,6 +712,10 @@ main(int argc,
     }
   
 
+  printf("</td></tr></table>\r\n"
+         "<!-- /boink -->\r\n\r\n");
+
+
   if(anyDecompose)
     {
       printf("Note: text in <FONT COLOR=\"#00DD00\">");
@@ -682,10 +723,14 @@ main(int argc,
 
     }
 
-  printf("<HR><A HREF=\"http://www.unicode.org/\">Based on: %s</A>\r\n",
-	 u_getVersion());
+  printf("<A HREF=\"http://www.unicode.org/\">Based on: %s</A>\r\n",
+         u_getVersion());
+
+  printf("<BR>Powered by <A HREF=\"http://oss.software.ibm.com/developerworks/opensource/icu/\">ICU 1.3.1</A>\r\n");
   
-  printf("<BR>Powered by <A HREF=\"http://www10.software.ibm.com/developerworks/opensource/icu/\">ICU 1.3.1</A>\r\n");
+  printf("</td></tr></table>\r\n");
+
+  printf("</BODY></HTML>\r\n");
 }
 
 /* still lazy evaluated. but it'll give us an alternate strcpy */
@@ -912,7 +957,18 @@ void showSearchMenu(UChar startFrom)
 {
   int32_t i;
 
-  printf("Search for Script: <FORM METHOD=GET>");
+  printf("<!-- boink -->\r\n"
+         "<table border=0 cellpadding=0 cellspacing=0 width=100%><tr><td bgcolor=\"#000000\">\r\n"
+         "<table border=0 cellpadding=1 cellspacing=1 width=100%><tr><td bgcolor=\"#cccccc\">\r\n"
+         "<!-- boink -->\r\n");
+
+  printf("<b>Search</b><br>\r\n"
+         "<!-- boink -->\r\n"
+         "</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n"
+         "<table border=0><tr><td>\r\n"
+         "<!-- /boink -->\r\n");
+
+  printf("By Script: <FORM METHOD=GET>");
   printf("<SELECT NAME=scr>\r\n");
   for(i=U_BASIC_LATIN;i<=U_CHAR_SCRIPT_COUNT;i++)
     {
@@ -928,7 +984,7 @@ void showSearchMenu(UChar startFrom)
   printf("<INPUT TYPE=SUBMIT VALUE=\"Search\">");
   printf("</FORM>\r\n");
 
-  printf("Search for Type: <FORM METHOD=GET>");
+  printf("By Type: <FORM METHOD=GET>");
   printf("<SELECT NAME=typ>\r\n");
   for(i=U_UNASSIGNED;i<=U_GENERAL_OTHER_TYPES;i++)
     {
@@ -944,10 +1000,15 @@ void showSearchMenu(UChar startFrom)
   printf("<INPUT TYPE=SUBMIT VALUE=\"Search\">");
   printf("</FORM>\r\n");
 
-  printf("Search by charname: <FORM METHOD=GET><INPUT NAME=s><INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
+  printf("By Charname: <FORM METHOD=GET><INPUT NAME=s><INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
 
 #ifdef RADICAL_LIST
-  printf("<A HREF=\"?radlst=1\">Radicals</A>");
+  printf("<A HREF=\"?radlst=1\">Radicals</A><P>");
 #endif
+  
+  printf("<!-- boink -->\r\n"
+         "</td></tr></table>\r\n"
+         "</td></tr></table>\r\n");
+
 }
 

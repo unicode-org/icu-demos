@@ -1,0 +1,28 @@
+Dec 2, 1999
+
+Not a lot to write home about yet. Good way to debug the versions of
+your data files. Example use:
+
+# ./dumpdat dat unames
+isAcceptable() called on:
+Size: 20, Endianness: l, Charset family: A, UChar=2 bytes.
+dataFormat   =117.110. 97.109 unam
+formatVersion=  1.  0.  0.  0 ____
+dataVersion  =  3.  0.  0.  0 ____
+
+Size: 20, Endianness: l, Charset family: A, UChar=2 bytes.
+dataFormat   =117.110. 97.109 unam
+formatVersion=  1.  0.  0.  0 ____
+dataVersion  =  3.  0.  0.  0 ____
+
+
+The first header is the one passed to isAcceptable() [which always
+returns TRUE]. The second is the one that's actually returned.
+
+Future versions of dumpdat could actually dump out the contents of a
+data file, or perhaps extract them into a new file. [In this way one
+could de-commonize a DLL or .dat file].
+
+Ideas? Suggestions? better yet, improve this and send us the patch!
+
+ -steven
