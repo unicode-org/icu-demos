@@ -22,7 +22,7 @@ To use this sample:
 
 - Build & enjoy:
 
-   put a file "test.utf" in the current directory [one is supplied]
+   put a file "test.rtf" in the current directory [one is supplied]
    run "make check"
    view "test_utf8.txt" with your favorite UTF-8 viewer.
 
