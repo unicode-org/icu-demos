@@ -49,7 +49,7 @@ distclean distclean-local dist dist-local check check-local res-local
 
 
 ## List of standard targets
-all:  all-local
+all:  Makefile all-local
 install:  install-local
 clean:  clean-local
 distclean :  distclean-local
@@ -61,7 +61,7 @@ all-local: res-local root_SAMPLE.txt
 res-local: Makefile.res $(RES)
 
 Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
-	./detectEncodings.sh $(AUTOGENSRC)
+	sh ./detectEncodings.sh $(AUTOGENSRC)
 
 -include Makefile.res
 
@@ -71,7 +71,7 @@ root.txt: ../locexp.c root.txt.inc ../tools/extractStrings.sh
 	env PATH=../tools:../../uconv:$(PATH) extractStrings.sh ../locexp.c > ../resource/root.txt || ( rm -f root.txt ; false )
 
 index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
-	../tools/genIndex.sh $(SRC) root.txt > index.txt
+	sh ../tools/genIndex.sh $(SRC) root.txt > index.txt
 
 
 install-local: install-res
