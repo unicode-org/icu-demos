@@ -51,7 +51,7 @@ static void TRANSLITERATED_LoadTransliteratorIfNotLoaded(FromUTransliteratorCont
   {
     ctx->transerr = U_ZERO_ERROR;
     ctx->trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &ctx->transerr);
-//     fprintf(stderr, "TR[%d:%s]=%p [%s]\n", 9133, id, ctx->trans, u_errorName(status)); 
+    /*     fprintf(stderr, "TR[%d:%s]=%p [%s]\n", 9133, id, ctx->trans, u_errorName(status));  */
   }
 
   if(!ctx->trans || U_FAILURE(status))

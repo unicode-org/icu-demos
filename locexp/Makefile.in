@@ -48,7 +48,7 @@ ICULIBS += -lusort -llxutil -lustdio
 LDFLAGS += -L../usort/lib -L./util 
 
 # get the hostname the code is built on
-CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS)
+CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"@host@\"
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \

@@ -6,10 +6,68 @@
 #include "unicode/ures.h"
 #include "unicode/ustdio.h"
 #include "locexp.h"
+#include <stdlib.h>
 
 const char *ures_getTag(UResourceBundle *n)
 {
     return ures_getKey(n);
+}
+
+void writeSubObject( LXContext *lx, UResourceBundle *n )
+{
+  UErrorCode s2 = U_ZERO_ERROR;
+  UResourceBundle *sub = NULL;
+
+  fprintf(lx->fOUT, "%s :", ures_getTag(n));
+  if(ures_getSize(n) > 1) 
+    fprintf(lx->fOUT, " [%d]", ures_getSize(n));
+
+  switch(ures_getType(n))
+    {
+    case RES_NONE: fprintf(lx->fOUT, "NONE");break;
+    case RES_STRING:
+      /*fprintf(lx->fOUT, "STRING"); */
+      {
+	const UChar *u;
+	int32_t len = 0;
+	u = ures_getString(n, &len, &s2);
+	if(U_FAILURE(s2)) { fprintf(lx->fOUT, " Err %s\n", u_errorName(s2));  return; }
+	if(u == NULL)
+	{
+	  fprintf(lx->fOUT, "NULL\n");
+	}
+	else
+	{
+	  char *out;
+	  out = calloc(1,(u_strlen(u)+2)*(6)); /* space for \uXXXX */
+	  u_UCharsToChars(u, out, u_strlen(u)+1);
+	  fprintf(lx->fOUT, "\"%s\"", out);
+	}
+      }
+      break;
+    case RES_BINARY: fprintf(lx->fOUT, "<A HREF=\"./%s\">BINARY</A>", ures_getTag(n)); break;
+    case RES_TABLE: fprintf(lx->fOUT, "TABLE"); break;
+    case RES_INT: fprintf(lx->fOUT, "INT=%d", ures_getInt(n, &s2)); break;
+    case RES_ARRAY: fprintf(lx->fOUT, "ARRAY");
+      fprintf(lx->fOUT, "<BR><OL>\r\n");
+      {
+	int i;
+	for(i=0;i<ures_getSize(n);i++)
+	{
+	  s2 = U_ZERO_ERROR;
+	  sub = ures_getByIndex(n, i, sub, &s2);
+	  if(U_FAILURE(s2)) break;
+	  fprintf(lx->fOUT, " <LI> ");
+	  writeSubObject(lx, sub);
+	}
+      }
+      fprintf(lx->fOUT, "</OL>\r\n");
+      break;
+
+    case RES_INT_VECTOR: fprintf(lx->fOUT, "INT VECTOR"); break;
+    case RES_RESERVED: fprintf(lx->fOUT, "RESERVED"); break;
+    default: fprintf(lx->fOUT, "unknown %d", ures_getType(n)); break;
+    }
 }
 
 void writeFileObject( LXContext *lx, const char *path )
@@ -19,7 +77,10 @@ void writeFileObject( LXContext *lx, const char *path )
   UResourceBundle *n = NULL;
   UErrorCode s2 = U_ZERO_ERROR;
 
-  rb = ures_open(FSWF_bundlePath(), lx->cLocale, &status);  
+  if(strcmp(lx->chosenEncoding,"icudata"))
+    rb = ures_open(FSWF_bundlePath(), lx->cLocale, &status);  
+  else
+    rb = ures_open(NULL, lx->cLocale, &status);  
 
   if(U_FAILURE(status))
   {
@@ -55,20 +116,7 @@ void writeFileObject( LXContext *lx, const char *path )
           }
         else
           {
-            fprintf(lx->fOUT, "%s :", ures_getTag(n));
-            switch(ures_getType(n))
-              {
-              case RES_NONE: fprintf(lx->fOUT, "NONE");break;
-              case RES_STRING: fprintf(lx->fOUT, "STRING"); break;
-              case RES_BINARY: fprintf(lx->fOUT, "<A HREF=\"./%s\">BINARY</A>", ures_getTag(n)); break;
-              case RES_TABLE: fprintf(lx->fOUT, "TABLE"); break;
-              case RES_INT: fprintf(lx->fOUT, "INT=%d", ures_getInt(n, &s2)); break;
-              case RES_ARRAY: fprintf(lx->fOUT, "ARRAY"); break;
-              case RES_INT_VECTOR: fprintf(lx->fOUT, "INT VECTOR"); break;
-              case RES_RESERVED: fprintf(lx->fOUT, "RESERVED"); break;
-              default: fprintf(lx->fOUT, "unknown %d", ures_getType(n)); break;
-              }
-            fprintf(lx->fOUT, " [%d]", ures_getSize(n));
+	    writeSubObject( lx, n);
             fprintf(lx->fOUT, "\n");
           }
       }

@@ -526,9 +526,10 @@ void runLocaleExplorer(LXContext *myContext)
       if(tmp && tmp[0]  && !lx->curLocale && (tmp[0] == '_'))
 	{
 	  UChar dispName[1024];
+	  UChar dispName2[1024];
 	  UErrorCode stat = U_ZERO_ERROR;
 	  dispName[0] = 0;
-	  uloc_getDisplayName(lx->curLocaleName, NULL, dispName, 1024, &stat);
+	  uloc_getDisplayName(lx->curLocaleName, lx->cLocale, dispName, 1024, &stat);
 	  
 	  u_fprintf(lx->OUT, "<UL><B>%U  [%U]</B></UL>\r\n",
 		    FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
@@ -754,9 +755,12 @@ void runLocaleExplorer(LXContext *myContext)
 	 - lists the locales to browse
   */
 
+#ifndef LXHOST
+# define LXHOST ""
+#endif
 
   if(!strcmp(lx->cLocale,"klingon"))
-    u_fprintf(lx->OUT, "<P>Thank you for using the ICU LocaleExplorer, from %s compiled %s %s<P>\r\n", LXHOSTNAME, __DATE__, __TIME__);
+    u_fprintf(lx->OUT, "<P>Thank you for using the ICU LocaleExplorer, from %s compiled %s %s %s<P>\r\n", LXHOSTNAME, __DATE__, __TIME__, LXHOST);
 
   u_fprintf(lx->OUT, "</BODY></HTML>\r\n");
 
@@ -2057,7 +2061,7 @@ void listBundles(char *b)
       charDescs[0] = FSWF("localPatternChars0", "Era");
       charDescs[1] = FSWF("localPatternChars1", "Year");
       charDescs[2] = FSWF("localPatternChars2", "Month");
-      charDescs[3] = FSWF("localPatternChars3", "Date");
+      charDescs[3] = FSWF("localPatternChars3", "Day of Month");
       charDescs[4] = FSWF("localPatternChars4", "Hour Of Day 1");
       charDescs[5] = FSWF("localPatternChars5", "Hour Of Day 0"); 
       charDescs[6] = FSWF("localPatternChars6", "Minute");
@@ -2983,7 +2987,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
   u_fprintf(lx->OUT, "</TABLE>");
 
-//  if(exampleType == kNumberExample )
+  /*  if(exampleType == kNumberExample )  */
 
   u_fprintf(lx->OUT, "</TD>");
 
@@ -4562,7 +4566,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 	charDescs[0] = FSWF("localPatternChars0", "Era");
 	charDescs[1] = FSWF("localPatternChars1", "Year");
 	charDescs[2] = FSWF("localPatternChars2", "Month");
-	charDescs[3] = FSWF("localPatternChars3", "Date");
+	charDescs[3] = FSWF("localPatternChars3", "Day of Month");
 	charDescs[4] = FSWF("localPatternChars4", "Hour Of Day 1");
 	charDescs[5] = FSWF("localPatternChars5", "Hour Of Day 0"); 
 	charDescs[6] = FSWF("localPatternChars6", "Minute");
@@ -4979,8 +4983,17 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, UBool *didSetLocal
   /* Now, did we get a file object? */
   if(*didsetEncoding && pi && !strcmp(encoding, "_"))
   {
+    strcpy(lx->chosenEncoding, "us-ascii");
     *didsetEncoding = FALSE;
     *fileObject = pi;
+    return NULL;
+  }
+
+  if(*didsetEncoding && pi && !strcmp(encoding, "_icudata"))
+  {
+    *didsetEncoding = FALSE;
+    *fileObject = pi;
+    strcpy(lx->chosenEncoding, "icudata");
     return NULL;
   }
 
