@@ -81,10 +81,14 @@ static const char *helpText=
     " confusable. For example, many CJK Radicals are identical in appearance to CJK"
     " Ideographs. Mixtures of simplified and traditional characters can also be visually"
     " highlighted, to help signal possible user errors.</p>\n"
-    " For obtaining some interesting strings and Unicode code point, please visit:\n "
+    " <br> <i>Examples</i>\n"
+    " <br>You can either paste in Unicode text into the above box, or you can use Unicode escapes.\n"
+    " For example, you can either use \"&#x00E4;\" or \"\\u00E4\", or could use the decomposition \"a\\u0308\".\n"
+    " You can also copy some interesting Unicode text samples from the following pages:\n"
     " <ul>\n"
     " 	<li><a href=\"http://www.unicode.org/standard/WhatIsUnicode.html\">What is Unicode? </a> </li>\n"
     "	<li><a href=\"http://oss.software.ibm.com/cgi-bin/icu/ub\">Unicode Browser </a></li>\n"
+    "<li><a href=\"http://oss.software.ibm.com/cgi-bin/icu/lx\">Locale Explorer </a></li>\n"
     " </ul>\n" 
     "<hr>";
 
@@ -92,15 +96,15 @@ static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
 static const char *emptyString="(empty)";
 
-static const char *startString="%04x";
+static const char *startString="%04X";
 
-static const char *midString=" %04x";
+static const char *midString=" %04X";
 
 static const char *endString="";
 
 static const char *startForm=
     "<form method=\"GET\" action=\"%s\">\n"
-    "<p>Enter the domain name to be converted in UTF-8 or escaped Unicode text:<br>"
+    "<p>Enter the domain name to be converted in UTF-8 or escaped Unicode text (\\uXXXX or \\UXXXXXXXX) :<br>"
     "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"164\" value=\"%s\"> </p>\n";
 
 static const char *endForm=
@@ -256,6 +260,9 @@ static void breakScripts(const UChar* src, int32_t srcLength, UnicodeString& res
         script = lastScript;
     }else if (lastScript == USCRIPT_INVALID_CODE){
         lastScript = script;
+    }
+    if(script == USCRIPT_INHERITED){
+	script = lastScript;
     }
     if ((c >= 0x4E00 && c <= 0x9FFF) && (han_t_set !=NULL && han_s_set!=NULL)) {
     	if(han_t_set->contains(c)){
