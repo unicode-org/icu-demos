@@ -1,0 +1,14 @@
+--- ./translit/index.txt	Thu Feb 10 13:58:13 2000
++++ ../Ndata2/translit/index.txt	Thu Feb 10 14:06:16 2000
+@@ -42,5 +42,11 @@
+               "quotes" }
+         { "KeyboardEscape-Latin1", "", "kbdescl1" }
+         { "UnicodeName-UnicodeChar", "", "ucname" }
++
++        // xtradata additions
++        { "Han-Pinyin", "", "pinyin" }
++        { "Kanji-English", "", "kanjieng" }
++        { "Kanji-OnRomaji", "", "kanjion" }
++
+     }
+ }

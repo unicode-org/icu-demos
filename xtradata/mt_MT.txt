@@ -1,0 +1,20 @@
+// Just some Malta-specific things
+
+mt_MT {
+ Version { "x0.1_srl@monkey.sbay.org" }
+          LocaleString { mt_MT }
+	  ShortCountry { MALTA }
+    CurrencyElements {
+        "Lm",
+        MTL,
+        "."
+    }
+
+    NumberPatterns {
+        "#,##0.###;-#,##0.###",
+        "Lm#,##0.00;($#,##0.00)",
+        "#,##0%"
+    }
+
+}
+

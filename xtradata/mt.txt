@@ -1,0 +1,245 @@
+// by srl@monkey.sbay.org, thanks to Mirka Mifsud Bonnici for much of the translation
+//                         thanks to Karmenu Attard for additional help
+// Maltese locale.
+
+// Search for 'Sources' below for source abbreviations
+
+// Quick rundown on Maltese Unicode:  [If you're not sure what 'c.' means, 
+// ---------------------------------   look up in the Unicode Book the page
+// c. = U+010B   C. = U+010A  'ch'     with the 01xx code points, or www.unicode.org]
+// g. = U+0121   G. = U+0120  soft G
+// h/ = U+0127   H/ = U+0126  voiced H [or 2nd letter of unvoiced gh/]
+// z. = U+017c   Z. = U+017B  'dz'
+//
+// COMBINING MARKS:
+// There is no combining mark for the slash (h/)
+//  but, U+0307 is the DOT ABOVE needed for z., c., and g.
+
+mt {
+    Version { "x0.3_srl@monkey.sbay.org" } // x meaning an experimental locale
+    LocaleString { mt_MT }
+    LocaleID { "9995" } // ?
+    ShortLanguage { mlt }
+    Languages {
+
+// Some of these tags look like they are in other languages, not Maltese.
+ mt { Malti }
+ cs { Cesky } 
+ cy { Cymraeg } 
+ da { Dansk } 
+ de { Deutsch } 
+ el { Ellinika } 
+ en { English } 
+ es { "Español" } 
+ et { Eesti } 
+ fi { Suomi } 
+ fr { "Français" } 
+ hr { Hrvatski } 
+ is { "Íslenska" } 
+ it { Taljan }  // CI dictionary
+ ja { "\u0120appuni\u017C" } // srl, after [BM]
+ lt { Lietuviskai } 
+ lv { Latviski } 
+ pl { Polski } 
+ pt { Português } 
+ ro { Romana } 
+ ru { Russkij } 
+ sv { Svenska } 
+ tr { Turkce } 
+// x1 { Magyar } 
+// x2 { Makedonski } 
+// x3 { Nederlands }  // this is a language?
+// x4 { Norsk } 
+// x9 { Slovencina } 
+// xa { Slovenscina } 
+    }
+    Countries {
+// Country tags look OK
+        MT { Malta }
+        AL { Albanija }
+        AD { Andorra }
+        AT { Awstrija }
+        BE { Belgju }
+        BA { Boznija/Herzegovina  }
+        BG { Bulgarija }
+        HR { Kroazja }
+        CY { Cipru }
+        CZ { Rep.Ceka  }
+        DK { Danimarka  }
+        EE { Estonja }
+        FI { Finlandja }
+        FR { Franza }
+        DE { Germanja }
+        GR { Grecja }
+        GL { Groenlandja }
+        HU { Ungerija }
+        IS { Islanda }
+        IE { Irlanda }
+        IL { Izrael }
+        IT { Italja }
+        LV { Latvja }
+        LI { Liechtenstein }
+        LT { Litwanja }
+        LU { Lussemburgu }
+        MK { Macedonia }
+        MC { Monaco }
+        NL { Olanda }
+        NO { Norvegja }
+        PL { Polonja }
+        PT { Portugall }
+        RO { Rumanija }
+        RU { Federazzjoni Russa }
+        SK { Rep. Slovakka }
+        SI { Slovenja }
+        ES { Spanja }
+        SE { Svezja }
+        CH { Svizzera }
+        TR { Turkija }
+        UA { Ukranja }
+        GB { Gran Brittanja }
+        UK { Renju Unit }
+        VA { Stat tal-Vatikan  }
+        YU { Yugoslavia  }
+	EG { Egittu }
+	CN { Cina }
+	TW { Tajwan }
+	AU { Awstralja }
+	ZA { "Afrika t'Isfel" }
+  	BO { Bolivia }	
+	CA { Kanada }
+    }
+    MonthNames {
+	Jannar,
+	Frar,
+	Marzu,
+	April,
+	Mejju,
+	Gunju,
+	Lulju,	
+	Awissu,
+	Settembru,
+	Ottubru,
+	Novembru,
+	Dicembru
+        ""
+    }
+// ?
+   MonthAbbreviations {
+        Jan,
+        Fra,
+        Mar,
+        Apr,
+        Mej,
+        Gun,
+        Lul,
+        Awi,
+        Set,
+        Ott,
+        Nov,
+        Dic,
+        ""
+    }
+    DayNames {
+        il-\u0126add,
+        it-Tnejn,
+        it-Tlieta,
+        l-Erbg\u0127a,
+        il-\u0126amis,
+        il-\u0120img\u0127a,
+        is-Sibt
+    }
+    DayAbbreviations { 
+        "\u0126add",
+	Tnejn,
+	Tlieta,
+	"Erbg\u0127a", 
+	"\u0126amis",
+	"\u0120img\u0127a",
+	Sibt 
+    }
+
+
+    NumberElements {
+        ".",
+        ",",
+        ";",
+        "%",
+        "0",
+        "#",
+        "-",
+        E,
+        "\u2030",
+        "\u221e",
+        "\ufffd"
+    }
+
+
+// illum is-Sibt, 01 ta'' Awissu, 1998 :)
+    DateTimePatterns {
+        "h:mm:ss a z",
+        "h:mm:ss a z",
+        "h:mm:ss a",
+        "h:mm a",
+        "EEEE, dd 'ta''' MMMM, yyyy",
+        "MMMM d, yyyy",
+        "dd-MMM-yy",
+        "M/d/yy",
+        "{1} {0}"
+    }
+    DateTimeElements {
+        "1",
+        "1"
+    }
+
+// Maltese alphabet: grazzi, to mr. Karmenu Attard
+// 
+// UPDATED: Now almost according to 'colour image's dictionary order (Malta, 1998) -- [CI]
+//   a b c. [c] d e f g. g gh/ h h/ i ie j k l m n o p q r s t u v w x y z z.
+//   Only Colour Image's dictionary has 'ie' as a separate letter.
+//   
+//  
+//
+// *other sources:
+//
+// Kapt Pawlu Bugeja's dizzunarju
+//  (Kelmet il-Malti) [Grima: Marsa, Malta, 1990) - the orange one     -- [Kelmet]
+//   -- same order, but lists z. before z
+//
+// Lydia Sciriha seems to use the order 'g g. gh/' but 'z z.' in       -- [BM]
+//   Beginning Maltese (Uni ta' Malta, 1996) in the lessons,
+// but in the word list (at back) it's 'g. g gh/' and 'z. z' [1st ed.]
+//
+// J. Aquilina in his 'Teach Yourself:Maltese' book                    -- [Ty]
+//     (London: Hodder Headline, 1965 and Chicago, NTC Publishing 1995)
+// uses the very different 'g. g h h/ ... n gh/ o .. x z. z' ordering, 
+// placing gh/ between n and o.
+//
+// 
+//
+// 
+//
+//
+//   Note, that 'c' doesn't exist in Maltese. But I put it here following c. 
+//   for compatibility with foreign words.
+// Note that g follows g., but z. follows z.
+// a b c. [c] d e f g. g gh/ h h/ i ie j k l m n o p q r s t u v w x y z. z
+
+   CollationElements
+   {
+      "& B < c\u0307 , C\u0307 "                       // c.  C.
+      "& F < g\u0307 , G\u0307 "                       // g.  G.
+         " < g,G"
+         " < g\u0127 , g\u0126 , G\u0127 , G\u0126 "   // gh  gH Gh GH
+      "& H < \u0127  , \u0126 "                        // h/  H/
+      "& I < ie, iE, Ie, IE   "                        // ie is a single letter
+      "& Y < z\u0307 , Z\u0307"                        // z.  Z.
+   }
+
+// OLD collation elements: WRONG.
+//                                                   ll       Ll         LL
+//                                                   gh       Gh         GH
+//    CollationElements { "& F < g\u0307 , G\u0307 & H < \u0127, \u0126 & N <  & X < z\u0307 , Z\u0307 " }
+
+}
+
+

@@ -1,0 +1,27 @@
+--- index.txt	Thu Feb 10 13:58:03 2000
++++ ../Ndata2/index.txt	Thu Feb 10 14:05:03 2000
+@@ -5,6 +5,8 @@
+ // *
+ // *******************************************************************************
+ 
++// This version has the xtradata patches.
++
+ index {
+     InstalledLocales {
+         ar,
+@@ -156,6 +158,14 @@
+         zh,
+         zh_CN,
+         zh_HK,
+-        zh_TW
++        zh_TW,
++        
++        // additional, experimental locales
++	mt,
++	mt_MT,
++	hi,
++	hi_IN,
++	eo
++
+     }
+ }

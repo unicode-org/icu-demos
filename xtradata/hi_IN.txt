@@ -1,0 +1,28 @@
+// srl@monkey.sbay.org, with help from Shehnaz Nagpurwala and Anwar Nagpurwala
+// Hindi locale. Need to work on unicodizing more of the text..
+
+hi_IN {
+    LocaleString { hi_IN }
+    CurrencyElements {
+        "Rup",
+        RUP,
+        "."
+    }
+    DateTimePatterns {
+        "h:mm:ss \u092c\u091c\u094b a z",
+        "h:mm:ss a z",
+        "h:mm:ss a",
+        "h:mm a",
+        "EEEE, MMMM dd, yyyy",
+        "MMMM d, yyyy",
+        "dd-MMM-yy",
+        "M/d/yy",
+        "{1} {0}"
+    }
+    DateTimeElements {
+        "1",
+        "1"
+    }
+      
+
+}

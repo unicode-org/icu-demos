@@ -1,0 +1,89 @@
+// srl@monkey.sbay.org, with help from Shehnaz Nagpurwala and Anwar Nagpurwala
+// Hindi locale. Need to work on unicodizing more of the text..
+
+hi {
+   Version { "x0.0_srl@monkey.sbay.org"}
+    LocaleString { hi }
+    LocaleID { "9999" }
+    ShortLanguage { ind }
+    ShortCountry { India }
+    Languages {
+	hi { "\u0939\u093f\u0928\u094d\u0926\u0940" } // HINDI
+//              H    vmI     N  virama  D     vmII 
+   //   hi { "hind" }
+    }
+    Countries {
+	IN { "\u092d\u093e\u0930\u0924" } // bharat
+	//IN { "bopal" }
+    }
+    MonthNames {
+        Janvari,
+        Farvari,
+        March,
+        April,
+        May,
+        June,
+        July,
+        "\u0905\u0917\u0938\u094D\u091F", //Agast,
+        Sitamber,
+        Actuber,
+        Navamber,
+        December,
+        ""
+    }
+    MonthAbbreviations {
+        Jan,
+        Far,
+        Mar,
+        Apr,
+        May,
+        Jun,
+        Jul,
+        Aga,
+        Sit,
+        Act,
+        Nav,
+        Dec,
+        ""
+    }
+    DayNames {
+	"\u0930\u0935\u093F\u0935\u093E\u0930",
+        Somwar,
+	"\u092E\u0917\u0981\u0932\u0935\u093E\u0930",
+        "\u092C\u0941\u0927\u0935\u093E\u0930", // budhwar
+        "\u0917\u0941\u0930\u0941\u0935\u093E\u0930", // Guruwar,
+        Shukrwar,
+        Shaniwar
+    }
+    DayAbbreviations
+    {
+	"\u0930\u0935\u0940",
+	Som,
+	"\u092E\u0919\u0932",
+	"\u092C\u0941\u0927",
+	"\u0917\u0941\u0930\u0941",
+	Shukr,
+	Shani
+    }
+
+    AmPmMarkers { AM, PM }
+    Eras { BC, AD }
+    NumberPatterns {
+        "#,##0.###;-#,##0.###",
+        "#,##0.00 Rp;(#,##0.00 Rp)",
+        "#,##0%"
+    }
+    NumberElements {
+        ".",
+        ",",
+        ";",
+        "%",
+        "0",
+        "#",
+        "-",
+        E,
+        "\u2030",
+        "\u221e",
+        "\ufffd"
+    }
+}
