@@ -77,8 +77,7 @@ void showExploreBreak(LXContext *lx, const char *locale, const char *b)
     value = 12345.6789; /* for now */
 
     /* Now, see if the user is trying to change the value. */
-    if((tmp = strstr(b,"NP_LOC"))) /* localized numbre */
-    {
+    if((tmp = strstr(b,"NP_LOC"))) { /* localized number */
         /* Localized # */
         tmp += 7;
 
@@ -94,9 +93,8 @@ void showExploreBreak(LXContext *lx, const char *locale, const char *b)
             status = U_ZERO_ERROR;
             localValueErr = FSWF("formatExample_errorParse_num", "Could not parse this, replaced with a default value.");
 	}
-    }
-    else if ((tmp = strstr(b,"NP_DEF")) || (tmp = strstr(b,"NP_DBL")))
-    { /* Default side, or number (NP_DBL) coming from somewhere else */
+    } else if ((tmp = strstr(b,"NP_DEF")) || (tmp = strstr(b,"NP_DBL"))) {
+        /* Default side, or number (NP_DBL) coming from somewhere else */
         /* Localized # */
         tmp += 7;
 
@@ -112,9 +110,7 @@ void showExploreBreak(LXContext *lx, const char *locale, const char *b)
             status = U_ZERO_ERROR;
             defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
         }
-    }
-    else if (tmp = strstr(b, "NP_SPL"))
-    {
+    } else if ((tmp = strstr(b, "NP_SPL"))!=NULL) {
         tmp += 7;
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
         u_replaceChar(valueString, 0x00A0, 0x0020);  /* Spellout doesn't want to see NBSP's */

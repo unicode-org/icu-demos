@@ -42,7 +42,7 @@ OBJECTS +=  main.o
 OBJECTS += util.o 
 OBJECTS +=  TextCache.o
 
-CPPFLAGS += -I$(ICU_COMMON_HEADERS)
+CPPFLAGS += -I$(ICU_COMMON_HEADERS) 
 
 CLEANFILES=*~ $(TARGET).out
 

@@ -619,7 +619,7 @@ MySortable *findLocale(MySortable *root, const char *locale)
             return &(root->subLocs[n]);
         }
         
-        if(found = findLocale(&(root->subLocs[n]),locale)) /* if found at a sublevel */
+        if((found = findLocale(&(root->subLocs[n]),locale))) /* if found at a sublevel */
             return found;
     }
     
@@ -893,9 +893,9 @@ UBool testConverter(const char *converter,
 {
   UErrorCode  status = U_ZERO_ERROR;
   UConverter *cnv;
-  UBool      worked = FALSE;  
+  /*UBool      worked = FALSE;  */
   int8_t     *target;
-  void       *oldContext;
+  const void       *oldContext;
   UConverterFromUCallback oldAction;
 
   cnv = ucnv_open(converter, &status);

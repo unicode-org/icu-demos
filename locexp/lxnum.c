@@ -113,7 +113,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
             defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
         }
     }
-    else if (tmp = strstr(b, "NP_SPL"))
+    else if ((tmp = strstr(b, "NP_SPL")))
     {
         tmp += 7;
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);

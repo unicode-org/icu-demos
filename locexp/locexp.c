@@ -408,7 +408,7 @@ void displayLocaleExplorer(LXContext *lx)
             char *end;
             UChar usample[256];
             
-            sample = querystring + 10;
+            sample = strdup(querystring + 10);
             end    = strchr(sample, '&');
             
             if(end == NULL)

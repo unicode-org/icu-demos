@@ -21,8 +21,9 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     
     int32_t patience = 999; /* break if more than 999 days in a month */
 
-    int32_t width, pad, i, day, day1;
-    int32_t lens [10];
+    /*int32_t  width, pad;*/
+    int32_t i, day, day1;
+    /*int32_t lens [10]; */
     int32_t firstday, current;
     UNumberFormat *nfmt;
     UDateFormat *dfmt;
@@ -30,7 +31,7 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     UChar s [BUF_SIZE];
     const int useLongNames = 1;
     const UChar *pat = (useLongNames ? sLongPat : sShortPat);
-    int32_t len = -1;
+    /*int32_t len = -1;*/
 #define BUF_SIZ 500
     UChar buf[BUF_SIZ];
     dayCount = ucal_getLimit(cal, UCAL_DAY_OF_WEEK, UCAL_MAXIMUM, &status);

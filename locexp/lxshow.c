@@ -1652,7 +1652,6 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale, con
   UBool bigString = FALSE; /* is it big? */
   UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len;
-  UResourceBundle *item = NULL;
   const char *key = "Currencies";
   const UChar  *cflu = NULL;
   char cfl[4] = {0};

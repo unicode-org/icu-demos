@@ -113,7 +113,7 @@ char **getcgivars() {
     /** Then, from the list of pairs, extract the names and values **/
     cgivars= (char **) malloc((paircount*2+1)*sizeof(char **)) ;
     for (i= 0; i<paircount; i++) {
-        if (eqpos=strchr(pairlist[i], '=')) {
+        if ((eqpos=strchr(pairlist[i], '='))) {
             *eqpos= '\0' ;
             unescape_url(cgivars[i*2+1]= strdup(eqpos+1)) ;
         } else {

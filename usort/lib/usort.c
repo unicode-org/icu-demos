@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-*   Copyright (C) 1999-2000, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -20,6 +20,7 @@
 #define T_USORT_IMPLEMENTATION
 
 #include <stdlib.h>
+#include <string.h>
 #include "unicode/usort.h"
 #include "uparse.h"
 
@@ -251,8 +252,6 @@ void usort_remove(USort *usort)
 void
 usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *userData)
 {
-  UErrorCode status = U_ZERO_ERROR;
-
   if(len == -1)
     len = u_strlen(line);
 
@@ -277,12 +276,12 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
       newList = realloc(usort->lines, sizeof(USortLine) * newSize);
       if(!newList)
 	{
-	  fprintf(stderr,"Fatal: could not rallocate %d bytes for linelist\n",
+	  fprintf(stderr,"Fatal: could not rallocate %ld bytes for linelist\n",
 		  sizeof(USortLine) * newSize);
 	  abort();
 	}
 #ifdef SDEBUG
-      fprintf(stderr,"realloc linelist from %d to %d lines\n", usort->size, newSize);
+      fprintf(stderr,"realloc linelist from %ld to %ld lines\n", usort->size, newSize);
 #endif
       usort->lines = newList;
       usort->size = newSize;
@@ -294,7 +293,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
 
   if(!usort->lines[usort->count].chars)
     {
-      fprintf(stderr,"could not allocate %d bytes for lineList.chars\n", (len+1)*sizeof(UChar));
+      fprintf(stderr,"could not allocate %ld bytes for lineList.chars\n", (len+1)*sizeof(UChar));
       abort();
     }
 

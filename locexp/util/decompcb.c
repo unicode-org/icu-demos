@@ -29,6 +29,7 @@ static UChar block0300Subs[] =
     { 0x0060, 0x00b4, 0x005e, 0x007e, 0x007e, 0x00af, 0x0306, 0x0307, 0x00a8, 0x0309, 0x00b0, 0x0022, 0x030c, 0x0022 }; 
 
 
+#ifdef USE_BLOCK_0390_SUBS
 static UChar block0390Subs[] = 
 { 
   0x0390,
@@ -42,6 +43,7 @@ static UChar block0390Subs[] =
   0x0398,
   0x0049
 };
+#endif
 
 /* called for each char */
 static void DECOMPOSE_uchar (const void *context,
@@ -57,16 +59,12 @@ static void DECOMPOSE_uchar (const void *context,
 
   FromUDecomposeContext *ctx = (FromUDecomposeContext*)context;
 
-  UBool     changedSomething = FALSE;  /* have we had *any* effect here? 
-					   Used to exit when this fcn isn't doing
-					   any good. */
-
   const UChar *mySource;
 
   UConverterFromUCallback oldCallback = NULL;
-  void *oldContext                    = NULL;
+  const void *oldContext                    = NULL;
   UConverterFromUCallback junkCallback = NULL;
-  void *junkContext                    = NULL;
+  const void *junkContext                    = NULL;
 
   
   /* First, attempt a decompose */
@@ -156,7 +154,7 @@ static void DECOMPOSE_uchar (const void *context,
                                 &oldContext,
                                 &setStatus);
 	}
-#if 0
+#if USE_BLOCK_0390_SUBS
       else if( (theChar >= 0x0391) && (theChar <= (0x0390 - 1 + (sizeof(block0390Subs)/sizeof(UChar)))))
 	{ /* greek xliteration */
 	  decomposedSequence[0] = block0390Subs[theChar - 0x0390];

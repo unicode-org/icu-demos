@@ -175,7 +175,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
         const char* opcode = getParamValue("OPCODE", "");
         const char* arg1 = getParamValue("OPARG1", "");
         const char* arg2 = getParamValue("OPARG2", "");
-        const char* arg3 = getParamValue("OPARG3", "");
+        //const char* arg3 = getParamValue("OPARG3", "");
 
         if (strcmp(opcode, "GETAVAILABLESOURCES") == 0) {
             UnicodeString src;

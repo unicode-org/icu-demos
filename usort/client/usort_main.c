@@ -58,7 +58,10 @@ int main(int argc, const char *argv[])
   const char *fromCodepage;
   const char *toCodepage;
   const char *locale = NULL;
-  UBool useDecompose = FALSE, escapeMode = FALSE;
+#ifdef DECOMPOSE
+  UBool useDecompose = FALSE
+#endif
+  UBool escapeMode = FALSE;
   USort      *list = NULL;
   UCollationStrength strength = UCOL_DEFAULT_STRENGTH;
   UColAttributeValue normalizationMode = UCOL_OFF;

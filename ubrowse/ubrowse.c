@@ -138,11 +138,12 @@ void printCharName(UChar32 c)
 /******************************************************** derived from ucnv_err.c */
 #define ToOffset(a) a<=9?(0x0030+a):(0x0030+a+7)
 
+#ifdef USE_SUBWITHVALUEHTML
 /*Takes a int32_t and fills in  a UChar* string with that number "radix"-based
  * and padded with "pad" zeroes
  */
 static void 
-  itou (UChar * buffer, int32_t i, int32_t radix, int32_t pad)
+itou (UChar * buffer, int32_t i, int32_t radix, int32_t pad)
 {
   int32_t length = 0;
   int32_t num = 0;
@@ -174,7 +175,7 @@ static void
 
   return;
 }
-#if 0
+
 void 
 SubstituteWithValueHTML (UConverter * _this,
                          char **target,
@@ -284,9 +285,7 @@ SubstituteWithValueHTML (UConverter * _this,
 
 void printOneUChar32(UChar32 theChar)
 {
-  char  theString[100];
   UChar chars[20];
-  UErrorCode status = U_ZERO_ERROR;
   int offset = 0;
 
   chars[0]=0;
@@ -773,7 +772,7 @@ if(!tmp) /* if there was no trailing '/' ... */
         {
           mode = ERADICAL;
         }
-      else if(sscanf(qs, "s=%200s", &gSearchHTML) == 1)
+      else if(sscanf(qs, "s=%200s", gSearchHTML) == 1)
       {
         char *ss = NULL;
         char *cs = NULL;
@@ -783,7 +782,7 @@ if(!tmp) /* if there was no trailing '/' ... */
         
         block = 0;
         /* look for 'continue' tag */
-        if(cs=strstr(qs,"cs="))
+        if((cs=strstr(qs,"cs=")))
         {
           if(sscanf(cs,"cs=%X",&block) != 1)
           {
@@ -802,7 +801,7 @@ if(!tmp) /* if there was no trailing '/' ... */
           mode=EEXACTNAME;
         }
 
-        if(ss=strchr(gSearchHTML, '&'))
+        if((ss=strchr(gSearchHTML, '&')))
         {
           *ss = 0;
         }
@@ -868,6 +867,8 @@ if(!tmp) /* if there was no trailing '/' ... */
     u_fprintf(gOut, " | <a href=\"?ch=%04X\">prev</a> <a href=\"?ch=%04X\">next</a> ",
              (block & 0x1FFFFF)-0x1, (block & 0x1FFFFF)+0x1);
     break;
+  default:
+    u_fprintf(gOut, "<!-- Unknown mode! -->\r\n");
   }
 
   u_fprintf(gOut, "");

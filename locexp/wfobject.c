@@ -36,7 +36,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	  char *out;
           int32_t length = 0;
           int32_t bufsz = 0;
-          UChar *up = u;
+          const UChar *up = u;
           UBool usError = FALSE;
 
           bufsz = (u_strlen(u)+2)*(9);
@@ -48,7 +48,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
           }
           out[length]=0;
           
-	  //u_UCharsToChars(u, out, u_strlen(u)+1);
+	  /*u_UCharsToChars(u, out, u_strlen(u)+1); */
 	  fprintf(lx->fOUT, "\"%s\"", out);
 	}
       }

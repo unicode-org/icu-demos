@@ -7,9 +7,10 @@
 
 /*  Main function for dumping the contents of a particular locale ---------------------------- */
 
-void showOneLocale(LXContext *lx, char *b)
+void showOneLocale(LXContext *lx, const char *b)
 {
-    char *tmp, *locale = NULL;
+    char *tmp;
+    const char *locale = NULL;
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *myRB = NULL;
     const char *qs;

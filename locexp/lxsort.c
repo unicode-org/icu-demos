@@ -449,7 +449,7 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           status = U_ZERO_ERROR;
           value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if(ss=strstr(b, "&cas1="))
+          if((ss=strstr(b, "&cas1=")))
           {
               value = atoi(ss+strlen("&cas1="));
           }
@@ -613,20 +613,19 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     u_fprintf(lx->OUT, "</TR></TABLE>");
 
     }
-
-
-
     break;
+
+  default:
+    break;
+    /* no customization */
   } 
 
   u_fprintf(lx->OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WI_DTH=100% HE_IGHT=100%><TR><TD WI_DTH=\"33%\"><B>%U</B></TD>\r\n",
             FSWF("usortSource", "Source"));
 
   /* Now, the table itself. first the column headings  ============================== */
-  if(inputChars[0])
-  {
-    switch(mode)
-    { 
+  if(inputChars[0]) {
+    switch(mode) { 
      case  kSimpleMode:
      {
        u_fprintf(lx->OUT, "<TD WI_DTH=\"33%\"><B>%U</B></TD><TD WI_DTH=\"33%\"><B>%U</B></TD>",
@@ -637,12 +636,11 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       
      case kG7Mode:
      {
-       for(i=0;i<G7COUNT;i++)
-         {
-           UChar junk[1000];
-           uloc_getDisplayName(G7s[i], lx->cLocale, junk, 1000, &status);
-           u_fprintf(lx->OUT, "<TD WIDTH=\"10%\">%U</TD>",junk);
-         }
+       for(i=0;i<G7COUNT;i++) {
+         UChar junk[1000];
+         uloc_getDisplayName(G7s[i], lx->cLocale, junk, 1000, &status);
+         u_fprintf(lx->OUT, "<TD WIDTH=\"10%\">%U</TD>",junk);
+       }
      }
      break;
     } /* end switch mode */
@@ -673,7 +671,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   /* ========== Do the actual sort ======== */
   if(inputChars[0] != 0)
   {
-    UCollationStrength sortTypes[] = { UCOL_IDENTICAL /* not used */, UCOL_DEFAULT, UCOL_SECONDARY, UCOL_PRIMARY };
     int n;
     
     UChar in[SORTSIZE];
@@ -690,7 +687,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
         for(n=0;n<2;n++)
         {
           USort *aSort = NULL;
-          UErrorCode sortErr = U_ZERO_ERROR;
           UChar *first, *next;
           int32_t i, count=0;
           

@@ -157,7 +157,8 @@ extern void chooseConverter(LXContext *lx, const char *restored);
 extern void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample);
 
 extern void chooseConverterFrom(LXContext *lx, const char *restored, USort *list);
-extern void showOneLocale(LXContext *lx, char *b);
+extern void showOneLocale(LXContext *lx, const char *b);
+void showExploreBreak(LXContext *lx, const char *locale, const char *b);
 
 /* fcns for dumping the contents of a particular rb */
 extern void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString);
