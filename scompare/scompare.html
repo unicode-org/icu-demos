@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+<title>ICU String Compare Demo</title>
+<style type="text/css">
+   .box {background-color:yellow; border: groove black 3px; font-weight:bolder}
+</style>
+
+<script language="JavaScript" type="text/javascript">
+function doCompare() {
+   var form=document.getElementById("ourForm");
+   form.target = "resultFrame";
+   document.getElementById("d1").firstChild.nodeValue = "Submitted ";
+   document.getElementById("d2").firstChild.nodeValue = "Submitted ";
+   document.getElementById("d3").firstChild.nodeValue = "Submitted ";
+   document.getElementById("d4").firstChild.nodeValue = "Submitted ";
+   form.submit();
+   }
+
+function displayResults() {
+   var framex = document.getElementById("resultFrame");
+   var frameDoc = framex.contentDocument;
+   if (!frameDoc) {
+       // For IE only, a different way to get the document object from an iframe.
+       frameDoc = framex.Document;
+   }
+   if (frameDoc.getElementById("r1")) {
+       // Don't update displayed results if there are no results from cgi
+       //  This will be the case on the initial load of the page.
+       //  (Avoids script errors.)
+       var result1 = frameDoc.getElementById("r1").firstChild.nodeValue;
+       var result2 = frameDoc.getElementById("r2").firstChild.nodeValue;
+       var result3 = frameDoc.getElementById("r3").firstChild.nodeValue;
+       var result4 = frameDoc.getElementById("r4").firstChild.nodeValue;
+   
+       document.getElementById("d1").firstChild.nodeValue = result1;
+       document.getElementById("d2").firstChild.nodeValue = result2;
+       document.getElementById("d3").firstChild.nodeValue = result3;
+       document.getElementById("d4").firstChild.nodeValue = result4;
+   }
+ 
+}
+</script>
+
+<body>
+<h1>ICU Unicode String Compare Demo</h1>
+
+<p>This page is a demonstation of ICU's string comparison functions, showing the
+     effects of the options for Unicode Normalization (canonical equivalence) and 
+     Case Insensitive comparisons.
+</p>
+
+<p>Enter the strings to be compared, then click on the "submit" button.  The strings may
+     contain \uhhhh and \Uhhhhhhhh hex escapes for characters that can not be entered 
+     directly from the keyboard.  For descriptions of additional escape sequences, 
+     see UnicodeString::unescape() in the 
+    <a href="http://oss.software.ibm.com/icu/apiref/classUnicodeString.html">
+     ICU API reference</a></p>
+
+<p> <button type="button" onClick="doCompare();" >Submit</button>
+</p>
+
+<!-- The form for entering the strings to be compared. 
+	The cgi results are placed into a non-displaying iframe that
+	is declared at the end of this page.
+	A script function, triggered by the loading of the iframe,
+	transfers the results into the elements with id attributes d1, d2, etc.
+	appearing in this form.
+	-->
+<form id="ourForm" method="POST" action="/cgi-bin/icu/scompare"
+	accept-charset="utf-8">
+  <p><input size="40" name="s1a" value="first string"></input>
+       <input  size="40" name="s1b" value="second string"></input> 
+       <span class="box" id="d1">&nbsp;&lt;>&nbsp; </span>
+</p>
+<p><input size="40" name="s2a" value="">
+      <input  size="40" name="s2b" value="">
+      <span class="box" id="d2">&nbsp;=&nbsp;  </span>
+</p>
+<p><input size="40" name="s3a" value="">
+      <input  size="40" name="s3b" value="">
+      <span class="box" id="d3">&nbsp;=&nbsp;  </span>
+</p>
+<p><input size="40" name="s4a" value="">
+      <input  size="40" name="s4b" value="">
+      <span class="box" id="d4">&nbsp;=&nbsp;  </span>
+</p>
+<br/>
+<hr/>
+<p><b>Key to Results</b></p>
+<table border="1">
+<tr>
+<th><i>Result</i></th>  <th><i>Meaning</i></th><th><i>ICU API used</i></th>
+<tr>	<td>=</td>
+	<td>Strings are exactly equal</td>
+	<td>UnicodeString::compare()</td>
+	</tr>
+<tr>
+	<td>=(I)</td>
+	<td>Strings are equal in a case insensitive compare, unequal otherwise</td>
+	<td>UnicodeString::caseCompare()</td>
+</tr>
+<tr>
+	<td>=(N)</td>
+	<td>Strings are equal after normalization, unequal otherwise</td>
+	<td>Normalizer::compare(),  U_FOLD_CASE_DEFAULT option</td>
+</tr>
+<tr>
+	<td>=(NI)</td>  
+	<td>Strings are equal in a compare that is both case insensitive and 
+	considers canonical equavalence, unequal otherwise</td>
+	<td>Normalizer::compare(),  U_COMPARE_IGNORE_CASE option</td>
+</tr>
+<tr>
+	<td>&lt;></td>
+	<td>Strings are not equal</td>
+	<td>All of the above functions return not equal.</tr>
+</table>
+
+
+<!-- resultFrame, a non-displaying frame to receive the results from the form submit -->
+<iframe id="resultFrame" height="0" width="0" frameborder="no"
+           name="resultFrame"  onload="displayResults();">
+  <h4>result frame</hr>
+</iframe>
+</body>
