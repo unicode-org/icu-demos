@@ -20,4 +20,4 @@
 
 #include "unicode/utypes.h"
 
-void printCPTable(const char *convName, char *startBytes, UErrorCode *status);
+void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status);

@@ -93,12 +93,20 @@ SOURCE=.\convexp.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\params.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\printcp.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\params.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\printcp.h

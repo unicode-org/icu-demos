@@ -24,7 +24,7 @@ TARGET = convexp
 
 CPPFLAGS += -I$(ICU_SOURCE)/common
 
-OBJECTS = printcp.o convexp.o
+OBJECTS = printcp.o params.o convexp.o
 
 ## List of standard targets
 all: all-local

@@ -18,10 +18,12 @@
 *
 */
 
-#include "printcp.h"
 #include "unicode/ucnv.h"
 #include "unicode/ustring.h"
 #include "unicode/uchar.h"
+
+#include "printcp.h"
+#include "params.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -33,11 +35,11 @@
 
 static void printHeader() {
     int32_t idx;
-    puts("<tr><th></th>");
+    puts("<tr><td></td>");
     for (idx = 0; idx < 16; idx++) {
         printf("<th class=\"standard\"" CELL_WIDTH ">%02X</th>", idx);
     }
-    puts("</tr>");
+    puts("<td></td></tr>");
 }
 
 static const char *getEscapeChar(UChar32 uniVal) {
@@ -46,8 +48,8 @@ static const char *getEscapeChar(UChar32 uniVal) {
     case '>':   return "&gt;<br>";
     case '&':   return "&amp;<br>";
     case 0x00:  return ISO_BEGIN "NUL" ISO_END;
-    case 0x01:  return ISO_BEGIN "STX" ISO_END;
-    case 0x02:  return ISO_BEGIN "SOT" ISO_END;
+    case 0x01:  return ISO_BEGIN "SOH" ISO_END;
+    case 0x02:  return ISO_BEGIN "STX" ISO_END;
     case 0x03:  return ISO_BEGIN "ETX" ISO_END;
     case 0x04:  return ISO_BEGIN "EOT" ISO_END;
     case 0x05:  return ISO_BEGIN "ENQ" ISO_END;
@@ -78,11 +80,11 @@ static const char *getEscapeChar(UChar32 uniVal) {
     case 0x1E:  return ISO_BEGIN "RS" ISO_END;
     case 0x1F:  return ISO_BEGIN "US" ISO_END;
     case 0x7F:  return ISO_BEGIN "DEL" ISO_END;
-    case 0x80:  return ISO_BEGIN "&nbsp;" ISO_END;
-    case 0x81:  return ISO_BEGIN "&nbsp;" ISO_END;
+//    case 0x80:  return ISO_BEGIN "&nbsp;" ISO_END;
+//    case 0x81:  return ISO_BEGIN "&nbsp;" ISO_END;
     case 0x82:  return ISO_BEGIN "BPH" ISO_END;
     case 0x83:  return ISO_BEGIN "NBH" ISO_END;
-    case 0x84:  return ISO_BEGIN "IND" ISO_END;
+//    case 0x84:  return ISO_BEGIN "IND" ISO_END;
     case 0x85:  return ISO_BEGIN "NEL" ISO_END;
     case 0x86:  return ISO_BEGIN "SSA" ISO_END;
     case 0x87:  return ISO_BEGIN "ESA" ISO_END;
@@ -102,14 +104,17 @@ static const char *getEscapeChar(UChar32 uniVal) {
     case 0x95:  return ISO_BEGIN "MW" ISO_END;
     case 0x96:  return ISO_BEGIN "SPA" ISO_END;
     case 0x97:  return ISO_BEGIN "EPA" ISO_END;
-    case 0x98:  return ISO_BEGIN "SAS" ISO_END;
-    case 0x99:  return ISO_BEGIN "&nbsp;" ISO_END;
+    case 0x98:  return ISO_BEGIN "SOS" ISO_END;
+//    case 0x99:  return ISO_BEGIN "&nbsp;" ISO_END;
     case 0x9A:  return ISO_BEGIN "SCI" ISO_END;
     case 0x9B:  return ISO_BEGIN "CSI" ISO_END;
     case 0x9C:  return ISO_BEGIN "ST" ISO_END;
     case 0x9D:  return ISO_BEGIN "OSC" ISO_END;
     case 0x9E:  return ISO_BEGIN "PM" ISO_END;
     case 0x9F:  return ISO_BEGIN "APC" ISO_END;
+    }
+    if (u_iscntrl(uniVal)) {
+        return ISO_BEGIN NBSP ISO_END;
     }
 
     return NULL;
@@ -151,9 +156,8 @@ char *parseAndCopy(char *dest, const char *source, int32_t len) {
     return dest;
 }
 
-void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
-    int32_t col, row, utf8Size, startBytesLen;
-    UConverter *cnv = ucnv_open(convName, status);
+void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
+    int32_t col, row, utf8Size, startBytesLen, maxCharSize;
     char *sourceBuffer;
     char *source;
     char *sourceLimit;
@@ -161,9 +165,9 @@ void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
     UChar *target;
     UChar *targetLimit;
     UChar32 uniVal;
-    static char utf8[32];
-    static char uniName[128];
-    int8_t maxCharSize;
+    static char utf8[128];
+    static char uniName[256];
+    int8_t cnvMaxCharSize;
 
     if (U_FAILURE(*status)) {
         return;
@@ -171,20 +175,21 @@ void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
 
     if (!startBytes) {
         puts("<p>ERROR: startBytes == NULL</p>");
+        return;
     }
 
     UConverterType convType = ucnv_getType(cnv);
     switch (convType) {
     case UCNV_SBCS:
 //    case UCNV_DBCS:
-//    case UCNV_MBCS:   /* Be careful. This can also act like DBCS */
+    case UCNV_MBCS:   /* Be careful. This can also act like DBCS */
     case UCNV_LATIN_1:
 //    case UCNV_UTF8:
 //    case UCNV_UTF16_BigEndian:
 //    case UCNV_UTF16_LittleEndian:
 //    case UCNV_UTF32_BigEndian:
 //    case UCNV_UTF32_LittleEndian:
-//    case UCNV_EBCDIC_STATEFUL:
+    case UCNV_EBCDIC_STATEFUL:
 //    case UCNV_ISO_2022:
 //    case UCNV_LMBCS_1:
 //    case UCNV_LMBCS_2: 
@@ -212,7 +217,6 @@ void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
         break;
     default:
         puts("<p>Codepage layout information is not available for this converter at this time.</p>");
-        ucnv_close(cnv);
         return;
     }
 
@@ -220,14 +224,19 @@ void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
     /* If it's an odd number, ignore the last digit */
     startBytesLen = ((strlen(startBytes)>>1)<<1);
     maxCharSize = startBytesLen/2;
-    if (maxCharSize >= ucnv_getMaxCharSize(cnv)) {
+	cnvMaxCharSize = ucnv_getMaxCharSize(cnv);
+	if (convType == UCNV_EBCDIC_STATEFUL || convType == UCNV_ISO_2022) {
+		/* Add one for the shift */
+		cnvMaxCharSize++;
+	}
+    if (maxCharSize >= cnvMaxCharSize) {
         puts("<p>WARNING: startBytes > maximum number of characters. startBytes is truncated.</p>");
-        maxCharSize = ucnv_getMaxCharSize(cnv) - 1;
-        startBytesLen = (ucnv_getMaxCharSize(cnv)-1) * 2;
+        maxCharSize = cnvMaxCharSize - 1;
+        startBytesLen = (cnvMaxCharSize-1) * 2;
     }
     maxCharSize++;
     if (startBytesLen > 0) {
-        printf("<p>Currently showing the codepage starting with %s</p>\n", startBytes);
+        printf("<p>Currently showing the codepage starting with the bytes %s</p>\n", startBytes);
     }
 
     ucnv_setToUCallBack(cnv, UCNV_TO_U_CALLBACK_SKIP, NULL, NULL, NULL, status);
@@ -244,10 +253,11 @@ void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
         puts("<tr>");
         printf("<th class=\"standard\">%X0</th>\n", row);
         for (col = 0; col < 16; col++) {
-            *status = U_ZERO_ERROR;
             ucnv_resetToUnicode(cnv);
+            uint8_t currCh = (uint8_t)(row << 4 | col);
+            *status = U_ZERO_ERROR;
 
-            sourceBuffer[startBytesLen/2] = (char)(row << 4 | col);
+            sourceBuffer[startBytesLen/2] = currCh;
             targetBuffer[0] = 0;
             source = sourceBuffer;
             target = targetBuffer;
@@ -266,19 +276,28 @@ void printCPTable(const char *convName, char *startBytes, UErrorCode *status) {
                 }
                 printf("<font size=\"-2\">%04X</font></td>\n", uniVal);
             }
-            else if (*status == U_TRUNCATED_CHAR_FOUND) {
-                printf("<td class=\"continue\"" CELL_WIDTH ">%02X</td>", (uint32_t)(row << 4 | col));
+            else if (*status == U_TRUNCATED_CHAR_FOUND
+				|| (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0))
+            {
+                printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s\">%02X</a></td>\n",
+                    gCurrConverter, startBytes, (uint32_t)currCh,
+                    getStandardOptionsURL(status),
+                    (uint32_t)currCh);
             }
             else {
                 // show nothing
-                printf("<td class=\"reserved\"" CELL_WIDTH ">&nbsp;</td>");
+                puts("<td class=\"reserved\"" CELL_WIDTH ">"NBSP"</td>");
             }
         }
+        printf("<th class=\"standard\">%X0</th>\n", row);
         puts("</tr>");
     }
+
+    printHeader();
     puts("</table>");
 
     delete sourceBuffer;
     delete targetBuffer;
-    ucnv_close(cnv);
+
+    ucnv_resetToUnicode(cnv);
 }

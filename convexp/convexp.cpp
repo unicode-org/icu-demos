@@ -21,17 +21,12 @@
 #include "unicode/ucnv.h"
 #include "unicode/ustring.h"
 
-#include "uhash.h"
-#include "cstring.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "printcp.h"
-
-#define PROGRAM_NAME "Converter Explorer"
-#define CGI_NAME "convexp"
+#include "params.h"
 
 static const char htmlHeader[]=
     "Content-Type: text/html; charset=utf-8\n"
@@ -46,8 +41,8 @@ static const char htmlHeader[]=
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
     "td {white-space: nowrap;}\n"
     "td.value {font-family: monospace;}\n"
-    "td.reserved {padding-top: 0.8em; padding-bottom: 0.8em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
-    "td.continue {padding-top: 0.8em; padding-bottom: 0.8em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
+    "td.reserved {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
+    "td.continue {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
     "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: 1px, solid; font-size: 75%; font-family: monospace;}\n"
     "</style>\n"
     "</head>\n"
@@ -61,7 +56,7 @@ static const char navigationMainHeader[]=
     "<strong>" PROGRAM_NAME "</strong>\n";
 
 static const char navigationSubHeader[]=
-    "<a href=\"" CGI_NAME "\">" PROGRAM_NAME "</a> &gt;\n"
+    "<a href=\"" CGI_NAME "?%s\">" PROGRAM_NAME "</a> &gt;\n"
     "<strong>%s</strong>\n";
 
 static const char navigationEndHeader[]=
@@ -110,172 +105,15 @@ static const char versions[]=
     "<p>Powered by "
     "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> %s</p>\n";
 
-static const char NBSP[]="\xC2\xA0";    // UTF-8 form of &nbsp;
-
-static const char ALL[]="ALL";
-
-int32_t gMaxStandards;
-char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
-char *gStartBytes = NULL;
-UHashtable *gStandardsSelected = NULL;
-const char *gScriptName = NULL;
-
-#define OPTION_SEPARATOR  '&' 
-#define VALUE_SEPARATOR   '='
-
-
-
-static const char *getStandardOptionsURL(UErrorCode *status) {
-    static char optionsURL[1024] = "";
-    int32_t pos = -1;
-    const UHashElement *e;
-    const char *standard;
-    int32_t len = 0;
-
-    while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
-        standard = (const char*) e->value.pointer;
-        len += sprintf(optionsURL+len, "&s=%s", standard);
-        if (*standard == 0) {
-            /* Special case for when browsers are too smart, like Opera */
-            len += sprintf(optionsURL+len, "-");
-        }
-    }
-
-    return optionsURL;
-}
-
-/*
- Only insert standards that we recognize into the hashtable
- All other standards could be bad/malicious data
-*/
-static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *status) {
-    int32_t i;
-    const char *standard;
-
-    if (nameSize <= 0 || *newStandard == '-') {
-        uhash_put(gStandardsSelected,
-            (void*)ucnv_getStandard(gMaxStandards-1, status),
-            (void*)ucnv_getStandard(gMaxStandards-1, status),
-            status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
-        }
-        return;
-    }
-    if (uprv_strnicmp(ALL, newStandard, nameSize) == 0) {
-        uhash_put(gStandardsSelected, (void*)ALL, (void*)ALL, status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
-        }
-        return;
-    }
-    for (i = 0; i < gMaxStandards; i++) {
-        *status = U_ZERO_ERROR;
-        standard = ucnv_getStandard((uint16_t)i, status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
-        }
-        if (uprv_strnicmp(standard, newStandard, nameSize) == 0) {
-            uhash_put(gStandardsSelected, (void*)standard, (void*)standard, status);
-            if (U_FAILURE(*status)) {
-                printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
-            }
-            return;  // I'm done, I already found it.
-        }
-    }
-    printf("WARNING: Ignoring unknown standard %s<br>\n", newStandard);
-}
-
-static const char* getNextOption(const char* src, const char* srcLimit) {
-    const char *nextOpt = strchr(src, OPTION_SEPARATOR);
-    if (nextOpt != NULL) {
-        src = nextOpt;
-    }
-    else {
-        src = srcLimit;
-    }
-    return src;
-}
-
-static void parseAllStandards(const char *queryStr, UErrorCode *status) {
-    const char* src = queryStr;
-    int srcLen = strlen(queryStr);
-    const char* srcLimit = queryStr + srcLen;
-    static char gStartBytesBuffer[16];
-
-    while (src < srcLimit) {
-        const char *nextVal = strchr(src, VALUE_SEPARATOR);
-        if (!nextVal) {
-            nextVal = srcLimit;
-        }
-        else {
-            nextVal++;
-        }
-        const char *nextOpt = getNextOption(src, srcLimit);
-        if (strncmp(src, "s=", 2) == 0) {
-            addStandard(nextVal, nextOpt - nextVal, status);
-        }
-        else if (strncmp(src, "conv=", 5) == 0) {
-            UErrorCode myStatus = U_ZERO_ERROR;
-            strncpy(gCurrConverter, nextVal, nextOpt - nextVal);
-            gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
-
-            UConverter *cnv = ucnv_open(gCurrConverter, &myStatus);
-            if (U_SUCCESS(myStatus)) {
-                strcpy(gCurrConverter, ucnv_getName(cnv, &myStatus));
-                ucnv_close(cnv);
-            }
-            gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
-        }
-        else if (strncmp(src, "bytes=", 6) == 0) {
-            const char *strItr = gStartBytesBuffer;
-            gStartBytes = gStartBytesBuffer;
-            strncpy(gStartBytes, nextVal, nextOpt - nextVal);
-            gStartBytes[sizeof(gStartBytesBuffer)-1] = 0;   // NULL terminate for safety
-            while (*strItr) {
-                if (!isxdigit(*strItr)) {
-                    // Bad data! Ignore the whole thing
-                    gStartBytes = NULL;
-                    break;
-                }
-                strItr++;
-            }
-        }
-        else {
-            // Woah! I don't know what this option is.
-        }
-        src = nextOpt+1;
-    }
-    if (!gCurrConverter) {
-        // Can't use the starter bytes without a converter! Someone made a mistake.
-        gStartBytes = NULL;
-    }
-}
-
-/*static void addAllStandards(UHashtable *standardsHashtable, UErrorCode *status) {
-    int32_t i;
-    const char *standard;
-
-    for (i = 0; i < gMaxStandards; i++) {
-        *status = U_ZERO_ERROR;
-        standard = ucnv_getStandard((uint16_t)i, status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
-        }
-        uhash_put(standardsHashtable, (void*)standard, (void*)standard, status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
-        }
-    }
-}
-*/
-
 static void printOptions(UErrorCode *status) {
     int32_t i;
     const char *standard, *checked;
 
     if (*gCurrConverter) {
-        printf("<input type=\"HIDDEN\" name=\"conv\" value=\"%s\" checked>", gCurrConverter);
+        printf("<input type=\"HIDDEN\" name=\"conv\" value=\"%s\" checked>\n", gCurrConverter);
+    }
+    if (gStartBytes) {
+        printf("<input type=\"HIDDEN\" name=\"bytes\" value=\"%s\" checked>\n", gStartBytes);
     }
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
@@ -303,9 +141,6 @@ static void printOptions(UErrorCode *status) {
         checked = "";
     }
     printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\"%s> <em>All Aliases</em><br>\n", checked);
-    if (gStartBytes) {
-        printf("<input type=\"HIDDEN\" name=\"bytes\" value=\"%s\" checked>\n", gStartBytes);
-    }
     puts("<br>");
 }
 
@@ -430,7 +265,7 @@ static void printAmbiguousAliasedConverters() {
                 }
                 canonicalName = ucnv_getCanonicalName(alias, standard, &status);
                 if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
-                    printf("<a href=\"" CGI_NAME "?conv=%s%s\">%s</a> %s { %s }<br>\n",
+                    printf("<a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"%s\">%s</a> %s { %s }<br>\n",
                         canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
                 }
             }
@@ -494,6 +329,7 @@ static void printConverterInfo(UErrorCode *status) {
     char starterBuffer[sizeof(starterBufferBool)+1];    // Add one for the NULL
     int8_t len;
     UConverter *cnv = ucnv_open(gCurrConverter, status);
+    UConverterType convType;
 
     puts("<h2>Information About This Converter</h2>");
     if (U_FAILURE(*status)) {
@@ -501,7 +337,8 @@ static void printConverterInfo(UErrorCode *status) {
         return;
     }
     puts(startTable);
-    printf("<tr><th>Type of converter</th><td class=\"value\">%s</td></tr>\n", getConverterType(ucnv_getType(cnv)));
+    convType = ucnv_getType(cnv);
+    printf("<tr><th>Type of converter</th><td class=\"value\">%s</td></tr>\n", getConverterType(convType));
     printf("<tr><th>Minimum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMinCharSize(cnv));
     printf("<tr><th>Maximum number of bytes</th><td class=\"value\">%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
 
@@ -510,7 +347,10 @@ static void printConverterInfo(UErrorCode *status) {
     len = sizeof(buffer)/sizeof(buffer[0]);
     ucnv_getSubstChars(cnv, buffer, &len, status);
     escapeBytes(buffer, len);
-    if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
+    if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
+        || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
+        || convType == UCNV_UTF32_BigEndian || convType == UCNV_UTF32_LittleEndian )
+    {
         printf(" <strong><em>(See note below)</em></strong>\n");
     }
     printf("</td></tr>\n");
@@ -545,14 +385,17 @@ static void printConverterInfo(UErrorCode *status) {
 
     puts(endTable);
 
-    if (gStartBytes) {
-        printCPTable(gCurrConverter, gStartBytes, status);
-    }
-
-    if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
-        puts("<p><strong><em>Note:</em></strong> The substitution byte sequence is platform dependent.\n"
+    if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
+        || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
+        || convType == UCNV_UTF32_BigEndian || convType == UCNV_UTF32_LittleEndian )
+    {
+        puts("<p><strong><em>Note:</em></strong> The substitution byte sequence can be platform dependent.\n"
              "It depends on the endianess of the platform.\n"
              "Please see the <a href=\"http://www.unicode.org/faq/utf_bom.html\">Unicode FAQ</a> for details.</p>");
+    }
+
+    if (gStartBytes) {
+        printCPTable(cnv, gStartBytes, status);
     }
 
     ucnv_close(cnv);
@@ -664,7 +507,7 @@ static void printAliasTable() {
                 printf("<tr>\n<th>%s</th>\n", canonicalName);
             }
             else {
-                printf("<tr>\n<th><a href=\"" CGI_NAME "?conv=%s%s\">%s</a></th>\n",
+                printf("<tr>\n<th><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
                     canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
             status = U_ZERO_ERROR;
@@ -710,17 +553,18 @@ main(int argc, const char *argv[]) {
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
+//    if((cgi="conv=ibm-1388&b=0e")!=NULL) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
-//    if((cgi="conv=windows-1256&bytes=")!=NULL) {
-//    if((cgi="conv=ibm-950&bytes=C0")!=NULL) {
+//    if((cgi="conv=windows-1256&b=")!=NULL) {
+//    if((cgi="conv=ibm-950&b=")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //        puts(cgi);
-        parseAllStandards(cgi, &errorCode);
+        parseAllOptions(cgi, &errorCode);
     }
     if (uhash_count(gStandardsSelected) == 0) {
         /* Didn't specify a standard. Give the person something to look at. */
@@ -736,7 +580,7 @@ main(int argc, const char *argv[]) {
     }
 
     if (*gCurrConverter) {
-        printf(navigationSubHeader, gCurrConverter);
+        printf(navigationSubHeader, getStandardOptionsURL(&errorCode), gCurrConverter);
     }
     else {
         printf(navigationMainHeader);
@@ -758,7 +602,7 @@ main(int argc, const char *argv[]) {
         printConverterInfo(&errorCode);
     }
 
-    
+
     puts("<br>\n<hr>");
 
     char icuVString[16];
