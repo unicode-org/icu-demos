@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Thu Aug  7 19:40:43 CEST 2003 on filfla
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c on Thu Aug 21 17:50:25 PDT 2003 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -29,14 +29,13 @@ root {
    DayAbbreviations  {  "Short Names"  }
    DayNames  {  "Long Names"  }
    EXPLORE_CollationElements  {  "Collation (sorting) Example"  }
-   EXPLORE_CollationElements_Defaults  {  "Defaults"  }
+   EXPLORE_CollationElements_Defaults  {  "Reset to Defaults"  }
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
    EXPLORE_CollationElements_ShowCollKey  {  "Show Collation Key"  }
    EXPLORE_CollationElements_Sort  {  "Sort"  }
-   EXPLORE_CollationElements_g7sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
    EXPLORE_CollationElements_moreInfo1  {  "For more information, see the"  }
    EXPLORE_CollationElements_moreInfo2  {  "ICU userguide"  }
-   EXPLORE_CollationElements_strength  {  "You see four different columns as output. The first is the original text for comparison. The lines are numbered to show their original position. The remaining columns show sorting by different strengths (available as a parameter to the collation function). Groups of lines that sort precisely the same are separated by an underline. Since collation treats these lines as identical, lines in the same group could appear in any order (depending on the precise sorting algorithm used). "  }
+   EXPLORE_CollationElements_options  {  "Options"  }
    EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
    EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
    EXPLORE_NumberPatterns  {  "Explore &gt; Numbers"  }
@@ -95,23 +94,24 @@ root {
    UCAL_ZONE_OFFSET  {  "Zone offset field"  }
    UCOL_ALTERNATE_HANDLING  {  "Alternate handling"  }
    UCOL_CASE_FIRST  {  "Case first"  }
-   UCOL_CASE_LEVEL  {  "Case level"  }
-   UCOL_FRENCH_COLLATION  {  "French collation"  }
-   UCOL_HIRAGANA__QUATERNARY_MODE  {  "Hiragana Quaternary Mode"  }
-   UCOL_IDENTICAL  {  "Identical"  }
-   UCOL_LOWER_FIRST  {  "Lower first"  }
-   UCOL_NON_IGNORABLE  {  "Non-ignorable"  }
-   UCOL_NORMALIZATION_MODE  {  "Normalization mode"  }
+   UCOL_CASE_LEVEL  {  "Add case level"  }
+   UCOL_FRENCH_COLLATION  {  "French accents"  }
+   UCOL_HIRAGANA__QUATERNARY_MODE  {  "Add Hiragana Level"  }
+   UCOL_IDENTICAL  {  "L5 = L4 + Codepoint"  }
+   UCOL_LOWER_FIRST  {  "Force Lowercase first"  }
+   UCOL_NON_IGNORABLE  {  "Punctuation = Base"  }
+   UCOL_NORMALIZATION_MODE  {  "Full normalization mode"  }
    UCOL_OFF  {  "Off"  }
    UCOL_ON  {  "On"  }
    UCOL_ON_WITHOUT_HANGUL  {  "On,without Hangul"  }
-   UCOL_PRIMARY  {  "Primary"  }
-   UCOL_QUATERNARY  {  "Quaternary"  }
-   UCOL_SECONDARY  {  "Secondary"  }
-   UCOL_SHIFTED  {  "Shifted"  }
+   UCOL_PRIMARY  {  "L1 = Base Letters"  }
+   UCOL_QUATERNARY  {  "L4 = L3 + Punct."  }
+   UCOL_SECONDARY  {  "L2 = L1 + Accents"  }
+   UCOL_SHIFTED  {  "Ignore Punctuation"  }
    UCOL_STRENGTH  {  "Strength"  }
-   UCOL_TERTIARY  {  "Tertiary"  }
-   UCOL_UPPER_FIRST  {  "Upper first"  }
+   UCOL_TERTIARY  {  "L3 = L2 + Case"  }
+   UCOL_UPPER_FIRST  {  "Force Uppercase first"  }
+   UCOL_noforcecase  {  "Don't force case"  }
    UNKNOWN_ERROR  {  "unknown error"  }
    U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
    Version  {  "Version"  }
@@ -151,7 +151,7 @@ root {
    demos  {  "Demos"  }
    display_ALT  {  "Display Problems?"  }
    display_GIF  {  "displayproblems.gif"  }
-   display_OPTIONS  {  "ALIGN=RIGHT"  }
+   display_OPTIONS  {  "valign=top ALIGN=RIGHT"  }
    empty  {  "(Empty)"  }
    encodingOK0  {  "Click here if the encoding '"  }
    encodingOK1  {  "' is acceptable, or choose one from below."  }
@@ -177,6 +177,7 @@ root {
    help  {  "Help"  }
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "BORDER=0"  }
+   ieWarning  {  "IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."  }
    inherited  {  "(inherited)"  }
    inherited_from  {  "(inherited from %U)"  }
    introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.  <p>ICU is an open-source project."  }
@@ -256,16 +257,6 @@ root {
 
 // Special Cases
 
-// From root_head.html (iso-8859-1)
-   htmlHEAD {
-       "<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. ~srl -->\u000A<!-- Copyright (c) 2000-2002 IBM, Inc. and others .. -->\u000A</head>\u000A<body text=\u0022#000000\u0022 bgcolor=\u0022#FFFFFF\u0022 TOPMARGIN=\u00222\u0022 LEFTMARGIN=\u00222\u0022 MARGINWIDTH=\u00222\u0022 MARGINHEIGHT=\u00222\u0022>\u000A&nbsp;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu/\u0022>ICU</A> &gt;\u000A<A HREF=\u0022/icu/demo/\u0022>Demo</A> &gt;\u000A<B>Locale Explorer</B><BR>\u000A<HR>\u000A"   }
-
-
-// From root_tail.html (iso-8859-1)
-   htmlTAIL {
-       "<!-- DEFAULT.htmlTAIL -->\u000A\u000A<!-- DEFAULT.htmlTAIL -->\u000A"   }
-
-
 
  // Imported from: root.txt.inc 
 
@@ -274,7 +265,8 @@ root {
    opened.gif:import { "root/opened.gif" }
    closed.gif:import { "root/closed.gif" }
    help.html:import  { "root/help.html" }
-	transliteration.html:import { "root/transliteration.html" }
+   transliteration.html:import { "root/transliteration.html" }
+   sortHelp:include { "root/sortHelp.html" }
    displayproblems.gif:import { "root/displayproblems.gif" }
    explore.gif:import { "root/explore.gif" }
    help.gif:import { "root/help.gif" }
@@ -284,6 +276,8 @@ root {
    lxbar_g.gif:import { "root/lxbar_g.gif" }
    lxbar_ibm.jpg:import { "root/lxbar_ibm.jpg" }
    lxbar_icu.jpg:import { "root/lxbar_icu.jpg" }
+   htmlHEAD:include { "root/head.html" }
+   htmlTAIL:include { "root/tail.html" }
 
 // tab
    tab_bot.gif:import { "root/tab_bot.gif" }

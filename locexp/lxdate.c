@@ -138,10 +138,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
       
         u_fprintf(lx->OUT, "<B><I>%U</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
-#if 0
-        /* Just the pattern */
-        u_fprintf(lx->OUT, "%U", defChars);
-#else
         u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_DateTimePatterns\">\r\n");
         u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
         u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_DateTimePatterns VALUE=\"");
@@ -157,7 +153,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         status = U_ZERO_ERROR;
       
         u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM>", FSWF("EXPLORE_change", "Change"));
-#endif
     }
   
     u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG src=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
@@ -173,9 +168,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
         /*  === local side */
         u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%U</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
-#if 0
-        u_fprintf(lx->OUT, "%U", tempChars);
-#else
         u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_DateTimePatterns\">\r\n");
         u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
         u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_DateTimePatterns VALUE=\"");
@@ -185,8 +177,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_LOC ROWS=1 COLS=50>");
         writeEscaped(lx, tempChars);
         u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM>", FSWF("EXPLORE_change", "Change"));
-#endif
-
     }
     /*  ============== End of the default/localized split =============== */
 

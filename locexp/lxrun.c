@@ -127,8 +127,11 @@ void setupLocaleExplorer(LXContext *lx)
                               &status);
     
         /* To do: install more cb's later. */
+        /* following are for various callbacks - mostly disabled for now. -srl */
       
 #if 0
+        /* Old transliterated callback - transliterates unconvertible runs. 
+           Note: Now, we use ustdio based transliteration */
         if(!strcmp(lx->chosenEncoding, "transliterated"))
         {
             memset(&lx->xlitCtx, sizeof(lx->xlitCtx), 0);
@@ -144,6 +147,7 @@ void setupLocaleExplorer(LXContext *lx)
 #endif
 
 #if 0
+        /* Collect callback - collect unconvertable chars & suggest a better converter */
         else
         
         {
@@ -252,7 +256,8 @@ void setupLocaleExplorer(LXContext *lx)
 
         lx->timeZone = lx->newZone;
 
-#ifndef LX_NO_USE_UTIMZONE
+#if 0
+        /* TODO: 2.8:  C tz interface doesn't seem to be working. Investigate */
         tz = utz_open(lx->newZone); /* returns NULL for nonexistent TZ!! */
 #else
         tz = NULL;
@@ -271,19 +276,12 @@ void setupLocaleExplorer(LXContext *lx)
 
 }
 
-/** 
- * TODO - move this stuff elsewhere 
- */
-
-#ifndef LX_BUF_OUT
-#error Sorry - locexp will not compile without lx_buf_out at present.
-#endif
-
+/* defining _GNU_SOURCE will result in a little more efficiency - 
+   use memory instead of a tmp file */
 
 #ifdef _GNU_SOURCE
 #define LX_OPEN_MEMSTREAM
 #else
-#error sorry - non-memstream is broken at present.  Try defining _GNU_SOURCE if you can.
 #define LX_TMPFILE
 #endif
 
@@ -291,7 +289,6 @@ void setupLocaleExplorer(LXContext *lx)
 void runLocaleExplorer(LXContext *lx)
 {
 
-#ifdef LX_BUF_OUT
   FILE *tmpf;
   FILE *realout;
 #if defined(LX_TMPFILE)
@@ -301,14 +298,12 @@ void runLocaleExplorer(LXContext *lx)
   char *buf;
   size_t len;
 #endif 
-#endif /* LX_BUF_OUT */
 
   lx->convRequested = "utf-8";
   lx->convName = "utf-8";
   
   setLocaleAndEncoding(lx);
   
-#ifdef LX_BUF_OUT
   realout = lx->fOUT;
 #ifdef LX_TMPFILE
   tmpf = tmpfile();
@@ -317,7 +312,6 @@ void runLocaleExplorer(LXContext *lx)
   len = 16384;
   buf = malloc(len);
   lx->fOUT = open_memstream(&buf, &len);
-#endif
 #endif
   
   lx->OUT = openUFILE(lx);
@@ -338,32 +332,21 @@ void runLocaleExplorer(LXContext *lx)
     displayLocaleExplorer(lx);
   }
   
-
-#ifndef LX_BUF_OUT
-    /* write end of headers */
-    fprintf(lx->fOUT, "\r\n");
     fflush(lx->fOUT);
+#ifdef LX_TMPFILE
+    len = ftell(tmpf); /* get length from pos in file */
 #endif
-
-#ifdef LX_BUF_OUT
-    fflush(lx->fOUT);
     appendHeader(lx, "Content-length", "%d", len);
-#endif
 
     strcat(lx->headers, "\n");
 
-    
-
-#ifdef LX_BUF_OUT
+    fwrite(lx->headers,1,strlen(lx->headers),realout); /* write out in one chunk */
 #if defined(LX_TMPFILE)
-
 #define OBUFSIZ 16384
     {
       char obuf[OBUFSIZ];
       int32_t rlen;
       int32_t toread;
-      fflush(tmpf);
-      len = ftell(tmpf);
 #ifdef LX_BUF_DEBUG
       fprintf(stderr, "wrote %ld to tmp file\n", len);
       fflush(stderr);
@@ -392,17 +375,14 @@ void runLocaleExplorer(LXContext *lx)
       }
       fflush(realout);
       fclose(tmpf);
-
+    }
 #else
     /* mem stream */
-      
-      fwrite(lx->headers,1,strlen(lx->headers),realout); /* write out in one chunk */
       fwrite(buf,1,len,realout); /* write out in one chunk ( omit if HEAD ! ) */
       free(buf);
       fflush(realout);
 #endif
-#endif
-}
+}    
 
 UResourceBundle *getCurrentBundle(LXContext *lx, UErrorCode *status) 
 {
@@ -552,5 +532,5 @@ void setLocaleAndEncoding(LXContext *lx)
       lx->convUsed = "utf-8";
     }
 
-}
+ }
 

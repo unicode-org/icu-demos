@@ -53,10 +53,6 @@ void showOneLocale(LXContext *lx)
         chooseLocale(lx, TRUE, b, "", FALSE);
 
         /* show the demos */
-#if 0
-        u_fprintf(lx->OUT, "<H3>%U</H3>\r\n<UL><LI>",
-                  FSWF("demos", "Demos"));
-#endif
         u_fprintf(lx->OUT, "<table border=0 width=\"100%%\" summary=\"--\"><tr><td valign=top>");
         u_fprintf(lx->OUT, " %U\r\n",
                   FSWF("explore_G7", "Try Multi-lingual Sorting"));
@@ -75,9 +71,6 @@ void showOneLocale(LXContext *lx)
         u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%U</A>\r\n",
                   lx->dispLocale, lx->chosenEncoding,
                   FSWF("explore_xlitomatic", "Translit-o-matic"));
-#endif
-#if 0
-        u_fprintf(lx->OUT, "<P></UL>\r\n");
 #endif
         return; /* BREAK out */
     }
@@ -98,6 +91,7 @@ void showOneLocale(LXContext *lx)
     /* analyze what kind of locale we've got.  Should this be a little smarter? */
 
 #if 0
+    /* "friendly" messages */
     u_fprintf(lx->OUT, "%U", FSWF("localeDataWhat", "This page shows the localization data for the locale listed at left. "));
 
     if(strlen(locale)==2) /* just the language */
@@ -157,14 +151,6 @@ void showOneLocale(LXContext *lx)
     }
     else if (strstr(b, "EXPLORE_CollationElements"))
     {
-#if 0
-        showKeyAndStartItem(lx, "EXPLORE_CollationElements", 
-                            FSWF("EXPLORE_CollationElements", "Collation (sorting) Example"),
-                            locale,
-                            FALSE,
-                            U_ZERO_ERROR);
-#endif
-
         showSort(lx, locale);
         
         u_fprintf(lx->OUT, "<table width=100%%><tr>\r\n"); 
@@ -315,26 +301,7 @@ void showOneLocale(LXContext *lx)
 
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*     Numbers section %%%*/
-
-#if 0
-        u_fprintf(lx->OUT, "<table cellpadding=0 cellspacing=0 width=\"100%%\"><tr><td VALIGN=\"TOP\">");
-
-        {
-            const UChar *currDesc[4];
-            currDesc[0] = FSWF("CurrencyElements0", "Currency symbol");
-            currDesc[1] = FSWF("CurrencyElements1", "Int'l Currency symbol");
-            currDesc[2] = FSWF("CurrencyElements2", "Currency separator");
-            currDesc[3] = 0;
-      
-            showArrayWithDescription(lx, myRB, locale, currDesc, "CurrencyElements", kNormal);
-        }
-        u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
-#endif
         showCurrencies(lx, myRB, locale);
-#if 0
-        u_fprintf(lx->OUT, "</td></tr></table>");
-#endif
-    
     
         { /*from dcfmtsym */
             const UChar *numDesc[12];

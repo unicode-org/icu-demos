@@ -59,42 +59,25 @@ void chooseConverter(LXContext *lx, const char *restored)
         else
             number = name; /* '[fullnameofconverter]' */
 
-#if 0
-      
-        for(j=0;U_SUCCESS(err);j++)
-	{
-            alias = ucnv_getAlias(name, j, &err);
-
-            if(!alias)
-                break;
-#endif
-            if(!strstr(alias, "ibm-") || !strstr(alias,name))
-                sprintf(dispName, "%s [%s]", alias, number);
-            else
-                strcpy(dispName, alias);
-
-            if(!strcmp(alias,"fonted"))
-                usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)"fonted");
-            else
-                usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)MIMECharsetName(name));
-#if 0
-	}
-
-#endif
+        if(!strstr(alias, "ibm-") || !strstr(alias,name))
+          sprintf(dispName, "%s [%s]", alias, number);
+        else
+          strcpy(dispName, alias);
+        
+        if(!strcmp(alias,"fonted"))
+          usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)"fonted");
+        else
+          usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)MIMECharsetName(name));
     }
-  
 
     naliases = (mysort->count);
     u_fprintf_u(lx->OUT, FSWF("convsAvail","%d converters available, %d aliases total."), ncnvs, naliases);
-
 
     usort_sort(mysort);
   
     chooseConverterFrom(lx, restored, mysort);
 
     usort_close(mysort);
-
-
 }
 
 

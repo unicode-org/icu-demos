@@ -210,6 +210,7 @@ extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *loca
 extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showSort( LXContext *lx, const char *locale);
+extern void showSortStyle( LXContext *lx );
 
 extern void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showExploreNumberPatterns  ( LXContext *lx, const char *locale);

@@ -53,13 +53,7 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
                                         pos = usearch_next(search, status))
             {
 	      (*totalHits)++;
-#if 0
-                /** Right now we only care about whether the string is present.  Later on we can 
-                add something to print out the context, and also to handle multiple hits. */
-                printf("Found match at %d pos, length is %d\n", pos, 
-                                        usearch_getMatchedLength(search)); 
-#endif
-                return TRUE;
+              return TRUE;
             }
         }
       }
@@ -207,17 +201,7 @@ extern void showExploreSearch( LXContext *lx)
     } else {
       valueString[0] = 0;
     }
-    
-    
 
-#if 0    
-    if(lx->curLocale == NULL)
-    {
-        u_fprintf(lx->OUT, "Please click <A HREF=\"?_=root&EXPLORE_search=\">HERE</A>\r\n");
-        return;
-    }
-#endif
-    
     showExploreSearchForm(lx, valueString);
     
     if(!valueString || u_strlen(valueString)<=0)

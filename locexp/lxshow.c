@@ -487,14 +487,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
         userRequested = didUserAskForKey(lx, key);
         bigString = TRUE;
 
-        if(!userRequested) /* it's hidden. */
-        {
-#if 0
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U ", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
-            u_fprintf(lx->OUT, " </A>\r\n<P>");
-#endif
-        }
-        else
+        if(userRequested) /* it's not hidden. */
         {
             u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %U</A><P>\r\n",
                       locale,
@@ -1418,7 +1411,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
                     status = U_ZERO_ERROR;
 
 
-#ifndef LX_NO_USE_UTIMZONE
+#if 0 /* def LX_NO_USE_UTIMZONE */
                     if(isTZ && (h == 6))
                     {
                         UTimeZone *zone = utz_open(zn);
@@ -1564,6 +1557,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                         
                         if(s) {
 #if 0
+                          /* attempt to Bidi-shape the string if Arabic */
                             UChar junk[8192];
                             UErrorCode she=U_ZERO_ERROR;
                             int32_t dstl;

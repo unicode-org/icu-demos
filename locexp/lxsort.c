@@ -128,17 +128,17 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
 #if 1
   if(lineAbove) { u_fprintf(lx->OUT, "<div class=\"box%d\">\r\n", (evenOdd++)%2 ); }
-  u_fprintf(lx->OUT, "<font size=\"-3\">%02d</font>&nbsp;%U", (aSort==NULL)?num:(int32_t)aSort->lines[num].userData, chars);
+  u_fprintf(lx->OUT, "<tt class=count>%02d</tt>&nbsp;%U", (aSort==NULL)?num:(int32_t)aSort->lines[num].userData, chars);
 
   {
     int32_t ii;
     if(aSort  && hasQueryField(lx,"showCollKey") && lineBelow  ) {
-      u_fprintf(lx->OUT, "<br><font size=-1 color=\"#777777\"><tt>");
+      u_fprintf(lx->OUT, "<br/><tt class=key>");
 
       for(ii=0;ii<aSort->lines[num].keySize;ii++) {
         u_fprintf(lx->OUT, "%02x ", aSort->lines[num].key[ii]);
       }
-      u_fprintf(lx->OUT, "</tt></font>\r\n");
+      u_fprintf(lx->OUT, "</tt>\r\n");
     }
   }
   if(lineBelow) { u_fprintf(lx->OUT, "\r\n</div>\r\n"); } else { u_fprintf(lx->OUT, "<br>\r\n"); }
@@ -185,11 +185,11 @@ const UChar *showSort_attributeVal(UColAttributeValue val)
   case UCOL_OFF : return FSWF("UCOL_OFF","Off");
   case UCOL_ON : return FSWF("UCOL_ON","On");
 /*  case UCOL_ON_WITHOUT_HANGUL : return FSWF("UCOL_ON_WITHOUT_HANGUL","On,without Hangul"); ????  */
-  case UCOL_PRIMARY : return FSWF("UCOL_PRIMARY","L1. Base Letters Only");
-  case UCOL_SECONDARY : return FSWF("UCOL_SECONDARY","L2. Base &amp; Accents");
-  case UCOL_TERTIARY : return FSWF("UCOL_TERTIARY","L3. Base, Accents, &amp; Case");
-  case UCOL_QUATERNARY: return FSWF("UCOL_QUATERNARY","L4. Base, Accents, Case, &amp; Punct.");
-  case UCOL_IDENTICAL: return FSWF("UCOL_IDENTICAL","L5. B/A/C/P and Codepoint");
+  case UCOL_PRIMARY   :   return FSWF("UCOL_PRIMARY","L1 = Base Letters");
+  case UCOL_SECONDARY : return FSWF("UCOL_SECONDARY","L2 = L1 + Accents");
+  case UCOL_TERTIARY  :  return FSWF("UCOL_TERTIARY","L3 = L2 + Case");
+  case UCOL_QUATERNARY:return FSWF("UCOL_QUATERNARY","L4 = L3 + Punct.");
+  case UCOL_IDENTICAL:  return FSWF("UCOL_IDENTICAL","L5 = L4 + Codepoint");
 
   case UCOL_SHIFTED : return FSWF("UCOL_SHIFTED","Ignore Punctuation");
   case UCOL_NON_IGNORABLE : return FSWF("UCOL_NON_IGNORABLE","Punctuation = Base");
@@ -365,6 +365,36 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
 
   return text;
 }
+
+void showSortStyle(LXContext *lx)
+{
+
+  u_fprintf(lx->OUT, "%s",  "\r\n<style type=text/css>\r\n"
+            "<!--\r\n"
+/*
+            ".box0 { border: 1px inset gray; margin: 1px }\r\n"
+            ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
+*/
+            ".wide        { width: 100% }\r\n"
+            ".high        { height: 100% }\r\n"
+            ".fill        { width: 100%; height: 100% }\r\n"
+            ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
+            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n"
+            "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
+            "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
+            "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
+            "               color: black; vertical-align: top; border: 1px solid black; \r\n"
+            "               padding: 5px }\r\n"
+            ".noborder    { border: 1px none white }\r\n"
+            ".widenoborder { width: 100%; border: 1px none white }\r\n"
+            ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
+            ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"
+            ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
+            "tt.count { font-size: 80%; color: #0000FF }\r\n"
+            "tt.key { font-size: 70%; color: #666666 }\r\n"
+            "-->\r\n</style>\r\n");
+  
+}
   
 /**
  * Demonstrate sorting.  Call usort as a library to do the actual sorting.
@@ -413,34 +443,7 @@ void showSort(LXContext *lx, const char *locale)
     lxSortReset = TRUE;
   }
 
-#if 0
-  u_fprintf(lx->OUT, "</td></tr></table>\r\n"); /* get us out of the table */
-#endif
-
-  u_fprintf(lx->OUT, "<br><b>%U</b>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
-
-  u_fprintf(lx->OUT, "<style>\r\n"
-            "<!--\r\n"
-/*
-            ".box0 { border: 1px inset gray; margin: 1px }\r\n"
-            ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
-*/
-            ".wide        { width: 100%% }\r\n"
-            ".high        { height: 100%% }\r\n"
-            ".fill        { width: 100%%; height: 100%% }\r\n"
-            ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
-            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n"
-            "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
-            "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
-            "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
-            "               color: black; vertical-align: top; border: 1px solid black; \r\n"
-            "               padding: 5px }\r\n"
-            ".noborder    { border: 1px none white }\r\n"
-            ".widenoborder { width: 100%%; border: 1px none white }\r\n"
-            ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
-            ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"
-            ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
-            "-->\r\n</style>\r\n");
+  u_fprintf(lx->OUT, "<p><b>%U</b></p>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
 
   strChars[0] = 0;
 
@@ -454,8 +457,13 @@ void showSort(LXContext *lx, const char *locale)
 
 
   /* look for custom rules =========================================================================== */
+
+  text = NULL;
   ruleChars[0] = 0;
-  text = queryField(lx, "usortRules");
+
+  if(!lxSortReset) {
+    text = queryField(lx, "usortRules");
+  }
 
   if(text) {
 
@@ -481,8 +489,8 @@ void showSort(LXContext *lx, const char *locale)
             locale);
   u_fprintf(lx->OUT, "<TABLE id=\"main\" class=\"wide\" border=1>\r\n");
   /* the source box  =======================================================================================*/
-  u_fprintf(lx->OUT, "  <td %s ><b>%U</b>\r\n", /* top is only 1 row for now */
-            isG7?" rowspan=\"2\" ":"width=\"22%\" rowspan=\"1\" ",
+  u_fprintf(lx->OUT, " <tr> <td %s ><b>%U</b>\r\n", /* top is only 1 row for now */
+            isG7?" rowspan=\"2\" ": /* width=\"22%\" */ " rowspan=\"1\" ",
             FSWF("usortSource", "Source"));
 
   u_fprintf(lx->OUT, "<p><TEXTAREA %s ROWS=20 NAME=\"EXPLORE_CollationElements\">", 
@@ -558,17 +566,6 @@ void showSort(LXContext *lx, const char *locale)
         customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
       }
 
-#if 0
-      { 
-        int q;
-        for(q=0;ruleChars[q];q++) {
-          u_fprintf(lx->OUT, "&lt;U+%04x&gt;", ruleChars[q]);
-        }
-        u_fprintf(lx->OUT, "<br>");
-      }
-#endif
-
-
       if(U_FAILURE(customError))
       {
         u_fprintf(lx->OUT, "<B>%U %s :</B>", 
@@ -585,7 +582,7 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       attribute = UCOL_STRENGTH;
       customStrength = ucol_getAttribute(customCollator, attribute, &status);
-      if((ss = queryField(lx,"strength"))) {
+      if(!lxSortReset && (ss = queryField(lx,"strength"))) {
         nn = atoi(ss);
         if( (nn || (*ss=='0'))  && /* choice is a number and.. */
             (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
@@ -624,13 +621,15 @@ void showSort(LXContext *lx, const char *locale)
           status = U_ZERO_ERROR;
           value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if((ss=queryField(lx, "cas1")))
+          if(!lxSortReset && (ss=queryField(lx, "cas1")))
           {
             value = atoi(ss);
           }
           else
           {
+            if(!lxSortReset) {
               value = UCOL_OFF;
+            }
           }
           u_fprintf(lx->OUT, "<select class=wide name=cas1>\r\n");
 
@@ -656,13 +655,15 @@ void showSort(LXContext *lx, const char *locale)
           status = U_ZERO_ERROR;
           value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if((ss=queryField(lx, "shft")))
+          if(!lxSortReset && (ss=queryField(lx, "shft")))
           {
             value = atoi(ss);
           }
           else
           {
+            if(!lxSortReset) {
               value = UCOL_NON_IGNORABLE;
+            }
           }
           u_fprintf(lx->OUT, "<select class=wide name=shft>\r\n");
 
@@ -685,11 +686,11 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx,"fr"))
+      if(hasQueryField(lx,"fr") && !lxSortReset)
       {
         value = UCOL_ON;
       } 
-      else if(lxCustSortOpts) /* if we came from the form.. */
+      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
@@ -705,10 +706,9 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx,"case")) {
+      if(hasQueryField(lx,"case") && !lxSortReset) {
         value = UCOL_ON;
-      } 
-      else if(lxCustSortOpts) /* if we came from the form.. */
+      }  else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
@@ -724,11 +724,11 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx, "dcmp"))  {
+      if(hasQueryField(lx, "dcmp") && !lxSortReset)  {
         value = UCOL_ON;
       } 
       /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else if(lxCustSortOpts) /* if we came from the form.. */
+      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
@@ -744,10 +744,10 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx, "hira")) {
+      if(hasQueryField(lx, "hira") && !lxSortReset) {
         value = UCOL_ON;
       } 
-      else if(lxCustSortOpts) /* if we came from the form.. */
+      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
@@ -793,10 +793,10 @@ void showSort(LXContext *lx, const char *locale)
           int32_t i, count=0;
 
           if(n == 0) { 
-            u_fprintf(lx->OUT, "<TD WIDTH=\"22%%\" rowspan=\"2\"><p><B>%U</B></p>\r\n",
+            u_fprintf(lx->OUT, "<TD " /* WIDTH=\"22%%\" */ " rowspan=\"2\"><p><B>%U</B></p>\r\n",
                       FSWF("usortOriginal", "Original"));
           } else {
-            u_fprintf(lx->OUT, "<TD WIDTH=\"22%%\" rowspan=\"2\"><p><B>%U</B></p>\r\n",
+            u_fprintf(lx->OUT, "<TD " /* WIDTH=\"22%%\" */ " rowspan=\"2\"><p><B>%U</B></p>\r\n",
                       FSWF("usortCollated", "Collated"));
           }
 
@@ -832,19 +832,10 @@ void showSort(LXContext *lx, const char *locale)
             usort_sort(aSort); /* first item is 'original' */
           }
           
-
-          u_fprintf(lx->OUT, "<table class=noborder width=\"90%%\" border=1>\r\n");
-          u_fprintf(lx->OUT, "<tr><TD VALIGN=TOP>");
-          
           for(i=0;i<aSort->count;i++) {
             showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars);
           }
-
-          u_fprintf(lx->OUT, "</TD></tr>");	  
-          u_fprintf(lx->OUT, "</table></td>\r\n");
-          
           usort_remove(aSort); /* clear out lines, prepare for next go round */
-          
         }
         usort_close(customSort);
       } else   { /* G7 */
@@ -908,7 +899,7 @@ void showSort(LXContext *lx, const char *locale)
           
           usort_sort(aSort);
           
-          u_fprintf(lx->OUT, " <TD width=\"20%%\"  VALIGN=TOP>");
+          u_fprintf(lx->OUT, " <TD " /* width=\"20%%\" */ " VALIGN=TOP>");
           
           for(i=0;i<aSort->count;i++) {
             showSort_outputWord(lx, aSort, i, aSort->lines[i].chars);
@@ -942,7 +933,7 @@ void showSort(LXContext *lx, const char *locale)
     u_fprintf(lx->OUT, "<br>\r\n");
     u_fprintf(lx->OUT, "<textarea class=wide name=\"usortRules\" rows=5 cols=50 columns=50>");
     
-    if(hasQueryField(lx, "usortRulesLocale")) {
+    if(hasQueryField(lx, "usortRulesLocale") && !lxSortReset) {
       UErrorCode err = U_ZERO_ERROR;
       UResourceBundle *bund, *array = NULL;
       const UChar *s = 0;

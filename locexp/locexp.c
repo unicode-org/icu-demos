@@ -113,6 +113,7 @@ void displayLocaleExplorer(LXContext *lx)
       u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\">\r\n", lx->convRequested);
     }
 
+    showSortStyle(lx);
     
     u_fprintf(lx->OUT, "%U", 
               FSWF ( /* NOEXTRACT */ "htmlHEAD",

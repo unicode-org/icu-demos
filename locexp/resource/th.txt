@@ -1,0 +1,7 @@
+﻿// -*- Coding: utf-8 -*-
+// Copyright (c) 2003 IBM and Others
+th
+{
+        // no 'version' yet - this isn't really a translation.
+        EXPLORE_CollationElements_sampleString { "-กระจ่าง|123|$123|bad|Bad|Bat|bat|bäd|Bäd|bät|Bät|côté|coté|côte|cote|ก็|กก|กรรม|กรรม์|กิน|กี่|กึ๋น|ข้าง|ข้างๆ คูๆ|ข้างเงิน|ครรภ-|ครรภ์|บุญหลง|บุญ-หลง|ทูลเกล้า|ทูลเกล้าทูลกระหม่อม|ทูลเกล้าฯ|ฤทธิ์|ฤษี|ฤๅษี|ฮูก|฿๑๒๓|เก้ง|แห่ง|แหง่|โกน|ฯพณฯ|๑๒๓" }
+}

@@ -1,5 +1,5 @@
 ﻿// -*- Coding: utf-8 -*-
-// Copyright (c) 2000 IBM, Inc. and Others
+// Copyright (c) 2000 IBM and Others
 ru
 {
         title { "здравствуйте - ICU Locale Explorer" }
