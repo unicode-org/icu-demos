@@ -11,25 +11,31 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 <body>
 <font face="arial,helvetica,sanserif">
 
+<script>
+// Determine our location.
+if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
+  SELF = "/developerworks/opensource/icu/translitdemo";
+  JSDIR = "../icu/project/demo";
+} else {
+  SELF = "/cgi-bin/translit";
+  JSDIR = "../js";
+}
+</script>
+
+<!-- a bit of a hack: only one of these will work -->
 <script src="../js/util.js"></script>
+<script src="../icu/project/demo/util.js"></script>
 
 <script>
 // Load available IDs from CGI and populate select elems
 AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
-
 USER_IDS = "$USER_IDS".split(";");
-
-// Determine our location.
-if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
-  SELF = "/developerworks/opensource/icu/translitdemo";
-} else {
-  SELF = "/cgi-bin/translit";
-}
+SEPARATOR = "--------";
 
 // Generate options (inline) for a SELECT_ID element
 function generateSelectIDOptions(i) {
   var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
-  generateOptions(o.concat(USER_IDS).concat(AVAILABLE_IDS),
+  generateOptions(o.concat(USER_IDS).concat([SEPARATOR]).concat(AVAILABLE_IDS),
                   document.FORM["_SELECT_ID_SELECTION"+i].value);
 }
 </script>
@@ -111,6 +117,14 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
 function _submit(i) {
   var id1 = getSelectedOption(document.FORM.SELECT_ID1);
   var id2 = getSelectedOption(document.FORM.SELECT_ID2);
+  if (id1 == SEPARATOR && i==1) {
+    document.FORM.SELECT_ID1.selectedIndex = 0;
+    return;
+  }
+  if (id2 == SEPARATOR && i==2) {
+    document.FORM.SELECT_ID2.selectedIndex = 0;
+    return;
+  }
   if (id1 == '(Compound)') {
     if (i==1) return; // Ignore selection of (Compound)
     id1 = document.FORM.COMPOUND_ID1.value;
