@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>Transliteration Rule Editor</title>
+<title>Transform Rule Editor</title>
 <style type="text/css">
 .wide    { width: 100% }
 textarea { font-family: Arial Unicode MS; font-size: 100% }
@@ -24,7 +24,7 @@ if ((typeof UTIL_LOADED) == "undefined" || !UTIL_LOADED) {
   alert("Internal Error: util.js not loaded.\nThis page will not function properly.");
 }
 
-NEW_ID = "(New Transliterator)";
+NEW_ID = "(New Transform)";
 SEPARATOR1 = "============User============";
 SEPARATOR2 = "===========System===========";
 IS_NEW_ID = 0;
@@ -53,7 +53,7 @@ function handleSave() {
     return handleSaveAs();
   }
   if (arrayContainsString(AVAILABLE_IDS, id, 1)) {
-    alert(id + " is a system transliterator.  Please choose a different ID.");
+    alert(id + " is a system transform.  Please choose a different ID.");
     return handleSaveAs();
   }
   op("callbackSave", id,
@@ -87,7 +87,7 @@ function handleSaveAs() {
       }
     }
     if (arrayContainsString(AVAILABLE_IDS, id, 1)) {
-      alert(id + " is a system transliterator.  Please choose a different ID.");
+      alert(id + " is a system transform.  Please choose a different ID.");
       continue;
     }
     break; // Got a valid ID.
@@ -149,7 +149,7 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
   <table width="100%">
     <tr>
       <td width="10%">&nbsp;</td>
-      <td width="80%" align="center"><strong><big><big><big>Transliteration Rule Editor</big></big></big></strong></td>
+      <td width="80%" align="center"><strong><big><big><big>Transform Rule Editor</big></big></big></strong></td>
       <td width="10%" align="right"><a
       href="http://oss.software.ibm.com/icu/demo/translit_rule_help.html" target="_blank">Help</a></td>
     </tr>
