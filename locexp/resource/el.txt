@@ -1,4 +1,0 @@
-el
-{
-	DefaultEncoding { "iso-8859-7" }
-}

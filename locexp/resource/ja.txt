@@ -1,9 +1,0 @@
-// Japanese. by Steven R. Loomis
-
-ja 
-{
-	DefaultEncoding
-	{
-		{ "shift_jis" }
-	}
-}
