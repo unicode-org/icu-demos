@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="icuucd.lib icuind.lib"
-				OutputFile="..\..\..\icu\bin\Debug/util.dll"
+				OutputFile=".\Debug/util.dll"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\icu\lib"
 				GenerateDebugInformation="TRUE"

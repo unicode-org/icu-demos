@@ -1,8 +1,4 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EscapeABundle", "..\locexp\resource\EscapeABundle.vcproj", "{C4EB9A03-0861-406E-BC4A-243672D30F93}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumpdat", "..\dumpdat\dumpdat.vcproj", "{E38521D4-F13E-4565-A975-988759C06106}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
@@ -30,10 +26,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ubrowse", "..\ubrowse\ubrow
 		{967A8361-DC2F-4AF9-9156-0C685511FC52} = {967A8361-DC2F-4AF9-9156-0C685511FC52}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unescapeABundle", "..\locexp\resource\unescapeABundle.vcproj", "{5124F373-00F5-40C7-91FD-1F774CB3D3FC}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort_client", "..\usort\client\usort_client.vcproj", "{9CC2F688-2D88-435F-8A67-F4DF35C9C500}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3E336F38-A961-466D-ADCF-77A8822FDCEE} = {3E336F38-A961-466D-ADCF-77A8822FDCEE}
@@ -51,16 +43,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\locexp\util\util
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbrowser", "..\nbrowser\nbrowser.vcproj", "{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{C4EB9A03-0861-406E-BC4A-243672D30F93}.Debug.ActiveCfg = Debug|Win32
-		{C4EB9A03-0861-406E-BC4A-243672D30F93}.Debug.Build.0 = Debug|Win32
-		{C4EB9A03-0861-406E-BC4A-243672D30F93}.Release.ActiveCfg = Release|Win32
-		{C4EB9A03-0861-406E-BC4A-243672D30F93}.Release.Build.0 = Release|Win32
 		{E38521D4-F13E-4565-A975-988759C06106}.Debug.ActiveCfg = Debug|Win32
 		{E38521D4-F13E-4565-A975-988759C06106}.Debug.Build.0 = Debug|Win32
 		{E38521D4-F13E-4565-A975-988759C06106}.Release.ActiveCfg = Release|Win32
@@ -85,10 +77,6 @@ Global
 		{35185E79-0A5D-448F-B879-4F17DB7A222E}.Debug.Build.0 = Debug|Win32
 		{35185E79-0A5D-448F-B879-4F17DB7A222E}.Release.ActiveCfg = Release|Win32
 		{35185E79-0A5D-448F-B879-4F17DB7A222E}.Release.Build.0 = Release|Win32
-		{5124F373-00F5-40C7-91FD-1F774CB3D3FC}.Debug.ActiveCfg = Debug|Win32
-		{5124F373-00F5-40C7-91FD-1F774CB3D3FC}.Debug.Build.0 = Debug|Win32
-		{5124F373-00F5-40C7-91FD-1F774CB3D3FC}.Release.ActiveCfg = Release|Win32
-		{5124F373-00F5-40C7-91FD-1F774CB3D3FC}.Release.Build.0 = Release|Win32
 		{9CC2F688-2D88-435F-8A67-F4DF35C9C500}.Debug.ActiveCfg = Debug|Win32
 		{9CC2F688-2D88-435F-8A67-F4DF35C9C500}.Debug.Build.0 = Debug|Win32
 		{9CC2F688-2D88-435F-8A67-F4DF35C9C500}.Release.ActiveCfg = Release|Win32
@@ -105,6 +93,10 @@ Global
 		{967A8361-DC2F-4AF9-9156-0C685511FC52}.Debug.Build.0 = Debug|Win32
 		{967A8361-DC2F-4AF9-9156-0C685511FC52}.Release.ActiveCfg = Release|Win32
 		{967A8361-DC2F-4AF9-9156-0C685511FC52}.Release.Build.0 = Release|Win32
+		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Debug.ActiveCfg = Debug|Win32
+		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Debug.Build.0 = Debug|Win32
+		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Release.ActiveCfg = Release|Win32
+		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
