@@ -4,7 +4,7 @@ I C U  -  A P P S
  This package contains sample applications built using the ICU. For
 more information on the ICU:
 
- URL:   http://www10.software.ibm.com/developerworks/opensource/icu/
+ URL:   http://oss.software.ibm.com/developerworks/opensource/icu/
 
  Email: icu4c@us.ibm.com
 
@@ -108,8 +108,22 @@ THE APPS
 
 - udata    *** OBSOLETE - now part of udata [part of the ICU]
 
+- xlitomatic From: Steven R. Loomis
+                   <srl@monkey.sbay.org>
+        
+           Uses: transliteration
+                 Depends on: locexp/util, etc.
+
+     * Transliterates HTML files using any transliterator. C++.
+ 
+- calexpo   From: Steven R. Loomis        [NOT CHECKED IN]
+                  <srl@monkey.sbay.org>
+
+           Uses: Date/Time formatting, Calendar
+
+     * Demonstrates the flexibility of the Calendar class.
 
 - Your contribution could be here too! Write: <icu4c@us.ibm.com>
 
 -----------------
-(c) 1999 IBM, Inc. and others
+(c) 1999, 2000 IBM, Inc. and others
