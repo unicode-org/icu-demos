@@ -27,7 +27,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, NULL, &status);
     status = U_ZERO_ERROR; /* ? */
   
-    df_default = udat_open(UDAT_SHORT, UDAT_SHORT, NULL, NULL, -1, NULL, 0, &status);
+    df_default = udat_open(UDAT_FULL, UDAT_FULL, NULL, NULL, -1, NULL, 0, &status);
     status = U_ZERO_ERROR; /* ? */
 
     now = ucal_getNow();
@@ -78,7 +78,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         tmp += 7;
 
         unescapeAndDecodeQueryField(valueString, 1000, tmp);
-        u_replaceChar(valueString, 0x0020, 0x00A0); 
+        /*u_replaceChar(valueString, 0x0020, 0x00A0);  */
 
         status = U_ZERO_ERROR;
         now = udat_parse(df, valueString, -1, &parsePos, &status);
@@ -88,8 +88,9 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     if(U_FAILURE(status) || (now == 0))
     {
-        status = U_ZERO_ERROR;
         u_fprintf(lx->OUT, "%U %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
+        explainStatus(lx,status,"EXPLORE_DateTimePatterns");
+        status = U_ZERO_ERROR;
         now = ucal_getNow();
     }
     status = U_ZERO_ERROR;
@@ -147,7 +148,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\">\r\n");
 
-        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=30>");
+        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=50>");
 
         lx->backslashCtx.html = FALSE;
         u_fprintf(lx->OUT, "%U", defChars); 
@@ -181,7 +182,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\">\r\n");
       
-        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_LOC ROWS=1 COLS=30>");
+        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_LOC ROWS=1 COLS=50>");
         writeEscaped(lx, tempChars);
         u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM>", FSWF("EXPLORE_change", "Change"));
 #endif

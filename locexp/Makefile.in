@@ -36,7 +36,7 @@ CLEANFILES = *~
 ## Target information
 TARGET = locexp
 
-LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o
+LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o lxbrk.o
 CGIOBJ = cgimain.o
 # FCGIOBJ = fcgimain.o
 OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
@@ -44,7 +44,7 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 DEPS = $(OBJECTS:.o=.d)
 
 LXLIBS=  -L../usort/lib -lusort -L./util -liculxutil$(ICULIBSUFFIX)   -L./resource/out/ -llocexp
-ICULIBS := $(LDFLAGS_USTDIO) $(ICULIBS)  $(LXLIBS)  -licutoolutil
+ICULIBS := $(LDFLAGS_USTDIO) $(ICULIBS)  $(LXLIBS) $(LDFLAGS_TOOLUTIL)
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.

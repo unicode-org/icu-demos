@@ -80,7 +80,7 @@ tidy: $(TARGET)
 	tidy -utf8 -q nbrowser.html 2>&1 | sed -e "s%^nbrowser.html%"`pwd`"/nbrowser.html%g"
 
 $(TARGET) : $(OBJECTS)
-	$(LINK.c) -o $@ $^ $(ICULIBS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
 
 

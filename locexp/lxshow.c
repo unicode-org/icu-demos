@@ -344,7 +344,7 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
   
     UErrorCode status = U_ZERO_ERROR;
 
-    UScriptCode  list[16];
+    UScriptCode  list[32];
     int32_t len, i;
 
     len = uscript_getCode(locale, list, sizeof(list)/sizeof(list[0]), &status);

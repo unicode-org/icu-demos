@@ -34,8 +34,21 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	else
 	{
 	  char *out;
-	  out = calloc(1,(u_strlen(u)+2)*(6)); /* space for \uXXXX */
-	  u_UCharsToChars(u, out, u_strlen(u)+1);
+          int32_t length = 0;
+          int32_t bufsz = 0;
+          UChar *up = u;
+          UBool usError = FALSE;
+
+          bufsz = (u_strlen(u)+2)*(9);
+	  out = calloc(1,bufsz); /* space for \uXXXX */
+          out[0]=0;
+          while(*up) {
+            U8_APPEND(out, length, bufsz, *up, usError);
+            up++;
+          }
+          out[length]=0;
+          
+	  //u_UCharsToChars(u, out, u_strlen(u)+1);
 	  fprintf(lx->fOUT, "\"%s\"", out);
 	}
       }
@@ -86,7 +99,7 @@ void writeFileObject( LXContext *lx, const char *path )
 
   if(U_FAILURE(status))
   {
-    printf("Content-type: text/html\r\n\r\n");
+    printf("Content-type: text/html;charset=utf-8\r\n\r\n");
     printf("Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
            lx->cLocale,
            (thePath==NULL)?"NULL":thePath,
@@ -99,7 +112,7 @@ void writeFileObject( LXContext *lx, const char *path )
   if(!path || !(*path) || (*path == '/'))
   {
 
-    fprintf(lx->fOUT, "Content-type: text/html\r\n\r\n");
+    fprintf(lx->fOUT, "Content-type: text/html;charset=utf-8\r\n\r\n");
     fprintf(lx->fOUT, "<html><head><title>bundle list for %s</title></head>\r\n",
            lx->cLocale);
     fprintf(lx->fOUT, "<body>");
