@@ -102,6 +102,7 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
     if(!gTR[n])
     {
         gTR[n] = utrns_open(id);
+//        fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]); 
     }
 
     if(!gTR[n])
@@ -109,7 +110,6 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
         gTR[n] = utrns_open("Null");
     }
     
-/*    fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]); */
 
     return gTR[n];
 }

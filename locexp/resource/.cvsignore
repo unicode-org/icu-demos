@@ -1,7 +1,7 @@
 index.txt
 Makefile
 Makefile.res
-default_SAMPLE.txt
+root_SAMPLE.txt
 *.res
-default.txt
+root.txt
 escapeABundle

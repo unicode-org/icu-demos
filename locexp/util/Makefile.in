@@ -31,7 +31,7 @@ HEADERS += fontedcb.h
 
 ## tz support
 OBJECTS += utimzone.o
-HEADERS += utimzone.h
+HEADERS += unicode/utimzone.h
 
 DEPS = $(OBJECTS:.o=.d)
 

@@ -213,8 +213,9 @@ int main(const char *argv[], int argc)
   char *tmp;
   UChar subTitle[1024];
   int32_t n,i;
-  
+
   /* INIT THE LX */
+  memset(lx, 0, sizeof(*lx));
   strcpy(lx->cLocale, "en");
   lx->defaultRB = 0;
   lx->ourCharsetName = "iso-8859-1";
@@ -224,31 +225,25 @@ int main(const char *argv[], int argc)
   lx -> numLocales = 0;
   /* END INIT LX */
 
+
   /* init ...... */
-  uloc_setDefault("nl", &status); /* BASELINE */
+  uloc_setDefault("raj_NZ_EURO", &status); /* BASELINE. Don't use a real locale here - will mess up the fallback error codes [for now] */
+
 
 
 #ifdef  WIN32
   u_setDataDirectory("c:\\dev\\icu\\data\\");
 #endif
 
+
   /** Below is useful for debugging. */
-  /*  fprintf(stderr, "PID=%d\n", getpid()); */
-  /*   system("sleep 20");  */
+/*    fprintf(stderr, "PID=%d\n", getpid());  */
+/*     system("sleep 20");   */
 
   status = U_ZERO_ERROR; 
 
 
-
-
-
-
   /* ------- END INIT ----------*/
-  putenv("QUERY_STRING=_=hi");
-  putenv("PATH_INFO=/kn/transliterated/");
-  putenv("SERVER_NAME=blah");
-  putenv("SCRIPT_NAME=/a/b/c");
-
 
   if((tmp=getenv("QUERY_STRING")) == NULL)
   {
@@ -260,6 +255,7 @@ int main(const char *argv[], int argc)
   /* Set up some initial values, just in case something goes wrong later. */
   strcpy(lx->chosenEncoding, "LATIN_1");
   lx->ourCharsetName = "iso-8859-1";
+
 
   /* set the path for FSWF */
   {
@@ -274,7 +270,10 @@ int main(const char *argv[], int argc)
     FSWF_setBundlePath(newPath);
   }
 
+
   lx->OUT = setLocaleAndEncodingAndOpenUFILE(lx->chosenEncoding, &lx->setLocale, &lx->setEncoding);
+
+
   if(!lx->OUT)
     doFatal("u_finit trying to open file", 0);
   
@@ -317,10 +316,12 @@ int main(const char *argv[], int argc)
   /* Change what DECOMPOSE calls as it's last resort */
   DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML;
 
+
   /* parse & sort the list of locales */
  setupLocaleTree();
   /* Open an RB in the default locale */
   lx->defaultRB = ures_open(NULL, lx->cLocale, &status);
+
 
   /* setup the time zone.. */
   if (!strncmp(tmp,"SETTZ=",6))
@@ -346,6 +347,7 @@ int main(const char *argv[], int argc)
       }
   }
 
+
   if(lx->newZone[0] == 0x0000) /* if still no zone.. */
   {
       const char *cook;
@@ -358,7 +360,9 @@ int main(const char *argv[], int argc)
       }
   }
   
-  u_uastrcpy(lx->newZone, "Europe/Malta");
+/*  u_uastrcpy(lx->newZone, "Europe/Malta"); */
+  u_uastrcpy(lx->newZone, "PST"); /* for now */
+
 
   if(lx->newZone[0] != 0x0000)
   {
@@ -386,6 +390,7 @@ int main(const char *argv[], int argc)
   /* Print the encoding and last HTTP header... */
 
   printf("Content-Type: text/html;charset=%s\r\n\r\n", lx->ourCharsetName);
+  fflush(stdout);
 
   /* 
      kore wa nandesuka?
@@ -430,6 +435,8 @@ int main(const char *argv[], int argc)
     u_fprintf(lx->OUT, "ICU_DATA is NULL!!!!!!!!");
   }
 */
+
+
   /* now see what we're gonna do */
   tmp = getenv ( "QUERY_STRING" );
   
@@ -958,10 +965,10 @@ void printStatusTable()
 		FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
 
-  if(!isSupportedLocale(lx->cLocale, TRUE))
+  if(!isSupportedLocale(lx->cLocale, TRUE)) 
     {
       u_fprintf(lx->OUT, "<TD COLSPAN=3 ><FONT COLOR=\"#FF0000\">");
-      u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), lx->cLocale);
+      u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported. [i think]"), lx->cLocale);
       u_fprintf(lx->OUT, "</FONT></TD>");
     }
 
@@ -984,15 +991,12 @@ void printStatusTable()
            FSWF("poweredby_filebug", "File a bug"));
 
     u_fprintf(lx->OUT, "</CENTER><P>\r\n");
-#if 0
-  if(couldNotOpenEncoding)
+
+  if(lx->couldNotOpenEncoding)
   {
     /* Localize this when it actually works! */
-    u_fprintf(lx->OUT,"<TR><TD COLSPAN=2><FONT COLOR=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</FONT></TD></TR>\r\n", couldNotOpenEncoding); 
+    u_fprintf(lx->OUT,"<TR><TD COLSPAN=2><FONT COLOR=\"#FF0000\">Warning, couldn't open the encoding '%s', using a default.</FONT></TD></TR>\r\n", lx->couldNotOpenEncoding); 
   }
-#endif
-
-
 }
 
 void printPath(const MySortable *leaf, const MySortable *current, bool_t styled)
@@ -1641,10 +1645,13 @@ void listBundles(char *b)
                 FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
 
+#ifdef LX_HAVE_XLITOMATIC
       u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%U</A>\r\n",
                 lx->cLocale, lx->chosenEncoding,
                 FSWF("explore_xlitomatic", "Translit-o-matic"));
+#endif
       u_fprintf(lx->OUT, "<P></UL>\r\n");
+
       return; /* BREAK out */
     }
 
@@ -1675,7 +1682,7 @@ void listBundles(char *b)
     {
       u_fprintf(lx->OUT, " %U",FSWF("localeDataLanguage","No country is specified, so the data is generic to this language."));
     }
-  else if(!strcmp(locale,"default"))
+  else if(!strcmp(locale,"root"))
     {
       u_fprintf(lx->OUT, " %U", FSWF("localeDataDefault", "This is the default localization data, which will be used if no other installed locale is specified."));
     }
@@ -1990,7 +1997,7 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 
 
       /* fix the status */
-      if(!strcmp(locale, "default"))
+      if(!strcmp(locale, "root"))
 	status = U_ZERO_ERROR;
       else
 	status = U_USING_DEFAULT_ERROR;
@@ -3154,7 +3161,7 @@ void explainStatus( UErrorCode status, const char *tag )
 	}
       else
 	{
-	  u_fprintf(lx->OUT, "<A HREF=\"?_=default#%s\">", tag);
+	  u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
 	  u_fprintf_u(lx->OUT, FSWF("inherited", "(inherited)"));
 	}
 
@@ -3162,7 +3169,7 @@ void explainStatus( UErrorCode status, const char *tag )
       break;
 
     case U_USING_DEFAULT_ERROR:
-	u_fprintf(lx->OUT, "<A HREF=\"?_=default#%s\">", tag);
+	u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
 	  u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %U)"), lx->locales->ustr); 
 	  u_fprintf(lx->OUT, "</A>");
       break;
@@ -4086,6 +4093,7 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
   bool_t           supp   = TRUE;
 
   newRB = ures_open(FSWF_bundlePath(), locale, &status);
+//  fprintf(stderr, "open[bundpath|%s|%s,%c]->%s\n", FSWF_bundlePath(), locale, includeChildren?'T':'F',u_errorName(status));
   if(U_FAILURE(status))
     supp = FALSE;
   else
@@ -4097,6 +4105,7 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
       else
 	{
 	  ures_get(newRB, "helpPrefix", &status);
+//          fprintf(stderr, "helpPrefix->%s\n", u_errorName(status));
 
 	  if(status == U_USING_DEFAULT_ERROR)
 	    supp = FALSE;
@@ -4288,7 +4297,7 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
 	  if(*pi) /* don't want 0 length encodings */
 	    {
 	      encoding = pi;
-              fprintf(stderr, "DSE1+%s\n", pi);
+              /* fprintf(stderr, "DSE1+%s\n", pi); */
 	      *didsetEncoding = TRUE; 
 
 	    }
@@ -4391,17 +4400,25 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
 
     }
 
+
   if(encoding)
     {
       strcpy(lx->chosenEncoding, encoding);
     }
+
+  /* Map transliterated/fonted : */
+  if((0==strcmp(encoding, "transliterated")) ||
+     (0==strcmp(encoding, "fonted"))) 
+  {
+    encoding = "usascii";
+  }
 
   /* now, open the file */
   f = u_finit(stdout, locale, encoding);
 
   if(!f)
     {
-      /* couldNotOpenEncoding = encoding; */
+      lx->couldNotOpenEncoding = encoding;
       f = u_finit(stdout, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
       if(!f)
       {
@@ -4412,6 +4429,7 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
     }
 
 
+
   /* we know that ufile won't muck withthe locale.
      But we are curious what encoding it chose, and we will propagate it. */
   if(encoding == NULL)
@@ -4420,9 +4438,11 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
       strcpy(lx->chosenEncoding, encoding);
     }
 
+
   /* --sigh-- FIX FSWF SO IT TAKES A LOCALE!! */
   uloc_setDefault(lx->cLocale, &status );
   
+
   return f;
 }
 

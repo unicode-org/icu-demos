@@ -384,7 +384,7 @@ int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen)
 
 /** 
  * Initialize a MySortable with the specified locale. Will reset all fields.
- * TODO: limit displayname to just a part (default -> English -> United States -> California, instead of   .... -> English (United States) -> ... 
+ * TODO: limit displayname to just a part (root -> English -> United States -> California, instead of   .... -> English (United States) -> ... 
  * @param s The MySortable struct to initialize
  * @param locid The Locale that the MySortable should refer to
  * @param inLocale The Locale which the MySortable's display name should be displayed 
@@ -529,7 +529,7 @@ void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level
 
 /**
  * create a MySortable tree of locales. 
- * default -> en, ja, de, ... -> en_US, en_CA, .. -> en_US_CALIFORNIA
+ * root -> en, ja, de, ... -> en_US, en_CA, .. -> en_US_CALIFORNIA
  * @param inLocale the Locale the tree should be created in
  * @param localeCount [return] total # of items in the tree
  * @return a new MySortable tree, owned by the caller.  Not sorted.
@@ -547,7 +547,7 @@ MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount)
   root = malloc(sizeof(MySortable));
 
   /* get things rolling... */
-  initSortable(root, "default", inLocale, NULL);
+  initSortable(root, "root", inLocale, NULL);
   *localeCount = 1;
 
 
@@ -987,7 +987,7 @@ bool_t testConverter(const char *converter,
   ucnv_setFromUCallBack(cnv, UCNV_FROM_U_CALLBACK_STOP, &status);
 
   ucnv_fromUnicode (cnv,
-		    &target,
+		    (char**)&target,
 		    buffer + bufLen,
 		    &sample,
 		    sample + sampleLen,

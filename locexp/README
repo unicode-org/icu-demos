@@ -191,4 +191,7 @@ X - done
       - have a 'no cookies' link (add a third PI path) if cookies are
         declined
 
+   - handle shiftjis/korean/euc-jp escaping...
+       backslash (U+005C) isn't available! do soemthing else.. use %'s or 
+        something. maybe transliteration.
 

@@ -12,8 +12,8 @@ locexp/html/incorrect.gif -text
 locexp/html/opened.gif -text
 locexp/html/transliteration.html svneol=native#text/html
 locexp/icudata.tgz -text
-locexp/resource/default_head.html svneol=native#text/html
-locexp/resource/default_tail.html svneol=native#text/html
+locexp/resource/root_head.html svneol=native#text/html
+locexp/resource/root_tail.html svneol=native#text/html
 locexp/resource/sr.txt -text
 locexp/resource/sr.utf16.txt -text svneol=unset#application/octet-stream
 uconv/charset/ISO-8859-2.txt -text svneol=unset#application/octet-stream

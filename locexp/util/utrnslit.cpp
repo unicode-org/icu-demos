@@ -57,8 +57,9 @@ const char *utrns_getAvailableID(int32_t i)
 UTransliterator * 
 utrns_open(const char *id)
 {
-  UTransliterator* u = (UTransliterator*) Transliterator::createInstance(UnicodeString(id, ""));
-  /*  fprintf(stderr, "utrns_open(%s) => %p\n", id, u); */
+  UnicodeString uid(id, "");
+  UTransliterator* u = (UTransliterator*) Transliterator::createInstance(uid); /* "" */
+  //   fprintf(stderr, "utrns_open(%s) => %p\n", id, u); 
   return u;
 }
 
