@@ -99,7 +99,12 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
     {
         gTR[n] = utrns_open(id);
     }
-    
+
+    if(!gTR[n])
+    {
+        gTR[n] = utrns_open("Null");
+    }
+
     return gTR[n];
 }
 

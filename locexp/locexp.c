@@ -74,7 +74,7 @@
 #include "kangxi.h"
 #include "cstring.h"
 #define LXHOSTNAME "pero"
-#define URLPREFIX "/locexp"
+#define URLPREFIX ""
 #endif
 
 #ifdef LX_USE_FONTED
@@ -235,14 +235,15 @@ int main(const char *argv[], int argc)
   UErrorCode status;
   char *tmp;
   UChar subTitle[1024];
-  int32_t n;
+  int32_t n,i;
 
-//  u_setDataDirectory("c:\\icu\\icu\\data\\");
+
+  u_setDataDirectory("c:\\icu\\icu\\data\\");
 
   /** Below is useful for debugging. */
   /*  fprintf(stderr, "PID=%d\n", getpid()); */
   /*   system("sleep 20");  */
-  
+
   status = U_ZERO_ERROR; 
 
   if(getenv("QUERY_STRING") == NULL)
@@ -268,7 +269,6 @@ int main(const char *argv[], int argc)
   if(!OUT)
     doFatal("u_finit trying to open file", 0);
   
-
   ourCharsetName = MIMECharsetName(chosenEncoding); /* for some sanity */
 
   /** Setup the callbacks **/
@@ -311,8 +311,6 @@ int main(const char *argv[], int argc)
   /* Change what DECOMPOSE calls as it's last resort */
   DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML;
 
-/**/    fprintf(stderr, "At line %d\n", __LINE__);  fflush(stderr);
-
   /* parse & sort the list of locales */
  setupLocaleTree();
   /* Open an RB in the default locale */
@@ -320,8 +318,6 @@ int main(const char *argv[], int argc)
 
   /* Print the encoding and last HTML header... */
   printf("Content-Type: text/html;charset=%s\r\n\r\n", ourCharsetName);
-
-  /**/    fprintf(stderr, "At line %d\n", __LINE__);  fflush(stderr);
 
   /* 
      kore wa nandesuka?
@@ -339,28 +335,21 @@ int main(const char *argv[], int argc)
 
   u_fprintf(OUT,"<HTML>");
 
-/**/    fprintf(stderr, "At line %d\n", __LINE__);  fflush(stderr);
-
   u_fprintf(OUT, "\r\n<!-- \r\n\r\n   Hello, HTML explorer :)  Don't know how readable this HTML will be!\r\n  If you have any questions, comments, [gasp] bugs, or\r\n [hopehope] improvements, please drop some knowledge to:\r\n    icu4c@us.ibm.com THX! \r\n                 ~srl \r\n\r\n-->");
 
   u_fprintf(OUT, "<HEAD BGCOLOR=\"#DFDDDD\"><TITLE>");
 
   printPath(curLocale, curLocale, FALSE);
 
-
-  /**/    fprintf(stderr, "At line %d\n", __LINE__);  fflush(stderr);
-
-
-  /**/    fprintf(stderr, "At line %d\n", __LINE__);  fflush(stderr);
-
   if(uprv_strstr(getenv("QUERY_STRING"), "EXPLORE"))
     u_fprintf(OUT, " &gt; %U", FSWF("exploreTitle", "Explore"));
 
   u_fprintf(OUT, "</TITLE>\r\n");
-  
-//  if(!getenv("PATH_INFO") || !getenv("PATH_INFO")[0])
-//    u_fprintf(OUT, "<!-- STUPID --> <BASE HREF=\"http:%s%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME")); /* Ensure that all relative paths have the cgi name followed by a slash. */
-  
+
+/*  
+  if(!getenv("PATH_INFO") || !getenv("PATH_INFO")[0])
+    u_fprintf(OUT, "<!-- STUPID --> <BASE HREF=\"http:%s%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME")); /* Ensure that all relative paths have the cgi name followed by a slash. 
+*/  
   
   u_fprintf(OUT, "%U", 
 	    FSWF ( /* NOEXTRACT */ "htmlHEAD",
@@ -468,7 +457,6 @@ int main(const char *argv[], int argc)
 
 
     }
-
 
   if ( tmp == NULL )
     tmp = ""; /* for sanity */
@@ -585,7 +573,6 @@ int main(const char *argv[], int argc)
 		FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
 
-
   if(COLLECT_getChars()[0] != 0x0000)
     {
       UConverterFromUCallback oldCallback;
@@ -648,13 +635,18 @@ int main(const char *argv[], int argc)
 
   u_fprintf(OUT, "</BODY></HTML>\r\n");
 
+  fflush(stdout);
+
   u_fclose(OUT);
+
+  fflush(stderr);
 
   FSWF_close();
 
   if(defaultRB)
     ures_close(defaultRB);
 
+  return 0;
 }
 
 const UChar *defaultLanguageDisplayName()

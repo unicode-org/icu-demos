@@ -65,11 +65,17 @@ int32_t utrns_transliterate(UTransliterator *_this,
     int32_t actLen;
 
     UnicodeString res(result, 0, resultLength);
+    res.replace(0, srcLength, source, 0, srcLength);    
 
+//    UnicodeString res = UnicodeString(FALSE, (UChar*)source, srcLength);
+
+
+    ((Transliterator*)_this)->transliterate(res,0,srcLength);
+/*
     ((Transliterator*)_this)->transliterate(UnicodeString(FALSE, (UChar*)source, srcLength),
                                             0, srcLength,
                                             res);
-
+*/
     T_fillOutputParams(&res, result, resultLength, &actLen, status);
 
     return actLen;
