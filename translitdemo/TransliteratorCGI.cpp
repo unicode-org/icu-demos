@@ -53,9 +53,6 @@
 // Encoding we use for interchange to/from the browser
 #define ENCODING "UTF8"
 
-// Special transliterator IDs
-#define NULL_ID "Null"
-
 static int _compareIDs(const void* arg1, const void* arg2);
 
 TransliteratorCGI::TransliteratorCGI() :
@@ -226,17 +223,21 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             if (id.charAt(0) == 39) {
                 id.remove(0,1);
                 dir = UTRANS_REVERSE;
+#if 0
+// Let's do this in the JavaScript instead, so we can apply it
+// only to the first transform, and not to the second.
             } else {
                 // We prepend an invisible Hex-Any transliterator.
                 // This just makes it possible for the user to type
                 // hex escapes in the input area.
                 id.insert(0, UnicodeString("Hex-Any;", ""));
+#endif
             }
             loadUserTransliterators();
             UErrorCode status = U_ZERO_ERROR;
             UParseError err;
             Transliterator *t = Transliterator::createInstance(id, dir, err, status);
-            if (t != 0) {
+            if (t != 0 && U_SUCCESS(status)) {
                 char* s = cleanupNewlines(arg1);
                 text = UnicodeString(s, ENCODING);
                 delete[] s;
@@ -260,6 +261,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                     }
                 }
             }
+            delete t;
             util_fprintfq(out, text);
         }
 
