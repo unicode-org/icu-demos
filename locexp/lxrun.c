@@ -632,7 +632,6 @@ void setLocaleAndEncoding(LXContext *lx)
 {
   const char *q;
   UErrorCode status = U_ZERO_ERROR;
-  const char *tmp;
   /**
    *  _  explored locale 
    * d_  full display locale 
