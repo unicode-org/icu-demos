@@ -54,8 +54,7 @@ static const char *helpText=
     "to demonstrate tailored normalization as mentioned as\n"
     "<a href=\"http://www.unicode.org/review/\">Unicode public review</a> issue 7.\n"
     "Uncheck all of these options for regular <a href=\"http://www.unicode.org/reports/tr15/\">Unicode Normalization</a>.</p>\n"
-    "<p>Hangul excludes AC00..D7A3. CJK Compat. excludes CJK Compatibility Ideographs (those with a canonical decomposition).\n"
-    "a-umlaut excludes just U+00E4 (&#xe4;), which does not fulfill the closure condition for exclusions (try e.g. U+01DF &#x1df;).</p>\n"
+    "<p>Hangul excludes AC00..D7A3. CJK Compat. excludes CJK Compatibility Ideographs (those with a canonical decomposition).</p>\n"
     "\n"
     "<p>The Unicode 3.2 option performs normalization according to Unicode 3.2 (except for NormalizationCorrections) "
     "even if ICU otherwise supports a higher version.\n</p>"
@@ -88,7 +87,6 @@ static const char *endForm=
     "<p>Decomposition exclusions:"
     " <input type=\"checkbox\" name=\"op0\" %s> Hangul"
     " <input type=\"checkbox\" name=\"op1\" %s> CJK Compat."
-    " <input type=\"checkbox\" name=\"op2\" %s> a-umlaut"
     "<br>\n"
     "Unicode version:"
     " <input type=\"radio\" name=\"uv\" value=\"0\" %s>current"
@@ -351,7 +349,6 @@ main(int argc, const char *argv[]) {
     printf(endForm,
         options&1 ? "checked" : "",
         options&2 ? "checked" : "",
-        options&4 ? "checked" : "",
         (options&0xe0)==0 ? "checked" : "",
         (options&0xe0)==UNORM_UNICODE_3_2 ? "checked" : "");
 
