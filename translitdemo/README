@@ -1,0 +1,41 @@
+Transliterator Demo README
+
+The Transliterator demo program is a simple CGI that allows the user
+to transliterate text to and from various scripts using system
+transliterators built into ICU.  It is designed to work with ICU4c
+version 1.8 or later.
+
+OSS setup
+---------
+
+On OSS we are going to map the URL
+  http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo
+to
+  /www/software10/cgi-bin/icu/translitdemo
+
+This is a shell script that sets LD_LIBARARY_PATH and ICU_DATA
+appropriately and invokes the actual binary.
+
+Installation
+------------
+
+translit: The CGI executable is assumed to live in a cgi-bin directory
+(e.g., /home/httpd/cgi-bin/translit for an Apache default
+installation).
+- This location is specified in translit_template.html
+                            and translit_rule_edit.html
+
+translit_template.html: This data file is read by the CGI executable.
+The CGI expects it to be at the relative location (to the cgi) of
+data/translit_template.html.
+- This location is specified in TransliteratorCGI.cpp
+
+Library path: To let the CGI see the ICU shared libraries, set the
+library path.  One way is to use LD_LIBRARY_PATH:
+  LD_LIBRARY_PATH=/usr/local/lib ./translit
+will invoke the CGI from the command line, if one is in the cgi-bin
+directory, and the ICU libraries (e.g. libicuuc.so.18) are in
+/usr/local/lib.
+  Another way on Linux is to add the line
+  /usr/local/lib
+  to the file /etc/ld.so.conf, then run /sbin/ldconfig (as root).
