@@ -1,6 +1,8 @@
+// -*- Coding: latin-1 -*- 
+// So that it can be used w/o datafiles..
 // by srl@monkey.sbay.org, thanks to Mirka Mifsud Bonnici for much of the translation
 //                         thanks to Karmenu Attard for additional help
-//                         thanks to MaxMan (Manuel) for additional help
+//                         thanks to MaxMan for additional help
 // Maltese locale.
 
 // Search for 'Sources' below for source abbreviations
@@ -17,100 +19,116 @@
 //  but, U+0307 is the DOT ABOVE needed for z., c., and g. (in collation rules)
 
 mt {
-    Version { "x0.4_srl@monkey.sbay.org" } // x meaning an experimental locale
-    LocaleString { mt_MT }
-    LocaleID { "9995" } // ?
+    Version { "x0.5_srl@monkey.sbay.org" } // x meaning an experimental locale
+//    LocaleString { mt }
+//    LocaleID { "9995" } // ?
     ShortLanguage { mlt }
     Languages {
 
+default { "G\u0127erq" }
+
 // Some of these tags look like they are in other languages, not Maltese.
- mt { Malti }
  ar { G\u0127arbi }
  cs { \u010Aesky } 
  cy { \u010Aymraeg } 
  da { Dansk } 
- de { Deutsch } 
- el { Ellinika } 
+ de { "\u0120ermani\u017C" } // [CI]
+ el { Ellinika }  // <-- FIX?
  en { English } 
- es { "Español" } 
- et { Eesti } 
- fi { Suomi } 
- fr { "Français" } 
+ es { "Spanjol" } 
+ et { Eesti }  // <-- FIX
+ fi { Suomi } // <-- FIX?
+ fr { "Fran\u010Bi\u017c" } 
  hr { Hrvatski } 
- is { "Íslenska" } 
+ is { "Íslenska" }  // <-- FIX
  it { Taljan }  // CI dictionary
  ja { "\u0120appuni\u017C" } // srl, after [BM]
  lt { Lietuviskai } 
  lv { Latviski } 
+ mt { Malti }
  pl { Polski } 
- pt { Português } 
+ pt { "Portugi\u017c" }
  ro { Romana } 
  ru { Russkij } 
  sv { Svenska } 
- tr { Turkce } 
+ th { "Tajlandi\u017c" }
+ tr { "Tork" } 
+ uk { "Ukranjan" }
+
 // x1 { Magyar } 
 // x2 { Makedonski } 
-// x3 { Nederlands }  // this is a language?
 // x4 { Norsk } 
 // x9 { Slovencina } 
 // xa { Slovenscina } 
     }
     Countries {
-// Country tags look OK
-        MT { Malta }
+
         AL { Albanija }
-//        AD { Andorra }
+        AR { Ar\u0121entina }
         AT { Awstrija }
-	AU { Awstralja }
-//        AU { Awstralija }
-        BE { Bel\u0121ju }
+        AU { Awstralja }
         BA { Bo\u017Cnija/\u0126erzegovina  }
+        BE { Bel\u0121ju }
         BG { Bulgarija }
-        HR { Kroazja }
+        BO { Bolivia }  
+        BR { Bra\u017Cil }
+        CA { Kanada }
+        CH { \u017Bvizzera }
+        CN { \u010Aina }
+        CU { "Kuba" }
         CY { \u010Aipru }
         CZ { Rep. \u010Aeka  }
+        DE { \u0120ermanja }
         DK { Danimarka  }
+        DZ { Al\u0121erija }
         EE { Estonja }
+        EG { E\u0121ittu }
+        ES { Spanja }
         FI { Finlandja }
         FR { Franza }
-        DE { \u0120ermanja }
-        GR { \u0120re\u010Bja }
+        GB { Gran Brittanja }
         GL { \u0120roenlandja }
+        GR { \u0120re\u010Bja }
+        HR { Kroazja }
         HU { Ungerija }
-        IS { Islanda }
         IE { Irlanda }
-        IL { Izrael }
-        IT { Italja } // Should be 'Talja?'
-        LV { Latvja }
- //       LI { Liechtenstein }
+        IL { "I\u017crael" }
+        IN { Indja }
+        IQ { "Iraq" }
+        IR { "Iran" }
+        IS { Islanda }
+        IT { Italja }
+        JP { \u0120appun }
+        LB { "Lebanon" }
         LT { Litwanja }
         LU { Lussemburgu }
- //       MK { Macedonia }
-//        MC { Monaco }
+        LV { Latvja }
+        LY { "Libja" }
+        MA { "Marokk" }
+        MT { Malta }
+        MX { "Messiku" }
         NL { Olanda }
-        NO { Norvegja }
+        NO { Norve\u0121ja }
+        PE { "Peru" }
+        PK { "Pakistan" }
         PL { Polonja }
-        PT { Portugall }
+        PT { Portugall } // [KA]
         RO { Rumanija }
         RU { Federazzjoni Russa }
-        SK { Rep. Slovakka }
+        SA { "Sawdi Arabja" }
+        SE { \u017Bvezja }
         SI { Slovenja }
-        ES { Spanja }
-        SE { Svezja }
-        CH { Svizzera }
+        SK { Rep. Slovakka }
+        SY { "Sirja" }
+        TH { "Tajlandja" }
+        TN { "Tune\u017c" }
         TR { Turkija }
+        TW { Tajwan }
         UA { Ukranja }
-        GB { Gran Brittanja }
-//        UK { Renju Unit }
+        US { "Stati Uniti" }
         VA { Stat tal-Vatikan  }
-    //    YU { Yugoslavia  }
         YU { Jugoslavja }
-	EG { E\u0121ittu }
-	CN { \u010Aina }
-	TW { Tajwan }
-	ZA { "Afrika t'Isfel" }
-  	BO { Bolivia }	
-	CA { Kanada }
+        ZA { "Afrika t'Isfel" }
     }
     MonthNames {
 	Jannar,
@@ -127,20 +145,21 @@ mt {
 	Di\u010Bembru
         ""
     }
-// ?
+
+//  FIX - month abbrevs.
    MonthAbbreviations {
-        Jan,
-        Fra,
-        Mar,
-        Apr,
-        Mej,
-        \u0120un,
-        Lul,
-        Awi,
-        Set,
-        Ott,
-        Nov,
-        Di\u010B,
+        Jan.,
+        Frar,
+        Marzu,
+        April,
+        Mejju,
+        \u0120unju,
+        Lulju,
+        Awissu,
+        Sett.,
+        Ott.,
+        Nov.,
+        Di\u010B.,
         ""
     }
     DayNames {
@@ -152,6 +171,12 @@ mt {
         il-\u0120img\u0127a,
         is-Sibt
     }
+
+    Eras {
+         "QK",  // Quddiem Kristu  [from Il-BIBBJA - it-tieni edijoni,
+         "WK"   // Wara Kristu      Ghaqda Biblika Maltija]
+    }
+
     DayAbbreviations { 
         "\u0126add",
 	Tnejn,
@@ -184,66 +209,35 @@ mt {
         "h:mm:ss a z",
         "h:mm:ss a",
         "h:mm a",
-        "EEEE, dd 'ta''' MMMM, yyyy",
-        "MMMM d, yyyy",
-        "dd-MMM-yy",
-        "M/d/yy",
+        "EEEE, d 'ta''' MMMM, yyyy",
+        "d 'ta''' MMMM",
+        "dd/MM/yy",
+        "dd/MM/yy",
         "{1} {0}"
     }
     DateTimeElements {
-        "1",
+        "2",
         "1"
     }
 
-// Maltese alphabet: grazzi, to mr. Karmenu Attard
-// 
-// UPDATED: Now almost according to 'colour image's dictionary order (Malta, 1998) -- [CI]
-//   a b c. [c] d e f g. g gh/ h h/ i ie j k l m n o p q r s t u v w x y z z.
-//   Only Colour Image's dictionary has 'ie' as a separate letter.
-//   
-//  
-//
-// *other sources:
-//
-// Kapt Pawlu Bugeja's dizzunarju
-//  (Kelmet il-Malti) [Grima: Marsa, Malta, 1990) - the orange one     -- [Kelmet]
-//   -- same order, but lists z. before z
-//
-// Lydia Sciriha seems to use the order 'g g. gh/' but 'z z.' in       -- [BM]
-//   Beginning Maltese (Uni ta' Malta, 1996) in the lessons,
-// but in the word list (at back) it's 'g. g gh/' and 'z. z' [1st ed.]
-//
-// J. Aquilina in his 'Teach Yourself:Maltese' book                    -- [Ty]
-//     (London: Hodder Headline, 1965 and Chicago, NTC Publishing 1995)
-// uses the very different 'g. g h h/ ... n gh/ o .. x z. z' ordering, 
-// placing gh/ between n and o.
-//
-// 
-//
-// 
-//
-//
 //   Note, that 'c' doesn't exist in Maltese. But I put it here following c. 
 //   for compatibility with foreign words.
-// Note that g follows g., but z. follows z.
-// a b c. [c] d e f g. g gh/ h h/ i ie j k l m n o p q r s t u v w x y z. z
+
+// Joseph Felici Pace says: 
+// a b c. [c] d e f g. g gh/ h h/ i ie j k l m n o p q r s t u v w x [y] z. z
 
    CollationElements
    {
       "& B < c\u0307 , C\u0307 "                       // c.  C.
+         " < c,C"      
       "& F < g\u0307 , G\u0307 "                       // g.  G.
          " < g,G"
          " < g\u0127 , g\u0126 , G\u0127 , G\u0126 "   // gh  gH Gh GH
       "& H < \u0127  , \u0126 "                        // h/  H/
       "& I < ie, iE, Ie, IE   "                        // ie is a single letter
       "& Y < z\u0307 , Z\u0307"                        // z.  Z.
+         " < z,Z"
    }
-
-// OLD collation elements: WRONG.
-//                                                   ll       Ll         LL
-//                                                   gh       Gh         GH
-//    CollationElements { "& F < g\u0307 , G\u0307 & H < \u0127, \u0126 & N <  & X < z\u0307 , Z\u0307 " }
-
 
 // Time zone
 //CET: 
@@ -260,4 +254,29 @@ mt {
 
 }
 
+
+// -- BIBLIOGRAPHY --
+//
+// Maltese alphabet: grazzi, to mr. Karmenu Attard
+// 
+//  'colour image's dictionary order (Malta, 1998) -- [CI]
+//   a b c. [c] d e f g. g gh/ h h/ i ie j k l m n o p q r s t u v w x y z z.
+//   Only Colour Image's dictionary has 'ie' as a separate letter. 
+//    (that i have seen so far)
+//
+// Kapt Pawlu Bugeja's dizzunarju
+//  (Kelmet il-Malti) [Grima: Marsa, Malta, 1990) - the orange one     -- [Kelmet]
+//   -- same order, but lists z. before z
+//
+// Lydia Sciriha seems to use the order 'g g. gh/' but 'z z.' in       -- [BM]
+//   Beginning Maltese (Uni ta' Malta, 1996) in the lessons,
+// but in the word list (at back) it's 'g. g gh/' and 'z. z' [1st ed.]
+//
+// J. Aquilina in his 'Teach Yourself:Maltese' book                    -- [Ty]
+//     (London: Hodder Headline, 1965 and Chicago, NTC Publishing 1995)
+// uses the very different 'g. g h h/ ... n gh/ o .. x z. z' ordering, 
+// placing gh/ between n and o.
+//
+// Casha, Charles: 'Kun Af - aktar dwar ilsienna'                       -- [KA]
+//   (Blata l-Bajda, Malta: Merlin Library Ltd., 1987)
 

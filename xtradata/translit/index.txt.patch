@@ -1,6 +1,6 @@
---- ./translit/index.txt	Thu Feb 10 13:58:13 2000
-+++ ../Ndata2/translit/index.txt	Thu Feb 10 14:06:16 2000
-@@ -42,5 +42,12 @@
+--- index.txt.orig	Thu Feb 24 12:45:21 2000
++++ index.txt	Fri Mar 24 00:13:42 2000
+@@ -42,5 +42,13 @@
                "quotes" }
          { "KeyboardEscape-Latin1", "", "kbdescl1" }
          { "UnicodeName-UnicodeChar", "", "ucname" }
@@ -10,6 +10,7 @@
 +        { "Kanji-English", "", "kanjieng" }
 +        { "Kanji-OnRomaji", "", "kanjion" }
 +        { "Latin-Maltese", "Maltese-Latin", "lmaltese" }
++        { "HTMLEntities-Unicode", "Unicode-HTMLEntities", "htmlent" }
 +
      }
  }

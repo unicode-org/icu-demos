@@ -1,4 +1,4 @@
-RESFILESSRC=index.txt default.txt eo.txt mt.txt mt_MT.txt hi.txt hi_IN.txt
+RESFILESSRC=index.txt default.txt eo.txt mt.txt mt_MT.txt hi.txt hi_IN.txt id.txt
 RESFILES=$(RESFILESSRC:.txt=.res)
     
 srcdir=@srcdir@
@@ -32,7 +32,7 @@ all:
 data:  $(RESFILES) convrtrs.txt
 	ICU_DATA=$(ICUDATADIR) $(GENRB) translit/*.txt
 	ICU_DATA=$(ICUDATADIR) $(GENRB) -elatin3 translit/lmaltese.txt
-	ICU_DATA=$(ICUDATADIR) $(MAKECONV) *.ucm
+	ICU_DATA=$(ICUDATADIR) $(MAKECONV) *.ucm 
 	cp convrtrs.txt $(ICUDATADIR)
 	ICU_DATA=$(ICUDATADIR) $(sbindir)/gencnval convrtrs.txt
 
@@ -50,7 +50,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 install-patches: convrtrs.txt.orig $(PATCHEDFILES)
 
 install-rebuild: rebuildData.sh
-	@./rebuildData.sh $(ICUDATADIR)/usascii.cnv $(ICUDATADIR)/cnvalias.dat || echo "Hmm, problem re building data. Perhaps you didn't run fetchOriginalFiles.."
+	@./rebuildData.sh $(ICUDATADIR)/usascii.cnv $(ICUDATADIR)/ibm-954.cnv $(ICUDATADIR)/cnvalias.dat || echo "Hmm, problem re building data. Perhaps you didn't run fetchOriginalFiles.."
 
 clean:
 	-rm -rf *.res *.cnv translit/*.res $(PATCHEDFILES)

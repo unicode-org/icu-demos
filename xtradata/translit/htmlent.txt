@@ -1,0 +1,12 @@
+// -*- coding: latin-1; -*-
+// Copyright (c) 2000 International Business Machines
+//  Corporation and others. All rights reserved.
+// [try to] convert named HTML entities to unicode
+
+htmlent {
+ Rule {
+   "&quot';'<>\u0022;"
+   "&nbsp';'<>\u00A0;"
+   // Todo: other named entities
+ }
+}
