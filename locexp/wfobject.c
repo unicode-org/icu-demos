@@ -8,17 +8,12 @@
 #include "locexp.h"
 #include <stdlib.h>
 
-const char *ures_getTag(UResourceBundle *n)
-{
-    return ures_getKey(n);
-}
-
 void writeSubObject( LXContext *lx, UResourceBundle *n )
 {
   UErrorCode s2 = U_ZERO_ERROR;
   UResourceBundle *sub = NULL;
 
-  fprintf(lx->fOUT, "%s :", ures_getTag(n));
+  fprintf(lx->fOUT, "%s :", ures_getKey(n));
   if(ures_getSize(n) > 1) 
     fprintf(lx->fOUT, " [%d]", ures_getSize(n));
 
@@ -45,7 +40,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	}
       }
       break;
-    case RES_BINARY: fprintf(lx->fOUT, "<A HREF=\"./%s\">BINARY</A>", ures_getTag(n)); break;
+    case RES_BINARY: fprintf(lx->fOUT, "<A HREF=\"./%s\">BINARY</A>", ures_getKey(n)); break;
     case RES_TABLE: fprintf(lx->fOUT, "TABLE"); break;
     case RES_INT: fprintf(lx->fOUT, "INT=%d", ures_getInt(n, &s2)); break;
     case RES_ARRAY: fprintf(lx->fOUT, "ARRAY");
