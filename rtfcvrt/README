@@ -1,0 +1,33 @@
+Copyright (c) 2000 IBM, Inc. and others.
+
+Purpose:
+  - parses Microsoft(R) RTF format and outputs UTF-8 plain text.
+  
+
+Needs:
+  - sample parser from the RTF spec
+
+To use this sample:
+
+- download the microsoft RTF spec, it contains the source
+  code you need.
+
+    ftp://ftp.microsoft.com/Softlib/MSLFILES/GC0165.EXE
+
+  need the following files: rtfactn.c, rtfdecl.h, rtfreadr.c, rtftype.h
+
+- Install the patch:
+
+   patch < rtf.patch
+
+- Build & enjoy:
+
+   put a file "test.utf" in the current directory [one is supplied]
+   run "make check"
+   view "test_utf8.txt" with your favorite UTF-8 viewer.
+
+- To make a new version of the patchfile:
+  make a directory 'orig' and put the original files there
+  ( rtfactn.c, rtfdecl.h, rtfreadr.c, rtftype.h ) and then run:
+
+      make  make-diffs

@@ -1,0 +1,142 @@
+--- orig/rtfreadr.c	Mon Jun 12 18:56:37 2000
++++ rtfreadr.c	Mon Jun 12 19:19:22 2000
+@@ -5,4 +5,7 @@
+ #include "rtfdecl.h"
+ 
++int icu_fontcp[ICU_FONTCOUNT]; // fcharset# for each font
++int icu_cfont = 0; // current font
++
+ int cGroup;
+ bool fSkipDestIfUnk;
+@@ -31,4 +34,11 @@
+     int ec;
+ 
++    for(icu_cfont=0;icu_cfont<ICU_FONTCOUNT;icu_cfont++)
++      {
++        icu_fontcp[icu_cfont] = 0;
++      }
++    icu_cfont = 0;
++    // end ICU
++
+     fp = fpIn = fopen("test.rtf", "r");
+     if (!fp)
+@@ -38,8 +48,9 @@
+     }
+     if ((ec = ecRtfParse(fp)) != ecOK)
+-        printf("error %d parsing rtf\n", ec);
++      fprintf(stderr,"error %d parsing rtf\n", ec);
+     else
+-        printf("Parsed RTF file OK\n");
++      fprintf(stderr, "Parsed RTF file OK\n");
+     fclose(fp);
++    icu_flushit(1); // clean out any excess
+     return 0;
+ }
+@@ -99,4 +110,6 @@
+                     if (ris != risHex)
+                         return ecAssertion;
++//                    fprintf(stdout, "{{#%d:%d|%c}}",cNibble, b, ch);
++                    fflush(stdout);
+                     b = b << 4;
+                     if (isdigit(ch))
+@@ -107,17 +120,26 @@
+                         {
+                             if (ch < 'a' || ch > 'f')
++                            {
++                                putchar('%');
+                                 return ecInvalidHex;
+-                            b += (char) ch - 'a';
++                            }
++                            b += 0x0a + (char) ch - 'a';
+                         }
+                         else
+                         {
+                             if (ch < 'A' || ch > 'F')
++                            {
++                                putchar('%');
+                                 return ecInvalidHex;
+-                            b += (char) ch - 'A';
++                            }
++                            b += 0x0a + (char) ch - 'A';
+                         }
+                     }
+                     cNibble--;
++
+                     if (!cNibble)
+                     {
++//                        fprintf(stdout, "\n\n\n     {{ %02X }}\n\n\n",
++//                               (int)b);
+                         if ((ec = ecParseChar(b)) != ecOK)
+                             return ec;
+@@ -280,4 +302,5 @@
+     }
+ }
++
+ //
+ // %%Function: ecPrintChar
+@@ -290,5 +313,5 @@
+ {
+     // unfortunately, we don't do a whole lot here as far as layout goes...
+-    putchar(ch);
++    icu_putchar(ch, icu_fontcp[chp.font]);
+     return ecOK;
+ }
+--- orig/rtfactn.c	Mon Jun 12 18:56:47 2000
++++ rtfactn.c	Mon Jun 12 19:18:48 2000
+@@ -34,4 +34,5 @@
+     actnSpec,   propChp,    0,                          // ipropPlain
+     actnSpec,   propSep,    0,                          // ipropSectd
++    actnByte,   propChp,    offsetof(CHP, font),        // ipropFont
+ };
+ 
+@@ -45,4 +46,5 @@
+     "ri",       0,      fFalse,     kwdProp,    ipropRightInd,
+     "fi",       0,      fFalse,     kwdProp,    ipropFirstInd,
++    "f",        0,      fFalse,     kwdProp,    ipropFont,
+     "cols",     1,      fFalse,     kwdProp,    ipropCols,
+     "sbknone",  sbkNon, fTrue,      kwdProp,    ipropSbk,
+@@ -215,4 +217,13 @@
+ 
+     // search for szKeyword in rgsymRtf
++/*    fprintf(stderr, "[%s,%d,%c]", szKeyword, param, (fParam?'Y':'N')); */
++         if(!strcmp("f", szKeyword)) {
++           icu_cfont = param;
++         } else if ( !strcmp("fcharset", szKeyword)) {
++           icu_fontcp[icu_cfont] = param;
++           fprintf(stderr, "\\f%d == %d\n", icu_cfont, icu_fontcp[icu_cfont]);
++         } else if ( !strcmp("u", szKeyword)) { 
++           icu_putuchar( param ); /* unicode */
++         }
+ 
+     for (isym = 0; isym < isymMax; isym++)
+@@ -312,2 +323,3 @@
+     return ecOK;
+ }
++
+--- orig/rtfdecl.h	Mon Jun 12 18:56:02 2000
++++ rtfdecl.h	Mon Jun 12 19:19:09 2000
+@@ -42,2 +42,10 @@
+ #define ecAssertion         6       // Assertion failure
+ #define ecEndOfFile         7       // End of file reached while reading RTF
++
++// ICU
++#define ICU_FONTCOUNT 1024  // max fonts
++extern int icu_fontcp[ICU_FONTCOUNT];
++extern int icu_cfont;
++extern void icu_putchar(char ch, int cp);
++extern void icu_putuchar(int uchar);
++extern void icu_flushit(int final);
+--- orig/rtftype.h	Mon Jun 12 18:56:14 2000
++++ rtftype.h	Mon Jun 12 17:22:13 2000
+@@ -8,4 +8,5 @@
+     char fUnderline;
+     char fItalic;
++  int font;
+ } CHP;                  // CHaracter Properties
+ 
+@@ -64,4 +65,5 @@
+               ipropSbk, ipropPgnFormat, ipropFacingp, ipropLandscape,
+               ipropJust, ipropPard, ipropPlain, ipropSectd,
++              ipropFont,
+               ipropMax } IPROP;
+ 
