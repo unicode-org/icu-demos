@@ -39,6 +39,8 @@ void usage(const char *pname, const char *msg)
   fprintf(stderr, "\n\t-T codepage      \n\t\tSet the output codepage\n");
   fprintf(stderr, "\n\t-L locale        \n\t\tSet the locale to 'locale'\n");
   fprintf(stderr, "\n\t-1, -2, -3, -I   \n\t\tSet the collation strength to \n\t\tprimary, secondary, tertiary, or identical (respectively)\n");
+  fprintf(stderr, "\n\t-n               \n\t\tTurn the normalization on\n");
+  fprintf(stderr, "\n\t-t               \n\t\tTrim the trailing spaces from the strings\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "Locale sensitive sort, (c) 1999-2003 IBM, Inc. Uses ICU.\n");
   fprintf(stderr, "http://oss.software.ibm.com/icu/\n");
@@ -59,6 +61,8 @@ int main(int argc, const char *argv[])
   UBool useDecompose = FALSE, escapeMode = FALSE;
   USort      *list = NULL;
   UCollationStrength strength = UCOL_DEFAULT_STRENGTH;
+  UColAttributeValue normalizationMode = UCOL_OFF;
+  UBool trim = FALSE;
 
   fromCodepage = ucnv_getDefaultName();
 
@@ -117,6 +121,14 @@ int main(int argc, const char *argv[])
           verbose = 1;
           break;
 
+        case 'n':
+          normalizationMode = UCOL_ON;
+          break;
+
+        case 't':
+          trim = TRUE;
+          break;
+
 	    case 'L':
 	      i++;
 	      if(i<argc)
@@ -148,6 +160,8 @@ int main(int argc, const char *argv[])
 
 
   list = usort_open(locale, strength, TRUE, &status);
+  ucol_setAttribute(usort_getCollator(list), UCOL_NORMALIZATION_MODE, normalizationMode, &status);
+  list->trim = trim;
 
   if(U_FAILURE(status))
     {

@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include "unicode/usort.h"
+#include "uparse.h"
 
 #ifdef WIN32
 #include <stdlib.h>
@@ -198,6 +199,7 @@ usort_open(const char *locale, UCollationStrength strength, UBool ownText,
   n->ownsText = ownText;
   n->collator = ucol_open(locale, status);
   n->func = ucol_getSortKey;
+  n->trim = FALSE;
 
   if(U_FAILURE(*status)) /* Failed to open the collator. */
     {
@@ -236,6 +238,13 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
 
   if(len == -1)
     len = u_strlen(line);
+
+  /* remove trailing whitespace */
+  if(usort->trim) {
+    const UChar *startWS = u_strTrailingWhiteSpaceStart(line, len);
+    len = startWS - line;
+  }
+
   
   /* make sure the list has enough room */
   if(usort->count >= usort->size) /* also true the 1st time */

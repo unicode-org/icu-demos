@@ -112,6 +112,7 @@ typedef struct
   UBool     ownsText;     /* True of the lineList owns the chars. */
   UCollator *collator;     /* Collator for text. 0wned.  */
   SortKeyFunction *func;   /* Function producing sortkeys */
+  UBool     trim;
 } USort;
 
 /**
