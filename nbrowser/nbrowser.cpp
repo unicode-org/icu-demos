@@ -76,9 +76,9 @@ static const char *endString="";
 
 static const char *startForm=
     "<form method=\"GET\" action=\"%s\">\n"
-    "<p>Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes<br>"
+    "<p>Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes<br>\n"
     "<input size=\"80\" name=\"t\" value=\"%s\"><br>\n"
-    "or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)<br>"
+    "or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)<br>\n"
     "<input size=\"80\" name=\"s\" value=\"";
 
 static const char *endForm=
@@ -302,16 +302,18 @@ main(int argc, const char *argv[]) {
     const char *endInLastArg;
     int32_t inputLength, countArgs, options;
     UErrorCode errorCode;
-    const char *script;
+
+    const char *cgi, *script;
     UBool inputIsUTF8;
 
     script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
 
+    inputLength=options=0;
     inputIsUTF8=FALSE;
+    errorCode=U_ZERO_ERROR;
     if(argc>1) {
         /* get input from command line */
-        errorCode=U_ZERO_ERROR;
         inputLength=parseInput(argv+1, argc-1,
                                countArgs, endInLastArg,
                                buffer, sizeof(buffer),
@@ -329,15 +331,13 @@ main(int argc, const char *argv[]) {
         } else {
             options=0;
         }
-    } else {
-        /* get input from cgi variable */
-        const char *cgi=getenv("QUERY_STRING"); // "s=xxxx&op0=yyyy"
+    } else if((cgi=getenv("QUERY_STRING"))!=NULL) {
+        // get input from cgi variable, e.g. t=a\\u0308%EA%B0%81&s=0061+0308&op1=on
         const char *in;
 
         if((in=strstr(cgi, "t="))!=NULL) {
             inputIsUTF8=TRUE;
             in+=2; // skip "t="
-            errorCode=U_ZERO_ERROR;
             inputLength=parseEscaped(in, buffer, sizeof(buffer), errorCode);
             u_strFromUTF8(buffer16, LENGTHOF(buffer16), &inputLength,
                           buffer, inputLength,
@@ -352,7 +352,6 @@ main(int argc, const char *argv[]) {
             }
         } else if((in=strstr(cgi, "s="))!=NULL) {
             in+=2; // skip "s="
-            errorCode=U_ZERO_ERROR;
             inputLength=parseInput(&in, 1,
                                    countArgs, endInLastArg,
                                    buffer, sizeof(buffer),
