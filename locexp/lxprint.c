@@ -52,7 +52,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 	{
             u_fprintf(lx->OUT, "(%U %d - %s)", FSWF("UNKNOWN_ERROR", "unknown error"), (int) status,
                       u_errorName(status));
-            fprintf(stderr,"LRB: caught Unknown err- %d\n", status); 
+            fprintf(stderr,"LRB: caught Unknown err- %d %s\n", status, u_errorName(status)); 
 	}
     }
 
@@ -384,6 +384,11 @@ void printStatusTable(LXContext *lx)
         u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
                   lx->curLocaleName,
                   FSWF("sourceFile", "View Locale Source"));
+
+        u_fprintf(lx->OUT, " &nbsp; ");
+        u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/icu/xml/%s.xml\">%U</A>", 
+                  lx->curLocaleName,
+                  FSWF("LDMLsourceFile", "View LDML Source"));
 
         u_fprintf(lx->OUT, " &nbsp; ");
     }

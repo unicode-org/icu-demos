@@ -5,10 +5,10 @@
 
 /* Patterm string - "MMM yyyy" */
 static const UChar sShortPat [] = { 0x004D, 0x004D, 0x004D, 0x0020, 
-0x0079, 0x0079, 0x0079, 0x0079 };
+                                    0x0079, 0x0079, 0x0079, 0x0079, 0x0020, 'G', 0x0000 };
 /* Pattern string - "MMMM yyyy" */
 static const UChar sLongPat [] = { 0x004D, 0x004D, 0x004D, 0x004D, 0x0020, 
-0x0079, 0x0079, 0x0079, 0x0079 };
+                                   0x0079, 0x0079, 0x0079, 0x0079, 0x0020, 'G', 0x0000 };
 
 #define BUF_SIZE 1024
 
@@ -19,23 +19,29 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     int monthCount = 0;
     int fdow;
     
-    /*int32_t width, pad, i, day;
+    int32_t patience = 999; /* break if more than 999 days in a month */
+
+    int32_t width, pad, i, day, day1;
     int32_t lens [10];
     int32_t firstday, current;
-    UNumberFormat *nfmt;*/
+    UNumberFormat *nfmt;
     UDateFormat *dfmt;
+    UDate d;
     UChar s [BUF_SIZE];
     const int useLongNames = 1;
     const UChar *pat = (useLongNames ? sLongPat : sShortPat);
-    int32_t len = (useLongNames ? 9 : 8);
-    
+    int32_t len = -1;
+#define BUF_SIZ 500
+    UChar buf[BUF_SIZ];
     dayCount = ucal_getLimit(cal, UCAL_DAY_OF_WEEK, UCAL_MAXIMUM, &status);
     monthCount = ucal_getLimit(cal, UCAL_MONTH, UCAL_MAXIMUM, &status);
     
-    fdow = ucal_getAttribute(cal, UCAL_FIRST_DAY_OF_WEEK);
+    fdow = ucal_getAttribute(cal, UCAL_FIRST_DAY_OF_WEEK) - 1;
+    d = ucal_getMillis(cal, &status);
+    day1 = ucal_get(cal, UCAL_DATE, &status);
+
     
-    
-    u_fprintf(lx->OUT, "%d days, %d months<P>\r\n", dayCount, monthCount);
+    u_fprintf(lx->OUT, "%d days, %d months - fdow=%d<P>\r\n", dayCount, monthCount, fdow);
     
     /* Set up the day names */
     /* --get_days(days, useLongNames, fdow, status); --*/
@@ -45,15 +51,100 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     
     
     /* Open a formatter with a month and year only pattern */
-    dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,NULL,NULL,0,pat, len,&status);
+    dfmt = udat_open(UDAT_IGNORE,UDAT_IGNORE,lx->locale,NULL,0,pat, -1,&status);
     
-    udat_format(dfmt, ucal_getMillis(cal, &status), s, BUF_SIZE, 0, &status);
+    udat_format(dfmt, d, s, BUF_SIZE, 0, &status);
     
     u_fprintf(lx->OUT, "<table border=3><tr><td colspan=%d><h1>%U</h1></td></tr>\r\n",
         dayCount, s);
     
+    u_fprintf(lx->OUT, "<tr>");
+    for(i = 0; i < dayCount; i++) {
+      UChar aBuf[500];
+      int32_t len;
+      len = udat_getSymbols(dfmt, UDAT_SHORT_WEEKDAYS, 1+ ((i+fdow)%dayCount), aBuf, 499,&status);
+      if(len>0) {
+        UChar bBuf[500];
+        len = udat_getSymbols(dfmt, UDAT_WEEKDAYS, 1+ ((i+fdow)%dayCount), bBuf, 499,&status);
+        if(len > 0) {
+          u_fprintf(lx->OUT, "<td><a href=\"#\" title=\"%U\">%U</a></td>", bBuf, aBuf, i,(i+fdow)%dayCount);
+        } else {
+          u_fprintf(lx->OUT, "<td>%U</td>", aBuf, i,(i+fdow)%dayCount);
+        }
+      } else {
+        u_fprintf(lx->OUT, "<td><font color=\"red\">%d missing- %s</td>", ((i+fdow)%dayCount), u_errorName(status));
+      }
+    }
+    u_fprintf(lx->OUT, "</tr>\r\n");
+
+    if(U_FAILURE(status)) {
+      u_fprintf(lx->OUT, "</table>\r\n");
+      explainStatus(lx, status, "");
+      return;
+    }
     
+    /* -- now the days -- */
+
+    ucal_set(cal, UCAL_DATE,1);
+    firstday = ucal_get(cal, UCAL_DAY_OF_WEEK,&status);
+
+    firstday -= (fdow+1);
+    
+    nfmt = unum_open(UNUM_DECIMAL, NULL, 0, lx->locale, NULL, &status);
+
+    if(U_FAILURE(status)) {
+      u_fprintf(lx->OUT, "</table>\r\n");
+      explainStatus(lx, status, "");
+      return;
+    }
+    
+    current = firstday;
+    if(current < 0) {
+      current += dayCount;
+    }
+    for(i=0;i<current;++i) {
+      u_fprintf(lx->OUT, "<td bgcolor=\"#BBBBBB\"></td>");
+    }
+    day = ucal_get(cal, UCAL_DATE, &status);
+    do {
+      if(U_FAILURE(status) || !(--patience)) {
+        u_fprintf(lx->OUT, "</tr></table>\r\n");
+        explainStatus(lx, status, "");
+        return;
+      }
+
+      unum_format(nfmt, day, buf, BUF_SIZE,0,&status);
+      u_fprintf(lx->OUT, " <td %s>%U</td>",
+                (day==day1)?"bgcolor=\"00DDFF\"":"", /* current day */
+                buf);
+      
+      ++current;
+      current %= dayCount;
+      if(current == 0) {
+        u_fprintf(lx->OUT, "</tr>\r\n<tr>");
+      }
+
+      /* Go to the next day */
+      ucal_add(cal, UCAL_DATE, 1, &status);
+      day = ucal_get(cal, UCAL_DATE, &status);
+
+    } while(day != 1);
+    while(current++ < dayCount) {
+      u_fprintf(lx->OUT, "<td bgcolor=\"#dddddd\"></td>");
+    }
+    u_fprintf(lx->OUT,"</tr>\r\n");
+    
+    /* -- done -- */
+    
+
+    if(U_FAILURE(status)) {
+      u_fprintf(lx->OUT, "</table>\r\n");
+      explainStatus(lx, status, "");
+      return;
+    }
+
     u_fprintf(lx->OUT, "</table>\r\n");
+    /* set millis back? */
 }
 
 void fillFieldNames(const UChar** n)
@@ -83,15 +174,15 @@ void fillFieldNames(const UChar** n)
 void printCalMenuSection( LXContext *lx, const char *num, char type,
                           char thisType,const UChar *name)
 {
-    /* if(type==thisType) */  /* LEFT tab A */
-    {
-        u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"5%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aleft.gif\">");
-        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar=%c&NP_DBL=%s\">%U</A>", 
-                  lx->cLocale,
-                  thisType, num, name);
-        u_fprintf(lx->OUT, "<IMG WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aright.gif\"></TD>");
-
-    }
+  /* if(type==thisType) */  /* LEFT tab A */
+  {
+    u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"20%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aleft.gif\">");
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar=%c&NP_DBL=%s\">%U</A>", 
+              lx->curLocaleName,
+              thisType, num, name);
+    u_fprintf(lx->OUT, "<IMG ALIGN=RIGHT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aright.gif\"></TD>");
+    
+  }
 }
 
 void printCalMenuBar( LXContext *lx, const char *num, char type )
@@ -118,7 +209,7 @@ void printCalMenuBar( LXContext *lx, const char *num, char type )
     u_fprintf(lx->OUT, "<TD HEIGHT=4 WIDTH=\"3%%\">&nbsp</TD>");
     printCalMenuSection(lx, num, type,
                         'c', FSWF("calexp_calTab", "Calendar"));
-    u_fprintf(lx->OUT, "<TD HEIGHT=2 COLSPAN=3 WIDTH=100%%>D&nbsp;</TD></TR>");
+    u_fprintf(lx->OUT, "<TD HEIGHT=2 COLSPAN=3 WIDTH=100%%><!-- D -->&nbsp;</TD></TR>");
     u_fprintf(lx->OUT, "<TR><TD COLSPAN=10 HEIGHT=3 BACKGROUND=\"../_/tab_bot.gif\"></TD><FONT SIZE=4>&nbsp;</FONT></TR></TABLE>\r\n");
 }
 
@@ -145,7 +236,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
         type = *(tmp + strlen("EXPLORE_Calendar="));
     }
 
-    nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, NULL, &status);
+    nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, lx-> locale, NULL, &status);
     status = U_ZERO_ERROR; /* ? */
 
     if ((tmp = strstr(qs,"NP_DBL"))) /* Double: UDate format input ============= */
@@ -172,7 +263,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
 
     u_fprintf(lx->OUT, "[%D %T]<P>", now, now );
 
-    cal = ucal_open(lx->timeZone, -1, lx->cLocale, UCAL_TRADITIONAL, &status);
+    cal = ucal_open(lx->timeZone, -1, lx->locale, UCAL_TRADITIONAL, &status);
     ucal_setMillis(cal, now, &status);
 
     if(U_FAILURE(status))
@@ -184,16 +275,9 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
 
     status = U_ZERO_ERROR;
 
-    printCalMenuBar( lx, num, type );
+    /* printCalMenuBar( lx, num, type ); */
+    u_fprintf(lx->OUT, "<table border=0><tr><td>\r\n");
 
-    switch(type)
-    {
-    case 'c':
-      printCalendar( lx, cal );
-      break;
-        
-    case 'f':
-    default:
 
         /**************** calendar fields **********************/
     {
@@ -222,19 +306,16 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
             status = U_ZERO_ERROR;
             for(j=0;j<NR_ITEMS;j++)
             {
-                cal2 = ucal_open(lx->timeZone, -1, lx->cLocale, UCAL_TRADITIONAL, &status);
+                cal2 = ucal_open(lx->timeZone, -1, lx->locale, UCAL_TRADITIONAL, &status);
                 ucal_setMillis(cal2, now, &status);
                 if(U_SUCCESS(status))
                 {
-                    if(roll[j] == TRUE)
-                    {
-                        ucal_roll(cal2, (UCalendarDateFields)i, amt[j], &status);
-                    }
-                    else
-                    {
-                        ucal_set(cal2, (UCalendarDateFields)i,
-                                 ucal_get(cal2, (UCalendarDateFields)i, &status) + amt[j]);
-                    }
+                  if(roll[j]) {
+                    ucal_roll(cal2, (UCalendarDateFields)i, amt[j], &status);
+                  } else {
+                    ucal_set(cal2, (UCalendarDateFields)i,
+                             ucal_get(cal2, (UCalendarDateFields)i, &status) + amt[j]);
+                  }
                 }
         
                 /* Whew! */
@@ -244,7 +325,7 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
 
                     sprintf(num, "%f", ucal_getMillis(cal2, &status));
                     u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar&NP_DBL=%s\">",
-                              lx->cLocale,
+                              lx->curLocaleName,
                               num);
                     u_fprintf(lx->OUT, "%s", nam[j]);
                     u_fprintf(lx->OUT, "</A>");
@@ -280,8 +361,9 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
             u_fprintf(lx->OUT, "  <TR><TD COLSPAN=2>ERR: %s</TD></TR>\r\n",
                       u_errorName(status));
         }
+        
         u_fprintf(lx->OUT, "</TABLE>\r\n");
-
+        
         u_fprintf(lx->OUT, "<P><B>%U</B><BR>&lt; %U<BR>- %U<BR>+ %U<BR>&gt; %U<BR><P>\r\n",
                   FSWF("calexp_chg","Change buttons:"),
                   FSWF("calexp_chg_roll_decr", "Roll down"),
@@ -290,9 +372,13 @@ extern void showExploreCalendar( LXContext *lx, const char *qs)
                   FSWF("calexp_chg_roll_incr", "Roll up"));
 
     } /* end calendar table [f] */
-    break;
+    
+    u_fprintf(lx->OUT, "</td><td valign=top>\r\n");
 
-    } 
+    printCalendar( lx, cal );
+
+    u_fprintf(lx->OUT, "</tr></table>\r\n");
+
 }
 
 

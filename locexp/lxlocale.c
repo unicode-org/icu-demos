@@ -395,5 +395,7 @@ void setupLocaleTree(LXContext *lx)
 
         if(lx->curLocale)
             lx->parLocale = lx->curLocale->parent;
+        
+        lx->locale = loc;
     }
 }

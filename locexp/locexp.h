@@ -64,6 +64,7 @@ typedef struct
 
   /* ====== locale navigation ===== */
   MySortable      *curLocale;     /* Current locale */
+  const char *locale; /* user's locale */
   MySortable      *parLocale;     /* Parent locale of current */
   char             curLocaleName[128];
   UChar           newZone[300];          /* Timezone to set to */
