@@ -1,11 +1,92 @@
 /**********************************************************************
-*   Copyright (C) 1999-2002, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
 #include "locexp.h"
 
 /* routines having to do with the sort sample */
+void printRuleString(LXContext *lx, const UChar*s) 
+{
+  while(*s) {
+    switch(*s) {
+    case '&':  u_fprintf(lx->OUT, "&amp;"); break;
+    case '<': u_fprintf(lx->OUT, "&lt;"); break;
+    case '>': u_fprintf(lx->OUT, "&gt;"); break;
+    default: u_fputc(*s,lx->OUT);
+    }
+    s++;
+  }
+}
+
+/**
+ * Display a single 'word' (line of sorted text)
+ * @param lx the locale explorer context
+ * @param sort the USort object being displayed - or NULL.
+ * @param num the index into the USort. (ignored if sort == NULL)
+ * @param chars NULL terminated UChars to be output for this word
+ * @param evenOdd A counter 
+ */
+void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* chars)
+{
+  UBool lineAbove;  /* Show box above the current line? */
+  UBool lineBelow;  /* Show box below current line? */
+  static int32_t evenOdd = 0;
+
+  if(aSort == NULL) {
+    /* no USort */
+    lineAbove = FALSE;
+    lineBelow = FALSE;
+  } else {
+    /* calculate lineAbove */
+    if(num == 0) {  
+      lineAbove = TRUE; /* first item - always a line above */
+    } else if( aSort->lines[num-1].keySize == aSort->lines[num].keySize  &&
+               !memcmp(aSort->lines[num-1].key,
+                       aSort->lines[num].key,
+                       aSort->lines[num].keySize) ) {
+      /* item is identical to previous - no line above */
+      lineAbove = FALSE;
+    } else {
+      /* different than prev - line above. */
+      lineAbove = TRUE;
+    }
+
+    /* calculate lineBelow */
+    if(num == (aSort->count-1)) {
+      lineBelow = TRUE; /* last item - always line below */
+    } else if( aSort->lines[num+1].keySize == aSort->lines[num].keySize  &&
+               !memcmp(aSort->lines[num+1].key,
+                       aSort->lines[num].key,
+                       aSort->lines[num].keySize) ) {
+      /* item is identical to next - no line below */
+      lineBelow = FALSE;
+    } else {
+      /* different than next - line below. */
+      lineBelow = TRUE;
+    }
+  }
+
+
+
+#if 1
+  if(lineAbove) { u_fprintf(lx->OUT, "<div class=\"box%d\">\r\n", (evenOdd++)%2 ); }
+  u_fprintf(lx->OUT, "%U", chars);
+  if(lineBelow) { u_fprintf(lx->OUT, "\r\n</div>\r\n"); } else { u_fprintf(lx->OUT, "<br>\r\n"); }
+  /* CSS mode */
+#else
+  u_fprintf(lx->OUT, "%s%s%02d.%U%s%s<BR>\n",
+            ((lineBelow)?"<U>":""),
+            ((lineAbove)?"":"<font color=\"#AAAAAA\">"),
+            (aSort==NULL)?num:(int32_t)aSort->lines[num].userData,
+            chars,
+            ((lineAbove)?"":"</font>"),
+            ((lineBelow)?"</U>":"")
+            );
+
+#endif
+}
+
 
 const UChar *showSort_attributeName(UColAttribute attrib)
 {
@@ -71,24 +152,23 @@ void showSort_attrib(LXContext *lx, const char *locale, UCollator *ourCollator)
   }
   else
   {
-        UColAttributeValue val;
-        UColAttribute      attrib;
-        
-        u_fprintf(lx->OUT, "<H4>%U</H4><UL>\r\n", FSWF("usort_attrib", "Attributes"));
-        for(attrib=UCOL_FRENCH_COLLATION; attrib < UCOL_ATTRIBUTE_COUNT;
-            attrib++)
-          {
-            subStatus = U_ZERO_ERROR;
-            val = ucol_getAttribute(ourCollator,
-                                    attrib,
-                                    &subStatus);
-            u_fprintf(lx->OUT, "  <LI><b>%U</b>: %U\r\n",
-                      showSort_attributeName(attrib),
-                      showSort_attributeVal(val));
-          }
-        u_fprintf(lx->OUT, "</UL>\r\n");
-        ucol_close(newCollator);
-      }
+    UColAttributeValue val;
+    UColAttribute      attrib;
+    
+    u_fprintf(lx->OUT, "<H4>%U</H4><UL>\r\n", FSWF("usort_attrib", "Attributes"));
+    for(attrib=UCOL_FRENCH_COLLATION; attrib < UCOL_ATTRIBUTE_COUNT;
+        attrib++) {
+      subStatus = U_ZERO_ERROR;
+      val = ucol_getAttribute(ourCollator,
+                              attrib,
+                              &subStatus);
+      u_fprintf(lx->OUT, "  <LI><b>%U</b>: %U\r\n",
+                showSort_attributeName(attrib),
+                showSort_attributeVal(val));
+    }
+    u_fprintf(lx->OUT, "</UL>\r\n");
+    ucol_close(newCollator);
+  }
 }
   
 /**
@@ -107,15 +187,17 @@ void showSort_attrib(LXContext *lx, const char *locale, UCollator *ourCollator)
 void showSort(LXContext *lx, const char *locale, const char *b)
 {
   char   inputChars[SORTSIZE];
+  char   ruleUrlChars[SORTSIZE] = "";
   char *text;
   char *p;
   int32_t length;
   UChar  strChars[SORTSIZE];
+  UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
   int    i;
+  UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
 
   /* The 'g7' locales to demonstrate. Note that there eight.  */
-
-  UErrorCode status = U_ZERO_ERROR;
+  UErrorCode status = U_ZERO_ERROR;  
 
   /* For customization: */
   UColAttributeValue  customStrength = UCOL_DEFAULT;
@@ -123,6 +205,12 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   UCollator          *customCollator = NULL;
   UColAttributeValue  value;
   UColAttribute       attribute;
+
+  if(strstr(b, "lxCustSortOpts=")) {
+    lxCustSortOpts = TRUE;
+  }
+
+  u_fprintf(lx->OUT, "<style>\r\n<!--.box0 { border: 1px inset blue; margin: 1px }\r\n.box1 { border: 1px inset red; margin: 1px; background-color: #CCEECC } -->\r\n</style>\r\n");
 
   /* Mode switch.. */
   enum
@@ -132,14 +220,9 @@ void showSort(LXContext *lx, const char *locale, const char *b)
      */
     kG7Mode, 
     
-    /* 'classic' mode- original, default, pri+sec, sec only 
+    /* 'classic' mode- original, with customization
      */
     kSimpleMode,   
-    
-    /* Custom mode- user can choose any other options they wish. 
-     * denoted by 'cust=' in the URL. 
-     */
-    kCustomMode
   } mode = kSimpleMode;
 
   strChars[0] = 0;
@@ -147,10 +230,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   if(strstr(locale,"g7") != NULL)
   {
     mode = kG7Mode;
-  }
-  else if(strstr(b, "&cust=") != NULL)
-  {
-    mode = kCustomMode;
   }
 
   /* pull out the text to be sorted. Note, should be able to access this 
@@ -181,42 +260,111 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   {
     inputChars[0] = 0;  /* no text to process */
   }
+
+
+  /* look for custom rules */
+  ruleChars[0] = 0;
+  text = strstr(b, "usortRules=");
+
+  if(text) {
+    text += strlen("usortRules=");
+
+    unescapeAndDecodeQueryField_enc(ruleChars, SORTSIZE, 
+                                    text, lx->chosenEncoding);
+    p = strchr(text, '&');
+    if(p) { /* terminating ampersand */
+      length = p - text;
+    } else {
+      length = strlen(text);
+    }
+
+    if(length > (SORTSIZE-1)) {
+      length = SORTSIZE-1; /* safety ! */
+    }
+
+    strncpy(ruleUrlChars, text, length); /* make a copy for future use */
+    ruleUrlChars[length] = 0;
+  } else {
+    ruleChars[0] = 0;
+  }
   
   u_fprintf(lx->OUT, "%U<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted."));
+  
+  u_fprintf(lx->OUT, "<FORM>");
+  u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=_ VALUE=%s>", locale);
+  u_fprintf(lx->OUT, "<INPUT NAME=EXPLORE_CollationElements VALUE=\"%U\" TYPE=hidden>", strChars); 
+  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\">",
+            FSWF("EXPLORE_CollationElements_Defaults", "Defaults"));
+  u_fprintf(lx->OUT, "</FORM>\r\n ");
 
+  u_fprintf(lx->OUT, "<FORM>");
+  u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=_ VALUE=%s>", locale);
+  /*  u_fprintf(lx->OUT, "<INPUT NAME=EXPLORE_CollationElements VALUE=\"%U\" TYPE=hidden>", strChars); */
+  
   /* Here, 'configuration information' at the top of the page. ====== */
   switch(mode)
   {
     case kSimpleMode:
     {
-      showSort_attrib(lx, locale, NULL);
-       
-       u_fprintf(lx->OUT, "<A HREF=\"?_=%s&%s&cust=\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%U</A>\r\n<P>", locale, b, FSWF("usort_Custom","Customize..."));
-    }
-    break;
-
-    case kCustomMode:
-    {
       const char *ss;
       int nn;
       UErrorCode customError = U_ZERO_ERROR;
+      
+      if ( ruleChars[0] ) { /* custom rules */
+        UCollator *coll;
+        UParseError parseErr;
 
-      customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+        coll = ucol_openRules ( ruleChars, -1, 
+                                UCOL_DEFAULT, UCOL_DEFAULT, /* attr val, str */
+                                &parseErr,
+                                &customError);
+
+        customSort = usort_openWithCollator(coll, TRUE, &customError);
+        
+        if(U_FAILURE(customError) || !customSort) {
+          u_fprintf(lx->OUT, "<B>%U %s %s:</B>", 
+                    FSWF("showSort_cantOpenCustomConverter", "Could not open a custom usort/collator for the following locale and reason"), locale);
+          explainStatus(lx, customError, NULL); 
+          
+          u_fprintf(lx->OUT,"<br><table border=1><tr><td>%U (%s):</td></tr><tr>",
+                    FSWF("showSort_Context", "Error shown by this mark:"),
+                    "<font color=red><u>|</u></font>");
+
+          u_fprintf(lx->OUT, "<td><tt>");
+          printRuleString(lx, parseErr.preContext);
+          u_fprintf(lx->OUT, "<font color=red><u>|</u></font>");
+          printRuleString(lx, parseErr.postContext);
+          u_fprintf(lx->OUT, "</tt></tr></td></table><br>\r\n");
+          customError = U_ZERO_ERROR;
+          customSort = NULL;
+        }
+      } 
+
+      if(customSort == NULL) {
+        customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+      }
+
+#if 0
+          { 
+            int q;
+            for(q=0;ruleChars[q];q++) {
+              u_fprintf(lx->OUT, "&lt;U+%04x&gt;", ruleChars[q]);
+            }
+            u_fprintf(lx->OUT, "<br>");
+          }
+#endif
+
+
       if(U_FAILURE(customError))
       {
         u_fprintf(lx->OUT, "<B>%U %s :</B>", 
                   FSWF("showSort_cantOpenCustomConverter", "Could not open a custom usort/collator for the following locale and reason"), locale);
         explainStatus(lx, customError, NULL); 
-        return;
       } 
 
       customCollator = usort_getCollator(customSort);
+      /* for standard: see       showSort_attrib(lx, locale, NULL); */
 
-      u_fprintf(lx->OUT, "<FORM>");
-      u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=_ VALUE=%s>", locale);
-      u_fprintf(lx->OUT, "<INPUT NAME=EXPLORE_CollationElements VALUE=\"%U\" TYPE=hidden>", strChars);
-      u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=cust VALUE=>");
-      
       /* begin customizables */
       
       u_fprintf(lx->OUT, "<TABLE BORDER=0><TR><TD>");
@@ -229,14 +377,12 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       {
         value = UCOL_ON;
       } 
-#if 1 
-      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else
+      else if(lxCustSortOpts) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
-#endif
-      u_fprintf(lx->OUT, "<input type=checkbox %s name=fr> %U <BR>\r\n",
+
+      u_fprintf(lx->OUT, "<input type=hidden name=lxCustSortOpts value=> <input type=checkbox %s name=fr> %U <BR>\r\n",
                 (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -250,6 +396,9 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       if(strstr(b, "&shft="))
       {
         value = UCOL_SHIFTED;
+      } else  if(lxCustSortOpts) /* if we came from the form.. */
+      {
+        value = UCOL_NON_IGNORABLE;
       }
 
       u_fprintf(lx->OUT, "<input type=checkbox %s name=shft> %U <BR>\r\n",
@@ -299,13 +448,10 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       {
         value = UCOL_ON;
       } 
-#if 1 
-      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else
+      else if(lxCustSortOpts) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
-#endif
       u_fprintf(lx->OUT, "<input type=checkbox %s name=case> %U <BR>\r\n",
                 (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
@@ -322,13 +468,11 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       {
         value = UCOL_ON;
       } 
-#if 1 
       /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else
+      else if(lxCustSortOpts) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
-#endif
       u_fprintf(lx->OUT, "<input type=checkbox %s name=dcmp> %U <BR>\r\n",
                 (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
@@ -382,28 +526,58 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       {
         value = UCOL_ON;
       } 
-#if 1 
-      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else
+      else if(lxCustSortOpts) /* if we came from the form.. */
       {
         value = UCOL_OFF;
       }
-#endif
       u_fprintf(lx->OUT, "<input type=checkbox %s name=hira> %U <BR>\r\n",
                 (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
 
+    u_fprintf(lx->OUT, "</TD>");
 
-      /* end customizables ---------------------------------------------------------- */
-    u_fprintf(lx->OUT, "</TD><TD>");
-    showSort_attrib(lx, locale, customCollator);
-    u_fprintf(lx->OUT, "</TD></TR></TABLE>");
-
-      u_fprintf(lx->OUT, "<input type=submit value=Change></FORM>\r\n");
+    /* end customizables ---------------------------------------------------------- */
+    u_fprintf(lx->OUT, "<TD>\r\n");
+    u_fprintf(lx->OUT, "%U\r\n", FSWF("usortCustomRules","Custom Rules"));
+    {
+      UChar dispName[1024];
+      UErrorCode stat = U_ZERO_ERROR;
+      dispName[0] = 0;
+      uloc_getDisplayName(lx->curLocaleName, lx->cLocale, dispName, 1024, &stat);
       
-       u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_CollationElements=%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/opened.gif\" ALT=\"\">%U</A>\r\n<P>", locale, inputChars, FSWF("usort_CustomClose","Remove Customization"));
+      u_fprintf(lx->OUT, "<input type=submit name=\"usortRulesLocale\" value=\"%U %U %U\">",
+                FSWF("usortLocaleRules1", "Load rules for"),
+                dispName,
+                FSWF("usortLocaleRules2","") /* for translation */
+                );
+    }
+    u_fprintf(lx->OUT, "<br>\r\n");
+    u_fprintf(lx->OUT, "<textarea name=\"usortRules\" rows=5 cols=50 columns=50>");
+    
+    if(strstr(b,"usortRulesLocale=")) {
+      UErrorCode err = U_ZERO_ERROR;
+      UResourceBundle *bund, *array = NULL;
+      const UChar *s = 0;
+      int32_t len;
+
+      bund = getCurrentBundle(lx, &err);
+      if(bund) array = ures_getByKey(bund, "CollationElements", NULL, &err);
+      if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);
+      if(U_SUCCESS(err) && s && *s) {
+        printRuleString(lx,s);
+      } else { 
+        u_fprintf(lx->OUT, "err %s", u_errorName(err));
+      }
+    } else if (ruleUrlChars[0]) { /* user has entered a custom rule */
+      printRuleString(lx,ruleChars);
+    }
+    u_fprintf(lx->OUT, "</textarea>\r\n");
+    
+    u_fprintf(lx->OUT, "</TD>\r\n");
+    u_fprintf(lx->OUT, "</TR></TABLE>");
+
     }
 
 
@@ -421,19 +595,9 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     { 
      case  kSimpleMode:
      {
-       u_fprintf(lx->OUT, "<TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD>",
-                 FSWF("usortOriginal", "Original"),
-                 FSWF("usortTertiary", "Default"),
-                 FSWF("usortSecondary", "Primary & Secondary"),
-                 FSWF("usortPrimary", "Primary only"));
-     }
-     break;
-      
-     case kCustomMode:
-     {
        u_fprintf(lx->OUT, "<TD WIDTH=\"20%\"><B>%U</B></TD><TD WIDTH=\"20%\"><B>%U</B></TD>",
                  FSWF("usortOriginal", "Original"),
-                 FSWF("usortSorted", "Sorted"));
+                 FSWF("usortCollated", "Collated"));
      }
      break;
       
@@ -455,8 +619,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   u_fprintf(lx->OUT, "<TR><TD WIDTH=\"20%\">");
   
   /* the source box */
-  u_fprintf(lx->OUT, "<FORM ACTION=\"#EXPLORE_CollationElements\" METHOD=GET>\r\n");
-  u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"_\" VALUE=\"%s\">\r\n", locale);
   u_fprintf(lx->OUT, "<TEXTAREA ROWS=10 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
   
   writeEscaped(lx, strChars); 
@@ -465,12 +627,8 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   
   u_fprintf(lx->OUT, "</TEXTAREA><BR>\r\n");
   
-  if(mode != kCustomMode) /* for now ...  TODO fix: HIDE the Sort button inside custom. Why? It would remove
-                             all customization. */
-  {
-    u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM><P>\r\n",
-              FSWF("EXPLORE_CollationElements_Sort", "Sort"));
-  }
+  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\"><P>\r\n",
+            FSWF("EXPLORE_CollationElements_Sort", "Sort"));
 
   /* END source box */
   u_fprintf(lx->OUT, "</TD>\r\n");
@@ -492,14 +650,18 @@ void showSort(LXContext *lx, const char *locale, const char *b)
       case kSimpleMode:
       {
         /* Loop through each sort method */
-        for(n=0;n<4;n++) /* not 4 */
+        for(n=0;n<2;n++)
         {
-          USort *aSort;
+          USort *aSort = NULL;
           UErrorCode sortErr = U_ZERO_ERROR;
           UChar *first, *next;
           int32_t i, count=0;
           
-          aSort = usort_open(locale, sortTypes[n], TRUE, &sortErr);
+          aSort = customSort;
+          if(n>0 && !lxCustSortOpts) {
+            /* don't setstrength on 1st item (default) if custom options have been set */
+            ucol_setStrength(usort_getCollator(aSort), UCOL_DEFAULT);
+          }
           
           /* add lines from buffer */
           
@@ -509,129 +671,38 @@ void showSort(LXContext *lx, const char *locale, const char *b)
              output.. */
           first = in;
           next = first;
-          while(*next)
-          {
-            if(*next == 0x000A)
-            {
-              if(first != next)
-              {
+          while(*next) {
+            if(*next == 0x000A) {
+              if(first != next) {
                 usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
               }
               first = next+1;
             }
             next++;
           }
-                  
-          if(first != next) /* get the LAST line */
-          {
+          
+          if(first != next) { /* get the LAST line */
             usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
           }      
           
-          if(n != 0)
+          if(n != 0) {
             usort_sort(aSort); /* first item is 'original' */
-          
+          }
           
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
-          for(i=0;i<aSort->count;i++)
-          {
-            UBool doUnderline = TRUE;
-            
-            if( ((i+1)<aSort->count) &&
-                (aSort->lines[i].keySize == aSort->lines[i+1].keySize) &&
-                !memcmp(aSort->lines[i].key,
-                        aSort->lines[i+1].key,
-                        aSort->lines[i].keySize))
-            {
-              doUnderline = FALSE;
-            }
-            
-            u_fprintf(lx->OUT, "%s%02d.%U%s<BR>\n",
-                      (doUnderline?"<U>":""),
-                      (int32_t)aSort->lines[i].userData, aSort->lines[i].chars,
-                      (doUnderline?"</U>":"")
-                      );
+          for(i=0;i<aSort->count;i++) {
+            showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars);
           }
-          
+
           u_fprintf(lx->OUT, "</TD>");	  
           
-          usort_close(aSort);
+          usort_remove(aSort); /* clear out lines, prepare for next go round */
         }
+        usort_close(customSort);
       }
       break;
 
-      case kCustomMode: 
-      {
-          USort *aSort;
-          UChar *first, *next;
-          int32_t i, count=0;
-          
-          u_fprintf(lx->OUT, "<TD valign=top>");
-          
-          aSort = customSort; /* from above */
-        
-          /* add lines from buffer */
-          
-          /* For now, we pass TRUE to clone the text. Wasteful! But, 
-             it avoids having to modify the in text AND keep track of the
-             ptrs. Now if a usort could be cloned and resorted before
-             output.. */
-          first = in;
-          next = first;
-          while(*next)
-          {
-            if(*next == 0x000A)
-            {
-              if(first != next)
-              {
-                *next = 0; /* we are the only user of this text! */
-                          
-                usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
-                u_fprintf(lx->OUT, "%02d.%U<BR>\n",
-                          count, first);
-
-              }
-              first = next+1;
-            }
-            next++;
-          }
-          
-          if(first != next) /* get the LAST line */
-          {
-            usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
-          }      
-          
-          usort_sort(aSort);
-          
-          u_fprintf(lx->OUT, "</TD> <TD VALIGN=TOP>");
-          
-          for(i=0;i<aSort->count;i++)
-          {
-            UBool doUnderline = TRUE;
-            
-            if( ((i+1)<aSort->count) &&
-                (aSort->lines[i].keySize == aSort->lines[i+1].keySize) &&
-                !memcmp(aSort->lines[i].key,
-                        aSort->lines[i+1].key,
-                        aSort->lines[i].keySize))
-            {
-              doUnderline = FALSE;
-            }
-            
-            u_fprintf(lx->OUT, "%s%02d.%U%s<BR>\n",
-                      doUnderline?"<U>":"",
-                      (int32_t)aSort->lines[i].userData, aSort->lines[i].chars,
-                      doUnderline?"</U>":""
-                      );
-          }
-          
-          u_fprintf(lx->OUT, "</TD>");	  
-          
-          usort_close(aSort);
-
-      }
-      break;
-      
       case kG7Mode:
       {
         for(n=0;n<G7COUNT;n++)
@@ -673,24 +744,8 @@ void showSort(LXContext *lx, const char *locale, const char *b)
           
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
-          for(i=0;i<aSort->count;i++)
-          {
-            UBool doUnderline = TRUE;
-            
-            if( ((i+1)<aSort->count) &&
-                (aSort->lines[i].keySize == aSort->lines[i+1].keySize) &&
-                !memcmp(aSort->lines[i].key,
-                        aSort->lines[i+1].key,
-                        aSort->lines[i].keySize))
-            {
-              doUnderline = FALSE;
-            }
-            
-            u_fprintf(lx->OUT, "%s%02d.%U%s<BR>\n",
-                      doUnderline?"<U>":"",
-                      (int32_t)aSort->lines[i].userData, aSort->lines[i].chars,
-                      doUnderline?"</U>":""
-                      );
+          for(i=0;i<aSort->count;i++) {
+            showSort_outputWord(lx, aSort, i, aSort->lines[i].chars);
           }
           
           u_fprintf(lx->OUT, "</TD>");	  
@@ -702,11 +757,17 @@ void showSort(LXContext *lx, const char *locale, const char *b)
     }
   }
   u_fprintf(lx->OUT, "</TR></TABLE><P>");
+
+  u_fprintf(lx->OUT, "</form>\r\n");
   
   if(mode != kG7Mode)
     u_fprintf(lx->OUT, "<P><P>%U", FSWF("EXPLORE_CollationElements_strength", "You see four different columns as output. The first is the original text for comparison. The lines are numbered to show their original position. The remaining columns show sorting by different strengths (available as a parameter to the collation function). Groups of lines that sort precisely the same are separated by an underline. Since collation treats these lines as identical, lines in the same group could appear in any order (depending on the precise sorting algorithm used). "));
   
   u_fprintf(lx->OUT, "<P>\r\n");
+  u_fprintf(lx->OUT, "%U <a href=\"http://oss.software.ibm.com/icu/userguide/Collate_Intro.html\">%U</a><p>\r\n",
+            FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
+            FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));
+
   showExploreCloseButton(lx, locale, "CollationElements");
 }
 

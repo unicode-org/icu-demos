@@ -40,9 +40,10 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     d = ucal_getMillis(cal, &status);
     day1 = ucal_get(cal, UCAL_DATE, &status);
 
-    
+    #if 0
     u_fprintf(lx->OUT, "%d days, %d months - fdow=%d<P>\r\n", dayCount, monthCount, fdow);
-    
+    #endif
+
     /* Set up the day names */
     /* --get_days(days, useLongNames, fdow, status); --*/
     

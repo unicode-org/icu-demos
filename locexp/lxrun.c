@@ -356,3 +356,35 @@ void runLocaleExplorer(LXContext *lx)
     	displayLocaleExplorer(lx);
     }
 }
+
+UResourceBundle *getCurrentBundle(LXContext *lx, UErrorCode *status) 
+{
+  if(U_FAILURE(*status)) {
+    return NULL;
+  }
+
+  if(lx->curRB) {
+    return(lx->curRB); 
+  }
+
+  if((lx->locale == NULL)|| !*(lx->locale)) { /* illegal arg */ return NULL; }
+  lx->curRB = ures_open(NULL, lx->locale, status);
+
+  return lx->curRB;
+}
+
+UResourceBundle *getDisplayBundle(LXContext *lx, UErrorCode *status) 
+{
+  if(U_FAILURE(*status)) {
+    return NULL;
+  }
+
+  if(lx->defaultRB) {
+    return(lx->defaultRB); 
+  }
+
+  if(!*(lx->cLocale)) { /* illegal arg */ return NULL; }
+  lx->defaultRB = ures_open(NULL, lx->cLocale, status);
+  return lx->defaultRB;
+}
+

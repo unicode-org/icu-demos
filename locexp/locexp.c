@@ -112,6 +112,10 @@ void displayLocaleExplorer(LXContext *lx)
     } else if(strstr(querystring, "_=")) {
       u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
     }
+    if(lx->chosenEncoding && lx->chosenEncoding[0]) {
+      u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\">\r\n", lx->chosenEncoding);
+    }
+
     
     u_fprintf(lx->OUT, "%U", 
               FSWF ( /* NOEXTRACT */ "htmlHEAD",
@@ -514,7 +518,9 @@ void displayLocaleExplorer(LXContext *lx)
     
     if(lx->defaultRB)
         ures_close(lx->defaultRB);
-    
+
+    if(lx->curRB)
+        ures_close(lx->curRB);
     
     return;
 }

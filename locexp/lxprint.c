@@ -115,7 +115,7 @@ void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *loca
     if(!sampleString)
         sampleString = "";
 
-    u_fprintf(lx->OUT, "\r\n<FORM TARGET=\"_new\" NAME=EXPLORE_%s ACTION=\"#EXPLORE_%s\">"
+    u_fprintf(lx->OUT, "\r\n<FORM TARGET=\"_new\" NAME=EXPLORE_%s ACTION=\"EXPLORE_%s\">"
               "<INPUT TYPE=HIDDEN NAME=_ VALUE=\"%s\">"
               "<INPUT TYPE=HIDDEN NAME=\"EXPLORE_%s\" VALUE=\"",
               key, key,locale,key);

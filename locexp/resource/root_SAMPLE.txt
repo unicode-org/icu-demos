@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Fri May 30 09:39:48 PDT 2003 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Thu Jul 10 16:29:12 PDT 2003 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -29,9 +29,12 @@ root {
    DayAbbreviations  {  "Short Names"  }
    DayNames  {  "Long Names"  }
    EXPLORE_CollationElements  {  "Collation (sorting) Example"  }
+   EXPLORE_CollationElements_Defaults  {  "Defaults"  }
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
    EXPLORE_CollationElements_Sort  {  "Sort"  }
    EXPLORE_CollationElements_g7sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
+   EXPLORE_CollationElements_moreInfo1  {  "For more information, see the"  }
+   EXPLORE_CollationElements_moreInfo2  {  "ICU userguide"  }
    EXPLORE_CollationElements_strength  {  "You see four different columns as output. The first is the original text for comparison. The lines are numbered to show their original position. The remaining columns show sorting by different strengths (available as a parameter to the collation function). Groups of lines that sort precisely the same are separated by an underline. Since collation treats these lines as identical, lines in the same group could appear in any order (depending on the precise sorting algorithm used). "  }
    EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
    EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
@@ -42,6 +45,7 @@ root {
    EXPLORE_search_notfound  {  "Sorry, nothing was found."  }
    EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
    EXPLORE_search_searching  {  "Searching for <B>%U</B>..."  }
+   LDMLsourceFile  {  "View LDML Source"  }
    LocaleCodes  {  "Locale Codes"  }
    LocaleCodes_3  {  "3"  }
    LocaleCodes_Country  {  "Region"  }
@@ -216,6 +220,7 @@ root {
    rules  {  "Rules"  }
    set  {  "Set"  }
    showAll  {  "Show All"  }
+   showSort_Context  {  "Error shown by this mark:"  }
    showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
    sourceFile  {  "View Locale Source"  }
    statusTableHeader  {  "Your settings:"  }
@@ -227,15 +232,13 @@ root {
    translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
    transliterate_help  {  "Transliteration Help"  }
    ubrowse  {  "Browse Unicode in this codepage"  }
+   usortCollated  {  "Collated"  }
+   usortCustomRules  {  "Custom Rules"  }
+   usortLocaleRules1  {  "Load rules for"  }
+   usortLocaleRules2  {  ""  }
    usortOriginal  {  "Original"  }
-   usortPrimary  {  "Primary only"  }
-   usortSecondary  {  "Primary & Secondary"  }
-   usortSorted  {  "Sorted"  }
    usortSource  {  "Source"  }
-   usortTertiary  {  "Default"  }
    usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
-   usort_Custom  {  "Customize..."  }
-   usort_CustomClose  {  "Remove Customization"  }
    usort_attrib  {  "Attributes"  }
    warningExperimentalLocale  {  "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>"  }
    warningInheritedLocale  {  "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"  }

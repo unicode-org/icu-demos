@@ -58,7 +58,8 @@ typedef struct
   UBool setEncoding;            /* what is our state? What's setup? */
   UBool setLocale;
 
-  UResourceBundle *defaultRB;        /* RB in the selected locale  - CACHE*/
+  UResourceBundle *defaultRB;        /* RB in the display locale  - CACHE*/
+  UResourceBundle *curRB;            /* RB in the current locale */ 
 
   UBool  inDemo;       /* are we in a 'demo' page? If so, don't show encoding/ecc options */
 
@@ -222,6 +223,11 @@ extern void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, c
 
 extern void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char* qs);
 extern void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale, const char *key, const char* qs, double value, UNumberFormat *valueFmt);
+
+/* get bundle for current locale */
+extern UResourceBundle *getCurrentBundle(LXContext* lx, UErrorCode *status);
+/* get bundle for display locale */
+extern UResourceBundle *getDisplayBundle(LXContext* lx, UErrorCode *status);
 
 #endif
 
