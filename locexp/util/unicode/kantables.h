@@ -21,7 +21,7 @@ char kanTable[][4] =
 {
    { 0x00 },  /* 0c80 */
    { 0x00 },  /* 0c81 */
-   { 0x00 },  /* 0C82;KANNADA SIGN ANUSVARA;Mc;0;L;;;;;N;;;;; */
+   { 0x4D, 0x00 },  /* 0C82;KANNADA SIGN ANUSVARA;Mc;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0C83;KANNADA SIGN VISARGA;Mc;0;L;;;;;N;;;;; */
    { 0x00 },  /* XXXX */
    { 0x00 },  /* 0C85;KANNADA LETTER A;Lo;0;L;;;;;N;;;;; */
@@ -52,10 +52,10 @@ char kanTable[][4] =
    { 0x00 },  /* 0C9E;KANNADA LETTER NYA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0C9F;KANNADA LETTER TTA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CA0;KANNADA LETTER TTHA;Lo;0;L;;;;;N;;;;; */
-   { 0x00 },  /* 0CA1;KANNADA LETTER DDA;Lo;0;L;;;;;N;;;;; */
+   { 0x73, 0xDA, 0x00 },  /* 0CA1;KANNADA LETTER DDA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CA2;KANNADA LETTER DDHA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CA3;KANNADA LETTER NNA;Lo;0;L;;;;;N;;;;; */
-   { 0x00 },  /* 0CA4;KANNADA LETTER TA;Lo;0;L;;;;;N;;;;; */
+   { 0x7D, 0xDA, 0x00 },  /* 0CA4;KANNADA LETTER TA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CA5;KANNADA LETTER THA;Lo;0;L;;;;;N;;;;; */
    { 0xA5, 0xDA, 0x00 },  /* 0CA6;KANNADA LETTER DA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CA7;KANNADA LETTER DHA;Lo;0;L;;;;;N;;;;; */
@@ -64,10 +64,10 @@ char kanTable[][4] =
    { 0x00 },  /* 0CAA;KANNADA LETTER PA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CAB;KANNADA LETTER PHA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CAC;KANNADA LETTER BA;Lo;0;L;;;;;N;;;;; */
-   { 0x00 },  /* 0CAD;KANNADA LETTER BHA;Lo;0;L;;;;;N;;;;; */
+   { 0xBA, /* 0xDA, */ 0x00 },  /* 0CAD;KANNADA LETTER BHA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CAE;KANNADA LETTER MA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CAF;KANNADA LETTER YA;Lo;0;L;;;;;N;;;;; */
-   { 0x00 },  /* 0CB0;KANNADA LETTER RA;Lo;0;L;;;;;N;;;;; */
+   { 0xC1, 0xDA, 0x00 },  /* 0CB0;KANNADA LETTER RA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CB1;KANNADA LETTER RRA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CB2;KANNADA LETTER LA;Lo;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CB3;KANNADA LETTER LLA;Lo;0;L;;;;;N;;;;; */
@@ -81,8 +81,8 @@ char kanTable[][4] =
    { 0x00 },  /* XXXX */
    { 0x00 },  /* XXXX */
    { 0x00 },  /* XXXX */
-   { 0x00 },  /* 0CBE;KANNADA VOWEL SIGN AA;Mc;0;L;;;;;N;;;;; */
-   { 0xE6, 0x20, 0x00 },  /* 0CBF;KANNADA VOWEL SIGN I;Mn;0;NSM;;;;;N;;;;; */
+   { 0xDB, 0x00 },  /* 0CBE;KANNADA VOWEL SIGN AA;Mc;0;L;;;;;N;;;;; */
+   { 0xE6, 0x00 },  /* 0CBF;KANNADA VOWEL SIGN I;Mn;0;NSM;;;;;N;;;;; */
    { 0x00 },  /* 0CC0;KANNADA VOWEL SIGN II;Mc;0;L;0CBF 0CD5;;;;N;;;;; */
    { 0x00 },  /* 0CC1;KANNADA VOWEL SIGN U;Mc;0;L;;;;;N;;;;; */
    { 0x00 },  /* 0CC2;KANNADA VOWEL SIGN UU;Mc;0;L;;;;;N;;;;; */
