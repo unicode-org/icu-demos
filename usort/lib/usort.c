@@ -129,7 +129,7 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
     myTarget     = buf;
     arraySize    = kPrintBufSize;
   }
-  while(*status == U_INDEX_OUTOFBOUNDS_ERROR); 
+  while(*status == U_BUFFER_OVERFLOW_ERROR);
 
  finish:
 
@@ -380,7 +380,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
 				  /* last chunk so flush.. */
 	  
 	  /* OK let's break it down.. */
-	  if(status == U_INDEX_OUTOFBOUNDS_ERROR)
+	  if(status == U_BUFFER_OVERFLOW_ERROR)
 	    {
 	      UChar *newBuf;
 	      int32_t newSize = sizeof(UChar)*((outBufEnd-outBuf)*2);
