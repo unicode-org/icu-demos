@@ -1,3 +1,22 @@
+/*
+*******************************************************************************
+*                                                                             *
+* COPYRIGHT:                                                                  *
+*   (C) Copyright International Business Machines Corporation, 1999           *
+*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
+*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
+*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
+*                                                                             *
+*******************************************************************************
+*   file name:  unewdata.h
+*   encoding:   US-ASCII
+*   tab size:   8 (not used)
+*   indentation:4
+*
+*   created on: 1999oct25
+*   created by: Markus W. Scherer
+*/
+
 #ifndef __UNEWDATA_H__
 #define __UNEWDATA_H__
 

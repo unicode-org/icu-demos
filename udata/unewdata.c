@@ -1,8 +1,28 @@
+/*
+*******************************************************************************
+*                                                                             *
+* COPYRIGHT:                                                                  *
+*   (C) Copyright International Business Machines Corporation, 1999           *
+*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
+*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
+*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
+*                                                                             *
+*******************************************************************************
+*   file name:  unewdata.c
+*   encoding:   US-ASCII
+*   tab size:   8 (not used)
+*   indentation:4
+*
+*   created on: 1999oct25
+*   created by: Markus W. Scherer
+*/
+
 #include "stdio.h"
 #include "utypes.h"
 #include "ustring.h"
 #include "cmemory.h"
 #include "cstring.h"
+#include "uloc.h"
 #include "udata.h"
 #include "unewdata.h"
 
@@ -19,6 +39,8 @@ udata_create(const char *type, const char *name,
              UErrorCode *pErrorCode) {
     UNewDataMemory *pData;
     uint16_t headerSize, commentLength;
+    const char *path;
+    char filename[512];
     uint8_t bytes[16];
 
     if(pErrorCode==NULL || U_FAILURE(*pErrorCode)) {
@@ -36,21 +58,18 @@ udata_create(const char *type, const char *name,
     }
 
     /* open the output file */
+    path=uloc_getDataDirectory();
+    if(path!=NULL) {
+        icu_strcpy(filename, path);
+    } else {
+        filename[0]=0;
+    }
+    icu_strcat(filename, name);
     if(type!=NULL && *type!=0) {
-        char filename[512];
-
-	icu_strcpy(filename, uloc_getDataDirectory());
-        icu_strcat(filename, name);
         icu_strcat(filename, ".");
         icu_strcat(filename, type);
-        pData->file=fopen(filename, "wb");
-    } else {
-      char filename[512];
-      icu_strcpy(filename, uloc_getDataDirectory());
-      icu_strcat(filename, name);
-      pData->file=fopen(filename, "wb");
     }
-
+    pData->file=fopen(filename, "wb");
     if(pData->file==NULL) {
         icu_free(pData);
         *pErrorCode=U_FILE_ACCESS_ERROR;

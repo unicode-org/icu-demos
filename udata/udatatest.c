@@ -1,3 +1,22 @@
+/*
+*******************************************************************************
+*                                                                             *
+* COPYRIGHT:                                                                  *
+*   (C) Copyright International Business Machines Corporation, 1999           *
+*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
+*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
+*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
+*                                                                             *
+*******************************************************************************
+*   file name:  udatatest.c
+*   encoding:   US-ASCII
+*   tab size:   8 (not used)
+*   indentation:4
+*
+*   created on: 1999oct25
+*   created by: Markus W. Scherer
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,13 +31,11 @@ static void
 printName(uint32_t code) {
     UErrorCode errorCode=U_ZERO_ERROR;
     UTextOffset length=u_charName(code, U_UNICODE_CHAR_NAME, name, sizeof(name), &errorCode);
-    if(length>0) {
+    if(U_FAILURE(errorCode)) {
+        printf("U-%08x: %s\n", code, errorName(errorCode));
+    } else if(length>0) {
         printf("U-%08x: %s\n", code, name);
     }
-    if(U_FAILURE(errorCode))
-      {
-	printf("U-%08x: %s\n", code, errorName(errorCode));
-      }
 }
 
 extern int

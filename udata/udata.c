@@ -1,9 +1,27 @@
-#include "stdio.h"
+/*
+*******************************************************************************
+*                                                                             *
+* COPYRIGHT:                                                                  *
+*   (C) Copyright International Business Machines Corporation, 1999           *
+*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
+*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
+*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
+*                                                                             *
+*******************************************************************************
+*   file name:  udata.c
+*   encoding:   US-ASCII
+*   tab size:   8 (not used)
+*   indentation:4
+*
+*   created on: 1999oct25
+*   created by: Markus W. Scherer
+*/
+
 #include "utypes.h"
+#include "uloc.h"
 #include "cmemory.h"
 #include "cstring.h"
 #include "udata.h"
-#include <uloc.h>
 
 static UDataMemory *
 doOpenChoice(const char *type, const char *name,
@@ -39,9 +57,9 @@ udata_openChoice(const char *type, const char *name,
 
 /* platform-specific implementation ----------------------------------------- */
 
-#if 0 /* Win32 dll implementation */
-#elif 0 /* POSIX dll implementation */
-#elif WIN32 /* Win32 memory map implementation */
+#if defined(WIN32)
+#   if defined(UDATA_DLL) /* Win32 dll implementation */
+#   else /* Win32 memory map implementation */
 #include <windows.h>
 
 typedef struct {
@@ -82,10 +100,22 @@ doOpenChoice(const char *type, const char *name,
     pData->map=OpenFileMapping(FILE_MAP_READ, FALSE, buffer);
     if(pData->map==NULL) {
         /* the mapping has not been created */
+        char filename[512];
+        const char *path;
+        HANDLE file;
+
         /* open the input file */
-        HANDLE file=CreateFile(buffer+4, GENERIC_READ, FILE_SHARE_READ, NULL,
-                               OPEN_EXISTING,
-                               FILE_ATTRIBUTE_NORMAL|FILE_FLAG_RANDOM_ACCESS, NULL);
+        path=uloc_getDataDirectory();
+        if(path!=NULL) {
+            icu_strcpy(filename, path);
+            icu_strcat(filename, buffer+4);
+            path=filename;
+        } else {
+            path=buffer+4;
+        }
+        file=CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL,
+                        OPEN_EXISTING,
+                        FILE_ATTRIBUTE_NORMAL|FILE_FLAG_RANDOM_ACCESS, NULL);
         if(file==INVALID_HANDLE_VALUE) {
             icu_free(pData);
             *pErrorCode=U_FILE_ACCESS_ERROR;
@@ -172,9 +202,10 @@ udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
         }
     }
 }
-#elif defined (LINUX)||defined(POSIX)||defined(SOLARIS)||defined(AIX)||defined(HPUX) /* POSIX memory map implementation */
- 
-/* srl's mmap implementation */
+#   endif
+#elif defined (LINUX)||defined(POSIX)||defined(SOLARIS)||defined(AIX)||defined(HPUX)
+#   if defined(UDATA_DLL) /* POSIX dll implementation */
+#   else /* POSIX memory map implementation */
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -222,9 +253,9 @@ doOpenChoice(const char *type, const char *name,
 
     if(stat(buffer, &mystat))
       {
-	icu_free(pData);
-	*pErrorCode=U_FILE_ACCESS_ERROR;
-	return NULL;
+        icu_free(pData);
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
       }
 
     length = mystat.st_size;
@@ -233,24 +264,24 @@ doOpenChoice(const char *type, const char *name,
 
     if(fd == -1)
       {
-	icu_free(pData);
-	*pErrorCode=U_FILE_ACCESS_ERROR;
-	return NULL;
+        icu_free(pData);
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
       }
 
     data = mmap(0, length, PROT_READ, MAP_SHARED, fd, 0);
 
     if(data == MAP_FAILED)
       {
-	perror("mmap");
-	close(fd);
-	icu_free(pData);
-	*pErrorCode=U_FILE_ACCESS_ERROR;
-	return NULL;
+        perror("mmap");
+        close(fd);
+        icu_free(pData);
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
       }
 
     fprintf(stderr, "mmap of %s [%d bytes] succeeded, -> 0x%X\n",
-	    buffer, length, data); fflush(stderr);
+            buffer, length, data); fflush(stderr);
     
     close(fd); /* no longer needed */
 
@@ -288,7 +319,7 @@ U_CAPI void U_EXPORT2
 udata_close(UDataMemory *pData) {
     if(pData!=NULL) {
       if(munmap(pData->p, pData->length) == -1)
-	perror("munmap");
+        perror("munmap");
 
         icu_free(pData);
     }
@@ -318,9 +349,10 @@ udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
         }
     }
 }
- 
+#   endif 
+#else /* unknown platform - stdio fopen()/fread() implementation */
+#include <stdio.h>
 
-#else /* stdio fopen()/fread() implementation */
 struct UDataMemory {
     uint16_t headerSize;
     uint8_t magic1, magic2;
@@ -334,26 +366,22 @@ doOpenChoice(const char *type, const char *name,
     UDataMemory *pData;
     UDataInfo *info;
     long fileLength;
+    char filename[512];
     const char *dataDir;
     
-    dataDir = uloc_getDataDirectory();
-
     /* open the input file */
+    dataDir=uloc_getDataDirectory();
+    if(dataDir!=NULL) {
+        icu_strcpy(filename, dataDir);
+    } else {
+        filename[0]=0;
+    }
+    icu_strcat(filename, name);
     if(type!=NULL && *type!=0) {
-        char filename[512];
-
-	icu_strcpy(filename, dataDir);
-        icu_strcat(filename, name);
         icu_strcat(filename, ".");
         icu_strcat(filename, type);
-        file=fopen(filename, "rb");
-    } else {
-      char filename[512];
-      icu_strcpy(filename, dataDir);
-      icu_strcat(filename, name);
-      file=fopen(filename, "rb");
     }
-
+    file=fopen(filename, "rb");
     if(file==NULL) {
         *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;

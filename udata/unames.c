@@ -1,4 +1,13 @@
 /*
+*******************************************************************************
+*                                                                             *
+* COPYRIGHT:                                                                  *
+*   (C) Copyright International Business Machines Corporation, 1999           *
+*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
+*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
+*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
+*                                                                             *
+*******************************************************************************
 *   file name:  unames.c
 *   encoding:   US-ASCII
 *   tab size:   8 (not used)
@@ -17,6 +26,7 @@
 #include "utypes.h"
 #include "udata.h"
 #include "unames.h"
+#include "umutex.h"
 
 /* prototypes --------------------------------------------------------------- */
 
@@ -90,32 +100,35 @@ u_charName(uint32_t code, UCharNameChoice nameChoice,
         return 0;
     }
 
-    /* load UCharNames from file if necessary; mutex?! */
+    /* load UCharNames from file if necessary */
     if(uCharNames==NULL) {
-      UCharNames *names;
-      UDataMemory *data;
-      data =udata_openChoice(DATA_TYPE, DATA_NAME, isAcceptable, NULL, pErrorCode);
-      if(U_FAILURE(*pErrorCode)) {
-	return 0;
-      }
-      
-      names=(UCharNames *)udata_getMemory(data);
-      
-      {
-	umtx_lock(NULL);
-	if(uCharNames == NULL) {
-	  uCharNames = names;
-	  uCharNamesData = data;
-	  data = NULL;
-	  names = NULL;
-	}
-	umtx_unlock(NULL);
-      }
+        UCharNames *names;
+        UDataMemory *data;
 
-      if(data != NULL) {
-	udata_close(data); /* NULL if it was set correctly */
-      }
+        /* open the data outside the mutex block */
+        data=udata_openChoice(DATA_TYPE, DATA_NAME, isAcceptable, NULL, pErrorCode);
+        if(U_FAILURE(*pErrorCode)) {
+            return 0;
+        }
 
+        names=(UCharNames *)udata_getMemory(data);
+
+        /* in the mutex block, set the data for this process */
+        {
+            umtx_lock(NULL);
+            if(uCharNames==NULL) {
+                uCharNames=names;
+                uCharNamesData=data;
+                data=NULL;
+                names=NULL;
+            }
+            umtx_unlock(NULL);
+        }
+
+        /* if a different thread set it first, then close the extra data */
+        if(data!=NULL) {
+            udata_close(data); /* NULL if it was set correctly */
+        }
     }
 
     /* try algorithmic names first */
