@@ -184,3 +184,22 @@ function ciSort(a, b) {
     var lb = b.toLowerCase();
     return (la > lb) ? 1 : ((la < lb) ? -1 : 0);
 }
+
+/**
+ * Return true if the given array contains the given string.
+ * If ignoreCase is true, then ignore case.
+ */
+function arrayContainsString(a, s, ignoreCase) {
+    var i;
+    if (ignoreCase) {
+        s = s.toLowerCase();
+        for (i=0; i<a.length; ++i) {
+            if (s == a[i].toLowerCase()) return true;
+        }
+    } else {
+        for (i=0; i<a.length; ++i) {
+            if (s == a[i]) return true;
+        }
+    }
+    return false;
+}

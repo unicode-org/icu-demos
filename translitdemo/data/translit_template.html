@@ -97,7 +97,6 @@ function generateSelectIDOptions(i) {
 </font>
 
 <script>
-
 // Set things up for form submission.  This is invoked
 // by either the Transliterate button or by the SELECT id elements.
 // The argument is either 1 or 2 for the SELECT id elements,
@@ -195,55 +194,13 @@ function handleInsertSamples() {
 // Handler for Edit Rules button
 function handleEditRules() {
   _getEditor().focus();
-  //document.FORM.IS_EDITOR_OPEN.value = "1";
 }
 
 // Return the editor window
 function _getEditor() {
   return open("/cgi-bin/translit?TEMPLATE_FILE=data/translit_rule_edit.html",
               "_TRANSLIT_EDIT");
-              //"menubar,resizable,scrollbars");
 }
-
-//=// Handler that gets called by the rule editing window when the user
-//=// wants to submit the new rules
-//=function submitRules(ruleWindow) {
-//=  // The custom rule data consists of an ID and rule text.
-//=  // We'll copy these to our form, add an entry to the TRANSLITERATOR_ID_1
-//=  // and TRANSLITERATOR_ID_2 selectors, and select that item in both.
-//=  // TODO -- clean up this logic
-//=  var f = document.FORM;
-//=  var id = f.USER_RULE_ID.value = ruleWindow.FORM.ID.value;
-//=  f.USER_RULE.value = ruleWindow.FORM.RULES.value;
-//=
-//=  f.COMPOUND_ID_1.value = id;
-//=  f.TRANSLITERATOR_ID_1.selectedIndex = 0; // Compound
-//=
-//=  f.EDIT_MODE.value = "1"; // Flag that we have rules now
-//=
-//=  // Put a helpful message in the Output 1 text area
-//=  f.OUTPUT_1.value =
-//=    "(CustomRules transliterator loaded.  To see results, modify the " +
-//=    "compound ID, if desired, then press the Transliterate " +
-//=    "button.)"
-//=
-//=  // Clear the second output area
-//=  f.OUTPUT_2.value = "";
-//=
-//=  // If the second transliterator is "(Inverse)" then set it to Null,
-//=  // since we don't support inverses of the custom transliterator yet.
-//=  if (f.TRANSLITERATOR_ID_2.selectedIndex == 0) {
-//=    var o = f.TRANSLITERATOR_ID_2.options;
-//=    for (i=2; i<o.length; ++i) {
-//=      if (o[i].text == "Null") {
-//=        f.TRANSLITERATOR_ID_2.selectedIndex = i;
-//=        break;
-//=      }
-//=    }
-//=  }
-//=
-//=  window.focus();
-//=}
 </script>
 
 </body>

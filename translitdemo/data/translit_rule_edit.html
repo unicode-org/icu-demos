@@ -11,59 +11,86 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 <script src="../js/util.js"></script>
 
 <script>
-// Load user IDs from CGI
-USER_IDS = "$USER_IDS".split(";");
+NEW_ID = "(New Transliterator)";
+SEPARATOR = "--------";
+IS_NEW_ID = 0;
+
+// We can get these dynamically from the CGI, but it's too slow.  Also,
+// this allows us to eliminate ones we don't want, like
+// UnicodeName-UnicodeChar.
+
+AVAILABLE_RBT_IDS =
+"Latin-Arabic;Arabic-Latin;Latin-Cyrillic;Cyrillic-Latin;Latin-Devanagari;Devanagari-Latin;Latin-Greek;Greek-Latin;Latin-Hebrew;Hebrew-Latin;Latin-Jamo;Jamo-Latin;Latin-Kana;Kana-Latin;CurlyQuotes-StraightQuotes;StraightQuotes-CurlyQuotes;Fullwidth-Halfwidth;Halfwidth-Fullwidth;Hiragana-Katakana;Katakana-Hiragana;KeyboardEscape-Latin1".split(";");
+
+AVAILABLE_IDS = "Latin-Arabic;Arabic-Latin;Latin-Cyrillic;Cyrillic-Latin;Latin-Devanagari;Devanagari-Latin;Latin-Greek;Greek-Latin;Latin-Hangul;Hangul-Latin;Latin-Hebrew;Hebrew-Latin;Latin-Jamo;Jamo-Latin;Latin-Kana;Kana-Latin;Any-Lower;Any-Name;Name-Any;Any-Title;Any-Upper;Bengali-Devanagari;Devanagari-Bengali;Bengali-Gujarati;Gujarati-Bengali;Bengali-Gurmukhi;Gurmukhi-Bengali;Bengali-Kannada;Kannada-Bengali;Bengali-Malayalam;Malayalam-Bengali;Bengali-Oriya;Oriya-Bengali;Bengali-Tamil;Tamil-Bengali;Bengali-Telugu;Telugu-Bengali;CurlyQuotes-StraightQuotes;StraightQuotes-CurlyQuotes;Devanagari-Gujarati;Gujarati-Devanagari;Devanagari-Gurmukhi;Gurmukhi-Devanagari;Devanagari-Kannada;Kannada-Devanagari;Devanagari-Malayalam;Malayalam-Devanagari;Devanagari-Oriya;Oriya-Devanagari;Devanagari-Tamil;Tamil-Devanagari;Devanagari-Telugu;Telugu-Devanagari;Fullwidth-Halfwidth;Halfwidth-Fullwidth;Gujarati-Gurmukhi;Gurmukhi-Gujarati;Gujarati-Kannada;Kannada-Gujarati;Gujarati-Malayalam;Malayalam-Gujarati;Gujarati-Oriya;Oriya-Gujarati;Gujarati-Tamil;Tamil-Gujarati;Gujarati-Telugu;Telugu-Gujarati;Gurmukhi-Kannada;Kannada-Gurmukhi;Gurmukhi-Malayalam;Malayalam-Gurmukhi;Gurmukhi-Oriya;Oriya-Gurmukhi;Gurmukhi-Tamil;Tamil-Gurmukhi;Gurmukhi-Telugu;Telugu-Gurmukhi;Hangul-Jamo;Jamo-Hangul;Hex-Unicode;Unicode-Hex;Hiragana-Katakana;Katakana-Hiragana;Kannada-Malayalam;Malayalam-Kannada;Kannada-Oriya;Oriya-Kannada;Kannada-Tamil;Tamil-Kannada;Kannada-Telugu;Telugu-Kannada;KeyboardEscape-Latin1;Malayalam-Oriya;Oriya-Malayalam;Malayalam-Tamil;Tamil-Malayalam;Malayalam-Telugu;Telugu-Malayalam;Null;Oriya-Tamil;Tamil-Oriya;Oriya-Telugu;Telugu-Oriya;Remove;Tamil-Telugu;Telugu-Tamil;UnicodeName-UnicodeChar".split(";");
 
 // Generate options (inline) for SELECT element
 function generateSelectIDOptions() {
-  generateOptions(document.FORM.USER_IDS,
-                  document.FORM._SELECT_ID_SELECTION.value);
+  var selection = document.FORM._SELECT_ID_SELECTION.value;
+  //alert(document.FORM.ARG_OPERATION.value);
+  var options = USER_IDS;
+  if (document.FORM.ARG_OPERATION.value != "COMPILE" &&
+      document.FORM.ARG_OPERATION.value != "_LOAD") {
+    selection = NEW_ID;
+    options = [NEW_ID].concat(options);
+    IS_NEW_ID = 1;
+  }
+  options = options.concat([SEPARATOR]).concat(AVAILABLE_RBT_IDS);
+  generateOptions(options, selection);
 }
-
-// Handler to submit current window's rules.  We just delegate
-// everything to the parent.
-//|function submitRules() {
-//|  var w = window.opener;
-//|  if (!w.closed) {
-//|    w.submitRules(window);
-//|  }
-//|}
-
-//|// Rebuild the IDs selector
-//|function refreshIDs() {
-//|  var a = new Array();
-//|  for (id in IDS) {
-//|    a.push(id);
-//|  }
-//|  a.sort(ciSort);
-//|  setOptions(document.FORM.SELECT_ID, a);
-//|}
 
 function handleSave() {
   var id = getSelectedOption(document.FORM.SELECT_ID);
-  if (!id) {
+  if (id == SEPARATOR) return;
+  if (!id || id == NEW_ID) {
     handleSaveAs();
     return;
   }
   document.FORM.ARG_OPERATION.value = "COMPILE";
   document.FORM.ARG_ID.value = id;
-  document.FORM.ARG_RULES.value = document.FORM.USER_RULE.value;
+  document.FORM.ARG_RULES.value = document.FORM.RULE_SOURCE.value;
   document.FORM.submit();
 }
 
+function isAValidID(id) {
+  return id.match(/^[0-9A-Za-z]+$/) != null ||
+         id.match(/^[0-9A-Za-z]+-[0-9A-Za-z]+$/) != null;
+}
+
 function handleSaveAs() {
-  var id = prompt("Save this rule set as:", "");
-  if (id) id = trimSpaces(id, 1);
-  if (id) {
-    document.FORM.ARG_OPERATION.value = "COMPILE";
-    document.FORM.ARG_ID.value = id;
-    document.FORM.ARG_RULES.value = document.FORM.USER_RULE.value;
-    document.FORM.submit();
+  // Loop until user enters a valid ID or cancels
+  for (;;) {
+    var id = prompt("Save this rule set as:", "");
+    if (id == null) return;
+    id = trimSpaces(id, 1);
+    if (!isAValidID(id)) {
+      alert("Please supply an ID of the form AAA or AAA-AAA,\nwhere AAA is one or more alphanumeric characters.");
+      continue;
+    }
+    if (arrayContainsString(USER_IDS, id, 1)) {
+      if (confirm("Replace existing rule set " + id + "?")) {
+        break;
+      } else {
+        continue;
+      }
+    }
+    if (arrayContainsString(AVAILABLE_IDS, id, 1)) {
+      alert(id + " is a system transliterator.  Please choose a different ID.");
+      continue;
+    }
+    break; // Got a valid ID.
   }
+  document.FORM.ARG_OPERATION.value = "COMPILE";
+  document.FORM.ARG_ID.value = id;
+  document.FORM.ARG_RULES.value = document.FORM.RULE_SOURCE.value;
+  document.FORM._SELECT_ID_SELECTION.value = id;
+  document.FORM.submit();
 }
 
 function handleDelete() {
-  var id = getSelectedOption(document.FORM.LOAD_IDS);
+  var id = getSelectedOption(document.FORM.SELECT_ID);
+  if (id == SEPARATOR) return;
+  if (id == NEW_ID) return;
   if (confirm("Delete " + id + "?")) {
     document.FORM.ARG_OPERATION.value = "REMOVE";
     document.FORM.ARG_ID.value = id;
@@ -73,16 +100,14 @@ function handleDelete() {
 
 function handleSelectID() {
   var id = getSelectedOption(document.FORM.SELECT_ID);
+  if (id == SEPARATOR) return;
+  if (id == NEW_ID) return;
+  // _LOAD is not recognized by the cgi, but we use it
+  document.FORM.ARG_OPERATION.value = "_LOAD";
   document.FORM._SELECT_ID_SELECTION.value = id;
   document.FORM.ARG_ID.value = id;
   document.FORM.submit();
 }
-
-function returnToParent() {
-  alert("returnToParent()");
-}
-
-//|function setMode(m) { document.FORM.MODE.value = m; }
 </script>
 
 <body>
@@ -93,12 +118,16 @@ function returnToParent() {
 <form method="POST" action="/cgi-bin/translit" name="FORM">
 -->
 <form method="POST" action="/cgi-bin/translit" name="FORM">
-  <!-- MODE must be parsed before stdout -->
-  <input type="hidden" name="MODE" value="$MODE">
-  <input type="hidden" name="ARG_ID">
+  <input type="hidden" name="ARG_ID" value="$ARG_ID">
   <input type="hidden" name="ARG_RULES">
-  <input type="hidden" name="ARG_OPERATION">
+  <input type="hidden" name="ARG_OPERATION" value="$ARG_OPERATION">
   <input type="hidden" name="_SELECT_ID_SELECTION" value="$_SELECT_ID_SELECTION">
+  <script>
+    // Load dollarRESULT here to force dollarUSER_IDS to get updated.
+    // Expect dollarRESULT to have double quotes escaped.
+    RESULT="$RESULT";
+    USER_IDS="$USER_IDS".split(";");
+  </script>
   <table width="100%">
     <tr>
       <td width="10%">&nbsp;</td>
@@ -121,7 +150,7 @@ function returnToParent() {
           <input type="button" value="Save" onClick="handleSave()">
           </td>
           <td width="1%">
-          <input type="button" value="Save As..." onClick="hansleSaveAs()">
+          <input type="button" value="Save As..." onClick="handleSaveAs()">
           </td>
           <td width="1%">
           <input type="button" value="Delete" onClick="handleDelete()">
@@ -131,47 +160,21 @@ function returnToParent() {
       </td>
     </tr>
     <tr>
-      <td><textarea name="USER_RULE" rows="16" cols="20" class="wide">$USER_RULE</textarea></td>
+      <td><textarea name="RULE_SOURCE" rows="16" cols="20" class="wide">$RULE_SOURCE</textarea></td>
     </tr>
     <tr>
-      <td><b>$RESULT</b></td>
+      <td><b>
+        <script>document.write(RESULT);</script>
+      </b></td>
     </tr>
   </table>
 <input type="hidden" name="TEMPLATE_FILE" value="data/translit_rule_edit.html">
 </form>
 
 <script>
-//|// Load up custom rule IDs from the cookies.  Store these as
-//|// keys in the hash IDS.
-//|var ids = getCookieKeys();
-//|IDS = new Object();
-//|for (i=0; i<ids.length; ++i) {
-//|  IDS[ids[i]] = 1;
-//|}
-//|refreshIDs();
-//|
-//|// Must assign the keyPress handler like this; can't do it in the element
-//|//document.FORM.ID.onkeypress = trapEnter(save);
-//|
-//|// If this is an initial load, set up our start state
-//|var mode = document.FORM.MODE.value;
-//|if (mode == "") {
-//|  document.FORM.RULES.value = "# Enter rules here or load an existing set of rules by selecting from the list above";
-//|
-//|  // Populate our fields, if we have previous values.  This may
-//|  // overwrite RULES.
-//|  //|window.opener.retrieveRules(window);
-//|} else if (mode == "ERROR") {
-//|  // The rules on the page are in error
-//|  alert("There is a syntax error in the rules.  For details, see " +
-//|        "the error message on the page.");
-//|} else if (mode == "SAVED") {
-//|  // The rules on the page are good; return to the parent page
-//|  returnToParent();
-//|}
-//|
-//|// Always reset the MODE to BUILD
-//|//| document.FORM.MODE.value = "BUILD";
+if (IS_NEW_ID) {
+  document.FORM.RULE_SOURCE.value = "// Enter new rules here or select an existing rule above";
+}
 </script>
 
 </font>
