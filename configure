@@ -1087,7 +1087,7 @@ if test "$srcdir" = "."; then
   fi
 fi
 
-ac_config_files="$ac_config_files icuapps.mk Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile"
+ac_config_files="$ac_config_files icuapps.mk Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -1438,7 +1438,8 @@ do
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "test/testdata/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/testdata/Makefile" ;;
   "test/obstest/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/obstest/Makefile" ;;
-  *) { { echo "$as_me:1441: error: invalid argument: $ac_config_target" >&5
+  "idnbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES idnbrowser/Makefile" ;;
+  *) { { echo "$as_me:1442: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -1638,7 +1639,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:1641: creating $ac_file" >&5
+    { echo "$as_me:1642: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -1656,7 +1657,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:1659: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:1660: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -1669,7 +1670,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:1672: error: cannot find input file: $f" >&5
+           { { echo "$as_me:1673: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
