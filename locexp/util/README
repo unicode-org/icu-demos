@@ -1,0 +1,61 @@
+locale explorer utils readme
+----------------------------
+
+[Thu, Dec 9, 1999]
+
+ What can I say.  Anything that seemed too general to go into Locale
+Explorer (which itself needs a reorg) has ended up here.
+
+ The most popular exports from here are the callbacks and the FSWF
+mechanism.  Please post to our newsgroups or mailing lists if you look
+at these and find them useful.  Most of this grew out of internal demo
+work.
+
+   * Are these useful API's or new functionality?
+   * Are there bugs?
+   * Do you have any ideas for new functionality?
+   * How are you using these routines in your own programs?
+
+<icu4c@us.ibm.com>
+
+------------
+
+Here's kind of a laundry list of what you may or may not find
+contained herein::
+
+kangxi.h    - table of the KangXi radicals
+
+* the C API's that never were [yet]
+utimzone.h  - TimeZone       wrapper
+utrnslit.h  - Transliterator wrapper
+
+* C api additions
+ures_additions.h - a couple of functions on resource bundles, and one
+                   on number format
+
+* CALLBACKS
+collectcb.h   - remembers which characters failed conversion
+
+decompcb.h    - runs text through the Normalizer [as well as some
+                special tables] looking for better matches
+
+fontedcb.h    - switches HTML fonts to simulate a real rendering
+                pipeline. Includes [incomplete] shaping/rendering
+                for Syriac[Assyrian] and Devanagari[Hindi].
+          
+translitcb.h  - Runs text through the Transliterator, based on script.
+                Supports: Russian, Hebrew, Arabic, Devanagari, and Kana.
+
+
+* MISCELLANEOUS
+lx_utils.h   - a mishmash of:
+                    - sorting and traversal of the Locale tree
+                    - FSWF - works with extractStrings.sh to provide
+                            'mesage catalog' type 
+                    - URL/query field escaping and management
+
+
+* IMPLEMENTATION
+syrtables.h   - syriac implementation
+fonted_imp.h  - common file for 'fontedcb' modules
+devtables.h   - devanagari implementation

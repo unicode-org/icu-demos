@@ -1,0 +1,11 @@
+ So you want to translate locale explorer? Cool :)
+
+ Run the build process, and then snag yourself a copy of default.txt as
+it is produced. Rename it's filename to something (i.e. it.txt for
+italian) and rename 'default' to 'it' inside.
+
+ At this point, it's probably best if you could use any editor to
+write the text, but then email it to me [with the encoding you used to
+save a PLAIN text file]:  srl@monkey.sbay.org
+
+ Or write me and ask me how it's done.
