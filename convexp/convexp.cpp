@@ -318,7 +318,7 @@ static UBool isASCIIcompatible(UConverter *cnv) {
                    &source, source+sizeof(ascii),
                    NULL, TRUE, &status);
     ucnv_reset(cnv);
-    if (memcmp(expected, output, sizeof(expected)) == 0) {
+    if (U_SUCCESS(status) && memcmp(expected, output, sizeof(expected)) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -375,7 +375,7 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td class=\"value\">%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th>Is ASCII [\\x20-\\x7E] irregular?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\u0020-\\u007E] irregular?</th><td class=\"value\">%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
 
     ambiguousAlias = containsAmbiguousAliases();
     printf("<tr><th>Contains ambiguous aliases?</th><td class=\"value\">%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
@@ -552,13 +552,14 @@ main(int argc, const char *argv[]) {
     gMaxStandards = ucnv_countStandards();
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
+//    if((cgi="conv=utf-16be")!=NULL) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-1388&b=0e")!=NULL) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=windows-1256&b=")!=NULL) {
-//    if((cgi="conv=ibm-950&b=")!=NULL) {
+//    if((cgi="conv=ibm-950")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
