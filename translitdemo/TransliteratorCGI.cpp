@@ -1,3 +1,4 @@
+
 // Copyright (c) 2000-2001 IBM, Inc. and others.
 /**
  * The CGI interacts with the template file by filling in variables of
@@ -290,16 +291,9 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                     fprintf(out, "// Cannot create ");
                     util_fprintf(out, id);
                 } else {
-                    if (t->getDynamicClassID() ==
-                        RuleBasedTransliterator::getStaticClassID()) {
-                        ((RuleBasedTransliterator*)t)->toRules(rule, FALSE);
-                        util_fprintfq(out, rule);
-                    } else {
-                        fprintf(out, "// ");
-                        util_fprintf(out, id);
-                        fprintf(out, " is not a RuleBasedTransliterator");
-                    }
-                    delete t;
+		    t->toRules(rule, FALSE);
+		    util_fprintfq(out, rule);
+		    delete t;
                 }
             }
         }
