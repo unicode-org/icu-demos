@@ -4,6 +4,7 @@
 ***********************************************************************/
 #include "locexp.h"
 #include <unicode/ustdio.h>
+#include "unicode/putil.h"
 #include "unicode/unum.h"
 
 static void submitICIR(LXContext* lx);

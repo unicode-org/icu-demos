@@ -3,6 +3,7 @@
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
+#include <unicode/putil.h>
 #include <unicode/udata.h>
 
 /************************ fcns *************************/

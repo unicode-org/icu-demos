@@ -7,6 +7,7 @@
 #include "unicode/ustring.h"
 #include "unicode/uchar.h"
 #include "unicode/uniset.h"
+#include "unicode/putil.h"
 #include "cstring.h"
 #include "uparse.h"
 #include "ucdtest.h"

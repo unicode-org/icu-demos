@@ -8,6 +8,7 @@
 */
 
 #include <stdlib.h>
+#include "unicode/putil.h"
 #include "unicode/lx_utils.h"
 #include "unicode/ucnv_cb.h"
 

@@ -3,6 +3,7 @@
 /* Write an object out of the LX virtual path to stdout */
 
 #include "unicode/utypes.h"
+#include "unicode/putil.h"
 #include "unicode/ures.h"
 #include "unicode/ustdio.h"
 #include "locexp.h"

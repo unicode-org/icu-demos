@@ -9,6 +9,7 @@
 
 #include "unicode/uset.h"
 #include "unicode/ucurr.h"
+#include "unicode/putil.h"
 
 /* Move Along.. nothing to see here.. */ 
 U_CAPI UResourceBundle* U_EXPORT2 
