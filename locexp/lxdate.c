@@ -43,7 +43,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     exploreFetchNextPattern(lx,pattern, queryField(lx,"str"));
 
     df = udat_open(0,0,locale, NULL, -1, NULL, 0, &status);
-    udat_applyPattern(df, TRUE, pattern, -1);
+    udat_applyPattern(df, FALSE, pattern, -1);
 
     status = U_ZERO_ERROR;
   

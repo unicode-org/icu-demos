@@ -860,6 +860,10 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
         case kDateTimeExample:
             exampleStatus = U_ZERO_ERROR;
+#if 1
+            toShow = s;
+        /* don't localize the pattern */
+#else
             exampleDF = udat_open(UDAT_IGNORE,UDAT_IGNORE,locale,NULL, 0, s,-1,&exampleStatus);
             if(U_SUCCESS(exampleStatus))
             {
@@ -871,12 +875,16 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 unum_close(exampleDF);
                 exampleDF = NULL;
             }
+#endif
             break;
 
         case kNumberExample:
 
+#if 1
+            toShow= s;
+            /* don't localize */
+#else
             toShow = nothing;
-
             exampleNF = unum_open(0, s,-1,locale,NULL, &exampleStatus);
             if(U_SUCCESS(exampleStatus))
             {
@@ -888,6 +896,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 unum_close(exampleNF);
                 exampleNF = NULL;
             }
+#endif
             break;
         default:
             ;
@@ -971,8 +980,10 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 if(i < 8)
                 {
                     len = 0;
-
                     exampleDF = udat_open(UDAT_IGNORE, UDAT_IGNORE, locale,NULL, 0, s,-1,&exampleStatus);
+#if 1
+                    toShow = s;
+#else
                     if(U_SUCCESS(exampleStatus))
                     {
                         len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
@@ -982,6 +993,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                             toShow = tempChars;
                         }
                     }
+#endif
                 }
                 break;
                 
@@ -990,6 +1002,10 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                     d = 1234567890;
 
                 exampleNF = unum_open(0, s,-1,locale, NULL, &exampleStatus);
+#if 1
+            u_strcpy(tempChars,s);
+            toShow = tempChars;
+#else
                 if(U_SUCCESS(exampleStatus))
                 {
                     len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
@@ -998,6 +1014,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                         toShow = tempChars;
                     }
                 }
+#endif
                 break;
 
             default:
