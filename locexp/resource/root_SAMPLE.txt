@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Fri Nov  8 19:10:43 PST 2002 on akka
+// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../lxsort.c ../srchexp.c ../wfobject.c on Thu Apr 17 23:53:00 CEST 2003 on filfla
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -168,7 +168,7 @@ root {
    helpgif_opt  {  "BORDER=0"  }
    inherited  {  "(inherited)"  }
    inherited_from  {  "(inherited from %U)"  }
-   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."  }
+   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.  <p>ICU is an open-source project."  }
    localPatternChars0  {  "Era"  }
    localPatternChars1  {  "Year"  }
    localPatternChars10  {  "Day Of Year"  }
@@ -202,7 +202,7 @@ root {
    none  {  "None"  }
    off  {  "off"  }
    on  {  "on"  }
-   otherLanguageSameCountryLocales  {  "<B>%U</B> under other languages"  }
+   otherLanguageSameCountryLocales  {  "<b>%U</b> under other languages"  }
    poweredby  {  "Powered by"  }
    poweredby_filebug  {  "File a bug"  }
    rules  {  "Rules"  }
@@ -246,7 +246,7 @@ root {
 
 // From root_head.html (iso-8859-1)
    htmlHEAD {
-       "<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. ~srl -->\u000A<!-- Copyright (c) 2000-2002 IBM, Inc. and others .. -->\u000A</head>\u000A<body text=\u0022#000000\u0022 bgcolor=\u0022#FFFFFF\u0022 TOPMARGIN=\u00222\u0022 LEFTMARGIN=\u00222\u0022 MARGINWIDTH=\u00222\u0022 MARGINHEIGHT=\u00222\u0022>\u000A&nbsp;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu/\u0022>ICU</A> &gt;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu/demo/\u0022>Demo</A> &gt;\u000A<B>Locale Explorer</B><BR>\u000A<HR>\u000A"   }
+       "<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. ~srl -->\u000A<!-- Copyright (c) 2000-2002 IBM, Inc. and others .. -->\u000A</head>\u000A<body text=\u0022#000000\u0022 bgcolor=\u0022#FFFFFF\u0022 TOPMARGIN=\u00222\u0022 LEFTMARGIN=\u00222\u0022 MARGINWIDTH=\u00222\u0022 MARGINHEIGHT=\u00222\u0022>\u000A&nbsp;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu/\u0022>ICU</A> &gt;\u000A<A HREF=\u0022/icu/demo/\u0022>Demo</A> &gt;\u000A<B>Locale Explorer</B><BR>\u000A<HR>\u000A"   }
 
 
 // From root_tail.html (iso-8859-1)

@@ -227,7 +227,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     /* ..... */
     /* locale pattern chars */
     {
-	const UChar *charDescs[19];
+	const UChar *charDescs[22];
 
 	charDescs[0] = FSWF("localPatternChars0", "Era");
 	charDescs[1] = FSWF("localPatternChars1", "Year");
@@ -247,7 +247,9 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 	charDescs[15] = FSWF("localPatternChars15", "Hour 1");
 	charDescs[16] = FSWF("localPatternChars16", "Hour 0");
 	charDescs[17] = FSWF("localPatternChars17", "Timezone");
-	charDescs[18] = 0;
+    charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
+    charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
+    charDescs[20] = 0;
 	
 	showStringWithDescription(lx, myRB, locale, "SHOWlocalPatternChars", charDescs, "localPatternChars", FALSE);
     }
