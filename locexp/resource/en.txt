@@ -1,0 +1,20 @@
+en {
+   helpPrefix { "default_" } // needed to get English in the list of locales
+
+
+// ==  Keys  ==
+   ShortLanguage { "ISO 3166 3-letter Language Code" }
+   ShortCountry  { "ISO 3166 3-letter Country Code" }
+   LocaleID      { "Windows Locale ID" }
+   Version { "ICU Data Version" }
+   Languages { "Language display names" }
+   Countries { "Country display names" }
+   CollationElements { "Collation rules" }
+   localPatternChars { "Localized Date Pattern Chars" }
+   zoneStrings { "Time Zones" }
+   NumberPatterns { "Number Patterns" }
+   NumberElements { "Number Elements" }
+   DateTimePatterns { "Date & Time Patterns" }
+   AmPmMarkers { "AM & PM" }
+   CurrencyElements { "Currency Elements" }
+}

@@ -1,0 +1,91 @@
+<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. --srl -->
+<!-- Note: look for the 'IBM connected vs. non-connected version of the search tag. Also, replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->
+
+<style type="text/css">
+<!--
+.barTitles {  font-size: 9pt; font-weight: 700; letter-spacing: 1px; color: #FFFFFF; font-family: HELVETICA, HELV, ARIAL}
+-->
+</style>
+<style TYPE="text/css">
+    .input {background:#FFFFFF;color:#000000;font-weight:normal;}
+    .iconNames {font-weight:600;font-size:9pt;}
+    .iconBlurb {font-weight:400;font-size:8pt;}
+    .barTitles {font-weight:700;font-size:9pt;letter-spacing:1px;}
+    .boxCaption {font-weight:600;font-size:9pt;}
+    .boxBlurb {font-weight:400;font-size:8pt;}
+    .zoneSection {font-weight:600;font-size:10pt;}
+</style>
+<script LANGUAGE="JavaScript">
+<!--
+/* sitemap and content window creator [from alphaworks --srl] */
+function openNavWin(navURL) {
+	var navWin = null;
+	navWin = window.open(navURL , "lxWin" , "WIDTH=440 , HEIGHT=400 , toolbar=yes , location=no , status=yes , scrollbars=yes , resizable=yes , copyhistory=no");
+	if (navigator.appName == "Netscape") { navWin.focus()};
+}
+
+function openHelpWin(navURL, frag) {
+	var navWin = null;
+	if(navWin == null)
+		navWin = window.open(navURL , "helpWin" , "scrollbars=yes,toolbar=yes,WIDTH=440,HEIGHT=400,location=yes,copyhistory=no,alwaysRaised=yes");
+	if (navigator.appName == "Netscape") { navWin.focus()};
+	navWin.location.hash = frag;
+// Bug: wish the window would pop up on subsequent calls. Maybe it would be best to kill the window and re open it!
+}
+//	navWin = window.open(navURL , "lxWin" , "WIDTH=440 , HEIGHT=400 , toolbar=yes , location=yes , status=yes , scrollbars=yes , resizable=yes , copyhistory=no");
+
+function nav_pulldown(list) {top.document.location.href = list.options[list.selectedIndex].value;}
+function wB(){var br="BR";if((navigator.userAgent.indexOf('Mozilla')!= -1)&&((navigator.userAgent.indexOf('Spoofer')==-1)&&(navigator.userAgent.indexOf('compatible')==-1))){br="NS"}return br}
+function wV(br){var bv=0;bv=navigator.appVersion.substring(0,1);if(br=="IE"){(parseInt(bv));}if(br=="NS"){(parseInt(bv));}return bv;}
+function wP(){var os="OS";if(navigator.userAgent.indexOf("OS/2")!=-1){os='os/2'}return os;}b=wB();v=wV(b);o=wP();
+function change_bgColor() {if (b=="NS" && v==2 && o != "os/2"){document.bgColor="#999999"}}
+function gotosite() {var L = document.formSpinbox.pickWW.selectedIndex; location.href = document.formSpinbox.pickWW.options[L].value; return false;}
+// end the hiding comment --> 
+</script>
+<!-- <BODY ONLOAD="change_bgColor()" BGCOLOR="#FFFFFF" TEXT="#000000"> -->
+<!-- begin masthead table -->
+<!--#include virtual="/general/warning.inc" -->
+<!--#include virtual="/general/warning.inc" -->
+</head>
+<body text="#000000" bgcolor="#FFFFFF" TOPMARGIN="2" LEFTMARGIN="2" MARGINWIDTH="2" MARGINHEIGHT="2">
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT VALIGN=TOP WIDTH="451" BGCOLOR="#0033CC"><a href="http://www.ibm.com/"><img SRC="/developerworks/opensource/icu/project/ibm_logo.gif" ALT="IBM" BORDER=0 height=24 width=57></a><img SRC="/developerworks/opensource/icu/project/logo_sp.gif" ALT="" BORDER=0 height=24 width=394></td>
+
+<td ROWSPAN="2" WIDTH="49"><a href="http://www.ibm.com/shop/"><img SRC="/developerworks/opensource/icu/project/i_shopibm.gif" ALT="ShopIBM" BORDER=0 height=45 width=49></a></td>
+
+<td ROWSPAN="2" WIDTH="45"><a href="http://www.ibm.com/support/"><img SRC="/developerworks/opensource/icu/project/i_support.gif" ALT="Support" BORDER=0 height=45 width=45></a></td>
+
+<td ROWSPAN="2" WIDTH="54"><a href="http://www.ibm.com/download/"><img SRC="/developerworks/opensource/icu/project/i_download.gif" ALT="Download" BORDER=0 height=45 width=54></a></td>
+
+<td WIDTH="100%" BGCOLOR="#0033CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+
+<tr>
+<td ALIGN=LEFT WIDTH="451" BGCOLOR="#000000"><a href="http://www.ibm.com/"><img SRC="/developerworks/opensource/icu/project/n_home.gif" ALT="Home" BORDER=0 height=21 width=38></a><a href="http://www.ibm.com/news/"><img SRC="/developerworks/opensource/icu/project/n_news.gif" ALT="News" BORDER=0 height=21 width=34></a><a href="http://www.ibm.com/products/"><img SRC="/developerworks/opensource/icu/project/n_products.gif" ALT="Products" BORDER=0 height=21 width=52></a><a href="http://www.ibm.com/services/"><img SRC="/developerworks/opensource/icu/project/n_services.gif" ALT="services" BORDER=0 height=21 width=51></a><a href="http://www.ibm.com/solutions/"><img SRC="/developerworks/opensource/icu/project/n_solutions.gif" ALT="Solutions" BORDER=0 height=21 width=54></a><a href="http://www.ibm.com/ibm/"><img SRC="/developerworks/opensource/icu/project/n_about.gif" ALT="About IBM" BORDER=0 height=21 width=59></a><img SRC="/developerworks/opensource/icu/project/n_sp.gif" ALT="" BORDER=0 height=21 width=163></td>
+
+<td WIDTH="100%" BGCOLOR="#000000"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+</table>
+
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<caption><!-- borders of search area, left-top-right-->
+<br><!-- search area--></caption>
+
+<tr>
+<td ROWSPAN="2" WIDTH="1" BGCOLOR="#003366"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+
+<td BGCOLOR="#FFFFFF"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=598></td>
+
+<td ROWSPAN="2" WIDTH="1" BGCOLOR="#9999CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+
+
+<!-- <tr>
+<td COLSPAN="3" BGCOLOR="#9999CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+-->
+
+</table>
+

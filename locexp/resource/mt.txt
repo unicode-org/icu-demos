@@ -1,0 +1,31 @@
+// Maltese translation. By Steven R. Loomis
+
+mt { 
+   DefaultEncoding{  "utf-8"  }
+   myConverter{ "Kodi\u010Bi ta' ittra:" }
+   myLocale { "Na\u0127:" }
+   statusTableHeader  {  "G\u0127a\u017Ala:<BR><!-- Click to change -->"  }
+   help { "G\u0127en" }
+   helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
+
+   chooseLocale0 { "Il-lingwa u pajji\u017A tieg\u0127i '" }
+   chooseLocale1 { "' huwa." }
+   chooseLocale2 { "Jew, select below.. " } 
+
+
+   NumberElements3{ "Persenta\u0121\u0121" }
+
+   UNKNOWN_ERROR  {  "(\u017Aball mhux mag\u0127ref)"  }
+   USING_DEFAULT_ERROR  {  "(nuqqas)"  }
+   USING_FALLBACK_ERROR  {  "(wirt)"  } // Inherited
+
+   usortIdentical  {  "Identiku"  }
+   usortPrimary  {  "Primarju"  }
+   usortSecondary  {  "Sekondarju"  }
+   usortSort  {  "Sort"  }
+   usortTertiary  {  "Terxiarju"  } // ?
+
+
+}
+
+

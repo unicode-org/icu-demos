@@ -1,0 +1,513 @@
+<!--
+help for the DEFAULT locale, listrb [localeexplorer]
+
+ (c) 1999 IBM, Inc. All rights reserved.
+
+ TODO:
+  
+  - EXPLORE_date, EXPLORE_num..
+  - 'display' (the 'display problems' button)
+
+DEFAULT.head copied from lrb bundle src
+
+-->
+<HTML>
+<HEAD><TITLE>ICU Locale Explorer &gt; Help</TITLE>
+
+<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. --srl -->
+<!-- Note: look for the 'IBM connected vs. non-connected version of the search tag. Also, replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->
+
+<style type="text/css">
+<!--
+.barTitles {  font-size: 9pt; font-weight: 700; letter-spacing: 1px; color: #FFFFFF; font-family: HELVETICA, HELV, ARIAL}
+-->
+</style>
+<style TYPE="text/css">
+    .input {background:#FFFFFF;color:#000000;font-weight:normal;}
+    .iconNames {font-weight:600;font-size:9pt;}
+    .iconBlurb {font-weight:400;font-size:8pt;}
+    .barTitles {font-weight:700;font-size:9pt;letter-spacing:1px;}
+    .boxCaption {font-weight:600;font-size:9pt;}
+    .boxBlurb {font-weight:400;font-size:8pt;}
+    .zoneSection {font-weight:600;font-size:10pt;}
+</style>
+<script LANGUAGE="JavaScript">
+<!--
+/* sitemap and content window creator [from alphaworks --srl] */
+function openNavWin(navURL) {
+	var navWin = null;
+	navWin = window.open(navURL , "lxWin" , "WIDTH=440 , HEIGHT=400 , toolbar=yes , location=no , status=yes , scrollbars=yes , resizable=yes , copyhistory=no");
+	if (navigator.appName == "Netscape") { navWin.focus()};
+}
+
+function openHelpWin(navURL, frag) {
+	var navWin = null;
+	if(navWin == null)
+		navWin = window.open(navURL , "helpWin" , "scrollbars=yes,toolbar=yes,WIDTH=440,HEIGHT=400,location=yes,copyhistory=no,alwaysRaised=yes");
+	if (navigator.appName == "Netscape") { navWin.focus()};
+	navWin.location.hash = frag;
+// Bug: wish the window would pop up on subsequent calls. Maybe it would be best to kill the window and re open it!
+}
+//	navWin = window.open(navURL , "lxWin" , "WIDTH=440 , HEIGHT=400 , toolbar=yes , location=yes , status=yes , scrollbars=yes , resizable=yes , copyhistory=no");
+
+function nav_pulldown(list) {top.document.location.href = list.options[list.selectedIndex].value;}
+function wB(){var br="BR";if((navigator.userAgent.indexOf('Mozilla')!= -1)&&((navigator.userAgent.indexOf('Spoofer')==-1)&&(navigator.userAgent.indexOf('compatible')==-1))){br="NS"}return br}
+function wV(br){var bv=0;bv=navigator.appVersion.substring(0,1);if(br=="IE"){(parseInt(bv));}if(br=="NS"){(parseInt(bv));}return bv;}
+function wP(){var os="OS";if(navigator.userAgent.indexOf("OS/2")!=-1){os='os/2'}return os;}b=wB();v=wV(b);o=wP();
+function change_bgColor() {if (b=="NS" && v==2 && o != "os/2"){document.bgColor="#999999"}}
+function gotosite() {var L = document.formSpinbox.pickWW.selectedIndex; location.href = document.formSpinbox.pickWW.options[L].value; return false;}
+// end the hiding comment --> 
+</script>
+<!-- <BODY ONLOAD="change_bgColor()" BGCOLOR="#FFFFFF" TEXT="#000000"> -->
+<!-- begin masthead table -->
+<!--#include virtual="/general/warning.inc" -->
+<!--#include virtual="/general/warning.inc" -->
+</head>
+<body text="#000000" bgcolor="#FFFFFF" TOPMARGIN="2" LEFTMARGIN="2" MARGINWIDTH="2" MARGINHEIGHT="2">
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT VALIGN=TOP WIDTH="451" BGCOLOR="#0033CC"><a href="http://www.ibm.com/"><img SRC="/developerworks/opensource/icu/project/ibm_logo.gif" ALT="IBM" BORDER=0 height=24 width=57></a><img SRC="/developerworks/opensource/icu/project/logo_sp.gif" ALT="" BORDER=0 height=24 width=394></td>
+
+<td ROWSPAN="2" WIDTH="49"><a href="http://www.ibm.com/shop/"><img SRC="/developerworks/opensource/icu/project/i_shopibm.gif" ALT="ShopIBM" BORDER=0 height=45 width=49></a></td>
+
+<td ROWSPAN="2" WIDTH="45"><a href="http://www.ibm.com/support/"><img SRC="/developerworks/opensource/icu/project/i_support.gif" ALT="Support" BORDER=0 height=45 width=45></a></td>
+
+<td ROWSPAN="2" WIDTH="54"><a href="http://www.ibm.com/download/"><img SRC="/developerworks/opensource/icu/project/i_download.gif" ALT="Download" BORDER=0 height=45 width=54></a></td>
+
+<td WIDTH="100%" BGCOLOR="#0033CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+
+<tr>
+<td ALIGN=LEFT WIDTH="451" BGCOLOR="#000000"><a href="http://www.ibm.com/"><img SRC="/developerworks/opensource/icu/project/n_home.gif" ALT="Home" BORDER=0 height=21 width=38></a><a href="http://www.ibm.com/news/"><img SRC="/developerworks/opensource/icu/project/n_news.gif" ALT="News" BORDER=0 height=21 width=34></a><a href="http://www.ibm.com/products/"><img SRC="/developerworks/opensource/icu/project/n_products.gif" ALT="Products" BORDER=0 height=21 width=52></a><a href="http://www.ibm.com/services/"><img SRC="/developerworks/opensource/icu/project/n_services.gif" ALT="services" BORDER=0 height=21 width=51></a><a href="http://www.ibm.com/solutions/"><img SRC="/developerworks/opensource/icu/project/n_solutions.gif" ALT="Solutions" BORDER=0 height=21 width=54></a><a href="http://www.ibm.com/ibm/"><img SRC="/developerworks/opensource/icu/project/n_about.gif" ALT="About IBM" BORDER=0 height=21 width=59></a><img SRC="/developerworks/opensource/icu/project/n_sp.gif" ALT="" BORDER=0 height=21 width=163></td>
+
+<td WIDTH="100%" BGCOLOR="#000000"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+</table>
+
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<caption><!-- borders of search area, left-top-right-->
+<br><!-- search area--></caption>
+
+<tr>
+<td ROWSPAN="2" WIDTH="1" BGCOLOR="#003366"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+
+<td BGCOLOR="#FFFFFF"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=598></td>
+
+<td ROWSPAN="2" WIDTH="1" BGCOLOR="#9999CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+
+
+<!-- <tr>
+<td COLSPAN="3" BGCOLOR="#9999CC"><img SRC="/developerworks/opensource/icu/project/c.gif" ALT="" BORDER=0 height=1 width=1></td>
+</tr>
+-->
+
+</table>
+
+<H1>ICU Locale Explorer &gt; Help</H1>
+
+ If you see this message, it's likely that you're looking for a help topic that's not written yet.
+ You can go to <A HREF="news://news.software.ibm.com/ibm.software.unicode">news://news.software.ibm.com/ibm.software.unicode</A> to ask your
+ question.<P>
+
+Please send any comments or suggestions for improvement of this help file to <B>icu4c@us.ibm.com</B>
+<HR>
+
+<A NAME="display"><H2>Display Problems</H2></A>
+The output of this dynamic page is dependent on your browser settings, installed fonts, and which encoding you choose.  If text displays incorrectly, you may need to change the encoding at the bottom of each Locale Explorer page.
+
+<P>
+<H3>Display Q&A</H3>
+<UL>
+  <LI><B>Why do I see boxes or question-marks?</B></LI> 
+     <UL>
+       It may
+     be that you do not have the proper font selected, or the font you
+     have selected is missing some letters.  On Netscape, go into Edit
+     -> Preferences and select the Fonts sub panel.  On Microsoft Internet
+     Explorer, go into the Internet Options dialog and click on Fonts.
+       <P>
+       Also make sure the right <A HREF="#encoding">encoding</A> is selected.
+     </UL><P>
+     
+  <LI><B>No text, "Garbage" text, <A NAME="encoding">Wrong Encoding</A></B>
+      <UL>
+        An Encoding is the specific method used to transfer letters to
+      your browser.  Each encoding has a specific charset, or set of
+      characters which it understands how to handle.  UTF-8 is the
+      preferred encoding to use, as it can transfer directly any
+      Unicode value (and therefore, any text which the Locale Explorer
+      tries to show.)  However, if your browser does not understand
+      UTF-8 or does not have the appropriate fonts, you may choose
+      from among several other industry-standard encodings.  Be aware
+      that some encodings will not be able to encode specific
+      characters. If you try to view a Greek locale using the
+      iso-8859-1 (Latin-1, Western European) encoding, you will simply
+      see many \uXXXX letters <A HREF="#literals">(see below)</A>.   Check your browser
+      settings to see which encodings it supports.
+        <P>
+	The Locale Explorer will attempt to negotiate an encoding with
+      your browser, however you may force it to use a different
+      encoding by clicking on the name of the current encoding in the
+      'Your Settings' box, at the bottom of each Locale Explorer page.
+      </UL><P>
+  <LI><A NAME="literals"><B>I see '<U>\u1234</U>' instead of a letter.</B></A>
+      <UL>
+	 This is because the <A HREF="#encoding">encoding</A> you have
+      chosen does not support the unicode character selected. Since
+      the purpose of the Locale Explorer is educational, it displays
+      the Unicode value instead of a questionmark. Note that the Sort,
+      Numberformat, and Dateformat demos all accept the \uXXXX
+      notation in their input fields.  ("\u" was chosen because this
+      format is also used in ICU locale bundle files, and is a
+      standard feature of Java as well.)
+      </UL><P>
+  <LI><B>Text is 'backwards', letters are drawn incorrectly. (Non-Latin scripts)</B>
+     <UL>
+       Drawing of some scripts, such as Arabic, depends heavily on the
+       browser and OS having the correct fonts and drawing support.
+       As well, scripts which are written right-to-left (such as
+       Arabic or Hebrew) depend on the browser/OS to understand
+       drawing text in this direction.  The Locale Explorer does not
+       attempt to correct for these situations.
+      </UL><P>
+  <LI><B>How do I install fonts?</B>
+    <UL>
+      On the Macintosh, drag fonts into your System Folder icon and
+      restart your browser. On Windows, bring up the Fonts control panel.
+      On X Windows, use 'man mkfontdir' and 'man xset' for more
+      information.
+    </UL><P>
+  <LI><B>Why do I see accents following characters, such as
+      '<U>o"</U>', or accents following <U>\uXXXX</U> unicode
+      characters?</B>
+      <UL>
+         The Locale Explorer uses a module called the Decomposition
+      Callback when it cannot output a character in a specific
+      encoding. It attempts a 'Unicode canonical character
+      decomposition' to break accented and ligature characters apart,
+      and then looks for possible substitutions for the decomposed
+      forms.
+      <P>
+       As an example, set the Locale Explorer encoding to iso-8859-1
+       and view Hungarian. 'Monday' in Hungarian ends with an '<U>o with
+       double acute accent</U>'.  This is decomposed into '<U>o</U>' +
+       '<U>double-acute</U>'.   O can be output as just a normal o.
+       The double-acute is turned into a doublequote (<U>"</U>), which
+       is then output. So the result is '<U>o"</U>' which is certainly
+       more readable than an error character such as '<U>?</U>'.
+      <P>
+       For this reason, if your fonts are deficient, you may actually
+       get better results (in some cases) by choosing iso-8859-1 or
+       some other encoding, than utf-8.  
+
+      </UL><P>
+</UL>
+
+<HR>
+
+<!--
+    ** Not implemented at present **
+  
+ <A NAME="chooseLocale"><H2>Choosing a Locale</H2></A>
+ <UL>
+      On this screen, you need to tell the Locale Explorer what your
+     own preferences for locale (language and country) are.  The
+     Locale Explorer isn't just a browser for locale data, it is also
+     an internationalized application itself. 
+ </UL>
+ <HR>
+-->
+
+
+<A NAME="MISSING_RESOURCE_ERROR"><H2>(missing resource) - MISSING_RESOURCE_ERROR</H2></A>
+<UL>
+     The resource you asked for did not exist, nor could a suitable default be 
+     found.
+</UL>
+
+
+
+<HR>
+
+<!--
+     ** Handled by 'inherited' link **
+ <A NAME="USING_FALLBACK_ERROR"><H2>(fallback value) - USING_FALLBACK_ERROR</H2></A>
+ <UL>
+     The resource you asked for wasn't in the precise locale you requested, however
+    it was found in a 'parent' locale.  For example, the locale "French (Burkina Faso)"
+    may not specify the names for the days of the week, but the parent locale "French"
+    would.
+</UL>
+-->
+
+
+<!-- 
+      ** Handled by inherited link **
+  <HR>
+
+  <A NAME="USING_DEFAULT_ERROR"><H2>(default value) - USING_DEFAULT_ERROR</H2></A>
+  <UL>
+     The resource you asked for did not exist, however a resource was found in the 
+          default locale.  For example, German [de] does not specify a value for Am/Pm
+     markers, so the defaults are used.
+     </UL>
+
+     <HR>
+-->
+
+<A NAME="AmPmMarkers"><H2>AM & PM</H2></A>
+<UL>
+  Used in formatting/parsing Times.<P> 
+  Specify the strings to be used for 'am' vs. 'pm'. Ignored if am/pm
+  are not used in that locale.
+</UL>
+
+<HR><A NAME="CollationElements"><H2>Collation rulesx</H2></A><UL>  
+  Specifies the rules to be used for collating (comparing and sorting) 
+  text. The rules may be found in the ICU documentation for TableCollator.
+</UL>
+
+</UL>
+
+<HR><A NAME="Countries"><H2>Countries</H2></A><UL>  
+    Specifies the display name for the given country codes.
+    Used for converting a country code or the country portion of a
+    locale into a displayable name.
+</UL>
+
+<HR><A NAME="CurrencyElements"><H2>Currency Elements</H2></A><UL>  
+   These strings are used in parsing/formatting numbers which are designated as currency values.  <P>
+<LI><B>Currency Symbol</B><BR> This is used whenever a 'currency symbol' (\u00A4) is encountered in a currency number pattern.<P>
+<LI><B>Int'l Currency Symbol</B><BR>Three-letter international code for a currency. Used where a doubled currency symbol (\u00A4 \u00A4) is encountered in a number pattern.<P>
+<LI><B>Currency separator</B><BR>This is used as the decimal separator in
+currency formatting/parsing, instead of the DecimalSeparator from the <A HREF="#NumberElements">NumberElements</A> list.
+
+  </UL>
+
+<HR><A NAME="DateTimeElements"><H2>Date & Time Options</H2></A><UL>  
+<LI><B>First day of the week</B> A number indicating which day of the week is considered the 'first' day, for calendar purposes.  It is 1-based, with 1 being Sunday, 2 being Monday, .. 7 being Saturday.
+<LI><B>Minimal Days in First Week</B>  - Minimal days required in the first week of the year are; For
+      example, if the first week is defined as one that contains the first day of the
+      first month of a year, this value will be 1. If it must be a full week,
+      the value will be 7. <!-- from calendar.h -->
+  </UL>
+
+
+<HR><A NAME="DateTimePatterns"><H2>Date & Time Patterns</H2></A><UL> 
+          The first 8 items are different lengths of either date or time
+	  patterns.  See the <A HREF="#localPatternChars">localPatternChars</A> (in the locale) for the meanings of special characters.
+
+
+<P><LI><B> Quoting rules:</B> Single quotes, (<B>'</B>), enclose bits of the pattern that should be treated literally. Inside a quoted string, two single quotes ('') are replaced with a single one (').  For example: <TT><U>'class of '</U>YYYY<U>' at '</U>h<U>' o''clock'</U> </TT> -> <B>class of 1939 at 6 o'clock</B> (Literal strings <U>underlined</U>.)
+  </UL>
+
+
+<HR><A NAME="Day"><H2>Day</H2></A><UL>  
+This resource contains the full and short (abbreviated)  names of the days of the week, starting with Sunday.
+  </UL>
+
+
+<HR><A NAME="Eras"><H2>Eras</H2></A><UL>  Display strings for the eras. (2 for the default, Gregorian calendar: BC,AD.)
+  </UL>
+
+<HR><A NAME="Languages"><H2>Languages</H2></A><UL>  
+Display names for language codes. 
+ </UL>
+
+
+<HR><A NAME="LocaleID"><H2>Windows Locale ID</H2></A><UL> 
+   Hexadecimal Locale ID for this Locale as used by Microsoft Windows. See <A TARGET="unicode.org" HREF="http://www.unicode.org">www.unicode.org</A> for a description of these ID's.
+
+  </UL>
+
+<!-- Non existent
+
+<HR><A NAME="LocaleNamePatterns"><H2>LocaleNamePatterns</H2></A><UL>  
+MessageFormat string for displaying a Locale's name.  (NOT USED?)
+  </UL>
+-->
+
+<!--  Non existent
+
+<HR><A NAME="LocaleString"><H2>LocaleString</H2></A><UL> Same as Locale's name (NOT USED?)  </UL>
+
+-->
+
+<HR><A NAME="Month"><H2>Month</H2></A><UL>  Full and short (abbreviated) month names, starting with January  </UL>
+
+<HR><A NAME="NumberElements"><H2>Number Elements</H2></A><UL> 
+   Symbols used in number formatting and parsing. Used in <A HREF="#NumberPatterns">NumberPatterns</A>.<P>
+   <LI><B>Decimal Separator</B> - separates the integer and fractional part
+   of the number.
+   <LI><B>Grouping Separator</B> - groups (for example) units of thousands:  10^6 = 1,000,000. 
+
+
+  The grouping separator is commonly used for thousands, but in some
+  countries for ten-thousands. The interval is a constant number of
+  digits between the grouping characters, such as 100,000,000 or 1,0000,0000.
+  If you supply a pattern with multiple grouping characters, the interval
+  between the last one and the end of the integer is the one that is
+  used. So "#,##,###,####" == "######,####" == "##,####,####".
+
+   <LI><B>Pattern Separator</B> - sets the character used for separating variant expressions. (For example:   <U>0.00<B>;</B>(0.00)</U>  where the second pattern is the form to use for negative number)
+   <LI><B>Percent</B> - symbol used to indicate a percentage (1/100th) amount.  (If present, the value is also multiplied by 100 before formatting. That way 1.23 => 123%)
+
+   <LI><B>ZeroDigit</B> - Symbol used to indicate a digit in the pattern, or zero if that place would otherwise be empty. For example, with the digit of '0',  the pattern "000" would format "34" as "034", but the pattern "0" would format "34" as just "34". As well, the digits 1-9 are expected to follow the code point of this specified 0 value.
+
+   <LI><B>Digit</B> - Symbol used to indicate any digit value. If that digit is zero, then it is not shown.
+   <LI><B>Minus Sign</B> - Symbol used to denote negative value.
+   <LI><B>Exponential</B> - Symbol separating the mantissa and exponent values.
+   <LI><B>PerMill</B> - symbol used to indicate a per-mille (1/1000th) amount.  (If present, the value is also multiplied by 1000 before formatting. That way 1.23 => 1230 [1/000])
+   <LI><B>Infinity</B> - The infinity sign. Corresponds to the IEEE infinity bit pattern.
+   <LI><B>Not a number</B> - The NaN sign. Corresponds to the IEEE NaN bit pattern.
+  </UL>
+
+<HR><A NAME="NumberPatterns"><H2>Number Patterns</H2></A><UL>  
+Patterns for formatting different types of numbers. 
+Note that the <A HREF="#NumberElements">NumberElements</A> resource
+affects how these patterns are interpreted.
+
+
+<LI><B>Decimal</B>
+<LI><B>Currency</B>
+ Use \u00A4 where the local currency symbol should be.  Doubling the 
+ currency symbol (\u00A4\u00A4) will output the international currency
+ symbol (a 3-letter code).
+<LI><B>Percent</B>  Pattern for use with percentage formatting
+<LI><B>Scientific</B> Pattern for use with scientific (exponent) formatting.
+<P>
+<P><LI><B> Quoting rules:</B> Single quotes, (<B>'</B>), enclose bits of the pattern that should be treated literally. Inside a quoted string, two single quotes ('') are replaced with a single one (').  For example: <TT><U>'X '</U>#<U>' at '</U>h<U>' o''clock'</U> </TT> -> <B>class of 1939 at 6 o'clock</B> (Literal strings <U>underlined</U>.)
+ </UL>
+
+<HR><A NAME="LocaleCodes"><H2>Locale Codes</H2></A><UL>  
+2 and 3 letter ISO codes for the language and country, as well as the variant codes.
+ </UL>
+
+<HR><A NAME="Version"><H2>Version</H2></A><UL> 
+ Version of the ICU data files. </UL>
+
+<HR><A NAME="localPatternChars"><H2>Localized Date Pattern Chars</H2></A>
+<UL>
+These characters are replaced with the appropriate values when a date or time
+is being formatted.   <P>
+Characters may be used multiple times. For example, if y is used for the year, 'yy' might produce '99', whereas 'yyyy' produces '1999'.<P>
+ For most numerical 
+characters, the number of characters specifies the field width. For example, if h is the hour, 'h' might produce '5', but 'hh' produces '05'. For some characters, the count specifies whether an abbreviated or full form should be used.<P>
+<B>Note:</B> In the following list, the default (English) form is used as an example, but see the actual locale for the correct characters!
+<P>
+
+   <LI><TT>G</TT> Era - Replaced with the <A HREF="#Era">Era</A> string for the current date.
+   <LI><TT>y</TT> Year - Use two for the short year, or 4 for the full year
+   <LI><TT>M</TT> Month - Use one or two for the numerical month, three for the abbreviation, or four for the full name.
+   <LI><TT>d</TT> Date - Day of the month. Use one, or two for zero padding.
+   <LI><TT>k</TT> Hour of day 1  [Midnight appears as '24']
+   <LI><TT>H</TT> Hour of day 0  [0-23]
+   <LI><TT>m</TT> Minute - Use one or two
+   <LI><TT>s</TT> Second - use one or two
+   <LI><TT>S</TT> Millisecond - Use 1,2, or 3.. shows the MOST significant digits.
+   <LI><TT>E</TT> Day of week - Use three for the short day, or four for the full name.
+   <LI><TT>D</TT> Day of year - Use 1-3
+   <LI><TT>F</TT> Day of Week in Month-  use one.  This is 1 for the first day of the week, etc..
+   <LI><TT>w</TT> Week of Year - use 1 or 2.
+   <LI><TT>W</TT> Week of month - use 1
+   <LI><TT>a</TT> AM or PM
+   <LI><TT>h</TT> Hour 1 - Noon and Midnight show up as "12"
+   <LI><TT>K</TT> Hour 0 - [0-11]
+   <LI><TT>z</TT> Timezone. Use 3 for the short timezone (i.e. PST) or 4 for the full name (Pacific Standard Time).  If there's no name for the zone, it'll show up as GMT+/-hh:mm.  
+</UL>
+
+<HR><A NAME="zoneStrings"><H2>Time Zones</H2></A><UL>  Localized names for time zones. The columns are, in order:
+<LI>Canonical name for the time zone
+<LI>Display long name for the normal time zone
+<LI>Abbreviation for the normal time zone
+<LI>Display long name for the time zone on summer/daylight savings time
+<LI>Abbreviation for the time zone on summer/daylight savings time
+<LI>A city in the specified time zone.
+ </UL>
+
+
+<HR><A NAME="EXPLORE_CollationElements"><H2>Collation (sorting) Example</H2></A><UL> 
+
+ This example demonstrates how the ICU can sort text in a
+ locale-specific way.  Type some lines of text into the box provided,
+ and click sort. The text will be sorted according to the collation
+ rules of the specified locale. All four different strengths will be
+ tried, and the results are shown side by side.
+<P>
+ Note that you may type in unicode values directly.  For example,
+ typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
+ which is at Unicode code point U+0416.
+<P>
+ For more information, see the ICU Documentation and <A TARGET="unicode.org" HREF="http://www.unicode.org/unicode/reports/tr10/">Unicode Technical Report #10: Unicode Collation Algorithm</A>.
+</UL>
+
+<HR><A NAME="EXPLORE_NumberPatterns"><H2>Number Pattern Demo</H2></A><UL> 
+
+  In this example you can try creating localized patterns and
+  formatting numbers using those patterns. <P>
+
+  The top form shows the pattern you are working with. It is the same
+  kind of pattern as the pre-set patterns found in the <A
+  HREF="#NumberPatterns">NumberPatterns</A> resource. Also, see the <A
+  HREF="#NumberElements">NumberElements</A>  resource for important
+  information on the characters used in each pattern.
+<P>
+  The left hand side shows the number that will be formatted. You may
+  change this number (and click Change) to see it's effect on the
+  formatted number. 
+<P>
+  The right hand side shows the formatted number. You may also change
+  the formatted version of the number (and click Change) to see it
+  converted back onto the left hand side.
+<P>
+ Note that you may type in unicode values directly.  For example,
+ typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
+ which is at Unicode code point U+0416.
+
+</UL>
+
+<HR><A NAME="EXPLORE_DateTimePatterns"><H2>Date&Time Pattern Demo</H2></A><UL> 
+
+  In this example you can try creating localized patterns and
+  formatting dates using those patterns. <P>
+
+  The top form shows the pattern you are working with. It is the same
+  kind of pattern as the pre-set patterns found in the <A
+  HREF="#DateTimePatterns">DateTimePatterns</A> resource.  The
+  characters used in the pattern are the <A
+  HREF="#localPatternChars">localized pattern characters</A> for that
+  locale. They are reprinted at the bottom of the demo for your
+  convenience.
+
+<P>
+  Below the pattern is the current date/time (at left), and the
+  formatted version using your pattern (at right).
+<P>
+ Note that you may type in unicode values directly.  For example,
+ typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
+ which is at Unicode code point U+0416.
+
+</UL>
+
+
+<HR>
+<B>End of help</B>
+
+
+
+
+<!-- DEFAULT.htmlTAIL -->
+
+<!-- replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->
+
+<br>&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td COLSPAN="1" WIDTH="0%"><a href="http://www.ibm.com/Privacy/"><img SRC="/developerworks/opensource/icu/project/privacy.gif" ALT="Privacy" BORDER=0 height=19 width=53></a><a href="http://www.ibm.com/Legal/"><img SRC="/developerworks/opensource/icu/project/legal.gif" ALT="Legal" BORDER=0 height=19 width=41></a><a href="http://www.ibm.com/Contact/"><img SRC="/developerworks/opensource/icu/project/contact.gif" ALT="Contact" BORDER=0 height=19 width=56></a></TD><TD BGCOLOR WIDTH=100%><img SRC="/developerworks/opensource/icu/project/localeexplorer/foot-extra.gif" ALT="---" height=19 WIDTH="100%" ></td>
+</tr>
+</table>
+<!-- DEFAULT.htmlTAIL -->
+
+</BODY></HTML>
