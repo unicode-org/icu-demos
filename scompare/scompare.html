@@ -1,200 +1,269 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
-   "http://www.w3.org/TR/html4/frameset.dtd">
-   
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Unicode String Comparison</title>
-<meta http-equiv="Content-Language" content="en-us"> 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<style type="text/css">
-<!--
-.output      { background-color: #DDDDFF }
-input        { font-size: 120% }
-textarea        { font-size: 120%; font-family: sans-serif }
-th, td         { vertical-align:top }
--->
-</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="PICS-Label" content='(PICS-1.1 "http://www.icra.org/ratingsv02.html" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1) "http://www.rsac.org/ratingsv01.html" l gen true r (n 0 s 0 v 0 l 0) "http://www.classify.org/safesurf/" l gen true r (SS~~000 1))' />
+<link rel="schema.DC" href="http://purl.org/DC/elements/1.0/"/>
+<link rel="SHORTCUT ICON" href="http://www.ibm.com/favicon.ico"/>
+<meta name="Description" content="Unicode string comparison demonstration using the ICU Unicode support library"/>
+<meta name="IBM.Country" content="ZZ"/>
+<meta name="DC.Date" scheme="iso8601" content="2005-02-03"/>
+<meta name="Source" content="v14 Template Generator, Template 14.7"/>
+<meta name="DC.Type" scheme="IBM_ContentClassTaxonomy" content="ZZ999"/>
+<meta name="Abstract" content="Unicode string comparison demonstration using the ICU Unicode support library"/>
+<meta name="Keywords" content="unicode, ICU, string compare, software, C, C++, Java, globalization, library, IBM"/>
+<meta name="DC.Subject" scheme="IBM_SubjectTaxonomy" content="SW700"/>
+<meta name="DC.Language" scheme="rfc1766" content="en"/>
+<meta name="Security" content="Public"/>
+<meta name="IBM.Industry" scheme="IBM_IndustryTaxonomy" content="ZZ"/>
+<meta name="Robots" content="index,nofollow"/>
+<meta name="DC.Publisher" content="IBM Corporation"/>
+<meta name="IBM.Effective" scheme="W3CDTF" content="2005-01-38"/>
+<meta name="Owner" content="heninger@us.ibm.com"/>
+<meta name="DC.Rights" content="Copyright (c) 2005 by IBM Corporation"/>
 
-<script language="JavaScript" type="text/javascript">
-<!--
-var resultDoc = null;
-
-//
-//  Get a value that was returned from the server.
-//     Values come back as non-displayed strings that are children of <p>
-//     elements with id tags, allowing them to be directly
-//     accessed by name, using getElementById().
-//
-function getValue(id) {
-    var value = "";
-    var resultElem = resultDoc.getElementById(id);
-    if (resultElem && resultElem.hasChildNodes()) {
-        value = resultElem.firstChild.nodeValue;
-    }
-    return value.toString();
-}
-
-//
-//  Store a value into the visible (displayed) document.
-//      Each field intended to be updated is under an element
-//      (typically a <span> with an id, allowing it to be
-//      directly addressed.
-//
-function setField(destId, value) {
-    var el = document.getElementById(destId);
-    if (el) {
-        el.firstChild.nodeValue = value;
-    } else {
-        // alert("setField - can't get " + destId);
-    } 
-}
-
-//
-//  DoCompare()  Called in response to the user submitting the form.
-//
-function doCompare() {
-    var form=document.getElementById("ourForm");
-    form.target = "resultFrame";
-    setField("binary", "? ");  // Blank out all of the result fields until the server responds.
-    setField("case", "? ");
-    setField("equiv", "? ");
-    setField("eq_ca", "? ");
-    form.submit();
-    }
-
-
-//
-//  toHexStrings   Convert a string to a hex form, showing the a hex
-//                 representation of all characters in the input. 
-//                 Return the hexified string.  Input strin is unaltered.
-//
-var hexDigits = "0123456789ABCDEF";
-function toHexString(s) {
-    var hexStr  = "";
-    if (s==null) {
-       return hexStr;
-    }
-    for (var i=0; i<s.length; i++) {
-	 var cval = s.charCodeAt(i);
-         var b = 12;  // shift to access high digit of code point value.
-         var prefix = "\\u";
-         var trail=0;
-         if (cval>=0xd800 && cval<0xdc00 && i+1<s.length) {
-            trail = s.charCodeAt(i+1);
-            if (trail>=0xdc00 && trail<0xe000) {
-               // Surrogate Pair.
-               i++;
-               prefix = "\\U";
-               cval = ((cval&0x3ff)<<10) + (trail&0x3ff) + 0x10000;
-               b = 28;   
-            }
-         }
-         hexStr += prefix;
-	 for (; b>=0; b-=4) {
-	    var h = (cval >>> b)&0xf;
-	    hexStr += hexDigits.charAt(h);
-	}
-	hexStr+=" ";
-    }
-    return hexStr;
-}
-     
-//
-//  displayResults()  This function is called at onLoad of the cgi results
-//		      into the hidden frame.
-//
-function displayResults() {
-    // Get a reference to the document in the frame with the raw results returned from the CGI.
-    //   Browser dependent.
-    var resultFrame = document.getElementById("resultFrame");
-    resultDoc = resultFrame.contentDocument;
-    if (!resultDoc) {
-	// For IE only, a different way to get the document object from an iframe.
-	resultDoc = resultFrame.Document;
-	}
-    
-    //
-    //  Display the unescaped and hex-format strings.
-    //
-    setField("str1a", getValue("s1a"));
-    setField("str1b", getValue("s1b"));
-    setField("hex1a", toHexString(getValue("s1a")));
-    setField("hex1b", toHexString(getValue("s1b")));
-   
-    //
-    //  Stuff the compare results from the CGI into the displayed output.
-    //
-    var result = getValue("r1");
-    setField("binary", result.substr(0, 1));
-    setField("case", result.substr(1, 1));
-    setField("equiv", result.substr(2, 1));
-    setField("eq_ca", result.substr(3, 1));
-     }
-//     -->
+<title>IBM ICU Unicode string compare demo</title>
+<link rel="stylesheet" type="text/css" href="//www.ibm.com/common/v14/main.css" />
+<link rel="stylesheet" type="text/css" media="all" href="//www.ibm.com/common/v14/screen.css" />
+<link rel="stylesheet" type="text/css" media="screen,print" href="//www.ibm.com/common/v14/table.css" />
+<link rel="stylesheet" type="text/css" media="print" href="//www.ibm.com/common/v14/print.css" />
+<script src="//www.ibm.com/common/v14/detection.js" language="JavaScript" type="text/javascript">
 </script>
 
 </head>
 <body>
 
-<!-- The form for entering the strings to be compared. 
-	The cgi results are placed into a non-displaying iframe that
-	is declared at the end of this page.
-	A script function, triggered by the loading of the iframe,
-	transfers the results into the elements with id attributes d1, d2, etc.
-	appearing in this form.
-	-->
+<!-- MASTHEAD_BEGIN -->
+<table width="760" cellspacing="0" cellpadding="0" border="0">
+<tr valign="top">
+<td width="110" class="bbg"><a href="http://www.ibm.com/"><img width="110" src="//www.ibm.com/i/v14/t/ibm-logo.gif" height="52" border="0" alt="IBM®"/></a></td>
+<td width="650" class="mbbg" align="right">
+<table align="right" cellspacing="0" cellpadding="0" border="0">
+<tr class="cty-tou">
+<td class="upper-masthead-corner" width="17" rowspan="2"><a href="#main"><img alt="Skip to main content" height="1" width="1" border="0" src="//www.ibm.com/i/c.gif"/></a></td>
+<td align="left">
+<table align="left" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td><span class="spacer">&nbsp;&nbsp;&nbsp;&nbsp;</span><b class="country">Country/region</b><span class="spacer">&nbsp;[</span><a href="http://www.ibm.com/planetwide/select/selector.html" class="ur-link">select</a><span class="spacer">]</span></td>
+<td class="upper-masthead-divider" width="29">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td align="left"><a href="http://www.ibm.com/legal/" class="ur-link">Terms of use</a></td>
+</tr>
+</table>
+</td>
+<td width="40">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="2" height="1" class="cty-tou-border"><img width="1" height="1" alt="" src="//www.ibm.com/i/c.gif"/></td>
+</tr>
+<tr>
+<td colspan="3"><img width="1" src="//www.ibm.com/i/c.gif" height="8" alt=""/></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td colspan="2" align="center">
+<form title="Search form" name="search-form" method="get" action="http://www.ibm.com/Search">
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td width="1"><label for="q"><img alt="Search for:" height="1" width="1" src="//www.ibm.com/i/c.gif"/></label></td>
+<td align="right"><input value="" type="text" size="15" name="q" maxlength="100" id="q" class="input"/></td>
+<td width="7">&nbsp;<input type="hidden" name="v" value="14"/><input type="hidden" name="lang" value="en"/><input type="hidden" name="cc" value="zz"/><input type="hidden" value="utf" name="en"/></td>
+<td><input value="Search" type="image" src="//www.ibm.com/i/v14/t/zz/en/search.gif" name="Search" alt="Search"/></td>
+<td width="20">&nbsp;</td>
+</tr>
+</table>
+</form>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td colspan="2" class="blbg">
+<table width="760" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td>
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td><span class="spacer">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+<td><a href="http://www.ibm.com/" class="masthead-mainlink">Home</a></td>
+<td width="27" class="masthead-divider">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://www.ibm.com/products/" class="masthead-mainlink">Products</a></td>
+<td width="27" class="masthead-divider">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://www.ibm.com/servicessolutions/" class="masthead-mainlink">Services &amp; solutions</a></td>
+<td width="27" class="masthead-divider">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://www.ibm.com/support/" class="masthead-mainlink">Support &amp; downloads</a></td>
+<td width="27" class="masthead-divider">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://www.ibm.com/account/" class="masthead-mainlink">My account</a></td>
+<td><span class="spacer">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<script type="text/javascript" language="JavaScript" src="//www.ibm.com/common/v14/pmh.js">
+</script>
 
-  <h1>Unicode String Comparison</h1>
-  <p>Enter the two strings to be compared, then click on the &quot;Submit&quot; button. The results are 
+
+<!-- MASTHEAD_END -->
+
+<table width="760" border="0" cellspacing="0" cellpadding="0" id="v14-body-table">
+<tr valign="top">
+<td width="150" id="navigation">
+
+<!-- LEFTNAV_BEGIN -->
+<table border="0" cellpadding="0" cellspacing="0" width="150">
+<tr>
+<td class="left-nav-spacer">&nbsp;</td>
+</tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="150">
+<tr>
+<td class="left-nav-overview" colspan="2"><a class="left-nav-overview" href="http://ibm.com/software/globalization/icu/chartsdemostools.jsp">ICU Unicode demos</a></td>
+</tr>
+<tr>
+<td class="left-nav" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/locales">Locale Explorer</a></td>
+</tr>
+<tr>
+<td class="left-nav" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/converters">Converter Explorer</a></td>
+</tr>
+<tr>
+<td class="left-nav" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/unicode">Character Browser</a></td>
+</tr>
+<tr>
+<td class="left-nav" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/normalization">Normalization Browser</a></td>
+</tr>
+<tr>
+<td class="left-nav" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/transform">Transform Demo</a></td>
+</tr>
+<tr>
+<td class="left-nav" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/domain">IDNA Demo</a></td>
+</tr>
+<tr>
+<td class="left-nav-highlight" colspan="2"><a class="left-nav" href="http://ibm.com/software/globalization/icu/demo/compare">String Compare Demo</a></td>
+</tr>
+<tr class="left-nav-last">
+<td width="14"><img src="//www.ibm.com/i/c.gif" width="14" height="1" alt="" class="display-img"/></td>
+<td width="136"><img src="//www.ibm.com/i/v14/t/left-nav-corner.gif" width="136" height="19" alt="" class="display-img"/></td>
+</tr>
+</table>
+<!-- LEFTNAV_END -->
+
+</td>
+<td width="610"><a name="main"></a><table width="610" cellpadding="0" cellspacing="0" border="0" id="content-table">
+<tr valign="top">
+<td width="10">&nbsp;</td>
+<td width="600"><!-- file scompare-content-templ.html
+        This file is a template for the content html of the ICU String Compare demo application.
+	It is one of the inputs to the cgi-bin program for that app.
+	
+	Copyright (c) 2004-2005, International Business Machines Corporation and others.  All Rights Reserved.
+-->
+
+<!-- Breadcrumb navigation across the top  -->
+	
+<table border="0" cellpadding="0" cellspacing="0">
+<tr valign="top">
+<td height="80"><img alt="" class="display-img" height="6" src="//www.ibm.com/i/c.gif" width="1"/>
+<a class="bctl" href="http://www.ibm.com/software">Software</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+<a class="bctl" href="http://www.ibm.com/software/globalization/index.jsp">Globalization</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+<a class="bctl" href="http://www.ibm.com/software/globalization/topics/icu/index.jsp">ICU</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+<a class="bctl" href="http://www.ibm.com/software/globalization/topics/icu/demo.jsp">Demo</a><span class="bct">&nbsp;&gt;&nbsp;</span><br />
+
+<!-- bread crumb end -->
+
+<!-- content -->
+
+<h1>ICU Unicode String Comparison</h1>
+<img alt="" class="display-img" height="6" src="//www.ibm.com/i/c.gif" width="1"/>
+
+	     
+
+<!-- "Unless the site is an online application where technical requirements are driving compliance issues, 
+       the maximum line length is 443 and standard column grids apply."
+       from http://w3-03.ibm.com/standards/internet/OneX/modify/column_grids.shtml
+       The ICU demos, as a group, should apply for this width exemption for the white (content) space.
+       -->
+
+<p>This demo application illustrates the operation of some of the different string compare functions that are
+available in the ICU Unicode support library.
+</p>
+  <p>Enter two strings to be compared, then click on the &quot;Submit&quot; button. The results are 
   described in the <a href="#Key">Key</a>. For more information, see <a href="#Background">
   Background</a>.</p>
 
+<br />
+
+<!-- The form for entering the strings to be compared. -->
 <!-- for oss server, action="/cgi-bin/icu/scompare"
        for windows test, action= "/cgi-bin/scompare.exe"
 -->
-
 <form id="ourForm" accept-charset="utf-8" action="/cgi-bin/scompare.exe"
-	method="post" target="resultFrame">  
+	method="post" >  
 
-<table border="1" cellpadding="2" cellspacing="0" style="border-collapse: collapse" width="100%" >
-    <tr>
-      <td rowspan="2" width="10%"><button tabindex="2" onclick="doCompare();">Submit</button></td>
-      <th rowspan="2">String 1</th>
-      <th rowspan="2">String 2</th>
-      <th colspan="4">Comparison Result</th>
+<table border="0" cellpadding="0" cellspacing="0" class="data-table-2" width="600" summary=""> 
+       <caption><em>Strings to be Compared</em></caption>
+
+   <tr>
+      <th> </th>
+      <th><label for="s1a">String 1</label></th>
+      <th><label for="s1b">String 2</label></th>
+  </tr>
+  <tr>
+      <td>Enter strings, then submit</td>
+      <td rowspan="2"><textarea  rows="2" cols="25" name="s1a" id="s1a" 
+           title="The first of the two strings to be compared">αλφα</textarea></td>
+      <td rowspan="2"><textarea  rows="2" cols="25" name="s1b"  id="s1b" 
+	   title="The second of the two strings to be compared">αλφα</textarea></td>
+    </tr>
+    <tr>   <!-- phony row, in conjunction with the rowspans, above, for the purpose of putting
+          the submit button in sequence after the input fields. -->
+	  <td><input type="image" src="//www.ibm.com/i/v14/buttons/us/en/submit.gif" 
+         alt="Submit" name="submit" value="Submit"/>
+	 </td>
+     </tr>
+      <tr>
+      <td align="left" width="10%">Strings after unescaping</td>
+      <td> αλφα </td>
+      <td> αλφα </td>
     </tr>
     <tr>
-      <th><a href="#a_Binary">Binary</a></th>
-      <th><a href="#a_Caseless">Caseless</th>
-      <th><a href="#a_Equiv">Equiv</th>
-      <th><a href="#a_Equiv_Caseless">Equiv-Caseless</th>
-    </tr>
-    <tr>
-      <th align="left"  >Input</th>
-      <td><textarea tabindex="1" rows="2" name="s1a" >&#945;&#955;&#966;&#945;</textarea></td>
-      <td><textarea tabindex="1" rows="2" name="s1b" >&#945;&#955;&#966;&#945;</textarea></td>
-      <td class="output" align="center" id="binary"> - </td>
-      <td class="output" align="center" id="case">Y</td>
-      <td  class="output" align="center" id="equiv">Y</td>
-      <td  class="output" align="center" id="eq_ca">Y</td>
-    </tr>
-    <tr>
-      <th align="left" width="10%">Unescaped</th>
-      <td class="output"><span id="str1a"> - </span></td>
-      <td class="output"><span id="str1b"> - </span></td>
-    </tr>
-    <tr>
-      <th align="left" width="10%">Hex</th>
-      <td class="output"><span id="hex1a"> - </span></td>
-      <td class="output"><span id="hex1b"> - </span></td>
+      <td align="left" width="10%">Strings in hex format</td>
+      <td> \u03b1 \u03bb \u03c6 \u03b1  </td>
+      <td> \u03b1 \u03bb \u03c6 \u03b1  </td>
     </tr>
   </table>
 </form>
-<h2><a name="Key">Key</a></h2>
-<table border="1" cellspacing="0" style="border-collapse: collapse"  cellpadding="2">
+
+   <br />
+   <br />
+  <table border="0" cellpadding="0" cellspacing="0" class="data-table-2" width="600"
+       summary="Table containing the four comparison results for the input strings.  A value of 'Y' indicates equivalent strings, a value of '-' indicates unequal strings."  >
+       <caption><em>Comparison Result</em></caption>
+     <tr>
+      <th><a href="#a_Binary">Binary</a></th>
+      <th><a href="#a_Caseless">Caseless</a></th>
+      <th><a href="#a_Equiv">Equiv</a></th>
+      <th><a href="#a_Equiv_Caseless">Equiv-Caseless</a></th>
+    </tr>
+    <tr>
+      <td><b>Y</b></td>
+      <td><b>Y</b></td>
+      <td><b>Y</b></td>
+      <td><b>Y</b></td>
+    </tr>
+</table>
+  
+<br />
+<br />
+<table border="0" cellpadding="0" cellspacing="0" class="data-table-2" width="600"
+      summary="Explanations of each of the four kinds of string comparisons performed by this application.">
+        <caption><em><a name="Key">Key</a> to Results</em></caption> 
   <tr>
-    <th><i>Result</i></th>
-    <th><i>Meaning</i></th>
+    <th >Result</th>
+    <th >Meaning</th>
   </tr>
   <tr>
     <td><a id="a_Binary"/>Binary</td>
@@ -211,7 +280,7 @@ function displayResults() {
     caseless match because they both case-fold to the same string.</td>
   </tr>
   <tr>
-    <td><a id="a_Equiv_Caseless"/>Equiv-Caseless</td>
+    <td><a id="a_Equiv_Caseless"/>Equiv-Caseless </td>
     <td>Strings are canonically equivalent, case insensitive. Examples: åland and &#x212B;land</td>
   </tr>
   <tr>
@@ -219,39 +288,57 @@ function displayResults() {
     <td>Display all input characters as hex values.</td>
   </tr>
 </table>
-<h2><a name="Background">Background</a></h2>
+
+
+<br />
+<br />
+<b><a name="Background">Background</a></b>
 <ul>
   <li>The above comparisons use only Unicode properties, and are invariant across locales. To 
   compare two strings according to locale settings, see
-  <a href="http://oss.software.ibm.com/cgi-bin/icu/lx/en_US/?d_=en_US&amp;x=col&amp;_=root">ICU Collation 
+  <a href="http://www-950.ibm.com/software/globalization/icu/demo/locales/root/?_=en_US&amp;x=col">ICU Collation 
   Demo</a>. 
   </li>
   <li>The strings may contain \uhhhh and \Uhhhhhhhh hex escapes for characters that can not be 
   entered directly from the keyboard. For descriptions of additional escape sequences, see 
   UnicodeString::unescape() in the
-  <a href="http://oss.software.ibm.com/icu/apiref/classUnicodeString.html">ICU API reference</a>.</li>
+  <a href="http://icu.sourceforge.net/apiref/icu4c/classUnicodeString.html">ICU API reference</a>.</li>
   <li>This tool is built using ICU's string comparison functions, showing the effects of the options 
   for Unicode Normalization (canonical equivalence) and Case Insensitive comparisons.</li>
 </ul>
-<h2>Known Issues</h2>
-<ul>
-  <li>With Internet Explorer, leading and trailing spaces are removed from the input strings, and runs of spaces within
-  the input are reduced to a single space.  With other browsers all spaces are maintained as entered.</li>
-  <li>The hex format display of the input strings include spaces between the \uhhhh values.  
-  This hex display can not be pasted back into the input to recreate the original string without first
-  removing the spaces.  The spaces are needed because some browsers will not line-wrap the
-  output without them.</li>
-  <li>With some versions of Mozilla Firefox, the table display will occasionally fail to resize to correctly fit the hex form
-  of the input strings.  If this happens, reload the page. </li>
-  <li>With Opera, the unescaped and hex forms of the input string will fail to display if the previous case input string was empty.
-  Press the submit button again and the problem will correct itself.</li>
-</ul>
+<p> </p>
+</td>
+</tr>
+</table>
+<!-- End of  file scompare-content-templ.html -->
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<!-- FOOTER_BEGIN -->
+<br />
+<table width="760" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td height="19" class="bbg">
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td><span class="spacer">&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="http://www.ibm.com/ibm/" class="mainlink">About IBM</a></td>
+<td width="27" class="footer-divider">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://www.ibm.com/privacy/" class="mainlink">Privacy</a></td>
+<td width="27" class="footer-divider">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><a href="http://www.ibm.com/contact/" class="mainlink">Contact</a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
 
-<!-- resultFrame, a non-displaying frame to receive the results from the form submit -->
-<iframe id="resultFrame" height="0" width=0" frameborder="0"
-           name="resultFrame"  onload="displayResults();">
-  <h4>result frame</h4>
-</iframe>
+
+<!-- FOOTER_END -->
+<script type="text/javascript" language="JavaScript1.2" src="//www.ibm.com/common/stats/stats.js"></script>
+<noscript><img src="//stats.www.ibm.com/rc/images/uc.GIF?R=noscript" width="1" height="1" alt="" border="0"/></noscript>
 </body>
-
 </html>
+<!--s1a=%CE%B1%CE%BB%CF%86%CE%B1&s1b=%CE%B1%CE%BB%CF%86%CE%B1-->
