@@ -45,7 +45,6 @@ de {
    EXPLORE_CollationElements_Sort  {  "Sortiere"  }
    EXPLORE_CollationElements_g7sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
    EXPLORE_CollationElements_sampleString  {  "Fu\u00dfe|Flu\u00dfe|Flusse|flusse|flu\u00dfe|fl\u00fc\u00dfe|fl\u00fcsse"  }
-   EXPLORE_CollationElements_strength  {  "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."  }
    EXPLORE_CollationElements_strength  {
       "Es gibt vier Sortierstufen, die zunehmend mehr Unterschiede ber\u00fccksichtigen:<p>"
       "In der ersten Stufe werden nur Grundzeichen unterschieden.<p>"
@@ -127,7 +126,6 @@ de {
    formatExample_errorParse_num  {  "Erkennungsfehler, Ersetzung durch Grundwert."  }
    formatExample_errorToPattern  {  "Das Muster konnte nicht umgewandelt werden [toPattern]"  }
    help  {  "Hilfe"  }
-   helpPrefix  {  "default_"  }
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "border=0"  }
    inherited  {  "(geerbt)"  }
