@@ -184,11 +184,11 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
 {
   /* if(type==thisType) */  /* LEFT tab A */
   {
-    u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"20%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aleft.gif\">");
+    u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"20%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"" LDATA_PATH "tab_aleft.gif\">");
     u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar=%c&NP_DBL=%s\">%S</A>", 
               lx->curLocaleName,
               thisType, num, name);
-    u_fprintf(lx->OUT, "<IMG ALIGN=RIGHT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"../_/tab_aright.gif\"></TD>");
+    u_fprintf(lx->OUT, "<IMG ALIGN=RIGHT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"" LDATA_PATH "tab_aright.gif\"></TD>");
     
   }
 }
@@ -218,7 +218,7 @@ void printCalMenuBar( LXContext *lx, const char *num, char type )
     printCalMenuSection(lx, num, type,
                         'c', FSWF("calexp_calTab", "Calendar"));
     u_fprintf(lx->OUT, "<TD HEIGHT=2 COLSPAN=3 WIDTH=100%%><!-- D -->&nbsp;</TD></TR>");
-    u_fprintf(lx->OUT, "<TR><TD COLSPAN=10 HEIGHT=3 BACKGROUND=\"../_/tab_bot.gif\"></TD><FONT SIZE=4>&nbsp;</FONT></TR></TABLE>\r\n");
+    u_fprintf(lx->OUT, "<TR><TD COLSPAN=10 HEIGHT=3 BACKGROUND=\"" LDATA_PATH "tab_bot.gif\"></TD><FONT SIZE=4>&nbsp;</FONT></TR></TABLE>\r\n");
 }
 
 

@@ -1,11 +1,54 @@
-## Copyright (c) 1999-2003, International Business Machines Corporation and
+## Copyright (c) 1999-2004, International Business Machines Corporation and
 ## others. All Rights Reserved.
 
 LOCALE EXPLORER  :  by Steven R. Loomis, IBM
--------------------------
+------------------------
+2004-May-27  locALE management
+  * merge script with language.  "en, ja, zh, zh-Hant, ..."
+  * merge region with variant.  "AM, AM-REVISED, US, ..."
+
+2004-Apr-03  URL redo. Support only a bare minimum of the old URLs.
+
+ KEYWORD      EXAMPLE   MEANING
+
+-------------------------------- Explored Locale
+ l            en        Language
+ s            Latn      Script
+ r            US        Region
+ v            ALAND     Variant
+
+ currency     USD       keyword "currency"
+ collation    phonebook kw "phonebook"
+ calendar     japanese  kw "calendar"
+ 
+ _            en_US     Full Explored Locale (Cookied)
+
+-------------------------------- Display Locale
+ d_l           sr        Display Locale
+ d_s           Cyrl      Display Script
+ d_r           YU        Display Region
+ d_v                     Display variant
+ d_           sr_YU     Full Display Locale (Cookied)
+
+-------------------------------- Misc Settings
+ tz      Europe/Malta   Time Zone (Cookied)
+ lat     22             Latitude
+ lon     -130           Longitude
+
+-------------------------------- Transient
+ x  col,cal,num,brk,ast,dat,src   Section
+ sc       y               Set Cookies. Set to 'y' if a cookie was sent with the last request.   If  sc=y and no cookies show up, set sc=n.
+ sc       n               No Cookies.  Passed through. Display an 'attempt cooky' page if n.   If cookie is set, display 'Remove Cookie'
+ sc       r               Remove cookie and then set to 'n'.
+ e        utf-8           Encoding.
+--------------------------------- Sectional
+NP_DBL    2.34444                 number
+... others
+
+
+
 TODO 8/15/2003 
   Sort
-    * get sample data from locale  - use some long week names, translate langauge's own name, etc.
     * fix G7
 
   

@@ -53,16 +53,19 @@ void displayLocaleExplorer(LXContext *lx)
 
     /* -------------- */
     
-    u_fprintf(lx->OUT, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> \r\n");
+    u_fprintf(lx->OUT, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\""
+              " \"http://www.w3.org/TR/html4/loose.dtd\"> \r\n");
     uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
     u_fprintf(lx->OUT,"<html lang=\"%s\">", langName);
     
-    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2003 IBM and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->\r\n");
+    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer %s \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->\r\n",
+              U_COPYRIGHT_STRING);
     
     u_fprintf(lx->OUT, "<head><title>");
     lx->backslashCtx.html = FALSE;
     printPath(lx, lx->curLocale, lx->curLocale, FALSE, NULL);
-    
+
+    /* TODO: check 'section' here */
     if(strstr(lx->queryString, "EXPLORE"))
     {
         lx->inDemo = TRUE;
@@ -92,12 +95,13 @@ void displayLocaleExplorer(LXContext *lx)
         {
             host = "";
         }
-        u_fprintf(lx->OUT, "<base href=\"http://%s%s%s/%s/%s/\">\r\n",         host, portStr, 
-            lx->scriptName, lx->dispLocale, 
-            lx->convRequested); /* Ensure that all relative paths have the cgi name followed by a slash.  */
+        sprintf(lx->myBaseURL, "http://%s%s%s/", host, portStr, lx->scriptName);
+        u_fprintf(lx->OUT, "<base href=\"%s%s/\">\r\n",  lx->myBaseURL,
+                  (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); /* Ensure that all relative paths have the cgi name followed by a slash.  */
     }
 
 
+    /* TODO: check section */
     /* Robot Exclusion */
     if(hasQueryField(lx,"PANICDEFAULT") ||
        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) {
@@ -141,18 +145,22 @@ void displayLocaleExplorer(LXContext *lx)
       }
     }
 #endif
-
-    if(localeParam && *localeParam && !lx->curLocale && strcmp(lx->curLocaleName,"g7"))
-      {
-        UChar dispName[1024];
-        UErrorCode stat = U_ZERO_ERROR;
-        dispName[0] = 0;
-        uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
-        
-        u_fprintf(lx->OUT, "<blockquote><b>%S [%S]</b></blockquote>\r\n",
-                  FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
-      }
     
+    if(!strncmp(lx->section, "ch", 2)) {
+      showChangePage(lx);
+    } else {
+      /* fall through to OLD style checks */
+      if(localeParam && *localeParam && !lx->curLocale && strcmp(lx->curLocaleName,"g7"))
+        {
+          UChar dispName[1024];
+          UErrorCode stat = U_ZERO_ERROR;
+          dispName[0] = 0;
+          uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
+          
+          u_fprintf(lx->OUT, "<blockquote><b>%S [%S]</b></blockquote>\r\n",
+                    FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
+        }
+      
     if(isExperimentalLocale(lx->curLocaleName) && lx->queryString && lx->queryString[0] && strcmp(lx->curLocaleName,"g7"))
       {
         u_fprintf(lx->OUT, "<blockquote><b>%S</b></blockquote>\r\n",
@@ -182,9 +190,13 @@ void displayLocaleExplorer(LXContext *lx)
     {
       u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\"><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
       
+#if 0      
       u_fprintf(lx->OUT, "<font size=\"+1\">");
       printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
       u_fprintf(lx->OUT, "</font>");
+#else
+      printChangeLocale(lx);
+#endif
       
       u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
       
@@ -197,8 +209,7 @@ void displayLocaleExplorer(LXContext *lx)
     
     if ( lx->queryString == NULL )
       lx->queryString = ""; /* for sanity */
-    
-    if( ( (!*lx->queryString)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
+    if( !lx->curLocaleName[0]
         || strstr(lx->queryString, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
     {
         u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><p>");
@@ -218,37 +229,15 @@ void displayLocaleExplorer(LXContext *lx)
     
     
     /* Logic here: */
-    if( /* !lx->setLocale || */  !strncmp(lx->queryString,"locale", 6))     /* ?locale  or not set: pick locale */
-    {
-        char *restored;
+    if( !lx->curLocaleName[0] || !strcmp(lx->section,"main") ) {    /* ?locale  or not set: pick locale */
+      u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
         
-        restored = strchr(lx->queryString, '&');
-        if(restored)
-        {
-            restored ++;
-        }
-        
-        if(!restored)
-        {
-            restored = "converter"; /* what to go on to */
-        }
-        
-        if(lx->dispLocaleSet)
-        {
-            u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("changeLocale", "Change the Locale used for Labels"));
-        }
-        else
-        {
-            u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
-        }
-        
-        u_fprintf(lx->OUT, "<table summary=\"%S\" WIDTH=\"70%%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
-        u_fprintf(lx->OUT, "<td colspan=2 align=right>");
-        printHelpTag(lx, "chooseLocale", NULL);
-        u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-        chooseLocale(lx, FALSE, (char*)lx->dispLocale, restored, (UBool)!strncmp(lx->queryString,"locale_all", 10));
-    }
-    else if (!strncmp(lx->queryString,"converter", 9))  /* ?converter */
+      u_fprintf(lx->OUT, "<table summary=\"%S\" WIDTH=\"70%%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
+      u_fprintf(lx->OUT, "<td colspan=2 align=right>");
+      printHelpTag(lx, "chooseLocale", NULL);
+      u_fprintf(lx->OUT, "</td></tr></table>\r\n");
+      chooseLocale(lx, TRUE, (char*)lx->dispLocale, "", (UBool)!strncmp(lx->queryString,"locale_all", 10));
+    } else if (!strncmp(lx->queryString,"converter", 9))  /* ?converter */
     {
         char *restored;
         
@@ -351,7 +340,7 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "\">");
         u_fprintf(lx->OUT, "%S</a>\r\n",
             FSWF("encoding_PickABetter", "Click here to search for a better encoding"));
-        
+
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
     }
 #endif
@@ -369,8 +358,10 @@ void displayLocaleExplorer(LXContext *lx)
 #ifndef LXHOST
 # define LXHOST ""
 #endif
+
+    } /* END OLD STYLE */
     
-    if(!strcmp(lx->dispLocale,"klingon"))
+    if(!strcmp(lx->dispLocale,"tlh"))
         u_fprintf(lx->OUT, "<p>Thank you for using the ICU LocaleExplorer, from %s compiled %s on %s<p>\r\n", LXHOSTNAME, lx_version(), LXHOST);
     
     u_fprintf(lx->OUT, "</body></html>\r\n");
@@ -447,16 +438,59 @@ UBool didUserAskForKey(LXContext *lx, const char *key)
 
 void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patternText)
 {
-    /* make QS point to the first char of the field data */
-    const char *qs = strchr(patternText, '=');
-    if(qs == NULL) {
-      *dstPattern = 0;
-      return;
-    }
-    qs++;
-
-/*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
-    unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, lx->convRequested);
-    u_replaceChar(dstPattern, 0x0020, 0x00A0);
+  /* make QS point to the first char of the field data */
+  const char *qs = patternText;
+  if(qs == NULL) {
+    *dstPattern = 0;
+    return;
+  }
+  
+  /*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
+  unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, lx->convRequested);
+  u_replaceChar(dstPattern, 0x0020, 0x00A0);
 }
 
+
+
+const char *getLXBaseURL(LXContext* lx, uint32_t o) {
+  if(!(o&kNO_URL)) {
+    strcpy(lx->myURL, lx->myBaseURL);
+  } else {
+    lx->myURL[0] = 0;
+  }
+  strcat(lx->myURL, "?");
+  if(!(o&kNO_LOC) && lx->curLocaleBlob.base[0]) {
+    strcat(lx->myURL, "_=");
+    strcat(lx->myURL, lx->curLocaleBlob.base);
+    strcat(lx->myURL, "&");
+  }
+  if(!(o&kNO_DISPLOC) && lx->dispLocaleBlob.base[0]) {
+    strcat(lx->myURL, "d_=");
+    strcat(lx->myURL, lx->dispLocaleBlob.base);
+    strcat(lx->myURL, "&");
+  }
+  if(!(o&kNO_SECT) && lx->section[0]) {
+    strcat(lx->myURL, "x=");
+    strcat(lx->myURL, lx->section);
+    strcat(lx->myURL, "&");
+  }
+  if(!(o&kNO_COLL) && lx->curLocaleBlob.collation[0]) {
+    strcat(lx->myURL, "collation=");
+    strcat(lx->myURL, lx->curLocaleBlob.collation);
+    strcat(lx->myURL, "&");
+  }
+  if(!(o&kNO_CAL) && lx->curLocaleBlob.calendar[0]) {
+    strcat(lx->myURL, "calendar=");
+    strcat(lx->myURL, lx->curLocaleBlob.calendar);
+    strcat(lx->myURL, "&");
+  }
+  if(!(o&kNO_CURR) && lx->curLocaleBlob.currency[0]) {
+    strcat(lx->myURL, "currency=");
+    strcat(lx->myURL, lx->curLocaleBlob.currency);
+    strcat(lx->myURL, "&");
+  }
+  if(lx->myURL[strlen(lx->myURL)-1]=='&') {
+    lx->myURL[strlen(lx->myURL)-1]=0;
+  }
+  return lx->myURL;
+}

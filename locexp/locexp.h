@@ -55,12 +55,29 @@ U_CFUNC char locexp_dat[];
 # include <io.h>
 #endif
 
+#define LDATA_PATH "./_/" 
+
+#define LBUFBIG 1024
+#define LBUFSML 128
+
+typedef struct {
+  char             name[LBUFBIG];
+  char             base[LBUFBIG];
+  char             l[LBUFSML];
+  char             s[LBUFSML];
+  char             r[LBUFSML];
+  char             v[LBUFSML];
+  char             calendar[LBUFSML];
+  char             collation[LBUFSML];
+  char             currency[LBUFSML];
+} LocaleBlob;
 
 typedef struct 
 {
   /* ============= HTTP input - to be set up by context initializer */
   const char *scriptName;      /* Cached results of getenv("SCRIPT_NAME") */
   const char *queryString;     /* QUERY_STRING */
+  const char *cookies;         /* HTTP_COOKIE */
   const char *acceptCharset;   /* HTTP_ACCEPT_CHARSET */
   const char *acceptLanguage;  /* HTTP_ACCEPT_LANGUAGE */
   const char *serverName;      /* SERVER_NAME */
@@ -88,9 +105,12 @@ typedef struct
   /* ============= OTHER STATE */
   UBool  inDemo;       /* are we in a 'demo' (EXPLORER) page? If so, don't show encoding and other options */
   const char *fileObj;    /* if set - then we're writing out a data object */
+  UBool  setCookies;
+  char section[10];
 
   /* ============= DISPLAY LOCALE */
   const char      *dispLocale; /* client (display) locale - was cLocale */
+  LocaleBlob       dispLocaleBlob;
   UResourceBundle *dispRB;        /* RB in the display locale  - CACHE (was defaultRB)*/
   UBool            dispLocaleSet; /* Display locale has been set */
 
@@ -100,25 +120,33 @@ typedef struct
 
   MySortable      *curLocale;     /* Current locale */
   MySortable      *parLocale;     /* Parent locale of current */
-  char             curLocaleName[128];
+  LocaleBlob       curLocaleBlob;
+  const char       *curLocaleName;
   UChar           newZone[300];          /* Timezone to set to */
+  double   latitude;
+  double   longitude;
   const UChar          *timeZone;
   UChar displayName[1024];        /* Cache of current language display name */
   
   /* current locale's default calendar */
   char             defaultCalendar[1024];
+  UResourceBundle  *calMyBundle;
+  UResourceBundle  *calFbBundle;
   
   MySortable     specialParLocale; /* owns the parent IF it's not in the tree */
 
   /* === TODO: put the following  into a CACHE keyed on locale! */
   MySortable      *locales ;     /* tree of locales] */
   int32_t          numLocales;
+  MySortable      *regions ;     /* list pointing into arbitrary parts of 'locales' */
 
   /* === Context information for callbacks..  */
   FromUBackslashContext   backslashCtx;
   FromUDecomposeContext   decomposeCtx;
   FromUTransliteratorContext   xlitCtx;
-  
+
+  char         myBaseURL[1024]; /* private: URL for getBaseUrl */
+  char         myURL[1024]; /* private: URL for getBaseUrl */
 } LXContext;
 
 /********************** Some Konstants **** and structs ***************/
@@ -185,6 +213,9 @@ extern const UChar *defaultLanguageDisplayName(LXContext *lx);
  * @param suffix Any text to follow the URL
  */
 extern void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled, const char *suffix);
+extern void printChangeLocale(LXContext *lx);
+extern void printChangeA(LXContext *lx, const char *loc, const char *prefix);
+extern void showChangePage(LXContext *lx); /* obeys 'section' */
 extern void printSubLocales(LXContext *lx, const char *suffix) ;
 
 /* selection of locales and converter */
@@ -210,15 +241,18 @@ extern void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const 
 extern void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString);
 extern void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, UBool compareToDisplay);
 extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale);
-extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
+extern void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const char *type);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
+extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
+extern void showDefaultCalendar(LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showSort( LXContext *lx, const char *locale);
 extern void showSortStyle( LXContext *lx );
 
 extern void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showExploreNumberPatterns  ( LXContext *lx, const char *locale);
 
-extern void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
+extern const char *keyToSection( const char *key);
+extern void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *section);
 extern void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign);
 extern void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 extern void showExploreCloseButton(LXContext *lx, const char *locale, const char *frag);
@@ -269,6 +303,9 @@ extern UResourceBundle *getCurrentBundle(LXContext* lx, UErrorCode *status);
 extern UResourceBundle *getCollationBundle(LXContext* lx, UErrorCode *status);
 /* get bundle for display locale */
 extern UResourceBundle *getDisplayBundle(LXContext* lx, UErrorCode *status);
+extern UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault, UErrorCode *status);
+extern void calPrintDefaultWarning(LXContext *lx);
+extern UResourceBundle *loadCalRes3(LXContext *lx, const char *style, const char *type, const char *keyStem, UBool *isDefault, UErrorCode *status);
 
 /* CGI (or CGI-like) helper functions */
 void initCGIVariables(LXContext* lx);
@@ -276,12 +313,32 @@ void initPOSTFromFILE(LXContext* lx, FILE *f);
 void closeCGIVariables(LXContext* lx);
 void closePOSTFromFILE(LXContext* lx);
 
+typedef enum { kALL_PARTS   = 0,
+               kNO_LOC = 1,      /* omit _  */
+               kNO_DISPLOC = 2,  /* omit d_ */
+               kNO_COLL = 4,     /* omit collation */
+               kNO_CAL = 8,      /* omit calendar */
+               kNO_CURR = 16,    /* omit currency */
+               kNO_SECT = 32,    /* omit section */
+               kNO_URL = 0x10000, /* omit http://xxx.yyy */
+               kNO_PARTS=0xFFFFFF
+             } EBaseURLOpt;
+
+/**
+ * return a pointer to an internal (per-context) buffer.
+ * @param o parts to omit (see EBaseURLOpt)
+ */
+const char *getLXBaseURL(LXContext* lx, uint32_t o);
+
 /* lxurl */
 /* find start of field from a query like string */
-const char *fieldInQuery(LXContext* lx, const char *query, const char *field);
-const char *queryField(LXContext* lx, const char *field);
-UBool hasQueryField(LXContext* lx, const char *field);
-
+extern const char *fieldInQuery(LXContext* lx, const char *query, const char *field);
+extern const char *queryField(LXContext* lx, const char *field);
+extern UBool hasQueryField(LXContext* lx, const char *field);
+extern const char *cookieField(LXContext* lx, const char *field);
+extern UBool hasCookieField(LXContext* lx, const char *field);
+extern double parseDoubleFromField(LXContext* lx, UNumberFormat* nf, const char *key, double defVal);
+extern double parseDoubleFromString(LXContext* lx, UNumberFormat* nf, const char *str, double defVal);
 /* header management */
 /**
  * Add a header to the list.  Do not add trailing cr/lf.
@@ -289,8 +346,30 @@ UBool hasQueryField(LXContext* lx, const char *field);
  * @param header the header name (e.g. "Content-type")
  * @param fmt stdio (host, not unicode!) format string + params (e.g. "text/plain; charset=%s", "btf-5") 
  */
-void appendHeader(LXContext* lx, const char *header, const char *fmt, ...);
+extern void appendHeader(LXContext* lx, const char *header, const char *fmt, ...);
 
+/* Astro - only defined if LX_ASTRO is defined, else stubbed out. */
+
+#if defined(LX_ASTRO)
+/**
+ * Open the astro, return a ref object.  
+ * can print errors. 
+ * @return Astro reference handle
+ */
+extern void *uastro_open(LXContext *lx);
+
+/**
+ * Close the astronomer.
+ */
+extern void uastro_close(void *astro);
+
+/**
+ * Print stuff
+ */
+extern void uastro_show(void *astro, LXContext *lx);
+
+
+#endif
 
 #endif
 

@@ -109,13 +109,13 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
         if(bigString && !userRequested) /* it's hidden. */
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
         }
         else
         {
             if(bigString)
             {
-                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                     locale,
                     key,
                     FSWF("bigStringHide", "Hide"));
@@ -408,13 +408,13 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
 
         if(bigString && !userRequested) /* it's hidden. */
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
         }
         else
         {
             if(bigString)
             {
-                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+                u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                     locale,
                     key,
                     FSWF("bigStringHide", "Hide"));
@@ -489,7 +489,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 
         if(userRequested) /* it's not hidden. */
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                       locale,
                       key,
                       FSWF("bigStringShorten", "Don't show all"));
@@ -520,7 +520,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     if(len != rulesLen)
     {
         u_fprintf(lx->OUT, "%S", FSWF("...", "..."));
-        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%S</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\"><I>%S</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
         u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), len, rulesLen);
         u_fprintf(lx->OUT, " </A>\r\n");
     }
@@ -595,7 +595,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     if(!userRequested && (howManyChars >= kShowUnicodeSetCutoffSize))
     {
         u_fprintf(lx->OUT, "%S", FSWF("...", "..."));
-        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\"><I>%S</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+        u_fprintf(lx->OUT, "<br><A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\"><I>%S</I> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
         u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), kShowUnicodeSetCutoffSize, howManyChars);
         u_fprintf(lx->OUT, " </A>\r\n");
     }
@@ -649,14 +649,14 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
 
     if(bigString && !userRequested) /* it's hidden. */
     {
-        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
+        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("stringClickToShow","(Click here to show.)"));
         u_fprintf(lx->OUT, "<P>");
     }
     else
     {
         if(bigString)
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -701,20 +701,13 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     const char *realKey;
     char   key2[1024];
     UBool userRequested = FALSE;
+    UBool isDefault = FALSE;
 
     userRequested = didUserAskForKey(lx, key);
-
-    if( (isCal == kCal) && lx->defaultCalendar[0]) {
-      snprintf(key2, 1022, "%s_%s", key, lx->defaultCalendar);
-
-      array = ures_getByKey(rb, key2, array, &firstStatus);
-      
-      if(firstStatus == U_MISSING_RESOURCE_ERROR) {
-        firstStatus = U_ZERO_ERROR;
-        realKey = key;
-      } else {
-        realKey = key2;
-      }
+    strcpy(key2, key);
+    if(isCal == kCal) {
+      key2[0]=toupper(key2[0]); /* upcase for compatibility */
+      array = loadCalRes(lx, key, &isDefault, &firstStatus);
     }
 
     if(array == NULL ) {
@@ -723,7 +716,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
 
     item = ures_getByIndex(array, 0, item, &firstStatus);
 
-    showKeyAndStartItem(lx, key, NULL, locale, FALSE, firstStatus);
+    showKeyAndStartItem(lx, key2, NULL, locale, FALSE, firstStatus);
 
     if(realKey == key2) {
       u_fprintf(lx->OUT, "(%s)<br>\r\n", lx->defaultCalendar);
@@ -739,7 +732,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
         }
 
         if((i > 10) && !userRequested) {
-          u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+          u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
           break;
         }
 
@@ -762,18 +755,23 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     }
     u_fprintf(lx->OUT, "</OL>");
     if((i>=10) && userRequested) {
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
+    }
+    if(isDefault) {
+      calPrintDefaultWarning(lx);
     }
     u_fprintf(lx->OUT, "</TD>");
     u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
     showKeyAndEndItem(lx, key, locale);
     u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
 
-    ures_close(item);
-    ures_close(array);
+    if(U_SUCCESS(status)) {
+      ures_close(item);
+      ures_close(array);
+    }
 }
 
 /* Show a resource that's an array, wiht an explanation ------------------------------- */
@@ -800,7 +798,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     UChar tempTime[1024]; /* for Date-Time */
     const char *realKey;
     char   key2[1024];
-
+    UBool isDefault = FALSE;
     /* figure out what example to use */
     if(!strcmp(key,"DateTimePatterns"))
         exampleType = kDateTimeExample;
@@ -814,21 +812,10 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
     firstStatus = U_ZERO_ERROR;
     
-    if( (isCal == kCal) && lx->defaultCalendar[0]) {
-      snprintf(key2, 1022, "%s_%s", key, lx->defaultCalendar);
-
-      array = ures_getByKey(rb, key2, array, &firstStatus);
-      
-      if(firstStatus == U_MISSING_RESOURCE_ERROR) {
-        firstStatus = U_ZERO_ERROR;
-        realKey = key;
-      } else {
-        realKey = key2;
-      }
+    if( isCal == kCal) {
+      array = loadCalRes(lx, key, &isDefault, &firstStatus);
     }
     
-    /* u_fprintf(lx->OUT, "(REALKEY %s)\n", realKey); */
-
     if(array == NULL ) {
       array = ures_getByKey(rb, key, array, &firstStatus);
     }
@@ -837,9 +824,11 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     s = ures_getString(item, &len, &firstStatus);
     showKeyAndStartItemShort(lx, key, NULL, locale, FALSE, firstStatus);
 
+    #if 0
     if(realKey == key2) {
       u_fprintf(lx->OUT, "(%s)<br>\r\n", lx->defaultCalendar);
     }
+    #endif
 
     if(exampleType != kNoExample)
     {
@@ -928,7 +917,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                   homeStr
             );
 
-        u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  ALIGN=RIGHT   ");
+        u_fprintf(lx->OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"" LDATA_PATH "explore.gif\"  ALIGN=RIGHT   ");
         u_fprintf(lx->OUT, " VALUE=\"%S\"></FORM>",
                   FSWF("exploreTitle", "Explore"));
         u_fprintf(lx->OUT, "</FORM>");
@@ -1092,6 +1081,9 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
     u_fprintf(lx->OUT, "</table>");
 
+    if(isDefault) {
+      calPrintDefaultWarning(lx);
+    }
     u_fprintf(lx->OUT, "</td>");
 
     showKeyAndEndItem(lx, key, locale);
@@ -1238,30 +1230,108 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
     ures_close(item);
 }
 
+void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem)
+{
+  char aKeyStem[400];
+  char *q;
+  strcpy(aKeyStem, keyStem);
+  aKeyStem[0]=toupper(aKeyStem[0]);
+  if(q = strstr(aKeyStem, "Names")) {
+    *q = 0;
+  }
+  /* dayNames -> Day,  monthNames -> Month 
+     for legacy translations */
+  showKeyAndStartItem(lx, aKeyStem, NULL, locale, FALSE, U_ZERO_ERROR); /* No status possible  because we have two items */
+
+   u_fprintf(lx->OUT, "<h4>%S</h4>\n", FSWF("Calendar_type_format", "Formatting"));
+   showShortLongCalType(lx, rb, locale, keyStem, "format");
+   u_fprintf(lx->OUT, "<h4>%S</h4>\n", FSWF("Calendar_type_stand-alone", "Stand-alone"));
+   showShortLongCalType(lx, rb, locale, keyStem, "stand-alone");
+
+  u_fprintf(lx->OUT, "</td>");
+  
+  showKeyAndEndItem(lx, keyStem, locale);
+}
+
 /* Show a resource that has a short (*Abbreviations) and long (*Names) version ---------------- */
 /* modified showArray */
-void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const UChar *shortName, const UChar *longName, int32_t num )
+void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const char *type )
 {
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode shortStatus = U_ZERO_ERROR, longStatus = U_ZERO_ERROR;
     char       shortKey[100], longKey[100];
-    UResourceBundle  *shortArray = NULL, *longArray = NULL, *item = NULL;
-    int32_t len;
+    UResourceBundle *item = NULL;
+     int32_t len;
     const UChar *s  = 0;
-    int i;
+    int i,j;
+    int stuffCount;
+    int maxCount = 0;
+    struct {
+      const char *style;
+      UChar *title;
+      int32_t count;
+      UResourceBundle *bund;
+      UBool isDefault;
+    } stuff[] = { {"narrow", NULL, -1, NULL, FALSE},
+                  {"abbreviated", NULL, -1, NULL, FALSE},
+                  {"wide", NULL, -1, NULL, FALSE} };
+ 
+    stuffCount = sizeof(stuff)/sizeof(stuff[0]);
+    stuff[0].title = FSWF("DayNarrow", "Narrow Names");
+    stuff[1].title = FSWF("DayAbbreviations", "Short Names");
+    stuff[2].title = FSWF("DayNames", "Long Names");
 
-    showKeyAndStartItem(lx, keyStem, NULL, locale, FALSE, U_ZERO_ERROR); /* No status possible  because we have two items */
+/* FSWF("MonthAbbreviations", " - NOT USED - see DayAbbreviations ") */
+/* FSWF("MonthNames", "  - NOT USED - see DayNames ") */
 
-    sprintf(shortKey, "%sNames", keyStem);
-    sprintf(longKey,  "%sAbbreviations", keyStem);
+    for(i=0;i<stuffCount;i++) {
+      stuff[i].bund = loadCalRes3(lx, keyStem, type, stuff[i].style, &stuff[i].isDefault, &status);
+      stuff[i].count = ures_getSize(stuff[i].bund);
+      if(stuff[i].count > maxCount) {
+        maxCount = stuff[i].count;
+      }
+    }
 
-    /* pre load the status of these things */
-    shortArray = ures_getByKey(rb, shortKey, shortArray, &shortStatus);
-    longArray  = ures_getByKey(rb, longKey, longArray, &longStatus);
-    item       = ures_getByIndex(shortArray, 0, item, &shortStatus);
-    item       = ures_getByIndex(longArray, 0, item, &longStatus);
+    if(U_FAILURE(status)) {
+      explainStatus(lx, status, keyStem);
+    } else { 
+      u_fprintf(lx->OUT, "<table border=1 w_idth=\"100%%\"><tr><th>#</th>");
+      for(i=0;i<stuffCount;i++) {
+        u_fprintf(lx->OUT, "<th>%S", stuff[i].title);
+        if(stuff[i].isDefault) {
+          u_fprintf(lx->OUT, "<br>");
+          calPrintDefaultWarning(lx);
+        }
+        u_fprintf(lx->OUT, "</th>");
+      }
+      u_fprintf(lx->OUT, "</tr>\n");
 
-    u_fprintf(lx->OUT, "<table border=1 width=\"100%%\"><tr><td><b>#</b></td><td><b>%S</b> ", shortName);
+      for(j=0;j<maxCount;j++) {
+        u_fprintf(lx->OUT, " <tr><td>%d</td>", j);
+        for(i=0;i<stuffCount;i++) {
+          if(i>=stuff[i].count) {
+            u_fprintf(lx->OUT, "<td></td>");
+          } else {
+            UChar *s;
+            int32_t len;
+            UErrorCode subStatus = U_ZERO_ERROR;
+            s = ures_getStringByIndex(stuff[i].bund, j, &len, &subStatus);
+            if(U_SUCCESS(subStatus) && len) {
+              u_fprintf(lx->OUT, "<td>%S</td>", s);
+            } else {
+              u_fprintf(lx->OUT, "<td>");
+              explainStatus(lx, subStatus, NULL);
+              u_fprintf(lx->OUT, "</td>");
+            }
+          }
+        }
+        u_fprintf(lx->OUT, "</tr>\n");
+      }
+
+      u_fprintf(lx->OUT, "</table>\n");
+    }
+#if 0
+    u_fprintf(lx->OUT, "<table border=1 w_idth=\"100%%\"><tr><td><b>#</b></td><td><b>%S</b> ", shortName);
     explainStatus(lx, shortStatus, keyStem);
     u_fprintf(lx->OUT, "</td><td><b>%S</b> ", longName);
     explainStatus(lx, longStatus, keyStem);
@@ -1308,13 +1378,14 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
     }
 
     u_fprintf(lx->OUT, "</table>");
-    u_fprintf(lx->OUT, "</td>");
 
-    showKeyAndEndItem(lx, keyStem, locale);
-    ures_close(item);
-    ures_close(shortArray);
-    ures_close(longArray);
+#endif
 
+    if(U_SUCCESS(status)) {
+      for(i=0;i<stuffCount;i++) {
+        ures_close(stuff[i].bund);
+      }
+    }
 }
 
 /* Show a 2d array  -------------------------------------------------------------------*/
@@ -1355,13 +1426,13 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
     if(bigString && !userRequested) /* it's hidden. */
     {
         /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+        u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
     }
     else
     {
         if(bigString)
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+            u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1488,10 +1559,10 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 
   if(bigString && !userRequested) /* it's hidden. */  {
     /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1655,10 +1726,10 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   }
 
   if(bigString && !userRequested) /* it's hidden. */  {
-    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"../_/closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&SHOW%s=1#%s\"><IMG BORDER=0 WIDTH=16 HEIGHT=16 SRC=\"" LDATA_PATH "closed.gif\" ALT=\"\">%S</A>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"../_/opened.gif\" ALT=\"\"> %S</A><P>\r\n",
+      u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\"><IMG border=0 width=16 height=16 SRC=\"" LDATA_PATH "opened.gif\" ALT=\"\"> %S</A><P>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1787,7 +1858,296 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   showKeyAndEndItem(lx, key, locale);
 }
 
+UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault, UErrorCode *status) {
+  /* Yes, this is a near-reimplementation of icu::CalendarData.  */
+  UResourceBundle *item1 = NULL;
+  *isDefault = FALSE;
+  if(U_FAILURE(*status)) { return; }
+  if(!lx->calMyBundle) {
+#if defined(LX_DEBUG)
+    fprintf(stderr, "loadCalRes - no calMyBundle ! \n");
+#endif
+    *status = U_INTERNAL_PROGRAM_ERROR;
+    return;
+  } else {
+    item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
+  }
+  
+  if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
+    *status = U_ZERO_ERROR;
+    *isDefault = TRUE;
+    item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
+  }
+
+  if(U_FAILURE(*status)) {
+    ures_close(item1);
+    return NULL;
+  } else {
+    return item1;
+  }
+}
 
 
+UResourceBundle *loadCalRes3(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UErrorCode *status) {
+  /* Yes, this is a near-reimplementation of icu::CalendarData.  */
+  UResourceBundle *item1 = NULL;
+  UResourceBundle *item2 = NULL;
+  UResourceBundle *item3 = NULL;
+  *isDefault = FALSE;
+  if(U_FAILURE(*status)) { return; }
+  if(!lx->calMyBundle) {
+#if defined(LX_DEBUG)
+    fprintf(stderr, "loadCalRes3 - no calMyBundle ! \n");
+#endif
+    *status = U_INTERNAL_PROGRAM_ERROR;
+    return;
+  } else {
+    item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
+    item2 = ures_getByKeyWithFallback(item1, type, item2, status);
+    item3 = ures_getByKeyWithFallback(item2, style, item3, status);
+  }
+  
+  if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
+    *status = U_ZERO_ERROR;
+    *isDefault = TRUE;
+    item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
+    item2 = ures_getByKeyWithFallback(item1, type, item2, status);
+    item3 = ures_getByKeyWithFallback(item2, style, item3, status);
+  }
+
+  ures_close(item1);
+  ures_close(item2);
+  if(U_FAILURE(*status)) {
+    ures_close(item3);
+    return NULL;
+  } else {
+    return item3;
+  }
+}
+
+void calPrintDefaultWarning(LXContext *lx) {
+  UErrorCode status = U_ZERO_ERROR;
+
+    UChar keyBuf[1024];
+    UChar valBuf[1024];
+    char loc[1024];
+/*     keyBuf[0]=0; */
+/*     uloc_getDisplayKeyword("calendar", */
+/*                            lx->dispLocale, */
+/*                            keyBuf, */
+/*                            1024, */
+/*                            &status); */
+    sprintf(loc, "@%s=%s", "calendar", "gregorian");
+    uloc_getDisplayKeywordValue(loc,
+                                "calendar",
+                                lx->dispLocale,
+                                valBuf,
+                                1024,
+                                &status);
+    u_fprintf(lx->OUT, "<font size=-2>");
+    u_fprintf_u(lx->OUT, FSWF(/**/"inherited_from", "from: %S"), valBuf);
+    u_fprintf(lx->OUT, "</font>\n");
+}
+
+void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale) {
+  const char *urlCal = lx->curLocaleBlob.calendar;
+  UErrorCode status = U_ZERO_ERROR;
+  UResourceBundle *fillin1 = NULL;
+  UResourceBundle *fillin2 = NULL;
+  const char *key = "DefaultCalendar";
+  const UChar *s;
+  int32_t len;
+
+  strcpy(lx->defaultCalendar, "gregorian");
+
+  fillin1 = ures_getByKey(myRB, "calendar", fillin1, &status);
+  fillin2 = ures_getByKeyWithFallback(fillin1, "default", fillin2, &status);
+
+  showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+
+  if(U_SUCCESS(status)) {
+    s  = ures_getString(fillin2, &len, &status);
+    if (s) {
+      {
+        char defCalStr[200];
+        if(len > 199) {
+          len = 199;
+        }
+        u_UCharsToChars(s, defCalStr, len);
+        defCalStr[len]=0;
+        if(defCalStr[0]) {
+          strcpy(lx->defaultCalendar,defCalStr);
+        }
+      }
+    }
+  }
+
+  if(U_SUCCESS(status)) {
+    UChar keyBuf[1024];
+    UChar valBuf[1024];
+    char loc[1024];
+    keyBuf[0]=0;
+    uloc_getDisplayKeyword("calendar",
+                           lx->dispLocale,
+                           keyBuf,
+                           1024,
+                           &status);
+    sprintf(loc, "@%s=%s", "calendar", lx->defaultCalendar);
+    uloc_getDisplayKeywordValue(loc,
+                                "calendar",
+                                lx->dispLocale,
+                                valBuf,
+                                1024,
+                                &status);
+    u_fprintf(lx->OUT, "%S %S: %S<br>", FSWF("keyword_Default", "Default"), keyBuf, valBuf);
+    if(lx->curLocaleBlob.calendar[0]) {
+      sprintf(loc, "@%s=%s", "calendar", lx->curLocaleBlob.calendar);
+      uloc_getDisplayKeywordValue(loc,
+                                  "calendar",
+                                  lx->dispLocale,
+                                  valBuf,
+                                  1024,
+                                  &status);
+      u_fprintf(lx->OUT, "%S %S: %S<br>", FSWF("keyword_Current", "Current"), keyBuf, valBuf);
+    }
+  }
+  /* user selection overrides default */
+  if(lx->curLocaleBlob.calendar[0]) {
+    strcpy(lx->defaultCalendar, lx->curLocaleBlob.calendar);
+  }
+
+  u_fprintf(lx->OUT, "</TD>");
+  showKeyAndEndItem(lx, key, locale);
+}
 
 
+void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
+{
+  UErrorCode status = U_ZERO_ERROR;
+  UBool typeFallback = FALSE;
+  UResourceBundle *calBundle = NULL; /* "calendar" */
+  UResourceBundle *myBundle = NULL; /* 'type' */
+  UResourceBundle *fbBundle = NULL; /* gregorian */
+    
+  /* %%%%%%%%%%%%%%%%%%%%%%%*/
+  /*   Date/Time section %%%*/
+  showDefaultCalendar(lx, myRB, locale); /* and setup lx->defaultCalendar */
+
+  calBundle = ures_getByKey(myRB, "calendar", NULL, &status);
+
+  if(U_FAILURE(status)) {
+    u_fprintf(lx->OUT, "Can't load 'calendar': ");
+    explainStatus(lx, status, "calendar");
+    return;
+  }
+
+  if(!strcmp(lx->defaultCalendar,"gregorian")) {
+    lx->calMyBundle = ures_getByKeyWithFallback(calBundle, "gregorian", NULL, &status);
+    if(U_FAILURE(status)) {
+      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", lx->defaultCalendar);
+      explainStatus(lx, status, "calendar");
+      return;
+    }
+  } else {
+    lx->calMyBundle = ures_getByKeyWithFallback(calBundle, lx->defaultCalendar, NULL, &status);
+    if(U_FAILURE(status)) {
+      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", lx->defaultCalendar);
+      explainStatus(lx, status, "calendar");
+      return;
+    }
+    lx->calFbBundle = ures_getByKeyWithFallback(calBundle, "gregorian", NULL, &status);
+    if(U_FAILURE(status)) {
+      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", "gregorian");
+      explainStatus(lx, status, "calendar");
+      return;
+    }
+  }
+
+  if(U_FAILURE(status)) {
+    explainStatus(lx, status, "calendar");
+    return;
+  }
+
+  showShortLongCal(lx, myRB, locale, "dayNames"); 
+  showShortLongCal(lx, myRB, locale, "monthNames");
+  
+  u_fprintf(lx->OUT, "&nbsp;<table cellpadding=0 cellspacing=0 width=\"100%%\"><tr><td VALIGN=\"TOP\">");
+  
+  {
+    const UChar *ampmDesc[3];
+    ampmDesc[0] = FSWF("AmPmMarkers0", "am");
+    ampmDesc[1] = FSWF("AmPmMarkers1", "pm");
+    ampmDesc[2] = 0;
+    
+    showArrayWithDescription(lx, myRB, locale, ampmDesc, "AmPmMarkers", kCal);
+  }
+  u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td VALIGN=\"TOP\">");
+  showArray(lx, myRB, locale, "eras", kCal);
+  u_fprintf(lx->OUT, "</td></tr></table>");
+  
+  
+  {
+    const UChar *dtpDesc[10]; /* flms */
+    dtpDesc[0] = FSWF("DateTimePatterns0", "Full Time");
+    dtpDesc[1] = FSWF("DateTimePatterns1", "Long Time");
+    dtpDesc[2] = FSWF("DateTimePatterns2", "Medium Time");
+    dtpDesc[3] = FSWF("DateTimePatterns3", "Short Time");
+    dtpDesc[4] = FSWF("DateTimePatterns4", "Full Date");
+    dtpDesc[5] = FSWF("DateTimePatterns5", "Long Date");
+    dtpDesc[6] = FSWF("DateTimePatterns6", "Medium Date");
+    dtpDesc[7] = FSWF("DateTimePatterns7", "Short Date");
+    dtpDesc[8] = FSWF("DateTimePatterns8", "Date-Time pattern.<BR>{0} = time, {1} = date");
+    dtpDesc[9] = 0;
+    
+    showArrayWithDescription(lx, myRB, locale, dtpDesc, "DateTimePatterns", kCal);
+  }
+  
+  
+  { 
+    const UChar *zsDesc[8];
+    zsDesc[0] = FSWF("zoneStrings0", "Canonical");
+    zsDesc[1] = FSWF("zoneStrings1", "Normal Name");
+    zsDesc[2] = FSWF("zoneStrings2", "Normal Abbrev");
+    zsDesc[3] = FSWF("zoneStrings3", "Summer/DST Name");
+    zsDesc[4] = FSWF("zoneStrings4", "Summer/DST Abbrev");
+    zsDesc[5] = FSWF("zoneStrings5", "Example City");
+#ifndef LX_NO_USE_UTIMZONE
+    zsDesc[6] = FSWF("zoneStrings6", "Raw Offset");
+#else
+    zsDesc[6] = 0;
+#endif
+    zsDesc[7] = 0;
+    
+    show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");  /* not calendrical */
+  }
+  
+  /* locale pattern chars */
+  {
+    const UChar *charDescs[22];
+    
+    charDescs[0] = FSWF("localPatternChars0", "Era");
+    charDescs[1] = FSWF("localPatternChars1", "Year");
+    charDescs[2] = FSWF("localPatternChars2", "Month");
+    charDescs[3] = FSWF("localPatternChars3", "Day of Month");
+    charDescs[4] = FSWF("localPatternChars4", "Hour Of Day 1");
+    charDescs[5] = FSWF("localPatternChars5", "Hour Of Day 0"); 
+    charDescs[6] = FSWF("localPatternChars6", "Minute");
+    charDescs[7] = FSWF("localPatternChars7", "Second");
+    charDescs[8] = FSWF("localPatternChars8", "Millisecond");
+    charDescs[9] = FSWF("localPatternChars9", "Day Of Week");
+    charDescs[10] = FSWF("localPatternChars10", "Day Of Year");
+    charDescs[11] = FSWF("localPatternChars11", "Day Of Week In Month");
+    charDescs[12] = FSWF("localPatternChars12", "Week Of Year");
+    charDescs[13] = FSWF("localPatternChars13", "Week Of Month");
+    charDescs[14] = FSWF("localPatternChars14", "Am/Pm");
+    charDescs[15] = FSWF("localPatternChars15", "Hour 1");
+    charDescs[16] = FSWF("localPatternChars16", "Hour 0"); 
+    charDescs[17] = FSWF("localPatternChars17", "Timezone");
+    charDescs[18] = FSWF("localPatternChars18", "Year (of 'Week of Year')");
+    charDescs[19] = FSWF("localPatternChars19", "Day of Week (1=first day according to locale)");
+    charDescs[20] = 0;
+    
+    showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", TRUE); /* calendrical? */
+  }
+  showDateTimeElements(lx, myRB, locale); /* not calendrical? */
+}

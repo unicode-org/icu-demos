@@ -4,6 +4,7 @@
 ***********************************************************************/
 #include "locexp.h"
 #include <unicode/ustdio.h>
+#include "unicode/unum.h"
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -66,6 +67,7 @@ void initCGIVariables(LXContext* lx)
   lx->acceptCharset   = getenvOrEmpty("HTTP_ACCEPT_CHARSET");
   lx->serverName      = getenvOrEmpty("SERVER_NAME");
   lx->hostName        = getenvOrEmpty("HTTP_HOST");
+  lx->cookies         = getenvOrEmpty("HTTP_COOKIE");
   lx->acceptLanguage  = getenvOrEmpty("HTTP_ACCEPT_LANGUAGE");
 
   /* fix up hostPort */
@@ -141,6 +143,25 @@ const char *fieldInQuery(LXContext* lx, const char *query, const char *field)
   return NULL;
 }
 
+const char *fieldInCookie(LXContext* lx, const char *query, const char *field)
+{
+  const char *q = query;
+  int32_t len   = strlen(field);
+  while (*q && (q = strstr(q, field))) {  /* look for an occurance of the field */
+
+    /* fprintf(stderr, "trine %s>%s<\n", field, q); */
+    if(((q==query) || (q[-1]==' ' && q[-2]==';')) && /* beginning, or field boundary */
+       (q[len]=='=')) {   /* end with = sign */
+      return q+len+1; 
+    }
+    q++;
+    if(*q == ' ') {
+      q++;
+    }
+  }
+  return NULL;
+}
+
 const char *copyField(LXContext* lx, const char *val)
 {
   const char *end;
@@ -160,8 +181,27 @@ const char *copyField(LXContext* lx, const char *val)
   }
 }
 
+const char *copyCookieField(LXContext* lx, const char *val)
+{
+  const char *end;
+
+  if(!val) return NULL; /* not found */
+  if(!*val) return val;  /* 0 length field at end of string */
+  
+  end = strchr(val, ';');
+  if(!end) {
+    return strdup(val);  /* you get the whole string - */
+  } else {
+    char *ret;               /* copy up to but not including & */
+    ret = malloc(end-val+1);
+    strncpy(ret,val,end-val);
+    ret[end-val]=0;
+    return ret;
+  }
+}
+
 /* Generic routines */
-const char *getQueryField(LXContext* lx, const char *field)
+static const char *getQueryField(LXContext* lx, const char *field)
 {
   const char *val = NULL;
 
@@ -187,6 +227,30 @@ UBool hasQueryField(LXContext* lx, const char *field)
 {
   const char *val =  getQueryField(lx,field);
   if((val == NULL) || (*val == '&')) {
+    return FALSE; 
+  } else {
+    return TRUE; 
+  }
+}
+
+/* Cookie versions */
+const char *cookieField(LXContext* lx, const char *field)
+{
+  if((lx->cookies == NULL) || !lx->cookies[0]) {
+    return FALSE;
+  }
+  const char *val =  fieldInCookie(lx,lx->cookies, field);
+
+  return copyField(lx, val);
+}
+
+UBool hasCookieField(LXContext* lx, const char *field)
+{
+  if((lx->cookies == NULL) || !lx->cookies[0]) {
+    return FALSE;
+  }
+  const char *val =  fieldInCookie(lx,lx->cookies, field);
+  if((val == NULL) || (*val == ';')) {
     return FALSE; 
   } else {
     return TRUE; 
@@ -220,4 +284,26 @@ void appendHeader(LXContext* lx, const char *header, const char *fmt, ...)
     lx->headers = realloc(lx->headers,lx->headerLen);
   }
   strcat(lx->headers,buf);
+}
+
+double parseDoubleFromField(LXContext* lx, UNumberFormat* nf, const char *key, double defVal) {
+  return parseDoubleFromString(lx, nf, queryField(lx, key), defVal);
+}
+
+double parseDoubleFromString(LXContext* lx, UNumberFormat* nf, const char *str, double defVal) {
+  UChar valueString[1024];
+  int32_t parsePos = 0;
+  double val = 0.;
+  UErrorCode status = U_ZERO_ERROR;
+  if(!str || !*str) {
+    return defVal;
+  }
+  /* Localized # */
+  unescapeAndDecodeQueryField(valueString, (sizeof(valueString)/sizeof(valueString[0]))-1, str);
+  u_replaceChar(valueString, 0x0020, 0x00A0);
+  val = unum_parseDouble(nf, valueString, -1, &parsePos, &status);
+  if(U_FAILURE(status)) {
+    val = defVal;
+  }
+  return val;
 }

@@ -100,6 +100,18 @@ U_CAPI void destroyLocaleTree(MySortable *d);
  */
 U_CAPI MySortable *findLocale(MySortable *root, const char *locale);
 
+
+/**
+ * create a MySortable list of regions (2nd level entries) - simply aliases into another 
+ * locale tree
+ * @param inLocale the Locale the tree should be created in
+ * @param locales locale tree to search
+ * @param regionCount [return] total # of items in the list
+ * @return a new MySortable list, owned by the caller.  Not sorted.
+ */
+
+U_CAPI MySortable *createRegionList(const char *inLocale, MySortable *locales);
+
 /* Pick a better charset name */
 U_CAPI const char *MIMECharsetName(const char *origName);
 

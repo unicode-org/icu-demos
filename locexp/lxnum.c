@@ -32,7 +32,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
     u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_NumberPatterns_What","This example demonstrates formatting of numbers in this locale."));
 
-    exploreFetchNextPattern(lx, pattern, strstr(lx->queryString,"EXPLORE_NumberPatterns")); 
+    exploreFetchNextPattern(lx, pattern, queryField(lx, "str")); 
 
     nf = unum_open(UNUM_DEFAULT,NULL, 0, locale, NULL, &status);
   
@@ -77,11 +77,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     value = 12345.6789; /* for now */
 
     /* Now, see if the user is trying to change the value. */
-    if((tmp = strstr(lx->queryString,"NP_LOC"))) /* localized numbre */
+    if(tmp = queryField(lx,"NP_LOC")) /* localized numbre */
     {
         /* Localized # */
-        tmp += 7;
-
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x0020, 0x00A0);
       
@@ -95,11 +93,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
             localValueErr = FSWF("formatExample_errorParse_num", "Could not parse this, replaced with a default value.");
 	}
     }
-    else if ((tmp = strstr(lx->queryString,"NP_DEF")) || (tmp = strstr(lx->queryString,"NP_DBL")))
+    else if ((tmp = queryField(lx,"NP_DEF")) || (tmp = queryField(lx,"NP_DBL")))
     { /* Default side, or number (NP_DBL) coming from somewhere else */
         /* Localized # */
-        tmp += 7;
-
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x0020, 0x00A0);
 
@@ -113,9 +109,8 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
             defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
         }
     }
-    else if ((tmp = strstr(lx->queryString, "NP_SPL")))
+    else if (tmp = queryField(lx, "NP_SPL"))
     {
-        tmp += 7;
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x00A0, 0x0020);  /* Spellout doesn't want to see NBSP's */
     
@@ -144,7 +139,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     /* NOW we are ready ! */
 
     /* display the FORM, and fetch the current pattern */
-    exploreShowPatternForm(lx, pattern, locale, "NumberPatterns", strstr(lx->queryString,"EXPLORE_NumberPatterns"), value, nf_default); 
+    exploreShowPatternForm(lx, pattern, locale, "NumberPatterns", queryField(lx, "str"), value, nf_default); 
 
 
     /* Now, display the results in <default> and in their locale */
@@ -164,9 +159,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     {
       
         u_fprintf(lx->OUT, "<B><I>%S</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
-        u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_NumberPatterns\">\r\n");
-        u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_NumberPatterns VALUE=\"");
+        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+                  getLXBaseURL(lx, kNO_URL));
+        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"str\" VALUE=\"");
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\">\r\n");
 
@@ -181,7 +176,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
       
     }
   
-    u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+    u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
     /* ============ 'localized' side ================================= */
 
@@ -196,9 +191,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     {
         /*  === local side */
         u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
-        u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_NumberPatterns\">\r\n");
-        u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_NumberPatterns VALUE=\"");
+        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+                  getLXBaseURL(lx, kNO_URL));
+        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"str\" VALUE=\"");
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\">\r\n");
       
@@ -216,16 +211,16 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
     /* ============== Spellout ================== */
     u_fprintf(lx->OUT, "<tr><td colspan=3>\r\n");
-    u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_NumberPatterns\">\r\n");
-    u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
-    u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_NumberPatterns VALUE=\"");
+    u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+              getLXBaseURL(lx, kNO_URL));
+    u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"str\" VALUE=\"");
     writeEscaped(lx, pattern);
     u_fprintf(lx->OUT, "\">\r\n");
 
     u_fprintf(lx->OUT, "<B>%S</B> ", FSWF("Spellout", "Spellout"));
 
 
-    if(strstr(lx->queryString, "NP_SPL"))
+    if(hasQueryField(lx, "NP_SPL"))
     {  
         u_fprintf(lx->OUT, "<BR>%S<BR>\r\n", valueString);
     }

@@ -4,6 +4,7 @@
 ***********************************************************************/
 
 #include "locexp.h"
+#include "unicode/udata.h"
 
 #define isNL(x) ((x)==0x000D || (x)==0x000A || (x)==0x2029 || (x)==0x2028)
 
@@ -287,7 +288,7 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
 
   /* pull out the text to be sorted. ===========================================================
    */
-  text = queryField(lx,"EXPLORE_CollationElements");
+  text = queryField(lx,"str");
 
   if(!text || !*text) {
     /* attempt load from RB */
@@ -446,6 +447,15 @@ void showSort(LXContext *lx, const char *locale)
 
   u_fprintf(lx->OUT, "<p><b>%S</b></p>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
 
+  {
+    char funcLoc[1024];
+    UErrorCode funcStat = U_ZERO_ERROR;
+    UBool isAvail;
+    
+    ures_getFunctionalEquivalent(funcLoc, 1023, U_ICUDATA_NAME U_TREE_SEPARATOR_STRING  "coll", "collations", "collation", locale, &isAvail, FALSE, &funcStat);
+    u_fprintf(lx->OUT, "<p>FE: %s</p>\n", funcLoc);
+  }
+
   strChars[0] = 0;
 
   if(strstr(locale,"g7") != NULL)
@@ -486,15 +496,15 @@ void showSort(LXContext *lx, const char *locale)
 /*  u_fprintf(lx->OUT, "%S<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted.")); */
 
   /* Table begin ============================================================================== */
-  u_fprintf(lx->OUT, "<FORM METHOD=\"POST\" ACTION=\"?_=%s&EXPLORE_CollationElements=&\">", 
-            locale);
+  u_fprintf(lx->OUT, "<FORM METHOD=\"POST\" ACTION=\"%s\">", 
+            getLXBaseURL(lx, kNO_URL));
   u_fprintf(lx->OUT, "<TABLE id=\"main\" class=\"wide\" border=1>\r\n");
   /* the source box  =======================================================================================*/
   u_fprintf(lx->OUT, " <tr> <td %s ><b>%S</b>\r\n", /* top is only 1 row for now */
             isG7?" rowspan=\"2\" ": /* width=\"22%\" */ " rowspan=\"1\" ",
             FSWF("usortSource", "Source"));
 
-  u_fprintf(lx->OUT, "<p><TEXTAREA %s ROWS=20 NAME=\"EXPLORE_CollationElements\">", 
+  u_fprintf(lx->OUT, "<p><TEXTAREA %s ROWS=20 NAME=\"str\">", 
             (isG7?"":" class=\"wide\" COLUMNS=20  COLS=20 "));
   
   writeEscaped(lx, strChars); 

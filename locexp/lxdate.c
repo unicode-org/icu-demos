@@ -155,7 +155,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
     }
   
-    u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG src=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+    u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG src=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
     /* ============ 'localized' side ================================= */
 

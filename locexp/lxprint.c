@@ -7,7 +7,7 @@
 
 
 #include "locexp.h"
-
+#include <unicode/uscript.h>
 
 /* Explain what the status code means --------------------------------------------------------- */
 
@@ -77,13 +77,13 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
 
     }
 
-    u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"../_/help.html#%s\">%S</A>",
+    u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"" LDATA_PATH "help.html#%s\">%S</A>",
               helpTag,str);
 }
 
 void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-    u_fprintf(lx->OUT, "<a href=\"../_/help.html#%s\" target=\"icu_lx_help\"><img %S src=\"../_/%S\" alt=\"%S\"></a>",
+    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH "%S\" alt=\"%S\"></a>",
               helpTag, 
               options, src, alt);
 }
@@ -94,28 +94,48 @@ void showExploreCloseButton(LXContext *lx, const char *locale, const char *frag)
     u_fprintf(lx->OUT, "<!-- no CLOSE BUTTON here. -->\r\n");
 }
 
+const char *keyToSection(const char *key) {
+  if(!strcmp(key, "CollationElements")) { 
+    return "col"; 
+  } else if(!strcmp(key, "NumberPatterns")) {
+    return "num";
+  } else if(!strcmp(key, "DateTimePatterns")) {
+    return "dat";
+  } else if(!strcmp(key, "Calendar")) {
+    return "cal";
+  } else {
+    return key;
+  }
+}
+
 void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key)
 {
     UChar nullString[] = { 0x0000 };
+    const char *section;
   
+    section = keyToSection(key);
+
     if(!sampleString)
         sampleString = nullString;
 
-    u_fprintf(lx->OUT, "\r\n<form target=\"_new\" name=EXPLORE_%s action=\"#EXPLORE_%s\">\r\n"
-              "<input type=hidden name=_ value=\"%s\">\r\n"
-              "<input type=hidden name=\"EXPLORE_%s\" value=\"",
-              key, key,locale,key);
+    u_fprintf(lx->OUT, "\r\n<form target=\"_new\" method=POST name=EXPLORE_%s action=\"%s#EXPLORE_%s\">\r\n"
+              "<input type=hidden name=\"x\" value=\"%s\">"
+              "<input type=hidden name=\"str\" value=\"",
+              section, getLXBaseURL(lx, kNO_URL | kNO_SECT), section,section);
     writeEscaped(lx, sampleString);
     u_fprintf(lx->OUT, "\">\r\n");
   
-    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"../_/explore.gif\" align=right value=\"%S\"></form>",
+    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" align=right value=\"%S\"></form>",
               FSWF("exploreTitle", "Explore"));
 }
 
 void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign)
 {
-  u_fprintf(lx->OUT, "<a target=\"_new\" href=\"?_=%s&EXPLORE_%s=\">", locale, key);
-  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"../_/explore.gif\" %s ALT=\"%S\">",
+    const char *section;  
+    section = keyToSection(key);
+
+    u_fprintf(lx->OUT, "<a target=\"_new\" href=\"%s&x=%s\">", getLXBaseURL(lx, kNO_URL|kNO_SECT), section);
+  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" %s ALT=\"%S\">",
               rightAlign?"ALIGN=RIGHT ":"",
             FSWF("exploreTitle", "Explore") );
   u_fprintf(lx->OUT, "</a>\r\n");
@@ -124,12 +144,14 @@ void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *loca
 void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key)
 {
     UChar nullString[] = { 0x0000 };
+    const char *section;  
+    section = keyToSection(key);
   
     if(!sampleString)
         sampleString = nullString;
 
-    u_fprintf(lx->OUT, "<A TARGET=\"lx_explore_%s_%s\" HREF=\"?_=%s&EXPLORE_%s=",
-              locale,key,locale,key);
+    u_fprintf(lx->OUT, "<A TARGET=\"lx_explore_%s_%s\" HREF=\"%s&x=%s&str=",
+              locale,key,getLXBaseURL(lx, kNO_URL | kNO_SECT),section);
     writeEscaped(lx, sampleString);
     u_fprintf(lx->OUT, "&\">");
 }
@@ -138,7 +160,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
     u_fprintf(lx->OUT, "<TABLE summary=\"%S\" BORDER=0 CELLSPACING=0 WIDTH=\"100%%\">", keyName);
-    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
     u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s>", key);
     u_fprintf(lx->OUT,"</A>", keyName);
 
@@ -178,9 +200,8 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
     UChar tmp[1024];
 
     /**********  Now we've got the pattern from the user. Now for the form.. ***/
-    u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_%s\">\r\n",
-              key);
-    u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>", locale);
+    u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_%s\">\r\n",
+              getLXBaseURL(lx, kNO_URL), key);
 
     if(valueFmt)
     {
@@ -190,9 +211,7 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
         unum_formatDouble(valueFmt, value, tmp, 1000, 0, &status);
         u_fprintf(lx->OUT, "%S\">", tmp);
     }
-    u_fprintf(lx->OUT, "<TEXTAREA ROWS=2 COLS=60 NAME=\"EXPLORE_%s\">",
-              key);
-
+    u_fprintf(lx->OUT, "<TEXTAREA ROWS=2 COLS=60 NAME=\"str\">");
 
     lx->backslashCtx.html = FALSE;
 
@@ -215,7 +234,7 @@ void printStatusTable(LXContext *lx)
     UChar *dateStr;
     
     u_fprintf(lx->OUT, "<table border=0 cellspacing=0 width=\"100%%\">");
-    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
     u_fprintf(lx->OUT, "  <tr>\r\n   <td colspan=3 width=0 valign=top bgcolor=" kXKeyBGColor "><a name=%s><b>", "YourSettings");
     
     /* PrintHelpTag */
@@ -271,7 +290,7 @@ void printStatusTable(LXContext *lx)
 
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"../_/incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
+        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH "incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
     }
 
     u_fprintf(lx->OUT, "</td></tr>\r\n"); /* end little right hand thingy */
@@ -283,16 +302,11 @@ void printStatusTable(LXContext *lx)
   
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale");
-        if(strncmp(lx->queryString, "locale",6))
-            u_fprintf(lx->OUT,"&%s", lx->queryString);
-        u_fprintf(lx->OUT, "\">");
-    }
-    uloc_getDisplayName(lx->dispLocale, lx->dispLocale, myChars, 1024, &status);
-    u_fprintf_u(lx->OUT, myChars);
-    if(lx->inDemo == FALSE)
-    {
-        u_fprintf(lx->OUT, "</a>");
+      printChangeA(lx, lx->dispLocale, "d");
+    } else {
+      uloc_getDisplayName(lx->dispLocale, lx->dispLocale, myChars, 1024, &status);
+      u_fprintf_u(lx->OUT, myChars);
+      u_fprintf(lx->OUT, " <i>TODO: make this clickable</i> ");
     }
     u_fprintf(lx->OUT, "</td></tr>\r\n");
 
@@ -343,7 +357,7 @@ void printStatusTable(LXContext *lx)
     }
 
 
-    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#AFA8AF\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></TD></TR>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#AFA8AF\" colspan=3><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=0 height=0></TD></TR>\r\n");
     
     u_fprintf(lx->OUT, "</table>\r\n");
     u_fprintf(lx->OUT, "<center>\r\n");
@@ -501,4 +515,377 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
             lx->scriptName);
     fflush(lx->fOUT);
     exit(0);
+}
+
+/* ============================ */
+/* Changes. */
+#define kCalendarPart 'K'
+#define kCollationPart 'S'
+#define kCurrencyPart 'Y'
+
+
+/* void showKeywordMenuList(LXContext *lx, UEnumeration *e, UErrorCode *status) { */
+/*   const char *s = NULL; */
+/*   if(U_FAILURE(*status)) { */
+/*     return; */
+/*   } */
+/*   while(s = uenum_next(e, NULL, status)) { */
+/*     showKeywordMenu(lx, s, status); */
+/*   } */
+/*   uenum_close(e); */
+/* } */
+
+#if 0
+void exPrintChangeLocale(LXContext *lx)
+{
+  int32_t n;
+  UChar dispname[1024];
+  UErrorCode status = U_ZERO_ERROR;
+
+  uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispname, 1023, &status);
+  u_fprintf(lx->OUT, "Now: [%s]<br>\n", lx->curLocaleName);
+  u_fprintf(lx->OUT, "= %S<br>\n", dispname);
+  u_fprintf(lx->OUT, "<form method=GET action=\"?_=%s\">\n", lx->curLocaleName);
+
+  u_fprintf(lx->OUT, "<select name=l>\n");
+  u_fprintf(lx->OUT, " <option value=\"\">\n");
+  for(n=0;n<lx->locales->nSubLocs;n++) {
+    u_fprintf(lx->OUT, " <option %s value=\"%s\">%S\n",
+              !strcmp(lx->locales->subLocs[n]->str,lx->curLocaleL)?"selected":"",
+              lx->locales->subLocs[n]->str,
+              lx->locales->subLocs[n]->ustr);
+  }
+  u_fprintf(lx->OUT, "</select>\n");
+
+  u_fprintf(lx->OUT, "<select name=s>\n");
+  u_fprintf(lx->OUT, " <option value=\"\">\n");
+  for(n=0;n<USCRIPT_CODE_LIMIT;n++) {
+    u_fprintf(lx->OUT, " <option %s value=\"%s\">%s\n",
+              !strcmp(uscript_getShortName((UScriptCode)n),lx->curLocaleS)?"selected":"",
+              uscript_getShortName((UScriptCode)n),
+              uscript_getName((UScriptCode)n)); /* change to localized */
+  }
+  u_fprintf(lx->OUT, "</select>\n");
+
+  u_fprintf(lx->OUT, "<select name=r>\n");
+  u_fprintf(lx->OUT, " <option value=\"\">\n");
+  for(n=0;n<lx->regions->nSubLocs;n++) {
+    char rgn[128];
+    
+    uloc_getCountry(lx->regions->subLocs[n]->str, rgn, 128, &status);
+
+    u_fprintf(lx->OUT, " <option %s value=\"%s\">%S\n",
+              !strcmp(rgn,lx->curLocaleR)?"selected":"",
+              rgn,
+              lx->regions->subLocs[n]->ustr);
+  }
+  u_fprintf(lx->OUT, "</select>\n");
+
+  u_fprintf(lx->OUT, "<select name=v>\n");
+  u_fprintf(lx->OUT, "</select>\n");
+
+  showKeywordMenuList(lx, ucol_getKeywords(&status), &status);
+  if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
+  showKeywordMenu(lx, "calendar", &status);
+  if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
+  showKeywordMenu(lx, "currency", &status);
+  if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
+  
+  u_fprintf(lx->OUT, "<input type=submit>\n");
+  u_fprintf(lx->OUT, "</form>\n");
+}
+#endif
+
+void printChangeField(LXContext *lx, const char *locale, const char *prefix, char part)
+{
+  UChar dispname[1024];
+  UErrorCode status = U_ZERO_ERROR;
+  dispname[0]=0;
+  switch(part) {
+  case 'l':
+    uloc_getDisplayLanguage(locale, lx->dispLocale, dispname, 1023, &status);
+    break;
+  case 's':
+    uloc_getDisplayScript(locale, lx->dispLocale, dispname, 1023, &status);
+    break;
+  case 'r':
+    uloc_getDisplayCountry(locale, lx->dispLocale, dispname, 1023, &status);
+    break;
+  case 'v':
+    uloc_getDisplayVariant(locale, lx->dispLocale, dispname, 1023, &status);
+    break;
+  }
+  if(dispname[0]) {
+    if((part == 'v') || (part == 's')) {
+      u_fprintf(lx->OUT, " (");
+    }
+    u_fprintf(lx->OUT, "%S", dispname);
+    if((part == 'v') || (part == 's')) {
+      u_fprintf(lx->OUT, ")");
+    }
+  } else {
+    u_fprintf(lx->OUT, "&nbsp;");
+  }
+}
+
+void printChangeKeyword(LXContext *lx, const char *locale, const char *prefix, 
+                        const char *what, char type)
+{
+    UChar keyBuf[1024];
+    UChar valBuf[1024];
+    UErrorCode status = U_ZERO_ERROR;
+
+    keyBuf[0]=0;
+    uloc_getDisplayKeyword(what,
+                           lx->dispLocale,
+                           keyBuf,
+                           1024,
+                           &status);
+    if(U_FAILURE(status)) {
+      keyBuf[0]=0;
+      status = U_ZERO_ERROR;
+    }
+    valBuf[0]=0;
+    uloc_getDisplayKeywordValue(locale,
+                                what,
+                                lx->dispLocale,
+                                valBuf,
+                                1024,
+                                &status);
+    if(U_FAILURE(status)) {
+      valBuf[0]=0;
+      status = U_ZERO_ERROR;
+    }
+    
+    u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
+              getLXBaseURL(lx, kNO_URL | kNO_SECT),
+              prefix, type, lx->section);
+    u_fprintf(lx->OUT, "%S: <b>%S</b>\n", keyBuf, valBuf);
+    u_fprintf(lx->OUT, "</a> &nbsp;");
+}
+
+void printChangeA(LXContext *lx, const char *locale, const char *prefix)
+{
+  int32_t n;
+  UErrorCode status = U_ZERO_ERROR;
+  
+  u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
+            getLXBaseURL(lx, kNO_URL | kNO_SECT),
+            prefix, 'l', lx->section);
+  printChangeField(lx, locale, prefix, 'l');
+  printChangeField(lx, locale, prefix, 's');
+  u_fprintf(lx->OUT, "</a> &nbsp;");
+
+  u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
+            getLXBaseURL(lx, kNO_URL | kNO_SECT),
+            prefix, 'r', lx->section);
+  printChangeField(lx, locale, prefix, 'r');
+  printChangeField(lx, locale, prefix, 'v');
+  u_fprintf(lx->OUT, "</a> &nbsp;");
+  
+  if(prefix[0]==0) {
+    /* -------------- calendar ---------- */
+    printChangeKeyword(lx, locale, prefix, "calendar", kCalendarPart);
+    printChangeKeyword(lx, locale, prefix, "collation", kCollationPart);
+    printChangeKeyword(lx, locale, prefix, "currency", kCurrencyPart);
+  }
+}
+
+void printChangeLocale(LXContext *lx)
+{
+#if defined(LX_DEBUG)
+  u_fprintf(lx->OUT, "<tt>base URL= %s</tt><br>\n", getLXBaseURL(lx,0));
+#endif
+  printChangeA(lx, lx->curLocaleName, "");
+}
+
+static void startCell(LXContext *lx) 
+{
+  u_fprintf(lx->OUT, "<table border=3><tr>");
+}
+
+static void printCell(LXContext *lx, const char *myURL, const char *prefix, char part, const char *str, 
+               UChar* ustr, int32_t n, const char* current)
+{
+  UBool selected;
+  char partStr[20];
+  partStr[0] = part;
+  partStr[1] = 0;
+  switch(part) {
+  case kCalendarPart:
+    prefix="";
+    strcpy(partStr, "calendar"); break;
+  case kCollationPart:
+    prefix="";
+    strcpy(partStr, "collation"); break;
+  case kCurrencyPart:
+    prefix="";
+    strcpy(partStr, "currency"); break;
+  default: ;
+  }
+  if(n>0 && (n%5)==0) {
+    u_fprintf(lx->OUT, "</tr>\n<tr>");
+  }
+  selected = (!strcmp(str,current));
+  if(selected) {
+    u_fprintf(lx->OUT, "<td bgcolor=\"#DDDDFF\">", lx->OUT);
+  } else {
+    u_fprintf(lx->OUT, "<td>");
+  }
+  u_fprintf(lx->OUT, " <a href=\"%s&%s%s=%s&\">%S</a>\n",
+            myURL,
+            prefix,
+            partStr,
+            str,
+            ustr);
+  u_fprintf(lx->OUT, "</td>");
+}
+
+static void endCell(LXContext *lx)
+{
+  u_fprintf(lx->OUT, "</tr></table>");
+}
+
+
+void showKeywordMenu(LXContext *lx, const char *e, const char *kwVal, int32_t *n, const char *myURL, const char *prefix, char part, UErrorCode *status) {
+  char funcE[129];
+  char funcL[129];
+  UEnumeration *en;
+  const char *s;
+
+  if(U_FAILURE(*status)) {
+    return;
+  }
+  /*u_fprintf(lx->OUT, "%s=\n", e);*/
+  if(!strcmp(e, "collation")) {
+    en = ucol_getKeywordValues(e, status);
+  } else if(!strcmp(e, "currency")) {
+    en = ures_getKeywordValues( "ICUDATA", "Currencies", status);
+  } else  {
+    en = ures_getKeywordValues( "ICUDATA", e, status);
+  }
+  while(s = uenum_next(en, NULL, status)) {
+    UChar u[1024];
+    char floc[345];
+    sprintf(floc, "@%s=%s", e, s);
+    uloc_getDisplayKeywordValue(floc, e, lx->dispLocale, u, 1024, status);
+    printCell(lx, myURL, prefix, part, s, u, *n, kwVal);
+    (*n) ++;
+  }
+  uenum_close(en);
+}
+
+void showChangePage(LXContext *lx)
+{
+  const char *changeWhat;
+  char part = 0;
+  UBool isDisp = FALSE;
+  char prefix[4];
+  char oxStr[20];
+  char myURL[2048];
+  const char *ox;
+  const char *baseU;
+  int32_t n =0;
+  UBool selected = FALSE;
+  LocaleBlob *b;
+  UErrorCode status = U_ZERO_ERROR;
+  int32_t adds = 0;
+
+  ox = queryField(lx, "ox");
+  if(ox && *ox) {
+    strcpy(oxStr,"&x=");
+    strcat(oxStr, ox);
+  } else {
+    oxStr[0]=0;
+  }
+  changeWhat = lx->section + strlen("ch");
+  if(*changeWhat == 'd') {
+    isDisp = TRUE;
+    changeWhat++;
+    strcpy(prefix,"d_");
+    b = &lx->dispLocaleBlob;
+    u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("changeLocale", "Change the Locale used for Labels"));
+  } else {
+    u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
+    strcpy(prefix, "_");
+    b = &lx->curLocaleBlob;
+  }
+  part = *changeWhat;
+  switch(part) {
+  case kCalendarPart: adds |= kNO_CAL; break;
+  case kCollationPart: adds |= kNO_COLL; break;
+  case kCurrencyPart: adds |= kNO_CURR; break;
+  default: adds=0;
+  }
+  baseU = getLXBaseURL(lx, kNO_URL | kNO_SECT | adds);
+  strcpy(myURL, baseU);
+  strcat(myURL, oxStr);
+  switch (part) {
+  case 'l':
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Locale", "Languages"));
+    startCell(lx);
+    for(n=0;n<lx->locales->nSubLocs;n++) {
+      printCell(lx, myURL, prefix, part, lx->locales->subLocs[n]->str, 
+                lx->locales->subLocs[n]->ustr, n, b->l);
+    }
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->l);
+    endCell(lx);
+    break;
+  case 's':
+    startCell(lx);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->s);
+    endCell(lx);
+    break;
+  case 'r':
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Sublocale", "Regions"));
+    startCell(lx);
+    for(n=0;n<lx->regions->nSubLocs;n++) {
+      int32_t len, len2; 
+      char rgn[128];
+      len = uloc_getCountry(lx->regions->subLocs[n]->str, rgn, 128, &status);
+      rgn[len] = '_';
+      len2 = uloc_getVariant(lx->regions->subLocs[n]->str, rgn+len+1, 128-len-1, &status);
+      if(len2 == 0) { /* didn't have a variant */
+        rgn[len]=0;
+      }
+      printCell(lx, myURL, prefix, part, rgn,
+                lx->regions->subLocs[n]->ustr, n, b->r);
+    }
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->r);
+    endCell(lx);
+    break;
+
+  case 'v':
+    startCell(lx);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->v);
+    endCell(lx);
+    break;
+
+  case kCalendarPart:
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Calendar", "Calendars"));
+    startCell(lx);
+    showKeywordMenu(lx, "calendar", b->calendar, &n, myURL, prefix, part, &status);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->calendar);
+    endCell(lx);
+    break;
+
+  case kCollationPart:
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Collation", "Collation"));
+    startCell(lx);
+    showKeywordMenu(lx, "collation", b->collation, &n, myURL, prefix, part, &status);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->collation);
+    endCell(lx);
+    break;
+
+  case kCurrencyPart:
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Currency", "Currency"));
+    startCell(lx);
+    showKeywordMenu(lx, "currency", b->currency, &n, myURL, prefix, part, &status);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Clear", "(clear)"), n, b->currency);
+    endCell(lx);
+    break;
+
+  default:
+    u_fprintf(lx->OUT, "Err - unknkown type code '%c'\n", part);
+  }
 }

@@ -437,119 +437,299 @@ UResourceBundle *getDisplayBundle(LXContext *lx, UErrorCode *status)
   return lx->dispRB;
 }
 
+void setBlobFromLocale(LXContext *lx, LocaleBlob* b, const char *loc, UErrorCode *status)
+{
+  char *aL = b->l;
+  char *aS = b->s;
+  char *aR = b->r;
+  char *aV = b->v;
+
+  *aL = 0;
+  *aS = 0;
+  *aR = 0;
+  *aV = 0;
+  
+  b->name[0]=0;
+
+  if(loc) {
+    uloc_getName(loc, b->base, LBUFBIG-1, status);  /* canonicalize? */
+    b->base[LBUFBIG-1]=0;
+
+    /* pull out any fields */
+    uloc_getLanguage(b->base,  aL, LBUFSML-1, status);
+    uloc_getScript(b->base,    aS, LBUFSML-1, status);
+    uloc_getCountry(b->base,   aR, LBUFSML-1, status);
+    uloc_getVariant(b->base,   aV, LBUFSML-1, status);
+
+  } else {
+    b->base[0]=0;
+  }
+}
+
+/**
+ * @param lx context
+ * @param b locale blob
+ * @param type: either '' or 'd' for regular or display locale
+ */
+void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
+{
+  char *aL = b->l;
+  char *aS = b->s;
+  char *aR = b->r;
+  char *aV = b->v;
+  char *aCalendar = b->calendar;
+  char *aCollator = b->collation;
+  char *aCurrency = b->currency;
+  char fieldName[30]="";
+  char *fieldChar;
+  char *curLocale;
+  const char *q;
+  UErrorCode status = U_ZERO_ERROR;
+  /*char aKeywords[LBUFBIG] ="";*/
+  UEnumeration* keywordEnum = NULL;
+  const char *keyword;
+  int32_t keywordLen = 0;
+
+  curLocale = b->base;
+  
+  strcpy(fieldName, type);
+  strcat(fieldName, "_");
+  fieldChar = fieldName + strlen(fieldName);
+
+  /* load cookie exp field - if present */
+  if((q=queryField(lx, fieldName)) ||
+     (q=cookieField(lx, fieldName))) {
+    setBlobFromLocale(lx, b, q, &status);
+  } else {
+    setBlobFromLocale(lx, b, NULL, &status);
+  }
+
+  keywordEnum = uloc_openKeywords(curLocale, &status);
+  while(keyword = uenum_next(keywordEnum, &keywordLen, &status)) {
+    if(!strcmp(keyword,"calendar")) {
+      uloc_getKeywordValue(curLocale, keyword, aCalendar, LBUFSML-1, &status);
+    } else if(!strcmp(keyword,"currency")) {
+      uloc_getKeywordValue(curLocale, keyword, aCurrency, LBUFSML-1, &status);
+    } else if(!strcmp(keyword,"collation")) {
+      uloc_getKeywordValue(curLocale, keyword, aCollator, LBUFSML-1, &status);
+    } else {
+      /* unsupported keyword */
+    }
+  }
+  uenum_close(keywordEnum);
+
+  fieldChar[1] = 0;
+  
+  /* now the parts - _s, _r, _l, _v  or d_s, d_r, d_l, d_v */
+  fieldChar[0] = 'l';
+  if(q=queryField(lx, fieldName)) {
+    strncpy(aL, q, LBUFSML-1);
+    aS[0]=0; /* setting Language zeros Script */
+  }
+  fieldChar[0] = 's';
+  if(q=queryField(lx, fieldName)) {
+    strncpy(aS, q, LBUFSML-1);
+  }
+  fieldChar[0] = 'r';
+  if(q=queryField(lx, fieldName)) {
+    strncpy(aR, q, LBUFSML-1);
+    aV[0]=0; /* setting Region zeros Variant */
+  }
+  fieldChar[0] = 'v';
+  if(q=queryField(lx, fieldName)) {
+    strncpy(aV, q, LBUFSML-1);
+  }
+
+  if(type[0] == 0) {
+    /* keywords for display locale are NOT supported */
+    if(q=queryField(lx, "collation")) {
+      strncpy(aCollator, q, LBUFSML-1);
+    }
+    if(q=queryField(lx, "currency")) {
+      strncpy(aCurrency, q, LBUFSML-1);
+    }
+    if(q=queryField(lx, "calendar")) {
+      strncpy(aCalendar, q, LBUFSML-1);
+    }
+  }
+  curLocale[0]=0;
+
+  if((strlen(aL)+strlen(aS)+strlen(aR)+strlen(aV)+strlen(aCollator)+strlen(aCalendar)+strlen(aCurrency)+strlen("___@collation=&calendar=&currency=&=="))>LBUFSML-1) {
+    strcpy(b->name,"locale_too_big_");
+    return;
+  }
+  
+  if(aL[0]) {
+    strcat(curLocale, aL);
+  }
+  if(!strchr(aL,'_')) { /* language could be lang+script */
+    if(aS[0]) {/* ignore script if language had _ */
+      strcat(curLocale, "_");
+      strcat(curLocale, aS);
+    }
+    if(aR[0]) {
+      strcat(curLocale, "_");
+    }
+  }
+  if(aR[0]) {
+    strcat(curLocale, aR);
+  }
+  if(!strchr(aR,'_')) {
+    if(aV[0]) { /* ignore variant if Region had _ */
+      if(!aR[0]) {
+        strcat(curLocale, "__");
+      } else {
+        strcat(curLocale, "_");
+      }
+      strcat(curLocale, aV);
+    }
+  }
+
+  /* now, work on keywords */
+  strcpy(b->name, b->base);
+  curLocale = b->name;
+
+  /* add in keywords */
+  if(type[0] == 0) { /* only for non-display */
+    UBool hadKw = FALSE;
+    if(aCollator[0]) {
+      if(hadKw) {
+        strcat(curLocale, ";");
+      } else {
+        strcat(curLocale, "@");
+        hadKw = TRUE;
+      }
+      strcat(curLocale, "collation=");
+      strcat(curLocale, aCollator);
+    }
+    if(aCalendar[0]) {
+      if(hadKw) {
+        strcat(curLocale, ";");
+      } else {
+        strcat(curLocale, "@");
+        hadKw = TRUE;
+      }
+      strcat(curLocale, "calendar=");
+      strcat(curLocale, aCalendar);
+    }
+    if(aCurrency[0]) {
+      if(hadKw) {
+        strcat(curLocale, ";");
+      } else {
+        strcat(curLocale, "@");
+        hadKw = TRUE;
+      }
+      strcat(curLocale, "currency=");
+      strcat(curLocale, aCurrency);
+    }
+  }
+}
+
 void setLocaleAndEncoding(LXContext *lx)
 {
-    char *pi;
-    char *tmp;
+  const char *q;
+  char *s;
+  char *lim;
+  UErrorCode status = U_ZERO_ERROR;
+  char dspLocale[LBUFBIG] = "";
+  const char *tmp;
+  /**
+   *  _  explored locale 
+   * d_  full display locale 
+   * tz  timezone
+   *
+   **/
+  lx->curLocaleName = lx->curLocaleBlob.name;
+  loadLocaleFromFields(lx, &(lx->curLocaleBlob), "");
 
-    /* First, parse out /locale/conv/  from pathInfo */
-    pi = strdup(lx->pathInfo); /* TODO: string pool */ 
+  if((q=queryField(lx, "x")) || 
+     (q=cookieField(lx, "x"))) { 
+    strncpy(lx->section, q, sizeof(lx->section)/sizeof(lx->section[0]));
+    lx->section[(sizeof(lx->section)/sizeof(lx->section[0]))-1]=0;
+  }
 
-    if( (pi) && (*pi && '/') ) {
-      pi++; /* eat first slash */
-      tmp = strchr(pi, '/');
-      
-      if(tmp)
-        *tmp = 0; /* tie off at the slash */
-      
-      if ( *pi != 0) { /* don't want 0-length locales */
-        lx->dispLocale = pi;
-        lx->dispLocaleSet = TRUE;
-      } else {
-        lx->dispLocale = "";
-      }
-      
-      if(tmp) { /* have encoding */
-        tmp++; /* skip '/' */
-        pi = tmp;
-        if(*pi) { /* don't want 0 length encodings */
-          lx->convRequested = pi;
-
-          tmp = strchr(tmp, '/');
-          if(tmp) {
-            pi = tmp + 1;
-            *tmp = 0;
-          
-            if(lx->convRequested[0] == '_') {
-              lx->fileObj = pi;
-            }
-          }
-
-          lx->convSet = TRUE; 
-	    }
-      }
-    }
-
-    if(!lx->convRequested) {
-      lx->convRequested="";
-    }
-    if(!lx->dispLocale) {
-      lx->dispLocale = "";
-    }
-
-    if(!lx->dispLocaleSet && lx->acceptLanguage && *lx->acceptLanguage) {
-      char *newLocale;
-      /* OK, if they haven't set a locale, maybe their web browser has. */
-      if(!(tmp=strchr(lx->acceptLanguage,','))) /* multiple item separator */
-        if(!(tmp=strchr(lx->acceptLanguage,'='))) { /* strength separator */
-          const char *lang;
-
-          lang = lx->acceptLanguage + strlen(lx->acceptLanguage);
-          newLocale = strdup(lx->acceptLanguage);
-          newLocale[my_min(100,lang-lx->acceptLanguage)]=0;
-          
-          /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight.  */
-          
-          /* half hearted attempt at canonicalizing the locale string. */
-          newLocale[0] = tolower(newLocale[0]);
-          newLocale[1] = tolower(newLocale[1]);
-          if(newLocale[2] == '-')
-            newLocale[2] = '_';
-          if(newLocale[5] == '-')
-            newLocale[5] = '_';
-          
-          newLocale[3] = toupper(newLocale[3]);
-          newLocale[4] = toupper(newLocale[4]);
-          
-          if(isSupportedLocale(newLocale, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
-            lx->dispLocale =  newLocale;
-            lx->dispLocaleSet = TRUE;
-          } else {
-            free(newLocale);
-          }
-        }
-      /* that might at least get something.. It's better than defaulting to en_US */
+  if(!lx->convRequested) {
+    lx->convRequested="";
     }
   
-    if(!lx->convSet) {
-      const char *accept;
-      const char *agent;
-      
-      accept = lx->acceptCharset;
+  lx->dispLocale = lx->dispLocaleBlob.name;
+  loadLocaleFromFields(lx, &(lx->dispLocaleBlob), "d");
 
-      if(accept && strstr(accept, "utf-8")) {
-        lx->convRequested = "utf-8"; /* use UTF8 if they have it ! */
-      } else if( (agent = (const char *)getenv("HTTP_USER_AGENT")) &&
-                 (strstr(agent, "MSIE 4") || strstr(agent, "MSIE 5")) &&
-                 (strstr(agent, "Windows NT")))  {
-        lx->convRequested = "utf-8"; /* MSIE can handle utf8 but doesn't request it. */
-      }
+  if(!lx->dispLocale[0] && lx->acceptLanguage && *lx->acceptLanguage) {
+    char *newLocale;
+    char testLanguage[128];
+    const char *tmp2;
+    /* OK, if they haven't set a locale, maybe their web browser has. */
+    tmp = strchr(lx->acceptLanguage,',');
+    tmp2 = strchr(lx->acceptLanguage, ';');
+    if((tmp&&tmp2) && (tmp2 < tmp)) {  /* 'en;q=1, ...' */
+      tmp = tmp2;
+    } else if(tmp == NULL) {
+      tmp = lx->acceptLanguage + strlen(lx->acceptLanguage);
     }
-
-
-    if(lx->convRequested) {
-      lx->convUsed = lx->convRequested;
+    newLocale = strdup(lx->acceptLanguage);
+    newLocale[my_min(100,tmp-lx->acceptLanguage)]=0;
+    
+    /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight.  */
+    /* half hearted attempt at canonicalizing the locale string. */
+    newLocale[0] = tolower(newLocale[0]);
+    newLocale[1] = tolower(newLocale[1]);
+    if(newLocale[2] == '-')
+      newLocale[2] = '_';
+    if(newLocale[5] == '-')
+      newLocale[5] = '_';
+    
+    newLocale[3] = toupper(newLocale[3]);
+    newLocale[4] = toupper(newLocale[4]);
+    testLanguage[0]=0;
+    uloc_getLanguage(newLocale, testLanguage, 127, &status);
+    if(U_SUCCESS(status) && isSupportedLocale(testLanguage, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
+      setBlobFromLocale(lx, &lx->dispLocaleBlob, newLocale, &status);
+      strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
     }
-
-    /* Map transliterated/fonted : */
-    if(0==strcmp(lx->convRequested, "fonted"))
+    free(newLocale);
+  }
+  /* that might at least get something.. It's better than defaulting to en_US */
+  
+  if(!lx->convSet) {
+    const char *accept;
+    const char *agent;
+    
+    accept = lx->acceptCharset;
+    
+    if(accept && strstr(accept, "utf-8")) {
+      lx->convRequested = "utf-8"; /* use UTF8 if they have it ! */
+    } else if( (agent = (const char *)getenv("HTTP_USER_AGENT")) &&
+               (strstr(agent, "MSIE 4") || strstr(agent, "MSIE 5")) &&
+               (strstr(agent, "Windows NT")))  {
+      lx->convRequested = "utf-8"; /* MSIE can handle utf8 but doesn't request it. */
+    }
+  }
+  
+  
+  if(lx->convRequested) {
+    lx->convUsed = lx->convRequested;
+  }
+  
+  /* Map transliterated/fonted : */
+  if(0==strcmp(lx->convRequested, "fonted"))
     {
       lx->convUsed = "usascii";
     }
-    if(0==strcmp(lx->convUsed, "transliterated"))
+  if(0==strcmp(lx->convUsed, "transliterated"))
     {
       lx->convUsed = "utf-8";
     }
 
- }
+  if(lx->pathInfo && strstr(lx->pathInfo, "/_/")) {
+    const char *n = strstr(lx->pathInfo, "/_/");
+    char tmpLoc[100];
+    strncpy(tmpLoc, lx->pathInfo+1, 99);
+    tmpLoc[99]=0;
+    tmpLoc[n-lx->pathInfo-1]=0;
+    lx->dispLocale = strdup(tmpLoc);
+    lx->fileObj = n + 3;
+    lx->convRequested  = "_";
+  }
+}
 

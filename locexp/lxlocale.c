@@ -181,7 +181,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     if(showAll == FALSE && toOpen == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"../_/closed.gif\" alt=\"\">%S</A>\r\n<BR>",
+        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"" LDATA_PATH "closed.gif\" alt=\"\">%S</A>\r\n<BR>",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }
@@ -211,10 +211,9 @@ void printSubLocales(LXContext *lx, const char *suffix)
         
         if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, " [");
         
-        u_fprintf(lx->OUT, "<a href=\"?_=%s%s%s\">", 
-                  lx->curLocale->subLocs[n]->str,
-                  suffix?"&":"",
-                  suffix?suffix:"");
+        u_fprintf(lx->OUT, "<a href=\"%s&_=%s\">", 
+                  getLXBaseURL(lx, kNO_URL|kNO_LOC),
+                  lx->curLocale->subLocs[n]->str);
         
         if(isExperimentalLocale(lx->curLocale->subLocs[n]->str)) {
           u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
@@ -269,8 +268,8 @@ void printSubLocales(LXContext *lx, const char *suffix)
                       lx->curLocale->ustr);
           u_fprintf(lx->OUT, ": ");
         }
-        u_fprintf(lx->OUT, "<a href=\"?_=%s%s%s\">", 
-                  buf,suffix?"&":"", suffix?suffix:"");
+        u_fprintf(lx->OUT, "<a href=\"%s&_=%s\">", 
+                  getLXBaseURL(lx, kNO_URL|kNO_LOC), buf);
         
         if(isExperimentalLocale(buf)) {
           u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
@@ -480,32 +479,12 @@ void setupLocaleTree(LXContext *lx)
 
     /* setup base locale */
     lx->locales = createLocaleTree(lx->dispLocale, &lx->numLocales);
-
-    qs = lx->queryString;
-    if(   qs &&
-          (*(qs++) == '_') &&
-          (*(qs++) == '='))
-    {
-        amp = strchr(qs,'&');
-        if(!amp)
-            amp = qs+strlen(qs);
-      
-        if((amp-qs)>100) /* safety */
-	{
-            strncpy(loc,qs,100);
-            loc[100] = 0;
-	}
-        else
-	{
-            strncpy(loc,qs,amp-qs);
-            loc[amp-qs] = 0;
-	}
-      
+    lx->regions = createRegionList(lx->dispLocale, lx->locales);
+    if(*loc) {
         /* setup cursors.. */
         lx->curLocale = findLocale(lx->locales, loc);
 
         if(lx->curLocale)
             lx->parLocale = lx->curLocale->parent;
-        
     }
 }

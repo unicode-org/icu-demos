@@ -351,54 +351,65 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
    
     status = U_ZERO_ERROR; /* check for variant */
     
-    if( (siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
-        (siz > 1) )
-    {
-        s->ustr = malloc((siz+2) * sizeof(UChar));
-        ((UChar*)(s->ustr))[0] = 0;
+    /* if( (status=U_ZERO_ERROR),(siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
+       (siz > 1) ) {
+       s->ustr = malloc((siz+2) * sizeof(UChar));
+       ((UChar*)(s->ustr))[0] = 0;
+       status = U_ZERO_ERROR;
+       uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+       s->ustr[siz]=0;
+    } else
+    */
+    if( (status=U_ZERO_ERROR),(siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
+               (siz > 1) ) {
+      int32_t vLen = 0;
+      status = U_ZERO_ERROR;
+      vLen = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status);
+      if(vLen) {
+        vLen += 4;
+      }
+      s->ustr = malloc((siz+vLen+2) * sizeof(UChar));
+      ((UChar*)(s->ustr))[0] = 0;
+      status = U_ZERO_ERROR;
+      uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+      if(vLen) {
+        int32_t nsiz = 0;
+        s->ustr[siz++] = (UChar)' ';
+        s->ustr[siz++] = (UChar)'(';
+        nsiz = uloc_getDisplayVariant(s->str, inLocale, (UChar*)(s->ustr + siz), vLen-3, &status);
+        siz += nsiz;
+        s->ustr[siz++] = (UChar)')';
+      }
+      s->ustr[siz++] = (UChar)0;
+    } else if((status=U_ZERO_ERROR),(siz == 0) && inLocale[0] == '_') {
+      s->ustr = malloc(2*2);
+      s->ustr[0] = '-';
+      s->ustr[1] = 0;
+    } else {
+      status = U_ZERO_ERROR;
+      int32_t len;
+      if((siz = uloc_getDisplayName( s->str, inLocale, NULL, 0, &status)) >1) {
+/*       int32_t len, scriptLen; */
+        UChar *aStr; 
+/*       if((scriptLen=uloc_getScript(s->str, NULL, 0, &status))>0) { */
+/*         siz += uloc_getDisplayScript(s->str, inLocale, NULL, 0, &status) + 3; */
+/*       } */
+        aStr = s->ustr = malloc((siz+2) *sizeof(UChar)); 
+/*       ((UChar*)(s->ustr))[0] = 0; */
         status = U_ZERO_ERROR;
-        uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-        s->ustr[siz]=0;
-
-    }
-    else
-    {
-        status = U_ZERO_ERROR;
-        if( (siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
-            (siz > 1) )
-        {
-            s->ustr = malloc((siz+2) * sizeof(UChar));
-            ((UChar*)(s->ustr))[0] = 0;
-            status = U_ZERO_ERROR;
-            uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-            s->ustr[siz]=0;
-
-        }
-        else
-        {
-            if((siz == 0) && inLocale[0] == '_')
-            {
-                s->ustr = malloc(2*2);
-                s->ustr[0] = '-';
-                s->ustr[1] = 0;
-            }
-            else
-            {
-                status = U_ZERO_ERROR;
-                if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
-                    (siz > 1) )
-                {
-                    s->ustr = malloc((siz+2) *sizeof(UChar));
-                    ((UChar*)(s->ustr))[0] = 0;
-                    status = U_ZERO_ERROR;
-                    uloc_getDisplayLanguage( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
-                    s->ustr[siz]=0;
-                }
-                else {
-                  s->ustr = 0;
-                }
-            }
-        }
+        len = uloc_getDisplayName( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+/*       if(U_SUCCESS(status) && scriptLen) { */
+/*         aStr[len]=(UChar)' '; */
+/*               len++; */
+/*               aStr[len]=(UChar)'['; */
+/*               len++; */
+/*               len += uloc_getDisplayScript ( s->str, inLocale, aStr+len, siz, &status); */
+/*               aStr[len]=(UChar)']'; */
+/*               len++; */
+/*       } */
+        aStr[len]=0;
+        len++;
+      }
     }
     s->subLocs = 0;
     s->nSubLocs = 0;
@@ -409,6 +420,17 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
     memset(s->key, 0, SORTKEYSIZE);
 }
 
+static void incrSubLocs(MySortable *root) {
+  if( (root->nSubLocs) >= root->subLocsSize) {
+    if(root->subLocsSize)
+      root->subLocsSize *= 2;
+    else
+      root->subLocsSize = 2;
+    
+    root->subLocs = 
+      my_realloc(root->subLocs,sizeof(MySortable*)*(root->nSubLocs), sizeof(MySortable*) * (root->subLocsSize));
+  }
+}
 
 /**
  * Add a locale (realloc if necesary) directly to this level.
@@ -420,25 +442,12 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
  
 MySortable *addSubLocaleTo(MySortable *root, const char *thisLocale, const char *inLocale, int32_t *localeCount)
 {
-    if( (root->nSubLocs) >= root->subLocsSize) {
-      if(root->subLocsSize)
-        root->subLocsSize *= 2;
-      else
-        root->subLocsSize = 2;
-
-        root->subLocs = 
-            my_realloc(root->subLocs,sizeof(MySortable*)*(root->nSubLocs), sizeof(MySortable*) * (root->subLocsSize));
-    }
-    
-    root->subLocs[root->nSubLocs] = malloc(sizeof(MySortable));
-    
-    initSortable(root->subLocs[root->nSubLocs], thisLocale, inLocale, root);
-    
-    localeCount++;
-    
-    root->nSubLocs++;
-    
-    return root->subLocs[root->nSubLocs-1];
+  incrSubLocs(root);
+  root->subLocs[root->nSubLocs] = malloc(sizeof(MySortable));
+  initSortable(root->subLocs[root->nSubLocs], thisLocale, inLocale, root);
+  localeCount++;
+  root->nSubLocs++;
+  return root->subLocs[root->nSubLocs-1];
 }
 
 void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level, const char *inLocale, int32_t *localeCount)
@@ -446,11 +455,19 @@ void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level
     char        curStub[128]; /* current stub (next section to add) */
     const char *curStubLimit; /* ptr to end of the current 'stub' (sublocale section) */
     int32_t     j;
+      const char *secondStub = NULL;
     
     curStubLimit = strchr(level, '_');
-    if(!curStubLimit)
+    /* is there a script? */
+    if (curStubLimit == NULL) {
         curStubLimit = thisLoc + strlen(thisLoc); /* end of the string */
-    
+    } else if( (thisLoc == level) &&
+               (curStubLimit != NULL) &&
+               (secondStub = strchr(curStubLimit+1, '_')) &&
+               ((secondStub-curStubLimit)==5)) { /* _XXXX */
+      curStubLimit = secondStub;  /* include the script */
+    }
+
     /* curStubLimit points after the end of the current level of locale.   (so:  en*_US) */
     
     strncpy(curStub, thisLoc, curStubLimit-thisLoc);  /* curStub = "en" */
@@ -520,7 +537,6 @@ MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount)
     const char *thisLoc;
     
     thisLoc = uloc_getAvailable(i);
-    
     addLocaleRecursive(root, thisLoc, thisLoc, inLocale, localeCount);
   }
   
@@ -673,6 +689,47 @@ void mySort(MySortable *s, UErrorCode *status, UBool recurse)
   if(coll) { 
     ucol_close(coll);
   }
+}
+
+
+U_CAPI MySortable *createRegionList(const char * inLocale, MySortable *locales)
+{
+  MySortable *root;
+  UErrorCode status = U_ZERO_ERROR;
+  int32_t i,j,k,h;
+  root = malloc(sizeof(MySortable));
+  root->nSubLocs=0;
+  root->subLocsSize=0;
+  
+  for(i=0;i<locales->nSubLocs;i++) {
+    for(j=0;j<locales->subLocs[i]->nSubLocs;j++) {
+      MySortable *match=NULL;
+      for(k=0;!match && k<root->nSubLocs;k++) {
+        if(!u_strcmp(locales->subLocs[i]->subLocs[j]->ustr, root->subLocs[k]->ustr)) {
+          match = root->subLocs[k];
+        }
+      }
+      if(!match) {
+        incrSubLocs(root);
+        root->subLocs[root->nSubLocs++]=locales->subLocs[i]->subLocs[j];
+      }
+      /* now, look for sub-sub-sub locs (variants) */
+      for(h=0;h<locales->subLocs[i]->subLocs[j]->nSubLocs;h++) {
+        match = NULL;
+        for(k=0;!match && k<root->nSubLocs;k++) {
+          if(!u_strcmp(locales->subLocs[i]->subLocs[j]->subLocs[h]->ustr, root->subLocs[k]->ustr)) {
+            match = root->subLocs[k];
+          }
+        }
+        if(!match) {
+          incrSubLocs(root);
+          root->subLocs[root->nSubLocs++]=locales->subLocs[i]->subLocs[j]->subLocs[h];
+        }
+      }
+    }
+  }
+  mySort(root,&status, FALSE); 
+  return root;
 }
 
 /* convert from our internal names to a MIME friendly name .. ----------------------------  */
