@@ -155,7 +155,6 @@ printString(const UChar *s, int32_t length) {
 static void
 printStringUTF8(const UChar *s, int32_t length) {
     char *c = NULL;
-    int32_t i;
 
     if(length<0) {
         length=u_strlen(s);
@@ -261,17 +260,17 @@ static void breakScripts(const UChar* src, int32_t srcLength, UnicodeString& res
     }else if (lastScript == USCRIPT_INVALID_CODE){
         lastScript = script;
     }
-    if(script == USCRIPT_INHERITED){
-	script = lastScript;
+    if(script == USCRIPT_INHERITED || script == USCRIPT_COMMON){
+	    script = lastScript;
     }
     if ((c >= 0x4E00 && c <= 0x9FFF) && (han_t_set !=NULL && han_s_set!=NULL)) {
-    	if(han_t_set->contains(c)){
-		script = USCRIPT_HAN_T;
-	}else if(han_s_set->contains(c)){
-		script = USCRIPT_HAN_S;
-	}else{
-		script = USCRIPT_HAN_N;
-	}
+        if(han_t_set->contains(c)){
+		    script = USCRIPT_HAN_T;
+	    }else if(han_s_set->contains(c)){
+		    script = USCRIPT_HAN_S;
+	    }else{
+		    script = USCRIPT_HAN_N;
+	    }
     }
     if (script == USCRIPT_HAN_N && (lastScript == USCRIPT_HAN_T || lastScript == USCRIPT_HAN_S)){
 	 script = lastScript;
