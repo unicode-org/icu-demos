@@ -64,7 +64,6 @@ Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 -include Makefile.res
 
 
-mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
 root.txt: ../locexp.c root.txt.inc ../tools/extractStrings.sh
 	env PATH=../tools:../../uconv:$(PATH) extractStrings.sh ../locexp.c > ../resource/root.txt || ( rm -f root.txt ; false )
@@ -76,7 +75,7 @@ index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
 install-local: install-res
 
 tmp/locexp.lst: Makefile
-	@$(mkinstalldirs) tmp
+	@$(MKINSTALLDIRS) tmp
 	@-$(RMV) $@
 	@for file in $(RES); do \
 	  echo `pwd`/$$file >> $@; \

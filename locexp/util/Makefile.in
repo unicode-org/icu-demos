@@ -60,13 +60,12 @@ all-local: $(TARGET)
 install-local: all-local install-headers install-library
 
 install-library: all-local
-	$(mkinstalldirs) $(libdir)
+	$(MKINSTALLDIRS) $(libdir)
 	$(INSTALL) $(TARGET) $(libdir)/$(TARGET)
 
-mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
 install-headers:
-	$(mkinstalldirs) $(includedir)
+	$(MKINSTALLDIRS) $(includedir)
 	@list='$(HEADERS)'; for file in $$list; do \
 	 echo " $(INSTALL_DATA) $$file $(includedir)/$$file"; \
 	 $(INSTALL_DATA) $$file $(includedir)/$$file; \

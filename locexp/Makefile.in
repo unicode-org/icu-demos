@@ -89,6 +89,7 @@ all-local: $(TARGET)
 
 install-local: install-target
 
+
 install-target: all-local
 	$(MKINSTALLDIRS) $(bindir)
 	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
