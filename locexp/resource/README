@@ -19,3 +19,13 @@ Todo's:
 
  - add more data
  - more demo text for coll
+
+---------
+
+Note: 
+ for the 'collation elements sample string' it is in this format:
+
+      AAAA\\u000Dbbbb\\u000D ...
+
+ and, all unicode values should be doubly escaped. (\\uXXXX)
+ TODO: make this sane!!!

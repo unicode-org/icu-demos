@@ -1,7 +1,7 @@
 // Copyright (c) 1999, International Business Machines Corporation and
 // others. All Rights Reserved.
 // English LocaleExplorer translation resource
-// -*- coding: latin-1; -*-
+// -*- Coding: latin-1 ; -*-
 
 
 en {

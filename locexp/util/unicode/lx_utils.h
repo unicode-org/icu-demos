@@ -106,10 +106,10 @@ U_CAPI int32_t unescapeAndDecodeQueryField(UChar *dst, int32_t dstLen, const cha
 U_CAPI int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *src, const char *enc);
 
 /* copy UChars around, WITHOUT termination, and convert \uXXXX back to the right chars */
-int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen);
+U_CAPI int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen);
 
 /* Decode a URL query field  [%XX, +, etc.] */
-void doDecodeQueryField(const char *in, char *out, int32_t length);
+U_CAPI void doDecodeQueryField(const char *in, char *out, int32_t length);
 
 /**
  * Format the current date in the given style

@@ -27,7 +27,9 @@ CLEANFILES = *~ *.res  escapeABundle
 GENSRC = default.txt index.txt
 
 # resource files
-SRC    = en.txt mt.txt el.txt ja.txt sr.txt
+# AUTOGEN - source whose encoding is detected
+AUTOGENSRC = en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt
+SRC    = sr.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)
 RES = $(ALLSRC:.txt=.res)
@@ -54,7 +56,12 @@ check:  check-local
 
 all-local: res-local default_SAMPLE.txt
 
-res-local: $(RES)
+res-local: Makefile.res $(RES)
+
+Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
+	./detectEncodings.sh $(AUTOGENSRC)
+
+-include Makefile.res
 
 mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
@@ -86,45 +93,12 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-# ICULIBS includes all standard ICU libraries.
-# if we wanted only part of the ICU, we could use (for example) just
-#         '$(LIBS) -licu-uc -lusort' ...
-
-
-#ifneq ($(MAKECMDGOALS),distclean)
-#-include $(DEPS)
-#endif
-
-
-
-
-
-
-# icuapps/locexp/resource makefile
-
-# all:	genrb
-
-# index:
-# 	@-rm index.txt
-# 	make index.txt all
-
-# genrb:
-# 	( cd ../../source/tools/genrb ; ICU_DATA=/home/srl/icu/data/ ./genrb /home/srl/icu/data/listrb.d/*.txt )
-
-# index.txt:
-# 	genIndex.sh > index.txt
-
 #sr.txt:  sr.utf16.txt escapeABundle
 #	../../uconv/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt || rm -f sr.txt
-
-mt.res : mt.txt
-	@echo Rebuilding $@ - latin3
-	@$(sbindir)/genrb -elatin3 $<
 
 sr.res : sr.txt
 	@echo Rebuilding $@ - utf-16le
 	@$(sbindir)/genrb -eutf-16le $<
-
 
 escapeABundle: escapeABundle.c
 	cc -o escapeABundle escapeABundle.c

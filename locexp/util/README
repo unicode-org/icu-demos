@@ -42,10 +42,10 @@ decompcb.h    - runs text through the Normalizer [as well as some
 fontedcb.h    - switches HTML fonts to simulate a real rendering
                 pipeline. Includes [incomplete] shaping/rendering
                 for Syriac[Assyrian] and Devanagari[Hindi].
+                  [ Errors now handled better! Digits now supported! ]
           
 translitcb.h  - Runs text through the Transliterator, based on script.
                 Supports: Russian, Hebrew, Arabic, Devanagari, and Kana.
-
 
 * MISCELLANEOUS
 lx_utils.h   - a mishmash of:

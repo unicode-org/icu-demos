@@ -60,6 +60,8 @@ U_CAPI void
     return;
 #endif
   /* ERROR */
+  *err = U_ZERO_ERROR; /* clean slate */
+
   if(_this->invalidUCharLength != 1)
     {
       *target = '#';

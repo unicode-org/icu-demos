@@ -33,7 +33,7 @@
 ##
 ## Note: FSWF means Fetch String with Fallback.   see locexp.c
 
-echo "// locexp default file. Generated from locexp.c on `date` on `hostname`"
+echo "// default file. Generated from $* on `date` on `hostname`"
 echo "// It's probably not a good idea to change this file."
 echo "// Better to change locexp.c or the DEFAULT.* source files and rebuild."
 echo

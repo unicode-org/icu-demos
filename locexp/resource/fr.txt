@@ -1,0 +1,6 @@
+// -*- Coding: iso-8859-1 -*-
+fr
+{
+        EXPLORE_CollationElements_sampleString { "déjà|Meme|deja|même|dejà|bpef|b\u0153g|Boef|Mémé|b\u0153f|boef|bnef" }
+}
+

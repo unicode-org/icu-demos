@@ -50,11 +50,11 @@ int main()
   myChar = (cHi<<8) | cLo;
 
   if (myChar == 0xFEFF) {
-      cH = &cHi;
-      cL = &cLo;
+    cH = &cHi;
+    cL = &cLo;
   } else if (myChar == 0xFFFE) {
-      cH = &cLo;
-      cL = &cHi;
+    cH = &cLo;
+    cL = &cHi;
   }
 
   while(!feof(stdin))

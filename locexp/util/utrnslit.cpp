@@ -34,6 +34,26 @@ U_CAPI void U_EXPORT2 T_fillOutputParams(const UnicodeString* temp,
 #include <stdio.h>
 #include <unicode/ustring.h>
 
+int32_t utrns_countAvailableIDs()
+{
+  return Transliterator::countAvailableIDs();
+}
+
+const char *utrns_getAvailableID(int32_t i)
+{
+  char *ret;
+  UnicodeString n = Transliterator::getAvailableID(i);
+
+  if(!n.length())
+    {
+      return NULL;
+    }
+
+  ret = (char*)malloc(n.length()+1);
+  u_austrcpy(ret, n.getUChars()); /* should be extract? */
+  return ret;
+}
+
 UTransliterator * 
 utrns_open(const char *id)
 {

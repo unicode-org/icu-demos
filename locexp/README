@@ -1,4 +1,4 @@
-## Copyright (c) 1999, International Business Machines Corporation and
+## Copyright (c) 1999-2000, International Business Machines Corporation and
 ## others. All Rights Reserved.
 
 LOCALE EXPLORER  :  by Steven R. Loomis, IBM
@@ -139,7 +139,7 @@ xdvng.ttf into that control panel, or go to the file menu (in Fonts)
 -------------------------------
 -------------------------------
 
-TODO LIST for LOCEXP:
+TODO LIST for LOCEXP: [X=done, ~=partially done]
 
  ~ see util/README for utility TODO's [mostly done]
 
@@ -185,3 +185,10 @@ X - done
     - improve the 'default' pattern in the DTexplorer
 
     - better usort sample strings
+
+    - add LANG and HTTP META tags - for saved documents
+    - use cookies to hide the lang/encoding choice
+      - have a 'no cookies' link (add a third PI path) if cookies are
+        declined
+
+

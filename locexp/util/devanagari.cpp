@@ -200,13 +200,17 @@ U_CAPI bool_t
 
   const UChar *mysrc = *source;
   UChar  p;
+  bool_t shouldAdvanceSource = FALSE;
 
   for(mysrc = (*source - 1);mysrc < sourceLimit;mysrc++)
   {
     if(mysrc == (*source - 1))
       p = _this->invalidUCharBuffer[0];
     else
-      p = *mysrc;
+      {
+        shouldAdvanceSource = TRUE;
+        p = *mysrc;
+      }
   
 #if 0
     /** BROKEN _ wants to optimize spaces **/
@@ -222,11 +226,11 @@ U_CAPI bool_t
    }
 #endif
 
-   if((((p)&0xFF00) != 0x0900) || ((p & 0x0980) == 0x0980) ) // non hindi
+   if((((p)&0xFF00) != 0x0900) || ((p & 0xFF80) == 0x0980) ) // non hindi
 	if(p != 0x0981)
-   {
-     break;
-   }
+          {
+            break;
+          }
 
 #if 0
 	if(inFont == TRUE)
@@ -264,10 +268,13 @@ U_CAPI bool_t
    }
 #endif
 
+  if(shouldAdvanceSource == TRUE)
+      (*source)++;
+
      // hindi.
    if(inFont == FALSE)
    {
-     UnicodeString str  = "<FONT FACE=\"Xdvng\">";
+     UnicodeString str  = "<FONT FACE=\"Xdvng,xdvng\">";
      int len = str.length();
      const UChar *chars = str.getUChars();
 #ifdef WIN32

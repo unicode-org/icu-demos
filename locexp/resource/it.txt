@@ -1,0 +1,24 @@
+// -*- Coding: iso-8859-1 -*-
+// some italian sort words
+
+it
+{
+          EXPLORE_CollationElements_sampleString { 
+
+       "coniglio|"
+       "nome|"
+       "regione|"
+       "soldi|"
+       "gatto|"
+       "università|"
+       "Milano|"
+       "fratello|"
+       "cognato|"
+       "telefono|"
+       "porta|"
+       "cane|"
+       "battello|"
+       "trombone"
+
+          }
+}

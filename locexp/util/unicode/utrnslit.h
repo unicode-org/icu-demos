@@ -56,6 +56,16 @@ U_CAPI
  void 
 utrns_close(UTransliterator *t);
 
+
+/* count the # of items available */
+U_CAPI
+int32_t utrns_countAvailableIDs();
+
+/* DEPRECATED - bad mem model. caller owns storage */
+U_CAPI
+const char *utrns_getAvailableID(int32_t index);
+
+
 #endif
 
 

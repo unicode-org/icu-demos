@@ -1,5 +1,5 @@
 // Generated copy of default.txt. Also look at 'en.txt'.
-// locexp default file. Generated from locexp.c on Thu Feb 24 16:14:17 PST 2000 on daphne
+// default file. Generated from ../locexp.c on Fri Mar 31 07:51:36 PST 2000 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the DEFAULT.* source files and rebuild.
 
@@ -89,6 +89,7 @@ default {
    exploreTitle  {  "Explore"  }
    explore_Button  {  "Explore"  }
    explore_G7  {  "Try Multi-lingual Sorting"  }
+   explore_xlitomatic  {  "Translit-o-matic"  }
    formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
    formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date"  }
    formatExample_DateTimePatterns_errorOpen  {  "Couldn't open the formatter"  }
@@ -169,7 +170,7 @@ default {
    zoneStrings5  {  "Example City"  }
    zoneStrings6  {  "Raw Offset"  }
    zoneStrings_open_failed  {  "<I>Unknown</I>"  }
-   zone_set  {  "Set Timezone to:"  }
+   zone_set  {  "Set timezone to:"  }
    zone_warn  {  "Note: only works if you have cookies turned on."  }
 
 // Special Cases
