@@ -8,4 +8,11 @@ helpPrefix { "default_" }
 localeList_Locale { "\u570B\u5BB6" }
 localeList_Sublocale { "\u8A9E\u8A00" }
 
+    EXPLORE_CollationElements_sampleString {
+  "\u76E7\u5091\u514B|" // (Jack's name in Chinese, the first character sounds like 'Loo'
+  "\u65BD\u5C1A\u541F|" //(Helena's name in Chinese)
+  "\u65BD\u99AC\u51E0|" // (Maggie's name in Simplified Chinese)
+  "\u57C3\u897F\u512A|" // (ICU trasliterated into Chinese)
+  "\u65BD\u746A\u6A5F|" //(Maggie's name in Chinese)
+  } // end of collationsample
 }
