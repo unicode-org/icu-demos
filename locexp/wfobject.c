@@ -7,12 +7,10 @@
 #include "unicode/ustdio.h"
 #include "locexp.h"
 
-#ifdef WIN32
 const char *ures_getTag(UResourceBundle *n)
 {
     return ures_getKey(n);
 }
-#endif
 
 void writeFileObject( LXContext *lx, const char *path )
 {
