@@ -411,7 +411,7 @@ const char *uurl_next(UUrlIter *u)
 		free(n->val);
 	}
 	n->val=NULL;
-	if(n->field && (n->field != n->valBuf)) {
+	if(n->field && (n->field != n->fldBuf)) {
 		free(n->field);
 	}
 	n->field=NULL;
