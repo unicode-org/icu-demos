@@ -31,11 +31,25 @@ BUILDING
 --------
 
  To build the locale explorer, first you must have the ICU built and
-installed of course (see ../README).  Secondly, the uconv and usort
+installed of course (see ../README).  
+
+
+  Secondly, the uconv and usort
 projects should be built and installed.   In short, your best bet is
 to simply type 'make install' from the top level of icuapps.
 
  Please read Makefile.in for details on making 'Makefile.local'.
+
+EXPERIMENTAL LOCALES
+--------------------
+   1). To get the experimental locales, first cvs update the 'locale' directory which is at
+  the same level as 'icu' and 'icuapps.
+   2). CD into the icu/source/data/locales directory
+   3). Copy the data:   
+              cp ../../../../locale/icu/experimental/*.txt .
+   4). add the data to the reslocal file (assumes you don't already have a reslocal) 
+         echo 'GENRB_SOURCE_LOCAL='`(cd  ../../../../locale/icu/experimental/ ; ls *.txt)` > reslocal.mk
+   5). rebuild ICU
 
 
 INSTALLING
