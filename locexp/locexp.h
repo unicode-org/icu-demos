@@ -17,8 +17,8 @@ typedef struct
   const char *ourCharsetName; /* HTML friendly name of the current charset */
   char        chosenEncoding[128];
   
-  bool_t setEncoding;            /* what is our state? What's setup? */
-  bool_t setLocale;
+  UBool setEncoding;            /* what is our state? What's setup? */
+  UBool setLocale;
 
   UResourceBundle *defaultRB;        /* RB in the selected locale  - CACHE*/
 

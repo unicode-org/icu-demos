@@ -152,21 +152,21 @@ static void writeStr(const char *str, unsigned char **target, const unsigned cha
     }
 }
 
-U_CAPI bool_t
-fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *targetLimit,const UChar ** source,const UChar * sourceLimit,int32_t *offsets,bool_t flush,UErrorCode * err)
+U_CAPI UBool
+fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *targetLimit,const UChar ** source,const UChar * sourceLimit,int32_t *offsets,UBool flush,UErrorCode * err)
 {
-  bool_t inFont = FALSE;
+  UBool inFont = FALSE;
  
  
   UChar buf[kBufLen];
   int32_t typ[kBufLen];
   int32_t n = 0;
-  bool_t  sawLiveConsonant = FALSE;
+  UBool  sawLiveConsonant = FALSE;
   unsigned char tmp[99];
  
   const UChar *mysrc = *source;
   UChar  p;
-  bool_t shouldAdvanceSource = FALSE;
+  UBool shouldAdvanceSource = FALSE;
  
   for(mysrc = (*source - 1);mysrc < sourceLimit;mysrc++)
     {
@@ -190,7 +190,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
             {
               UnicodeString str  = "</FONT>";
               int len = str.length();
-              const UChar *chars = str.getUChars();
+              const UChar *chars = str.getBuffer();
 #ifdef WIN32
               convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
 #else
@@ -210,7 +210,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
         {
           UnicodeString str  = "<FONT FACE=\"Kpnews,kpnews\">";
           int len = str.length();
-          const UChar *chars = str.getUChars();
+          const UChar *chars = str.getBuffer();
 #ifdef WIN32
           convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
 #else
@@ -227,7 +227,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
         {
           UnicodeString str  = "!";
           int len = str.length();
-          const UChar *chars = str.getUChars();
+          const UChar *chars = str.getBuffer();
 #ifdef WIN32
           convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
 #else
@@ -239,7 +239,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
         {
           UnicodeString str  = "</FONT>";
           int len = str.length();
-          const UChar *chars = str.getUChars();
+          const UChar *chars = str.getBuffer();
 #ifdef WIN32
           convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
 #else

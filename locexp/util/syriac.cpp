@@ -50,12 +50,12 @@ void syrRevWrite(const char *c)
 */
 void doSyriac(const UChar **parentLoc)
 {
-  bool_t inFont = FALSE;
+  UBool inFont = FALSE;
   
   const UChar* c = *parentLoc;
   const UChar* p;
   int32_t n = 0;
-  bool_t  sawLiveConsonant = FALSE;
+  UBool  sawLiveConsonant = FALSE;
   char tmp[300];
   
   tmp[0] = 0;

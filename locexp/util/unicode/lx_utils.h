@@ -52,7 +52,7 @@ typedef struct mysortable
 
 
 /* Sort */
-U_CAPI void mySort(MySortable *root, UErrorCode *err, bool_t recurse);
+U_CAPI void mySort(MySortable *root, UErrorCode *err, UBool recurse);
 
 
 /**
@@ -183,7 +183,7 @@ U_CFUNC UChar *uastrdup(const char *hostchars);
  */
 
 
-U_CAPI bool_t testConverter(const char *converter, 
+U_CAPI UBool testConverter(const char *converter, 
                      const UChar *sample,
 		     int32_t sampleLen, 
 		     int8_t *buffer,

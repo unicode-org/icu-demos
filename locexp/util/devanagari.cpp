@@ -179,28 +179,28 @@ void flushDevanagari(const UChar *buf, const int32_t *typ,
     }
 }
 
-U_CAPI bool_t
+U_CAPI UBool
   fonted_devanagari (UConverter * _this,
 					    unsigned char **target,
 					    const unsigned char *targetLimit,
 					    const UChar ** source,
 					    const UChar * sourceLimit,
 					    int32_t *offsets,
-					    bool_t flush,
+					    UBool flush,
 					    UErrorCode * err)
 {
-  bool_t inFont = FALSE;
+  UBool inFont = FALSE;
 
 
   UChar buf[kBufLen];
   int32_t typ[kBufLen];
   int32_t n = 0;
-  bool_t  sawLiveConsonant = FALSE;
+  UBool  sawLiveConsonant = FALSE;
   unsigned char tmp[99];
 
   const UChar *mysrc = *source;
   UChar  p, nextp;
-  bool_t shouldAdvanceSource = FALSE;
+  UBool shouldAdvanceSource = FALSE;
 
   for(mysrc = (*source - 1);mysrc < sourceLimit;mysrc++)
   {
@@ -280,7 +280,7 @@ U_CAPI bool_t
    {
      UnicodeString str  = "<FONT FACE=\"Xdvng,xdvng\">";
      int len = str.length();
-     const UChar *chars = str.getUChars();
+     const UChar *chars = str.getBuffer();
 #ifdef WIN32
      convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);
 #else
@@ -351,7 +351,7 @@ U_CAPI bool_t
   {
      UnicodeString str  = "</FONT>";
      int len = str.length();
-     const UChar *chars = str.getUChars();
+     const UChar *chars = str.getBuffer();
 
 #ifdef WIN32
      convertIntoTargetOrErrChars(_this,target,(const char *)targetLimit,&chars,chars+len,err);

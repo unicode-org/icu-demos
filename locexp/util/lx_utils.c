@@ -613,7 +613,7 @@ MySortable *findLocale(MySortable *root, const char *locale)
 
 /* Sort an array of sortables --------------------------------------------------------*/
 /* terminated with s->str being null */
-void mySort(MySortable *s, UErrorCode *status, bool_t recurse)
+void mySort(MySortable *s, UErrorCode *status, UBool recurse)
 {
   UCollator *coll;
   MySortable *p;
@@ -869,7 +869,7 @@ U_CFUNC UChar *uastrdup(const char *hostchars)
   return u_uastrcpy(chr, hostchars);
 }
 
-bool_t testConverter(const char *converter, 
+UBool testConverter(const char *converter, 
                      const UChar *sample,
 		     int32_t sampleLen, 
 		     int8_t *buffer,
@@ -877,7 +877,7 @@ bool_t testConverter(const char *converter,
 {
   UErrorCode  status = U_ZERO_ERROR;
   UConverter *cnv;
-  bool_t      worked = FALSE;  
+  UBool      worked = FALSE;  
   int8_t     *target;
   void       *oldContext;
   UConverterFromUCallback oldAction;

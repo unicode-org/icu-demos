@@ -25,9 +25,9 @@ extern UConverterFromUCallback COLLECT_lastResortCallback;
    test in uchars.h. if FALSE (default), collect will record all chars.
 */
 #ifdef WIN32
-bool_t                  COLLECT_alnum;
+UBool                  COLLECT_alnum;
 #else
-extern bool_t                  COLLECT_alnum;
+extern UBool                  COLLECT_alnum;
 #endif
 
 U_CAPI void 
@@ -37,7 +37,7 @@ U_CAPI void
 				const UChar ** source,
 				const UChar * sourceLimit,
 				int32_t *offsets,
-				bool_t flush,
+				UBool flush,
 				UErrorCode * err);
 
 

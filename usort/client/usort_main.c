@@ -58,7 +58,7 @@ int main(int argc, const char *argv[])
   const char *fromCodepage;
   const char *toCodepage;
   const char *locale = NULL;
-  bool_t useDecompose = FALSE, escapeMode = FALSE;
+  UBool useDecompose = FALSE, escapeMode = FALSE;
   USort      *list = NULL;
   UCollationStrength strength = UCOL_DEFAULT_STRENGTH;
   fromCodepage = getenv("ICU_ENCODING");

@@ -47,12 +47,12 @@ U_CAPI void
 					    const UChar ** source,
 					    const UChar * sourceLimit,
 					    int32_t *offsets,
-					    bool_t flush,
+					    UBool flush,
 					    UErrorCode * err)
 {
   char *oldTarget;
   UChar u;
-  bool_t handled = FALSE;
+  UBool handled = FALSE;
 
 #ifdef WIN32
   if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
@@ -172,12 +172,12 @@ U_CAPI void
 			      const UChar ** source,
 			      const UChar * sourceLimit,
 			      int32_t *offsets,
-			      bool_t flush,
+			      UBool flush,
 			      UErrorCode * err)
 {
   char *oldTarget;
   UChar u;
-  bool_t handled = FALSE;
+  UBool handled = FALSE;
   int32_t l;
 
   if (CONVERSION_U_SUCCESS (*err))

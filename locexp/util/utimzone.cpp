@@ -43,16 +43,16 @@ U_CAPI int32_t utz_getRawOffset(const UTimeZone *zone)
 
 // int32_t utz_getDisplayName(zone, daylight, style, locale, result, resultLength, status)
 
-// bool_t utz_useDayightTime(zone);
+// UBool utz_useDayightTime(zone);
 
-//U_CAPI bool_t utz_hasSameRules(const UTimeZone *zone, const UTimeZone *other);
+//U_CAPI UBool utz_hasSameRules(const UTimeZone *zone, const UTimeZone *other);
 
 U_CAPI const UChar* utz_hackyGetDisplayName(const UTimeZone *zone)
 {
   if(!zone)
     return NULL;
 
-  ((const TimeZone*)zone)->getDisplayName(*(new UnicodeString())).getUChars();
+  ((const TimeZone*)zone)->getDisplayName(*(new UnicodeString())).getBuffer();
 }
 
 U_CAPI void utz_setDefault(const UTimeZone *zone)

@@ -28,10 +28,10 @@ GENSRC = root.txt index.txt
 
 # resource files
 # AUTOGEN - source whose encoding is detected
-AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt zh.txt
+AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt  zh.txt
 
 # ones which have a BOM can just go here
-SRC    = sr.txt zh_SG.txt $(AUTOGENSRC)
+SRC    = sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)
 RES = $(ALLSRC:.txt=.res)

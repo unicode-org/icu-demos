@@ -48,7 +48,7 @@ U_CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
   if (U_SUCCESS(*status))
     {
        char *str = (char*)malloc(uStr.length() + 3);
-       u_austrcpy(str,uStr.getUChars()); /* should be extract? */
+       u_austrcpy(str,(const UChar*)(uStr.getBuffer())); /* should be extract? */
        return str;
      }
   else return NULL;

@@ -12,7 +12,7 @@
 #include "unicode/collectcb.h"
 
 UConverterFromUCallback COLLECT_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
-bool_t                  COLLECT_alnum = FALSE;
+UBool                  COLLECT_alnum = FALSE;
 
 static UChar *COLLECT_BAD_CHARS = NULL;
 static int32_t COLLECT_BAD_CHARS_SIZE = 0;
@@ -78,7 +78,7 @@ U_CAPI void
 				const UChar ** source,
 				const UChar * sourceLimit,
 				int32_t *offsets,
-				bool_t flush,
+				UBool flush,
 				UErrorCode * err)
 {
   int32_t i;

@@ -109,10 +109,10 @@ void printStatusTable();
  * @param current The locale that should be selected
  * @param styled Should bold tags and links be put in?
  */
-void printPath(const MySortable *leaf, const MySortable *current, bool_t styled);
+void printPath(const MySortable *leaf, const MySortable *current, UBool styled);
 
 /* selection of locales and converter */
-void chooseLocale(const char *qs, bool_t toOpen, const char *current, const char *restored);
+void chooseLocale(const char *qs, UBool toOpen, const char *current, const char *restored);
 void chooseConverter(const char *restored);
 
 void chooseConverterMatching(const char *restored, UChar *sample);
@@ -125,7 +125,7 @@ void showFlagImage(const char *locale, const char *extraIMGparams);
 void showCollationElements(UResourceBundle *rb, const char *locale, const char *qs, const char *whichString);
 void showString(UResourceBundle *rb, const char *locale, const char *qs, const char *whichString);
 void showLocaleCodes(UResourceBundle *myRB, const char *locale);
-void showStringWithDescription(UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *whichString, bool_t hidable);
+void showStringWithDescription(UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *whichString, UBool hidable);
 void showArray(UResourceBundle *rb, const char *locale, const char *whichString);
 void showArrayWithDescription(UResourceBundle *rb, const char *locale, const UChar *desc[], const char *whichString);
 void show2dArrayWithDescription(UResourceBundle *rb, const char *locale, const UChar *desc[], const char *queryString, const char *whichString);
@@ -142,11 +142,11 @@ void showExploreButtonSort(UResourceBundle *rb, const char *locale, const char *
 void showExploreLink(UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);
 void showExploreCloseButton(const char *locale, const char *frag);
 
-bool_t didUserAskForKey(const char *key, const char *queryString);
+UBool didUserAskForKey(const char *key, const char *queryString);
 
 /*  Pluggable UI.  Put these before and after each item. */
-void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus);
-void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus);
+void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus);
+void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus);
 void showKeyAndEndItem(const char *key, const char *locale);
 void explainStatus_X( UErrorCode status, const char *tag );
 
@@ -159,15 +159,15 @@ void explainStatus_X( UErrorCode status, const char *tag );
  * @param didSetLocale   (on return) TRUE if a locale was chosen
  * @return the new UFILE. Doesn't set any callbacks
  */
-UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didSetEncoding, const char **fileObject);
+UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, UBool *didSetLocale, UBool *didSetEncoding, const char **fileObject);
 
 /* write a string in \uXXXX format */
 void writeEscaped(const UChar *s);
 char *createEscapedSortList(const UChar *source);
 
 /* is this a locale we should advertise as supported? */
-bool_t isSupportedLocale(const char *locale, bool_t includeChildren); /* for LX interface */
-bool_t isExperimentalLocale(const char *local); /* for real data */
+UBool isSupportedLocale(const char *locale, UBool includeChildren); /* for LX interface */
+UBool isExperimentalLocale(const char *local); /* for real data */
 
 
 void printHelpTag(const char *helpTag, const UChar *str);
@@ -557,7 +557,7 @@ void runLocaleExplorer(LXContext *myContext)
 
       if(lx->curLocale && lx->curLocale->nSubLocs)
 	{
-	  bool_t hadExperimentalLocales = FALSE;
+	  UBool hadExperimentalLocales = FALSE;
 
 	  u_fprintf(lx->OUT, "%U<BR><UL>", FSWF("sublocales", "Sublocales:"));
 
@@ -565,7 +565,7 @@ void runLocaleExplorer(LXContext *myContext)
 
 	  for(n=0;n<lx->curLocale->nSubLocs;n++)
 	    {
-	      bool_t wasExperimental = FALSE;
+	      UBool wasExperimental = FALSE;
 
 	      if(n != 0)
 		u_fprintf(lx->OUT, ", ");
@@ -1117,7 +1117,7 @@ void printStatusTable()
   }
 }
 
-void printPath(const MySortable *leaf, const MySortable *current, bool_t styled)
+void printPath(const MySortable *leaf, const MySortable *current, UBool styled)
 {
 
   if(!leaf) /* top level */
@@ -1168,9 +1168,9 @@ void printPath(const MySortable *leaf, const MySortable *current, bool_t styled)
 }
 
 
-static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, const char *restored, bool_t *hadUnsupportedLocales)
+static void printLocaleLink(UBool toOpen, MySortable *l, const char *current, const char *restored, UBool *hadUnsupportedLocales)
 {
-  bool_t supported;
+  UBool supported;
 
   if ( toOpen == FALSE)
     {
@@ -1246,7 +1246,7 @@ static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, c
   
 }
 
-static void printLocaleAndSubs(bool_t toOpen, MySortable *l, const char *current, const char *restored, bool_t *hadUnsupportedLocales)
+static void printLocaleAndSubs(UBool toOpen, MySortable *l, const char *current, const char *restored, UBool *hadUnsupportedLocales)
 {
   int32_t n;
 
@@ -1272,13 +1272,13 @@ static void printLocaleAndSubs(bool_t toOpen, MySortable *l, const char *current
 
 
 /* chooselocale --------------------------------------------------------------------------- */
-void chooseLocale(const char *qs, bool_t toOpen, const char *current, const char *restored)
+void chooseLocale(const char *qs, UBool toOpen, const char *current, const char *restored)
 {
   UBool  hit = FALSE;
   UBool showAll = FALSE;
   int32_t n, j;
   UErrorCode status = U_ZERO_ERROR;
-  bool_t  hadUnsupportedLocales = FALSE;
+  UBool  hadUnsupportedLocales = FALSE;
 
   if((toOpen == FALSE) && qs && strstr(qs, "SHOWall"))
   {
@@ -1584,7 +1584,7 @@ void chooseConverterFrom(const char *restored, USort *list)
   for(i=0;i<(rows * COLS);i++)
     {
       int32_t theCell;
-      bool_t hit;
+      UBool hit;
       const char *cnv = NULL; 
       
 
@@ -1763,7 +1763,7 @@ void listBundles(char *b)
   char *tmp, *locale = NULL;
   UErrorCode status = U_ZERO_ERROR;
   UResourceBundle *myRB = NULL;
-  bool_t doShowSort = FALSE;
+  UBool doShowSort = FALSE;
   const char *qs;
 
   qs = b;
@@ -2154,8 +2154,8 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   UChar temp[UCA_LEN]={'\0'};
   UChar *scopy = 0;
   UChar *comps = 0;
-  bool_t bigString     = FALSE; /* is it too big to show automatically? */
-  bool_t userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString     = FALSE; /* is it too big to show automatically? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len = 0, len2, i;
   UCollator *coll = NULL; /* build an actual collator */
 
@@ -2349,8 +2349,8 @@ void showLocaleCodes( UResourceBundle *rb, const char *locale)
 {
   
   UErrorCode status = U_ZERO_ERROR;
-  bool_t bigString = FALSE; /* is it big? */
-  bool_t userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
   char tempchar[1000];
   int32_t len;
 
@@ -2452,8 +2452,8 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
   
   UErrorCode status = U_ZERO_ERROR;
   const UChar *s  = 0;
-  bool_t bigString = FALSE; /* is it big? */
-  bool_t userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len;
 
   s = ures_getStringByKey(rb, key, &len, &status);
@@ -2509,13 +2509,13 @@ void showString( UResourceBundle *rb, const char *locale, const char *queryStrin
  * @param key the key we're listing
  */
 
-void showStringWithDescription(UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *key, bool_t hidable)
+void showStringWithDescription(UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *key, UBool hidable)
 {
   
   UErrorCode status = U_ZERO_ERROR;
   const UChar *s  = 0;
-  bool_t bigString = FALSE; /* is it big? */
-  bool_t userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t i;
   int32_t len;
 
@@ -3113,9 +3113,9 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   const UChar *s  = 0;
   int32_t h,v;
   int32_t rows,cols;
-  bool_t bigString = FALSE; /* is it big? */
-  bool_t userRequested = FALSE; /* Did the user request this string? */
-  bool_t isTZ = FALSE; /* do special TZ processing */
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
+  UBool isTZ = FALSE; /* do special TZ processing */
   int32_t len;
 
   UResourceBundle *array = ures_getByKey(rb, key, NULL, &status);
@@ -3262,8 +3262,8 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
   const UChar *s  = 0;
   int32_t v;
   int32_t rows;
-  bool_t bigString = FALSE; /* is it big? */
-  bool_t userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString = FALSE; /* is it big? */
+  UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len;
   UResourceBundle *item = NULL;
 
@@ -3426,7 +3426,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 }
 
 
-bool_t didUserAskForKey(const char *key, const char *queryString)
+UBool didUserAskForKey(const char *key, const char *queryString)
 {
   const char *tmp1, *tmp2;
   
@@ -4684,11 +4684,11 @@ void showExploreNumberPatterns(const char *locale, const char *b)
 }
 
 
-bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
+UBool isSupportedLocale(const char *locale, UBool includeChildren)
 {
   UResourceBundle *newRB;
   UErrorCode       status = U_ZERO_ERROR;
-  bool_t           supp   = TRUE;
+  UBool           supp   = TRUE;
 
   newRB = ures_open(FSWF_bundlePath(), locale, &status);
 
@@ -4718,11 +4718,11 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
   return supp;
 }
 
-bool_t isExperimentalLocale(const char *locale)
+UBool isExperimentalLocale(const char *locale)
 {
   UResourceBundle *newRB;
   UErrorCode       status = U_ZERO_ERROR;
-  bool_t           supp   = FALSE;
+  UBool           supp   = FALSE;
   int32_t len;
 
   newRB = ures_open(NULL, locale, &status);
@@ -4741,7 +4741,7 @@ bool_t isExperimentalLocale(const char *locale)
   return supp;
 }
 
-void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus)
+void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
       u_fprintf(lx->OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
       u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
@@ -4763,7 +4763,7 @@ void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char 
       explainStatus_X(showStatus, key);
 }
 
-void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, bool_t cumulative, UErrorCode showStatus)
+void showKeyAndStartItem(const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
   showKeyAndStartItemShort(key,keyName,locale, cumulative, showStatus);
   u_fprintf(lx->OUT,"&nbsp;</TD><TR><TD COLSPAN=2>\r\n");
@@ -4776,7 +4776,7 @@ void showKeyAndEndItem(const char *key, const char *locale)
 
 
 /* ----------------- lx->setEncoding */
-UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didsetEncoding, const char **fileObject)
+UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, UBool *didSetLocale, UBool *didsetEncoding, const char **fileObject)
 {
   char *pi;
   char *tmp;

@@ -17,7 +17,7 @@
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
 
-bool_t TRANSLITERATED_tagWithHTML = TRUE;
+UBool TRANSLITERATED_tagWithHTML = TRUE;
 
 UConverterFromUCallback TRANSLITERATED_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 
@@ -77,7 +77,7 @@ U_STRING_DECL(beginMark, _beginMark, 18 );
 U_STRING_DECL(  endMark, _endMark,   7);
 
 /* TODO: Use the real scriptRun APIs instead of UCharBlock */
-UTransliterator *getTransliteratorForScript(UCharBlock script)
+UTransliterator *getTransliteratorForScript(UBlockCode script)
 {
     int i;
 
@@ -86,47 +86,47 @@ UTransliterator *getTransliteratorForScript(UCharBlock script)
         U_STRING_INIT(beginMark, _beginMark, 18);
         U_STRING_INIT(  endMark, _endMark, 7);
 
-        gTR = (UTransliterator**) malloc(sizeof(UTransliterator*)*U_SCRIPT_BLOCK_COUNT);
-        for(i=0;i<U_SCRIPT_BLOCK_COUNT;i++)
+        gTR = (UTransliterator**) malloc(sizeof(UTransliterator*)*UBLOCK_COUNT);
+        for(i=0;i<UBLOCK_COUNT;i++)
             gTR[i] = 0;
     }
 
     switch(script)
     {
-    case U_LATIN_EXTENDED_A_BLOCK:
+    case UBLOCK_LATIN_EXTENDED_A:
         return loadTranslitFromCache((int)script, "Maltese-Latin");
 
-    case U_DEVANAGARI_BLOCK:
+    case UBLOCK_DEVANAGARI:
         return loadTranslitFromCache((int)script, "Devanagari-Latin");
 
-    case U_TAMIL_BLOCK:
+    case UBLOCK_TAMIL:
         return loadTranslitFromCache((int)script, "Tamil-Latin");
         
-    case U_GREEK_BLOCK:
+    case UBLOCK_GREEK:
         return loadTranslitFromCache((int)script, "Greek-Latin");
 
-    case U_ARABIC_BLOCK:
+    case UBLOCK_ARABIC:
         return loadTranslitFromCache((int)script, "Arabic-Latin");
 
-    case U_CYRILLIC_BLOCK:
+    case UBLOCK_CYRILLIC:
         return loadTranslitFromCache((int)script, "Cyrillic-Latin"); /* Cyrillic != Russian, but.. */
 
-    case U_HEBREW_BLOCK:
+    case UBLOCK_HEBREW:
         return loadTranslitFromCache((int)script, "Hebrew-Latin"); 
 
-    case U_KATAKANA_BLOCK:
-    case U_HIRAGANA_BLOCK:
+    case UBLOCK_KATAKANA:
+    case UBLOCK_HIRAGANA:
         return loadTranslitFromCache((int)script, "Kana-Latin"); 
 
-    case U_CJK_UNIFIED_IDEOGRAPHS_BLOCK:
+    case UBLOCK_CJK_UNIFIED_IDEOGRAPHS:
         return loadTranslitFromCache((int)script, "Kanji-English"); 
 
-    case U_HALFWIDTH_AND_FULLWIDTH_FORMS_BLOCK:
+    case UBLOCK_HALFWIDTH_AND_FULLWIDTH_FORMS:
         return loadTranslitFromCache((int)script, "Halfwidth-Latin"); 
 
 
-    case U_HANGUL_JAMO_BLOCK:
-    case U_HANGUL_SYLLABLES_BLOCK:
+    case UBLOCK_HANGUL_JAMO:
+    case UBLOCK_HANGUL_SYLLABLES:
         return loadTranslitFromCache((int)script, "Hangul-Jamo;Jamo-Latin"); 
 
 
@@ -149,7 +149,7 @@ U_CAPI void
     int32_t len;
     UErrorCode status2 = U_ZERO_ERROR;
     UTransliterator *myTrans;
-    UCharBlock scriptBlock;
+    UBlockCode scriptBlock;
     int srclen;
     FromUTransliteratorContext *ctx;
     UConverter *oC = NULL;

@@ -57,7 +57,7 @@ static void DECOMPOSE_uchar (void *context,
 
   FromUDecomposeContext *ctx = (FromUDecomposeContext*)context;
 
-  bool_t     changedSomething = FALSE;  /* have we had *any* effect here? 
+  UBool     changedSomething = FALSE;  /* have we had *any* effect here? 
 					   Used to exit when this fcn isn't doing
 					   any good. */
 

@@ -29,7 +29,7 @@ U_CAPI void
 					    const UChar ** source,
 					    const UChar * sourceLimit,
 					    int32_t *offsets,
-					    bool_t flush,
+					    UBool flush,
 					    UErrorCode * err);
 
 /* NOTE: returns USING_FALLBACK_ERROR instead of ZERO_ERROR if 
@@ -50,7 +50,7 @@ U_CAPI void
 					    const UChar ** source,
 					    const UChar * sourceLimit,
 					    int32_t *offsets,
-					    bool_t flush,
+					    UBool flush,
 					    UErrorCode * err);
 
 
