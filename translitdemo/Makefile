@@ -17,7 +17,7 @@
 #  - do make install.    This CGI needs to have the 'data' directory in the
 #  same directory as the translit CGI binary.
 
-ICU_CONFIG=icu-config
+ICU_CONFIG=/data/icu/bin/icu-config
 ICU_INC=$(shell $(ICU_CONFIG) --incfile)
 BINDIR=$(shell $(ICU_CONFIG) --bindir)
 

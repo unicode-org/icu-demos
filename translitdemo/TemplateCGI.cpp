@@ -94,6 +94,10 @@ void TemplateCGI::run(FILE* out) {
         die("Bad template name.");
       }
     }
+    if(fileName[0]=='/')
+    {
+	die("Bad template name.");
+    }
     if(strstr(fileName,"..")) /* reject dot-dots */
     {
       die("Bad template name.");

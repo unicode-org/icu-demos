@@ -89,8 +89,12 @@ TransliteratorCGI::~TransliteratorCGI() {
  */
 const char* TransliteratorCGI::getTemplateFile() {
     const char* c = getParamValue("TEMPLATE_FILE");
+    const char* defaultC = "data/translit_main.html";
     if (!c || !*c) {
-        c = "data/translit_main.html";
+        c = defaultC;
+    } else if(strncmp(c,"data/",5)) {
+	die("Not a transliterator template.");
+	c = defaultC;
     }
     return c;
 }
