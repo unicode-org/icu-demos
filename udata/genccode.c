@@ -25,7 +25,6 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "cmemory.h"
 #include "cstring.h"
 #include "utypes.h"
@@ -84,9 +83,6 @@ getLongPathname(char *pathname) {
             pathname=info.cFileName;
         }
         FindClose(file);
-    } else {
-        fprintf(stderr, "genccode: unable to find input file %s\n", pathname);
-        exit(U_FILE_ACCESS_ERROR);
     }
 #endif
     return pathname;
