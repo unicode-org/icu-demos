@@ -84,6 +84,7 @@ function handleSaveAs() {
   document.FORM.ARG_ID.value = id;
   document.FORM.ARG_RULES.value = document.FORM.RULE_SOURCE.value;
   document.FORM._SELECT_ID_SELECTION.value = id;
+  document.FORM._USER_IDS_CHANGED.value = 1;
   document.FORM.submit();
 }
 
@@ -94,6 +95,7 @@ function handleDelete() {
   if (confirm("Delete " + id + "?")) {
     document.FORM.ARG_OPERATION.value = "REMOVE";
     document.FORM.ARG_ID.value = id;
+    document.FORM._USER_IDS_CHANGED.value = 1;
     document.FORM.submit();
   }
 }
@@ -122,6 +124,7 @@ function handleSelectID() {
   <input type="hidden" name="ARG_RULES">
   <input type="hidden" name="ARG_OPERATION" value="$ARG_OPERATION">
   <input type="hidden" name="_SELECT_ID_SELECTION" value="$_SELECT_ID_SELECTION">
+  <input type="hidden" name="_USER_IDS_CHANGED" value="$_USER_IDS_CHANGED">
   <script>
     // Load dollarRESULT here to force dollarUSER_IDS to get updated.
     // Expect dollarRESULT to have double quotes escaped.
@@ -174,6 +177,12 @@ function handleSelectID() {
 <script>
 if (IS_NEW_ID) {
   document.FORM.RULE_SOURCE.value = "// Enter new rules here or select an existing rule above";
+}
+
+// If we have added or removed user IDs, we need to update the main window
+if (document.FORM._USER_IDS_CHANGED.value) {
+  window.opener.updateUserIDs(USER_IDS.join(";"));
+  document.FORM._USER_IDS_CHANGED.value = "";
 }
 </script>
 

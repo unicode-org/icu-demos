@@ -17,10 +17,12 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 // Load available IDs from CGI and populate select elems
 AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
 
-// Generate options (inline) for a SELECT element
+USER_IDS = "$USER_IDS".split(";");
+
+// Generate options (inline) for a SELECT_ID element
 function generateSelectIDOptions(i) {
   var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
-  generateOptions(o.concat(AVAILABLE_IDS),
+  generateOptions(o.concat(USER_IDS).concat(AVAILABLE_IDS),
                   document.FORM["_SELECT_ID_SELECTION"+i].value);
 }
 </script>
@@ -200,6 +202,21 @@ function handleEditRules() {
 function _getEditor() {
   return open("/cgi-bin/translit?TEMPLATE_FILE=data/translit_rule_edit.html",
               "_TRANSLIT_EDIT");
+}
+
+// Update ourself to reflect new/deleted user IDs.
+// In practice this means modifying the ID selectors dynamically.
+// @param userIDs user IDs, separated by ";".  For some reason,
+// passing the actual array doesn't work.
+function updateUserIDs(userIDs) {
+  USER_IDS = userIDs.split(";");
+  var ids = USER_IDS.concat(AVAILABLE_IDS);
+  setOptions(document.FORM.SELECT_ID1,
+             ['(Compound)'].concat(ids),
+             document.FORM._SELECT_ID_SELECTION1.value);
+  setOptions(document.FORM.SELECT_ID2,
+             ['(Compound)','(Inverse)'].concat(ids),
+             document.FORM._SELECT_ID_SELECTION2.value);  
 }
 </script>
 
