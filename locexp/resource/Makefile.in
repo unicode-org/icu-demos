@@ -24,7 +24,7 @@ include $(top_builddir)/icuapps.mk
 lxdatadir= $(libdir)/$(PACKAGE)/$(VERSION)/locexp
 
 PKG=locexp
-PKGMODE=static
+PKGMODE=dll
 OUT= out
 
 ## Extra files to remove for 'make clean'
@@ -79,10 +79,8 @@ Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 
 -include Makefile.res
 
-
-
 root.txt: $(FSWF_SRC) root.txt.inc ../tools/extractStrings.sh
-	env $(INVOKE) PATH=../tools:$(bindir):$(sbindir):$(PATH) extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
+	$(INVOKE) PATH=../tools:$(bindir):$(sbindir):$(PATH) extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
 
 index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
 	sh ../tools/genIndex.sh $(SRC) root.txt > index.txt
@@ -97,6 +95,7 @@ $(OUT)/locexp.lst: Makefile
 	done;
 
 install-res:
+	$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst -I $(libdir)
 
 dist-local:
 

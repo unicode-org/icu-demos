@@ -43,8 +43,8 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 
 DEPS = $(OBJECTS:.o=.d)
 
-LXLIBS=  -L../usort/lib -lusort -L./util -liculxutil   -L./resource/out/ -llocexp
-ICULIBS := -lustdio $(ICULIBS)  $(LXLIBS)
+LXLIBS=  -L../usort/lib -lusort -L./util -liculxutil$(ICULIBSUFFIX)   -L./resource/out/ -llocexp
+ICULIBS := $(LDFLAGS_USTDIO) $(ICULIBS)  $(LXLIBS)
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
@@ -121,8 +121,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licuuc -lusort' ...
 
-$(TARGET) : $(LXOBJ) $(CGIOBJ)
-	$(LINK.cc) -o $@ $^ $(ICULIBS) -llocexp
+$(TARGET) : $(LXOBJ) $(CGIOBJ) 
+	$(LINK.cc) -o $@ $(LXOBJ) $(CGIOBJ) $(ICULIBS) -llocexp
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
