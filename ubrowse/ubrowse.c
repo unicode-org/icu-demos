@@ -310,6 +310,8 @@ void myEnumCharNamesFn_setup()
     words_count = 0;
     while(p && *p)
     {
+        fprintf(stderr, "[P=%s count=%d\n", p, words_count);
+        
         q = strchr(p, ' ');
         if(q == NULL)  /* last one */
         {
@@ -328,7 +330,9 @@ void myEnumCharNamesFn_setup()
         words[words_count][49]=0;
         words_count++;
         p = q;
-        while(isspace(*p)) p++;
+        if(p != NULL) {
+            while(isspace(*p)) p++;
+        }
         if(words_count >= 16) {
             return;
         }
@@ -766,14 +770,14 @@ if(!tmp) /* if there was no trailing '/' ... */
 	  u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X</title>\n", block);
 	  mode = ECOLUMN;
 	}
-      else if(sscanf(qs, "scr=%d&amp;b=%x", &gSearchBlock, &block) == 2)
+      else if(sscanf(qs, "scr=%d&b=%x", &gSearchBlock, &block) == 2)
 	{
           mode = ECOLUMN;
           block = doSearchBlock(gSearchBlock, block);
           block &= 0x1FFFF0;
           u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X, %s</title>\n", block, getUBlockCodeName(gSearchBlock));
 	}
-      else if(sscanf(qs, "typ=%d&amp;b=%x", &gSearchType, &block) == 2)
+      else if(sscanf(qs, "typ=%d&b=%x", &gSearchType, &block) == 2)
 	{
           mode = ECOLUMN;
 	  block = doSearchType(gSearchType, block);
@@ -819,7 +823,7 @@ if(!tmp) /* if there was no trailing '/' ... */
         }
 
         /* look for 'exact' tag */
-        ss = strstr(gSearchHTML,"&amp;sx=");
+        ss = strstr(gSearchHTML,"&sx=");
         
         mode = ENAME;
         
