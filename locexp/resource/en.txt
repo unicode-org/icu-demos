@@ -27,5 +27,5 @@ en {
 /* Will try to add these sequentially for the sanity of translators! */
    SpelloutRulesExample { "Number Spellout Examples" }
    SpelloutRules { "Number Spellout Rules" }
-        
+   ExemplarCharacters { "Exemplar Characters" }
 }
