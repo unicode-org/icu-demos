@@ -52,7 +52,7 @@ res-local: $(RES)
 mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
 default.txt: ../locexp.c
-	env PATH=../tools:$(PATH):$(sbindir) extractStrings.sh ../locexp.c > ../resource/default.txt || ( rm -f default.txt ; false )
+	env PATH=../tools:../../uconv:$(PATH) extractStrings.sh ../locexp.c > ../resource/default.txt || ( rm -f default.txt ; false )
 
 index.txt: Makefile.in $(SRC)
 	../tools/genIndex.sh $(SRC) default.txt > index.txt
@@ -60,7 +60,7 @@ index.txt: Makefile.in $(SRC)
 
 install-local: install-res
 
-install-res:
+install-res: res-local
 	$(mkinstalldirs) $(lxdatadir)
 	$(INSTALL) $(ALLSRC) $(RES) $(lxdatadir)
 
