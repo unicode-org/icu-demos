@@ -127,17 +127,18 @@ void writeFileObject( LXContext *lx, const char *path )
         fprintf(lx->fOUT, "<li> ");
         if(U_FAILURE(s2))
           {
-            fprintf(lx->fOUT, " <B>%s</B>\n", u_errorName(s2));
+            fprintf(lx->fOUT, " <b>%s</b>\n", u_errorName(s2));
           }
         else
           {
 	    writeSubObject( lx, n);
             fprintf(lx->fOUT, "\n");
           }
+        fprintf(lx->fOUT, "</li> ");
       }
-    fprintf(lx->fOUT, "</UL>");
-    fprintf(lx->fOUT, "</BODY>");
-    fprintf(lx->fOUT, "</HTML>");
+    fprintf(lx->fOUT, "</ul>");
+    fprintf(lx->fOUT, "</body>");
+    fprintf(lx->fOUT, "</html>");
     
 /*    exit(0); */
   }

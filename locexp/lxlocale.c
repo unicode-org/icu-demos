@@ -198,7 +198,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
     {
       u_fprintf(lx->OUT, "%U", FSWF("sublocales", "Sublocales:"));
       if(!suffix || !*suffix) {
-        u_fprintf(lx->OUT, "<BR><ul>", FSWF("sublocales", "Sublocales:"));
+        u_fprintf(lx->OUT, "<br><div style=\"margin-left: 2.5em; margin-top: 1em; margin-bottom: 1em\">", FSWF("sublocales", "Sublocales:"));
       } 
       mySort(lx->curLocale, &status, FALSE);  /* Sort sub locales */
       
@@ -230,7 +230,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
         if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, "] ");
       }
       if(!suffix || !*suffix) {
-        u_fprintf(lx->OUT, "</ul>");
+        u_fprintf(lx->OUT, "</div>");
       }
     }
   

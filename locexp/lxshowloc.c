@@ -47,8 +47,6 @@ void showOneLocale(LXContext *lx)
 
     if(! locale )
     {
-        char *sampleChars;
-
         /* show the 'choose a locale' page */
         chooseLocale(lx, TRUE, b, "", FALSE);
 
@@ -58,8 +56,6 @@ void showOneLocale(LXContext *lx)
                   FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
         showExploreButtonSort(lx, NULL,"g7", "CollationElements", FALSE);
-        
-        free(sampleChars);
 
         u_fprintf(lx->OUT, "<td width=\"50%%\"></td><td valign=top>\r\n");
 
@@ -184,6 +180,7 @@ void showOneLocale(LXContext *lx)
         /*    showString(lx, myRB, locale, "ExemplarCharacters", FALSE); */
     
         showTaggedArray(lx, myRB, locale, "Languages", TRUE);
+        showTaggedArray(lx, myRB, locale, "Scripts", TRUE); 
         showTaggedArray(lx, myRB, locale, "Countries", TRUE); 
     
       

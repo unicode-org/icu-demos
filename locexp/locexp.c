@@ -30,6 +30,7 @@ void displayLocaleExplorer(LXContext *lx)
   const char *localeParam;
   UErrorCode status = U_ZERO_ERROR;
   char portStr[100];
+  char langName[ULOC_FULLNAME_CAPACITY] = {0};
   
   localeParam = queryField(lx, "_");
     
@@ -53,9 +54,10 @@ void displayLocaleExplorer(LXContext *lx)
     /* -------------- */
     
     u_fprintf(lx->OUT, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> \r\n");
-    u_fprintf(lx->OUT,"<html>");
+    uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
+    u_fprintf(lx->OUT,"<html lang=\"%s\">", langName);
     
-    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2003 IBM and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->");
+    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer (c) 1999-2003 IBM and Others. \r\n All rights reserved. \r\n  http://oss.software.ibm.com/icu/  \r\n\r\n-->\r\n");
     
     u_fprintf(lx->OUT, "<head><title>");
     lx->backslashCtx.html = FALSE;
@@ -164,7 +166,7 @@ void displayLocaleExplorer(LXContext *lx)
         suffix = "EXPLORE_CollationElements=";
       } 
 
-      u_fprintf(lx->OUT, "<font size=+1>");
+      u_fprintf(lx->OUT, "<font size=\"+1\">");
       printPath(lx, lx->curLocale, lx->curLocale, suffix?TRUE:FALSE, suffix);
 
       if(queryField(lx, "EXPLORE_CollationElements")) {
@@ -178,9 +180,9 @@ void displayLocaleExplorer(LXContext *lx)
     }
     else
     {
-      u_fprintf(lx->OUT, "<table summary=\"%U\" width=100%%><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
+      u_fprintf(lx->OUT, "<table summary=\"%U\" width=\"100%%\"><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
       
-      u_fprintf(lx->OUT, "<font size=+1>");
+      u_fprintf(lx->OUT, "<font size=\"+1\">");
       printPath(lx, lx->curLocale, lx->curLocale, TRUE, NULL);
       u_fprintf(lx->OUT, "</font>");
       
@@ -199,19 +201,19 @@ void displayLocaleExplorer(LXContext *lx)
     if( ( (!*lx->queryString)  /* && !lx->setLocale && !(lx->setEncoding)*/) 
         || strstr(lx->queryString, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
     {
-        u_fprintf(lx->OUT, "<ul>");
+        u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><p>");
         u_fprintf_u(lx->OUT, 
-            FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.  <p>ICU is an open-source project."),
+            FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."),
             (double)(lx->locales->nSubLocs),
             (double)(uloc_countAvailable()-(lx->locales->nSubLocs)));
-        u_fprintf(lx->OUT, "<p>\r\n");
+        u_fprintf(lx->OUT, "</p>\r\n");
 #if 0
-        u_fprintf(lx->OUT, "%U<p>\r\n",
+        u_fprintf(lx->OUT, "<p>%U</p>\r\n",
             FSWF/**/(/**/"specialMessage_2000Oct30",/**/
             "<i>Note: Locale Explorer should be much faster, but.. there's an ongoing problem where (at least) Microsoft Internet Explorer users will be faced with a blank page or an error page.. if this occurs, please simply hit Reload and all should be corrected.</i>"));
 #endif
         
-        u_fprintf(lx->OUT, "</UL>");
+        u_fprintf(lx->OUT, "</div>");
     }
     
     
@@ -304,7 +306,7 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "%U: <form><input name=\"SETTZ\" value=\"%U\"><input type=submit></form>\r\n", 
             FSWF("zone_set", "Set timezone to:"),
             lx->newZone);
-        u_fprintf(lx->OUT, "<ul><i>%U</i></ul>\r\n", 
+        u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%U</i></div>\r\n", 
             FSWF("zone_warn","Note: only works if you have cookies turned on."));
         
         {
@@ -333,7 +335,7 @@ void displayLocaleExplorer(LXContext *lx)
         
         oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(lx->OUT)));
         
-        u_fprintf(lx->OUT, "<table width=100%% border=1><tr><td>%U<br>", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
+        u_fprintf(lx->OUT, "<table width=\"100%%\" border=1><tr><td>%U<br>", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
         
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_ESCAPE, &status2);
         
