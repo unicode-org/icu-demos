@@ -1,4 +1,3 @@
-
 /**
  * The CGI interacts with the template file by filling in variables of
  * the form $FOO and reading text from fields.  Here is a complete
@@ -11,6 +10,11 @@
  * Replaced by semicolon delimited list of available system
  * transliterator IDs.
  *
+ * $AVAILABLE_RBT_IDS
+ * Replaced by semicolon delimited list of available system
+ * RuleBasedTransliterator IDs.  This is an SLOW call because
+ * it instantiates all the IDs to see which are rule based.
+ *
  * $USER_IDS
  * Replaced by semicolon delimited list of user-defined transliterator
  * IDs (from the TextCache).
@@ -20,8 +24,11 @@
  * ARG_ID and then ARG_ID2.  ARG_DIRECTION2 may be set to "REVERSE"
  * to invoke ARG_ID2 in the reverse direction.
  *
- * $USER_RULE
- * Replaced by the text for user rule ARG_ID.
+ * $RULE_SOURCE
+ * Replaced by the text for user or system rule ARG_ID, unless
+ * ARG_OPERATION is "COMPILE".  In the latter case, $RULE_SOURCE
+ * is replaced by itself (the field value is left unchanged); this
+ * preserves the input text so the user can correct syntax errors.
  *
  * $RESULT
  * Replaced by either "OK" or an error string.  This is a generic
@@ -44,6 +51,11 @@
  * ARG_INPUT
  * ARG_OPERATION
  * ARG_RULES
+ *
+ * QUOTING:
+ * All of the strings are output raw, with no escaping, unless otherwise
+ * specified here:
+ * - $RESULT has double quotes escaped with backslashes
  *
  * TEMPLATE_FILE is a special field that is used to tell the CGI what
  * template file to use to generate its output.  It is a
@@ -72,6 +84,8 @@ TransliteratorCGI::TransliteratorCGI() :
     inputText = 0;
     availableIDs = 0;
     availableIDsCount = 0;
+    availableRBTIDs = 0;
+    availableRBTIDsCount = 0;
     isIntermediateInitialized = false;
     isIntermediateBogus = false;
     areUserTransliteratorsLoaded = false;
@@ -86,6 +100,10 @@ TransliteratorCGI::~TransliteratorCGI() {
         delete[] availableIDs[i];
     }
     delete[] availableIDs;
+    for (int i=0; i<availableRBTIDsCount; ++i) {
+        delete[] availableRBTIDs[i];
+    }
+    delete[] availableRBTIDs;
 
     delete translit1;
     delete translit2;
@@ -124,6 +142,16 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
         }
     }
 
+    else if (strcmp(var, "AVAILABLE_RBT_IDS") == 0) {
+        char** ids = getAvailableRBTIDs();
+        if (ids != 0) {
+            int i;
+            for (i=0; i<availableRBTIDsCount; ++i) {
+                fprintf(out, ((i==0)?"%s":";%s"), ids[i]);
+            }
+        }
+    }
+
     else if (strcmp(var, "ICU_VERSION") == 0) {
         char str[U_MAX_VERSION_STRING_LENGTH];
         UVersionInfo version;
@@ -136,12 +164,38 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
         ruleCache.visitKeys(handle_USER_IDS, (void*) out);
     }
 
-    else if (strcmp(var, "USER_RULE") == 0) {
+    else if (strcmp(var, "RULE_SOURCE") == 0) {
+        // If this is a compile operation, then replace RULE_SOURCE
+        // with itself.  That way we don't blow away rules the user
+        // has entered that contain a syntax error.
+        const char* opcode = getParamValue("ARG_OPERATION", "");
+        if (strcmp(opcode, "COMPILE") == 0) {
+            TemplateCGI::handleTemplateVariable(out, var);
+            return;
+        }
+
         UnicodeString id(getParamValue("ARG_ID", ""), ENCODING);
         UnicodeString rule;
         if (ruleCache.get(id, rule)) {
             util_fprintf(out, rule);
-        }
+        } else {
+            Transliterator *t = Transliterator::createInstance(id);
+            if (t == NULL) {
+                fprintf(out, "// Cannot create transliterator ");
+                util_fprintf(out, id);
+            } else {
+                if (t->getDynamicClassID() ==
+                    RuleBasedTransliterator::getStaticClassID()) {
+                    ((RuleBasedTransliterator*)t)->toRules(rule, FALSE);
+                    util_fprintf(out, rule);
+                } else {
+                    fprintf(out, "// ");
+                    util_fprintf(out, id);
+                    fprintf(out, " is not a RuleBasedTransliterator");
+                }
+                delete t;
+            }
+		}
     }
 
     else if (strcmp(var, "OUTPUT1") == 0) {
@@ -172,11 +226,20 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
             UnicodeString errMsg;
             Transliterator *t = buildUserRules(id, rules, errMsg);
             if (t != 0) {
-                fprintf(out, "OK");
                 delete t;
                 // We have a validated rule set; save it
-                ruleCache.put(id, rules);
+                UBool ok = ruleCache.put(id, rules);
+                fprintf(out, ok ? "OK" : "INTERNAL ERROR");
             } else {
+                // Escape double quotes and backslashes by prepending
+                // them with backslashes.
+                int32_t i;
+                for (i=0; i<errMsg.length(); ++i) {
+                    if (errMsg[i] == 0x0022 || errMsg[i] == 0x005C) {
+                        errMsg.insert(i, (UChar)0x005C);
+                        ++i;
+                    }
+                }
                 util_fprintf(out, errMsg);
             }
         }
@@ -233,6 +296,7 @@ Transliterator* TransliteratorCGI::getTranslit1(UnicodeString& constructorError)
         translit1 = Transliterator::createInstance(id);
         if (translit1 == 0) {
             constructorError = UnicodeString("Error: Unable to create transliterator \"", "");
+            id = UnicodeString(getParamValue("ARG_ID", NULL_ID), ENCODING);
             constructorError += id;
             constructorError += "\"";
         }
@@ -304,7 +368,7 @@ Transliterator* TransliteratorCGI::buildUserRules(const UnicodeString& id,
         sprintf(buf, "Syntax error in the rule \"");
         errMsg += buf;
         errMsg += err.preContext;
-        errMsg += "\" ";
+        errMsg += "\"";
         delete t;
         t = 0;
     }
@@ -326,6 +390,43 @@ void TransliteratorCGI::loadUserTransliterators() {
 }
 
 /**
+ * Return the available RuleBasedTransliterator IDs as a sorted
+ * list of char* strings.  This list is created once and cached
+ * thereafter.
+ *
+ * THIS IS AN EXPENSIVE CALL because it instantiates all the IDs.
+ */
+char** TransliteratorCGI::getAvailableRBTIDs() {
+    if (availableRBTIDs != 0) {
+        return availableRBTIDs;
+    }
+
+    char** all = getAvailableIDs();
+
+    availableRBTIDs = new char*[availableIDsCount];
+    if (availableRBTIDs == 0) {
+        availableRBTIDsCount = 0;
+        return 0;
+    }
+    
+    int32_t i;
+    availableRBTIDsCount = 0;
+    for (i=0; i<availableIDsCount; ++i) {
+        UnicodeString id(all[i], ENCODING);
+        Transliterator *t = Transliterator::createInstance(id);
+        if (t != NULL) {
+            if (t->getDynamicClassID() ==
+                RuleBasedTransliterator::getStaticClassID()) {
+                availableRBTIDs[availableRBTIDsCount++] = strdup(all[i]);
+            }
+            delete t;
+        }
+    }
+
+    return availableRBTIDs;
+}
+
+/**
  * Return the available transliterator IDs as a sorted list of
  * char* strings.  This list is created once and cached thereafter.
  */
@@ -335,7 +436,6 @@ char** TransliteratorCGI::getAvailableIDs() {
     }
 
     int32_t i;
-    loadUserTransliterators();
     availableIDsCount = Transliterator::countAvailableIDs();
     availableIDs = new char*[availableIDsCount];
     if (availableIDs == 0) {

@@ -35,6 +35,7 @@ class TransliteratorCGI : public TemplateCGI {
                                    UnicodeString& errMsg);
     void loadUserTransliterators();
     char** getAvailableIDs();
+    char** getAvailableRBTIDs();
 
     static void handle_USER_IDS(int32_t i, const UnicodeString& key,
                                 void* context);
@@ -49,6 +50,10 @@ class TransliteratorCGI : public TemplateCGI {
     // Cached available IDs list
     char** availableIDs;
     int32_t availableIDsCount;
+
+    // Cached RBT available IDs list
+    char** availableRBTIDs;
+    int32_t availableRBTIDsCount;
 
     // Cached transliterators
     Transliterator* translit1;
