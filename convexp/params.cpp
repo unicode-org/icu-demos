@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -46,7 +46,12 @@ U_CFUNC const char *getStandardOptionsURL(UErrorCode *status) {
 
         while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
             standard = (const char*) e->value.pointer;
-            len += sprintf(optionsURL+len, OPTION_SEP_STR"s=%s", standard);
+            if (len == 0) {
+                len += sprintf(optionsURL+len, "s=%s", standard);
+            }
+            else {
+                len += sprintf(optionsURL+len, OPTION_SEP_STR"s=%s", standard);
+            }
             if (*standard == 0) {
                 /* Special case for when browsers are too smart, like Opera */
                 len += sprintf(optionsURL+len, "-");
@@ -55,7 +60,7 @@ U_CFUNC const char *getStandardOptionsURL(UErrorCode *status) {
         standards = optionsURL;
     }
 
-    return optionsURL+1;
+    return optionsURL;
 }
 
 /*

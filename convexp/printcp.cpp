@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -44,9 +44,9 @@ static void printHeader() {
 
 static const char *getEscapeChar(UChar32 uniVal) {
     switch (uniVal) {
-    case '<':   return "&lt;<br>";
-    case '>':   return "&gt;<br>";
-    case '&':   return "&amp;<br>";
+    case '<':   return "&lt;<br />";
+    case '>':   return "&gt;<br />";
+    case '&':   return "&amp;<br />";
     case 0x00:  return ISO_BEGIN "NUL" ISO_END;
     case 0x01:  return ISO_BEGIN "SOH" ISO_END;
     case 0x02:  return ISO_BEGIN "STX" ISO_END;
@@ -203,7 +203,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     escapedChar = getEscapeChar(uniVal);  // Maybe this needs to go into the loop above
     if (!escapedChar) {
         u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
-        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br>",
+        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br />",
             uniName, utf8);
     }
     else {
@@ -214,7 +214,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     printf("<font size=\"-2\">");
     for (idx = 0; idx < targetSize; ) {
         if (idx != 0) {
-            puts("<br>");
+            puts("<br />");
         }
         U16_NEXT(targetBuffer, idx, targetSize, uniVal);
         printf("%04X", uniVal);

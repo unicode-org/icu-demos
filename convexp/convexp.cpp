@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -42,9 +42,10 @@ static const char htmlHeader[]=
     "<html lang=\"en-US\">\n"
     "<head>\n"
     "<title>ICU " PROGRAM_NAME "</title>\n"
-    "<meta name=\"robots\" content=\"nofollow\">\n"
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
+    "<meta name=\"robots\" content=\"nofollow\" />\n"
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
     "<style type=\"text/css\">\n"
+    "/*<![CDATA[*/\n"
     "p.value {font-family: monospace;}\n"
     "th {white-space: nowrap; background-color: #EEEEEE; text-align: left;}\n"
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
@@ -53,6 +54,7 @@ static const char htmlHeader[]=
     "td.reserved {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
     "td.continue {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
     "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 75%; font-family: monospace;}\n"
+    "/*]]>*/\n"
     "</style>\n"
     "</head>\n"
     "<body bgcolor=\"#FFFFFF\">\n"
@@ -74,7 +76,7 @@ static const char navigationEndHeader[]=
     "<a href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">Help</a>"
     "</td></tr>\n"
     "</table>\n"
-    "<hr>\n"
+    "<hr />\n"
     "<h1>ICU " PROGRAM_NAME "</h1>\n";
 
 static const char aliasHeader[]=
@@ -96,14 +98,14 @@ static const char startUCharEscape[]="\\u%04X";
 static const char trailingUCharEscape[]="\\u%04X";
 
 static const char startForm[]=
-    "<form method=\"GET\" action=\"%s\">\n"
-    "<p>Select a standard to view:<br>\n"
-    "<br>\n"
+    "<form method=\"get\" action=\"%s\">\n"
+    "<p>Select a standard to view:<br />\n"
+    "<br />\n"
 //    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"164\" value=\"%s\">\n"
     "\n";
 
 static const char endForm[]=
-            "<input type=\"submit\" value=\"View Results\" size=\"100\">\n"
+            "<input type=\"submit\" value=\"View Results\" size=\"100\" />\n"
             "</p>"
             "</form>\n";
 
@@ -121,10 +123,10 @@ static void printOptions(UErrorCode *status) {
     const char *standard, *checked;
 
     if (*gCurrConverter) {
-        printf("<input type=\"HIDDEN\" name=\"conv\" value=\"%s\" checked>\n", gCurrConverter);
+        printf("<input type=\"HIDDEN\" name=\"conv\" value=\"%s\" checked=\"checked\" />\n", gCurrConverter);
     }
     if (*gStartBytes) {
-        printf("<input type=\"HIDDEN\" name=\"b\" value=\"%s\" checked>\n", gStartBytes);
+        printf("<input type=\"HIDDEN\" name=\"b\" value=\"%s\"  checked=\"checked\" />\n", gStartBytes);
     }
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
@@ -139,23 +141,23 @@ static void printOptions(UErrorCode *status) {
             checked = "";
         }
         if (standard && *standard) {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"%s\" id=\"%s\"%s> <label for=\"%s\">%s</label><br>\n",
+            printf("<input type=\"checkbox\" name=\"s\" value=\"%s\" id=\"%s\"%s> <label for=\"%s\">%s</label><br />\n",
                 standard, standard, checked, standard, standard);
         }
         else {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"-\" id=\"UntaggedAliases\"%s> <label for=\"UntaggedAliases\"><em>Untagged Aliases</em></label><br>\n",
+            printf("<input type=\"checkbox\" name=\"s\" value=\"-\" id=\"UntaggedAliases\"%s> <label for=\"UntaggedAliases\"><em>Untagged Aliases</em></label><br />\n",
                 checked);
         }
     }
     if (uhash_find(gStandardsSelected, ALL) != NULL) {
-        checked = " checked";
+        checked = " checked=\"checked\"";
     }
     else {
         checked = "";
     }
-    printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\" id=\"AllAliases\"%s> <label for=\"AllAliases\"><em>All Aliases</em></label><br>\n",
+    printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\" id=\"AllAliases\"%s /> <label for=\"AllAliases\"><em>All Aliases</em></label><br />\n",
         checked);
-    puts("<br>");
+    puts("<br />");
 }
 
 static const char *getConverterType(UConverterType convType) {
@@ -237,7 +239,7 @@ static void escapeBytes(const char *source, int8_t len) {
     len--;
     while (len-- > 0) {
         if (len > 8 && (*source & 0xF) == 0) {
-            puts("<br>");
+            puts("<br />");
         }
         printf(trailingByteEscape, (uint8_t)*(source++));
     }
@@ -281,7 +283,7 @@ static void printAmbiguousAliasedConverters() {
                 }
                 canonicalName = ucnv_getCanonicalName(alias, standard, &status);
                 if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
-                    printf("<a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"%s\">%s</a> %s { %s }<br>\n",
+                    printf("<a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"%s\">%s</a> %s { %s }<br />\n",
                         canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
                 }
             }
@@ -516,7 +518,7 @@ static void printStandardHeaders(UErrorCode *status) {
     int32_t i;
     const char *standard;
 
-    puts("<tr><th class=\"standard\">Internal<br>Converter Name</th>");
+    puts("<tr><th class=\"standard\">Internal<br />Converter Name</th>");
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
         standard = ucnv_getStandard((uint16_t)i, status);
@@ -546,7 +548,12 @@ static void printAllAliasList(const char *canonicalName, UErrorCode *status) {
     puts("<td class=\"alias\">");
     for (idx = 0; idx < countAliases; idx++) {
         alias = ucnv_getAlias(canonicalName, idx, status);
-        printf("%s<br>\n", alias);
+        if (idx + 1 == countAliases) {
+            printf("%s", alias); /* Don't print a break after the last item. */
+        }
+        else {
+            printf("%s<br />\n", alias);
+        }
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getAlias() -> %s\n", u_errorName(*status));
         }
@@ -562,13 +569,19 @@ static void printStandardAliasList(const char *canonicalName, const char *standa
     }
     else {
         UErrorCode myStatus = U_ZERO_ERROR;
+        int32_t aliasCount = uenum_count(stdConvEnum, status);
 
         puts("<td class=\"alias\">");
-        if (uenum_count(stdConvEnum, status) == 0) {
+        if (aliasCount == 0) {
             printf(NBSP);
         }
         while ((alias = uenum_next(stdConvEnum, NULL, &myStatus))) {
-            printf("%s<br>\n", alias);
+            if (--aliasCount == 0) {
+                printf("%s", alias); /* Don't print a break after the last item. */
+            }
+            else {
+                printf("%s<br />\n", alias);
+            }
         }
         puts("</td>");
     }
@@ -718,7 +731,7 @@ main(int argc, const char *argv[]) {
     }
 
 
-    puts("<br>\n<hr>");
+    puts("<br />\n<hr />");
 
     char icuVString[16];
     UVersionInfo icuVer;

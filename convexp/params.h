@@ -36,7 +36,7 @@ U_CFUNC UBool gShowLanguages;
 
 #define OPTION_SEPARATOR    '&'
 #define VALUE_SEPARATOR     '='
-#define OPTION_SEP_STR      "&"
+#define OPTION_SEP_STR      "&amp;"
 #define NBSP                "\xC2\xA0"  /* UTF-8 &nbsp; */
 #define PROGRAM_NAME        "Converter Explorer"
 #ifdef WIN32
