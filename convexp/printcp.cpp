@@ -32,6 +32,8 @@
 #define CELL_WIDTH ""
 #define ISO_BEGIN "<div class=\"iso\">"
 #define ISO_END "</div>"
+#define GLYPH_BEGIN "<div class=\"glyph\">"
+#define GLYPH_END "</div>"
 
 static void printHeader() {
     int32_t idx;
@@ -44,9 +46,10 @@ static void printHeader() {
 
 static const char *getEscapeChar(UChar32 uniVal) {
     switch (uniVal) {
-    case '<':   return "&lt;<br />";
-    case '>':   return "&gt;<br />";
-    case '&':   return "&amp;<br />";
+    case '<':   return GLYPH_BEGIN "&lt;" GLYPH_END;
+    case '>':   return GLYPH_BEGIN "&gt;" GLYPH_END;
+    case '&':   return GLYPH_BEGIN "&amp;" GLYPH_END;
+    case ' ':   return GLYPH_BEGIN "<br />" GLYPH_END;// not quite correct, but it looks better
     case 0x00:  return ISO_BEGIN "NUL" ISO_END;
     case 0x01:  return ISO_BEGIN "SOH" ISO_END;
     case 0x02:  return ISO_BEGIN "STX" ISO_END;
@@ -203,7 +206,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     escapedChar = getEscapeChar(uniVal);  // Maybe this needs to go into the loop above
     if (!escapedChar) {
         u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
-        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><div class=\"glyph\">%s</div>",
+        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">" GLYPH_BEGIN "%s" GLYPH_END,
             uniName, utf8);
     }
     else {
