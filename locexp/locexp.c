@@ -126,6 +126,7 @@ void listBundles(char *b);
 /* fcns for dumping the contents of a particular rb */
 void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString);
 void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const char *whichString, UBool PREformatted);
+void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale, const char *whichString, int radix);
 void showLocaleCodes(LXContext *lx, UResourceBundle *myRB, const char *locale);
 void showLocaleScript(LXContext *lx, UResourceBundle *myRB, const char *locale);
 void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *locale, const char *qs, const UChar *desc[], const char *whichString, UBool hidable);
@@ -523,6 +524,8 @@ void runLocaleExplorer(LXContext *myContext)
     }
   else
     {
+      UBool hadExperimentalSubLocales = FALSE;
+
       if(tmp && tmp[0]  && !lx->curLocale && (tmp[0] == '_'))
 	{
 	  UChar dispName[1024];
@@ -556,9 +559,10 @@ void runLocaleExplorer(LXContext *myContext)
 		  
       u_fprintf(lx->OUT, "\r\n</TD></TR><TR><TD>");
 
+
+      /* look for sublocs */
       if(lx->curLocale && lx->curLocale->nSubLocs)
 	{
-	  UBool hadExperimentalLocales = FALSE;
 
 	  u_fprintf(lx->OUT, "%U<BR><UL>", FSWF("sublocales", "Sublocales:"));
 
@@ -576,7 +580,7 @@ void runLocaleExplorer(LXContext *myContext)
 	      if(isExperimentalLocale(lx->curLocale->subLocs[n].str))
 		{
 		  u_fprintf(lx->OUT, "<I><FONT COLOR=\"#9999FF\">");
-		  hadExperimentalLocales = TRUE;
+		  hadExperimentalSubLocales = TRUE;
 		  wasExperimental = TRUE;
 		}
 	      u_fprintf(lx->OUT, "%U",lx->curLocale->subLocs[n].ustr);
@@ -586,15 +590,127 @@ void runLocaleExplorer(LXContext *myContext)
 		}
               u_fprintf(lx->OUT, "</A>");
 	    }
-	  
-	  if(hadExperimentalLocales)
-	    u_fprintf(lx->OUT, "<BR>%U", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
-	  
+		  
 	  u_fprintf(lx->OUT, "</UL>");
+
 	}
+
+      /* Look for cousins with the same leaf component */
+      /* For now: ONLY do for xx_YY locales */
+      if(lx->curLocale && lx->parLocale &&         /* have locale & parent found (i.e. installed) */
+	 (lx->parLocale->parent == lx-> locales) ) /* parent's parent is root */
+      {
+	int count =0;
+	int i,j;
+	const char *stub;
+	char buf[500];
+	/* safe 'cause all these strings come from getInstalledLocales' */
+	stub = lx->curLocale->str + strlen(lx->parLocale->str);
+	/* u_fprintf(lx->OUT,"<B>STUB is: %s</B>\n",stub); */
+
+	/* OK, now find all children X of my grandparent,  where  (  X.parent.str + stub == X ) */
+	for(i=0;i<lx->locales->nSubLocs;i++)
+	{
+	  if(!strcmp(lx->locales->subLocs[i].str, lx->parLocale->str))
+	  {
+	    continue; /* Don't search our parent (same language) */
+	  }
+
+	  strcpy(buf, lx->locales->subLocs[i].str);
+	  strcat(buf, stub);
+
+	  if(findLocaleNonRecursive(&(lx->locales->subLocs[i]), buf) != -1)
+	  {
+	    UBool wasExperimental = FALSE;
+	    UChar ubuf[500];
+	      
+	    if((count++) > 0)
+	      u_fprintf(lx->OUT, ", ");
+	    else
+	      { /* header */
+		u_fprintf_u(lx->OUT, 
+			 FSWF("otherLanguageSameCountryLocales", "<B>%U</B> under other languages"),
+			  lx->curLocale->ustr);
+		u_fprintf(lx->OUT, ": ");
+	      }
+	    
+	      
+	    u_fprintf(lx->OUT, "<A HREF=\"?_=%s\">", 
+		      buf);
+	    
+	    if(isExperimentalLocale(buf))
+	      {
+		u_fprintf(lx->OUT, "<I><FONT COLOR=\"#9999FF\">");
+		hadExperimentalSubLocales = TRUE;
+		wasExperimental = TRUE;
+	      }
+
+	    u_fprintf(lx->OUT, "%U",lx->locales->subLocs[i].ustr);
+	    if(wasExperimental)
+	      {
+		u_fprintf(lx->OUT, "</FONT></I>");
+	      }
+	    u_fprintf(lx->OUT, "</A>");
+	  }
+	}
+	if(count > 0)
+	{
+	  u_fprintf(lx->OUT, "<BR>\r\n");
+	}
+      }
+  
+#if 0
+      /* This code shows sibling locales */
+      if(lx->curLocale && (lx->parLocale) && (lx->locales != lx->parLocale) && (lx->parLocale->nSubLocs > 1))
+      {
+	int count =0 ;
+	/* It's not a language, and it has siblings. */
+
+	/*	mySort(lx->parLocale, &status, FALSE);  */ /* Sorting your parent seems to be a bad idea! */
+
+	for(n=0;n<lx->parLocale->nSubLocs;n++)
+	{
+	  UBool wasExperimental = FALSE;
+	  
+	  u_fprintf(lx->OUT, " -%s- ", lx->parLocale->subLocs[n].str);
+
+	  if( (&(lx->parLocale->subLocs[n]) != lx->curLocale) /* && it's not a placeholder like de_ */ )
+	  {
+	      if((count++) > 0)
+		u_fprintf(lx->OUT, ", ");
+
+	      u_fprintf(lx->OUT, "<A HREF=\"?_=%s\">", 
+			lx->parLocale->subLocs[n].str);
+	      
+	      if(isExperimentalLocale(lx->parLocale->subLocs[n].str))
+		{
+		  u_fprintf(lx->OUT, "<I><FONT COLOR=\"#9999FF\">");
+		  hadExperimentalSubLocales = TRUE;
+		  wasExperimental = TRUE;
+		}
+	      u_fprintf(lx->OUT, "%U",lx->parLocale->subLocs[n].ustr);
+	      if(wasExperimental)
+		{
+		  u_fprintf(lx->OUT, "</FONT></I>");
+		}
+              u_fprintf(lx->OUT, "</A>");
+	  }
+	  else
+	  {
+	    u_fprintf(lx->OUT, " { DUP } ", lx->parLocale->subLocs[n].str);
+	  }
+	}
+		  
+	u_fprintf(lx->OUT, "</UL>");
+	
+      }
+#endif
+
+      /* this notice covers sublocs and sibling locs */
+      if(hadExperimentalSubLocales)
+	    u_fprintf(lx->OUT, "<BR>%U", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
+
       u_fprintf(lx->OUT, "</TD></TR></TABLE>\r\n");
-
-
     }
 
   if ( tmp == NULL )
@@ -782,7 +898,7 @@ void runLocaleExplorer(LXContext *myContext)
 const UChar *defaultLanguageDisplayName()
 {
   UErrorCode status = U_ZERO_ERROR;
-  static UChar displayName[1024] = { 0x0000 };
+  static UChar displayName[1024] = { 0x0000 }; /* BAD: static */
 
   if(displayName[0] == 0x0000)
     {
@@ -1983,7 +2099,7 @@ void listBundles(char *b)
     u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%\"><tr><td valign=TOP>");
      showLocaleCodes(lx, myRB, locale);
      u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
-     showString(lx, myRB, locale, "", "LocaleID", FALSE);
+     showInteger(lx, myRB, locale, "LocaleID", 16);
      u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
      showString(lx, myRB, locale, b, "Version", FALSE);
     u_fprintf(lx->OUT, "</table>");
@@ -2498,6 +2614,42 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
   showKeyAndEndItem("LocaleScript", locale);
 }
 
+
+/* Show a resource that's a simple integer -----------------------------------------------------*/
+/**
+ * Show an integer
+ * @param rb the resourcebundle to pull junk out of 
+ * @param locale the name of the locale (for URL generation)
+ * @param radix base of number to display (Only 10 and 16 are supported)
+ * @param key the key we're listing
+ */
+
+void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, int radix)
+{
+  
+  UErrorCode status = U_ZERO_ERROR;
+  UResourceBundle *res = NULL;
+  int32_t i;
+  int32_t len;
+
+  res = ures_getByKey(rb, key, res, &status);
+  i = ures_getInt(res, &status);
+  showKeyAndStartItem(key, NULL, locale, FALSE, status);
+
+
+  if(U_SUCCESS(status))
+  {
+    if(radix == 10) {
+      u_fprintf(lx->OUT, "%d", i);
+    } else if(radix == 16) {
+      u_fprintf(lx->OUT, "0x%X", i);
+    } else {
+      u_fprintf(lx->OUT, "(Unknown radix %d for %d)", radix, i);
+    }
+  }
+  u_fprintf(lx->OUT, "</TD>");
+  showKeyAndEndItem(key, locale);
+}
 
 /* Show a resource that's a simple string -----------------------------------------------------*/
 /**
