@@ -53,6 +53,7 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
                                         pos != USEARCH_DONE; 
                                         pos = usearch_next(search, status))
             {
+	      (*totalHits)++;
 #if 0
                 /** Right now we only care about whether the string is present.  Later on we can 
                 add something to print out the context, and also to handle multiple hits. */
@@ -252,12 +253,22 @@ extern void showExploreSearch( LXContext *lx, const char *qs)
             valueString);
     u_fprintf(lx->OUT, "</I>\r\n<OL>\r\n");
     doSearch(lx, valueString, lx->curLocale, &totalHits, search);
-            u_fprintf(lx->OUT, "</OL>\r\n");
+    u_fprintf(lx->OUT, "</OL>\r\n");
             
+    if(totalHits == 0) 
+    {
+      u_fprintf(lx->OUT, "%U\r\n",  FSWF("EXPLORE_search_notfound", "Sorry, nothing was found."));
+    }
+    else
+    {
+      u_fprintf_u(lx->OUT, FSWF("EXPLORE_search_found", "%d items were found."), totalHits);
+      u_fprintf(lx->OUT, " %U\r\n", FSWF("EXPLORE_search_oneperlocale", "Note that only the first match in each locale is shown."));
+    }
+
     usearch_close(search);
     
     u_fprintf(lx->OUT, "<hr>\r\nThis searching is an experimental service. Please write srl@jtcsv.com "
             "with any comments or complaints you might have!"
-                " Note: only the first match in each locale is shown. Results brought to you by the ICU Unicode Search Capability.<P>\r\n");
+	      "Results brought to you by the ICU Unicode Search Capability.<P>\r\n");
     
 }

@@ -1154,10 +1154,11 @@ void printStatusTable()
   u_fprintf(lx->OUT, "<TR><TD><B>%U</B></TD>\r\n",
             FSWF("encoding_translit_setting", "Transliteration:"));
 
-#if 0  /* Transliteration isn't working at present. */
+#if 0  /* Set to 1 if transliteration isn't working. */
   u_fprintf(lx->OUT, "<TD><I>%U</I></TD>",
             FSWF("off", "off"));
 #else
+  /* Transliteration is OK */
   if(lx->inDemo == FALSE)
   {
     if(!strcmp(lx->chosenEncoding, "transliterated"))
@@ -1965,44 +1966,6 @@ void listBundles(char *b)
       return;
     }
 
-#if SRL_HRCAK
-  /* check for aliasing */
-  {
-    UErrorCode qxc = U_ZERO_ERROR;
-    int32_t aliasLen = 0;
-    const UChar *alias;
-    alias   = ures_getStringByKey(myRB, "%%ALIAS", &aliasLen, &qxc);
-
-    if(aliasLen > 0) {
-      u_fprintf(lx->OUT, "(%U <A HREF=\"_=%U\">%U</A>)<P>",
-                  FSWF("aliasFor", "Really an alias for "),
-                alias,
-                alias);
-    }
-    else
-      {
-        const char *c;
-        c = ures_getName(myRB);
-        u_fprintf(lx->OUT, "[%s]\n", c?c:"NULL");
-        c = ures_getLocale(myRB, &qxc);
-        u_fprintf(lx->OUT, "[%s]\n", c?c:"NULL" );
-      }
-
-#if 0
-  if(status != U_ZERO_ERROR /* && (!lx->parLocale) */ ) 
-  {
-    /* Don't have a parent locale, AND it's a fallback or somesuch.  Set the parent .. */
-    lx->specialParLocale.nSubLocs = 0;
-    lx->specialParLocale.subLocsSize = 0;
-    lx->specialParLocale.str = ures_getLocale(myRB, &status);
-    lx->specialParLocale.ustr = uastrdup(lx->specialParLocale.str);
-    
-    lx->parLocale = &lx->specialParLocale;
-  }
-#endif
-  }
-#endif  /* srl_HRCEK */
-
   explainStatus_X(status,"top");
 
   /*   u_fprintf(lx->OUT, "</TD></TR><TR><TD COLSPAN=2>"); */
@@ -2187,25 +2150,7 @@ void listBundles(char *b)
       showStringWithDescription(lx, myRB, locale, b, charDescs, "localPatternChars", TRUE);
     }
     showDateTimeElements(lx, myRB, locale);
-#if 0
-    { 
-      const UChar *zsDesc[8];
-      zsDesc[0] = FSWF("zoneStrings0", "Canonical");
-      zsDesc[1] = FSWF("zoneStrings1", "Normal Name");
-      zsDesc[2] = FSWF("zoneStrings2", "Normal Abbrev");
-      zsDesc[3] = FSWF("zoneStrings3", "Summer/DST Name");
-      zsDesc[4] = FSWF("zoneStrings4", "Summer/DST Abbrev");
-      zsDesc[5] = FSWF("zoneStrings5", "Example City");
-#ifndef LX_NO_USE_UTIMZONE
-      zsDesc[6] = FSWF("zoneStrings6", "Raw Offset");
-#else
-      zsDesc[6] = 0;
-#endif
-      zsDesc[7] = 0;
-      
-      show2dArrayWithDescription(lx, myRB, locale, zsDesc, b, "zoneStrings");
-    }
-#endif
+
                                                   /* %%%%%%%%%%%%%%%%%%%%%%%*/
                                                   /*     Numbers section %%%*/
 
@@ -4510,24 +4455,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
       unescapeAndDecodeQueryField(valueString, 1000, tmp);
       /*      u_replaceChar(valueString, 0x0020, 0x00A0); */ /* NOt for the default pattern */
 
-#if 0
-      u_fprintf(lx->OUT, "VS_=((");
-      for(q=0;valueString[q];q++)
-	{
-	  u_fprintf(lx->OUT, "%c:%04x ", (char)valueString[q], valueString[q]);
-	}
-      u_fprintf(lx->OUT, "))<BR>");
-
-      udat_toPattern(df_default, FALSE, patn, 1024, &status);
-
-      u_fprintf(lx->OUT, "PAT=((");
-      for(q=0;patn[q];q++)
-	{
-	  u_fprintf(lx->OUT, "%c:%04x ", (char)patn[q], patn[q]);
-	}
-      u_fprintf(lx->OUT, "))<BR>");
-#endif
-
       status = U_ZERO_ERROR;
       
       now = udat_parse(df_default, valueString, -1, &parsePos, &status);
@@ -4541,29 +4468,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
       unescapeAndDecodeQueryField(valueString, 1000, tmp);
       u_replaceChar(valueString, 0x0020, 0x00A0); 
-
-      /*      valueString[u_strlen(valueString)-1] = 0; */
-	      /* extra space ? */
-
-
-#if 0
-      u_fprintf(lx->OUT, "VS_=((");
-      for(q=0;valueString[q];q++)
-	{
-	  u_fprintf(lx->OUT, "%c:%04x ", (char)valueString[q], valueString[q]);
-	}
-      u_fprintf(lx->OUT, "))<BR>");
-
-      udat_toPattern(df, FALSE, patn, 1024, &status);
-
-      u_fprintf(lx->OUT, "PAT=((");
-      for(q=0;patn[q];q++)
-	{
-	  u_fprintf(lx->OUT, "%c:%04x ", (char)patn[q], patn[q]);
-	}
-      u_fprintf(lx->OUT, "))<BR>");
-#endif
-
 
       status = U_ZERO_ERROR;
       now = udat_parse(df, valueString, -1, &parsePos, &status);
@@ -4801,12 +4705,12 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
   value = 12345.6789; /* for now */
 
   /* Now, see if the user is trying to change the value. */
-  if((tmp = strstr(b,"NP_LOC")))
-    {
+  if((tmp = strstr(b,"NP_LOC"))) /* localized numbre */
+  {
       /* Localized # */
       tmp += 7;
 
-      unescapeAndDecodeQueryField(valueString, 1000, tmp);
+      unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
       u_replaceChar(valueString, 0x0020, 0x00A0);
       
 
@@ -4818,13 +4722,13 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
 	  status = U_ZERO_ERROR;
 	  localValueErr = FSWF("formatExample_errorParse_num", "Could not parse this, replaced with a default value.");
 	}
-    }
+  }
   else if ((tmp = strstr(b,"NP_DEF")) || (tmp = strstr(b,"NP_DBL")))
-    {
+  { /* Default side, or number (NP_DBL) coming from somewhere else */
       /* Localized # */
       tmp += 7;
 
-      unescapeAndDecodeQueryField(valueString, 1000, tmp);
+      unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
       u_replaceChar(valueString, 0x0020, 0x00A0);
 
 
@@ -4832,11 +4736,27 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
       value = unum_parseDouble(nf_default, valueString, -1, 0, &status);
       
       if(U_FAILURE(status))
-	{
+      {
 	  status = U_ZERO_ERROR;
 	  defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
-	}
+      }
+  }
+  else if (tmp = strstr(b, "NP_SPL"))
+  {
+    tmp += 7;
+    unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->chosenEncoding);
+    u_replaceChar(valueString, 0x00A0, 0x0020);  /* Spellout doesn't want to see NBSP's */
+    
+
+    status = U_ZERO_ERROR;
+    value = unum_parseDouble(nf_spellout, valueString, -1, 0, &status);
+    
+    if(U_FAILURE(status))
+    {
+      status = U_ZERO_ERROR;
+      defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
     }
+  }
 
   /** TODO: replace with:
       
@@ -4924,11 +4844,25 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
 
   /* ============== Spellout ================== */
   u_fprintf(lx->OUT, "<tr><td colspan=3>\r\n");
+  u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_NumberPatterns\">\r\n");
+  u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
+  u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_NumberPatterns VALUE=\"");
+  writeEscaped(pattern);
+  u_fprintf(lx->OUT, "\">\r\n");
+
   u_fprintf(lx->OUT, "<B>%U</B> ", FSWF("Spellout", "Spellout"));
 
-  
+
+  if(strstr(b, "NP_SPL"))
+  {  
+    u_fprintf(lx->OUT, "<BR>%U<BR>\r\n", valueString);
+  }
+
   unum_formatDouble(nf_spellout, value, tempChars, 1024,0, &status);
 
+
+  u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_SPL ROWS=1 COLS=60>");
+  lx->backslashCtx.html = FALSE;
   if(U_FAILURE(status))
     {
       u_fprintf(lx->OUT, "%U<P>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
@@ -4936,8 +4870,15 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
     }
   else
     {
-      writeEscaped(tempChars);
+      u_fprintf(lx->OUT, "%U", tempChars); 
     }
+  lx->backslashCtx.html = TRUE;
+  
+  status = U_ZERO_ERROR;
+  
+  u_fprintf(lx->OUT, "</TEXTAREA><INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM>", FSWF("EXPLORE_change", "Change"));
+  
+  /* == end spellout == */
 
   u_fprintf(lx->OUT, "</td></tr>\r\n");
 
@@ -4962,6 +4903,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale, const char *b)
 }
 
 
+/* Is a locale supported by Locale Explorer? We use the presence of the 'helpPrefix' tag, to tell us */
 UBool isSupportedLocale(const char *locale, UBool includeChildren)
 {
   UResourceBundle *newRB;
@@ -5009,6 +4951,7 @@ UBool isSupportedLocale(const char *locale, UBool includeChildren)
   return supp;
 }
 
+/* Is the locale experimental? It is if its version starts with 'x'. */
 UBool isExperimentalLocale(const char *locale)
 {
   UResourceBundle *newRB;
@@ -5032,6 +4975,7 @@ UBool isExperimentalLocale(const char *locale)
   return supp;
 }
 
+/* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
 void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
       u_fprintf(lx->OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
@@ -5192,42 +5136,6 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, UBool *didSetLocal
 	{
 	  encoding = "utf-8"; /* MSIE can handle utf8 but doesn't request it. */
 	}
-#if 0	 
-      else /* OK, see if we can find a valid codepage */
-	{
-	  /** OLD code to choose a preferred encoding for a locale. */
-
-	  const UChar *defaultCodepage;
-	  int32_t i = 0;
-	  UErrorCode status;
-
-	  FSWF( /*NOEXTRACT*/ "",""); /* just to init it.. */
-	  if(gRB)
-	    {
-	      while( (defaultCodepage = ures_getArrayItem(gRB, "DefaultEncoding", i++, &status)) &&
-		     U_SUCCESS(status) )
-		{
-		  newEncoding = malloc(u_strlen(defaultCodepage) + 1);
-		  u_austrcpy((char*)newEncoding, defaultCodepage);
-
-		  if(accept)
-		    {
-		      if(strstr(accept,newEncoding) || strchr(accept,'*'))
-			encoding = newEncoding;
-		      break;
-		    }
-		  else
-		    free(newEncoding);
-		}
-	    }
-	  else
-	    {
-	      /* default wasn't accepted. */
-	    }
-
-	}
-#endif
-
     }
 
 
