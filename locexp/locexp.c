@@ -121,10 +121,12 @@ void displayLocaleExplorer(LXContext *lx)
 
     {
       const char *agent;
+      const char *server;
       agent = getenv("HTTP_USER_AGENT");
-      if(agent && strstr(agent,"MSIE")) {
+      server = getenv("SERVER_SOFTWARE");
+      if(agent && strstr(agent,"MSIE") && (!server || strncmp(server,"Null",4))) {
         u_fprintf(lx->OUT, "<i>%U</i><br>\r\n",
-                  FSWF("ieWarning","IE Bug: due to an apparent bug in MSIE, you may have page load errors.  Please simply press the Refresh button in this case."));
+                  FSWF("ieWarning","IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."));
       }
     }
 
