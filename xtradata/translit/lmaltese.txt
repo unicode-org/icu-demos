@@ -1,0 +1,41 @@
+// -*- coding: latin-3; -*-
+// Copyright (c) 2000 International Business Machines
+//  Corporation and others. All rights reserved.
+
+lmaltese {
+   Rule {
+   // may not want to use these and just go to straight latin3
+        "c-dot=å;"
+        "C-DOT=Å;"
+        "g-dot=õ;"
+        "G-DOT=Õ;"
+        "h-cross=±;"
+        "H-CROSS=¡;"
+        "z-dot=¿;"
+        "Z-DOT=¯;"
+        "letter=[~[:Lu:][:Ll:]];"
+        "lower=[[:Ll:]];"
+        "Gh<>G±;"
+        "GH<>G¡;"
+        "gh<>g±;"
+        "gH<>gH;"
+        "c<å;"
+        "C<Å;"
+        "g<õ;"
+        "G<Õ;"
+        "h<±;"
+        "H<¡;"
+        "z<¿;"
+        "Z<¯;"
+        "c.>å;"
+        "C.>Å;"
+        "g.>õ;"
+        "G.>Õ;"
+        "h/>±;"
+        "H/>¡;"
+        "h->±;"
+        "H->¡;"
+        "z.>¿;"
+        "Z.>¯;"
+   }
+}
