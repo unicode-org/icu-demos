@@ -116,10 +116,13 @@ static void DECOMPOSE_uchar(UConverter * _this,
   const UChar     *tempSource, *output;
   int32_t    decomposedLen;
   UErrorCode err2 = U_ZERO_ERROR;
+  UConverterFromUCallback oldCallback = NULL;
 
   bool_t     changedSomething = FALSE;  /* have we had *any* effect here? 
 					   Used to exit when this fcn isn't doing
 					   any good. */
+
+
 
   
   tempSource = &theChar;
@@ -186,7 +189,13 @@ static void DECOMPOSE_uchar(UConverter * _this,
     case 0x0300: /* combining diacriticals ------------------ 0300 */
       if(theChar < (0x0300 + (sizeof(block0300Subs)/sizeof(UChar))))
 	{
+	  UErrorCode setStatus = U_ZERO_ERROR; /* must use a different error - the INVALID_CHAR will prevent setFromUCallBack from running. */
 	  decomposedSequence[0] = block0300Subs[theChar & 0x00FF];
+	  
+	  /* Prevent a loop from [for example] U+0308 -> U+00A8 -> U+0308...*/
+	  oldCallback = ucnv_getFromUCallBack(_this);
+	  ucnv_setFromUCallBack(_this, DECOMPOSE_lastResortCallback, &setStatus);
+
 	}
 #if 0
       else if( (theChar >= 0x0391) && (theChar <= (0x0390 - 1 + (sizeof(block0390Subs)/sizeof(UChar)))))
@@ -224,6 +233,8 @@ static void DECOMPOSE_uchar(UConverter * _this,
     {
       /* Yes! We have something different. Put it out.. */
       *err = U_USING_FALLBACK_ERROR;
+
+  
       
       convertIntoTargetOrErrChars(_this, 
 				  target,
@@ -231,6 +242,12 @@ static void DECOMPOSE_uchar(UConverter * _this,
 				  output,
 				  output+u_strlen(output),
 				  err);
+
+      if(oldCallback)
+	{
+	  ucnv_setFromUCallBack (_this, oldCallback, err);
+	}
+
       return;
     }
 
@@ -246,6 +263,10 @@ static void DECOMPOSE_uchar(UConverter * _this,
 				  TRUE, /* flush, */
 				  err);
 
+  if(oldCallback)
+    {
+      ucnv_setFromUCallBack (_this, oldCallback, err);
+    }
 }
 
 U_CAPI void 
