@@ -253,8 +253,8 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                     text += " at ";
                     text += err.preContext;
                     if (err.postContext[0]) {
-                        test += " | ";
-                        test += err.postContext;
+                        text += " | ";
+                        text += err.postContext;
                     }
                 }
             }
@@ -343,11 +343,11 @@ Transliterator* TransliteratorCGI::buildUserRules(const UnicodeString& id,
         errMsg += "Error: ";
         errMsg += u_errorName(status);
         if (err.preContext[0]) {
-            text += " at ";
-            text += err.preContext;
+            errMsg += " at ";
+            errMsg += err.preContext;
             if (err.postContext[0]) {
-                test += " | ";
-                test += err.postContext;
+                errMsg += " | ";
+                errMsg += err.postContext;
             }
         }
         delete t;
