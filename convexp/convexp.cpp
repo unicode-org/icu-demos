@@ -444,8 +444,47 @@ static UBool isASCIIcompatible(UConverter *cnv) {
     return FALSE;
 }
 
+/*
+returns a new UnicodeSet that is a flattened form of the original
+UnicodeSet.
+TODO: Some codepages have multi-codepoint mappings, and we presume
+    that the codepage data is in NFKC. Right now, none of the languages
+    require the multicode point mappings (e.g. one codepage codepoint
+    to n Unicode codepoints). Fix this in the future when this changes.
+*/
+static USet *createFlattenSet(USet *origSet, UErrorCode *status) {
+    if (U_FAILURE(*status)) {
+        printf("createFlattenSet called with %s\n", u_errorName(*status));
+        return NULL;
+    }
+
+    USet *newSet = uset_open(1, 0);
+    int32_t origItemCount = uset_getItemCount(origSet);
+    int32_t idx, graphmeSize;
+    UChar32 start, end;
+    UChar graphme[64];
+
+    for (idx = 0; idx < origItemCount; idx++) {
+        graphmeSize = uset_getItem(origSet, idx,
+            &start, &end, 
+            graphme, (int32_t)(sizeof(graphme)/sizeof(graphme[0])),
+            status);
+        if (U_FAILURE(*status)) {
+            printf("ERROR: uset_getItem returned %s\n", u_errorName(*status));
+            *status = U_ZERO_ERROR;
+        }
+        if (graphmeSize) {
+            uset_addAllCodePoints(newSet, graphme, graphmeSize);
+        }
+        else {
+            uset_addRange(newSet, start, end);
+        }
+    }
+    return newSet;
+}
+
 static void printLanguages(UConverter *cnv, UErrorCode *status) {
-    static UChar patBuffer[128];
+    UChar patBuffer[128];
     char patBufferUTF8[1024]; /* 4 times as large as patBuffer */
     int32_t patLen;
     int32_t locCount = uloc_countAvailable();
@@ -473,22 +512,30 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
             if (locale) {
                 myStatus = U_ZERO_ERROR;
                 ulocdata_getExemplarSet(locSet, locale, 0, &myStatus);
-                if (myStatus != U_USING_FALLBACK_WARNING
-                    && uset_containsAll(cnvSet, locSet))
-                {
-                    patLen = uloc_getDisplayName(locale, "en", patBuffer, sizeof(patBuffer)/sizeof(patBuffer[0]), &myStatus);
-                    if (U_SUCCESS(*status)) {
-                        /* Make sure that the string is NULL terminated in case really bad things happen. */
-                        patBuffer[sizeof(patBuffer)/sizeof(patBuffer[0])-1] = 0;
-                        patBufferUTF8[0] = 0;
-                        u_strToUTF8(patBufferUTF8, sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0]), NULL, patBuffer, patLen, &myStatus);
-                        patBufferUTF8[sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0])-1] = 0;
-                        if (!localeFound) {
-                            localeFound = TRUE;
-                            puts("<tr><th>Locale</th><th>Locale Name</th></tr>");
+                if (myStatus != U_USING_FALLBACK_WARNING) {
+                    // Flatten glyphs like "ch" of a non-falling back set.
+                    USet *flatLocSet = createFlattenSet(locSet, status);
+                    if (U_SUCCESS(*status) && uset_containsAll(cnvSet, flatLocSet)) {
+                        patLen = uloc_getDisplayName(locale, "en", patBuffer, sizeof(patBuffer)/sizeof(patBuffer[0]), &myStatus);
+                        if (U_SUCCESS(*status)) {
+                            /* Make sure that the string is NULL terminated in case really bad things happen. */
+                            patBuffer[sizeof(patBuffer)/sizeof(patBuffer[0])-1] = 0;
+                            patBufferUTF8[0] = 0;
+                            u_strToUTF8(patBufferUTF8, sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0]), NULL, patBuffer, patLen, &myStatus);
+                            patBufferUTF8[sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0])-1] = 0;
+                            if (!localeFound) {
+                                localeFound = TRUE;
+                                puts("<tr><th>Locale</th><th>Locale Name</th></tr>");
+                            }
+                            printf("<tr><td>%s</td><td>%s</td></tr>\n",
+                                locale, patBufferUTF8);
                         }
-                        printf("<tr><td>%s</td><td>%s</td></tr>\n", locale, patBufferUTF8);
                     }
+                    /*else {
+                        printf("<tr><td>%s</td><td>"NBSP" -- Skipped --</td></tr>\n",
+                            locale);
+                    }*/
+                    uset_close(flatLocSet);
                 }
             }
         }
