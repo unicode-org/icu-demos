@@ -1,0 +1,9 @@
+This transliterator allows transforming of Serbian text from Cyrillic to Latin and vice-versa. Apply the diffs to files in source/data/translit in the 2.2 tree and put the .txt file in the same directory. After building, you should be able to use the following two transliterators:
+"Latin-Cyrillic/SR"
+"Cyrillic-Latin/SR"
+
+These are not tested, I needed them to convert a bunch of data from Latin to Cyrillic, but they should work fine.
+
+v.
+
+
