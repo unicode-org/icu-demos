@@ -1,0 +1,20 @@
+cvs diff translit_index.txt trnsfiles.mk (in directory C:\dev\0_icu\source\data\translit\)
+Index: translit_index.txt
+===================================================================
+RCS file: /usr/cvs/icu/icu/source/data/translit/translit_index.txt,v
+retrieving revision 1.23
+diff -r1.23 translit_index.txt
+70a71,73
+> { "Latin-Cyrillic/SR", "file", "t_Cyrl_Latn_SR", "REVERSE" },
+> { "Cyrillic-Latin/SR", "file", "t_Cyrl_Latn_SR", "FORWARD" },
+> 
+Index: trnsfiles.mk
+===================================================================
+RCS file: /usr/cvs/icu/icu/source/data/translit/trnsfiles.mk,v
+retrieving revision 1.3
+diff -r1.3 trnsfiles.mk
+30a31
+> t_Cyrl_Latn_SR.txt\
+
+
+*****CVS exited normally with code 1*****
