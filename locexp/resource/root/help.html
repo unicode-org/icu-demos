@@ -1,7 +1,7 @@
 <!-- -*- coding: latin-1; -*-
 
 $Version: $
-$Revision: 1.2 $
+$Revision: 1.3 $
  
 help for the DEFAULT locale, listrb [localeexplorer]
 
@@ -15,18 +15,16 @@ help for the DEFAULT locale, listrb [localeexplorer]
 DEFAULT.head copied from lrb bundle src
 
 -->
-<HTML>
-<HEAD><TITLE>ICU Locale Explorer &gt; Help</TITLE>
 
-<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. --srl -->
-<!-- Note: look for the 'IBM connected vs. non-connected version of the search tag. Also, replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->
-
+<html>
+  <head>
+    <title>ICU Locale Explorer &gt; Help</title>
+    <!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. -srl -->
+    <!-- Note: look for the 'IBM connected vs. non-connected version of the search tag. Also, replace /developerworks/opensource/icu/project/ with something else. Maybe http://www.ibm.com/ -->
 <style type="text/css">
 <!--
 .barTitles {  font-size: 9pt; font-weight: 700; letter-spacing: 1px; color: #FFFFFF; font-family: HELVETICA, HELV, ARIAL}
 -->
-</style>
-<style TYPE="text/css">
     .input {background:#FFFFFF;color:#000000;font-weight:normal;}
     .iconNames {font-weight:600;font-size:9pt;}
     .iconBlurb {font-weight:400;font-size:8pt;}
@@ -35,482 +33,675 @@ DEFAULT.head copied from lrb bundle src
     .boxBlurb {font-weight:400;font-size:8pt;}
     .zoneSection {font-weight:600;font-size:10pt;}
 </style>
+  </head>
 
-<IMG alt="Locale Explorer Help" border="0" height="50" hspace="0" src="lx.jpg" vspace="0" width="620"><BR><IMG alt="" border="0" height="17" hspace="0" src="lxbar_g.gif" vspace="0" width="200"><A href="http://oss.software.ibm.com/icu" target="new"><IMG alt="oss.software.ibm.com/icu" border="0" height="17" hspace="0" name="icu_" src="lxbar_icu.jpg" vspace="0" width="140"></A><A href="http://oss.software.ibm.com/icu" target="new"><IMG alt="www.ibm.com/developer" border="0" height="17" hspace="0" name="dev" src="lxbar_dev.jpg" vspace="0" width="140"></A><A href="http://www.ibm.com" target="new"><IMG alt="www.ibm.com" border="0" height="17" hspace="0" name="ibm" src="lxbar_ibm.jpg" vspace="0" width="140"></A><BR>
-
-<H1><A HREF="http://oss.software.ibm.com/icu/">ICU</A> Locale Explorer &gt; Help</H1>
-
-This file contains the help text for Locale Explorer, organized by topic.
- If your question is not covered here, you can post your question on IBM's
- <A HREF="news://news.software.ibm.com/ibm.software.unicode">unicode news group -
- <TT>news://news.software.ibm.com/ibm.software.unicode</TT></A>). Please post any
- comments or suggestions for improvement of this help file on the <A HREF=
-"http://oss.software.ibm.com/developerworks/opensource/icu/bugs">ICU bug
-database</A>.
- 
-<HR>
-
-<A NAME="display"><H2>Display Problems</H2></A>
-The output of this dynamic page is dependent on your browser settings, installed fonts, and which encoding you choose.  If text displays incorrectly, you may need to change the encoding at the bottom of each Locale Explorer page.
-
-<P>
-<H3>Display Q&A</H3>
-<UL>
-  <LI><B>Why do I see boxes or question-marks?</B></LI> 
-     <UL>
-       It may
-     be that you do not have the proper font selected, or the font you
-     have selected is missing some letters.  On Netscape, go into Edit
-     -> Preferences and select the Fonts sub panel.  On Microsoft Internet
-     Explorer, go into the Internet Options dialog and click on Fonts.
-       <P>
-       Also make sure the right <A HREF="#encoding">encoding</A> is selected.
-     </UL><P>
+  <body>
+    <img alt="Locale Explorer Help" border="0" height="50" hspace="0" src="lx.jpg" vspace="0" width="620"><br>
+    <img alt="" border="0" height="17" hspace="0" src="lxbar_g.gif" vspace="0"
+    width="200"><a href="http://oss.software.ibm.com/icu/" target="new"><img
+    alt="oss.software.ibm.com/icu/" border="0" height="17" hspace="0" name=
+    "icu_" src="lxbar_icu.jpg" vspace="0" width="140"></a><a href=
+    "http://oss.software.ibm.com/icu/" target="new"><img alt=
+    "www.ibm.com/developer/" border="0" height="17" hspace="0" name="dev" src=
+    "lxbar_dev.jpg" vspace="0" width="140"></a><a href="http://www.ibm.com/"
+    target="new"><img alt="www.ibm.com" border="0" height="17" hspace="0" name=
+    "ibm" src="lxbar_ibm.jpg" vspace="0" width="140"></a><br>
      
-  <LI><B>No text, "Garbage" text, <A NAME="encoding">Wrong Encoding</A></B>
-      <UL>
-        An Encoding is the specific method used to transfer letters to
-      your browser.  Each encoding has a specific charset, or set of
-      characters which it understands how to handle.  UTF-8 is the
-      preferred encoding to use, as it can transfer directly any
-      Unicode value (and therefore, any text which the Locale Explorer
-      tries to show.)  However, if your browser does not understand
-      UTF-8 or does not have the appropriate fonts, you may choose
-      from among several other industry-standard encodings.  Be aware
-      that some encodings will not be able to encode specific
-      characters. If you try to view a Greek locale using the
-      iso-8859-1 (Latin-1, Western European) encoding, you will simply
-      see many \uXXXX letters <A HREF="#literals">(see below)</A>.   Check your browser
-      settings to see which encodings it supports.
-        <P>
-	The Locale Explorer will attempt to negotiate an encoding with
-      your browser, however you may force it to use a different
-      encoding by clicking on the name of the current encoding in the
-      'Your Settings' box, at the bottom of each Locale Explorer page.
-      </UL><P>
-  <LI><A NAME="literals"><B>I see '<U>\u1234</U>' instead of a letter.</B></A>
-      <UL>
-	 This is because the <A HREF="#encoding">encoding</A> you have
-      chosen does not support the unicode character selected. Since
-      the purpose of the Locale Explorer is educational, it displays
-      the Unicode value instead of a questionmark. Note that the Sort,
-      Numberformat, and Dateformat demos all accept the \uXXXX
-      notation in their input fields.  ("\u" was chosen because this
-      format is also used in ICU locale bundle files, and is a
-      standard feature of Java as well.)
-      </UL><P>
-  <LI><B>Text is 'backwards', letters are drawn incorrectly. (Non-Latin scripts)</B>
+
+    <h1><a href="http://oss.software.ibm.com/icu/">ICU</a> Locale Explorer &gt;
+    Help</h1>
+    This file contains the help text for Locale Explorer, organized by topic.
+    If your question is not covered here, you can post your question on IBM's
+    <a href="http://oss.software.ibm.com/icu/archives/index.html">icu4c-support
+    mailing list -
+    <tt>http://oss.software.ibm.com/icu/archives/index.html</tt></a>). Please
+    post any comments or suggestions for improvement of this help file on the
+    <a href="http://www.jtcsv.com/cgibin/icu-bugs/">ICU bug database</a>. 
+    <hr>
+
+    <h2><a name="display">Display Problems</a></h2>
+
+    <p>The output of this dynamic page is dependent on your browser settings,
+    installed fonts, and which encoding you choose. If text displays
+    incorrectly, you may need to change the encoding at the bottom of each
+    Locale Explorer page.</p>
+
+    <h3>Display Q&amp;A</h3>
+
+    <ul>
+      <li>
+        <b>Why do I see boxes or question-marks?</b> 
+
+        <blockquote>
+          It may be that you do not have the proper font selected, or the font
+          you have selected is missing some letters. On Netscape, go into Edit
+          -&gt; Preferences and select the Fonts sub panel. On Microsoft
+          Internet Explorer, go into the Internet Options dialog and click on
+          Fonts. 
+
+          <p>Also make sure the right <a href="#encoding">encoding</a> is
+          selected.</p>
+        </blockquote>
+      </li>
+
+      <li>
+        <b>No text, "Garbage" text, <a name="encoding">Wrong Encoding</a></b> 
+
+        <blockquote>
+          An Encoding is the specific method used to transfer letters to your
+          browser. Each encoding has a specific charset, or set of characters
+          which it understands how to handle. UTF-8 is the preferred encoding
+          to use, as it can transfer directly any Unicode value (and therefore,
+          any text which the Locale Explorer tries to show.) However, if your
+          browser does not understand UTF-8 or does not have the appropriate
+          fonts, you may choose from among several other industry-standard
+          encodings. Be aware that some encodings will not be able to encode
+          specific characters. If you try to view a Greek locale using the
+          iso-8859-1 (Latin-1, Western European) encoding, you will simply see
+          many \uXXXX letters <a href="#literals">(see below)</a>. Check your
+          browser settings to see which encodings it supports. 
+
+          <p>The Locale Explorer will attempt to negotiate an encoding with
+          your browser, however you may force it to use a different encoding by
+          clicking on the name of the current encoding in the 'Your Settings'
+          box, at the bottom of each Locale Explorer page.</p>
+        </blockquote>
+
+        <p></p>
+      </li>
+
+      <li>
+        <a name="literals"><b>I see '<u>\u1234</u>' instead of a
+        letter.</b></a> 
+
+        <blockquote>
+          This is because the <a href="#encoding">encoding</a> you have chosen
+          does not support the unicode character selected. Since the purpose of
+          the Locale Explorer is educational, it displays the Unicode value
+          instead of a questionmark. Note that the Sort, Numberformat, and
+          Dateformat demos all accept the \uXXXX notation in their input
+          fields. ("\u" was chosen because this format is also used in ICU
+          locale bundle files, and is a standard feature of Java as well.)
+        </blockquote>
+
+        <p></p>
+      </li>
+
+      <li>
+        <b>Text is 'backwards', letters are drawn incorrectly. (Non-Latin
+        scripts)</b> 
+
+        <blockquote>
+          Drawing of some scripts, such as Arabic, depends heavily on the
+          browser and OS having the correct fonts and drawing support. As well,
+          scripts which are written right-to-left (such as Arabic or Hebrew)
+          depend on the browser/OS to understand drawing text in this
+          direction. The Locale Explorer does not attempt to correct for these
+          situations.
+        </blockquote>
+
+        <p></p>
+      </li>
+
+      <li>
+        <b>How do I install fonts?</b> 
+
+        <blockquote>
+          On the Macintosh, drag fonts into your System Folder icon and restart
+          your browser. On Windows, bring up the Fonts control panel. On X
+          Windows, use 'man mkfontdir' and 'man xset' for more information.
+        </blockquote>
+
+        <p></p>
+      </li>
+
+      <li>
+        <b>Why do I see accents following characters, such as '<u>o"</u>', or
+        accents following <u>\uXXXX</u> unicode characters?</b> 
+
+        <blockquote>
+          The Locale Explorer uses a module called the Decomposition Callback
+          when it cannot output a character in a specific encoding. It attempts
+          a 'Unicode canonical character decomposition' to break accented and
+          ligature characters apart, and then looks for possible substitutions
+          for the decomposed forms. 
+
+          <p>As an example, set the Locale Explorer encoding to iso-8859-1 and
+          view Hungarian. 'Monday' in Hungarian ends with an '<u>o with double
+          acute accent</u>'. This is decomposed into '<u>o</u>' +
+          '<u>double-acute</u>'. O can be output as just a normal o. The
+          double-acute is turned into a doublequote (<u>"</u>), which is then
+          output. So the result is '<u>o"</u>' which is certainly more readable
+          than an error character such as '<u>?</u>'.</p>
+
+          <p>For this reason, if your fonts are deficient, you may actually get
+          better results (in some cases) by choosing iso-8859-1 or some other
+          encoding, than utf-8.</p>
+        </blockquote>
+      </li>
+    </ul>
+    <hr>
+    <!--
+        ** Not implemented at present **
+      
+     <A NAME="chooseLocale"><H2>Choosing a Locale</H2></A>
      <UL>
-       Drawing of some scripts, such as Arabic, depends heavily on the
-       browser and OS having the correct fonts and drawing support.
-       As well, scripts which are written right-to-left (such as
-       Arabic or Hebrew) depend on the browser/OS to understand
-       drawing text in this direction.  The Locale Explorer does not
-       attempt to correct for these situations.
-      </UL><P>
-  <LI><B>How do I install fonts?</B>
-    <UL>
-      On the Macintosh, drag fonts into your System Folder icon and
-      restart your browser. On Windows, bring up the Fonts control panel.
-      On X Windows, use 'man mkfontdir' and 'man xset' for more
-      information.
-    </UL><P>
-  <LI><B>Why do I see accents following characters, such as
-      '<U>o"</U>', or accents following <U>\uXXXX</U> unicode
-      characters?</B>
-      <UL>
-         The Locale Explorer uses a module called the Decomposition
-      Callback when it cannot output a character in a specific
-      encoding. It attempts a 'Unicode canonical character
-      decomposition' to break accented and ligature characters apart,
-      and then looks for possible substitutions for the decomposed
-      forms.
-      <P>
-       As an example, set the Locale Explorer encoding to iso-8859-1
-       and view Hungarian. 'Monday' in Hungarian ends with an '<U>o with
-       double acute accent</U>'.  This is decomposed into '<U>o</U>' +
-       '<U>double-acute</U>'.   O can be output as just a normal o.
-       The double-acute is turned into a doublequote (<U>"</U>), which
-       is then output. So the result is '<U>o"</U>' which is certainly
-       more readable than an error character such as '<U>?</U>'.
-      <P>
-       For this reason, if your fonts are deficient, you may actually
-       get better results (in some cases) by choosing iso-8859-1 or
-       some other encoding, than utf-8.  
-
-      </UL><P>
-</UL>
-
-<HR>
-
-<!--
-    ** Not implemented at present **
-  
- <A NAME="chooseLocale"><H2>Choosing a Locale</H2></A>
- <UL>
-      On this screen, you need to tell the Locale Explorer what your
-     own preferences for locale (language and region) are.  The
-     Locale Explorer isn't just a browser for locale data, it is also
-     an internationalized application itself. 
- </UL>
- <HR>
--->
-
-
-<A NAME="MISSING_RESOURCE_ERROR"><H2>(missing resource) - MISSING_RESOURCE_ERROR</H2></A>
-<UL>
-     The resource you asked for did not exist, nor could a suitable default be 
-     found.
-</UL>
-
-
-
-<HR>
-
-<!--
-     ** Handled by 'inherited' link **
- <A NAME="USING_FALLBACK_ERROR"><H2>(fallback value) - USING_FALLBACK_ERROR</H2></A>
- <UL>
-     The resource you asked for wasn't in the precise locale you requested, however
-    it was found in a 'parent' locale.  For example, the locale "French (Burkina Faso)"
-    may not specify the names for the days of the week, but the parent locale "French"
-    would.
-</UL>
--->
-
-
-<!-- 
-      ** Handled by inherited link **
-  <HR>
-
-  <A NAME="USING_DEFAULT_ERROR"><H2>(default value) - USING_DEFAULT_ERROR</H2></A>
-  <UL>
-     The resource you asked for did not exist, however a resource was found in the 
-          default locale.  For example, German [de] does not specify a value for Am/Pm
-     markers, so the defaults are used.
+          On this screen, you need to tell the Locale Explorer what your
+         own preferences for locale (language and region) are.  The
+         Locale Explorer isn't just a browser for locale data, it is also
+         an internationalized application itself. 
      </UL>
-
      <HR>
--->
+    -->
 
-<A NAME="AmPmMarkers"><H2>AM & PM</H2></A>
-<UL>
-  Used in formatting/parsing Times.<P> 
-  Specify the strings to be used for 'am' vs. 'pm'. Ignored if am/pm
-  are not used in that locale.
-</UL>
+    <h2><a name="MISSING_RESOURCE_ERROR">(missing resource) -
+    MISSING_RESOURCE_ERROR</a></h2>
 
-<HR><A NAME="CollationElements"><H2>Collation rulesx</H2></A><UL>  
-  Specifies the rules to be used for collating (comparing and sorting) 
-  text. The rules may be found in the ICU documentation for TableCollator.
-</UL>
+    <p>The resource you asked for did not exist, nor could a suitable default
+    be found.</p>
+    <hr>
+    <!--
+         ** Handled by 'inherited' link **
+     <A NAME="USING_FALLBACK_ERROR"><H2>(fallback value) - USING_FALLBACK_ERROR</H2></A>
+     <UL>
+         The resource you asked for wasn't in the precise locale you requested, however
+        it was found in a 'parent' locale.  For example, the locale "French (Burkina Faso)"
+        may not specify the names for the days of the week, but the parent locale "French"
+        would.
+    </UL>
+    -->
+    <!-- 
+          ** Handled by inherited link **
+      <HR>
 
-</UL>
+      <A NAME="USING_DEFAULT_ERROR"><H2>(default value) - USING_DEFAULT_ERROR</H2></A>
+      <UL>
+         The resource you asked for did not exist, however a resource was found in the 
+              default locale.  For example, German [de] does not specify a value for Am/Pm
+         markers, so the defaults are used.
+         </UL>
 
-<HR><A NAME="Countries"><H2>Regions</H2></A><UL>  
-    Specifies the display name for the given region (ISO-3166) codes.
-    Used for converting a region code of a
-    locale into a displayable name.
-</UL>
+         <HR>
+    -->
 
-<HR><A NAME="CurrencyElements"><H2>Currency Elements</H2></A><UL>  
-   These strings are used in parsing/formatting numbers which are designated as currency values.  <P>
-<LI><B>Currency Symbol</B><BR> This is used whenever a 'currency symbol' (\u00A4) is encountered in a currency number pattern.<P>
-<LI><B>Int'l Currency Symbol</B><BR>Three-letter international code for a currency. Used where a doubled currency symbol (\u00A4 \u00A4) is encountered in a number pattern.<P>
-<LI><B>Currency separator</B><BR>This is used as the decimal separator in
-currency formatting/parsing, instead of the DecimalSeparator from the <A HREF="#NumberElements">NumberElements</A> list.
+    <h2><a name="AmPmMarkers">AM &amp; PM</a></h2>
 
-  </UL>
+    <p>Used in formatting/parsing Times. Specify the strings to be used for
+    'am' vs. 'pm'. Ignored if am/pm are not used in that locale.</p>
+    <hr>
 
-<HR><A NAME="DateTimeElements"><H2>Date & Time Options</H2></A><UL>  
-<LI><B>First day of the week</B> A number indicating which day of the week is considered the 'first' day, for calendar purposes.  It is 1-based, with 1 being Sunday, 2 being Monday, .. 7 being Saturday.
-<LI><B>Minimal Days in First Week</B>  - Minimal days required in the first week of the year are; For
-      example, if the first week is defined as one that contains the first day of the
-      first month of a year, this value will be 1. If it must be a full week,
-      the value will be 7. <!-- from calendar.h -->
-  </UL>
+    <h2><a name="CollationElements">Collation rules</a></h2>
 
+    <p>Specifies the rules to be used for collating (comparing and sorting)
+    text. The rules may be found in the ICU documentation for
+    TableCollator.</p>
+    <hr>
 
-<HR><A NAME="DateTimePatterns"><H2>Date & Time Patterns</H2></A><UL> 
-          The first 8 items are different lengths of either date or time
-	  patterns.  See the <A HREF="#localPatternChars">localPatternChars</A> (in the locale) for the meanings of special characters.
+    <h2><a name="Countries">Regions</a></h2>
 
+    <p>Specifies the display name for the given region (ISO-3166) codes. Used
+    for converting a region code of a locale into a displayable name.</p>
+    <hr>
 
-<P><LI><B> Quoting rules:</B> Single quotes, (<B>'</B>), enclose bits of the pattern that should be treated literally. Inside a quoted string, two single quotes ('') are replaced with a single one (').  For example: <TT><U>'class of '</U>YYYY<U>' at '</U>h<U>' o''clock'</U> </TT> -> <B>class of 1939 at 6 o'clock</B> (Literal strings <U>underlined</U>.)
-  </UL>
+    <h2><a name="CurrencyElements">Currency Elements</a></h2>
 
+    <p>These strings are used in parsing/formatting numbers which are
+    designated as currency values.</p>
 
-<HR><A NAME="Day"><H2>Day</H2></A><UL>  
-This resource contains the full and short (abbreviated)  names of the days of the week, starting with Sunday.
-  </UL>
+    <dl>
+      <dt><b>Currency Symbol</b></dt>
 
+      <dd>This is used whenever a 'currency symbol' (\u00A4) is encountered in
+      a currency number pattern.</dd>
 
-<HR><A NAME="Eras"><H2>Eras</H2></A><UL>  Display strings for the eras. (2 for the default, Gregorian calendar: BC,AD.)
-  </UL>
+      <dt><b>Int'l Currency Symbol</b></dt>
 
-<HR><A NAME="Languages"><H2>Languages</H2></A><UL>  
-Display names for language codes. 
- </UL>
+      <dd>Three-letter international code for a currency. Used where a doubled
+      currency symbol (\u00A4 \u00A4) is encountered in a number pattern.</dd>
 
+      <dt><b>Currency separator</b></dt>
 
-<HR><A NAME="LocaleID"><H2>Windows Locale ID</H2></A><UL> 
-   Hexadecimal Locale ID for this Locale as used by Microsoft Windows. See <A TARGET="unicode.org" HREF="http://www.unicode.org">www.unicode.org</A> for a description of these ID's.
+      <dd>This is used as the decimal separator in currency formatting/parsing,
+      instead of the DecimalSeparator from the <a href=
+      "#NumberElements">NumberElements</a> list.</dd>
+    </dl>
+    <hr>
 
-  </UL>
+    <h2><a name="DateTimeElements">Date &amp; Time Options</a></h2>
 
-<!-- Non existent
+    <dl>
+      <dt><b>First day of the week</b></dt>
 
-<HR><A NAME="LocaleNamePatterns"><H2>LocaleNamePatterns</H2></A><UL>  
-MessageFormat string for displaying a Locale's name.  (NOT USED?)
-  </UL>
--->
+      <dd>A number indicating which day of the
+      week is considered the 'first' day, for calendar purposes. It is 1-based,
+      with 1 being Sunday, 2 being Monday, .. 7 being Saturday.</dd>
 
-<!--  Non existent
+      <dt><b>Minimal Days in First Week</b></dt>
 
-<HR><A NAME="LocaleString"><H2>LocaleString</H2></A><UL> Same as Locale's name (NOT USED?)  </UL>
+      <dd>Minimal days required in the
+      first week of the year are; For example, if the first week is defined as
+      one that contains the first day of the first month of a year, this value
+      will be 1. If it must be a full week, the value will be 7. 
+      <!-- from calendar.h -->
+      </dd>
+    </dl>
+    <hr>
 
--->
+    <h2><a name="DateTimePatterns">Date &amp; Time Patterns</a></h2>
 
-<HR><A NAME="Month"><H2>Month</H2></A><UL>  Full and short (abbreviated) month names, starting with January  </UL>
+    <p>The first 8 items are different lengths of either date or time patterns.
+    See the <a href="#localPatternChars">localPatternChars</a> (in the locale)
+    for the meanings of special characters.</p>
 
-<HR><A NAME="NumberElements"><H2>Number Elements</H2></A><UL> 
-   Symbols used in number formatting and parsing. Used in <A HREF="#NumberPatterns">NumberPatterns</A>.<P>
-   <LI><B>Decimal Separator</B> - separates the integer and fractional part
-   of the number.
-   <LI><B>Grouping Separator</B> - groups (for example) units of thousands:  10^6 = 1,000,000. 
+    <p><b>Quoting rules:</b> Single quotes, (<b>'</b>), enclose bits of the
+    pattern that should be treated literally. Inside a quoted string, two
+    single quotes ('') are replaced with a single one ('). For example:
+    <tt><u>'class of '</u>YYYY<u>' at '</u>h<u>' o''clock'</u></tt> -&gt;
+    <b>class of 1939 at 6 o'clock</b> (Literal strings <u>underlined</u>.)</p>
+    <hr>
 
+    <h2><a name="Day">Day</a></h2>
 
-  The grouping separator is commonly used for thousands, but in some
-  countries for ten-thousands. The interval is a constant number of
-  digits between the grouping characters, such as 100,000,000 or 1,0000,0000.
-  If you supply a pattern with multiple grouping characters, the interval
-  between the last one and the end of the integer is the one that is
-  used. So "#,##,###,####" == "######,####" == "##,####,####".
+    <p>This resource contains the full and short (abbreviated) names of the
+    days of the week, starting with Sunday.</p>
+    <hr>
 
-   <LI><B>Pattern Separator</B> - sets the character used for separating variant expressions. (For example:   <U>0.00<B>;</B>(0.00)</U>  where the second pattern is the form to use for negative number)
-   <LI><B>Percent</B> - symbol used to indicate a percentage (1/100th) amount.  (If present, the value is also multiplied by 100 before formatting. That way 1.23 => 123%)
+    <h2><a name="Eras">Eras</a></h2>
 
-   <LI><B>ZeroDigit</B> - Symbol used to indicate a digit in the pattern, or zero if that place would otherwise be empty. For example, with the digit of '0',  the pattern "000" would format "34" as "034", but the pattern "0" would format "34" as just "34". As well, the digits 1-9 are expected to follow the code point of this specified 0 value.
+    <p>Display strings for the eras. (2 for the default, Gregorian calendar:
+    BC,AD.)</p>
+    <hr>
 
-   <LI><B>Digit</B> - Symbol used to indicate any digit value. If that digit is zero, then it is not shown.
-   <LI><B>Minus Sign</B> - Symbol used to denote negative value.
-   <LI><B>Exponential</B> - Symbol separating the mantissa and exponent values.
-   <LI><B>PerMill</B> - symbol used to indicate a per-mille (1/1000th) amount.  (If present, the value is also multiplied by 1000 before formatting. That way 1.23 => 1230 [1/000])
-   <LI><B>Infinity</B> - The infinity sign. Corresponds to the IEEE infinity bit pattern.
-   <LI><B>Not a number</B> - The NaN sign. Corresponds to the IEEE NaN bit pattern.
-  </UL>
+    <h2><a name="Languages">Languages</a></h2>
 
-<HR><A NAME="NumberPatterns"><H2>Number Patterns</H2></A><UL>  
-Patterns for formatting different types of numbers. 
-Note that the <A HREF="#NumberElements">NumberElements</A> resource
-affects how these patterns are interpreted.
+    <p>Display names for language codes. For example, "en" is "English" in
+    English, but it is "ingl&eacute;s" in Spanish.</p>
+    <hr>
 
+    <h2><a name="LocaleID">Windows Locale ID</a></h2>
 
-<LI><B>Decimal</B>
-<LI><B>Currency</B>
- Use \u00A4 where the local currency symbol should be.  Doubling the 
- currency symbol (\u00A4\u00A4) will output the international currency
- symbol (a 3-letter code).
-<LI><B>Percent</B>  Pattern for use with percentage formatting
-<LI><B>Scientific</B> Pattern for use with scientific (exponent) formatting.
-<P>
-<P><LI><B> Quoting rules:</B> Single quotes, (<B>'</B>), enclose bits of the pattern that should be treated literally. Inside a quoted string, two single quotes ('') are replaced with a single one (').  For example: <TT><U>'X '</U>#<U>' at '</U>h<U>' o''clock'</U> </TT> -> <B>class of 1939 at 6 o'clock</B> (Literal strings <U>underlined</U>.)
- </UL>
+    <p>Hexadecimal Locale ID for this Locale as used by Microsoft Windows. See
+    <a target="www.microsoft.com" href=
+    "http://www.microsoft.com/globaldev/">http://www.microsoft.com/globaldev/</a>
+    for a description of these ID's.</p>
+    <!-- Non existent
 
-<HR><A NAME="LocaleCodes"><H2>Locale Codes</H2></A><UL>  
-2 and 3 letter ISO codes for the language and region, as well as the variant codes.
- </UL>
+    <HR><A NAME="LocaleNamePatterns"><H2>LocaleNamePatterns</H2></A><UL>  
+    MessageFormat string for displaying a Locale's name.  (NOT USED?)
+      </UL>
+    -->
+    <!--  Non existent
 
-<HR><A NAME="Version"><H2>Version</H2></A><UL> 
- Version of the ICU data files. </UL>
+    <HR><A NAME="LocaleString"><H2>LocaleString</H2></A><UL> Same as Locale's name (NOT USED?)  </UL>
 
-<HR><A NAME="localPatternChars"><H2>Localized Date Pattern Chars</H2></A>
-<UL>
-These characters are replaced with the appropriate values when a date or time
-is being formatted.   <P>
-Characters may be used multiple times. For example, if y is used for the year, 'yy' might produce '99', whereas 'yyyy' produces '1999'.<P>
- For most numerical 
-characters, the number of characters specifies the field width. For example, if h is the hour, 'h' might produce '5', but 'hh' produces '05'. For some characters, the count specifies whether an abbreviated or full form should be used.<P>
-<B>Note:</B> In the following list, the default (English) form is used as an example, but see the actual locale for the correct characters!
-<P>
+    -->
+    <hr>
 
-   <LI><TT>G</TT> Era - Replaced with the <A HREF="#Era">Era</A> string for the current date.
-   <LI><TT>y</TT> Year - Use two for the short year, or 4 for the full year
-   <LI><TT>M</TT> Month - Use one or two for the numerical month, three for the abbreviation, or four for the full name.
-   <LI><TT>d</TT> Date - Day of the month. Use one, or two for zero padding.
-   <LI><TT>k</TT> Hour of day 1  [Midnight appears as '24']
-   <LI><TT>H</TT> Hour of day 0  [0-23]
-   <LI><TT>m</TT> Minute - Use one or two
-   <LI><TT>s</TT> Second - use one or two
-   <LI><TT>S</TT> Millisecond - Use 1,2, or 3.. shows the MOST significant digits.
-   <LI><TT>E</TT> Day of week - Use three for the short day, or four for the full name.
-   <LI><TT>D</TT> Day of year - Use 1-3
-   <LI><TT>F</TT> Day of Week in Month-  use one.  This is 1 for the first day of the week, etc..
-   <LI><TT>w</TT> Week of Year - use 1 or 2.
-   <LI><TT>W</TT> Week of month - use 1
-   <LI><TT>a</TT> AM or PM
-   <LI><TT>h</TT> Hour 1 - Noon and Midnight show up as "12"
-   <LI><TT>K</TT> Hour 0 - [0-11]
-   <LI><TT>z</TT> Timezone. Use 3 for the short timezone (i.e. PST) or 4 for the full name (Pacific Standard Time).  If there's no name for the zone, it'll show up as GMT+/-hh:mm.  
-</UL>
+    <h2><a name="Month">Month</a></h2>
 
-<HR><A NAME="zoneStrings"><H2>Time Zones</H2></A><UL>  Localized names for time zones. The columns are, in order:
-<LI>Canonical name for the time zone
-<LI>Display long name for the normal time zone
-<LI>Abbreviation for the normal time zone
-<LI>Display long name for the time zone on summer/daylight savings time
-<LI>Abbreviation for the time zone on summer/daylight savings time
-<LI>A city in the specified time zone.
- </UL>
+    <p>Full and short (abbreviated) month names, starting with January.</p>
+    <hr>
 
+    <h2><a name="NumberElements">Number Elements</a></h2>
 
-<HR><A NAME="EXPLORE_CollationElements"><H2>Collation (sorting) Example</H2></A><UL> 
+    <p>Symbols used in number formatting and parsing. Used in <a href=
+    "#NumberPatterns">NumberPatterns</a>.</p>
 
-This example demonstrates sorting 
-      (collation) in this locale. Type in some 
-      lines of text to be sorted, and click the <STRONG>Sort</STRONG> button. 
-      (The notes below explain what happens).
+    <dl>
+      <dt><b>Decimal Separator</b></dt>
 
+      <dd>- separates the integer and fractional part of the number.</dd>
 
-You see four different columns as output. The first 
-is the original text for comparison. The lines are numbered to show their 
-original position. The&nbsp;remaining columns show sorting by different 
-strengths (available as a parameter to the collation function).&nbsp;Groups of 
-lines that sort&nbsp;precisely the same are separated by an&nbsp;underline. 
-Since collation treats these lines as identical, lines in the same group could 
-appear in any order (depending on the precise sorting algorithm used).
-<P>The demo shows three different strengths used when 
-comparing any two strings:
-<UL>
-  <LI><FONT face=Arial size=2><EM>Primary Only</EM>&nbsp;means that only major 
-  differences are considered, such as different base letters (e.g. <EM>A vs 
-  B</EM>).</FONT></LI>
-  <LI><FONT face=Arial size=2><EM>Primary &amp; Secondary</EM> means that a 
-  second level of differences is also considered, such as accents 
-  (e.g.&nbsp;<EM>A vs Á</EM>). However, these are only relevant if there are 
-  <EM>no</EM> primary differences anywhere else in the strings.</FONT></LI><FONT 
-  face=Arial size=2>
-  <LI><FONT face=Arial size=2><EM>Primary - Tertiary </EM>means that a third 
-  level of differences is also considered, such as case (e.g. <EM>A vs a</EM>). 
-  However, these are only relevant if there are <EM>no</EM> primary differences 
-  and no secondary differences anywhere else in the 
-strings.</FONT></LI></FONT></UL>
-<DIV><FONT face=Arial size=2><EM>Primary - Tertiary</EM> is the only collation 
-people will normally use; however, these levels are also used in searching, for 
-a "loose" match. In some languages, such as French, secondary differences are 
-counted from the <EM>end</EM> of the strings. You see this if you look at the 
-difference in sorting between English and French for 
-the&nbsp;lines:&nbsp;"côté", "coté", "côte", and "cote".</FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
-  <DIV><FONT face=Arial size=2><STRONG>Note:</STRONG> if you want to enter a 
-  character for sorting that is not available from your keyboard, you can type 
-  it in by character code using "\u" notation: for example, "ä" is \u00E4, or 
-  paste it in from&nbsp;a unicode chart page,&nbsp;such as here&nbsp;[link <A 
-  href="http://www.macchiato.com/unicode/charts.html">http://www.macchiato.com/unicode/charts.html</A>].&nbsp;</FONT></DIV></BLOCKQUOTE>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><STRONG>References.</STRONG> For more information, 
-see </FONT></DIV>
-<UL><FONT face=Arial size=2>
-  <LI><FONT face=Arial size=2>the <EM>UTS #10 Unicode Collation Algorithm 
-  </EM>[link <A 
-  href="http://www.unicode.org/unicode/reports/tr10/Sample/">http://www.unicode.org/unicode/reports/tr10/Sample/</A>)]</FONT></LI>
-  <LI><FONT face=Arial size=2>the UCA demo (link to <A 
-  href="http://www.unicode.org/unicode/reports/tr10/Sample/">http://www.unicode.org/unicode/reports/tr10/Sample/</A>)</FONT></LI>
-  <LI>the Draft ICU User Guide</FONT></LI>
-  <UL>
-    <LI><FONT face=Arial size=2>Collation (link <A 
-    href="http://oss.software.ibm.com/developerworks/opensource/icu/project/userguide/collatorOverview.html"><EM>http://oss.software.ibm.com/developerworks/opensource/icu/project/userguide/collatorOverview.html</EM></A><EM>)</EM></FONT></LI></UL>
-  <LI><FONT face=Arial size=2>the Draft ICU API documentation on 
-  Collation</FONT></LI>
-  <UL>
-    <LI><FONT face=Arial size=2>Collator (link <A 
-    href="http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_collator.html#_details">http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_collator.html#_details</A>)</FONT></LI>
-    <LI><FONT face=Arial size=2>RuleBasedCollator (link <A 
-    href="http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_rulebasedcollator.html#_details">http://oss.software.ibm.com/developerworks/opensource/icu/project/apiref/API1.6/API/class_rulebasedcollator.html#_details</A>)</FONT></LI></UL></UL>
+      <dt><b>Grouping Separator</b></dt>
 
-<!-- 
- This example demonstrates how the ICU can sort text in a
- locale-specific way.  Type some lines of text into the box provided,
- and click sort. The text will be sorted according to the collation
- rules of the specified locale. All four different strengths will be
- tried, and the results are shown side by side.
-<P>
- Note that you may type in unicode values directly.  For example,
- typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
- which is at Unicode code point U+0416.
-<P>
- For more information, see the ICU Documentation and <A TARGET="unicode.org" HREF="http://www.unicode.org/unicode/reports/tr10/">Unicode Technical Report #10: Unicode Collation Algorithm</A>.
--->
-</UL>
+      <dd>- groups (for example) units of thousands: 10^6 = 1,000,000. The
+      grouping separator is commonly used for thousands, but in some countries
+      for ten-thousands. The interval is a constant number of digits between
+      the grouping characters, such as 100,000,000 or 1,0000,0000. If you
+      supply a pattern with multiple grouping characters, the interval between
+      the last one and the end of the integer is the one that is used. So
+      "#,##,###,####" == "######,####" == "##,####,####".</dd>
 
+      <dt><b>Pattern Separator</b></dt>
 
-<HR><A NAME="EXPLORE_NumberPatterns"><H2>Number Pattern Demo</H2></A><UL> 
+      <dd>- sets the character used for separating variant expressions. (For
+      example: <u>0.00<b>;</b>(0.00)</u> where the second pattern is the form
+      to use for negative number)</dd>
 
-  In this example you can try creating localized patterns and
-  formatting numbers using those patterns. <P>
+      <dt><b>Percent</b></dt>
 
-  The top form shows the pattern you are working with. It is the same
-  kind of pattern as the pre-set patterns found in the <A
-  HREF="#NumberPatterns">NumberPatterns</A> resource. Also, see the <A
-  HREF="#NumberElements">NumberElements</A>  resource for important
-  information on the characters used in each pattern.
-<P>
-  The left hand side shows the number that will be formatted. You may
-  change this number (and click Change) to see it's effect on the
-  formatted number. 
-<P>
-  The right hand side shows the formatted number. You may also change
-  the formatted version of the number (and click Change) to see it
-  converted back onto the left hand side.
-<P>
- Note that you may type in unicode values directly.  For example,
- typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
- which is at Unicode code point U+0416.
+      <dd>- symbol used to indicate a percentage (1/100th) amount. (If present,
+      the value is also multiplied by 100 before formatting. That way 1.23
+      =&gt; 123%)</dd>
 
-</UL>
+      <dt><b>ZeroDigit</b></dt>
 
-<HR><A NAME="EXPLORE_DateTimePatterns"><H2>Date&Time Pattern Demo</H2></A><UL> 
+      <dd>- Symbol used to indicate a digit in the pattern, or zero if that
+      place would otherwise be empty. For example, with the digit of '0', the
+      pattern "000" would format "34" as "034", but the pattern "0" would
+      format "34" as just "34". As well, the digits 1-9 are expected to follow
+      the code point of this specified 0 value.</dd>
 
-  In this example you can try creating localized patterns and
-  formatting dates using those patterns. <P>
+      <dt><b>Digit</b></dt>
 
-  The top form shows the pattern you are working with. It is the same
-  kind of pattern as the pre-set patterns found in the <A
-  HREF="#DateTimePatterns">DateTimePatterns</A> resource.  The
-  characters used in the pattern are the <A
-  HREF="#localPatternChars">localized pattern characters</A> for that
-  locale. They are reprinted at the bottom of the demo for your
-  convenience.
+      <dd>- Symbol used to indicate any digit value. If that digit is zero,
+      then it is not shown.</dd>
 
-<P>
-  Below the pattern is the current date/time (at left), and the
-  formatted version using your pattern (at right).
-<P>
- Note that you may type in unicode values directly.  For example,
- typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
- which is at Unicode code point U+0416.
+      <dt><b>Minus Sign</b></dt>
 
-</UL>
+      <dd>- Symbol used to denote negative value.</dd>
 
+      <dt><b>Exponential</b></dt>
 
-<HR><A NAME="transliteration"><H2>Transliteration Help</H2></A><UL> 
+      <dd>- Symbol separating the mantissa and exponent values.</dd>
 
- Clicking 'Transliterate it for me!' will cause any text that is NOT
- "Latin-1" to be <A TARGET="_new_xliterate_help" HREF="transliteration.html">transliterated</A>.  
- All transliteration will show up in <FONT COLOR="green">green</FONT>. 
- To remove transliteration, simply change your <A HREF="#encoding">encoding</A>
- to something else.  <A TARGET="_new_xliterate_help" HREF="transliteration.html">What is Transliteration?
- Click here to learn more!</A>
-</UL>
+      <dt><b>PerMill</b></dt>
 
+      <dd>- symbol used to indicate a per-mille (1/1000th) amount. (If present,
+      the value is also multiplied by 1000 before formatting. That way 1.23
+      =&gt; 1230 [1/000])</dd>
 
- 
-<HR>
-<B>End of help</B>
+      <dt><b>Infinity</b></dt>
 
-<HR>
-<I>Copyright (c) 2000 IBM, Inc. and Others</I>
+      <dd>- The infinity sign. Corresponds to the IEEE infinity bit
+      pattern.</dd>
 
+      <dt><b>Not a number</b></dt>
 
-</BODY></HTML>
+      <dd>- The NaN sign. Corresponds to the IEEE NaN bit pattern.</dd>
+    </dl>
+    <hr>
+
+    <h2><a name="NumberPatterns">Number Patterns</a></h2>
+
+    <p>Patterns for formatting different types of numbers. Note that the <a
+    href="#NumberElements">NumberElements</a> resource affects how these
+    patterns are interpreted.</p>
+
+    <dl>
+      <dt><b>Decimal</b></dt>
+
+      <dd>The normal locale specific way to write a base 10 number.</dd>
+
+      <dt><b>Currency</b></dt>
+
+      <dd>Use \u00A4 where the local currency symbol should be. Doubling the
+      currency symbol (\u00A4\u00A4) will output the international currency
+      symbol (a 3-letter code).</dd>
+
+      <dt><b>Percent</b></dt>
+
+      <dd>Pattern for use with percentage formatting</dd>
+
+      <dt><b>Scientific</b></dt>
+
+      <dd>Pattern for use with scientific (exponent) formatting.</dd>
+    </dl>
+
+    <p><b>Quoting rules:</b> Single quotes, (<b>'</b>), enclose bits of the
+    pattern that should be treated literally. Inside a quoted string, two
+    single quotes ('') are replaced with a single one ('). For example:
+    <tt><u>'X '</u>#<u>' at '</u>h<u>' o''clock'</u></tt> -&gt; <b>class of
+    1939 at 6 o'clock</b> (Literal strings <u>underlined</u>.)</p>
+    <hr>
+
+    <h2><a name="LocaleCodes">Locale Codes</a></h2>
+
+    <p>2 and 3 letter ISO codes for the language and region, as well as the
+    variant codes.</p>
+    <hr>
+
+    <h2><a name="Version">Version</a></h2>
+
+    <p>Version of the ICU data files.</p>
+    <hr>
+
+    <h2><a name="localPatternChars">Localized Date Pattern Chars</a></h2>
+
+    <p>These characters are replaced with the appropriate values when a date or
+    time is being formatted.</p>
+
+    <p>Characters may be used multiple times. For example, if y is used for the
+    year, 'yy' might produce '99', whereas 'yyyy' produces '1999'.</p>
+
+    <p>For most numerical characters, the number of characters specifies the
+    field width. For example, if h is the hour, 'h' might produce '5', but 'hh'
+    produces '05'. For some characters, the count specifies whether an
+    abbreviated or full form should be used.</p>
+
+    <p><b>Note:</b> In the following list, the default (English) form is used
+    as an example, but see the actual locale for the correct characters!</p>
+
+    <ul>
+      <li><tt>G</tt> Era - Replaced with the <a href="#Era">Era</a> string for
+      the current date.</li>
+
+      <li><tt>y</tt> Year - Use two for the short year, or 4 for the full
+      year</li>
+
+      <li><tt>M</tt> Month - Use one or two for the numerical month, three for
+      the abbreviation, or four for the full name.</li>
+
+      <li><tt>d</tt> Date - Day of the month. Use one, or two for zero
+      padding.</li>
+
+      <li><tt>k</tt> Hour of day 1 [Midnight appears as '24']</li>
+
+      <li><tt>H</tt> Hour of day 0 [0-23]</li>
+
+      <li><tt>m</tt> Minute - Use one or two</li>
+
+      <li><tt>s</tt> Second - use one or two</li>
+
+      <li><tt>S</tt> Millisecond - Use 1,2, or 3.. shows the MOST significant
+      digits.</li>
+
+      <li><tt>E</tt> Day of week - Use three for the short day, or four for the
+      full name.</li>
+
+      <li><tt>D</tt> Day of year - Use 1-3</li>
+
+      <li><tt>F</tt> Day of Week in Month- use one. This is 1 for the first day
+      of the week, etc..</li>
+
+      <li><tt>w</tt> Week of Year - use 1 or 2.</li>
+
+      <li><tt>W</tt> Week of month - use 1</li>
+
+      <li><tt>a</tt> AM or PM</li>
+
+      <li><tt>h</tt> Hour 1 - Noon and Midnight show up as "12"</li>
+
+      <li><tt>K</tt> Hour 0 - [0-11]</li>
+
+      <li><tt>z</tt> Timezone. Use 3 for the short timezone (i.e. PST) or 4 for
+      the full name (Pacific Standard Time). If there's no name for the zone,
+      it'll show up as GMT+/-hh:mm.</li>
+    </ul>
+    <hr>
+
+    <h2><a name="zoneStrings">Time Zones</a></h2>
+
+    <p>Localized names for time zones. The columns are, in order:</p>
+
+    <ul>
+      <li>Canonical name for the time zone.</li>
+
+      <li>Display long name for the normal time zone.</li>
+
+      <li>Abbreviation for the normal time zone.</li>
+
+      <li>Display long name for the time zone on summer/daylight savings
+      time.</li>
+
+      <li>Abbreviation for the time zone on summer/daylight savings time.</li>
+
+      <li>A city in the specified time zone.</li>
+    </ul>
+    <hr>
+
+    <h2><a name="EXPLORE_CollationElements">Collation (sorting)
+    Example</a></h2>
+
+    <p>This example demonstrates sorting (collation) in this locale. Type in
+    some lines of text to be sorted, and click the <strong>Sort</strong>
+    button. (The notes below explain what happens). You see four different
+    columns as output. The first is the original text for comparison. The lines
+    are numbered to show their original position. The remaining columns show
+    sorting by different strengths (available as a parameter to the collation
+    function). Groups of lines that sort precisely the same are separated by an
+    underline. Since collation treats these lines as identical, lines in the
+    same group could appear in any order (depending on the precise sorting
+    algorithm used).</p>
+
+    <p>The demo shows three different strengths used when comparing any two
+    strings:</p>
+
+    <ul>
+      <li><em>Primary Only</em> means that only major differences are
+      considered, such as different base letters (e.g. <em>A vs B</em>).</li>
+
+      <li><em>Primary &amp; Secondary</em> means that a second level of
+      differences is also considered, such as accents (e.g. <em>A vs
+      &Aacute;</em>). However, these are only relevant if there are <em>no</em>
+      primary differences anywhere else in the strings.</li>
+
+      <li><em>Primary - Tertiary</em> means that a third level of differences
+      is also considered, such as case (e.g. <em>A vs a</em>). However, these
+      are only relevant if there are <em>no</em> primary differences and no
+      secondary differences anywhere else in the strings.</li>
+    </ul>
+
+    <div>
+      <em>Primary - Tertiary</em> is the only collation people will normally
+      use; however, these levels are also used in searching, for a "loose"
+      match. In some languages, such as French, secondary differences are
+      counted from the <em>end</em> of the strings. You see this if you look at
+      the difference in sorting between English and French for the lines:
+      "c&ocirc;t&eacute;", "cot&eacute;", "c&ocirc;te", and "cote".
+    </div>
+
+    <div>
+      &nbsp;
+    </div>
+
+    <blockquote dir="ltr" style="MARGIN-RIGHT: 0px">
+      <div>
+        <strong>Note:</strong> if you want to enter a character for sorting
+        that is not available from your keyboard, you can type it in by
+        character code using "\u" notation: for example, "&auml;" is \u00E4, or
+        paste it in from&nbsp;a unicode chart page,&nbsp;such as
+        here&nbsp;[link <a href=
+        "http://www.macchiato.com/unicode/charts.html">http://www.macchiato.com/unicode/charts.html</a>].
+      </div>
+    </blockquote>
+
+    <div>
+      &nbsp;
+    </div>
+
+    <div>
+      <strong>References.</strong> For more information, please see these web
+      pages.
+    </div>
+
+    <ul>
+      <li>The <em>UTR #10 Unicode Collation Algorithm</em> [link <a href=
+      "http://www.unicode.org/unicode/reports/tr10/Sample/">http://www.unicode.org/unicode/reports/tr10/Sample/</a>)]</li>
+
+      <li>The UCA demo (link to <a href=
+      "http://www.unicode.org/unicode/reports/tr10/Sample/">http://www.unicode.org/unicode/reports/tr10/Sample/</a>)</li>
+
+      <li>
+        The Draft ICU User Guide 
+
+        <ul>
+          <li>Collation (link <a href=
+          "http://oss.software.ibm.com/icu/userguide/Collate_Intro.html">http://oss.software.ibm.com/icu/userguide/Collate_Intro.html</a>)</li>
+        </ul>
+      </li>
+
+      <li>
+        The ICU API documentation on Collation 
+
+        <ul>
+          <li>Collator (link <a href=
+          "http://oss.software.ibm.com/icu/apiref/ucol_8h.html#_details">http://oss.software.ibm.com/icu/apiref/ucol_8h.html#_details</a>)</li>
+        </ul>
+      </li>
+    </ul>
+    <!-- 
+     This example demonstrates how the ICU can sort text in a
+     locale-specific way.  Type some lines of text into the box provided,
+     and click sort. The text will be sorted according to the collation
+     rules of the specified locale. All four different strengths will be
+     tried, and the results are shown side by side.
+    <P>
+     Note that you may type in unicode values directly.  For example,
+     typing  '\u0416' will be replaced with the Cyrillic letter "Zhe",
+     which is at Unicode code point U+0416.
+    <P>
+     For more information, see the ICU Documentation and <A TARGET="unicode.org" HREF="http://www.unicode.org/unicode/reports/tr10/">Unicode Technical Report #10: Unicode Collation Algorithm</A>.
+    -->
+    <hr>
+
+    <h2><a name="EXPLORE_NumberPatterns">Number Pattern Demo</a></h2>
+
+    <p>In this example you can try creating localized patterns and formatting
+    numbers using those patterns.</p>
+
+    <p>The top form shows the pattern you are working with. It is the same kind
+    of pattern as the pre-set patterns found in the <a href=
+    "#NumberPatterns">NumberPatterns</a> resource. Also, see the <a href=
+    "#NumberElements">NumberElements</a> resource for important information on
+    the characters used in each pattern.</p>
+
+    <p>The left hand side shows the number that will be formatted. You may
+    change this number (and click Change) to see it's effect on the formatted
+    number.</p>
+
+    <p>The right hand side shows the formatted number. You may also change the
+    formatted version of the number (and click Change) to see it converted back
+    onto the left hand side.</p>
+
+    <p>Note that you may type in unicode values directly. For example, typing
+    '\u0416' will be replaced with the Cyrillic letter "Zhe", which is at
+    Unicode code point U+0416.</p>
+    <hr>
+
+    <h2><a name="EXPLORE_DateTimePatterns">Date &amp; Time Pattern
+    Demo</a></h2>
+
+    <p>In this example you can try creating localized patterns and formatting
+    dates using those patterns.</p>
+
+    <p>The top form shows the pattern you are working with. It is the same kind
+    of pattern as the pre-set patterns found in the <a href=
+    "#DateTimePatterns">DateTimePatterns</a> resource. The characters used in
+    the pattern are the <a href="#localPatternChars">localized pattern
+    characters</a> for that locale. They are reprinted at the bottom of the
+    demo for your convenience.</p>
+
+    <p>Below the pattern is the current date/time (at left), and the formatted
+    version using your pattern (at right).</p>
+
+    <p>Note that you may type in unicode values directly. For example, typing
+    '\u0416' will be replaced with the Cyrillic letter "Zhe", which is at
+    Unicode code point U+0416.</p>
+    <hr>
+
+    <h2><a name="transliteration">Transliteration Help</a></h2>
+
+    <p>Clicking 'Transliterate it for me!' will cause any text that is NOT
+    "Latin-1" to be <a href="transliteration.html">transliterated</a>. All
+    transliteration will show up in <span color="green">green</span>. To remove
+    transliteration, simply change your <a href="#encoding">encoding</a> to
+    something else. <a href="transliteration.html">What is Transliteration?
+    Click here to learn more!</a></p>
+    <hr>
+    <b>End of help</b> 
+    <hr>
+    <i>Copyright (c) 2000-2003 IBM, Inc. and Others</i>
+  </body>
+</html>
+
