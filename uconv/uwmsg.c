@@ -124,7 +124,7 @@ U_CAPI void  u_wmsg(const char *tag, ... )
   
   if(U_FAILURE(err))
   {
-    fprintf(stderr, "u_wmsg: failed to load tag [%s] [%s]!!\n", u_errorName(err));
+    fprintf(stderr, "u_wmsg: failed to load tag [%s] [%s]!!\n", tag,  u_errorName(err));
     return;
   }
 
