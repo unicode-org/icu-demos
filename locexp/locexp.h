@@ -387,6 +387,10 @@ extern void appendHeader(LXContext* lx, const char *header, const char *fmt, ...
  */
 extern void showICIR(LXContext* lx);
 
+extern void loadCalendarStuff(LXContext *lx, UResourceBundle *myRB, const char *locale);
+extern UResourceBundle *loadCalendarStuffFor(LXContext *lx, UResourceBundle *myRB, const char *locale, const char *defCal);
+extern void loadDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale);
+
 /* Astro - only defined if LX_ASTRO is defined, else stubbed out. */
 
 #if defined(LX_ASTRO)

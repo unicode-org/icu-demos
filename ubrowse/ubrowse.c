@@ -944,11 +944,10 @@ if(!tmp) /* if there was no trailing '/' ... */
   u_fprintf(gOut, "</td>\n");
 
   if(mode == ETOP) /* top level list of blocks ******************************** ETOP ********** */
-    {
-#pragma mark ETOP
+  {
       u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
-        u_fprintf(gOut, "<table summary=\"UnicodeBrowser\" border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\n");
+      u_fprintf(gOut, "<table summary=\"UnicodeBrowser\" border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\n");
 
       u_fprintf(gOut, "<b>Unicode Browser</b> - Click on a type of character view it in more detail<br>\n");
       u_fprintf(gOut, "</td></tr><tr><td bgcolor=\"#eeeeee\">\n"
@@ -961,8 +960,8 @@ if(!tmp) /* if there was no trailing '/' ... */
         u_fprintf(gOut, "%s", getUBlockCodeName(i));
         u_fprintf(gOut, "</a> | &nbsp;");
       }
-    u_fprintf(gOut, "<br>");
-    u_fprintf(gOut, "<br>");
+      u_fprintf(gOut, "<br>");
+      u_fprintf(gOut, "<br>");
       
 
       u_fprintf(gOut, "<b>General Categories:</b>");
@@ -985,7 +984,6 @@ if(!tmp) /* if there was no trailing '/' ... */
     }      
   else if (mode == EBLOCK) /* *************** BLOCK *******************************************/
     {
-#pragma mark EBLOCK
     u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
 
@@ -1038,7 +1036,6 @@ if(!tmp) /* if there was no trailing '/' ... */
     }
   else if(mode == ECOLUMN ) /****************************** COLUMN **************************/
     {
-#pragma mark ECOLUMN
       const char *hilite;
       UBool showBlock = FALSE;
       if(  ((block&~0xF)==0xFFF0) ||    /* FFFD/FFFF and */
@@ -1111,7 +1108,6 @@ if(!tmp) /* if there was no trailing '/' ... */
     }
   else if(mode == ECHAR) /************************* CHAR *****************************/
     {
-#pragma mark ECHAR
       u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
       printModeCHAR(block);
@@ -1122,7 +1118,6 @@ if(!tmp) /* if there was no trailing '/' ... */
 #ifdef RADICAL_LIST 
   else if(mode == ERADLST) /************************ RADICAL LIST ********************/
     {
-#pragma mark ERADLST
       u_fprintf(gOut, "</table></form>");
       u_fprintf(gOut, "<TABLE  summary=\"radical list\" BORDER=1>");
       u_fprintf(gOut, "<tr>");
