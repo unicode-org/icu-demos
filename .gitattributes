@@ -115,6 +115,7 @@ locexp/resource/zh_SG/displayproblems.gif -text
 locexp/resource/zh_SG/dp.gif -text
 locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
+test/testdata/uni-text.bin -text
 translitdemo/data/translit_main.html svneol=native#text/html
 translitdemo/data/translit_nub.html svneol=native#text/html
 translitdemo/data/translit_rule_edit.html svneol=native#text/html
