@@ -66,8 +66,8 @@ static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *s
 
     if (nameSize <= 0 || *newStandard == '-') {
         uhash_put(gStandardsSelected,
-            (void*)ucnv_getStandard(gMaxStandards-1, status),
-            (void*)ucnv_getStandard(gMaxStandards-1, status),
+            (void*)ucnv_getStandard((uint16_t)(gMaxStandards-1), status),
+            (void*)ucnv_getStandard((uint16_t)(gMaxStandards-1), status),
             status);
         if (U_FAILURE(*status)) {
             printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));

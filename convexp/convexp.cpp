@@ -50,7 +50,7 @@ static const char htmlHeader[]=
     "td.value {font-family: monospace;}\n"
     "td.reserved {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
     "td.continue {padding-top: 0.75em; padding-bottom: 0.75em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-family: monospace;}\n"
-    "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: 1px, solid; font-size: 75%; font-family: monospace;}\n"
+    "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 75%; font-family: monospace;}\n"
     "</style>\n"
     "</head>\n"
     "<body bgcolor=\"#FFFFFF\">\n"
@@ -96,11 +96,13 @@ static const char trailingUCharEscape[]="\\u%04X";
 static const char startForm[]=
     "<form method=\"GET\" action=\"%s\">\n"
     "<p>Select a standard to view:<br>\n"
+    "<br>\n"
 //    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"164\" value=\"%s\">\n"
-    "</p>\n";
+    "\n";
 
 static const char endForm[]=
             "<input type=\"submit\" value=\"View Results\" size=\"100\">\n"
+            "</p>"
             "</form>\n";
 
 static const char startTable[]=
@@ -135,10 +137,12 @@ static void printOptions(UErrorCode *status) {
             checked = "";
         }
         if (standard && *standard) {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"%s\"%s> %s<br>\n", standard, checked, standard);
+            printf("<input type=\"checkbox\" name=\"s\" value=\"%s\" id=\"%s\"%s> <label for=\"%s\">%s</label><br>\n",
+                standard, standard, checked, standard, standard);
         }
         else {
-            printf("<input type=\"checkbox\" name=\"s\" value=\"-\"%s> <em>Untagged Aliases</em><br>\n", checked);
+            printf("<input type=\"checkbox\" name=\"s\" value=\"-\" id=\"UntaggedAliases\"%s> <label for=\"UntaggedAliases\"><em>Untagged Aliases</em></label><br>\n",
+                checked);
         }
     }
     if (uhash_find(gStandardsSelected, ALL) != NULL) {
@@ -147,7 +151,8 @@ static void printOptions(UErrorCode *status) {
     else {
         checked = "";
     }
-    printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\"%s> <em>All Aliases</em><br>\n", checked);
+    printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\" id=\"AllAliases\"%s> <label for=\"AllAliases\"><em>All Aliases</em></label><br>\n",
+        checked);
     puts("<br>");
 }
 
@@ -422,7 +427,6 @@ static void printConverterInfo(UErrorCode *status) {
         printf("<p><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"set=1"OPTION_SEP_STR"%s\">View Complete Set...</a></p>\n",
             gCurrConverter, getStandardOptionsURL(&myStatus));
     }
-    puts("<br>");
 
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
         || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32
