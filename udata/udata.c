@@ -253,7 +253,7 @@ getChoice(Library lib, const char *entry,
 
 #define NO_LIBRARY NULL
 #define IS_LIBRARY(lib) ((lib)!=NULL)
-#define LOAD_LIBRARY(path, basename, isCommon) LoadLibrary(path);
+#define LOAD_LIBRARY(path, basename, isCommon) dlopen(path, RTLD_LAZY|RTLD_GLOBAL);
 #define UNLOAD_LIBRARY(lib) dlclose(lib)
 
 #   else /* POSIX memory map implementation --------------------------------- */
