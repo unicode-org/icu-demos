@@ -18,10 +18,6 @@
 *******************************************************************************
 */
 
-#ifdef HACKY_DEV_TIEIN
-extern int srl_mode;
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -44,25 +40,25 @@ extern int srl_mode;
 /* Protos */
 int main(int argc, char **argv);
 void doDecodeQueryField(const char *in, char *out);
- const char * up_u2c(char *buf, const UChar *src, UErrorCode *status);  
+ const char * up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *status);  
 void printType(int8_t type);
 void printScript(UCharScript script);
-UChar doSearchScript(int32_t, UChar startFrom);
-UChar doSearchType(int8_t, UChar startFrom);
-void showSearchMenu(UChar startFrom);
-void printCharName(UChar ch);
+UChar32 doSearchScript(int32_t, UChar32 startFrom);
+UChar32 doSearchType(int8_t, UChar32 startFrom);
+void showSearchMenu(UChar32 startFrom);
+void printCharName(UChar32 ch);
 
 /* globals, current search.. */
 int32_t gSearchType = -1;
 int32_t gSearchScript = -1;
 char    gSearchName[512];
 
-UChar gSearchChar = 0xFFFF;
+UChar32 gSearchChar = 0xFFFF;
 bool_t gSearchCharValid = FALSE;
 
 bool_t anyDecompose = FALSE;
 
-void printCharName(UChar c)
+void printCharName(UChar32 c)
 {
   char junkbuf[512];
   UErrorCode status = U_ZERO_ERROR;
@@ -71,7 +67,7 @@ void printCharName(UChar c)
   if(U_SUCCESS(status))
     puts(junkbuf);
   else
-    printf("{U+%04X}", c);
+    printf("{U+%06X}", c);
 }
 
 /******************************************************** derived from ucnv_err.c */
@@ -220,16 +216,20 @@ void
 #endif
 /*******************************************************end of borrowed code from ucnv_err.c **/
 
-void printBasicBlockInfo(UChar theChar)
+
+void printBasicBlockInfo(UChar32 theChar)
 {
   char  theString[100];
   UChar chars[5];
+  int n;
   UErrorCode status = U_ZERO_ERROR;
+  int offset = 0;
 
-  chars[1] = 0;
-  
-  chars[0] = theChar;
-  up_u2c(theString, chars, &status);
+  UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar);
+/*  chars[offset] = 0; */
+
+  up_u2c(theString, chars, offset, &status);
+
   if(status == U_USING_FALLBACK_ERROR)
     {
       printf("<FONT COLOR=\"#00DD00\"><I>");
@@ -243,14 +243,24 @@ void printBasicBlockInfo(UChar theChar)
   if(status == U_USING_FALLBACK_ERROR)
       printf("</I></FONT>");
   puts("</FONT>");
+}
 
-  if(  ((theChar & 0xFF00) == 0x0900) ||  ((theChar & 0xFF00) == 0x0700 ) )
-    {
-      /*      puts("<BR>");   */   /* Adds an extra line for devangari.. */
-#ifdef HACKY_DEV_TIEIN
-      doDevanagari(chars);
-#endif
-    }
+
+UBool myEnumCharNamesFn(void *context,
+                        UChar32 code,
+                        UCharNameChoice nameChoice,
+                        const char *name,
+                        UTextOffset length)
+{
+  if(strstr(name, gSearchName))
+  {
+    printf("<LI><A HREF=\"?k1=%06X#here\"><TT>%06X</TT> - %s\r\n",
+           code, code, name);
+    
+    printBasicBlockInfo( code );
+    printf("</A>\r\n");
+  }
+  return TRUE;
 }
 
 int
@@ -262,11 +272,11 @@ main(int argc,
   char *tmp;
   char theString[800];
   UChar chars[800];
-  UChar theChar;
+  UChar32 theChar;
   int n,i,r,c,uc;
   bool_t searchedFor;
-  UChar block = 0xFFFF;
-  enum { ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME } mode;
+  UChar32 block = 0xFFFF;
+  enum { ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME, EEXACTNAME } mode;
   UVersionInfo uvi;
 
   chars[1] = 0;
@@ -281,28 +291,25 @@ main(int argc,
   if(tmp)
     *tmp = 0; /* terminate */
 
-  if(!strcmp(pi,"x-dvng"))
-    printf("content-type: text/html;charset=x-dvng\r\n\r\n");
-  else
-    {
-      if(*pi==0) pi = NULL;
-      ucnv_setDefaultName(pi);
-      printf("content-type: text/html;charset=%s\r\n\r\n",pi);
-    }
+  {
+    if(*pi==0) pi = NULL;
+    ucnv_setDefaultName(pi);
+    printf("content-type: text/html;charset=%s\r\n\r\n",pi);
+  }
 
   printf("<HTML><HEAD>\r\n");
   if(!tmp) /* if there was no trailing '/' ... */
-    {
-      if(pi!=NULL) {
-          printf("<BASE HREF=\"http://%s%s/%s/\">\r\n", getenv("SERVER_NAME"),
-	         getenv("SCRIPT_NAME"),
-	         pi);
-      } else {
-          printf("<BASE HREF=\"http://%s%s/\">\r\n", getenv("SERVER_NAME"),
-	         getenv("SCRIPT_NAME"));
-      }
-
+  {
+    if(pi!=NULL) {
+      printf("<BASE HREF=\"http://%s%s/%s/\">\r\n", getenv("SERVER_NAME"),
+             getenv("SCRIPT_NAME"),
+             pi);
+    } else {
+      printf("<BASE HREF=\"http://%s%s/\">\r\n", getenv("SERVER_NAME"),
+             getenv("SCRIPT_NAME"));
     }
+    
+  }
 
   /* Now, see what we're supposed to do */
   qs = getenv("QUERY_STRING");
@@ -313,34 +320,34 @@ main(int argc,
     { 
       if (sscanf(qs,"n=%x", &block)== 1)
 	{
-	  block &= 0xFF00;
-	  printf("<TITLE>ICU UnicodeBrowser: block U+%04X</TITLE>\r\n", block);
+	  block &= 0x1FFF00;
+	  printf("<TITLE>ICU UnicodeBrowser: block U+%06X</TITLE>\r\n", block);
 	  mode = EBLOCK;
 	}
       else if(sscanf(qs, "k1=%x", &block) == 1)
 	{
 	  gSearchChar = block;
 	  gSearchCharValid = TRUE;
-	  block &= 0xFFF0;
-	  printf("<TITLE>ICU UnicodeBrowser: column U+%04X</TITLE>\r\n", block);
+	  block &= 0x1FFFF0;
+	  printf("<TITLE>ICU UnicodeBrowser: column U+%06X</TITLE>\r\n", block);
 	  mode = ECOLUMN;
 	}
       else if(sscanf(qs, "k=%x", &block) == 1)
 	{
-	  block &= 0xFFF0;
-	  printf("<TITLE>ICU UnicodeBrowser: column U+%04X</TITLE>\r\n", block);
+	  block &= 0x1FFFF0;
+	  printf("<TITLE>ICU UnicodeBrowser: column U+%06X</TITLE>\r\n", block);
 	  mode = ECOLUMN;
 	}
       else if(sscanf(qs, "scr=%d&b=%x", &gSearchScript, &block) == 2)
 	{
 	  block = doSearchScript(gSearchScript, block);
-	  block &= 0xFFF0;
+	  block &= 0x1FFFF0;
 	  mode = ECOLUMN;
 	}
       else if(sscanf(qs, "typ=%d&b=%x", &gSearchType, &block) == 2)
 	{
 	  block = doSearchType(gSearchType, block);
-	  block &= 0xFFF0;
+	  block &= 0x1FFFF0;
 	  mode = ECOLUMN;
 	}
       else if(sscanf(qs, "radlst=%d", &block) == 1)
@@ -355,6 +362,10 @@ main(int argc,
 	{
 	  mode = ENAME;
 	}
+      else if(sscanf(qs, "sx=%200s", &gSearchName) == 1)
+        {
+          mode = EEXACTNAME;
+        }
     }
 
   if(mode == ETOP)
@@ -378,7 +389,10 @@ main(int argc,
   printf("</td></tr><tr><td bgcolor=\"#eeeeee\">\r\n");
 
 
-  printf("<TABLE><TR><TD><FORM>Jump to Unicode block: (hex) <INPUT NAME=n VALUE=\"%04X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM></TD><TD><FORM><INPUT TYPE=SUBMIT NAME=n VALUE=\"Show All\"></FORM></TD></TR></TABLE>\r\n", block);
+  printf("<TABLE><TR><TD>");
+  printf("<FORM>Jump to Unicode block: (hex) <INPUT NAME=n VALUE=\"%06X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM><BR>", block);
+  printf("<FORM>Jump to Unicode column: (hex) <INPUT NAME=k VALUE=\"%06X\"><INPUT TYPE=SUBMIT VALUE=\"Go\"></FORM><BR>", block);
+  printf("</TD><TD><FORM><INPUT TYPE=SUBMIT NAME=n VALUE=\"Show All\"></FORM></TD></TR></TABLE>\r\n");
 
   printf("</td></tr></table>\r\n"
          "</td></tr></table>\r\n");
@@ -404,7 +418,7 @@ main(int argc,
 	{
 	  if( (n% 0x1000) == (0x0000) )
 	    printf("<BR>\r\n<B>%04X</B> ", n);
-	  printf("<A HREF=\"?n=%04X\">%04X</A> ", n, n);
+	  printf("<A HREF=\"?n=%06X\">%04X</A> ", n, n);
 	}
       printf("<BR></TT>\r\n");
 
@@ -421,6 +435,11 @@ main(int argc,
     {
       /* Unicode table  at block 'block' */
 
+      printf("- Block: <A HREF=\"?n=%06X\">%06X</A> -\r\n",
+	     (block & 0x1FFF00)-0x100, (block & 0x1FFF00)-0x100);
+      printf("<A HREF=\"?n=%06X\">%06X</A> -\r\n",
+	     (block & 0x1FFF00)+0x100, (block & 0x1FFF00)+0x100);
+
       n = 0;
       /*      for(n=0; n<0x100; n += 0x080) */
 	{
@@ -428,7 +447,7 @@ main(int argc,
 	  printf("<TR><TD></TD>");
 	  for(c = n;c<(n + 0x100);c+= 0x10)
 	    {
-	      printf("<TD><B><A HREF=\"?k=%04X\"><TT>%03X</TT></A></B></TD>", (block|c),  (block | c) >> 4   );
+	      printf("<TD><B><A HREF=\"?k=%06X\"><TT>%03X</TT></A></B></TD>", (block|c),  (block | c) >> 4   );
 	    }
 	  printf("</TR>\r\n");
 	  for(r = 0; r < 0x10; r++)
@@ -460,15 +479,23 @@ main(int argc,
 	printf("<TR><TD COLSPAN=18 ALIGN=CENTER><I>Click on a column number to zoom in.</I></TD></TR>\r\n");
 	printf("</TABLE></TT>");
       printf("<HR>\r\n");
-      printf("<A HREF=\"http://charts.unicode.org/Unicode.charts/normal/U%04X.html#Glyphs\">this block on charts.unicode.org</A>\r\n", block);
+      if(block <= 0xFFFF)
+        {
+          printf("<A HREF=\"http://charts.unicode.org/Unicode.charts/normal/U%04X.html#Glyphs\">this block on charts.unicode.org</A>\r\n", block);
+        }
       showSearchMenu( block + 0x0100);
     }
   else if(mode == ECOLUMN )
     {
       /* Unicode table  at column 'block' */
 
-      printf("<A HREF=\"?n=%04X\">View all of block %04X</A><P>\r\n",
-	     block & 0xFF00, block & 0xFF00);
+      printf("<A HREF=\"?n=%06X\">View all of block %06X</A>\r\n",
+	     block & 0x1FFF00, block & 0x1FFF00);
+      /* should check view here */
+      printf("- Column: <A HREF=\"?k=%06X\">%06X</A> -\r\n",
+	     (block & 0x1FFFF0)-0x10, (block & 0x1FFFF0)-0x10);
+      printf("<A HREF=\"?k=%06X\">%06X</A> -\r\n",
+	     (block & 0x1FFFF0)+0x10, (block & 0x1FFFF0)+0x10);
       printf("<TT><TABLE BORDER=1><TR><TD></TD>");
       printf("<TD><B>%03X</B></TD>",  (block ) >> 4   );
 
@@ -614,13 +641,13 @@ main(int argc,
 	  printf("<TD>");
 	  printCharName(theChar);
 	  printf("</TD>");
-	  printf("<TD><FONT SIZE=-1>U+%04X</FONT>", theChar);
+	  printf("<TD><FONT SIZE=-1>U+%06X</FONT>", theChar);
           
           /*
-              -- this works but it's kind of RUDE. --
+              -- this works but it's kind of RUDE. -- [to link in w/o asking]
               
               printf("<IMG WIDTH=32 HEIGHT=32 SRC=\"http://charts.unicode.org/Unicode.charts/Small.Glyphs/%02X/U%04X.gif\">\r\n",
-                 ((theChar&0xFF00)>>8),
+                 ((theChar&0x1FFF00)>>8),
                  theChar);
 
 #error you're rude
@@ -670,13 +697,13 @@ main(int argc,
       f = fopen(s,"r");
       i=0;
       printf("<TR>");
-      while(fscanf(f,"%04X\t%d", &u, &stroke) == 2)
+      while(fscanf(f,"%06X\t%d", &u, &stroke) == 2)
 	{
 	  if(!( (i++)%10))
 	    printf("</TR><TR>");
 	  printf("<TD>");
 	  printf("%d ", stroke);
-	  printf("<A HREF=\"?k1=%04X#here\">", u);
+	  printf("<A HREF=\"?k1=%06X#here\">", u);
 	  printBasicBlockInfo(u);
 	  printf("</A></TD>");
 	}
@@ -686,7 +713,7 @@ main(int argc,
 #endif /* RADICAL_LIST */
   else if(mode == ENAME)
     {
-      uint32_t c;
+      UChar32 c;
       char *p;
       char buf[512];
       UErrorCode status;
@@ -695,30 +722,55 @@ main(int argc,
 	*p = toupper(*p);
 
       /* "Be careful what you search for, you just might find it"
-	 (and 0xFFFF of it's close friends!)
+	 (and 0x10FFFF of it's close friends!)
       */
 
       printf("<H1>Searching for '%s'</H1>...\r\n", gSearchName);
       
       printf("<HR><UL>\r\n");
-      for(c=0x0000;c <= 0xFFFF;c++)
-	{
-	  status = U_ZERO_ERROR;
-	  u_charName(c, U_UNICODE_CHAR_NAME, buf, 512, &status);
 
-	  if(U_SUCCESS(status))
-	    {
-	      if(strstr(buf, gSearchName))
-		{
-		  printf("<LI><A HREF=\"?k1=%04X#here\"><TT>%04X</TT> - %s\r\n",
-			 c, c, buf);
+      u_enumCharNames(UCHAR_MIN_VALUE, UCHAR_MAX_VALUE,
+                      myEnumCharNamesFn,
+                      NULL,
+                      U_UNICODE_CHAR_NAME,
+                      &status);
 
-		  printBasicBlockInfo( c );
-		  printf("</A>\r\n");
-		  
-		}
-	    }
-	}
+      printf("</UL><HR>\r\n");
+      showSearchMenu( 0x0000 ); 
+    }
+  else if(mode == EEXACTNAME)
+    {
+      UChar32 c;
+      char *p;
+      char buf[512];
+      UErrorCode status = U_ZERO_ERROR;
+
+      for(p=gSearchName;*p;p++)
+        {
+          *p = toupper(*p);
+          if(*p == '+')
+            *p = ' ';
+        }
+
+      printf("<H1>Searching for '%s'</H1>...\r\n", gSearchName);
+      
+      printf("<HR><UL>\r\n");
+
+      c = u_charFromName(U_UNICODE_CHAR_NAME,
+                         gSearchName,
+                         &status);
+
+      if(U_FAILURE(status))
+        {
+          printf("Not found - %s %d<P>\n", u_errorName(status), status);
+        }
+      else
+        {
+          printf("<LI><A HREF=\"?k1=%06X#here\"><TT>%06X</TT> - %s\r\n",
+                c,c,gSearchName);
+          printBasicBlockInfo(c);
+
+        }
 
       printf("</UL><HR>\r\n");
       showSearchMenu( 0x0000 ); 
@@ -760,7 +812,7 @@ main(int argc,
 UConverter *gConverter = NULL;
 
 const char *
-up_u2c(char *buf, const UChar *src, UErrorCode *cnvStatus)
+up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *cnvStatus)
 {
   /* borrowed from udate */
   int32_t sourceLen;
@@ -779,6 +831,7 @@ up_u2c(char *buf, const UChar *src, UErrorCode *cnvStatus)
     {
       /* open a default converter */
       gConverter = ucnv_open(NULL, &status);
+      ucnv_setSubstChars(gConverter,"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
       if(U_FAILURE(status))
 	{
 	  puts("Could not open the default converter.");
@@ -786,7 +839,7 @@ up_u2c(char *buf, const UChar *src, UErrorCode *cnvStatus)
     }
 
   /* set up the conversion parameters */
-  sourceLen    = u_strlen(src);
+  sourceLen    = len;
   mySource     = src;
   mySourceEnd  = mySource + sourceLen;
   myTarget     = buf;
@@ -798,7 +851,6 @@ up_u2c(char *buf, const UChar *src, UErrorCode *cnvStatus)
   ucnv_setFromUCallBack(gConverter, &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 #endif
 
-  ucnv_setSubstChars(gConverter,"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
 
   /*  ucnv_setFromUCallBack(gConverter, &SubstituteWithValueHTML, &status); */
 
@@ -958,27 +1010,36 @@ case U_NO_SCRIPT: printf("NO_SCRIPT"); return;
     }
 }
 
-UChar doSearchScript(int32_t script, UChar startFrom)
+UChar32 doSearchScript(int32_t script, UChar32 startFrom)
 {
-  UChar end = (startFrom-1);
+  UChar32 end = (startFrom-1);
   for(;startFrom != end; startFrom++)
+  {
+    if(startFrom > UCHAR_MAX_VALUE)
+      startFrom = UCHAR_MIN_VALUE;
     if(u_charScript(startFrom) == script)
       return startFrom;
+  }
 
   return startFrom;
 }
 
-UChar doSearchType(int8_t type, UChar startFrom)
+UChar32 doSearchType(int8_t type, UChar32 startFrom)
 {
-  UChar end = (startFrom-1);
+  UChar32 end = (startFrom-1);
   for(;startFrom != end; startFrom++)
+  {
+    if(startFrom > UCHAR_MAX_VALUE)
+      startFrom = UCHAR_MIN_VALUE;
+
     if(u_charType(startFrom) == type)
       return startFrom;
+  }
 
   return startFrom;
 }
 
-void showSearchMenu(UChar startFrom)
+void showSearchMenu(UChar32 startFrom)
 {
   int32_t i;
 
@@ -1004,7 +1065,7 @@ void showSearchMenu(UChar startFrom)
       printf("\r\n");
     }
   printf("</SELECT>\r\n");
-  printf("<INPUT TYPE=hidden NAME=b VALUE=%04X>\r\n", startFrom);
+  printf("<INPUT TYPE=hidden NAME=b VALUE=%06X>\r\n", startFrom);
   printf("<INPUT TYPE=SUBMIT VALUE=\"Search\">");
   printf("</FORM>\r\n");
 
@@ -1020,11 +1081,13 @@ void showSearchMenu(UChar startFrom)
       printf("\r\n");
     }
   printf("</SELECT>\r\n");
-  printf("<INPUT TYPE=hidden NAME=b VALUE=%04X>\r\n", startFrom);
+  printf("<INPUT TYPE=hidden NAME=b VALUE=%06X>\r\n", startFrom);
   printf("<INPUT TYPE=SUBMIT VALUE=\"Search\">");
   printf("</FORM>\r\n");
 
   printf("By Charname: <FORM METHOD=GET><INPUT NAME=s><INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
+
+  printf("By Exact Name: <FORM METHOD=GET><INPUT NAME=sx><INPUT TYPE=SUBMIT VALUE=\"Search\"></FORM>\r\n");
 
 #ifdef RADICAL_LIST
   printf("<A HREF=\"?radlst=1\">Radicals</A><P>");
