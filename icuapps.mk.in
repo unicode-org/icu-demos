@@ -29,6 +29,10 @@ BINDIR = $(shell @ICU_CONFIG@ --bindir)
 GENRB=$(shell @ICU_CONFIG@ --invoke=genrb)
 UCONV=$(shell @ICU_CONFIG@ --invoke=uconv)
 PKGDATA=$(shell @ICU_CONFIG@ --invoke=pkgdata)
+
+# Warning: needs ICU's install nearby.
+LDFLAGS_TOOLUTIL =$(shell @ICU_CONFIG@ --ldflags-toolutil)
+ICU_SOURCE=$(top_srcdir)/../icu/source
 ####################################################################
 MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 
