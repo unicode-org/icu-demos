@@ -135,10 +135,13 @@ void showOneLocale(LXContext *lx)
     }
     else /* ================================= Normal ShowXXXXX calls ===== */
     {
-    u_fprintf(lx->OUT, "<a href=\"%s&x=iloc\">%S</a><br>",
-		getLXBaseURL(lx, kNO_SECT),
-		FSWF("icirView", "Switch to Survey View"));
-
+	if(!getenv("SERVER_NAME") || strncmp(getenv("SERVER_NAME"),"oss",3)) {
+		u_fprintf(lx->OUT, "<a href=\"%s&x=iloc\">%S</a><br>",
+			getLXBaseURL(lx, kNO_SECT),
+			FSWF("icirView", "Switch to Survey View"));
+	 } else {
+		u_fprintf(lx->OUT, "<!-- survey disabled -->");
+	}
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   LOCALE ID section %%%*/
         u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%%\"><tr><td valign=TOP>");

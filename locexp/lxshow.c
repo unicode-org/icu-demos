@@ -1932,22 +1932,25 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
   }
 }
 
-
 UResourceBundle *loadCalRes3(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UErrorCode *status) {
+	return loadCalRes3x(lx,keyStem,type,style,isDefault,lx->calMyBundle,status);
+}
+
+UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UResourceBundle *bnd, UErrorCode *status) {
   /* Yes, this is a near-reimplementation of icu::CalendarData.  */
   UResourceBundle *item1 = NULL;
   UResourceBundle *item2 = NULL;
   UResourceBundle *item3 = NULL;
   *isDefault = FALSE;
   if(U_FAILURE(*status)) { return NULL; }
-  if(!lx->calMyBundle) {
+  if(!bnd) {
 #if defined(LX_DEBUG)
     fprintf(stderr, "loadCalRes3 - no calMyBundle ! \n");
 #endif
     *status = U_INTERNAL_PROGRAM_ERROR;
     return NULL;
   } else {
-    item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
+    item1 = ures_getByKeyWithFallback(bnd, keyStem, item1, status);
     item2 = ures_getByKeyWithFallback(item1, type, item2, status);
     item3 = ures_getByKeyWithFallback(item2, style, item3, status);
   }
@@ -1994,21 +1997,17 @@ void calPrintDefaultWarning(LXContext *lx) {
     u_fprintf(lx->OUT, "</font>\n");
 }
 
-void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale) {
-  /*const char *urlCal = lx->curLocaleBlob.calendar;*/
+ void loadDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale) {
   UErrorCode status = U_ZERO_ERROR;
   UResourceBundle *fillin1 = NULL;
   UResourceBundle *fillin2 = NULL;
   const char *key = "DefaultCalendar";
   const UChar *s;
   int32_t len;
-
-  strcpy(lx->defaultCalendar, "gregorian");
-
+  
+    strcpy(lx->defaultCalendar, "gregorian");
   fillin1 = ures_getByKey(myRB, "calendar", fillin1, &status);
   fillin2 = ures_getByKeyWithFallback(fillin1, "default", fillin2, &status);
-
-  showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
 
   if(U_SUCCESS(status)) {
     s  = ures_getString(fillin2, &len, &status);
@@ -2026,6 +2025,21 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
       }
     }
   }
+
+}
+
+void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale) {
+  /*const char *urlCal = lx->curLocaleBlob.calendar;*/
+  UErrorCode status = U_ZERO_ERROR;
+  UResourceBundle *fillin1 = NULL;
+  UResourceBundle *fillin2 = NULL;
+  const char *key = "DefaultCalendar";
+  const UChar *s;
+  int32_t len;
+
+
+  showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+
 
   if(U_SUCCESS(status)) {
     UChar keyBuf[1024];
@@ -2056,62 +2070,74 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
       u_fprintf(lx->OUT, "%S %S: %S<br>", FSWF("keyword_Current", "Current"), keyBuf, valBuf);
     }
   }
-  /* user selection overrides default */
-  if(lx->curLocaleBlob.calendar[0]) {
-    strcpy(lx->defaultCalendar, lx->curLocaleBlob.calendar);
-  }
 
   u_fprintf(lx->OUT, "</TD>");
   showKeyAndEndItem(lx, key, locale);
 }
 
-
-void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
+UResourceBundle *loadCalendarStuffFor(LXContext *lx, UResourceBundle *myRB, const char *locale, const char *defCal)
 {
   UErrorCode status = U_ZERO_ERROR;
   /*UBool typeFallback = FALSE;*/
   UResourceBundle *calBundle = NULL; /* "calendar" */
+  UResourceBundle *myBundle = NULL;
   /*UResourceBundle *myBundle = NULL;*/ /* 'type' */
   /*UResourceBundle *fbBundle = NULL;*/ /* gregorian */
-    
-  /* %%%%%%%%%%%%%%%%%%%%%%%*/
-  /*   Date/Time section %%%*/
-  showDefaultCalendar(lx, myRB, locale); /* and setup lx->defaultCalendar */
 
   calBundle = ures_getByKey(myRB, "calendar", NULL, &status);
 
   if(U_FAILURE(status)) {
     u_fprintf(lx->OUT, "Can't load 'calendar': ");
     explainStatus(lx, status, "calendar");
-    return;
+    return NULL;
   }
 
-  if(!strcmp(lx->defaultCalendar,"gregorian")) {
-    lx->calMyBundle = ures_getByKeyWithFallback(calBundle, "gregorian", NULL, &status);
+  if(!strcmp(defCal,"gregorian")) {
+    myBundle = ures_getByKeyWithFallback(calBundle, "gregorian", NULL, &status);
     if(U_FAILURE(status)) {
-      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", lx->defaultCalendar);
+      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", defCal);
       explainStatus(lx, status, "calendar");
-      return;
+      return NULL;
     }
   } else {
-    lx->calMyBundle = ures_getByKeyWithFallback(calBundle, lx->defaultCalendar, NULL, &status);
+    myBundle = ures_getByKeyWithFallback(calBundle, defCal, NULL, &status);
     if(U_FAILURE(status)) {
-      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", lx->defaultCalendar);
+      u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", defCal);
       explainStatus(lx, status, "calendar");
-      return;
+      return NULL;
     }
     lx->calFbBundle = ures_getByKeyWithFallback(calBundle, "gregorian", NULL, &status);
     if(U_FAILURE(status)) {
       u_fprintf(lx->OUT, "Can't load 'calendar/%s': ", "gregorian");
       explainStatus(lx, status, "calendar");
-      return;
+      return NULL;
     }
   }
 
   if(U_FAILURE(status)) {
     explainStatus(lx, status, "calendar");
-    return;
+    return NULL;
   }
+  
+  return myBundle;
+}
+
+void loadCalendarStuff(LXContext *lx, UResourceBundle *myRB, const char *locale)
+{
+	lx->calMyBundle = loadCalendarStuffFor(lx,myRB,locale,lx->defaultCalendar);
+}
+
+void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
+{
+  loadDefaultCalendar(lx, myRB, locale);
+  showDefaultCalendar(lx, myRB, locale); /* and setup lx->defaultCalendar */
+  if(lx->curLocaleBlob.calendar[0]) {
+    strcpy(lx->defaultCalendar, lx->curLocaleBlob.calendar);
+  }
+  loadCalendarStuff(lx, myRB, locale);
+  /* %%%%%%%%%%%%%%%%%%%%%%%*/
+  /*   Date/Time section %%%*/
+  /* user selection overrides default */
 
   showShortLongCal(lx, myRB, locale, "dayNames"); 
   showShortLongCal(lx, myRB, locale, "monthNames");

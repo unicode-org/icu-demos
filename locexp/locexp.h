@@ -135,7 +135,9 @@ typedef struct
   char             defaultCalendar[1024];
   UResourceBundle  *calMyBundle;
   UResourceBundle  *calFbBundle;
-  
+  UResourceBundle  *calPosixBundle;
+  UResourceBundle  *calDisplayBundle;
+
   MySortable     specialParLocale; /* owns the parent IF it's not in the tree */
 
   /* === TODO: put the following  into a CACHE keyed on locale! */
@@ -308,6 +310,7 @@ extern UResourceBundle *getDisplayBundle(LXContext* lx, UErrorCode *status);
 extern UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault, UErrorCode *status);
 extern void calPrintDefaultWarning(LXContext *lx);
 extern UResourceBundle *loadCalRes3(LXContext *lx, const char *style, const char *type, const char *keyStem, UBool *isDefault, UErrorCode *status);
+extern UResourceBundle *loadCalRes3x(LXContext *lx, const char *style, const char *type, const char *keyStem, UBool *isDefault, UResourceBundle *par, UErrorCode *status);
 
 /* CGI (or CGI-like) helper functions */
 void initCGIVariables(LXContext* lx);
