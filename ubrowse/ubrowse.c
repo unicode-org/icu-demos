@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-* Copyright (C) 1996-2000, International Business Machines Corporation and    *
+* Copyright (C) 1996-2004, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 *******************************************************************************
 * HTML Design by Josh Mast <josh@hivehaus.org>                                *
@@ -73,6 +73,7 @@
 #include "unicode/uscript.h"
 #include "unicode/decompcb.h" /* from locexp/util */
 #include "unicode/lx_utils.h"
+#include "unicode/uset.h"
 
 int validate_sanity();
 
@@ -80,7 +81,7 @@ int validate_sanity();
 /* #define RADICAL_LIST */
 #include <kangxi.c> /* Kang-Xi Radical mapping table */
 
-typedef enum { ECHAR, ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME, EEXACTNAME } ESearchMode;
+typedef enum { ECHAR, ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME, EEXACTNAME, ESET, ESETCHUNK } ESearchMode;
 
 /* Protos */
 int main(int argc, char **argv);
@@ -106,7 +107,7 @@ int32_t gSearchType = -1;
 int32_t gSearchBlock = -1;
 char    gSearchName[512];
 char    gSearchHTML[512];
-
+UChar usf[1024]; /* unicode string set */
 UChar32 gSearchChar = 0xFFFF;
 UBool gSearchCharValid = FALSE;
 
@@ -309,12 +310,13 @@ void myEnumCharNamesFn_setup()
     words_count = 0;
     while(p && *p)
     {
-        fprintf(stderr, "[P=%s count=%d\n", p, words_count);
-        
+#if defined (UB_DEBUG)
+      fprintf(stderr, "[P=%s count=%d\n", p, words_count);
+#endif
         q = strchr(p, ' ');
         if(q == NULL)  /* last one */
         {
-            strncpy(words[words_count], p, 48);
+          strncpy(&(words[words_count][0]), p, 49);
         }
         else
         {
@@ -327,6 +329,9 @@ void myEnumCharNamesFn_setup()
             q++;
         }
         words[words_count][49]=0;
+#if defined (UB_DEBUG)
+        fprintf(stderr, " w=%s\n", words[words_count]);
+#endif
         words_count++;
         p = q;
         if(p != NULL) {
@@ -345,9 +350,30 @@ UBool myEnumCharNamesFn(void *context,
                         const char *name,
                        int32_t length)
 {
+  UBool isFound = FALSE;
   enumHits++;
-  if(strstr(name, gSearchName))
-  {
+  if(strstr(name, gSearchName)) {
+    isFound = TRUE;
+  } else if(words_count>1) {
+    const char *k = name;
+    int n;
+    for(n=0;k&&(n<words_count);n++) {
+      if((k=strstr(k,words[n]))) {
+        const char *nextk = k+strlen(words[n]);
+#if defined (UB_DEBUG)
+        fprintf(stderr, "[%d] considering %s -> %s\n", n, k, nextk);
+#endif
+        if((n>0)&&(k>0)&&(k[-1]!=' ')) { /* subsequent words must be on the beginning of a word boundary */
+          n--; /* retry n */
+        }
+        k = nextk;
+      }
+    }
+    if(k != NULL) {
+      isFound = TRUE;
+    }
+  }
+  if(isFound == TRUE) {
     if(foundCount == 0) {
       printRowHeader(TRUE);
     }
@@ -521,7 +547,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
       if(searchedFor)
         u_fprintf(gOut, "<b>");
 
-           u_fprintf(gOut, "<a href=\"?scr=%d&amp;b=%04X\">", (ublock_getCode(theChar))%UBLOCK_COUNT, theChar);
+           u_fprintf(gOut, "<a href=\"?scr=%d&amp;b=%04X\">", (ublock_getCode(theChar)) % UBLOCK_COUNT, theChar);
       u_fprintf(gOut, "%s", getUBlockCodeName(ublock_getCode(theChar)));
       u_fprintf(gOut, "</a>");
             
@@ -602,7 +628,7 @@ main(int argc,
 {
   char *qs;
   char *pi;
-  char *tmp;
+  char *tmp = NULL;
   UChar chars[800];
   UChar32 theChar;
   int n,i,r,c,uc;
@@ -614,23 +640,25 @@ main(int argc,
 
   chars[1] = 0;
   pi = getenv("PATH_INFO");
-  if(!pi)
-    pi = "/utf-8";
 
-
-  pi++;
-
-  tmp = strchr(pi, '/');
-  if(tmp)
-    *tmp = 0; /* terminate */
-
-  if(*pi==0)
-  {
+  if(pi && !strcmp(pi,"/")) {
     gOurEncoding = "utf-8";
-  }
-  else 
-  {
-    gOurEncoding = pi;
+    tmp="";
+  } else if(pi && *pi) {
+    pi++;
+    
+    tmp = strchr(pi, '/');
+    if(tmp) {
+      *tmp = 0; /* terminate */
+    }
+
+    if(pi && *pi==0) {
+      gOurEncoding = "utf-8";
+    } else {
+      gOurEncoding = pi;
+    }
+  } else {
+    gOurEncoding = "utf-8";
   }
 
   printf("Content-Type: text/html;charset=%s\n\n",gOurEncoding);
@@ -663,9 +691,9 @@ main(int argc,
 /*  ucnv_setDefaultName(gOurEncoding); */
 u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
    u_fprintf(gOut, "<html>\n");
-
-u_fprintf(gOut, "<head>");
-
+   
+   u_fprintf(gOut, "<head>");
+ 
 if(!tmp) /* if there was no trailing '/' ... */
 {
     if(pi!=NULL) {
@@ -686,7 +714,11 @@ if(!tmp) /* if there was no trailing '/' ... */
 
   if(qs)
     { 
-      if (sscanf(qs,"go=%x", &block)== 1)
+      if(strstr(qs,"&gosetn")) {
+        mode = ESETCHUNK;
+      } else if(strstr(qs,"&gosetk")) {
+        mode = ESET;
+      } else if (sscanf(qs,"go=%x", &block)== 1)
         {
           if(strstr(qs,"ch.x="))
           {
@@ -836,7 +868,6 @@ if(!tmp) /* if there was no trailing '/' ... */
          "<a href=\"/icu/demo/\">Demo</a> &gt;\n"
          "<b>Unicode Browser</b><BR>\n");
 
-
   u_fprintf(gOut, "<form action=\".\"><table summary=\"Navigation Control\" border=1 cellpadding=1 cellspacing=1><tr>");
 
   u_fprintf(gOut, "<td >");
@@ -872,9 +903,23 @@ if(!tmp) /* if there was no trailing '/' ... */
   }
 
   u_fprintf(gOut, "");
-  u_fprintf(gOut, "</td>");
+  u_fprintf(gOut, "</td>\n");
 
+  u_fprintf(gOut, "<td>");
 
+  {
+    const char *q;
+    q = strstr(qs,"&us=");
+    if(!q) { q = ""; } else { q += 4; }
+    usf[0]=0;
+    unescapeAndDecodeQueryField_enc(usf, 1023,
+                                    q, "UTF-8");
+  }
+  u_fprintf(gOut, "<input name=\"us\" size=\"60\" value=\"%S\">", usf);
+
+  printIconMenu("column", "gosetk", ESET, mode);
+  printIconMenu("block", "gosetn", ESETCHUNK, mode);
+  u_fprintf(gOut, "</td>\n");
 
   if(mode == ETOP) /* top level list of blocks ******************************** ETOP ********** */
     {
@@ -1271,8 +1316,161 @@ if(!tmp) /* if there was no trailing '/' ... */
 
       u_fprintf(gOut, "</UL><hr>\n");
       showSearchMenu( 0x0000 ); 
+    } else if((mode == ESET)||(mode=ESETCHUNK)) {  /************** UnicodeSet****************/
+    UChar ssf[1024];
+    uint16_t ser[1024];
+    int32_t serLen = 1024;
+    char serChars[1024];
+    int32_t serCharLen = 1024;
+    int32_t ssc = 1024;
+    const char *q;
+    UErrorCode status = U_ZERO_ERROR;
+    USet  *aSet = NULL;
+    int32_t n;
+    UConverter *u7 = NULL;
+    int32_t itemN = 0;
+    int32_t charN = 0;
+    int32_t len;
+    int32_t countDown;
+    UChar32 start = 0;
+    UChar32 end = 0;
+    UChar32 cur = 0xFFFF; /* cur>end = invalid */
+    int32_t iCount; /* item count */
+    UChar   littleBuffer[412];
+    UBool charNSet = FALSE;
+    int bCount =0;
+
+    if(mode==ESET) {
+      countDown = 10;
+    } else { /* block */
+      countDown = 100;
     }
-  else /************************************* ????????????????????????? ****************/
+    u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
+
+    if((q = strstr(qs,"itemN="))) {
+      q += 6;    itemN=atoi(q);
+    }
+    if((q = strstr(qs,"charN="))) {
+      q += 6;    charN=atoi(q);
+      charNSet = TRUE;
+    }
+
+#if defined (UB_DEBUG)
+    u_fprintf(gOut, "Usf: |%S|<br>\n", usf);
+#endif
+    aSet = uset_openPattern(usf, -1, &status);
+
+    if(U_FAILURE(status)) {
+      goto uFailIt;
+    }
+
+    iCount = uset_getItemCount(aSet);
+
+#if defined (UB_DEBUG)
+    u_fprintf(gOut, "chars %d, items %d<p>\n", uset_size(aSet), uset_getItemCount(aSet));
+#endif
+
+    u_fprintf(gOut, "<table summary=\"Search Results\" border=1>");
+    if(mode == ESETCHUNK) {
+      u_fprintf(gOut, "<tr>");
+    }
+
+    while((countDown--) && /* haven't gone too far and */
+          (itemN<iCount ||  /* more items OR */
+           cur<=end)) {    /* more to go on this item */
+      UErrorCode iStatus = U_ZERO_ERROR;
+      if(cur>end) { /* fetch another item */
+        len = uset_getItem(aSet, itemN, &start, &end, littleBuffer, 
+                           (sizeof(littleBuffer)/sizeof(littleBuffer[0]))-1,&iStatus);
+        if(U_FAILURE(iStatus) || (len==-1)) {
+          cur=1;
+          start=end=0;
+          if(U_FAILURE(iStatus)) {
+            u_fprintf(gOut, "<tr><td colspan=3><b>err %s</b></td></tr>\n", u_errorName(iStatus));
+          } else {
+            u_fprintf(gOut, "<tr><td colspan=3><b>err - out of range</b></td></tr>\n");
+          }
+        } else {
+          if(len == 0) { /* range */
+            if(charNSet == FALSE) {
+              cur=start;
+            } else {
+              cur=start+charN;
+            }
+          } else { /* string */
+            u_fprintf(gOut, "<tr><td colspan=3><B>string:</B> '<tt>%S</tt>'</td></tr>\n", 
+                      littleBuffer);
+            cur=1; /* no range. */
+            end=0;
+            start=0;
+          }
+          itemN++;
+        }
+
+        /* make sure charN is always 0 apart from first load */
+        if(charNSet) {
+          charNSet = FALSE;
+        } else {
+          charN = 0;
+        }
+      } /* end fetch-next-item */
+
+      if(cur<=end) { /* valid char within range */
+        if(mode == ESET) {
+          /**
+           * print char 
+           */
+          printRow(cur, TRUE, "",  "ch");
+        } else {
+          if(mode==ESETCHUNK && ((bCount++)%10)==0) {
+            u_fprintf(gOut, "</tr><tr>");
+          }
+          u_fprintf(gOut, "<td>%C</td>", (UChar)cur);
+        }
+
+        cur++;
+        charN++;
+      }
+    }
+    if(mode == ESETCHUNK) {
+      u_fprintf(gOut, "</tr>");
+    }
+    u_fprintf(gOut, "</table>");
+
+#if defined (UB_DEBUG)
+    u_fprintf(gOut, "on item %d, char %d (of %d)<br/>\n", 
+              itemN, charN, (end-start));
+#endif
+
+    if((end-start) && (cur<=end)) {
+      itemN--; /* reread 'current' item (because we already incremented above) */
+#if defined (UB_DEBUG)
+      u_fprintf(gOut, "need to resume on %d:%d<br>\n", itemN, charN);
+#endif
+    } else if(itemN<iCount) {
+      charN = 0; /* reset to beginning */
+#if defined (UB_DEBUG)
+      u_fprintf(gOut, "need to resume on %d:<br>\n", itemN);
+    } else {
+      u_fprintf(gOut, "finished.<br>\n");
+#endif
+    }
+
+    if(itemN < iCount) { /* continuation? */
+      u_fprintf(gOut, "<form method=\"GET\" action=\"?\">");
+      u_fprintf(gOut, "<input type=hidden name=itemN value=\"%d\"><input type=hidden name=charN value=\"%d\">\n", itemN, charN);
+      u_fprintf(gOut, "<input type=hidden name=us value=\"%S\">\n", usf);
+      u_fprintf(gOut, "<input type=submit name=goset%c value=Next>",
+                (mode==ESET)?'k':'n');
+      u_fprintf(gOut, "</form>\n");
+    }
+
+    uset_close(aSet);
+  uFailIt:
+    u_fprintf(gOut, "<hr width=\"22%%\">\nstatus is %s<p>\n", u_errorName(status));
+      
+    u_fprintf(gOut, "<P><P><P><P><P>\n");
+  }  else /************************************* ????????????????????????? ****************/
     {
       u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
 
