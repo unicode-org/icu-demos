@@ -1099,7 +1099,8 @@ if(!tmp) /* if there was no trailing '/' ... */
         u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
                   i, "int", getUPropertyName(i), has,
                   u_getIntPropertyMinValue(i),
-           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,(i!=UCHAR_GENERAL_CATEGORY)?u_getIntPropertyValue(block,i):U_MASK(u_getIntPropertyValue(block,i)),U_LONG_PROPERTY_NAME));
+           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+
 
       }
 
