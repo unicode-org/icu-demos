@@ -269,6 +269,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             char *r = cleanupNewlines(arg2);
             UnicodeString rules(r, ENCODING);
             delete[] r;
+            loadUserTransliterators();
             UnicodeString errMsg;
             if (buildUserRules(id, rules, errMsg)) {
                 // We have a validated rule set; save it
@@ -337,17 +338,21 @@ UBool TransliteratorCGI::buildUserRules(const UnicodeString& id,
                                              dir,
                                              err, status);
         if (U_FAILURE(status)) {
+            if (errMsg.length() > 0) {
+                errMsg += "\n";
+            }
             errMsg += "Error (";
             errMsg += (dir == UTRANS_FORWARD) ? "FORWARD" : "REVERSE";
             errMsg += "): ";
             errMsg += u_errorName(status);
             if (err.preContext[0]) {
-                errMsg += " at ";
+                errMsg += " at \"";
                 errMsg += err.preContext;
                 if (err.postContext[0]) {
                     errMsg += " | ";
                     errMsg += err.postContext;
                 }
+                errMsg += "\"";
             }
             success = FALSE;
         }
