@@ -365,12 +365,8 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
   
     if(toOpen == TRUE)
     {
-        u_fprintf(lx->OUT, "%s/%s/",
-                  lx->scriptName,
-                  (char*)lx->dispLocale);
-        if(lx->convSet)
-            u_fprintf(lx->OUT,"%s/", lx->convRequested);	  
-        u_fprintf(lx->OUT,"?_=%s", l->str);
+        u_fprintf(lx->OUT, "%s", getLXBaseURL(lx, kNO_LOC));
+        u_fprintf(lx->OUT,"&_=%s", l->str);
     }
     else
     {

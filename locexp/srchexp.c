@@ -127,8 +127,8 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
   /* Do the search .. */
   if(bundleHasString(r, lx, str, loc, totalHits, lastTag, search, &status))
   {
-    char *p = "";
-    char *q = "";
+    char *p = NULL;
+    char *q = NULL;
     p = strchr(lastTag, ':');
     if(p)
     {
@@ -136,13 +136,9 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
         q = p+1;
         p = " : ";
     }
-    else
-    {
-        p = "";
-    }
     u_fprintf(lx->OUT, "<li><A HREF=\"?_=%s\">%S</A> :", loc->str, loc->ustr);
     u_fprintf(lx->OUT, " <A HREF=\"?_=%s#%s\">%S</A>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
-    u_fprintf(lx->OUT, "%s%s\r\n", p, q);
+    u_fprintf(lx->OUT, "%s%s\r\n", p?p:"", q?q:"");
   }
   
   if(U_FAILURE(status)) u_fprintf(lx->OUT,"err %s\n", u_errorName(status));

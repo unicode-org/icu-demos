@@ -299,7 +299,7 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
     int32_t len;
     
     /* samplestring will vary with label locale! */
-    sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
+    sampleString =  FSWF(/*NOEXTRACT*/ "EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
     
     sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
     if(U_SUCCESS(sampleStatus))  {
@@ -378,12 +378,14 @@ void showSortStyle(LXContext *lx)
             ".high        { height: 100% }\r\n"
             ".fill        { width: 100%; height: 100% }\r\n"
             ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
-            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n"
+            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n");
+    u_fprintf(lx->OUT, "%s",    
             "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
             "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
             "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
             "               color: black; vertical-align: top; border: 1px solid black; \r\n"
-            "               padding: 5px }\r\n"
+            "               padding: 5px }\r\n");
+	u_fprintf(lx->OUT, "%s",
             ".noborder    { border: 1px none white }\r\n"
             ".widenoborder { width: 100%; border: 1px none white }\r\n"
             ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
@@ -931,7 +933,7 @@ void showSort(LXContext *lx, const char *locale)
             showSort_outputWord(lx, aSort, i, aSort->lines[i].chars);
           }
           
-          u_fprintf(lx->OUT, "</TD>");	  
+          u_fprintf(lx->OUT, "</TD>");  
           
           usort_close(aSort);
         }
@@ -964,7 +966,7 @@ void showSort(LXContext *lx, const char *locale)
       UResourceBundle *bund, *array = NULL;
       const UChar *s = 0;
       int32_t len;
-	const char *comp="?";
+      const char *comp="?";
 
       bund = getCollationBundle(lx, &err); if(U_SUCCESS(err)) comp = "bundle";
       if(bund) array = ures_getByKey(bund, "collations", NULL, &err); if(U_SUCCESS(err)) comp = "collations";

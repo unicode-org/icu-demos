@@ -730,5 +730,9 @@ void setLocaleAndEncoding(LXContext *lx)
     lx->fileObj = n + 3;
     lx->convRequested  = "_";
   }
+  if(hasQueryField(lx, "PANICDEFAULT")) {
+      setBlobFromLocale(lx, &lx->dispLocaleBlob, "en", &status);
+      strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
+  }
 }
 

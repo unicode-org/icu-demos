@@ -210,7 +210,7 @@ void displayLocaleExplorer(LXContext *lx)
     if ( lx->queryString == NULL )
       lx->queryString = ""; /* for sanity */
     if( !lx->curLocaleName[0]
-        || strstr(lx->queryString, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
+        || hasQueryField(lx, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
     {
         u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><p>");
         u_fprintf_u(lx->OUT, 
@@ -278,9 +278,9 @@ void displayLocaleExplorer(LXContext *lx)
         /* lx->newZone is initted early, need it for cookies :) */
         if(u_strlen(lx->newZone))
         {
-            UErrorCode status = U_ZERO_ERROR;
+            UErrorCode subStatus = U_ZERO_ERROR;
             u_fprintf(lx->OUT, "Got zone=%S<P>\n", lx->newZone);
-            u_fprintf(lx->OUT, "Time there =%S\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&status));
+            u_fprintf(lx->OUT, "Time there =%S\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&subStatus));
         }
         
         u_fprintf(lx->OUT, "%S: <form><input name=\"SETTZ\" value=\"%S\"><input type=submit></form>\r\n", 
