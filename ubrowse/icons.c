@@ -1,3 +1,9 @@
+/*
+*******************************************************************************
+* Copyright (C) 2004     , International Business Machines Corporation and    *
+* others. All Rights Reserved.                                                *
+**/
+
 #include "unicode/utypes.h"
 #include "unicode/udata.h"
 #include "unicode/ustdio.h"
