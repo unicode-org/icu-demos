@@ -434,7 +434,15 @@ int main(const char *argv[], int argc)
   
   u_fprintf(OUT, "<P><BR><P><P><BR><A NAME=\"mySettings\"></A><P><P><P><P><HR>");
   printStatusTable();
-  u_fprintf(OUT, "<I>%U</I> 1.3.1+<BR>", FSWF("poweredby", "Powered by ICU"));
+  u_fprintf(OUT, "<I>%U</I> <A HREF=\"%U\">%U</A> * <A HREF=\"http://www10.software.ibm.com/developerworks/opensource/icu/bugs\">%U</A><BR>", 
+	    FSWF("poweredby", "Powered by"),
+	    FSWF("poweredby_url", "http://www10.software.ibm.com/developerworks/opensource/icu/"),
+	    FSWF("poweredby_vers", "ICU 1.3.1"),
+	    FSWF("poweredby_filebug", "Found an error? Click here!")
+	    );
+
+  
+
   u_fprintf(OUT, "%U", date(NULL,UDAT_FULL,&status));
   
   if(!gRB)
@@ -1190,7 +1198,8 @@ void chooseConverter(const char *restored)
       }
     u_fprintf(OUT, "%s\n", ts);
 
-    u_fprintf(OUT, "<A TARGET=unibrowse HREF=\"/cgi-bin/unibrowse.sh/%s/\">Browse Unicode in this codepage</A>\r\n", defaultMime);
+    u_fprintf(OUT, "<A TARGET=unibrowse HREF=\"http://%s%s/../ubrowse/%s/\">%U</A>\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME"), defaultMime,
+	      FSWF("ubrowse", "Browse Unicode in this codepage"));
     
     u_fprintf(OUT, "</UL>\r\n");
   }

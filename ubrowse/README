@@ -1,0 +1,47 @@
+(c) 1999 IBM, Inc.
+Steven R. Loomis <srl@monkey.sbay.org>
+----------------------------
+simple cgi to browse the unicode codespace
+
+todo:
+* turn on RADICAL_LIST  [needs other data]
+* docs
+* prettify
+* rewrite to use USTDIO!!
+* better interface for choosing encoding
+
+----
+
+installation:
+
+* make sure udata and locexp are built and installed. Best to
+  run 'make install' from the icuapps directory.
+
+  Depends on:  liblxutil, libudata, unames binary file (unames.dat)
+
+* put ubrowse in the cgi-bin, etc directory.
+
+* Usage:
+
+   If the path to the cgi is 'http://www.foo.blah/cgi-bin/ubrowse', then 
+   for instance you can go to the path:
+
+      http://www.foo.blah/cgi-bin/ubrowse/iso-8859-6/
+
+   to view it in the Latin-6 codepage. Default is Latin-1.
+
+
+   The first page you come to has a link for every 256 code points. 
+  Click on one to view it.
+
+   Secondly, you come to rows of characters, 16 per row. 
+  [this is designed to look like the Unicode book].
+   Click on the HEADING of a row to view that row in more detail.
+
+   Thirdly you will be presented with detailed information for each
+  character.
+
+   You can search for a specific script or type by using the appropriate
+ popup menus, or jump to a particular code point.
+
+   Text in green has been decomposed using the fallback interator.

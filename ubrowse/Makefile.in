@@ -1,4 +1,4 @@
-## Makefile.in for ICUAPPS - icuapps/locexp/util
+## Makefile.in for ICU - example/usort/client
 ## Steven  R. Loomis
 
 srcdir=@srcdir@
@@ -9,17 +9,25 @@ include @ICU_MAKEFILE@
 
 
 ## Build directory information
-top_builddir = ../..
-subdir = locexp/util
+top_builddir = ..
+subdir = ubrowse
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
 
 ## Target information
-TARGET = liblxutil.$(SO)
+TARGET = ubrowse
 
-OBJECTS = decompcb.o lx_utils.o ures_additions.o kangxi.o
-HEADERS = decompcb.h lx_utils.h ures_additions.h kangxi.h
+LDFLAGS := -L../locexp/util -L../udata $(LDFLAGS)
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licu-uc -lusort' ...
+ICULIBS    += -llxutil -lustdio -ludata
+
+# Want to make sure the usort.h dependency is not on the installed version .. 
+CPPFLAGS  := -I../locexp/util -I../udata $(CPPFLAGS)
+
+OBJECTS = ubrowse.o 
 
 DEPS = $(OBJECTS:.o=.d)
 
@@ -40,21 +48,13 @@ check: check-local
 
 all-local: $(TARGET)
 
-install-local: all-local install-headers install-library
-
-install-library: all-local
-	$(mkinstalldirs) $(libdir)
-	$(INSTALL) $(TARGET) $(libdir)/$(TARGET)
+install-local: all-local install-target
 
 mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
-install-headers:
-	$(mkinstalldirs) $(includedir)
-	@list='$(HEADERS)'; for file in $$list; do \
-	 echo " $(INSTALL_DATA) $$file $(includedir)/$$file"; \
-	 $(INSTALL_DATA) $$file $(includedir)/$$file; \
-	done
-
+install-target: all-local
+	$(mkinstalldirs) $(bindir)
+	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
 
 dist-local:
 
@@ -74,8 +74,9 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licu-uc -lusort' ...
+
 $(TARGET) : $(OBJECTS)
-	$(SHLIB.c) -o $@ $^ $(ICULIBS)
+	$(LINK.c) -o $@ $^ $(ICULIBS)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)

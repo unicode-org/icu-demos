@@ -17,6 +17,9 @@
 
 #include "decompcb.h"
 
+#define HAVE_KANGXI
+#include "kangxi.h"
+
 UConverterFromUCallback DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 
 static UChar block0300Subs[] =
@@ -36,10 +39,6 @@ static UChar block0390Subs[] =
   0x0398,
   0x0049
 };
-
-#ifdef KXI
-#include "../dev/kxitbl.c"
-#endif
 
 /* clone the converter, reset it, and then try to transcode the source into the
    target. If it fails, then transcode into the error buffer. 
@@ -206,12 +205,12 @@ static void DECOMPOSE_uchar(UConverter * _this,
 	}
       break;
       
-#ifdef KXI
+#ifdef HAVE_KANGXI
     case 0x2F00: /* radical forms */
       if(theChar < 0x2FD6 )
 	{
 	  decomposedSequence[0] = 0xFE43;
-	  decomposedSequence[1] = kxitbl[((theChar & 0x00FF)*2) + 1];
+	  decomposedSequence[1] = gKangXiRadicalTable[((theChar & 0x00FF)*2) + 1];
 	  decomposedSequence[2] = 0xFE44;
 	  decomposedSequence[3] = 0x0000;
 	}

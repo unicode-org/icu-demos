@@ -85,6 +85,27 @@ THE APPS
                   Resource Bundles,  ...
                   uconv & usort [above]
 
+    * Shows off a lot of things. go to the ICU homepage and
+       look for the Locale Explorer.
+
+- ubrowse   From : Steven R. Loomis
+                  <srl@monkey.sbay.org>
+
+           Uses : Conversion, Chartypes..
+                  Depends on locexp/util.
+
+    * Browse the Unicode UCS-2 code space.
+
+- udata    From  : Markus Scherer
+                   <schererm@us.ibm.com>
+           
+            Uses : Conversion, Chartypes
+    * Provides an abstraction for accessing data
+     (data could be implemented as: dll, mem-mapped file, plain file, ...)
+
+    * Example use : a library for accessing Unicode character names
+    * Implemented : raw files 'fopen()',  Win32 mapped files, POSIX mmap()
+
 - Your contribution could be here too! Write: <icu4c@us.ibm.com>
 
 -----------------
