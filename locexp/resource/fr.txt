@@ -16,7 +16,7 @@ fr
    LocaleID      { "Identificateur de locale de Windows" }
    Version { "Version des données d'ICU" }
    Languages { "Noms de langues" }
-   Countries { "Noms de pays" }
+   Countries { "Noms de région" }
    CollationElements { "Règles de tri" }
    localPatternChars { "Caractères spéciaux des motifs de dates" }
    zoneStrings { "Fuseaux horaires" }
@@ -168,8 +168,8 @@ default value."  }
 //   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular country."  }
 //   localeDataLanguage  {  "No country is specified, so the data is generic to this language."  }
 //   localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
-   localeList_Locale  {  "Languages"  }
-   localeList_Sublocale  {  "Countries"  }
+   localeList_Locale  {  "Langues"  }
+   localeList_Sublocale  {  "Région"  }
 //   locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
 //   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported. [i think]"  }
    myConverter  {  "Encoding:"  }

@@ -14,7 +14,7 @@ for FILE in $*; do
          (
             echo "$RES : $FILE Makefile.res"
             echo '	@echo Rebuilding $@ - '$CODING
-            echo '	@$(INVOKE) $(sbindir)/genrb -d . -e'$CODING' $<'
+            echo '	@$(INVOKE) $(sbindir)/genrb -d . -e '$CODING' $<'
             echo
          ) >> Makefile.res
     fi

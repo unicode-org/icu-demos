@@ -12,15 +12,20 @@ en {
    LocaleID      { "Windows Locale ID" }
    Version { "ICU Data Version" }
    Languages { "Language display names" }
-   Countries { "Country display names" }
+   Countries { "Region display names" }
    CollationElements { "Collation rules" }
    localPatternChars { "Localized Date Pattern Chars" }
    zoneStrings { "Time Zones" }
    NumberPatterns { "Number Patterns" }
    NumberElements { "Number Elements" }
-   DateTimePatterns { "Date & Time Patterns" }
-   AmPmMarkers { "AM & PM" }
+   DateTimePatterns { "Date &amp; Time Patterns" }
+   AmPmMarkers { "AM &amp; PM" }
    CurrencyElements { "Currency Elements" }
-	Day { "Day" }
-	Month { "Month" }
+   Day { "Day" }
+   Month { "Month" }
+/* New in ICU 2.0 - October 2001 */
+/* Will try to add these sequentially for the sanity of translators! */
+   SpelloutRulesExample { "Number Spellout Examples" }
+   SpelloutRules { "Number Spellout Rules" }
+        
 }

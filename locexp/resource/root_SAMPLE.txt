@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c on Wed Jul 18 07:31:31 CEST 2001 on daphne
+// root file. Generated from ../locexp.c on Fri Oct 19 19:49:02 CEST 2001 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -38,7 +38,7 @@ root {
    LocaleCodes  {  "Locale Codes"  }
    LocaleCodes_2  {  "2"  }
    LocaleCodes_3  {  "3"  }
-   LocaleCodes_Country  {  "Country"  }
+   LocaleCodes_Country  {  "Region"  }
    LocaleCodes_Language  {  "Language"  }
    LocaleCodes_Variant  {  "Variant"  }
    MonthAbbreviations  {  "Short Names"  }
@@ -59,6 +59,7 @@ root {
    NumberPatterns1  {  "Currency Pattern"  }
    NumberPatterns2  {  "Percent Pattern"  }
    NumberPatterns3  {  "Scientific Pattern"  }
+   SpelloutRules_examples  {  "Number Spellout"  }
    UCOL_ALTERNATE_HANDLING  {  "Alternate handling"  }
    UCOL_CASE_FIRST  {  "Case first"  }
    UCOL_CASE_LEVEL  {  "Case level"  }
@@ -146,14 +147,14 @@ root {
    localPatternChars9  {  "Day Of Week"  }
    localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
    localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
-   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular country."  }
-   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular country."  }
-   localeDataLanguage  {  "No country is specified, so the data is generic to this language."  }
+   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular region."  }
+   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular region."  }
+   localeDataLanguage  {  "No region is specified, so the data is generic to this language."  }
    localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
    localeList_Locale  {  "Languages"  }
-   localeList_Sublocale  {  "Countries"  }
+   localeList_Sublocale  {  "Regions"  }
    locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
-   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported. [i think]"  }
+   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported."  }
    myConverter  {  "Encoding:"  }
    myLocale  {  "Label Locale:"  }
    none  {  "None"  }
@@ -200,12 +201,12 @@ root {
 
 // From root_head.html (iso-8859-1)
    htmlHEAD {
-       "<!-- DEFAULT.head.  This file comprises the END of the <HEAD> through the beginning of the <BODY>.  Put the <TITLE> above this and start html immediately following. --srl -->\u000A<!-- Copyright (c) 2000 IBM, Inc. and others .. -->\u000A\u000A<style type=\u0022text/cXss\u0022>\u000A<!--\u000A.barTitles {  font-size: 9pt; font-weight: 700; letter-spacing: 1px; color: #FFFFFF; font-family: HELVETICA, HELV, ARIAL}\u000A-->\u000A</style>\u000A<style TYPE=\u0022text/cXss\u0022>\u000A    .input {background:#FFFFFF;color:#000000;font-weight:normal;}\u000A    .iconNames {font-weight:600;font-size:9pt;}\u000A    .iconBlurb {font-weight:400;font-size:8pt;}\u000A    .barTitles {font-weight:700;font-size:9pt;letter-spacing:1px;}\u000A    .boxCaption {font-weight:600;font-size:9pt;}\u000A    .boxBlurb {font-weight:400;font-size:8pt;}\u000A    .zoneSection {font-weight:600;font-size:10pt;}\u000A</style>\u000A\u000A</head>\u000A<body text=\u0022#000000\u0022 bgcolor=\u0022#FFFFFF\u0022 TOPMARGIN=\u00222\u0022 LEFTMARGIN=\u00222\u0022 MARGINWIDTH=\u00222\u0022 MARGINHEIGHT=\u00222\u0022>\u000A&nbsp;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu\u0022>ICU</A> &gt;\u000A<A HREF=\u0022http://oss.software.ibm.com/icu/demo\u0022>Demo</A> &gt;\u000A<B>Locale Explorer</B><BR>\u000A<HR>\u000A"   }
+       ""   }
 
 
 // From root_tail.html (iso-8859-1)
    htmlTAIL {
-       "<!-- DEFAULT.htmlTAIL -->\u000A\u000A<!-- DEFAULT.htmlTAIL -->\u000A"   }
+       ""   }
 
 
 

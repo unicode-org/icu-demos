@@ -1,6 +1,11 @@
+# MORE things that should be in Makefile.inc but are only in icudefs.mk
+LDLIBRARYPATH_ENVVAR = LD_LIBRARY_PATH
+# end
+
+
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2000, International Business Machines
+## *   Copyright (C) 1999-2001, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -38,7 +43,7 @@ RES = $(ALLSRC:.txt=.res)
 
 %.res : %.txt
 	@echo Rebuilding $@
-	$(INVOKE) $(sbindir)/genrb -v -d. $<
+	$(INVOKE) $(sbindir)/genrb -d. $<
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
@@ -91,7 +96,8 @@ resinst: $(RES) tmp/locexp.lst
 resdllinst: $(RES) tmp/locexp.lst
 	$(INVOKE) $(sbindir)/pkgdata -p locexp -O @ICU_MAKEFILE@ -m dll -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T tmp tmp/locexp.lst
 
-install-res: res-local resdllinst
+install-res: res-local resinst
+#install-res: res-local resdllinst
 
 dist-local:
 

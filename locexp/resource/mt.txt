@@ -1,5 +1,4 @@
-// -*- Coding: iso-8859-3 -*-
-// Please note!!!!! This file is in LATIN-3 format [iso-8859-3]!
+ï»¿// -*- Coding: UTF_8 -*-
 //***********************************************************
 //*   Copyright (C) 1999,2000 International Business Machines
 //*   Corporation and others.  All Rights Reserved.
@@ -12,35 +11,35 @@ mt {
   //   USING_DEFAULT_ERROR  {  "(nuqqas)"  }
   //   USING_FALLBACK_ERROR  {  "(wirt)"  } // Inherited
   //   chooseLocale1 { "' huwa." }
-  //   chooseLocale2 { "Jew, ag±zel hawn taht.. " } 
+  //   chooseLocale2 { "Jew, agÄ§zel hawn taht.. " } 
   AmPmMarkers { "AM u PM" }
   CollationElements { "Collation rules" }
-  Countries { "Pajji¿ uri l-ismijiet" }
+  Countries { "PajjiÅ¼ uri l-ismijiet" }
   CurrencyElements { "Currency Elements" }
-  DateTimePatterns { "Forma ta' Data u ¡in" }
+  DateTimePatterns { "Forma ta' Data u Ä¦in" }
 
-   DateTimePatterns0  {  "¡in S±i±"  }
-   DateTimePatterns1  {  "¡in Twil"  }
-   DateTimePatterns2  {  "¡in Medju"  }
-   DateTimePatterns3  {  "¡in Qasir"  }
-   DateTimePatterns4  {  "Data S±i±a"  }
+   DateTimePatterns0  {  "Ä¦in SÄ§iÄ§"  }
+   DateTimePatterns1  {  "Ä¦in Twil"  }
+   DateTimePatterns2  {  "Ä¦in Medju"  }
+   DateTimePatterns3  {  "Ä¦in Qasir"  }
+   DateTimePatterns4  {  "Data SÄ§iÄ§a"  }
    DateTimePatterns5  {  "Data Twila"  }
    DateTimePatterns6  {  "Data Medja"  }
    DateTimePatterns7  {  "Data Qasira"  }
-   DateTimePatterns8  {  "Ordni ta' Data u ¡in<BR>{0} = ¡in, {1} = Data"  }
+   DateTimePatterns8  {  "Ordni ta' Data u Ä¦in<BR>{0} = Ä¦in, {1} = Data"  }
 
    Eras { "Epoka" }
-  Day { "Õurnata" }
+  Day { "Ä urnata" }
   DefaultEncoding{  "utf-8"  }
   Languages { "Lingwa uri l-ismijiet" }
-  LocaleCodes  {  "Kodiåi tal-Lokal"  }
-  LocaleCodes_Country  {  "Pajji¿"  }
+  LocaleCodes  {  "KodiÄ‹i tal-Lokal"  }
+  LocaleCodes_Country  {  "PajjiÅ¼"  }
   LocaleCodes_Language  {  "Lingwi"  }
   LocaleCodes_Variant  {  "Varjazzjoni"  }
   LocaleID      { "Windows Locale ID" }
   Month { "Xahar" }
   NumberElements { "Number Elements" }
-  NumberElements3{ "Persentaõõ" }
+  NumberElements3{ "PersentaÄ¡Ä¡" }
   NumberPatterns { "Forom ta' Numri" }
 
    NumberPatterns0  {  "Decimal Pattern"  }
@@ -48,27 +47,27 @@ mt {
    NumberPatterns2  {  "Percent Pattern"  }
    NumberPatterns3  {  "Scientific Pattern"  }
 
-  UNKNOWN_ERROR  {  "(¿ball mhux mag±ruf)"  }
+  UNKNOWN_ERROR  {  "(Å¼ball mhux magÄ§ruf)"  }
   Version { "ICU Data Version" }
-  changeLocale { "Il-lingwa u pajji¿ tieg±i :" }
-  chooseLocale { "Il-lingwa u pajji¿ tieg±i :" }
+  changeLocale { "Il-lingwa u pajjiÅ¼ tiegÄ§i :" }
+  chooseLocale { "Il-lingwa u pajjiÅ¼ tiegÄ§i :" }
   encoding_translit_setting { "Transliterazzjoni:" }
-  help { "G±en" }
+  help { "GÄ§en" }
   helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
   inherited  {  "(jintirtu)"  }
   inherited_from  {  "(jintirtu mill-%U)"  }
 //  localPatternChars { "Localized Date Pattern Chars" }
   localeList_Locale { "Il-Lingwi" }
-  localeList_Sublocale{ "Il-Pajji¿i" }
-  myConverter{ "Kodiåi:" }
+  localeList_Sublocale{ "Il-PajjiÅ¼i" }
+  myConverter{ "KodiÄ‹i:" }
   myLocale { "Lokal:" }
   none { "Xejn" }
-  on { "Mixg±ul" }
+  on { "MixgÄ§ul" }
   off { "Mitfi" }
-   poweredby  {  "Miõjub minn"  }
-  statusTableHeader  {  "G±a¿la: "  }
+   poweredby  {  "MiÄ¡jub minn"  }
+  statusTableHeader  {  "GÄ§aÅ¼la: "  }
   statusTableHeaderChange { "(Ikklikkja biex turi)" }
-  title  {  "MER¡BA! ICU LocaleExplorer"  }
+  title  {  "MERÄ¦BA!! ICU LocaleExplorer"  }
   usortIdentical  {  "Identiku"  }
   usortPrimary  {  "Primarju"  }
   usortSecondary  {  "Sekondarju"  }
