@@ -66,7 +66,7 @@ install: all
 	-mkdir $(bindir)
 	cp $(TARGET) $(bindir)
 	-mkdir $(TRANSLITD)
-	cp -R js $(TRANSLITD)/
+	cp -R data/js $(TRANSLITD)/
 	cp -R data/*.html $(TRANSLITD)
 	-mkdir $(TRANSLITD)/cache
 	chmod a+rw $(TRANSLITD)/cache

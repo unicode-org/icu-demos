@@ -44,7 +44,6 @@
 #include "TransliteratorCGI.h"
 #include "unicode/translit.h"
 #include "unicode/ustring.h"
-#include "unicode/rbt.h"
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h> // qsort (Linux)

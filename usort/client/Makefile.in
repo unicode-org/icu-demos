@@ -76,8 +76,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licu-uc -lusort' ...
 
 $(TARGET) : $(OBJECTS)
-
-#	$(LINK.c) -o $@ $^ $(ICULIBS)
+	$(LINK.c) -o $@ $^ $(ICULIBS)
 
 
 

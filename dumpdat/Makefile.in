@@ -45,9 +45,9 @@ check: check-local
 distclean distclean-local target-clean-local dist dist-local check	\
 check-local
 
-install-local: target-clean-local all-local
-	$(MKINSTALLDIRS) $(sbindir)
-	$(INSTALL) $(TARGET) $(sbindir)/$(TARGET)
+install-local: all-local
+	$(MKINSTALLDIRS) $(BINDIR)
+	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
 
 all-local: $(TARGET)
 

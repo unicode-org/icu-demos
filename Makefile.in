@@ -71,8 +71,8 @@ clean-local:
 check-local:
 
 # If autoconf wasn't detected, then 'true' is run.
-$(srcdir)/configure : $(srcdir)/configure.in 
-	cd $(srcdir) && $(AUTOCONF)
+#$(srcdir)/configure : $(srcdir)/configure.in 
+#	cd $(srcdir) && $(AUTOCONF)
 
 distclean-local:
 	rm -f Makefile config.cache config.log config.status
@@ -87,4 +87,5 @@ icuapps.mk: $(srcdir)/icuapps.mk.in  $(top_builddir)/config.status
 
 
 config.status: $(srcdir)/configure
-	$(SHELL) ./config.status --recheck
+	env PATH=$$PATH:`dirname @ICU_CONFIG@` ./config.status --recheck
+
