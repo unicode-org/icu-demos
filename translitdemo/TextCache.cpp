@@ -52,6 +52,7 @@ void TextCache::readIndex() {
             // Create the cache object
             CacheObj *obj = new CacheObj();
             if (obj == 0) {
+                delete[] name;
                 break;
             }
             strcpy(obj->filename, name);
@@ -72,7 +73,7 @@ UBool TextCache::writeIndex() {
     char path[256];
     strcpy(path, root);
     strcat(path, INDEX_FILENAME);
-    FILE *indexFile = fopen(path, "w+");
+    FILE *indexFile = fopen(path, "w+b");
     UBool success = TRUE;
     if (indexFile == NULL) {
         success = FALSE;
@@ -88,7 +89,8 @@ UBool TextCache::writeIndex() {
             success &= util_writeTo(indexFile, *key);
             success &= util_writeTo(indexFile, obj->filename, strlen(obj->filename) + 1);
         }
-        success &= util_writeTo(indexFile, UnicodeString()); // empty string is end mark
+        UnicodeString empty;
+        success &= util_writeTo(indexFile, empty); // empty string is end mark
         fclose(indexFile);
     }
     return success;

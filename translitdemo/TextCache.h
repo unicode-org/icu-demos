@@ -40,7 +40,7 @@ class TextCache {
     static void deleteCacheObj(void* o);
 
     void readIndex();
-    void writeIndex();
+    UBool writeIndex();
 
     enum { MAX_FILENAME_LENGTH = 31 };
 
