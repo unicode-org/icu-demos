@@ -1,3 +1,11 @@
+# *******************************************************************************
+# *
+# *   Copyright (C) 1999-2000, International Business Machines
+# *   Corporation and others.  All Rights Reserved.
+# *
+# *******************************************************************************/
+!ERROR This file is obsolete. Please use common library.
+
 # Microsoft Developer Studio Project File - Name="udata" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **

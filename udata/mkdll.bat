@@ -1,3 +1,6 @@
+@echo This file is obsolete. Please use common library.
+goto :end
+
 @echo off
 if "%ICU_DATA%"=="" goto :error
 
