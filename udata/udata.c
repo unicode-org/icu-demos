@@ -362,7 +362,9 @@ udata_close(UDataMemory *pData) {
 
 #undef UDATA_INDIRECT
 #undef UDATA_DLL
-#define UDATA_MAP
+#ifndef UDATA_MAP
+#   define UDATA_MAP
+#endif
 
 struct UDataMemory {
     uint16_t headerSize;
@@ -409,7 +411,6 @@ LOAD_LIBRARY(const char *path, const char *basename, bool_t isCommon) {
     pData=(UDataMemory *)icu_malloc(fileLength);
     if(pData==NULL) {
         fclose(file);
-        *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
         return NULL;
     }
 
@@ -417,7 +418,6 @@ LOAD_LIBRARY(const char *path, const char *basename, bool_t isCommon) {
     if((size_t)fileLength!=fread(pData, 1, fileLength, file)) {
         icu_free(pData);
         fclose(file);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
     }
 
@@ -460,6 +460,107 @@ udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
 #endif
 
 /* common function implementations ------------------------------------------ */
+
+#ifdef UDATA_INDIRECT
+
+#   ifdef UDATA_DLL
+
+/* common DLL implementations */
+
+U_CAPI void U_EXPORT2
+udata_close(UDataMemory *pData) {
+    if(pData!=NULL) {
+        if(IS_LIBRARY(pData->lib)) {
+            UNLOAD_LIBRARY(pData->lib);
+        }
+        icu_free(pData);
+    }
+}
+
+#   else
+
+/* common implementation of use of common memory map */
+
+/* this is the memory-map version of GET_ENTRY(), used by getChoice() */
+static MappedData *
+getCommonMapData(const UDataMemory *data, const char *dataName) {
+    /* dataName==NULL if no lookup in a table of contents is necessary */
+    if(dataName!=NULL) {
+        const char *base=(const char *)(data->p)+data->p->headerSize;
+        uint32_t *toc=(uint32_t *)base;
+        uint32_t start, limit, number;
+
+        /* perform a binary search for the data in the common data's table of contents */
+        start=0;
+        limit=*toc++;   /* number of names in this table of contents */
+        while(start<limit-1) {
+            number=(start+limit)/2;
+            if(icu_strcmp(dataName, (const char *)(base+toc[2*number]))<0) {
+                limit=number;
+            } else {
+                start=number;
+            }
+        }
+
+        if(icu_strcmp(dataName, (const char *)(base+toc[2*start]))==0) {
+            /* found it */
+            return (MappedData *)(base+toc[2*start+1]);
+        } else {
+            return NULL;
+        }
+    } else {
+        return data->p;
+    }
+}
+
+static bool_t
+isCommonDataAcceptable(void *context,
+                       const char *type, const char *name,
+                       UDataInfo *pInfo) {
+    return
+        pInfo->size>=20 &&
+        pInfo->isBigEndian==U_IS_BIG_ENDIAN &&
+        pInfo->charsetFamily==U_CHARSET_FAMILY &&
+        pInfo->sizeofUChar==sizeof(UChar) &&
+        pInfo->dataFormat[0]==0x43 &&   /* dataFormat="CmnD" */
+        pInfo->dataFormat[1]==0x6d &&
+        pInfo->dataFormat[2]==0x6e &&
+        pInfo->dataFormat[3]==0x44 &&
+        pInfo->formatVersion[0]==1;
+}
+
+#   endif
+
+/* common implementations of other functions for indirect mappings */
+
+U_CAPI const void * U_EXPORT2
+udata_getMemory(UDataMemory *pData) {
+    if(pData!=NULL) {
+        return (char *)(pData->p)+pData->p->headerSize;
+    } else {
+        return NULL;
+    }
+}
+
+U_CAPI void U_EXPORT2
+udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
+    if(pInfo!=NULL) {
+        if(pData!=NULL) {
+            UDataInfo *info=(UDataInfo *)(pData->p+1);
+            uint16_t size=pInfo->size;
+            if(size>info->size) {
+                pInfo->size=info->size;
+            }
+            icu_memcpy((uint16_t *)pInfo+1, (uint16_t *)info+1, size-2);
+        } else {
+            pInfo->size=0;
+        }
+    }
+}
+
+#endif
+
+/* function implementations for all platforms ------------------------------- */
 
 static Library commonLib=NO_LIBRARY;
 
@@ -697,39 +798,41 @@ doOpenChoice(const char *path, const char *type, const char *name,
 
     /* return the data if found */
     if(p!=NULL) {
-        UDataMemory *pData;
-
 #       ifndef UDATA_INDIRECT
             /* for direct mappings, Library==UDataMemory==MappedData */
             return (UDataMemory *)lib;
-#       elif defined(UDATA_MAP)
-            if(IS_LIBRARY(lib)) {
-                /* for mapped files, Library==UDataMemory */
-                pData=(UDataMemory *)lib;
-                pData->p=p;
-                return pData;
-            }
-#       endif
-
-        /* allocate the data structure */
-        pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
-        if(pData==NULL) {
-            if(IS_LIBRARY(lib)) {
-                UNLOAD_LIBRARY(lib);
-            }
-            *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
-            return NULL;
-        }
-
-#       ifdef UDATA_DLL
-            pData->lib=lib;
 #       else
-            /* defined(UDATA_MAP) && !IS_LIBRARY(lib) */
-            icu_memset(pData, 0, sizeof(pData));
-#       endif
+            UDataMemory *pData;
 
-        pData->p=p;
-        return pData;
+#           ifdef UDATA_MAP
+                if(IS_LIBRARY(lib)) {
+                    /* for mapped files, Library==UDataMemory */
+                    pData=(UDataMemory *)lib;
+                    pData->p=p;
+                    return pData;
+                }
+#           endif
+
+            /* allocate the data structure */
+            pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
+            if(pData==NULL) {
+                if(IS_LIBRARY(lib)) {
+                    UNLOAD_LIBRARY(lib);
+                }
+                *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
+                return NULL;
+            }
+
+#           ifdef UDATA_DLL
+                pData->lib=lib;
+#           else
+                /* defined(UDATA_MAP) && !IS_LIBRARY(lib) */
+                icu_memset(pData, 0, sizeof(pData));
+#           endif
+
+            pData->p=p;
+            return pData;
+#       endif
     }
 
     /* data not found */
@@ -738,74 +841,6 @@ doOpenChoice(const char *path, const char *type, const char *name,
     }
     return NULL;
 }
-
-#   ifdef UDATA_DLL
-
-/* common DLL implementations */
-
-U_CAPI void U_EXPORT2
-udata_close(UDataMemory *pData) {
-    if(pData!=NULL) {
-        if(IS_LIBRARY(pData->lib)) {
-            UNLOAD_LIBRARY(pData->lib);
-        }
-        icu_free(pData);
-    }
-}
-
-#   else
-
-/* common implementation of use of common memory map */
-
-/* this is the memory-map version of GET_ENTRY(), used by getChoice() */
-static MappedData *
-getCommonMapData(const UDataMemory *data, const char *dataName) {
-    /* dataName==NULL if no lookup in a table of contents is necessary */
-    if(dataName!=NULL) {
-        const char *base=(const char *)(data->p)+data->p->headerSize;
-        uint32_t *toc=(uint32_t *)base;
-        uint32_t start, limit, number;
-
-        /* perform a binary search for the data in the common data's table of contents */
-        start=0;
-        limit=*toc++;   /* number of names in this table of contents */
-        while(start<limit-1) {
-            number=(start+limit)/2;
-            if(icu_strcmp(dataName, (const char *)(base+toc[2*number]))<0) {
-                limit=number;
-            } else {
-                start=number;
-            }
-        }
-
-        if(icu_strcmp(dataName, (const char *)(base+toc[2*start]))==0) {
-            /* found it */
-            return (MappedData *)(base+toc[2*start+1]);
-        } else {
-            return NULL;
-        }
-    } else {
-        return data->p;
-    }
-}
-
-static bool_t
-isCommonDataAcceptable(void *context,
-                       const char *type, const char *name,
-                       UDataInfo *pInfo) {
-    return
-        pInfo->size>=20 &&
-        pInfo->isBigEndian==U_IS_BIG_ENDIAN &&
-        pInfo->charsetFamily==U_CHARSET_FAMILY &&
-        pInfo->sizeofUChar==sizeof(UChar) &&
-        pInfo->dataFormat[0]==0x43 &&   /* dataFormat="CmnD" */
-        pInfo->dataFormat[1]==0x6d &&
-        pInfo->dataFormat[2]==0x6e &&
-        pInfo->dataFormat[3]==0x44 &&
-        pInfo->formatVersion[0]==1;
-}
-
-#   endif
 
 static MappedData *
 getChoice(Library lib, const char *entry,
@@ -836,33 +871,3 @@ getChoice(Library lib, const char *entry,
 
     return p;
 }
-
-/* common implementations of other functions for indirect mappings */
-
-#ifdef UDATA_INDIRECT
-
-U_CAPI const void * U_EXPORT2
-udata_getMemory(UDataMemory *pData) {
-    if(pData!=NULL) {
-        return (char *)(pData->p)+pData->p->headerSize;
-    } else {
-        return NULL;
-    }
-}
-
-U_CAPI void U_EXPORT2
-udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
-    if(pInfo!=NULL) {
-        if(pData!=NULL) {
-            UDataInfo *info=(UDataInfo *)(pData->p+1);
-            uint16_t size=pInfo->size;
-            if(size>info->size) {
-                pInfo->size=info->size;
-            }
-            icu_memcpy((uint16_t *)pInfo+1, (uint16_t *)info+1, size-2);
-        } else {
-            pInfo->size=0;
-        }
-    }
-}
-#endif

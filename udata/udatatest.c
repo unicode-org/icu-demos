@@ -39,7 +39,20 @@ printName(uint32_t code) {
 
 extern int
 main(int argc, char *argv[]) {
+    UErrorCode errorCode;
     uint32_t code;
+
+    /* something to step into for debugging */
+    errorCode=U_ZERO_ERROR;
+    udata_open("/test/path/base", "", "one", &errorCode);
+    errorCode=U_ZERO_ERROR;
+    udata_open("/test/path/", "dit", "two", &errorCode);
+    errorCode=U_ZERO_ERROR;
+    udata_open("base", NULL, "three", &errorCode);
+    errorCode=U_ZERO_ERROR;
+    udata_open("", "dit", "four", &errorCode);
+    errorCode=U_ZERO_ERROR;
+    udata_open(NULL, "dit", "five", &errorCode);
 
     printName(0x284);
     printName(0x61);
