@@ -52,6 +52,7 @@ void closeLX(LXContext *theContext)
     FSWF_close();
     if(theContext != NULL)
     {
+        fflush(theContext->fOUT); /* and that, as they say, is that. */
         destroyLocaleTree(theContext->locales);
         theContext->locales = NULL;
     }
@@ -62,7 +63,7 @@ void setupLocaleExplorer(LXContext *lx)
 {
     const char  *fileObj = NULL;
     UErrorCode status = U_ZERO_ERROR;
-    char *tmp;
+    char *tmp = NULL;
 
 #ifdef WIN32
     if( setmode( fileno ( stdout ), O_BINARY ) == -1 ) {
@@ -222,7 +223,7 @@ void setupLocaleExplorer(LXContext *lx)
     /* Print the encoding and last HTTP header... */
 
     fprintf(lx->fOUT, "Content-Type: text/html;charset=%s\r\n\r\n", lx->ourCharsetName);
-    fflush(lx->fOUT);
+    /*fflush(lx->fOUT);*/
 
 
     /* 
@@ -253,7 +254,7 @@ void setupLocaleExplorer(LXContext *lx)
         }
         /* fprintf(stderr, "LC=[%s]\n", id);  */
         trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
-        if(U_FAILURE(transStatus))	
+        if(U_FAILURE(transStatus))
         {
             fprintf(stderr,"Failed to open - %s\n", u_errorName(transStatus));
             /* blah blah balh*/
@@ -305,24 +306,27 @@ void runLocaleExplorer(LXContext *lx)
 {
     setupLocaleExplorer(lx);
     if(lx->OUT) {
-    	displayLocaleExplorer(lx);
+        displayLocaleExplorer(lx);
     }
 }
 
 UResourceBundle *getCurrentBundle(LXContext *lx, UErrorCode *status) 
 {
-  if(U_FAILURE(*status)) {
-    return NULL;
-  }
+    if(U_FAILURE(*status)) {
+        return NULL;
+    }
 
-  if(lx->curRB) {
-    return(lx->curRB); 
-  }
+    if(lx->curRB) {
+        return(lx->curRB); 
+    }
 
-  if(!*(lx->curLocaleName)) { /* illegal arg */ return NULL; }
-  lx->curRB = ures_open(NULL, lx->curLocaleName, status);
+    if(!*(lx->curLocaleName)) {
+        /* illegal arg */
+        return NULL;
+    }
+    lx->curRB = ures_open(NULL, lx->curLocaleName, status);
 
-  return lx->curRB;
+    return lx->curRB;
 }
 
 UResourceBundle *getDisplayBundle(LXContext *lx, UErrorCode *status) 
