@@ -64,7 +64,7 @@ distclean-local: clean-local
 	rm -f Makefile 
 
 check-local:
-	$(INVOKE) ./$(TARGET) dat unames
+	$(INVOKE) ./$(TARGET) icu unames
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \

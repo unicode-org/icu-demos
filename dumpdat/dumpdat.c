@@ -468,7 +468,7 @@ main(int argc, char *argv[]) {
         if( (argc<3) || (argc >4) ) {
             fprintf(stderr,
                     "usage: %s <type> <name>\n" /* [ path ] */
-                    "\tPrint the UDATA header for a data type. [try '%s dat unames']\n",
+                    "\tPrint the UDATA header for a data type. [try '%s icu unames']\n",
                     argv[0],argv[0]);
             return U_ILLEGAL_ARGUMENT_ERROR;
         }
