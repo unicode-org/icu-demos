@@ -460,10 +460,12 @@ void TransliteratorCGI::loadUserTransliterators() {
     // Currently we support only one user-defined RBT, in the hidden
     // fields USER_RULE and USER_RULE_ID.
     UnicodeString id(getParamValue("USER_RULE_ID", ENCODING));
-    Transliterator *t = buildUserRules(id, "USER_RULE");
-    if (t != 0) {
-        UErrorCode status = U_ZERO_ERROR;
-        Transliterator::registerInstance(t, status);
+    if (id.length() > 0) {
+        Transliterator *t = buildUserRules(id, "USER_RULE");
+        if (t != 0) {
+            UErrorCode status = U_ZERO_ERROR;
+            Transliterator::registerInstance(t, status);
+        }
     }
 
     areUserTransliteratorsLoaded = true;
