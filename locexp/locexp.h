@@ -120,6 +120,8 @@ typedef struct
 
   MySortable      *curLocale;     /* Current locale */
   MySortable      *parLocale;     /* Parent locale of current */
+  MySortable      *lLocale;       /* Current language or NULL */
+  MySortable      *rLocale;     /* Current region or NULL [may be in the 'regions' list in which case it has a NULL parentLocale and is != curLocale */
   LocaleBlob       curLocaleBlob;
   const char       *curLocaleName;
   UChar           newZone[300];          /* Timezone to set to */
@@ -163,9 +165,6 @@ typedef struct
 #define kShowUnicodeSetCutoffSize 80   /* size in chars before a string is 'too big'. */
 #define kShow2dArrayRowCutoff 5     /* size in rows before an array is too big */
 #define kShow2dArrayColCutoff 5     /* size in cols before an array is too big */
-
-#define G7COUNT 8  /* all 8 of the g7 locales. showSort() */
-static const char   G7s[G7COUNT][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr_FR", "it_IT", "ja_JP", "sv_SE" };
 
 /** If we aren't on Win32, need to make up a hostname. **/
 #ifdef WIN32
@@ -243,6 +242,8 @@ extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *loca
 extern void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const char *type);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
+extern void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale);
+
 extern void showDefaultCalendar(LXContext *lx, UResourceBundle *rb, const char *locale);
 extern void showSort( LXContext *lx, const char *locale);
 extern void showSortStyle( LXContext *lx );

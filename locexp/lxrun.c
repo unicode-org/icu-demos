@@ -505,7 +505,7 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
   }
 
   keywordEnum = uloc_openKeywords(curLocale, &status);
-  while(keyword = uenum_next(keywordEnum, &keywordLen, &status)) {
+  while((keyword = uenum_next(keywordEnum, &keywordLen, &status))) {
     if(!strcmp(keyword,"calendar")) {
       uloc_getKeywordValue(curLocale, keyword, aCalendar, LBUFSML-1, &status);
     } else if(!strcmp(keyword,"currency")) {
@@ -522,33 +522,33 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
   
   /* now the parts - _s, _r, _l, _v  or d_s, d_r, d_l, d_v */
   fieldChar[0] = 'l';
-  if(q=queryField(lx, fieldName)) {
+  if((q=queryField(lx, fieldName))) {
     strncpy(aL, q, LBUFSML-1);
     aS[0]=0; /* setting Language zeros Script */
   }
   fieldChar[0] = 's';
-  if(q=queryField(lx, fieldName)) {
+  if((q=queryField(lx, fieldName))) {
     strncpy(aS, q, LBUFSML-1);
   }
   fieldChar[0] = 'r';
-  if(q=queryField(lx, fieldName)) {
+  if((q=queryField(lx, fieldName))) {
     strncpy(aR, q, LBUFSML-1);
     aV[0]=0; /* setting Region zeros Variant */
   }
   fieldChar[0] = 'v';
-  if(q=queryField(lx, fieldName)) {
+  if((q=queryField(lx, fieldName))) {
     strncpy(aV, q, LBUFSML-1);
   }
 
   if(type[0] == 0) {
     /* keywords for display locale are NOT supported */
-    if(q=queryField(lx, "collation")) {
+    if((q=queryField(lx, "collation"))) {
       strncpy(aCollator, q, LBUFSML-1);
     }
-    if(q=queryField(lx, "currency")) {
+    if((q=queryField(lx, "currency"))) {
       strncpy(aCurrency, q, LBUFSML-1);
     }
-    if(q=queryField(lx, "calendar")) {
+    if((q=queryField(lx, "calendar"))) {
       strncpy(aCalendar, q, LBUFSML-1);
     }
   }
@@ -628,10 +628,7 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
 void setLocaleAndEncoding(LXContext *lx)
 {
   const char *q;
-  char *s;
-  char *lim;
   UErrorCode status = U_ZERO_ERROR;
-  char dspLocale[LBUFBIG] = "";
   const char *tmp;
   /**
    *  _  explored locale 

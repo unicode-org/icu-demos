@@ -381,7 +381,6 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 /* ----------------- lx->setEncoding */
 UFILE *openUFILE(LXContext *lx)
 {
-    UErrorCode status = U_ZERO_ERROR;
     UFILE *f;
 
     /* now, open the file */

@@ -225,23 +225,14 @@ void displayLocaleExplorer(LXContext *lx)
     
     
     /* Logic here: */
-    if( !lx->curLocaleName[0] || !strcmp(lx->section,"main") ) {    /* ?locale  or not set: pick locale */
-      u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
-        
-      u_fprintf(lx->OUT, "<table summary=\"%S\" WIDTH=\"70%%\"><TR>", FSWF("chooseLocale_summary", "Choose Locale"));
-      u_fprintf(lx->OUT, "<td colspan=2 align=right>");
+    if( !lx->curLocaleName[0] || !strcmp(lx->section,"main") || !strcmp(lx->section, "ka") ) {    /* ?locale  or not set: pick locale */
       printHelpTag(lx, "chooseLocale", NULL);
-      u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-      chooseLocale(lx, TRUE, (char*)lx->dispLocale, "", (UBool)!strncmp(lx->queryString,"locale_all", 10));
-    } else if (!strncmp(lx->queryString,"converter", 9))  /* ?converter */
-    {
+      u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
+      chooseLocale(lx, TRUE, (char*)lx->dispLocale, "", !strcmp(lx->section,"ka"));
+    } else if (hasQueryField(lx,"converter")) {  /* ?converter */
         char *restored;
         
-        restored = strchr(lx->queryString, '&');
-        if(restored)
-        {
-            restored ++;
-        }
+        restored = queryField(lx, "ox");
         
         /*
         if(lx->setEncoding)

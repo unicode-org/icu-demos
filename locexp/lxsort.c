@@ -6,6 +6,9 @@
 #include "locexp.h"
 #include "unicode/udata.h"
 
+#define G7COUNT 8  /* all 8 of the g7 locales. showSort() */
+static const char   G7s[G7COUNT][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr_FR", "it_IT", "ja_JP", "sv_SE" };
+
 #define isNL(x) ((x)==0x000D || (x)==0x000A || (x)==0x2029 || (x)==0x2028)
 
 void stripComments(UChar *ch) 
@@ -243,7 +246,7 @@ void showSort_attrib(LXContext *lx, const char *locale, UCollator *ourCollator)
   }
 }
 
-appendStringTo(LXContext *lx, UChar *someText, int32_t someTextLen, const UChar * str)
+void appendStringTo(LXContext *lx, UChar *someText, int32_t someTextLen, const UChar * str)
 {
   UChar term[] = { '|', 0x0000 }; /* asciism */
   int32_t   left;
@@ -263,8 +266,6 @@ static void appendSomeOfArrayTo(LXContext *lx, UResourceBundle *aBundle, UChar *
   UErrorCode status = U_ZERO_ERROR;
   UResourceBundle *sub = NULL;
   const UChar *str;
-  int32_t n;
-
   int32_t len2;
   const char *key2;
   
@@ -293,11 +294,9 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
   if(!text || !*text) {
     /* attempt load from RB */
     const UChar *sampleString, *sampleString2 = NULL;
-    char *sampleChars;
     UResourceBundle *sampleRB;
     UErrorCode sampleStatus = U_ZERO_ERROR;
     int32_t len;
-    UBool   isDefault = FALSE;
     
     /* samplestring will vary with label locale! */
     sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
@@ -312,8 +311,6 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
       UChar  *someText;
       int32_t someTextLen;
       UResourceBundle *aBundle = NULL;
-      UResourceBundle *b1 = NULL;
-      UResourceBundle *b2 = NULL;
 
       someTextLen = u_strlen(sampleString) + 1024;
       someText = malloc(someTextLen * sizeof(someText[0]));
@@ -415,11 +412,9 @@ void showSort(LXContext *lx, const char *locale)
   char   inputChars[SORTSIZE];
   char   ruleUrlChars[SORTSIZE] = "";
   const char *text;
-  char *p;
   UChar  strChars[SORTSIZE];
   UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
   UChar  fixedRuleChars[SORTSIZE]; /* Custom rule UChars without comments */
-  int    i;
   UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
 
   /* The 'g7' locales to demonstrate. Note that there eight.  */
@@ -447,6 +442,7 @@ void showSort(LXContext *lx, const char *locale)
 
   u_fprintf(lx->OUT, "<p><b>%S</b></p>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
 
+#if defined (LX_DEBUG)
   {
     char funcLoc[1024];
     UErrorCode funcStat = U_ZERO_ERROR;
@@ -455,6 +451,7 @@ void showSort(LXContext *lx, const char *locale)
     ures_getFunctionalEquivalent(funcLoc, 1023, U_ICUDATA_NAME U_TREE_SEPARATOR_STRING  "coll", "collations", "collation", locale, &isAvail, FALSE, &funcStat);
     u_fprintf(lx->OUT, "<p>FE: %s</p>\n", funcLoc);
   }
+#endif
 
   strChars[0] = 0;
 

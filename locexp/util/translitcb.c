@@ -62,7 +62,7 @@ U_CAPI void
 {
     int32_t len;
     UErrorCode status2 = U_ZERO_ERROR;
-    UBlockCode scriptBlock;
+    UBlockCode scriptBlock = -1;
     int srclen;
     FromUTransliteratorContext *ctx;
     UConverter *oC = NULL;

@@ -127,24 +127,18 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
         hit = !strcmp(lx->locales->subLocs[n]->str,current);
 
-        if(hit)
-        {
-            u_fprintf_u(lx->OUT, BEGIN_HIT_CELL);
-        }
-        else
-        {
-            u_fprintf_u(lx->OUT, BEGIN_CELL);
+        if(hit) {
+          u_fprintf_u(lx->OUT, BEGIN_HIT_CELL);
+        } else {
+          u_fprintf_u(lx->OUT, BEGIN_CELL);
         }
 
         printLocaleLink(lx, toOpen, lx->locales->subLocs[n], current, restored, &hadUnsupportedLocales);
 
-        if(hit)
-        {
-            u_fprintf_u(lx->OUT, END_HIT_CELL);
-        }
-        else
-        {      
-            u_fprintf_u(lx->OUT, END_CELL);
+        if(hit) {
+          u_fprintf_u(lx->OUT, END_HIT_CELL);
+        } else {      
+          u_fprintf_u(lx->OUT, END_CELL);
         }
       
         if(lx->locales->subLocs[n]->nSubLocs)
@@ -461,17 +455,50 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
 
 void setupLocaleTree(LXContext *lx)
 {
-    const char *qs, *amp;
-    char       *loc = lx->curLocaleName;
+  const char *loc = lx->curLocaleName;
 
-    /* setup base locale */
-    lx->locales = createLocaleTree(lx->dispLocale, &lx->numLocales);
-    lx->regions = createRegionList(lx->dispLocale, lx->locales);
-    if(*loc) {
-        /* setup cursors.. */
-        lx->curLocale = findLocale(lx->locales, loc);
-
-        if(lx->curLocale)
-            lx->parLocale = lx->curLocale->parent;
+  /* setup base locale */
+  lx->locales = createLocaleTree(lx->dispLocale, &lx->numLocales);
+  lx->regions = createRegionList(lx->dispLocale, lx->locales);
+  if(*loc) {
+    /* setup cursors.. */
+    lx->curLocale = findLocale(lx->locales, loc);
+    
+    if(lx->curLocale) {
+      lx->parLocale = lx->curLocale->parent;
+      if(lx->parLocale == lx->locales) {
+        /* locale is a Language */
+        lx->lLocale = lx->curLocale;
+      } else {
+        /* locale is a region */
+        lx->rLocale = lx->curLocale;
+        lx->lLocale = lx->rLocale->parent;
+      }
     }
+    if(lx->curLocaleBlob.l[0] && !lx->lLocale) {
+      int i;
+      for(i=0;!lx->lLocale && (i<lx->locales->nSubLocs);i++) {
+        if(!strcmp(lx->locales->subLocs[i]->str, lx->curLocaleBlob.l)) {
+          lx->lLocale = lx->locales->subLocs[i];
+        }
+      }
+    }
+    if(lx->curLocaleBlob.r[0] && !lx->rLocale) {
+      int i;
+      for(i=0;!lx->rLocale && (i<lx->regions->nSubLocs);i++) {
+        UErrorCode status = U_ZERO_ERROR;
+        char r[200];
+        uloc_getCountry(lx->regions->subLocs[i]->str, r, 200, &status);
+        if(U_FAILURE(status)) {
+          continue;
+        }
+#if defined(LX_DEBUG)
+        fprintf(stderr, "[RGN] %s vs %s\n", lx->curLocaleBlob.r, r);
+#endif
+        if(!strcmp(r, lx->curLocaleBlob.r)) {
+          lx->rLocale = lx->regions->subLocs[i];
+        }
+      }
+    }
+  }
 }

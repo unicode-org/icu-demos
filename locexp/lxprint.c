@@ -50,7 +50,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
     default:
         if(status != U_ZERO_ERROR)
 	{
-            u_fprintf(lx->OUT, "(%S %d - %s)", FSWF("UNKNOWN_ERROR", "unknown error"), (int) status,
+            u_fprintf(lx->OUT, "(%d - %s)", (int) status,
                       u_errorName(status));
 #ifdef SRL_DEBUG
             fprintf(stderr,"LRB: caught Unknown err- %d %s\n", status, u_errorName(status)); 
@@ -73,17 +73,16 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
         printHelpImg(lx, helpTag, FSWF("help", "Help"), 
                      FSWF("helpgif", "help.gif"),
                      FSWF("helpgif_opt", "BORDER=0"));
-        return;
 
+    } else {
+      u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"" LDATA_PATH "help.html#%s\">%S</A>",
+                helpTag,str);
     }
-
-    u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"" LDATA_PATH "help.html#%s\">%S</A>",
-              helpTag,str);
 }
 
 void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH "%S\" alt=\"%S\"></a>",
+    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH "%S\" align=right alt=\"%S\"></a>",
               helpTag, 
               options, src, alt);
 }
@@ -723,13 +722,69 @@ static void startCell(LXContext *lx)
 }
 
 static void printCell(LXContext *lx, const char *myURL, const char *prefix, char part, const char *str, 
-               UChar* ustr, int32_t n, const char* current)
+               const UChar* ustr, int32_t n, const char* current)
 {
   UBool selected;
+  UBool doBold = FALSE; /* boldface this item? */
+  UBool couldBold = FALSE; /* boldface any items? (i.e., gray out others) */
   char partStr[20];
   partStr[0] = part;
   partStr[1] = 0;
   switch(part) {
+  case 'l':
+    if((!prefix||(*prefix!='d')) && (lx->rLocale)) {
+      int32_t i, j;
+      /* see which languages have this region*/
+      couldBold = TRUE;
+      for(i=0;!doBold&&i<lx->locales->nSubLocs;i++) {
+        if(!strcmp(str, lx->locales->subLocs[i]->str)) {
+          for(j=0;!doBold&&j<lx->locales->subLocs[i]->nSubLocs;j++) {
+            UErrorCode status = U_ZERO_ERROR;
+            char r[200];
+            uloc_getCountry(lx->locales->subLocs[i]->subLocs[j]->str, r, 200, &status);
+            if(U_FAILURE(status)) {
+              continue;
+            }
+#if defined (LX_DEBUG)
+            fprintf(stderr, "[L] %s vs %s\n", lx->curLocaleBlob.r, r);
+#endif
+            if(!strcmp(lx->curLocaleBlob.r,r)) {
+              doBold = TRUE;
+            }
+          }
+        }
+      }
+    }
+    break;
+  case 'r':
+    if((!prefix||(*prefix!='d')) && (lx->lLocale)) {
+      const MySortable *m;
+      UErrorCode status2 =  U_ZERO_ERROR;
+      int32_t i,j;
+      char r1[200];
+      char *rx;
+      strcpy(r1,str);
+      if((rx=strchr(r1,'_'))) {
+        *rx = 0;
+      }
+      couldBold = TRUE;
+      m = lx->lLocale; /* check all Regions under current Language */
+      for(i=0;!doBold && i<m->nSubLocs;i++) {
+        UErrorCode status = U_ZERO_ERROR;
+        char r[200];
+        uloc_getCountry(m->subLocs[i]->str, r, 200, &status);
+        if(U_FAILURE(status)) {
+          continue;
+        }
+#if defined (LX_DEBUG)
+        fprintf(stderr, "[L] %s vs %s\n", r1, r);
+#endif
+        if(!strcmp(r1,r)) {
+          doBold = TRUE;
+        }
+      }
+    }
+    break;
   case kCalendarPart:
     prefix="";
     strcpy(partStr, "calendar"); break;
@@ -746,16 +801,20 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
   }
   selected = (!strcmp(str,current));
   if(selected) {
-    u_fprintf(lx->OUT, "<td bgcolor=\"#DDDDFF\">", lx->OUT);
+    u_fprintf(lx->OUT, "<td bgcolor=\"#BBBBFF\">", lx->OUT);
+  } else if(couldBold && !doBold) {
+    u_fprintf(lx->OUT, "<td b_gcolor=\"#888888\">", lx->OUT); 
   } else {
     u_fprintf(lx->OUT, "<td>");
   }
-  u_fprintf(lx->OUT, " <a href=\"%s&%s%s=%s&\">%S</a>\n",
+  u_fprintf(lx->OUT, " <a href=\"%s&%s%s=%s&\">%s%S%s</a>\n",
             myURL,
             prefix,
             partStr,
             str,
-            ustr);
+            doBold?"<b>":(couldBold?"<font color=\"#444444\">":""),
+            ustr,
+            doBold?"</b>":(couldBold?"</font>":""));
   u_fprintf(lx->OUT, "</td>");
 }
 

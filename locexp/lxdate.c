@@ -21,7 +21,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     UErrorCode   status = U_ZERO_ERROR, defStatus = U_ZERO_ERROR, locStatus = U_ZERO_ERROR;
     UDate now;  /* example date */
     UNumberFormat *nf = NULL; /* for formatting the number */
-    char *tmp;
+    const char *tmp;
     int32_t parsePos = 0;
 
     nf = unum_open(0, FSWF("EXPLORE_DateTimePatterns_dateAsNumber", "#"), -1, NULL, NULL, &status);

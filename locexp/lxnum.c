@@ -77,7 +77,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     value = 12345.6789; /* for now */
 
     /* Now, see if the user is trying to change the value. */
-    if(tmp = queryField(lx,"NP_LOC")) /* localized numbre */
+    if((tmp = queryField(lx,"NP_LOC"))) /* localized numbre */
     {
         /* Localized # */
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
@@ -109,7 +109,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
             defaultValueErr = FSWF("formatExample_errorParse3", "Could not parse this, replaced with a default value.");
         }
     }
-    else if (tmp = queryField(lx, "NP_SPL"))
+    else if ((tmp = queryField(lx, "NP_SPL")))
     {
         unescapeAndDecodeQueryField_enc(valueString, 1000, tmp, lx->convRequested);
         u_replaceChar(valueString, 0x00A0, 0x0020);  /* Spellout doesn't want to see NBSP's */

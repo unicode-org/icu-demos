@@ -1226,10 +1226,9 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
     /* minimal days in week ================= */
     u_fprintf(lx->OUT, "%S", FSWF("DateTimeElements1", "Minimal Days in First Week: "));
   
-    if(U_SUCCESS(status))
-        u_fprintf(lx->OUT, " %d \r\n", elements[1]);
-    else
-    {
+    if(U_SUCCESS(status)) {
+      u_fprintf(lx->OUT, " %d \r\n", elements[1]); 
+    } else {
         explainStatus(lx, status, key);
         u_fprintf(lx->OUT, "\r\n");
     }
@@ -1279,7 +1278,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
     int maxCount = 0;
     struct {
       const char *style;
-      UChar *title;
+      const UChar *title;
       int32_t count;
       UResourceBundle *bund;
       UBool isDefault;
@@ -1307,11 +1306,23 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       explainStatus(lx, status, keyStem);
     } else { 
       u_fprintf(lx->OUT, "<table border=1 w_idth=\"100%%\"><tr><th>#</th>");
+      maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
         u_fprintf(lx->OUT, "<th>%S", stuff[i].title);
-        if(stuff[i].isDefault) {
+        if(strcmp(type,"format") &&
+           !strcmp(ures_getLocaleByType(stuff[i].bund,ULOC_ACTUAL_LOCALE,&status),"root") &&
+           (!lx->curLocaleName[0]||strcmp(lx->curLocaleName,"root"))) {
+          UChar tmp[2048]; /* FSWF is not threadsafe. Use a buffer */
+          u_fprintf(lx->OUT, "<br>");
+          u_sprintf(tmp, "%S type",  FSWF("Calendar_type_format", "Formatting"));
+          u_fprintf_u(lx->OUT, FSWF(/**/"inherited_from", "from: %S"), tmp);
+          stuff[i].count=0;
+        } if(stuff[i].isDefault) {
           u_fprintf(lx->OUT, "<br>");
           calPrintDefaultWarning(lx);
+        }
+        if(stuff[i].count > maxCount) {
+          maxCount = stuff[i].count;
         }
         u_fprintf(lx->OUT, "</th>");
       }
@@ -1377,13 +1388,15 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
         item = ures_getByIndex(shortArray, i, item, &status);
         s    = ures_getString(item, &len, &status);
 
-        if(i==0)
-            shortStatus = status;
+        if(i==0) {
+          shortStatus = status;
+        }
   
-        if(U_SUCCESS(status))
-            u_fprintf(lx->OUT, " %S ", s);
-        else
-            explainStatus(lx, status, keyStem); /* if there was an error */
+        if(U_SUCCESS(status)) {
+          u_fprintf(lx->OUT, " %S ", s);
+        } else {
+          explainStatus(lx, status, keyStem); /* if there was an error */
+        }
 
         u_fprintf(lx->OUT, "</td></tr>");
     }
@@ -1873,13 +1886,13 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
   /* Yes, this is a near-reimplementation of icu::CalendarData.  */
   UResourceBundle *item1 = NULL;
   *isDefault = FALSE;
-  if(U_FAILURE(*status)) { return; }
+  if(U_FAILURE(*status)) { return NULL; }
   if(!lx->calMyBundle) {
 #if defined(LX_DEBUG)
     fprintf(stderr, "loadCalRes - no calMyBundle ! \n");
 #endif
     *status = U_INTERNAL_PROGRAM_ERROR;
-    return;
+    return NULL;
   } else {
     item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
   }
@@ -1905,13 +1918,13 @@ UResourceBundle *loadCalRes3(LXContext *lx, const char *keyStem, const char *typ
   UResourceBundle *item2 = NULL;
   UResourceBundle *item3 = NULL;
   *isDefault = FALSE;
-  if(U_FAILURE(*status)) { return; }
+  if(U_FAILURE(*status)) { return NULL; }
   if(!lx->calMyBundle) {
 #if defined(LX_DEBUG)
     fprintf(stderr, "loadCalRes3 - no calMyBundle ! \n");
 #endif
     *status = U_INTERNAL_PROGRAM_ERROR;
-    return;
+    return NULL;
   } else {
     item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
     item2 = ures_getByKeyWithFallback(item1, type, item2, status);
