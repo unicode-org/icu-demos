@@ -129,6 +129,7 @@ usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
   n->count = 0;
   n->ownsText = ownText;
   n->collator = ucol_open(locale, status);
+  n->func = ucol_getSortKey;
 
   if(U_FAILURE(*status)) /* Failed to open the collator. */
     {
@@ -209,11 +210,13 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
     }
 
   /* now,  collate it. Note we do NOT include the null or newline in the collation. */
-  usort->lines[usort->count].keySize = ucol_getSortKey(usort->collator, usort->lines[usort->count].chars, len ,NULL, 0);
+  /*usort->lines[usort->count].keySize = ucol_getSortKey(usort->collator, usort->lines[usort->count].chars, len ,NULL, 0);*/
+  usort->lines[usort->count].keySize = usort->func(usort->collator, usort->lines[usort->count].chars, len ,NULL, 0);
   usort->lines[usort->count].userData = userData;
 
   usort->lines[usort->count].key = malloc ( usort->lines[usort->count].keySize );
-  ucol_getSortKey(usort->collator, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);
+  /*ucol_getSortKey(usort->collator, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);*/
+  usort->func(usort->collator, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);
 
 
 #ifdef SDEBUG
@@ -458,6 +461,11 @@ usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
     ucnv_close(newConverter);
 }
 
+
+void
+usort_setSortKeyFunction(USort *usort, SortKeyFunction skFunc) {
+  usort->func = skFunc;
+}
 
 
 

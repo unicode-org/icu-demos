@@ -72,6 +72,12 @@
 #include <unicode/uloc.h>
 #include <stdio.h>  /* for FILE*'s */
 
+/* declaration for forward iterating function */
+typedef int32_t SortKeyFunction(const    UCollator    *coll, const    UChar        *source,
+        int32_t            sourceLength,
+        uint8_t            *result,
+        int32_t            resultLength);
+
 /**
  * This structure defines a 'line' (row) of text to be sorted 
  */
@@ -95,6 +101,7 @@ typedef struct
   int32_t    count;     /* the # of actual lines */
   bool_t     ownsText;     /* True of the lineList owns the chars. */
   UCollator *collator;     /* Collator for text. 0wned.  */
+  SortKeyFunction *func;   /* Function producing sortkeys */
 } USort;
 
 /**
@@ -165,6 +172,9 @@ usort_sort(USort *usort);
 
 T_USORT_API void
 usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter);
+
+T_USORT_API void
+usort_setSortKeyFunction(USort *usort, SortKeyFunction skFunc);
 
 #endif /* _USORT */
 
