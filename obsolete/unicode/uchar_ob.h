@@ -23,8 +23,6 @@
 #include "unicode/uchar.h"
 #include "unicode/obsolete.h"
 
-#ifdef ICU_UCHAR_USE_DEPRECATES
-
 /* These UBlockCode constants were renamed to ones with a UBLOCK_ prefix. */
 enum {
     /** @obsolete ICU 2.4. Use the enum that begins with UBLOCK instead since this API will be removed in that release. */
@@ -296,7 +294,5 @@ typedef enum UCellWidth UCellWidth; /**< C typedef for struct UCellWidth. @obsol
  */
 U_CAPI uint16_t U_EXPORT2
 u_charCellWidth(UChar32 c);
-
-#endif /* ICU_UCHAR_USE_DEPRECATES */
 
 #endif

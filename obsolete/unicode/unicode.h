@@ -30,8 +30,8 @@
 #include "unicode/utypes.h"
 #include "unicode/uchar.h"
 #include "unicode/obsolete.h"
+#include "unicode/uchar_ob.h"
 
-#ifdef ICU_UNICODE_CLASS_USE_DEPRECATES
 U_NAMESPACE_BEGIN
 /**
  * This class is obsolete and will be removed.
@@ -1359,7 +1359,5 @@ U_NAMESPACE_END
 #else
 
 #error "The unicode/unicode.h header is obsolete. Please use the Unicode C API in unicode/uchar.h instead."
-
-#endif /* ICU_UNICODE_CLASS_USE_DEPRECATES */
 
 #endif

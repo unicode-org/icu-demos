@@ -34,10 +34,9 @@
 //****************************************************************************
 
 #include "unicode/utypes.h"
-
-#ifdef ICU_UNICODE_CLASS_USE_DEPRECATES
 #include "unicode/uchar.h"
 #include "unicode/unicode.h"
+
 U_NAMESPACE_BEGIN
 
 /*
@@ -52,4 +51,3 @@ Unicode::operator=(const Unicode &) {
     return *this;
 }
 U_NAMESPACE_END
-#endif /* ICU_UNICODE_CLASS_USE_DEPRECATES */

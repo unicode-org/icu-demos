@@ -23,8 +23,6 @@
 #include "unicode/unorm.h"
 #include "unicode/obsolete.h"
 
-#ifdef ICU_UNORM_USE_DEPRECATES
-
 /** Obsolete UNormalizationMode constants. */
 enum {
   /**
@@ -65,7 +63,5 @@ enum {
  * @obsolete ICU 2.2. Use unorm_normalize instead since this API will be removed in that release.
  */
 #define u_normalize unorm_normalize
-
-#endif /* ICU_UNORM_USE_DEPRECATES */
 
 #endif

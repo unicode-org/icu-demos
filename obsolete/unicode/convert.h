@@ -14,8 +14,6 @@
 
 #include "unicode/utypes.h"
 #include "unicode/obsolete.h"
-
-#ifdef ICU_UNICODECONVERTER_USE_DEPRECATES
 #include "unicode/uobject.h"
 #include "unicode/unistr.h"
 #include "unicode/ucnv.h"
@@ -476,10 +474,5 @@ private:
 };
 
 U_NAMESPACE_END
-#else
-
-#error "The unicode/convert.h header is obsolete. Please use the converter C API in unicode/ucnv.h instead."
-
-#endif /* ICU_UNICODECONVERTER_USE_DEPRECATES */
 
 #endif

@@ -21,8 +21,6 @@
 #include "unicode/obsolete.h"
 #include "unicode/uchar_ob.h"
 
-#ifdef ICU_UCHAR_USE_DEPRECATES
-
 /* static data tables ------------------------------------------------------- */
 
 static const UChar cellWidthRanges[] =
@@ -170,5 +168,3 @@ UnicodeString::numDisplayCells( int32_t start,
 }
 
 #endif
-
-#endif /* ICU_UCHAR_USE_DEPRECATES */

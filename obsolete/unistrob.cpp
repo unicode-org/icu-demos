@@ -21,7 +21,7 @@
 #include "unicode/obsolete.h"
 #include "unicode/unistrob.h"
 
-#ifdef U_USE_DEPRECATED_UCHAR_REFERENCE
+U_NAMESPACE_BEGIN
 
 const char UCharReference::fgClassID=0;
 
@@ -34,4 +34,4 @@ UnicodeString::operator[] (int32_t pos)
 }
 #endif
 
-#endif // U_USE_DEPRECATED_UCHAR_REFERENCE
+U_NAMESPACE_END

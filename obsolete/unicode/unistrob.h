@@ -23,7 +23,7 @@
 #include "unicode/unistr.h"
 #include "unicode/obsolete.h"
 
-#ifdef U_USE_DEPRECATED_UCHAR_REFERENCE
+U_NAMESPACE_BEGIN
 
 // UnicodeString in unistr.h had the following method
 #if 0
@@ -51,7 +51,7 @@
  * work as a readable and a writable operator.
  * @obsolete ICU 2.4. Use charAt(), setCharAt(), and operator[] const instead since this API will be removed in that release.
  */
-class U_COMMON_API UCharReference : public UObject {
+class U_OBSOLETE_API UCharReference : public UObject {
 public:
   UCharReference();
   inline UCharReference(UnicodeString *string,
@@ -120,6 +120,6 @@ inline
 UCharReference::operator UChar()
 { return fString->charAt(fPos); }
 
-#endif // U_USE_DEPRECATED_UCHAR_REFERENCE
+U_NAMESPACE_END
 
 #endif // __UNISTROB_H__
