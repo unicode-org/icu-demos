@@ -40,7 +40,7 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
   /* perform the conversion */
   do {
     /* reset the error code */
-    *status = ZERO_ERROR;
+    *status = U_ZERO_ERROR;
 
     /* perform the conversion */
     ucnv_fromUnicode(converter, &myTarget,  myTarget + arraySize,
@@ -54,7 +54,7 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
     myTarget     = buf;
     arraySize    = kPrintBufSize;
   }
-  while(*status == INDEX_OUTOFBOUNDS_ERROR); 
+  while(*status == U_INDEX_OUTOFBOUNDS_ERROR); 
 
  finish:
   
@@ -105,7 +105,7 @@ usort_open(const char *locale, UCollationStrength strength, bool_t ownText,
 
   if(!n)
     {
-      *status = MEMORY_ALLOCATION_ERROR;
+      *status = U_MEMORY_ALLOCATION_ERROR;
       return n;
     }
 
@@ -146,7 +146,7 @@ usort_close(USort *usort)
 CAPI void
 usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *userData)
 {
-  UErrorCode status = ZERO_ERROR;
+  UErrorCode status = U_ZERO_ERROR;
 
   if(len == -1)
     len = u_strlen(line);
@@ -214,7 +214,7 @@ CAPI void
 usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t escapeMode)
 {
   UConverter *newConverter = NULL;
-  UErrorCode status = ZERO_ERROR;
+  UErrorCode status = U_ZERO_ERROR;
 
   UChar *outBuf    = NULL; /* buffer for chars being turned into lines */
   UChar *outBufEnd = NULL; /* end of the outbuf - we'll grow if need be ! */
@@ -281,7 +281,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
       p = target;
       while(source < readData) /* however, if we run out of source, go back and get more */
 	{
-	  status = ZERO_ERROR;
+	  status = U_ZERO_ERROR;
 #ifdef SDEBUG
 	  *readData = 0;
 	  fprintf(stderr,"Transcoding %08x--%08x@%08x to %08x--%08x@%08X.\nData IN>%s<",
@@ -298,7 +298,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
 				  /* last chunk so flush.. */
 	  
 	  /* OK let's break it down.. */
-	  if(status == INDEX_OUTOFBOUNDS_ERROR)
+	  if(status == U_INDEX_OUTOFBOUNDS_ERROR)
 	    {
 	      UChar *newBuf;
 	      int32_t newSize = sizeof(UChar)*((outBufEnd-outBuf)*2);
@@ -323,8 +323,8 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, bool_t
 	      outBuf = newBuf;
 	      /* that's it..  OK we've got more memory for the next 'go round. But we'll
 		 process what we have first. */
-	      status = ZERO_ERROR;
-	    } /* end INDEX_OUTOFBOUNDS_ERROR handler */
+	      status = U_ZERO_ERROR;
+	    } /* end U_INDEX_OUTOFBOUNDS_ERROR handler */
 
 	  if(FAILURE(status))
 	    {
@@ -414,7 +414,7 @@ CAPI void
 usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
 {
   UConverter *newConverter = NULL;
-  UErrorCode status = ZERO_ERROR;
+  UErrorCode status = U_ZERO_ERROR;
   int32_t i;
   static const UChar kLF[] = { 0x000A, 0x0000 };
 

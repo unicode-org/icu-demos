@@ -6,7 +6,7 @@
  * Main file for usort. Gives a simple 
  *   command line interface.
  *
- *  1999-oct-07  srl   OK to check in. Needs arg cleanup..
+ *  1999-oct-07  srl   Needs arg cleanup..
  */
 
 #include "usort.h"
@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
   char tmp[200];
   /* fetch the options */
   int i;
-  UErrorCode status = ZERO_ERROR;
+  UErrorCode status = U_ZERO_ERROR;
   UConverter *fromConverter = NULL, *toConverter = NULL;
   const char *fromCodepage;
   const char *toCodepage;
