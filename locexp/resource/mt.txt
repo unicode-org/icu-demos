@@ -82,7 +82,7 @@ encoding_translit_setting { "Transliterazzjoni:" }
 help { "Għajnuna" }
 helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
 inherited  {  "(jintirtu)"  }
-inherited_from  {  "(jintirtu mill-%U)"  }
+inherited_from  {  "(jintirtu mill-%S)"  }
 localeList_Locale { "Il-Lingwi" }
 localeList_Sublocale{ "Il-Pajjiżi" }
 myConverter{ "Kodiċi:" }

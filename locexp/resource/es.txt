@@ -36,7 +36,7 @@ es
     EXPLORE_search_found { "%d artículos fueron encontrados." }
     EXPLORE_search_notfound { "Apesadumbrado, no se encontró nada." }
     EXPLORE_search_oneperlocale { "Observe que solamente el primer emparejan en cada localidad está visto." }
-    EXPLORE_search_searching { "El buscar para <B>%U</B>..." }
+    EXPLORE_search_searching { "El buscar para <B>%S</B>..." }
     LocaleCodes { "Códigos De Localidad" }
     LocaleCodes_Country { "Regi\u00F3n" }
     LocaleCodes_Language { "Lenguage" }
@@ -157,7 +157,7 @@ es
 //    helpgif { "help.gif" }
 //    helpgif_opt { "BORDER=0" }
     inherited { "(heredado)" }
-    inherited_from { "(heredado de %U)" }
+    inherited_from { "(heredado de %S)" }
     introSpiel { "<p>Este programa de la demostración ilustra los International Components for Unicode para los datos de la localización. Los datos cubren %V diversas idiomas, divididas más lejos en %V regiones y variantes. Para cada lengua, los datos tales como días de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de fuente abierta.</p>" }
     localPatternChars0 { "Era" }
     localPatternChars1 { "Año" }
@@ -192,7 +192,7 @@ es
     none { "Ninguno" }
     off { "Apagado" }    // Difficult to translate
     on { "Prendido" }    // Difficult to translate
-    otherLanguageSameCountryLocales { "<B>%U</B> bajo otras idiomas" }
+    otherLanguageSameCountryLocales { "<B>%S</B> bajo otras idiomas" }
     poweredby { "Accionado por" }
     poweredby_filebug { "Notifica un error" }   // I'm guessing this is right
     rules { "Reglas" }

@@ -134,7 +134,7 @@ fr
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "BORDER=0"  }
    inherited  {  "(hérité)"  }
-   inherited_from  {  "(Héritage: %U)"  }
+   inherited_from  {  "(Héritage: %S)"  }
 
 //== We'd like to have:
 // Hérité de la racine  [special case]

@@ -129,7 +129,7 @@ de {
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "border=0"  }
    inherited  {  "(geerbt)"  }
-   inherited_from  {  "(geerbt von %U)"  }
+   inherited_from  {  "(geerbt von %S)"  }
    introSpiel  {
       "Dieses Beispiel demonstriert die Gebietsschemadaten der Internationalen Unicode-Komponenten. "
       "Mehr als %V Sprachen und %V L\u00e4nder sind abgedeckt durch spezifische Muster, Namen und Angaben "
