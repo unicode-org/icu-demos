@@ -24,6 +24,7 @@ echo "   $1 {"
 # should be: -n or \c
 echo $ECHO_N "       \"$ECHO_C"
 
+#set -x
 uconv -f $2 -t UTF16_BigEndian $3 | escapeForBundle
 
 echo $ECHO_N  "\"$ECHO_C"

@@ -22,10 +22,12 @@ CPPFLAGS=$(shell @ICU_CONFIG@ --cppflags)
 CFLAGS=$(shell @ICU_CONFIG@ --cflags)
 CXXFLAGS=$(shell @ICU_CONFIG@ --cxxflags)
 LDFLAGS =$(shell @ICU_CONFIG@ --ldflags)
+LDFLAGS_USTDIO =$(shell @ICU_CONFIG@ --ldflags-ustdio)
 INVOKE =$(shell @ICU_CONFIG@ --invoke)
 SO =$(shell @ICU_CONFIG@ --so)
 BINDIR = $(shell @ICU_CONFIG@ --bindir)
 GENRB=$(shell @ICU_CONFIG@ --invoke=genrb)
+UCONV=$(shell @ICU_CONFIG@ --invoke=uconv)
 PKGDATA=$(shell @ICU_CONFIG@ --invoke=pkgdata)
 ####################################################################
 MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs

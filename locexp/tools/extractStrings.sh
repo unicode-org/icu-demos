@@ -32,7 +32,7 @@
 ##      Script NEEDS to be generalized. What about multiple input files? What if you want something other than root_head and root_tail?
 ##
 ## Note: FSWF means Fetch String with Fallback.   see locexp.c
-
+export INVOKE_UCONV
 echo "// root file. Generated from $* on `date` on `hostname`"
 echo "// It's probably not a good idea to change this file."
 echo "// Better to change locexp.c or the ROOT.* source files and rebuild."

@@ -77,7 +77,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licu-uc -lusort' ...
 
 $(TARGET) : $(OBJECTS)
-	$(LINK.c) -o $@ $^ $(ICULIBS)
+	$(LINK.c) -o $@ $^ $(shell $(ICU_CONFIG) --ldflags-system)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
