@@ -116,6 +116,10 @@ SOURCE=.\util\lx_utils.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\lxbrk.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\lxconv.c
 # End Source File
 # Begin Source File

@@ -240,12 +240,6 @@ void showSort(LXContext *lx, const char *locale, const char *b)
   UColAttributeValue  value;
   UColAttribute       attribute;
 
-  if(strstr(b, "lxCustSortOpts=")) {
-    lxCustSortOpts = TRUE;
-  }
-
-  u_fprintf(lx->OUT, "<style>\r\n<!--.box0 { border: 1px inset gray; margin: 1px }\r\n.box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC } -->\r\n</style>\r\n");
-
   /* Mode switch.. */
   enum
   { 
@@ -258,6 +252,12 @@ void showSort(LXContext *lx, const char *locale, const char *b)
      */
     kSimpleMode,   
   } mode = kSimpleMode;
+
+  if(strstr(b, "lxCustSortOpts=")) {
+    lxCustSortOpts = TRUE;
+  }
+
+  u_fprintf(lx->OUT, "<style>\r\n<!--.box0 { border: 1px inset gray; margin: 1px }\r\n.box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC } -->\r\n</style>\r\n");
 
   strChars[0] = 0;
 

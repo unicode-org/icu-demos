@@ -10,6 +10,13 @@
 #include <stddef.h>
 #include <string.h>
 
+#ifdef WIN32
+/* Silly Windows compatibility naming */
+#ifndef snprintf
+#define snprintf _snprintf
+#endif
+#endif
+
 
 #include "unicode/decompcb.h"
 #include "unicode/lx_utils.h"
