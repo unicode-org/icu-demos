@@ -398,7 +398,7 @@ UResourceBundle *getCollationBundle(LXContext *lx, UErrorCode *status)
         /* illegal arg */
         return NULL;
     }
-    lx->curRB = ures_open(U_ICUDATA_NAME "/coll", lx->curLocaleName, status);
+    lx->curRB = ures_open(U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "coll", lx->curLocaleName, status);
 
     return lx->curRB;
 }

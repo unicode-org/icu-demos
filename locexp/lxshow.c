@@ -190,7 +190,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
                     else
                     {
                         if((*comps == 0x000A) || u_isprint(*comps))
-                            u_fprintf(lx->OUT, "%K", *comps);
+                            u_fprintf(lx->OUT, "%C", *comps);
                         else
                             u_fprintf(lx->OUT, "<B>\\u%04X</B>", *comps); /* to emulate the callback */
                     }
@@ -576,7 +576,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
             {
                 for(c = start; c<=end; c++)
                 {
-                    u_fprintf(lx->OUT, "%K", c);
+                    u_fprintf(lx->OUT, "%C", c);
                 }
             }
             howManyChars += thisRangeLen;
@@ -676,7 +676,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
                 if(!s[i])
                     break;
 
-                u_fprintf(lx->OUT, "<TR><TD WIDTH=5>%d</TD><TD>%K</TD><TD>%S</TD></TR>\r\n",
+                u_fprintf(lx->OUT, "<TR><TD WIDTH=5>%d</TD><TD>%C</TD><TD>%S</TD></TR>\r\n",
                     i,
                     s[i],
                     desc[i]);

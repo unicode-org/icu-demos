@@ -452,7 +452,7 @@ void writeEscaped(LXContext *lx, const UChar *s)
             if(*s == 0x00A0)
                 u_fprintf(lx->OUT, " ");
             else
-                u_fprintf(lx->OUT, "%K", *s);
+                u_fprintf(lx->OUT, "%C", *s);
 	  
             s++;
 	}
@@ -475,7 +475,7 @@ void writeEscapedQuery(LXContext *lx, const UChar *s)
             if(*s == 0x00A0)
                 u_fprintf(lx->OUT, " ");
             else
-                u_fprintf(lx->OUT, "%K", *s);
+                u_fprintf(lx->OUT, "%C", *s);
 	  
             s++;
 	}
