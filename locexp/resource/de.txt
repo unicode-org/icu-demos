@@ -132,7 +132,7 @@ de {
    inherited_from  {  "(geerbt von %U)"  }
    introSpiel  {
       "Dieses Beispiel demonstriert die Gebietsschemadaten der Internationalen Unicode-Komponenten. "
-      "Mehr als 45 Sprachen und 154 L\u00e4nder sind abgedeckt durch spezifische Muster, Namen und Angaben "
+      "Mehr als %V Sprachen und %V L\u00e4nder sind abgedeckt durch spezifische Muster, Namen und Angaben "
       "f\u00fcr die Anzeige von Datum, Uhrzeit, Zahlen, Geldangaben, korrektes Sortieren und mehr.<p>"
       "Die Internationalen Unicode-Komponenten sind ein "Open-Source" Projekt."
       "Siehe die <a href=\u0022http://oss.software.ibm.com/icu\u0022>Internet-Leitseite</a> f\u00fcr alles weitere (nur auf Englisch)."

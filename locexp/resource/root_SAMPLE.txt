@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c on Sat Feb  2 01:20:46 CET 2002 on filfla
+// root file. Generated from ../locexp.c on Sat Feb  9 01:48:52 CET 2002 on filfla
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -129,7 +129,7 @@ root {
    helpgif_opt  {  "BORDER=0"  }
    inherited  {  "(inherited)"  }
    inherited_from  {  "(inherited from %U)"  }
-   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers over 45 different languages, further divided into 150+ geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."  }
+   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers over %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."  }
    localPatternChars0  {  "Era"  }
    localPatternChars1  {  "Year"  }
    localPatternChars10  {  "Day Of Year"  }

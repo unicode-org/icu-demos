@@ -604,10 +604,12 @@ void runLocaleExplorer(LXContext *myContext)
       || strstr(tmp, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
   {
     u_fprintf(lx->OUT, "</H2>"); /* close the 'title text */
-
-	u_fprintf(lx->OUT, "<UL>%U<P>\r\n",
-	  FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers over 45 different languages, further divided into 150+ geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."));
-        
+    u_fprintf(lx->OUT, "<UL>");
+	u_fprintf_u(lx->OUT, 
+		    FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."),
+		    (double)(lx->locales->nSubLocs),
+		    (double)(uloc_countAvailable()-(lx->locales->nSubLocs)));
+        u_fprintf(lx->OUT, "<P>\r\n");
 #if 0
         u_fprintf(lx->OUT, "%U<P>\r\n",
                   FSWF/**/(/**/"specialMessage_2000Oct30",/**/
