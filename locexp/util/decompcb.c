@@ -266,10 +266,11 @@ UCNV_FROM_U_CALLBACK_DECOMPOSE  (void *context,
   int32_t i;
   char   *oldTarget;
 
-  if(reason > UCNV_IRREGULAR)
+  if((reason > UCNV_IRREGULAR) || (length <= 0))
   {
     return;
   }
+
   
   DECOMPOSE_uchar(context,
                   fromUArgs,

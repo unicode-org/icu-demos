@@ -85,6 +85,7 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
 
 U_CAPI MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount);
 
+U_CAPI void destroyLocaleTree(MySortable *d);
 
 /**
  * Recursive search for the specified locale.
@@ -201,6 +202,9 @@ U_CAPI UErrorCode FSWF_bundleError();
 
 /* close FSWF's bundle */
 U_CAPI void FSWF_close();
+
+/* set bundle locale */
+U_CAPI void FSWF_setLocale( const char* loc);
 
 /* returns a path to load FSWF's bundle from..  */
 U_CAPI const char *FSWF_bundlePath();

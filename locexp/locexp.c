@@ -530,7 +530,9 @@ void runLocaleExplorer(LXContext *myContext)
   /* now see what we're gonna do */
   tmp = getenv ( "QUERY_STRING" );
 
+/*
   u_fprintf(lx->OUT, "COMP: %s %s<BR>\r\n", __DATE__,  __TIME__);
+*/
   
   if(strstr(tmp,"EXPLORE"))
     {
@@ -1053,7 +1055,7 @@ void printStatusTable()
   u_fprintf(lx->OUT, "<TR><TD><B>%U</B></TD>\r\n",
             FSWF("encoding_translit_setting", "Transliteration:"));
 
-#if 1  /* Transliteration isn't working at present. */
+#if 0  /* Transliteration isn't working at present. */
   u_fprintf(lx->OUT, "<TD><I>%U</I></TD>",
             FSWF("off", "off"));
 #else

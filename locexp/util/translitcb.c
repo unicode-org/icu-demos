@@ -146,6 +146,7 @@ U_CAPI void
     UCharScript script;
     int srclen;
     FromUTransliteratorContext *ctx;
+    UConverter *oC = NULL;
 
     int n = 0;
 
@@ -167,6 +168,19 @@ U_CAPI void
     u_strncpy(totrans,codeUnits, length);
 
     n = length;
+
+    if(fromUArgs->converter == ctx->utf8)
+    {
+      /* use callbacks here! */
+      return;
+    }
+
+    if(ctx->utf8 == NULL)
+    {
+      UErrorCode u8err = U_ZERO_ERROR;
+
+      ctx->utf8 = ucnv_open("utf-8", &u8err);
+    }
 
     /* the <FONT> thing */
     if(ctx->html == TRUE)
@@ -199,15 +213,22 @@ U_CAPI void
         /* If we found any, xliterate them */
         if(n > 0)
         {
-          const UChar *mySource;
-          utrns_transUChars(myTrans, totrans,  n, tmpbuf, 300, &status2);
-          mySource = tmpbuf;
+          const UChar *mySource; // trans,text,len,cap,start,limit,status
+          len = n;
 
+          utrans_transUChars(myTrans, totrans,  &n, 300, 0, &len, &status2);
+          mySource = totrans;
+
+          oC = fromUArgs->converter;
+          fromUArgs->converter = ctx->utf8;
+          
           ucnv_cbFromUWriteUChars(fromUArgs,
                                   &mySource,
                                   mySource+len,
                                   0,
                                   err);
+
+          fromUArgs->converter = oC;
 
           fromUArgs->source += srclen; /* if any of the actual source was found */
 
@@ -223,15 +244,23 @@ U_CAPI void
     {
       const UChar *mySource;
 
-      len = utrns_transliterate(myTrans, totrans, n, tmpbuf, 300, &status2);
-      mySource = tmpbuf;
+      len = n;
+      srclen = 0;
+
+      utrans_transUChars(myTrans, totrans, &n, 300, 0, &len, &status2);
+      mySource = totrans;
   
+      oC = fromUArgs->converter;
+      fromUArgs->converter = ctx->utf8;
 
       ucnv_cbFromUWriteUChars(fromUArgs,
                               &mySource,
                               mySource+len,
                               0,
                               err);
+
+      fromUArgs->converter = oC;
+
       fromUArgs->source += srclen; /* if any of the actual source was found */
       n = 0; /* reset */
     }

@@ -24,7 +24,7 @@ TARGET = liblxutil.$(SO)
 
 OBJECTS =  lx_utils.o ures_additions.o kangxi.o 
 OBJECTS += decompcb.o
-#OBJECTS += translitcb.o
+OBJECTS += translitcb.o
 
 #OBJECTS +=  collectcb.o translitcb.o  kannada.o
 

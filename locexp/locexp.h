@@ -9,6 +9,7 @@
 
 typedef struct 
 {
+  FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
   char cLocale[200]; /* client locale */
   
@@ -42,5 +43,17 @@ typedef struct
   FromUTransliteratorContext   xlitCtx;
   
 } LXContext;
+
+/**
+ * dump out a file that's ina  resource bundle
+ */
+extern void writeFileObject( LXContext *lx, const char *path );
+extern void runLocaleExplorer(LXContext *myContext);
+extern void initContext( LXContext *lx );
+
+extern void initLX();
+extern void closeLX();
+extern void explainStatus( LXContext *lx, UErrorCode status, const char *tag );
+
 
 #endif

@@ -34,7 +34,10 @@ CLEANFILES = *~
 ## Target information
 TARGET = locexp
 
-OBJECTS = locexp.o
+LXOBJ = locexp.o wfobject.o calexp.o
+CGIOBJ = cgimain.o
+# FCGIOBJ = fcgimain.o
+OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 
 DEPS = $(OBJECTS:.o=.d)
 
@@ -113,7 +116,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licuuc -lusort' ...
 
-$(TARGET) : $(OBJECTS)
+$(TARGET) : $(LXOBJ) $(CGIOBJ)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
 
 ifneq ($(MAKECMDGOALS),distclean)
@@ -165,3 +168,15 @@ endif
 #  (standard options won't be used)
 
 
+## EXPERIMENTAL - fastcgi localeexplorer
+
+# install fast locale explorer
+#  [kflx kills old instances, it's a Suid program]
+iflx: flx
+	$(INSTALL) flx $(bindir)/flx
+	$(INSTALL) flx.sh $(bindir)/flx.sh
+	./kflx
+
+# fast locale explorer itself 
+flx: $(LXOBJ) fcgimain.o
+	$(LINK.c) -o $@ $^ $(ICULIBS) -lfcgi

@@ -16,12 +16,12 @@ echo "// From $3 ($2)"
 echo "   $1 {"
 
 # should be: -n or \c
-echo  "       \""
+echo -n "       \""
 
 uconv -f $2 -t UTF16_BigEndian $3 | escapeForBundle
 
 # should be: -n or \c
-echo  "\""
+echo -n  "\""
 
 echo "   }"
 echo

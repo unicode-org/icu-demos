@@ -96,7 +96,7 @@ UCNV_FROM_U_CALLBACK_BACKSLASH (void *context,
   UConverterFromUCallback tCallback = NULL;
   void *tContext;
 
-  if (reason > UCNV_IRREGULAR)
+  if((reason > UCNV_IRREGULAR) || (length <= 0))
   {
     return;
   }
@@ -505,7 +505,28 @@ MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount)
   return root;
 }
 
+void destroyLocaleTree(MySortable *d)
+{
+  int i;
 
+  if(d == NULL) return;
+
+  for(i=0;i<d->nSubLocs;i++)
+    {
+      destroyLocaleTree(&d->subLocs[i]);
+    }
+  d->nSubLocs = 0;
+  d->subLocsSize = 0;
+  free(d->subLocs);
+  d->subLocs = NULL;
+  
+  free(d->ustr);
+  free(d->str);
+  if(d->parent == NULL) /* root */
+  {
+    free(d);
+  }
+}
 
 
 /* Helper function for mySort --------------------------------------------------------*/
@@ -634,6 +655,11 @@ const char *MIMECharsetName(const char *n)
 {
   UErrorCode err = U_ZERO_ERROR;
   const char *mime;
+
+  if(!strcmp(n, "transliterated")) {
+    /* transliteration gets you UTF-8 */
+    return "utf-8"; 
+  }
 
   mime = ucnv_getStandardName(n, "MIME", &err);
   if(U_FAILURE(err)||!mime) {
@@ -892,14 +918,17 @@ bool_t testConverter(const char *converter,
 
 UErrorCode  FSWF_bundleErr = U_ZERO_ERROR;
 
+const char *gLocale = NULL;
+
+UResourceBundle *gRB = NULL;
+
 UResourceBundle *FSWF_getBundle()
 {
-  static UResourceBundle *gRB = NULL;
 
   if(gRB == 0)
     {
       FSWF_bundleErr = U_ZERO_ERROR;
-      gRB = ures_open(  FSWF_bundlePath(), NULL, &FSWF_bundleErr);
+      gRB = ures_open(  FSWF_bundlePath(), gLocale, &FSWF_bundleErr);
       if(U_FAILURE(FSWF_bundleErr))
 	{
 	  gRB = 0;
@@ -907,6 +936,22 @@ UResourceBundle *FSWF_getBundle()
     }
   return gRB;
 
+}
+
+void FSWF_close()
+{
+  if(gRB != NULL)
+    {
+      ures_close(gRB);
+      gRB = NULL;
+    }
+}
+
+void FSWF_setLocale(const char *locale)
+{
+  FSWF_close();
+  gLocale = locale;
+  FSWF_getBundle();
 }
 
 
@@ -941,10 +986,6 @@ const UChar *FSWF(const char *key, const char *fallback)
 }
 
 
-void FSWF_close()
-{
-  ures_close(FSWF_getBundle());
-}
 
 static char FSWF_path[500] = "";
 
@@ -969,6 +1010,7 @@ U_CAPI UErrorCode FSWF_bundleError()
 {
   return FSWF_bundleErr;
 }
+
 
 
 
