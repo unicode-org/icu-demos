@@ -50,9 +50,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name usort_lib
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name util
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -80,9 +77,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name usort_lib
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name util
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -95,9 +89,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name util
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -142,18 +133,6 @@ Package=<4>
 ###############################################################################
 
 Project: "usort_lib"=..\usort\lib\usort_lib.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "util"=..\locexp\util\util.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

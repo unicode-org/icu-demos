@@ -241,7 +241,7 @@ int main(const char *argv[], int argc)
 
 
 #ifdef  WIN32
-  u_setDataDirectory("c:\\dev\\icu\\data\\");
+  u_setDataDirectory("c:\\o\\icu\\data\\");
 #endif
 
 
@@ -4565,6 +4565,13 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
   return f;
 }
 
+#ifdef WIN32
+const char *ures_getTag(UResourceBundle *n)
+{
+	return "No ures_getTag() under win32!!";
+
+}
+#endif
 
 void writeFileObject( LXContext *lx, const char *path )
 {
