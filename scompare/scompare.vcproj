@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuuc.lib icuin.lib"
+				AdditionalDependencies="icuucd.lib icuind.lib icuiod.lib"
 				OutputFile="$(OutDir)/scompare.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../icu/lib/"
@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuuc.lib icuin.lib"
+				AdditionalDependencies="icuuc.lib icuin.lib icuio.lib"
 				OutputFile="$(OutDir)/scompare.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../icu/lib/"
