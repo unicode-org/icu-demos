@@ -1,0 +1,4 @@
+target=/home/httpd/cgi-bin
+cp -vu translit $target
+cp -vu data/*.html $target/data
+cp -vu js/*.js $target/../html/js
