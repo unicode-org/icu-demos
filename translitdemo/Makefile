@@ -10,6 +10,9 @@
 #    was used (will look for $(prefix)/share/icu/Makefile.inc )
 #      OR 
 #   set the variable ICU_PREFIX to point at $(prefix)
+#
+#  - ICU_COMMON_HEADERS must be set to were ICU's common/unicode directory
+#    is. 
 #  
 #  - do 'make' in this directory
 
@@ -25,7 +28,11 @@ ICUPATH=
 ###########################################
 # HACK : TODO fix this
 ICU_INC=~/II/lib/icu/Makefile.inc
+
+# Must find uhash.h
+ICU_COMMON_HEADERS=../../icu/source/common
 ###########################################
+
 
 include $(ICU_INC)
 
@@ -44,17 +51,13 @@ OBJECTS += util.o
 #OBJECTS += uhash.o
 OBJECTS +=  TextCache.o
 
+CPPFLAGS += -I$(ICU_COMMON_HEADERS)
 
 CLEANFILES=*~ $(TARGET).out
 
 DEPS=$(OBJECTS:.o=.d)
 
-all: $(TARGET)
-
-zurk:
-	-rm translit
-	make translit
-	./translit 2> /dev/null
+all: $(ICU_COMMON_HEADERS)/uhash.h $(TARGET)
 
 .PHONY: all clean distclean check report
 
@@ -71,6 +74,11 @@ $(TARGET): $(OBJECTS)
 $(ICU_INC):
 	@echo "Please read the directions at the top of this file (Makefile)"
 	@echo "Can't open $(ICU_INC)"
+	@false
+
+$(ICU_COMMON_HEADERS)/uhash.h:
+	@echo "Need to find uhash.h, was not found in $(ICU_COMMON_HEADERS)"
+	@echo "Please change ICU_COMMON_HEADERS in this makefile."
 	@false
 
 ifneq ($(MAKECMDGOALS),distclean)

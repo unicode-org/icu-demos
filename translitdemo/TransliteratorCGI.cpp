@@ -1,3 +1,4 @@
+// Copyright (c) 2000-2001 IBM, Inc. and others.
 /**
  * The CGI interacts with the template file by filling in variables of
  * the form $FOO and reading text from fields.  Here is a complete
@@ -262,6 +263,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
         }
 
         else if (strcmp(opcode, "COMPILE") == 0) {
+
             UnicodeString id(arg1, ENCODING);
             char *r = cleanupNewlines(arg2);
             UnicodeString rules(r, ENCODING);

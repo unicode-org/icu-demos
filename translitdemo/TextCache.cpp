@@ -1,4 +1,4 @@
-
+// Copyright (c) 2000-2001 IBM, Inc. and others.
 #include "TextCache.h"
 #include <stdio.h>
 #include <sys/stat.h>
@@ -102,8 +102,9 @@ UBool TextCache::writeIndex() {
             if (elem == NULL) {
                 break;
             }
-            UnicodeString* key = (UnicodeString*) elem->key;
-            CacheObj* obj = (CacheObj*) elem->value;
+            UnicodeString* key = (UnicodeString*) elem->key.pointer;
+            CacheObj* obj = (CacheObj*) elem->value.pointer;
+             
             success &= util_writeTo(indexFile, *key);
             success &= util_writeTo(indexFile, obj->filename, strlen(obj->filename) + 1);
         }
@@ -123,7 +124,7 @@ void TextCache::visitKeys(KeyVisitor visit, void* context) const {
         if (elem == NULL) {
             break;
         }
-        UnicodeString* key = (UnicodeString*) elem->key;
+        UnicodeString* key = (UnicodeString*) elem->key.pointer;
         visit(i++, *key, context);
     }
 }
