@@ -18,8 +18,8 @@
 //  into the displayed page.
 //
 //  A result is returned in this format:
-//    <p id="s1a>input string 1 after unescaping it</p>
-//    <p id="s1b>input string 2 after unescaping it</p>
+//    <p id="s1a">input string 1 after unescaping it</p>
+//    <p id="s1b">input string 2 after unescaping it</p>
 //    <p id="r1">--YY</p>
 //
 //   and continuing with [s2a, s2b, r2] [s3a, s3b, r3] ...
@@ -115,9 +115,8 @@ UnicodeString  getParam(const char *content, const char *name) {
 //
 //  doCompare
 //
-//      Compares a pair of strings, producing one result string.
-//      The result is wrapped in the appropriate html and written to stdout.
-//      The result can be "=", "=(I)", "=(N)" or "=(N,I)"
+//      Compares a pair of strings, producing a result string.
+//      The results are  wrapped in the appropriate html and written to stdout.
 //
 //      parameters:
 //          content:  the raw, unprocessed POST data submitted from the html form.
@@ -127,10 +126,12 @@ UnicodeString  getParam(const char *content, const char *name) {
 //          rName:    The name with which to label the output string.
 //
 //      output (to stdout) looks like
-//          <p id="rName">result string</p>
+//          <p id="name1">the first input string</p>
+//          <p id="name2"the second input string</p>
+//          <p id="rName">----</p>
 //
 //      return true if name1 and name2 exist as parameters in the POST data
-//             false if eithe is missing.
+//             false if either is missing.
 
 bool doCompare(const char *content, const char *name1, const char *name2, const char *rName) {
     UErrorCode    status = U_ZERO_ERROR;
