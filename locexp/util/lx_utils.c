@@ -1038,7 +1038,7 @@ const char *getUCharCategoryName(int8_t type)
     const char *f;
 
     f = u_getPropertyValueName(UCHAR_GENERAL_CATEGORY,
-                                  U_MASK(type),
+                                  type,
                                   U_LONG_PROPERTY_NAME);
 
     if (f == NULL) {

@@ -1101,6 +1101,41 @@ if(!tmp) /* if there was no trailing '/' ... */
 
       }
 
+      for(i=UCHAR_MASK_START;i<UCHAR_MASK_LIMIT;i++) {
+	int32_t has;
+	has = u_getIntPropertyValue(block, i);
+
+	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+		  i, "int", getUPropertyName(i), has,
+		  u_getIntPropertyMinValue(i),
+           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+
+      }
+
+#if 0
+      for(i=UCHAR_DOUBLE_START;i<UCHAR_DOUBLE_LIMIT;i++) {
+	double has;
+	has = u_getDoublePropertyValue(block, i);
+
+	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%g (%ld..%ld)</td><td>%s</td></tr>\n",
+		  i, "int", getUPropertyName(i), has,
+		  u_getIntPropertyMinValue(i),
+           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+
+      }
+
+      for(i=UCHAR_STRING_START;i<UCHAR_STRING_LIMIT;i++) {
+	int32_t has;
+	has = u_getIntPropertyValue(block, i);
+
+	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+		  i, "int", getUPropertyName(i), has,
+		  u_getIntPropertyMinValue(i),
+           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+
+      }
+#endif
+
       u_fprintf(gOut, "</table>\n");
 
                 u_fprintf(gOut, "<br> The PN column and the PVN column refer to the internal property number and property value number. Except in the case of the Canonical_Combining_Class, these numbers have no relevance outside of ICU. ");

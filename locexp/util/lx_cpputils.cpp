@@ -10,8 +10,13 @@
 #include "unicode/lx_utils.h"
 #include "unicode/caniter.h"
 
+
 class HTMLFilter : public UnicodeFilter
 {
+private:
+  static const uint32_t fgHTMLFilterClassID;
+public:
+  virtual UClassID getDynamicClassID() const { return (UClassID) &fgHTMLFilterClassID; }
   /* post 2.2: - stuff we have to add */
 private:
   UnicodeString& toPattern(UnicodeString&, UBool)const { return *(new UnicodeString("Look, Mom, I'm on TV!")); }
@@ -91,6 +96,8 @@ private:
     int fState;
 
 };
+
+const uint32_t HTMLFilter::fgHTMLFilterClassID = 0;
 
 U_CAPI
 void lx_setHTMLFilterOnTransliterator(UTransliterator *xlit, UBool doFilter)
