@@ -1,0 +1,54 @@
+I C U  -  A P P S
+-----------------
+
+ This package contains sample applications built using the ICU. For
+more information on the ICU:
+
+ URL:   http://www10.software.ibm.com/developerworks/opensource/icu/
+
+ Email: icu4c@us.ibm.com
+
+
+ If you have an application that is written using the ICU that you
+would like to contribute, see the contact information above.
+
+
+BUILDING
+--------
+
+
+*** UNIX (or other command line platforms):
+
+  1. Build and install the ICU ('make install'). Make note of the 
+      prefix used to build the ICU, which can be set with the
+     '--prefix=' option to it's ./configure.
+
+  2. Run the configure script in the icuapps directory.  You may need
+     to supply the same '--prefix=XXX' argument that was passed to the
+     ICU.
+
+  3. Type 'make' in the icuapps, or 'make install' if you wish.
+
+ Example:
+
+  ICU:
+     cd ...somewhere/icu
+     ./configure --prefix=/var/local
+     make install
+  
+  ICUAPPS:
+     cd ...somewhere/icuapps         (THIS directory)
+     ./configure --prefix=/var/local
+     make
+     make install                    (optional)
+
+
+
+*** Win32 Instructions
+  
+  1. Project files to be created. 
+  2. For now, you may create your own project file and include
+     the ICU include and lib directories.
+
+
+
