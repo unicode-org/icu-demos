@@ -10,7 +10,9 @@ include @ICU_MAKEFILE@
 top_builddir = .
 subdir = .
 
-SUBDIRS= uconv usort
+## Locale Explorer depends on uconv [build] and usort [runtime].
+SUBDIRS= uconv usort locexp
+
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
