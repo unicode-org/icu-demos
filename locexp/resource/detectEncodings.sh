@@ -15,8 +15,8 @@ for FILE in $*; do
 #         echo "# $FILE : $CODING"
          RES=`echo $FILE | sed -e 's/\.txt/.res/'`
          (
-            echo "$PKG_$RES : $FILE Makefile.res"
-            echo '	@echo SUPER Rebuilding $@ - '$CODING
+            echo "${PKG}_${RES} : $FILE Makefile.res"
+            echo '	@echo Rebuilding $@ - '$CODING
             echo '	@$(INVOKE) $(GENRB) --package-name '$PKG' -d . -e '$CODING' $<'
             echo
          ) >> Makefile.res
