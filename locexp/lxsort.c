@@ -91,11 +91,12 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
   if(aSort == NULL) {
     /* no USort */
-    lineAbove = FALSE;
-    lineBelow = FALSE;
+    lineAbove = TRUE;
+    lineBelow = TRUE;
   } else {
     /* calculate lineAbove */
     if(num == 0) {  
+      evenOdd = 0;
       lineAbove = TRUE; /* first item - always a line above */
     } else if( aSort->lines[num-1].keySize == aSort->lines[num].keySize  &&
                !memcmp(aSort->lines[num-1].key,
@@ -127,7 +128,7 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
 #if 1
   if(lineAbove) { u_fprintf(lx->OUT, "<div class=\"box%d\">\r\n", (evenOdd++)%2 ); }
-  u_fprintf(lx->OUT, "%U", chars);
+  u_fprintf(lx->OUT, "(%02d) %U", (aSort==NULL)?num:(int32_t)aSort->lines[num].userData, chars);
 
   {
     int32_t ii;
@@ -162,13 +163,13 @@ const UChar *showSort_attributeName(UColAttribute attrib)
 
   switch(attrib)
   {
-    case UCOL_FRENCH_COLLATION: return FSWF("UCOL_FRENCH_COLLATION","French collation");
+    case UCOL_FRENCH_COLLATION: return FSWF("UCOL_FRENCH_COLLATION","French accents");
     case UCOL_ALTERNATE_HANDLING: return FSWF("UCOL_ALTERNATE_HANDLING","Alternate handling");
     case UCOL_CASE_FIRST: return FSWF("UCOL_CASE_FIRST","Case first");
-    case UCOL_CASE_LEVEL: return FSWF("UCOL_CASE_LEVEL","Case level");
-    case UCOL_NORMALIZATION_MODE: return FSWF("UCOL_NORMALIZATION_MODE","Normalization mode");
+    case UCOL_CASE_LEVEL: return FSWF("UCOL_CASE_LEVEL","Add case level");
+    case UCOL_NORMALIZATION_MODE: return FSWF("UCOL_NORMALIZATION_MODE","Full normalization mode");
     case UCOL_STRENGTH: return FSWF("UCOL_STRENGTH","Strength");
-    case UCOL_HIRAGANA_QUATERNARY_MODE: return FSWF("UCOL_HIRAGANA__QUATERNARY_MODE","Hiragana Quaternary Mode");
+    case UCOL_HIRAGANA_QUATERNARY_MODE: return FSWF("UCOL_HIRAGANA__QUATERNARY_MODE","Add Hiragana Level");
     default:  return nulls;
   }
 }
@@ -180,19 +181,20 @@ const UChar *showSort_attributeVal(UColAttributeValue val)
   switch(val)
   {
   /* Duplicate:  UCOL_CE_STRENGTH_LIMIT */
-  case UCOL_IDENTICAL: return FSWF("UCOL_IDENTICAL","Identical");
-  case UCOL_LOWER_FIRST : return FSWF("UCOL_LOWER_FIRST","Lower first");
-  case UCOL_NON_IGNORABLE : return FSWF("UCOL_NON_IGNORABLE","Non-ignorable");
+  case UCOL_LOWER_FIRST : return FSWF("UCOL_LOWER_FIRST","Force Lowercase first");
   case UCOL_OFF : return FSWF("UCOL_OFF","Off");
   case UCOL_ON : return FSWF("UCOL_ON","On");
 /*  case UCOL_ON_WITHOUT_HANGUL : return FSWF("UCOL_ON_WITHOUT_HANGUL","On,without Hangul"); ????  */
-  case UCOL_PRIMARY : return FSWF("UCOL_PRIMARY","Primary");
-  case UCOL_QUATERNARY: return FSWF("UCOL_QUATERNARY","Quaternary");
-  case UCOL_SECONDARY : return FSWF("UCOL_SECONDARY","Secondary");
-  case UCOL_SHIFTED : return FSWF("UCOL_SHIFTED","Shifted");
+  case UCOL_PRIMARY : return FSWF("UCOL_PRIMARY","L1. Base Letters Only");
+  case UCOL_SECONDARY : return FSWF("UCOL_SECONDARY","L2. Base &amp; Accents");
+  case UCOL_TERTIARY : return FSWF("UCOL_TERTIARY","L3. Base, Accents, &amp; Case");
+  case UCOL_QUATERNARY: return FSWF("UCOL_QUATERNARY","L4. Base, Accents, Case, &amp; Punct.");
+  case UCOL_IDENTICAL: return FSWF("UCOL_IDENTICAL","L5. B/A/C/P and Codepoint");
+
+  case UCOL_SHIFTED : return FSWF("UCOL_SHIFTED","Ignore Punctuation");
+  case UCOL_NON_IGNORABLE : return FSWF("UCOL_NON_IGNORABLE","Punctuation = Base");
  /* Duplicate: UCOL_STRENGTH_LIMIT */
-  case UCOL_TERTIARY : return FSWF("UCOL_TERTIARY","Tertiary");
-  case UCOL_UPPER_FIRST : return FSWF("UCOL_UPPER_FIRST","Upper first");
+  case UCOL_UPPER_FIRST : return FSWF("UCOL_UPPER_FIRST","Force Uppercase first");
   default: return nulls;
   }  
 }
@@ -291,17 +293,43 @@ void showSort(LXContext *lx, const char *locale)
     lxCustSortOpts = TRUE;
   }
 
-  u_fprintf(lx->OUT, "<style>\r\n<!--.box0 { border: 1px inset gray; margin: 1px }\r\n.box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC } -->\r\n</style>\r\n");
+  u_fprintf(lx->OUT, "</td></tr></table>\r\n"); /* get us out of the table */
+
+  u_fprintf(lx->OUT, "<style>\r\n"
+            "<!--\r\n"
+/*
+            ".box0 { border: 1px inset gray; margin: 1px }\r\n"
+            ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
+*/
+            ".wide        { width: 100%% }\r\n"
+            ".high        { height: 100%% }\r\n"
+            ".fill        { width: 100%%; height: 100%% }\r\n"
+            ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
+            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n"
+            "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
+            "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
+            "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
+            "               color: black; vertical-align: top; border: 1px solid black; \r\n"
+            "               padding: 5px }\r\n"
+            ".noborder    { border: 1px none white }\r\n"
+            ".widenoborder { width: 100%%; border: 1px none white }\r\n"
+            ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
+            ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"
+            ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
+            "-->\r\n</style>\r\n");
 
   strChars[0] = 0;
 
   if(strstr(locale,"g7") != NULL)
   {
+    u_fprintf(lx->OUT, "sorry G7 is broken now, come back later<P>\r\n");
+    return;
     mode = kG7Mode;
   }
 
-  /* pull out the text to be sorted. Note, should be able to access this 
-     as a POST
+
+
+  /* pull out the text to be sorted. ===========================================================
    */
   text = queryField(lx,"EXPLORE_CollationElements");
 
@@ -315,7 +343,6 @@ void showSort(LXContext *lx, const char *locale)
     
     /* samplestring will vary with label locale! */
     sampleString =  FSWF(/*NOEXTRACT*/"EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
-    text = sampleString;
     
     sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
     if(U_SUCCESS(sampleStatus))  {
@@ -323,7 +350,7 @@ void showSort(LXContext *lx, const char *locale)
       ures_close(sampleRB);
     }
     
-    if(U_FAILURE(sampleStatus))  {
+    if(U_FAILURE(sampleStatus) || !sampleString2)  {
       sampleString2 = sampleString; /* fallback */
     }
     text = createEscapedSortList(sampleString2);
@@ -348,7 +375,7 @@ void showSort(LXContext *lx, const char *locale)
   }
 
 
-  /* look for custom rules */
+  /* look for custom rules =========================================================================== */
   ruleChars[0] = 0;
   text = queryField(lx, "usortRules");
 
@@ -367,20 +394,51 @@ void showSort(LXContext *lx, const char *locale)
   } else {
     ruleChars[0] = 0;
   }
-  
-  u_fprintf(lx->OUT, "%U<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted."));
-  
+
+
+/*  u_fprintf(lx->OUT, "%U<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted.")); */
+
+#if 0  
   u_fprintf(lx->OUT, "<FORM METHOD=\"GET\">");
   u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=_ VALUE=%s>", locale);
   u_fprintf(lx->OUT, "<INPUT NAME=EXPLORE_CollationElements VALUE=\"%U\" TYPE=hidden>", strChars); 
   u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\">",
-            FSWF("EXPLORE_CollationElements_Defaults", "Defaults"));
+            FSWF/* */ (/* */"EXPLORE_CollationElements_Defaults", "Defaults"));
   u_fprintf(lx->OUT, "</FORM>\r\n ");
+#endif
 
+  /* Table begin ============================================================================== */
   u_fprintf(lx->OUT, "<FORM METHOD=\"POST\" ACTION=\"?_=%s&EXPLORE_CollationElements=&\">", 
             locale);
+  u_fprintf(lx->OUT, "<TABLE id=\"main\" class=\"wide\" border=1>\r\n");
+  /* the source box  =======================================================================================*/
+  u_fprintf(lx->OUT, "  <td width=\"22%%\" rowspan=\"1\"><b>%U</b>\r\n", /* top is only 1 row for now */
+            FSWF("usortSource", "Source"));
+
+  u_fprintf(lx->OUT, "<p><TEXTAREA class=\"wide\" ROWS=20 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
   
-  /* Here, 'configuration information' at the top of the page. ====== */
+  writeEscaped(lx, strChars); 
+  /* if(*inputChars)
+     u_fprintf(lx->OUT, "%s", inputChars);  */
+  
+  u_fprintf(lx->OUT, "</TEXTAREA>\r\n");
+
+  u_fprintf(lx->OUT, "</p>\n</td>\r\n");
+
+  /* submit buttons ===========================================================================*/
+
+  u_fprintf(lx->OUT, "<td rowspan=\"1\">"); /* two :   buttons +  options*/ /* top only 1 row for now - fixme */
+  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT class=wide VALUE=\"%U\"><br>\r\n",
+            FSWF("EXPLORE_CollationElements_Sort", "Sort"));
+
+  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT class=wide NAME=showCollKey VALUE=\"%U\"><P>\r\n",
+            FSWF("EXPLORE_CollationElements_ShowCollKey", "Show Collation Key"));
+
+/*  u_fprintf(lx->OUT, "</td>\r\n"); */
+  
+  u_fprintf(lx->OUT, "<hr width=\"20%%\">\r\n");
+  
+  /* Here, 'configuration information' at the top of the page. ==================== */
   switch(mode)
   {
     case kSimpleMode:
@@ -428,13 +486,13 @@ void showSort(LXContext *lx, const char *locale)
       }
 
 #if 0
-          { 
-            int q;
-            for(q=0;ruleChars[q];q++) {
-              u_fprintf(lx->OUT, "&lt;U+%04x&gt;", ruleChars[q]);
-            }
-            u_fprintf(lx->OUT, "<br>");
-          }
+      { 
+        int q;
+        for(q=0;ruleChars[q];q++) {
+          u_fprintf(lx->OUT, "&lt;U+%04x&gt;", ruleChars[q]);
+        }
+        u_fprintf(lx->OUT, "<br>");
+      }
 #endif
 
 
@@ -450,7 +508,105 @@ void showSort(LXContext *lx, const char *locale)
 
       /* begin customizables */
       
-      u_fprintf(lx->OUT, "<TABLE BORDER=0><TR><TD>");
+      /* -------------------------- UCOL_STRENGTH ----------------------------------- */
+      status = U_ZERO_ERROR;
+      attribute = UCOL_STRENGTH;
+      customStrength = ucol_getAttribute(customCollator, attribute, &status);
+      if((ss = queryField(lx,"strength"))) {
+        nn = atoi(ss);
+        if( (nn || (*ss=='0'))  && /* choice is a number and.. */
+            (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
+        {
+          customStrength = nn; 
+        }
+      }
+      status = U_ZERO_ERROR;
+      ucol_setAttribute(customCollator, attribute, customStrength, &status);
+      if(U_FAILURE(status))
+      {
+        explainStatus(lx, status, NULL);
+        status = U_ZERO_ERROR;
+      }
+
+      
+      u_fprintf(lx->OUT, "<select class=wide name=strength>\r\n");
+
+      for(value = UCOL_PRIMARY; value < UCOL_STRENGTH_LIMIT; value++)
+      {
+        if(showSort_attributeVal(value)[0] != 0x0000)  /* If it's a named attribute, try it */
+        {  
+          u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
+                    (customStrength==value)?"selected":"",
+                    value,
+                    showSort_attributeVal(value));
+        }
+      }
+      u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
+
+      /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
+      {
+          UColAttributeValue caseVals[] = { UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST };
+          int i;
+          attribute = UCOL_CASE_FIRST;
+          status = U_ZERO_ERROR;
+          value = ucol_getAttribute(customCollator, attribute, &status);
+          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+          if((ss=queryField(lx, "cas1")))
+          {
+            value = atoi(ss);
+          }
+          else
+          {
+              value = UCOL_OFF;
+          }
+          u_fprintf(lx->OUT, "<select class=wide name=cas1>\r\n");
+
+          for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
+          {
+              u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
+                        (caseVals[i]==value)?"selected":"",
+                        caseVals[i],
+                        (i==0)?FSWF("UCOL_noforcecase","Don't force case"):showSort_attributeVal(caseVals[i]));
+          }
+          u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
+
+          status = U_ZERO_ERROR;
+          ucol_setAttribute(customCollator, attribute, value, &status);
+          if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+      }
+      /* ----------------- ALT HANDLING ------------ */
+      {
+          UColAttributeValue caseVals[] = { UCOL_SHIFTED, UCOL_NON_IGNORABLE};
+          int i;
+          attribute = UCOL_ALTERNATE_HANDLING;
+          status = U_ZERO_ERROR;
+          value = ucol_getAttribute(customCollator, attribute, &status);
+          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+          if((ss=queryField(lx, "shft")))
+          {
+            value = atoi(ss);
+          }
+          else
+          {
+              value = UCOL_NON_IGNORABLE;
+          }
+          u_fprintf(lx->OUT, "<select class=wide name=shft>\r\n");
+
+          for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
+          {
+              u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
+                        (caseVals[i]==value)?"selected":"",
+                        caseVals[i],
+                        showSort_attributeVal(caseVals[i]));
+          }
+          u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
+
+          status = U_ZERO_ERROR;
+          ucol_setAttribute(customCollator, attribute, value, &status);
+          if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+      }
       /* ------------------------------- UCOL_FRENCH_COLLATION ------------------------------------- */
       attribute = UCOL_FRENCH_COLLATION;
       status = U_ZERO_ERROR;
@@ -471,56 +627,6 @@ void showSort(LXContext *lx, const char *locale)
       ucol_setAttribute(customCollator, attribute, value, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
       
-      /* ----------------- ALT HANDLING ------------ */
-      attribute = UCOL_ALTERNATE_HANDLING;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx, "shft"))
-      {
-        value = UCOL_SHIFTED;
-      } else  if(lxCustSortOpts) {/* if we came from the form.. */
-        value = UCOL_NON_IGNORABLE;
-      }
-
-      u_fprintf(lx->OUT, "<input type=checkbox %s name=shft> %U <BR>\r\n",
-                (value==UCOL_SHIFTED)?"checked":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-
-      /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
-      {
-          UColAttributeValue caseVals[] = { UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST };
-          int i;
-          attribute = UCOL_CASE_FIRST;
-          status = U_ZERO_ERROR;
-          value = ucol_getAttribute(customCollator, attribute, &status);
-          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if((ss=queryField(lx, "cas1")))
-          {
-            value = atoi(ss);
-          }
-          else
-          {
-              value = UCOL_OFF;
-          }
-          u_fprintf(lx->OUT, "%U: <select name=cas1>\r\n", showSort_attributeName(attribute) );
-
-          for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
-          {
-              u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
-                        (caseVals[i]==value)?"selected":"",
-                        caseVals[i],
-                        showSort_attributeVal(caseVals[i]));
-          }
-          u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
-
-          status = U_ZERO_ERROR;
-          ucol_setAttribute(customCollator, attribute, value, &status);
-          if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
-          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      }
       /* ------------------------------- UCOL_CASE_LEVEL ------------------------------------- */
       attribute = UCOL_CASE_LEVEL;
       status = U_ZERO_ERROR;
@@ -560,41 +666,6 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
       
 
-      /* -------------------------- UCOL_STRENGTH ----------------------------------- */
-      status = U_ZERO_ERROR;
-      attribute = UCOL_STRENGTH;
-      customStrength = ucol_getAttribute(customCollator, attribute, &status);
-      if((ss = queryField(lx,"strength"))) {
-        nn = atoi(ss);
-        if( (nn || (*ss=='0'))  && /* choice is a number and.. */
-            (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
-        {
-          customStrength = nn; 
-        }
-      }
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, customStrength, &status);
-      if(U_FAILURE(status))
-      {
-        explainStatus(lx, status, NULL);
-        status = U_ZERO_ERROR;
-      }
-
-      
-      u_fprintf(lx->OUT, "%U: <select name=strength>\r\n", showSort_attributeName(attribute) );
-
-      for(value = UCOL_PRIMARY; value < UCOL_STRENGTH_LIMIT; value++)
-      {
-        if(showSort_attributeVal(value)[0] != 0x0000)  /* If it's a named attribute, try it */
-        {  
-          u_fprintf(lx->OUT, "<OPTION %s VALUE=\"%d\">%U\r\n",
-                    (customStrength==value)?"selected":"",
-                    value,
-                    showSort_attributeVal(value));
-        }
-      }
-      u_fprintf(lx->OUT, "</SELECT><BR>\r\n");
-
       /* ------------------------------- UCOL_HIRAGANA_QUATERNARY_MODE ------------------------------------- */
       attribute = UCOL_HIRAGANA_QUATERNARY_MODE;
       status = U_ZERO_ERROR;
@@ -613,104 +684,27 @@ void showSort(LXContext *lx, const char *locale)
       ucol_setAttribute(customCollator, attribute, value, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
 
+      /* reset ----------------------------------------- */
+
+      u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT class=wide disabled VALUE=\"%U\">",
+                FSWF("EXPLORE_CollationElements_Defaults", "Reset to Defaults"));
+
     u_fprintf(lx->OUT, "</TD>");
 
     /* end customizables ---------------------------------------------------------- */
-    u_fprintf(lx->OUT, "<TD>\r\n");
-    u_fprintf(lx->OUT, "%U\r\n", FSWF("usortCustomRules","Custom Rules"));
-    {
-      UChar dispName[1024];
-      UErrorCode stat = U_ZERO_ERROR;
-      dispName[0] = 0;
-      uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
-      
-      u_fprintf(lx->OUT, "<input type=submit name=\"usortRulesLocale\" value=\"%U %U %U\">",
-                FSWF("usortLocaleRules1", "Load rules for"),
-                dispName,
-                FSWF("usortLocaleRules2","") /* for translation */
-                );
-    }
-    u_fprintf(lx->OUT, "<br>\r\n");
-    u_fprintf(lx->OUT, "<textarea name=\"usortRules\" rows=5 cols=50 columns=50>");
-    
-    if(hasQueryField(lx, "usortRulesLocale")) {
-      UErrorCode err = U_ZERO_ERROR;
-      UResourceBundle *bund, *array = NULL;
-      const UChar *s = 0;
-      int32_t len;
-
-      bund = getCurrentBundle(lx, &err);
-      if(bund) array = ures_getByKey(bund, "CollationElements", NULL, &err);
-      if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);
-      if(U_SUCCESS(err) && s && *s) {
-        u_fprintf(lx->OUT, "# %s.txt Rules\r\n\r\n", lx->curLocaleName, queryField(lx,"usortRulesLocale"));
-        printRuleString(lx,s);
-      } else { 
-        u_fprintf(lx->OUT, "err %s", u_errorName(err));
-      }
-    } else if (ruleUrlChars[0]) { /* user has entered a custom rule */
-      printRuleString(lx,ruleChars); 
-    }
-    u_fprintf(lx->OUT, "</textarea>\r\n");
-    
-    u_fprintf(lx->OUT, "</TD>\r\n");
-    u_fprintf(lx->OUT, "</TR></TABLE>");
+    /* ======================================================================================= */
 
     }
     break;
 
-  default:
+  default: /* fix this later */
     break;
     /* no customization */
   } 
 
-  u_fprintf(lx->OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WI_DTH=100% HE_IGHT=100%><TR><TD WI_DTH=\"33%\"><B>%U</B></TD>\r\n",
-            FSWF("usortSource", "Source"));
+/*  output  =================================================================================== */ 
 
-  /* Now, the table itself. first the column headings  ============================== */
-  if(inputChars[0]) {
-    switch(mode) { 
-     case  kSimpleMode:
-     {
-       u_fprintf(lx->OUT, "<TD WI_DTH=\"33%\"><B>%U</B></TD><TD WI_DTH=\"33%\"><B>%U</B></TD>",
-                 FSWF("usortOriginal", "Original"),
-                 FSWF("usortCollated", "Collated"));
-     }
-     break;
-      
-     case kG7Mode:
-     {
-       for(i=0;i<G7COUNT;i++) {
-         UChar junk[1000];
-         uloc_getDisplayName(G7s[i], lx->dispLocale, junk, 1000, &status);
-         u_fprintf(lx->OUT, "<TD WIDTH=\"10%\">%U</TD>",junk);
-       }
-     }
-     break;
-    } /* end switch mode */
-  } /* end if inputchars[0]  (header) */
-      
-  u_fprintf(lx->OUT, "</TR>\r\n");
-  
-  u_fprintf(lx->OUT, "<TR><TD WIDTH=\"20%\">");
-  
-  /* the source box */
-  u_fprintf(lx->OUT, "<TEXTAREA ROWS=20 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
-  
-  writeEscaped(lx, strChars); 
-  /* if(*inputChars)
-     u_fprintf(lx->OUT, "%s", inputChars);  */
-  
-  u_fprintf(lx->OUT, "</TEXTAREA><BR>\r\n");
-  
-  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\"><P>\r\n",
-            FSWF("EXPLORE_CollationElements_Sort", "Sort"));
 
-  u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT NAME=showCollKey VALUE=\"%U\"><P>\r\n",
-            FSWF("EXPLORE_CollationElements_ShowCollKey", "Show Collation Key"));
-
-  /* END source box */
-  u_fprintf(lx->OUT, "</TD>\r\n");
 
   /* ========== Do the actual sort ======== */
   if(inputChars[0] != 0)
@@ -733,7 +727,15 @@ void showSort(LXContext *lx, const char *locale)
           USort *aSort = NULL;
           UChar *first, *next;
           int32_t i, count=0;
-          
+
+          if(n == 0) { 
+            u_fprintf(lx->OUT, "<TD WIDTH=\"22%%\" rowspan=\"2\"><p><B>%U</B></p>\r\n",
+                      FSWF("usortOriginal", "Original"));
+          } else {
+            u_fprintf(lx->OUT, "<TD WIDTH=\"22%%\" rowspan=\"2\"><p><B>%U</B></p>\r\n",
+                      FSWF("usortCollated", "Collated"));
+          }
+
           aSort = customSort;
           if(n>0 && !lxCustSortOpts) {
             /* don't setstrength on 1st item (default) if custom options have been set */
@@ -766,16 +768,19 @@ void showSort(LXContext *lx, const char *locale)
             usort_sort(aSort); /* first item is 'original' */
           }
           
-          
-          u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
+
+          u_fprintf(lx->OUT, "<table class=noborder width=\"90%%\" border=1>\r\n");
+          u_fprintf(lx->OUT, "<tr><TD VALIGN=TOP>");
           
           for(i=0;i<aSort->count;i++) {
             showSort_outputWord(lx, (n==0)?NULL:aSort, i, aSort->lines[i].chars);
           }
 
-          u_fprintf(lx->OUT, "</TD>");	  
+          u_fprintf(lx->OUT, "</TD></tr>");	  
+          u_fprintf(lx->OUT, "</table></td>\r\n");
           
           usort_remove(aSort); /* clear out lines, prepare for next go round */
+          
         }
         usort_close(customSort);
       }
@@ -834,7 +839,51 @@ void showSort(LXContext *lx, const char *locale)
       break;
     }
   }
-  u_fprintf(lx->OUT, "</TR></TABLE><P>");
+  u_fprintf(lx->OUT, "</tr>\r\n");
+
+  
+    /* -===================================================================== custom rules ... */
+    u_fprintf(lx->OUT, "<tr><TD colspan=\"2\">\r\n");
+    u_fprintf(lx->OUT, "%U\r\n", FSWF("usortCustomRules","Custom Rules"));
+    {
+      UChar dispName[1024];
+      UErrorCode stat = U_ZERO_ERROR;
+      dispName[0] = 0;
+      uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
+      
+      u_fprintf(lx->OUT, "<input type=submit class=wide name=\"usortRulesLocale\" value=\"%U %U %U\">",
+                FSWF("usortLocaleRules1", "Load rules for"),
+                dispName,
+                FSWF("usortLocaleRules2","") /* for translation */
+        );
+    }
+    u_fprintf(lx->OUT, "<br>\r\n");
+    u_fprintf(lx->OUT, "<textarea class=wide name=\"usortRules\" rows=5 cols=50 columns=50>");
+    
+    if(hasQueryField(lx, "usortRulesLocale")) {
+      UErrorCode err = U_ZERO_ERROR;
+      UResourceBundle *bund, *array = NULL;
+      const UChar *s = 0;
+      int32_t len;
+
+      bund = getCurrentBundle(lx, &err);
+      if(bund) array = ures_getByKey(bund, "CollationElements", NULL, &err);
+      if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);
+      if(U_SUCCESS(err) && s && *s) {
+        u_fprintf(lx->OUT, "# %s.txt Rules\r\n\r\n", lx->curLocaleName, queryField(lx,"usortRulesLocale"));
+        printRuleString(lx,s);
+      } else { 
+        u_fprintf(lx->OUT, "err %s", u_errorName(err));
+      }
+    } else if (ruleUrlChars[0]) { /* user has entered a custom rule */
+      printRuleString(lx,ruleChars); 
+    }
+    u_fprintf(lx->OUT, "</textarea>\r\n");
+    
+    u_fprintf(lx->OUT, "</td></tr>\r\n");
+    /* ========== end rule */ 
+
+  u_fprintf(lx->OUT, "</TABLE><P>");
 
   u_fprintf(lx->OUT, "</form>\r\n");
 
@@ -848,6 +897,8 @@ void showSort(LXContext *lx, const char *locale)
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
             FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));
 
-  showExploreCloseButton(lx, locale, "CollationElements");
+  /* showExploreCloseButton(lx, locale, "CollationElements"); */
+  u_fprintf(lx->OUT, "<table width=100%%><tr><td>\r\n"); 
+  
 }
 
