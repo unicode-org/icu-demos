@@ -1,8 +1,4 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumpdat", "..\dumpdat\dumpdat.vcproj", "{E38521D4-F13E-4565-A975-988759C06106}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "idnbrowser", "..\idnbrowser\idnbrowser.vcproj", "{77B06247-9A24-419D-B4C2-C281D265F1C5}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
@@ -47,16 +43,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbrowser", "..\nbrowser\nbr
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\scompare.vcproj", "{F4E8422B-9C62-4771-B37E-1F9309291C70}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "translitdemo", "..\translitdemo\translitdemo.vcproj", "{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{E38521D4-F13E-4565-A975-988759C06106}.Debug.ActiveCfg = Debug|Win32
-		{E38521D4-F13E-4565-A975-988759C06106}.Debug.Build.0 = Debug|Win32
-		{E38521D4-F13E-4565-A975-988759C06106}.Release.ActiveCfg = Release|Win32
-		{E38521D4-F13E-4565-A975-988759C06106}.Release.Build.0 = Release|Win32
 		{77B06247-9A24-419D-B4C2-C281D265F1C5}.Debug.ActiveCfg = Debug|Win32
 		{77B06247-9A24-419D-B4C2-C281D265F1C5}.Debug.Build.0 = Debug|Win32
 		{77B06247-9A24-419D-B4C2-C281D265F1C5}.Release.ActiveCfg = Release|Win32
@@ -97,6 +97,14 @@ Global
 		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Debug.Build.0 = Debug|Win32
 		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Release.ActiveCfg = Release|Win32
 		{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}.Release.Build.0 = Release|Win32
+		{F4E8422B-9C62-4771-B37E-1F9309291C70}.Debug.ActiveCfg = Debug|Win32
+		{F4E8422B-9C62-4771-B37E-1F9309291C70}.Debug.Build.0 = Debug|Win32
+		{F4E8422B-9C62-4771-B37E-1F9309291C70}.Release.ActiveCfg = Release|Win32
+		{F4E8422B-9C62-4771-B37E-1F9309291C70}.Release.Build.0 = Release|Win32
+		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Debug.ActiveCfg = Debug|Win32
+		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Debug.Build.0 = Debug|Win32
+		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Release.ActiveCfg = Release|Win32
+		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
