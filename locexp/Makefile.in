@@ -20,7 +20,7 @@ LXOPTIONS = -DLX_USE_FONTED
 
 -include Makefile.local
 
-CPPFLAGS += $(LXOPTIONS)
+CPPFLAGS += $(LXOPTIONS) -DINSURE
 
 ## Build directory information
 top_builddir = ..

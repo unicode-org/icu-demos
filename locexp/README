@@ -195,3 +195,27 @@ X - done
        backslash (U+005C) isn't available! do soemthing else.. use %'s or 
         something. maybe transliteration.
 
+todo 1.6.0
+ *  - add 'show all cnvs'
+    - add 'show all label locales' [assume lx locales are a subset of icu locales]
+
+===== CHANGES in 1.6:
+ - converter list pared down to just MIME names [for now.. todo: show all]
+ - several fixes to the way sample sorts are printed
+ - 'change label' is shown in the target lang
+ - changing converters/labels/translit is disabled in 'exploration' page
+ - new localization: French
+ - The experimental transliterators and locale data have not been put up on the   locale explorer page now.
+ - simplified banner for locale explorer
+ - MIME names are used and passed to the browser
+
+=======
+TODO, transliteration:
+A couple of design points -  #1, want to do any-any transliteration, #2 need to put contexts into FSWF().
+  steps:
+   1. remove HTML from fswf'ed text, OR mark it somehow..
+   2. make FSWF have a switch so that it can translit ..
+   3. also, have some fcn so %U's can be transliterated... 
+                (buffer pool mgmt) 
+
+ Then, we could evne transliterate Latin-Cyrillic [ex].. because no HTML tags would be transliterated.. 
