@@ -198,7 +198,7 @@ void initContext ( LXContext *ctx )
   memset(ctx, 0, sizeof(*ctx));
   strcpy(ctx->cLocale, "en");
   ctx->defaultRB = 0;
-  ctx->ourCharsetName = "iso-8859-1";
+  ctx->ourCharsetName = "utf-8";
   ctx->locales = NULL;
   ctx->curLocale = NULL;
   ctx->parLocale = NULL;
@@ -295,8 +295,8 @@ void runLocaleExplorer(LXContext *myContext)
 
 
   /* Set up some initial values, just in case something goes wrong later. */
-  strcpy(lx->chosenEncoding, "LATIN_1");
-  lx->ourCharsetName = "iso-8859-1";
+  strcpy(lx->chosenEncoding, "utf-8");
+  lx->ourCharsetName = "utf-8";
 
 
 
@@ -607,10 +607,11 @@ void runLocaleExplorer(LXContext *myContext)
 	u_fprintf(lx->OUT, "<UL>%U<P>\r\n",
 	  FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers over 45 different languages, further divided into 150+ geographic locales.  For each language, data such as days of the week, months, and their abbreviations are defined.  <P>ICU is an open-source project."));
         
+#if 0
         u_fprintf(lx->OUT, "%U<P>\r\n",
                   FSWF/**/(/**/"specialMessage_2000Oct30",/**/
                        "<I>Note: Locale Explorer should be much faster, but.. there's an ongoing problem where (at least) Microsoft Internet Explorer users will be faced with a blank page or an error page.. if this occurs, please simply hit Reload and all should be corrected.</I>"));
-
+#endif
 	u_fprintf(lx->OUT, "</UL>");
   }
 
@@ -2076,7 +2077,7 @@ void listBundles(char *b)
       showStringWithDescription(lx, myRB, locale, b, charDescs, "localPatternChars", TRUE);
     }
     showDateTimeElements(lx, myRB, locale);
-    
+#if 0
     { 
       const UChar *zsDesc[8];
       zsDesc[0] = FSWF("zoneStrings0", "Canonical");
@@ -2094,6 +2095,7 @@ void listBundles(char *b)
       
       show2dArrayWithDescription(lx, myRB, locale, zsDesc, b, "zoneStrings");
     }
+#endif
                                                   /* %%%%%%%%%%%%%%%%%%%%%%%*/
                                                   /*     Numbers section %%%*/
 
