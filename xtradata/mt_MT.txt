@@ -18,3 +18,4 @@ mt_MT {
 
 }
 
+//CET: \u0126in ta' L-Ewropa Centrali

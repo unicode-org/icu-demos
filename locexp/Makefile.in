@@ -59,7 +59,6 @@ distclean distclean-local dist dist-local check check-local all-recursive \
 ## List of standard targets
 all: all-recursive all-local
 install: install-recursive install-local
-	@echo "NOT installing anything from the icudata directory. Read icudata/README for more information!"
 
 clean: clean-recursive clean-local
 distclean : distclean-recursive distclean-local

@@ -117,6 +117,10 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 sr.txt:  sr.utf16.txt escapeABundle
 	../../uconv/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt || rm -f sr.txt
 
+mt.res : mt.txt
+	@echo Rebuilding $@ - latin3
+	@$(sbindir)/genrb -elatin3 $<
+
 
 escapeABundle: escapeABundle.c
 	cc -o escapeABundle escapeABundle.c

@@ -147,7 +147,7 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
         return loadTranslitFromCache((int)script, "Arabic-Latin");
 
     case U_CYRILLIC:
-        return loadTranslitFromCache((int)script, "Russian-Latin"); /* Cyrillic != Russian, but.. */
+        return loadTranslitFromCache((int)script, "Cyrillic-Latin"); /* Cyrillic != Russian, but.. */
 
     case U_HEBREW:
         return loadTranslitFromCache((int)script, "Hebrew-Latin"); 
@@ -161,6 +161,11 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
 
     case U_HALFWIDTH_AND_FULLWIDTH_FORMS:
         return loadTranslitFromCache((int)script, "Halfwidth-Latin"); 
+
+
+    case U_HANGUL_JAMO:
+    case U_HANGUL_SYLLABLES:
+        return loadTranslitFromCache((int)script, "Hangul-Jamo;Jamo-Latin"); 
 
 
     default:
@@ -187,6 +192,9 @@ U_CAPI void
     UCharScript script;
     int srclen;
 
+    int n = 0;
+
+    UChar totrans[300];
     UChar tmpbuf[300];
     
 #ifdef WIN32
@@ -200,11 +208,14 @@ U_CAPI void
     script =  u_charScript(_this->invalidUCharBuffer[0]);
     myTrans = getTransliteratorForScript(script);
 
-    convertIntoTargetOrErrChars(_this, target, targetLimit, beginMark, beginMark+u_strlen(beginMark), err); 
+    totrans[n++]= _this->invalidUCharBuffer[0];
 
-    len = utrns_transliterate(myTrans, _this->invalidUCharBuffer, _this->invalidUCharLength, tmpbuf, 300, &status2);
+    /* the <FONT> thing */
+    convertIntoTargetOrErrChars(_this, target, targetLimit, beginMark, beginMark+u_strlen(beginMark), err);  
+
+    /* len = utrns_transliterate(myTrans, _this->invalidUCharBuffer, _this->invalidUCharLength, tmpbuf, 300, &status2);*/
     
-    convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err);
+    /* convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err); */
 
     /* Todo: check script of the rest of the invaliducharbuffer */
 
@@ -213,13 +224,21 @@ U_CAPI void
     while((*source) < sourceLimit)
     {
         for(srclen=0; ((*source)+srclen)<sourceLimit && u_charScript( (*source)[srclen] ) == script  ; srclen++);
-        
-        /* If we found any, xliterate them */
+       
         if(srclen > 0)
         {
-            len = utrns_transliterate(myTrans, *source, srclen, tmpbuf, 300, &status2);
+            u_strncpy(totrans+n, *source, srclen);
+            n += srclen;
+        }
+ 
+        /* If we found any, xliterate them */
+        if(n > 0)
+        {
+            len = utrns_transliterate(myTrans, totrans, n, tmpbuf, 300, &status2);
             convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err);
-            (*source) += srclen;
+            (*source) += srclen; /* if any of the actual source was found */
+
+            n = 0; /* reset */
         }
         script = u_charScript((*source)[srclen]);
 

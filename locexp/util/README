@@ -59,3 +59,15 @@ lx_utils.h   - a mishmash of:
 syrtables.h   - syriac implementation
 fonted_imp.h  - common file for 'fontedcb' modules
 devtables.h   - devanagari implementation
+
+----------------------------------------------------
+----------------------------------------------------
+TODO:
+
+ - translitcb
+
+    - REALLY want to have a composite converter, etc..
+    - But in the meantime:   Transliterate runs of the same BLOCK all as one. Better yet,
+      transliterate text that wants the same transliterator, all in
+      one run.  That way things like {PHI}{epsilon} can turn into Phe and
+      not PHe. 

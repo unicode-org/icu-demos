@@ -140,4 +140,10 @@ xdvng.ttf into that control panel, or go to the file menu (in Fonts)
               See the README and ../FONTS.SCALE files.. 
               Run 'mkfontdir .' and then 'xset fp+ `pwd`' and finally 'xset fp rehash'. 
               Restart your browser 
+
 -------------------------------
+-------------------------------
+
+TODO LIST for LOCEXP:
+
+   - see util/README for utility TODO's

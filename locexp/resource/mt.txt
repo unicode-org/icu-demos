@@ -3,30 +3,35 @@
 //*   Corporation and others.  All Rights Reserved.
 //***********************************************************************/
 // Maltese translation. By Steven R. Loomis <srl@monkey.sbay.org>
+// Also by Mirka Mifsud Bonicci <mirka@pr2000.com>
+//
+// Please note!!!!! This file is in LATIN-3 format [iso-8859-3]!
 
 mt { 
 
+    LocaleCodes  {  "Kodiåi ta' Lokali"  }
 
+   LocaleCodes_Country  {  "Pajji¿"  }
+   LocaleCodes_Language  {  "Lingwi"  }
+   LocaleCodes_Variant  {  "Varjazzonji"  }
 
+  DefaultEncoding{  "utf-8"  }
+   NumberElements3{ "Persentaõõ" }
+   UNKNOWN_ERROR  {  "(¿ball mhux mag±ref)"  }
+//   USING_DEFAULT_ERROR  {  "(nuqqas)"  }
+//   USING_FALLBACK_ERROR  {  "(wirt)"  } // Inherited
+   inherited  {  "(wirt)"  }
+   inherited_from  {  "(wirt minn %U)"  }
 
-
-
-
-
-   DefaultEncoding{  "utf-8"  }
-   NumberElements3{ "Persenta\u0121\u0121" }
-   UNKNOWN_ERROR  {  "(\u017Aball mhux mag\u0127ref)"  }
-   USING_DEFAULT_ERROR  {  "(nuqqas)"  }
-   USING_FALLBACK_ERROR  {  "(wirt)"  } // Inherited
-   chooseLocale0 { "Il-lingwa u pajji\u017A tieg\u0127i '" }
-   chooseLocale1 { "' huwa." }
-   chooseLocale2 { "Jew, select below.. " } 
-   help { "G\u0127en" }
-   helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
+   chooseLocale { "Il-lingwa u pajji¿ tieg±i :" }
+   changeLocale { "Il-lingwa u pajji¿ tieg±i :" }
+//   chooseLocale1 { "' huwa." }
+//   chooseLocale2 { "Jew, ag±zel hawn taht.. " } 
+   help { "G±en" }
    localeList_Locale { "il-Lingwi" }
-   localeList_Sublocale{ "pajji\u017B" }
-   myConverter{ "Kodi\u010Bi ta' ittra:" }
-   myLocale { "Na\u0127:" }
+   localeList_Sublocale{ "pajji¿" }
+   myConverter{ "Kodiåi ta' ittra:" }
+   myLocale { "Na±:" }
    none { "Xejn" }
    statusTableHeader  {  "G\u0127a\u017Cla:<BR><!-- Click to change -->"  }
    usortIdentical  {  "Identiku"  }
@@ -35,6 +40,25 @@ mt {
    usortSort  {  "Sort"  }
    usortTertiary  {  "Ter\u017Biarju"  } // ?
    usortSource { "Minn" }
+
+// Translations FROM en.txt follow: [esp. from Mirka]
+   helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
+   LocaleID      { "Windows Locale ID" }
+   Version { "ICU Data Version" }
+   Languages { "Lingwa uri l-ismijiet" }
+   Countries { "Pajji¿ uri l-ismijiet" }
+   CollationElements { "Collation rules" }
+   localPatternChars { "Localized Date Pattern Chars" }
+   zoneStrings { "Time Zones" }
+   NumberPatterns { "Number Patterns" }
+   NumberElements { "Number Elements" }
+   DateTimePatterns { "Date & Time Patterns" }
+   AmPmMarkers { "AM & PM" }
+   CurrencyElements { "Currency Elements" }
+	Day { "õurnata" }
+	Month { "xahar" }
+
+
 }
 
 
