@@ -35,7 +35,7 @@ parseQueryString(const char* source,int32_t srcLen, int32_t optionCount, QueryOp
             /* process the value */
             int32_t l=0;
             int32_t k = i+1; /* go past the value separtor */
-            while(src[k+l] != OPTION_SEPARATOR){
+            while(((k+l) < srcLen ) && src[k+l] != OPTION_SEPARATOR){
                 l++;
             }
             option->doesOccur = TRUE;
