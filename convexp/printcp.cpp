@@ -162,7 +162,7 @@ char *parseAndCopy(char *dest, const char *source, int32_t len) {
    because the character isn't complete yet. This function tries to prevent showing
    non-shortest form in the layout.
    Please see http://www.unicode.org/unicode/reports/tr28/ for details. */
-UBool isShortestUTF8(char *source, int32_t size) {
+static UBool isShortestUTF8(char *source, int32_t size) {
     if (source[0] == (char)0xc0 || source[0] == (char)0xc1 || source[0] > (char)0xf4
         || (size >= 2
             && ((source[0] == (char)0xE0 && source[1] < (char)0xA0)
@@ -175,8 +175,37 @@ UBool isShortestUTF8(char *source, int32_t size) {
     return TRUE;
 }
 
+static inline void printUChar(const UChar *targetBuffer, int32_t targetSize, UChar32 uniVal, UErrorCode *status) {
+    int32_t utf8Size;
+    static char utf8[128];
+    static char uniName[256];
+    const char *escapedChar = getEscapeChar(uniVal);
+
+    u_charName(uniVal, U_EXTENDED_CHAR_NAME, uniName, sizeof(uniName), status);
+    if (!escapedChar) {
+        u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
+        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br>",
+            uniName, utf8);
+    }
+    else {
+        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">%s", uniName, escapedChar);
+    }
+    printf("<font size=\"-2\">%04X</font></td>\n", uniVal);
+}
+
+static inline void printContinue(const char *startBytes, uint8_t currCh, UErrorCode *status) {
+    printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s#layout\">%02X</a></td>\n",
+        gCurrConverter, startBytes, (uint32_t)currCh,
+        getStandardOptionsURL(status),
+        (uint32_t)currCh);
+}
+
+static inline void printNothing() {
+    puts("<td class=\"reserved\"" CELL_WIDTH ">"NBSP"</td>");
+}
+
 void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
-    int32_t col, row, utf8Size, startBytesLen, maxCharSize;
+    int32_t col, row, startBytesLen, maxCharSize;
     char *sourceBuffer;
     char *source;
     char *sourceLimit;
@@ -184,8 +213,6 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     UChar *target;
     UChar *targetLimit;
     UChar32 uniVal;
-    static char utf8[128];
-    static char uniName[256];
     int8_t cnvMaxCharSize;
 
     if (U_FAILURE(*status)) {
@@ -274,42 +301,32 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         for (col = 0; col < 16; col++) {
             ucnv_resetToUnicode(cnv);
             uint8_t currCh = (uint8_t)(row << 4 | col);
-            *status = U_ZERO_ERROR;
+            int32_t targetSize = 0;
 
+            *status = U_ZERO_ERROR;
             sourceBuffer[startBytesLen/2] = currCh;
             targetBuffer[0] = 0;
             source = sourceBuffer;
             target = targetBuffer;
             ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, TRUE, status);
+            targetSize = (target - targetBuffer);
 
             if (convType == UCNV_UTF8 && *status == U_TRUNCATED_CHAR_FOUND && !isShortestUTF8(sourceBuffer, source - sourceBuffer))
             {
                 *status = U_ILLEGAL_CHAR_FOUND;
             }
-            if (U_SUCCESS(*status) && (target - targetBuffer) > 0) {
-                U16_GET_UNSAFE(targetBuffer, 0, uniVal);
-                const char *escapedChar = getEscapeChar(uniVal);
-                u_charName(uniVal, U_EXTENDED_CHAR_NAME, uniName, sizeof(uniName), status);
-                if (!escapedChar) {
-                    u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, target - targetBuffer, status);
-                    printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH "><font size=\"+2\">%s</font><br>", uniName, utf8);
-                }
-                else {
-                    printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">%s", uniName, escapedChar);
-                }
-                printf("<font size=\"-2\">%04X</font></td>\n", uniVal);
+            if (U_SUCCESS(*status) && targetSize > 0) {
+                U16_GET(targetBuffer, 0, 0, targetSize, uniVal);
+                printUChar(targetBuffer, targetSize, uniVal, status);
             }
             else if (*status == U_TRUNCATED_CHAR_FOUND
 				|| (convType == UCNV_EBCDIC_STATEFUL && currCh == UCNV_SO && startBytesLen == 0))
             {
-                printf("<td class=\"continue\"" CELL_WIDTH "><a href=\"" CGI_NAME "?conv=%s"OPTION_SEP_STR"b=%s%02X"OPTION_SEP_STR"%s#layout\">%02X</a></td>\n",
-                    gCurrConverter, startBytes, (uint32_t)currCh,
-                    getStandardOptionsURL(status),
-                    (uint32_t)currCh);
+                printContinue(startBytes, currCh, status);
             }
             else {
                 // show nothing
-                puts("<td class=\"reserved\"" CELL_WIDTH ">"NBSP"</td>");
+                printNothing();
             }
         }
         printf("<th class=\"standard\">%X0</th>\n", row);
