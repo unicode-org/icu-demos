@@ -9,7 +9,6 @@
    using the usort library.
 
    for the IBM Classes for Unicode
-   http://oss.software.ibm.com/icu/
 
    Steven R. Loomis <srl@jtcsv.com>
 
