@@ -87,18 +87,17 @@ void setupLocaleExplorer(LXContext *lx)
 #endif
 
 
-    /** Below is useful for debugging. */
-/*    fprintf(stderr, "PID=%d\n", getpid());  */
-/*     system("sleep 20");   */
+#if 0
+   /** Below is useful for debugging. */
+    fprintf(stderr, "PID=%d\n", getpid());  
+    system("sleep 20");   
+#endif
 
     status = U_ZERO_ERROR; 
 
     /* Set up some initial values, just in case something goes wrong later. */
     strcpy(lx->chosenEncoding, "utf-8");
     lx->ourCharsetName = "utf-8";
-
-
-
 
     lx->OUT = setLocaleAndEncodingAndOpenUFILE(lx, lx->chosenEncoding, &lx->setLocale, &lx->setEncoding, &fileObj);
 

@@ -1136,8 +1136,13 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     UErrorCode status;
     double examples[] = { 0, 123.45, 67890 };
     UNumberFormat *exampleNF = 0;
-
-    int n;
+    UNumberFormatStyle styles[] = { UNUM_SPELLOUT 
+#ifdef SRL_HAVE_XRBNF
+                                    , UNUM_ORDINAL, UNUM_DURATION
+#endif
+    };
+    const char *stylen[] = { "spellout", "ordinal", "duration" }; 
+    int n, k;
     const char *key = "SpelloutRulesExample";
     UChar tempChars[245];
 
@@ -1149,21 +1154,23 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
 
     u_fprintf(lx->OUT, "<TABLE BORDER=2 WIDTH=\"100%\" HEIGHT=\"100%\">\r\n");
 
-    for(n=0;n<3;n++)
-    {
+    for(k=0;k<3;k++) {
+      u_fprintf(lx->OUT, "<tr><td colspan=2><b>%s</b></td></tr>\r\n", stylen[k]);
+      for(n=0;n<(sizeof(styles)/sizeof(styles[0]));n++) {
         status = U_ZERO_ERROR;
         tempChars[0] = 0;
-        exampleNF = unum_open(UNUM_SPELLOUT,NULL, -1, locale, NULL, &status);
+        exampleNF = unum_open(styles[k],NULL, -1, locale, NULL, &status);
         unum_formatDouble(exampleNF, examples[n], tempChars, 1024,0, &status);
         u_fprintf(lx->OUT, "<TR><TD>%f</TD><TD>%U", examples[n], tempChars);
         unum_close(exampleNF);
-        if(U_FAILURE(status))
-        {
-            u_fprintf(lx->OUT, " ");
-            explainStatus(lx, status, NULL);
+        if(U_FAILURE(status)) {
+          u_fprintf(lx->OUT, " ");
+          explainStatus(lx, status, NULL);
         }
         u_fprintf(lx->OUT, "</TD></TR>\r\n");
+      }
     }
+
     u_fprintf(lx->OUT, "</TABLE>");
     showKeyAndEndItem(lx, key, locale);
 }

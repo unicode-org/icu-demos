@@ -1,9 +1,44 @@
+
 /**********************************************************************
 *   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
 #include "locexp.h"
+
+#define isNL(x) ((x)==0x000D || (x)==0x000A || (x)==0x2029 || (x)==0x2028)
+
+void stripComments(UChar *ch) 
+{
+  int32_t quoteCount = 0;
+
+
+  while(*ch) {
+    if(isNL(*ch)) {
+      ch++;
+      quoteCount = 0;
+      continue;
+    } else if(*ch == '\\') {
+      ch++;
+      if(*ch) {
+        ch++; /* skip whatever follows */
+      }     
+    } else if(*ch == '\'') {
+      ch++;
+      quoteCount++;
+    } else if(*ch == '#') {
+      if(quoteCount%2) {
+        ch++;
+      } else while(*ch && !isNL(*ch)) {
+        quoteCount = 0;
+        *ch = ' ';
+        ch++;
+      }
+    } else {
+      ch++;
+    }
+  }
+}
 
 /* routines having to do with the sort sample */
 void printRuleString(LXContext *lx, const UChar*s) 
@@ -97,7 +132,7 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
   {
     int32_t ii;
-    if(aSort  && strstr(lx->queryString,"showCollKey")  ) {
+    if(aSort  && hasQueryField(lx,"showCollKey")  ) {
       u_fprintf(lx->OUT, "<br><font size=-2 color=\"#999999\"><tt>");
 
       for(ii=0;ii<aSort->lines[num].keySize;ii++) {
@@ -221,11 +256,12 @@ void showSort(LXContext *lx, const char *locale)
 {
   char   inputChars[SORTSIZE];
   char   ruleUrlChars[SORTSIZE] = "";
-  char *text;
+  const char *text;
   char *p;
   int32_t length;
   UChar  strChars[SORTSIZE];
   UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
+  UChar  fixedRuleChars[SORTSIZE]; /* Custom rule UChars without comments */
   int    i;
   UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
 
@@ -252,7 +288,7 @@ void showSort(LXContext *lx, const char *locale)
     kSimpleMode,   
   } mode = kSimpleMode;
 
-  if(strstr(lx->queryString, "lxCustSortOpts=")) {
+  if(hasQueryField(lx,"lxCustSortOpts")) {
     lxCustSortOpts = TRUE;
   }
 
@@ -268,20 +304,14 @@ void showSort(LXContext *lx, const char *locale)
   /* pull out the text to be sorted. Note, should be able to access this 
      as a POST
    */
-  text = strstr(lx->queryString, "EXPLORE_CollationElements=");
+  text = queryField(lx,"EXPLORE_CollationElements");
 
   if(text)
   {
-    text += strlen("EXPLORE_CollationElements=");
-
     unescapeAndDecodeQueryField_enc(strChars, SORTSIZE,
                                     text, lx->chosenEncoding );
     
-    p = strchr(text, '&');
-    if(p) /* there is a terminating ampersand */
-      length = p - text;
-    else
-      length = strlen(text);
+    length = strlen(text);
     
     if(length > (SORTSIZE-1))
       length = SORTSIZE-1; /* safety ! */
@@ -297,20 +327,14 @@ void showSort(LXContext *lx, const char *locale)
 
   /* look for custom rules */
   ruleChars[0] = 0;
-  text = strstr(lx->queryString, "usortRules=");
+  text = queryField(lx, "usortRules");
 
   if(text) {
-    text += strlen("usortRules=");
 
     unescapeAndDecodeQueryField_enc(ruleChars, SORTSIZE, 
                                     text, lx->chosenEncoding);
-    p = strchr(text, '&');
-    if(p) { /* terminating ampersand */
-      length = p - text;
-    } else {
-      length = strlen(text);
-    }
-
+    length = strlen(text);
+      
     if(length > (SORTSIZE-1)) {
       length = SORTSIZE-1; /* safety ! */
     }
@@ -323,16 +347,15 @@ void showSort(LXContext *lx, const char *locale)
   
   u_fprintf(lx->OUT, "%U<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted."));
   
-  u_fprintf(lx->OUT, "<FORM>");
+  u_fprintf(lx->OUT, "<FORM METHOD=\"GET\">");
   u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=_ VALUE=%s>", locale);
   u_fprintf(lx->OUT, "<INPUT NAME=EXPLORE_CollationElements VALUE=\"%U\" TYPE=hidden>", strChars); 
   u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\">",
             FSWF("EXPLORE_CollationElements_Defaults", "Defaults"));
   u_fprintf(lx->OUT, "</FORM>\r\n ");
 
-  u_fprintf(lx->OUT, "<FORM>");
-  u_fprintf(lx->OUT, "<INPUT TYPE=hidden NAME=_ VALUE=%s>", locale);
-  /*  u_fprintf(lx->OUT, "<INPUT NAME=EXPLORE_CollationElements VALUE=\"%U\" TYPE=hidden>", strChars); */
+  u_fprintf(lx->OUT, "<FORM METHOD=\"POST\" ACTION=\"?_=%s&EXPLORE_CollationElements=&\">", 
+            locale);
   
   /* Here, 'configuration information' at the top of the page. ====== */
   switch(mode)
@@ -347,7 +370,11 @@ void showSort(LXContext *lx, const char *locale)
         UCollator *coll;
         UParseError parseErr;
 
-        coll = ucol_openRules ( ruleChars, -1, 
+        u_strcpy(fixedRuleChars, ruleChars);
+        stripComments(fixedRuleChars);
+        /* u_fprintf(lx->OUT, "R [<pre>%U</pre>]<BR>\r\n", fixedRuleChars); */
+
+        coll = ucol_openRules ( fixedRuleChars, -1, 
                                 UCOL_DEFAULT, UCOL_DEFAULT, /* attr val, str */
                                 &parseErr,
                                 &customError);
@@ -406,7 +433,7 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(lx->queryString, "&fr=")) 
+      if(hasQueryField(lx,"fr"))
       {
         value = UCOL_ON;
       } 
@@ -426,11 +453,10 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(lx->queryString, "&shft="))
+      if(hasQueryField(lx, "shft"))
       {
         value = UCOL_SHIFTED;
-      } else  if(lxCustSortOpts) /* if we came from the form.. */
-      {
+      } else  if(lxCustSortOpts) {/* if we came from the form.. */
         value = UCOL_NON_IGNORABLE;
       }
 
@@ -448,9 +474,9 @@ void showSort(LXContext *lx, const char *locale)
           status = U_ZERO_ERROR;
           value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if((ss=strstr(lx->queryString, "&cas1=")))
+          if((ss=queryField(lx, "cas1")))
           {
-              value = atoi(ss+strlen("&cas1="));
+            value = atoi(ss);
           }
           else
           {
@@ -477,8 +503,7 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(lx->queryString, "&case=")) 
-      {
+      if(hasQueryField(lx,"case")) {
         value = UCOL_ON;
       } 
       else if(lxCustSortOpts) /* if we came from the form.. */
@@ -497,8 +522,7 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(lx->queryString, "&dcmp=")) 
-      {
+      if(hasQueryField(lx, "dcmp"))  {
         value = UCOL_ON;
       } 
       /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
@@ -517,9 +541,7 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       attribute = UCOL_STRENGTH;
       customStrength = ucol_getAttribute(customCollator, attribute, &status);
-      if((ss = strstr(lx->queryString, "strength=")))
-      {
-        ss += 9; /* skip 'strength=' */
+      if((ss = queryField(lx,"strength"))) {
         nn = atoi(ss);
         if( (nn || (*ss=='0'))  && /* choice is a number and.. */
             (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
@@ -555,8 +577,7 @@ void showSort(LXContext *lx, const char *locale)
       status = U_ZERO_ERROR;
       value = ucol_getAttribute(customCollator, attribute, &status);
       status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(strstr(lx->queryString, "&hira=")) 
-      {
+      if(hasQueryField(lx, "hira")) {
         value = UCOL_ON;
       } 
       else if(lxCustSortOpts) /* if we came from the form.. */
@@ -589,7 +610,7 @@ void showSort(LXContext *lx, const char *locale)
     u_fprintf(lx->OUT, "<br>\r\n");
     u_fprintf(lx->OUT, "<textarea name=\"usortRules\" rows=5 cols=50 columns=50>");
     
-    if(strstr(lx->queryString,"usortRulesLocale=")) {
+    if(hasQueryField(lx, "usortRulesLocale")) {
       UErrorCode err = U_ZERO_ERROR;
       UResourceBundle *bund, *array = NULL;
       const UChar *s = 0;
@@ -599,6 +620,7 @@ void showSort(LXContext *lx, const char *locale)
       if(bund) array = ures_getByKey(bund, "CollationElements", NULL, &err);
       if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);
       if(U_SUCCESS(err) && s && *s) {
+        u_fprintf(lx->OUT, "# %s.txt Rules\r\n", lx->curLocaleName, queryField(lx,"usortRulesLocale"));
         printRuleString(lx,s);
       } else { 
         u_fprintf(lx->OUT, "err %s", u_errorName(err));

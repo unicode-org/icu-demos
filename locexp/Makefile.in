@@ -53,6 +53,7 @@ LDFLAGS += -L../usort/lib -L./util -L./resource/out/
 # get the hostname the code is built on
 CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"$(host)\"
 CPPFLAGS += $(LXOPTIONS) -DLX_STATIC
+CPPFLAGS += -I.
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
@@ -186,3 +187,9 @@ iflx: flx
 # fast locale explorer itself 
 flx: $(LXOBJ) fcgimain.o
 	$(LINK.cc) -o $@ $^ $(ICULIBS) -lfcgi
+
+treetest:  test/treetest.o  $(LXOBJ)
+	$(LINK.cc) -o $@ $^ $(ICULIBS) 
+
+urltest:  test/urltest.o  $(LXOBJ)
+	$(LINK.cc) -o $@ $^ $(ICULIBS) 

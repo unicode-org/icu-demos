@@ -45,7 +45,7 @@ typedef struct mysortable
   UChar *ustr;
   char *str;
   
-  struct mysortable *subLocs;
+  struct mysortable **subLocs;
   struct mysortable *parent;
   int32_t        nSubLocs;
   int32_t        subLocsSize;

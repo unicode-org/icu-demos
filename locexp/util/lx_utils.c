@@ -14,6 +14,7 @@
 /* Realloc broken on linux????? */
 void *my_realloc(void *ptr, size_t old, size_t size)
 {
+#ifdef XLINUX
     void *newptr;
 
     newptr = malloc(size);
@@ -22,6 +23,13 @@ void *my_realloc(void *ptr, size_t old, size_t size)
         free(ptr);
     }
     return newptr;
+#else
+    if(ptr == NULL) {
+      return malloc(size);
+    } else {
+      return realloc(ptr,size);
+    }
+#endif
 }
 
 /******************************************************** derived from ucnv_err.c */
@@ -336,14 +344,8 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
     int32_t siz;
     s->str = strdup(locid);
     s->ustr=0;
-  /*
-   * OLD CODE:
 
-     siz = uloc_getDisplayName(s->str,NULL, NULL, 0, &status);
-     s->ustr = malloc((siz+1) * sizeof(UChar));
-     ((UChar*)(s->ustr)) [0] = 0;
-     status = U_ZERO_ERROR;
-     uloc_getDisplayName( (s->str) , inLocale, (UChar*)(s->ustr), siz, &status);
+ /*
   * Now, we want to print the 'most leaf' string.. 
   */
    
@@ -352,10 +354,12 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
     if( (siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, &status)) &&
         (siz > 1) )
     {
-        s->ustr = calloc((siz+2) , sizeof(UChar));
+        s->ustr = malloc((siz+2) * sizeof(UChar));
         ((UChar*)(s->ustr))[0] = 0;
         status = U_ZERO_ERROR;
         uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+        s->ustr[siz]=0;
+
     }
     else
     {
@@ -363,16 +367,18 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
         if( (siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, &status))  &&
             (siz > 1) )
         {
-            s->ustr = calloc((siz+2) , sizeof(UChar));
+            s->ustr = malloc((siz+2) * sizeof(UChar));
             ((UChar*)(s->ustr))[0] = 0;
             status = U_ZERO_ERROR;
             uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+            s->ustr[siz]=0;
+
         }
         else
         {
             if((siz == 0) && inLocale[0] == '_')
             {
-                s->ustr = calloc(2,1);
+                s->ustr = malloc(2*2);
                 s->ustr[0] = '-';
                 s->ustr[1] = 0;
             }
@@ -382,13 +388,15 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
                 if( ( siz = uloc_getDisplayLanguage( s->str, inLocale, NULL, 0, &status)) &&
                     (siz > 1) )
                 {
-                    s->ustr = calloc((siz+2) , sizeof(UChar));
+                    s->ustr = malloc((siz+2) *sizeof(UChar));
                     ((UChar*)(s->ustr))[0] = 0;
                     status = U_ZERO_ERROR;
                     uloc_getDisplayLanguage( s->str, inLocale, (UChar*)(s->ustr), siz, &status );
+                    s->ustr[siz]=0;
                 }
-                else
-                    s->ustr = 0;
+                else {
+                  s->ustr = 0;
+                }
             }
         }
     }
@@ -412,24 +420,25 @@ void initSortable(MySortable *s, const char *locid, const char *inLocale, MySort
  
 MySortable *addSubLocaleTo(MySortable *root, const char *thisLocale, const char *inLocale, int32_t *localeCount)
 {
-    if( (root->nSubLocs) >= root->subLocsSize)
-    {
-        if(root->subLocsSize)
-            root->subLocsSize *= 2;
-        else
-            root->subLocsSize = 10;
-        
+    if( (root->nSubLocs) >= root->subLocsSize) {
+      if(root->subLocsSize)
+        root->subLocsSize *= 2;
+      else
+        root->subLocsSize = 2;
+
         root->subLocs = 
-            my_realloc(root->subLocs,sizeof(MySortable)*(root->nSubLocs), sizeof(MySortable) * (root->subLocsSize));
+            my_realloc(root->subLocs,sizeof(MySortable*)*(root->nSubLocs), sizeof(MySortable*) * (root->subLocsSize));
     }
     
-    initSortable(&(root->subLocs[root->nSubLocs]), thisLocale, inLocale, root);
+    root->subLocs[root->nSubLocs] = malloc(sizeof(MySortable));
+    
+    initSortable(root->subLocs[root->nSubLocs], thisLocale, inLocale, root);
     
     localeCount++;
     
     root->nSubLocs++;
     
-    return &(root->subLocs[root->nSubLocs-1]);
+    return root->subLocs[root->nSubLocs-1];
 }
 
 void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level, const char *inLocale, int32_t *localeCount)
@@ -463,7 +472,7 @@ void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level
         }
         *localeCount++;
     } else {
-        root = &(root->subLocs[j]);
+        root = root->subLocs[j];
     }
     
     if(*curStubLimit) /* We're not at the end yet. CSL points to _. */
@@ -501,22 +510,19 @@ MySortable *createLocaleTree(const char *inLocale, int32_t *localeCount)
 
   /* get things rolling... */
   initSortable(root, "root", inLocale, NULL);
-  *localeCount = 1;
 
+  *localeCount = 1;
 
   /* load the list of locales from the ICU and process them */
   nlocs = uloc_countAvailable();
   
-  for(i=0;i<nlocs;i++)
-    {
-      const char *thisLoc;
-
-      thisLoc = uloc_getAvailable(i);
-
-
-      addLocaleRecursive(root, thisLoc, thisLoc, inLocale, localeCount);
-
-    }
+  for(i=0;i<nlocs;i++)  {
+    const char *thisLoc;
+    
+    thisLoc = uloc_getAvailable(i);
+    
+    addLocaleRecursive(root, thisLoc, thisLoc, inLocale, localeCount);
+  }
   
   return root;
 }
@@ -527,10 +533,9 @@ void destroyLocaleTree(MySortable *d)
 
   if(d == NULL) return;
 
-  for(i=0;i<d->nSubLocs;i++)
-    {
-      destroyLocaleTree(&d->subLocs[i]);
-    }
+  for(i=0;i<d->nSubLocs;i++) {
+    destroyLocaleTree(d->subLocs[i]);
+  }
   d->nSubLocs = 0;
   d->subLocsSize = 0;
   free(d->subLocs);
@@ -538,22 +543,19 @@ void destroyLocaleTree(MySortable *d)
   
   free(d->ustr);
   free(d->str);
-  if(d->parent == NULL) /* root */
-  {
-    free(d);
-  }
+  free(d);
 }
 
 
-/* Helper function for mySort --------------------------------------------------------*/
+/* Helper function for mySort ----------------------------------------------*/
 int myCompare(const void *aa, const void *bb)
 {
   int cmp;
   int minSize;
   const MySortable *a, *b;
 
-  a = (const MySortable*) aa;
-  b = (const MySortable*) bb;
+  a = *((const MySortable**) aa);
+  b = *((const MySortable**) bb);
 
   if(a->keySize == b->keySize)
     return memcmp(a->key,b->key,a->keySize);
@@ -587,14 +589,12 @@ int32_t findLocaleNonRecursive(MySortable *toSort, const char *locale)
 {
     int32_t j;
     int32_t numTopLocs = toSort->nSubLocs;
-    MySortable *s = toSort->subLocs;
+    MySortable **s = toSort->subLocs;
     
-    for(j=0;j<numTopLocs;j++)
-    {
-        if(!strcmp(s[j].str, locale))
-        {
-            return j;
-        }
+    for(j=0;j<numTopLocs;j++) {
+      if(!strcmp(s[j]->str, locale)) {
+        return j;
+      }
     }
     
     return -1; /* not found */
@@ -614,25 +614,23 @@ MySortable *findLocale(MySortable *root, const char *locale)
     }
     
     /* Right now very stupid DFS. Let's forget that we actually know that if we're searching for fr_BF that we should look under the fr node. */
-    for(n=0;n<root->nSubLocs;n++)
-    {
-        if(!strcmp(root->subLocs[n].str,locale))
-        {
-            return &(root->subLocs[n]);
-        }
-        
-        if((found = findLocale(&(root->subLocs[n]),locale))) /* if found at a sublevel */
-            return found;
+    for(n=0;n<root->nSubLocs;n++) {
+      if(!strcmp(root->subLocs[n]->str,locale)) {
+        return root->subLocs[n];
+      }
+      
+      if((found = findLocale(root->subLocs[n],locale))) /* if found at a sublevel */
+        return found;
     }
     
     return NULL; /* not found */
 }
 
-/* Sort an array of sortables --------------------------------------------------------*/
+/* Sort a root's sortables --------------------------------------------------------*/
 /* terminated with s->str being null */
-void mySort(MySortable *s, UErrorCode *status, UBool recurse)
+
+void mySortInternal(MySortable *s, UErrorCode *status, UBool recurse, UCollator *coll)
 {
-    UCollator *coll;
     MySortable *p;
     int32_t num;
     int32_t n = 0;
@@ -643,27 +641,39 @@ void mySort(MySortable *s, UErrorCode *status, UBool recurse)
         return; /* nothing to do */
     
     *status = U_ZERO_ERROR;
-    coll = ucol_open(NULL, status);
+
     if(U_FAILURE(*status))
         return;
     
-    ucol_setStrength(coll, UCOL_PRIMARY);
     /* First, fill in the keys */
-    for(p=(s->subLocs);n < num;p++)
+    for(n=0;n < num;n++)
     {
-        if(recurse)
-            mySort(p,status,recurse); /* sub sort */
-        
-        p->keySize = ucol_getSortKey(coll, p->ustr, -1, p->key, SORTKEYSIZE);
-        /*      if(U_FAILURE(*status))
+      p = s->subLocs[n];
+      if(recurse) {
+        mySortInternal(p,status,recurse,coll); /* sub sort */
+      }
+      
+      p->keySize = ucol_getSortKey(coll, p->ustr, -1, p->key, SORTKEYSIZE);
+      /*if(U_FAILURE(*status))
         return; */
-        n++;
+      n++;
     }
-    
-    ucol_close(coll); /* don't need it now */
-    
-    qsort(s->subLocs, n, sizeof(MySortable), &myCompare);
 
+    qsort(s->subLocs, s->nSubLocs, sizeof(s->subLocs[0]), &myCompare);
+
+}
+
+void mySort(MySortable *s, UErrorCode *status, UBool recurse)
+{
+  UCollator *coll;
+  coll = ucol_open(NULL, status); /* ! */
+  if(U_SUCCESS(*status)) {
+    ucol_setStrength(coll, UCOL_PRIMARY);
+    mySortInternal(s,status,recurse,coll);
+  }
+  if(coll) { 
+    ucol_close(coll);
+  }
 }
 
 /* convert from our internal names to a MIME friendly name .. ----------------------------  */
@@ -720,11 +730,8 @@ void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src)
 }
 
 
-/* date [from udate by Stephen F. Booth] ----------------------------------------------------- */
+/* date [from udate by Stephen F. Booth] ------------------------------- */
 /* Format the date */
-
-
-
 
 UChar *
 date(const UChar *tz,

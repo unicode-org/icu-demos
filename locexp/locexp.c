@@ -180,25 +180,25 @@ void displayLocaleExplorer(LXContext *lx)
                     u_fprintf(lx->OUT, ", ");
                 }
 
-                if(lx->curLocale->subLocs[n].isVariant) u_fprintf(lx->OUT, " [");
+                if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, " [");
                 
                 u_fprintf(lx->OUT, "<a href=\"?_=%s\">", 
-                    lx->curLocale->subLocs[n].str);
+                    lx->curLocale->subLocs[n]->str);
                 
-                if(isExperimentalLocale(lx->curLocale->subLocs[n].str))
+                if(isExperimentalLocale(lx->curLocale->subLocs[n]->str))
                 {
                     u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
                     hadExperimentalSubLocales = TRUE;
                     wasExperimental = TRUE;
                 }
-                u_fprintf_u(lx->OUT, lx->curLocale->subLocs[n].ustr);
+                u_fprintf_u(lx->OUT, lx->curLocale->subLocs[n]->ustr);
                 if(wasExperimental)
                 {
                     u_fprintf(lx->OUT, "</font></i>");
                 }
                 u_fprintf(lx->OUT, "</a>");
                 
-                if(lx->curLocale->subLocs[n].isVariant) u_fprintf(lx->OUT, "] ");
+                if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, "] ");
             }
             u_fprintf(lx->OUT, "</ul>");
         }
@@ -219,15 +219,15 @@ void displayLocaleExplorer(LXContext *lx)
             /* OK, now find all children X of my grandparent,  where  (  X.parent.str + stub == X ) */
             for(i=0;i<lx->locales->nSubLocs;i++)
             {
-                if(!strcmp(lx->locales->subLocs[i].str, lx->parLocale->str))
+                if(!strcmp(lx->locales->subLocs[i]->str, lx->parLocale->str))
                 {
                     continue; /* Don't search our parent (same language) */
                 }
                 
-                strcpy(buf, lx->locales->subLocs[i].str);
+                strcpy(buf, lx->locales->subLocs[i]->str);
                 strcat(buf, stub);
                 
-                if(findLocaleNonRecursive(&(lx->locales->subLocs[i]), buf) != -1)
+                if(findLocaleNonRecursive(lx->locales->subLocs[i], buf) != -1)
                 {
                     UBool wasExperimental = FALSE;
                     
@@ -254,7 +254,7 @@ void displayLocaleExplorer(LXContext *lx)
                         wasExperimental = TRUE;
                     }
                     
-                    u_fprintf_u(lx->OUT, lx->locales->subLocs[i].ustr);
+                    u_fprintf_u(lx->OUT, lx->locales->subLocs[i]->ustr);
                     
                     if(wasExperimental)
                     {
@@ -282,7 +282,7 @@ void displayLocaleExplorer(LXContext *lx)
             {
                 UBool wasExperimental = FALSE;
                 
-                u_fprintf(lx->OUT, " -%s- ", lx->parLocale->subLocs[n].str);
+                u_fprintf(lx->OUT, " -%s- ", lx->parLocale->subLocs[n]->str);
                 
                 if( (&(lx->parLocale->subLocs[n]) != lx->curLocale) /* && it's not a placeholder like de_ */ )
                 {
@@ -290,15 +290,15 @@ void displayLocaleExplorer(LXContext *lx)
                         u_fprintf(lx->OUT, ", ");
                     
                     u_fprintf(lx->OUT, "<a href=\"?_=%s\">", 
-                        lx->parLocale->subLocs[n].str);
+                        lx->parLocale->subLocs[n]->str);
                     
-                    if(isExperimentalLocale(lx->parLocale->subLocs[n].str))
+                    if(isExperimentalLocale(lx->parLocale->subLocs[n]->str))
                     {
                         u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
                         hadExperimentalSubLocales = TRUE;
                         wasExperimental = TRUE;
                     }
-                    u_fprintf_u(lx->OUT, lx->parLocale->subLocs[n].ustr);
+                    u_fprintf_u(lx->OUT, lx->parLocale->subLocs[n]->ustr);
                     if(wasExperimental)
                     {
                         u_fprintf(lx->OUT, "</font></i>");
@@ -307,7 +307,7 @@ void displayLocaleExplorer(LXContext *lx)
                 }
                 else
                 {
-                    u_fprintf(lx->OUT, " { DUP } ", lx->parLocale->subLocs[n].str);
+                    u_fprintf(lx->OUT, " { DUP } ", lx->parLocale->subLocs[n]->str);
                 }
             }
             

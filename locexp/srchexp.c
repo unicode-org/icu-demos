@@ -156,7 +156,7 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
   /* Search all sublocales */
   for(i=0;i<loc->nSubLocs;i++)
   {
-    doSearch(lx, str, &(loc->subLocs[i]), totalHits, search);
+    doSearch(lx, str, loc->subLocs[i], totalHits, search);
   }
 
   ures_close(r);

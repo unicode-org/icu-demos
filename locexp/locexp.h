@@ -63,8 +63,8 @@ typedef struct
   const char *pathInfo;        /* PATH_INFO */
   uint16_t    port;            /* SERVER_PORT */
   const char *hostName;        /* HTTP_HOST */
+  const char *postData;
   
-
   /* ============= IO */
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
@@ -99,7 +99,7 @@ typedef struct
   MySortable     specialParLocale; /* owns the parent IF it's not in the tree */
 
   /* === TODO: put the following  into a CACHE keyed on locale! */
-  MySortable      *locales ;     /* tree of locales */
+  MySortable      *locales ;     /* tree of locales] */
   int32_t          numLocales;
 
   /* === Context information for callbacks..  */
@@ -260,7 +260,8 @@ void closePOSTFromFILE(LXContext* lx);
 /* lxurl */
 /* find start of field from a query like string */
 const char *fieldInQuery(LXContext* lx, const char *query, const char *field);
-char *queryField(LXContext* lx, const char *field);
+const char *queryField(LXContext* lx, const char *field);
+UBool hasQueryField(LXContext* lx, const char *field);
 
 
 #endif

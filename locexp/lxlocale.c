@@ -119,13 +119,13 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     for(n=0;n<lx->locales->nSubLocs;n++)
     {
         /* This will hide display locales - LANGUAGE level-  that don't exist. */
-        if((toOpen == FALSE) && !isSupportedLocale(lx->locales->subLocs[n].str, FALSE) && showAll == FALSE)
+        if((toOpen == FALSE) && !isSupportedLocale(lx->locales->subLocs[n]->str, FALSE) && showAll == FALSE)
             continue;
 
         u_fprintf(lx->OUT, "<tr>\r\n");
 
 
-        hit = !strcmp(lx->locales->subLocs[n].str,current);
+        hit = !strcmp(lx->locales->subLocs[n]->str,current);
 
         if(hit)
         {
@@ -136,7 +136,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
             u_fprintf_u(lx->OUT, BEGIN_CELL);
         }
 
-        printLocaleLink(lx, toOpen, &(lx->locales->subLocs[n]), current, restored, &hadUnsupportedLocales);
+        printLocaleLink(lx, toOpen, lx->locales->subLocs[n], current, restored, &hadUnsupportedLocales);
 
         if(hit)
         {
@@ -147,22 +147,22 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
             u_fprintf_u(lx->OUT, END_CELL);
         }
       
-        if(lx->locales->subLocs[n].nSubLocs)
+        if(lx->locales->subLocs[n]->nSubLocs)
         {
             u_fprintf_u(lx->OUT, BEGIN_CELL);
 
-            for(j=0;j< (lx->locales->subLocs[n].nSubLocs); j++)
+            for(j=0;j< (lx->locales->subLocs[n]->nSubLocs); j++)
             {
 #ifndef LX_SHOW_ALL_DISPLAY_LOCALES
                 /* This will hide display locales- COUNTRY/VARIANT level that don't exist. */
-                if((toOpen == FALSE) && !isSupportedLocale(lx->locales->subLocs[n].subLocs[j].str, FALSE) && (showAll ==FALSE) )
+                if((toOpen == FALSE) && !isSupportedLocale(lx->locales->subLocs[n]->subLocs[j]->str, FALSE) && (showAll ==FALSE) )
                     continue;
 #endif
 
                 if(j>0)
                     u_fprintf_u(lx->OUT, COMMA_SPACE);
 
-                printLocaleAndSubs(lx, toOpen, &(lx->locales->subLocs[n].subLocs[j]), current, restored, &hadUnsupportedLocales);
+                printLocaleAndSubs(lx, toOpen, lx->locales->subLocs[n]->subLocs[j], current, restored, &hadUnsupportedLocales);
 
             }
 
@@ -353,7 +353,7 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
             {
                 u_fprintf(lx->OUT, ", ");
             }
-            printLocaleAndSubs(lx, toOpen, &(l->subLocs[n]), current, restored, hadUnsupportedLocales);
+            printLocaleAndSubs(lx, toOpen, l->subLocs[n], current, restored, hadUnsupportedLocales);
         }
         
         u_fprintf(lx->OUT, "&nbsp;</font>]");
