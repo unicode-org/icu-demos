@@ -112,7 +112,7 @@ static void
 
   return;
 }
-
+#if 0
 void 
   SubstituteWithValueHTML (UConverter * _this,
 					    char **target,
@@ -216,6 +216,7 @@ void
 
   return;
 }
+#endif
 /*******************************************************end of borrowed code from ucnv_err.c **/
 
 void printBasicBlockInfo(UChar theChar)
@@ -745,7 +746,7 @@ main(int argc,
   }
   printf("</A>\r\n");
 
-  printf("<BR>Powered by <A HREF=\"http://oss.software.ibm.com/developerworks/opensource/icu/\">ICU 1.3.1</A>\r\n");
+  printf("<BR>Powered by <A HREF=\"http://oss.software.ibm.com/icu/\">ICU %s</A>\r\n", U_ICU_VERSION);
   
   printf("</td></tr></table>\r\n");
 
@@ -791,7 +792,11 @@ up_u2c(char *buf, const UChar *src, UErrorCode *cnvStatus)
   arraySize    = 0x000FFFFF; /* should be a param */
 
   /* put our special error handler in */
+#if 0 
+/* until it is implemented for 1.6 */
   ucnv_setFromUCallBack(gConverter, &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
+#endif
+
   ucnv_setSubstChars(gConverter,"_",1,&status);  /* DECOMPOSE calls SUBSTITUTE on failure. */
 
   /*  ucnv_setFromUCallBack(gConverter, &SubstituteWithValueHTML, &status); */
