@@ -1,45 +1,88 @@
 <html>
 
 <head>
-<title>Transliteration Custom Rule Editor</title>
+<title>Transliteration Rule Editor</title>
 <style type="text/css">
 .wide    { width: 100% }
 textarea { font-family: Arial Unicode MS; font-size: 100% }
 </style>
 </head>
 
+<script src="../js/util.js"></script>
+
 <script>
-//|isIE = navigator.appName.indexOf("Microsoft") != -1;
+// Load user IDs from CGI
+USER_IDS = "$USER_IDS".split(";");
+
+// Generate options (inline) for SELECT element
+function generateSelectIDOptions() {
+  generateOptions(document.FORM.USER_IDS,
+                  document.FORM._SELECT_ID_SELECTION.value);
+}
 
 // Handler to submit current window's rules.  We just delegate
 // everything to the parent.
-function submitRules() {
-  var w = window.opener;
-  if (!w.closed) {
-    w.submitRules(window);
+//|function submitRules() {
+//|  var w = window.opener;
+//|  if (!w.closed) {
+//|    w.submitRules(window);
+//|  }
+//|}
+
+//|// Rebuild the IDs selector
+//|function refreshIDs() {
+//|  var a = new Array();
+//|  for (id in IDS) {
+//|    a.push(id);
+//|  }
+//|  a.sort(ciSort);
+//|  setOptions(document.FORM.SELECT_ID, a);
+//|}
+
+function handleSave() {
+  var id = getSelectedOption(document.FORM.SELECT_ID);
+  if (!id) {
+    handleSaveAs();
+    return;
+  }
+  document.FORM.ARG_OPERATION.value = "COMPILE";
+  document.FORM.ARG_ID.value = id;
+  document.FORM.ARG_RULES.value = document.FORM.USER_RULE.value;
+  document.FORM.submit();
+}
+
+function handleSaveAs() {
+  var id = prompt("Save this rule set as:", "");
+  if (id) id = trimSpaces(id, 1);
+  if (id) {
+    document.FORM.ARG_OPERATION.value = "COMPILE";
+    document.FORM.ARG_ID.value = id;
+    document.FORM.ARG_RULES.value = document.FORM.USER_RULE.value;
+    document.FORM.submit();
   }
 }
 
-//|// onKeyPress handler for the ID input text.  All we do is trap
-//|// the ENTER key and make it invoke submitRules().  We need to do
-//|// this because we don't want this form to go back to the CGI; we
-//|// want it to back to the opener, where the Javascript code there
-//|// can handle things centrally.
-//|function idKeyPress(e) {
-//|  // Get the Event object
-//|  keyCode = isIE ? window.event.keyCode : e.which;
-//|  if (keyCode == 13) {
-//|
-//|    submitRules();
-//|
-//|    // Disable further handling of this event
-//|	if (isIE) {
-//|	  window.event.returnValue = false;
-//|	} else {
-//|	  return false;
-//|	}
-//|  }
-//|}
+function handleDelete() {
+  var id = getSelectedOption(document.FORM.LOAD_IDS);
+  if (confirm("Delete " + id + "?")) {
+    document.FORM.ARG_OPERATION.value = "REMOVE";
+    document.FORM.ARG_ID.value = id;
+    document.FORM.submit();
+  }
+}
+
+function handleSelectID() {
+  var id = getSelectedOption(document.FORM.SELECT_ID);
+  document.FORM._SELECT_ID_SELECTION.value = id;
+  document.FORM.ARG_ID.value = id;
+  document.FORM.submit();
+}
+
+function returnToParent() {
+  alert("returnToParent()");
+}
+
+//|function setMode(m) { document.FORM.MODE.value = m; }
 </script>
 
 <body>
@@ -50,12 +93,16 @@ function submitRules() {
 <form method="POST" action="/cgi-bin/translit" name="FORM">
 -->
 <form method="POST" action="/cgi-bin/translit" name="FORM">
-<!-- MODE must be parsed before $stdout -->
-<input type="hidden" name="MODE" value="$MODE">
+  <!-- MODE must be parsed before stdout -->
+  <input type="hidden" name="MODE" value="$MODE">
+  <input type="hidden" name="ARG_ID">
+  <input type="hidden" name="ARG_RULES">
+  <input type="hidden" name="ARG_OPERATION">
+  <input type="hidden" name="_SELECT_ID_SELECTION" value="$_SELECT_ID_SELECTION">
   <table width="100%">
     <tr>
       <td width="10%">&nbsp;</td>
-      <td width="80%" align="center"><strong><big><big><big>Custom Rule Editor</big></big></big></strong></td>
+      <td width="80%" align="center"><strong><big><big><big>Transliteration Rule Editor</big></big></big></strong></td>
       <td width="10%" align="right"><a
       href="http://oss.software.ibm.com/icu/demo/translit_rule_help.html" target="_blank">Help</a></td>
     </tr>
@@ -63,64 +110,69 @@ function submitRules() {
   <hr>
   <table width="100%">
     <tr>
-      <td><input type="submit" value="Submit" name="SUBMIT" class="wide"></td>
-    </tr>
-    <tr>
       <td><table width="100%" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="1%">ID:&nbsp;</td>
-          <td width="99%"><input type="text" name="ID" size="20" class="wide"
-                           value="CustomRules" disabled="true"></td>
+          <td width="97%">
+          <select name="SELECT_ID" size="1" class="wide"
+           onChange="handleSelectID()">
+           <script>generateSelectIDOptions();</script>
+          </select></td>
+          <td width="1%">
+          <input type="button" value="Save" onClick="handleSave()">
+          </td>
+          <td width="1%">
+          <input type="button" value="Save As..." onClick="hansleSaveAs()">
+          </td>
+          <td width="1%">
+          <input type="button" value="Delete" onClick="handleDelete()">
+          </td>
         </tr>
       </table>
       </td>
     </tr>
     <tr>
-      <td><textarea name="RULES" rows="16" cols="20" class="wide">$RULES</textarea></td>
+      <td><textarea name="USER_RULE" rows="16" cols="20" class="wide">$USER_RULE</textarea></td>
     </tr>
     <tr>
-      <td><b>$stdout</b></td>
+      <td><b>$RESULT</b></td>
     </tr>
   </table>
 <input type="hidden" name="TEMPLATE_FILE" value="data/translit_rule_edit.html">
 </form>
 
 <script>
+//|// Load up custom rule IDs from the cookies.  Store these as
+//|// keys in the hash IDS.
+//|var ids = getCookieKeys();
+//|IDS = new Object();
+//|for (i=0; i<ids.length; ++i) {
+//|  IDS[ids[i]] = 1;
+//|}
+//|refreshIDs();
+//|
 //|// Must assign the keyPress handler like this; can't do it in the element
-//|document.FORM.ID.onkeypress = idKeyPress;
-
-// If this is an initial load, set up our start state
-var mode = document.FORM.MODE.value;
-if (mode == "") {
-  document.FORM.RULES.value = "# Enter rules here";
-
-  // Populate our fields, if we have previous values.  This may
-  // overwrite RULES.
-  window.opener.retrieveRules(window);
-} else if (mode == "BUILD_ERROR") {
-  // The rules on the page are in error
-  alert("There is a syntax error in the rules.  For details, see " +
-        "the error message on the page.");
-} else if (mode == "BUILD_OK") {
-  // The rules on the page are good; return to the parent page
-  submitRules();
-}
-
-// Always reset the MODE to BUILD
-document.FORM.MODE.value = "BUILD";
+//|//document.FORM.ID.onkeypress = trapEnter(save);
+//|
+//|// If this is an initial load, set up our start state
+//|var mode = document.FORM.MODE.value;
+//|if (mode == "") {
+//|  document.FORM.RULES.value = "# Enter rules here or load an existing set of rules by selecting from the list above";
+//|
+//|  // Populate our fields, if we have previous values.  This may
+//|  // overwrite RULES.
+//|  //|window.opener.retrieveRules(window);
+//|} else if (mode == "ERROR") {
+//|  // The rules on the page are in error
+//|  alert("There is a syntax error in the rules.  For details, see " +
+//|        "the error message on the page.");
+//|} else if (mode == "SAVED") {
+//|  // The rules on the page are good; return to the parent page
+//|  returnToParent();
+//|}
+//|
+//|// Always reset the MODE to BUILD
+//|//| document.FORM.MODE.value = "BUILD";
 </script>
-
-<p><u>Note</u>: This page is under development.
-It is currently limited to a single user-defined set of
-rules that goes by the fixed ID <strong>CustomRules</strong>.
-The rules entered here are lost when the demo windows are closed.
-
-<p>In the future, this page will be expanded to include:
-
-<ul><li>Mulitple user-defined transliterators with editable IDs
-<li>Persistent user-defined transliterators
-<li>Capability to view and change rules for system transliterators
-</ul>
 
 </font>
 

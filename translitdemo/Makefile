@@ -33,7 +33,8 @@ include $(ICU_INC)
 TARGET=translit
 
 # All object files (C or C++)
-OBJECTS=TemplateCGI.o TransliteratorCGI.o getcgi.o main.o
+OBJECTS=TemplateCGI.o TransliteratorCGI.o getcgi.o main.o util.o \
+uhash.o TextCache.o
 
 CLEANFILES=*~ $(TARGET).out
 

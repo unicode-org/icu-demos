@@ -8,47 +8,143 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 </style>
 </head>
 
-<script>
-//| isIE = navigator.appName.indexOf("Microsoft") != -1;
+<body>
+<font face="arial,helvetica,sanserif">
 
-// Flag for whether or not to close the editor on unload
-DONT_CLOSE_EDITOR = 0;
+<script src="../js/util.js"></script>
+
+<script>
+// Load available IDs from CGI and populate select elems
+AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
+
+// Generate options (inline) for a SELECT element
+function generateSelectIDOptions(i) {
+  var o = (i==1) ? ['(Compound)'] : ['(Compound)','(Inverse)'];
+  generateOptions(o.concat(AVAILABLE_IDS),
+                  document.FORM["_SELECT_ID_SELECTION"+i].value);
+}
+</script>
+
+<!--
+<form method="POST" action="/developerworks/opensource/icu/translitdemo" name="FORM">
+<form method="POST" action="/cgi-bin/translit" name="FORM">
+-->
+<form method="POST" action="/cgi-bin/translit" name="FORM">
+  <input type="hidden" name="TEMPLATE_FILE" value="data/translit_template.html">
+  <input type="hidden" name="ARG_ID">
+  <input type="hidden" name="ARG_ID2">
+  <input type="hidden" name="ARG_DIRECTION2">
+  <input type="hidden" name="_SELECT_ID_SELECTION1" value="$_SELECT_ID_SELECTION1">
+  <input type="hidden" name="_SELECT_ID_SELECTION2" value="$_SELECT_ID_SELECTION2">
+
+  <table width="100%">
+    <tr>
+      <td width="20%">
+      <a href="http://www.unicode.org/unicode/standard/WhatIsUnicode.html" target="_blank">Samples</a>
+      <a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Samples2</a>
+</td>
+      <td width="60%" align="center"><strong><big><big><big>Transliteration Demo</big></big></big></strong><br>
+<font size="-1">Running on ICU <b>$ICU_VERSION</b></font></td>
+      <td width="20%" align="right">
+      <a href=http://oss.software.ibm.com/icu/demo/translit_help.html target="_blank">Help</a>
+      </td>
+    </tr>
+  </table>
+  <hr>
+  <table width="100%">
+    <tr>
+      <td width="34%" align="center"><strong><big>Input</strong></td>
+      <td width="33%" align="center"><strong><big>Output 1</strong></td>
+      <td width="33%" align="center"><strong><big>Output 2</big></strong></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Transliterate" name="SUBMIT"
+           onclick="handleTransliterateButton()" class="wide">
+          </td>
+      <td><select name="SELECT_ID1" size="1"
+           onChange="handleSelectID(1)" class="wide">
+          <script>generateSelectIDOptions(1);</script>
+      </select></td>
+      <td><select name="SELECT_ID2" size="1"
+           onChange="handleSelectID(2)" class="wide">
+          <script>generateSelectIDOptions(2);</script>
+      </select></td>
+    </tr>
+    <tr>
+	  <td>
+      <input type="button" value="Edit Rules" name="NEW"
+       onclick="handleEditRules();" class="wide">
+      </td>
+      <td rowspan="2"><textarea rows="2" name="COMPOUND_ID1" class="wide"
+           onKeyPress="handleCompoundIDKeyPress(1)">$COMPOUND_ID1</textarea>
+      </td>
+      <td rowspan="2"><textarea rows="2" name="COMPOUND_ID2" class="wide"
+           onKeyPress="handleCompoundIDKeyPress(2)">$COMPOUND_ID2</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td><input type="button" value="Insert Samples" name="SAMPLES"
+           onclick="handleInsertSamples()" class="wide">
+      </td>
+    </tr>
+    <tr>
+      <td><textarea rows="16" name="ARG_INPUT" class="wide">$ARG_INPUT</textarea></td>
+      <td><textarea rows="16" name="OUTPUT1" readonly class="wide">$OUTPUT1</textarea></td>
+      <td><textarea rows="16" name="OUTPUT2" readonly class="wide">$OUTPUT2</textarea></td>
+    </tr>
+  </table>
+</form>
+</font>
+
+<script>
+
+// Set things up for form submission.  This is invoked
+// by either the Transliterate button or by the SELECT id elements.
+// The argument is either 1 or 2 for the SELECT id elements,
+// or something else for the Transliterate button.
+function _submit(i) {
+  var id1 = getSelectedOption(document.FORM.SELECT_ID1);
+  var id2 = getSelectedOption(document.FORM.SELECT_ID2);
+  if (id1 == '(Compound)') {
+    if (i==1) return; // Ignore selection of (Compound)
+    id1 = document.FORM.COMPOUND_ID1.value;
+  }
+  if (id2 == '(Compound)') {
+    if (i==2) return; // Ignore selection of (Compound)
+    id2 = document.FORM.COMPOUND_ID2.value;
+  }
+  document.FORM._SELECT_ID_SELECTION1.value = id1;
+  document.FORM._SELECT_ID_SELECTION2.value = id2;
+  var isInverse = (id2 == '(Inverse)');
+  document.FORM.ARG_ID.value = id1;
+  document.FORM.ARG_ID2.value = isInverse ? id1 : id2;
+  document.FORM.ARG_DIRECTION2.value = isInverse ? "REVERSE" : "";
+  document.FORM.submit();
+}
+
+// Handler for a change to a transliterator ID box.
+function handleSelectID(i) {
+  _submit(i);
+}
+
+// Handler for Transliterate button
+function handleTransliterateButton() {
+  _submit(-1);
+}
 
 // Handler for compound type-in box.  This handler switches
 // the corresponding pop-up box to "(Compound)".
 // This is assumed to be the index 0 item for pop-up 1, and
 // the index 1 item for pop-up 2.
-function compoundKeyPress(i) {
-  x = document.FORM["TRANSLITERATOR_ID_" + i];
-  x.selectedIndex = (i==1) ? 0 : 1;
-}
-
-// Handler for a change to a transliterator ID box.
-function translitID(i) {
-  x = document.FORM["TRANSLITERATOR_ID_" + i];
-  selection = x.options[x.selectedIndex].text;
-  if (selection != "(Compound)") {
-    submitForm();
-  }
-}
-
-// Handler to submit the form.  We do this instead of having
-// an actual submit button because we need to process the form
-// before submission.
-function submitForm() {
-  // We need to enable to two SELECT input elements.  Otherwise,
-  // the CGI cannot read their values, and their values keep
-  // getting reset.
-  document.FORM.TRANSLITERATOR_ID_1.disabled = false;
-  document.FORM.TRANSLITERATOR_ID_2.disabled = false;
-  DONT_CLOSE_EDITOR = 1;
-  document.FORM.submit();
+function handleCompoundIDKeyPress(i) {
+  x = document.FORM["SELECT_ID" + i];
+  x.selectedIndex = 0;
 }
 
 // Handler to insert some sample text into the INPUT area
 // and set up the COMPOUND_ID_x boxes.
-function insertSamples() {
-  x = document.FORM.INPUT_TEXT;
+function handleInsertSamples() {
+  x = document.FORM.ARG_INPUT;
   x.value =
     "\uae40, \uad6d\uc0bc\n"+
     "\uc774, \uae30\uc218\n"+
@@ -56,13 +152,15 @@ function insertSamples() {
     "\uc774, \ud61c\ubbfc\n"+
     "\uac15, \uc815\ub2d8\n"+
     "\uc815, \ubcd1\ud638\n"+
-    "\u30db\u30c3\u30ab\u30a4\u30c9\u30a6\u30c1\u30e7\u30a6\n"+
-    "\u30b7\u30fc\u30a8\u30b9\u30a8\u30b9\u30b9\u30dd\u30fc\u30c4\n"+
-    "\u30ef\u30ab\u30d0\u30b7\u30ab\u30a4\u30a4\u30f3\n"+
-    "\u30b3\u30d0\u30e4\u30b7\u30e4\u30b9\u30d2\u30ed\n"+
-    "\u30df\u30e4\u30ae\u30b1\u30f3\u30bb\u30f3\u30c0\u30a4\u30c0\u30a4\n"+
-    "\u30a4\u30c1\u30b3\u30a6\u30c8\u30a6\u30ac\u30c3\u30b3\u30a6\n"+
-    "\u30de\u30c4\u30e2\u30c8\u30c8\u30e2\u30b3\n"+
+    "\u305f\u3051\u3060, \u307e\u3055\u3086\u304d\n"+
+    "\u307e\u3059\u3060, \u3088\u3057\u3072\u3053\n"+
+    "\u3084\u307e\u3082\u3068, \u306e\u307c\u308b\n"+
+    "\u304a\u304a\u306f\u3089, \u307e\u306a\u3076\n"+
+    "\u3075\u306a\u3064, \u304b\u305a\u3072\u3053\n"+
+    "\u305f\u3058\u308a, \u307f\u306d\u306f\u308b\n"+
+    "\u3064\u3060, \u305f\u304b\u3057\n"+
+    "\u306a\u304c\u304a, \u3068\u3082\u307f\n"+
+    "\u304a\u304a\u3059\u304e, \u3072\u308d\u3086\u304d\n"+
     "\u041a\u043e\u0440\u043d\u0438\u043b\u044c\u0435\u0432, \u041a\u0438\u0440\u0438\u043b\u043b\n"+
     "\u0410\u0440\u0431\u0430\u0442\u043e\u0432, \u0413\u0435\u043e\u0440\u0433\u0438\u0439\n"+
     "\u041a\u043e\u0432\u0430\u043b\u0435\u0432, \u041d\u0438\u043a\u043e\u043b\u0430\u0439\n"+
@@ -83,165 +181,70 @@ function insertSamples() {
     "\u039a\u03b9\u03b1\u03c0\u03b5\u03ba\u03ac\u03ba\u03b7, \u03a7\u03b1\u03c1\u03ac\n"+
     "\u039a\u03bf\u03bd\u03c4\u03bf\u03b3\u03b9\u03b1\u03bd\u03bd\u03ac\u03c4\u03bf\u03c2, \u0392\u03b1\u03c3\u03af\u03bb\u03b7\u03c2";
 
-  document.FORM.OUTPUT_1.value = "(Press the Transliterate button to see results.)";
-  document.FORM.TRANSLITERATOR_ID_1.selectedIndex = 0; // (Compound)
-  document.FORM.COMPOUND_ID_1.value =
+  document.FORM.OUTPUT1.value = "(Press the Transliterate button to see results.)";
+  document.FORM.SELECT_ID1.selectedIndex = 0; // (Compound)
+  document.FORM.COMPOUND_ID1.value =
     "Hangul-Latin; Kana-Latin; Cyrillic-Latin; Greek-Latin; Any-Title";
 
-  document.FORM.OUTPUT_2.value = "";
-  document.FORM.TRANSLITERATOR_ID_2.selectedIndex = 1; // (Compound)
-  document.FORM.COMPOUND_ID_2.value =
+  document.FORM.OUTPUT2.value = "";
+  document.FORM.SELECT_ID2.selectedIndex = 0; // (Compound)
+  document.FORM.COMPOUND_ID2.value =
     "Latin-Greek";
 }
 
+// Handler for Edit Rules button
+function handleEditRules() {
+  _getEditor().focus();
+  //document.FORM.IS_EDITOR_OPEN.value = "1";
+}
+
 // Return the editor window
-function getEditor() {
+function _getEditor() {
   return open("/cgi-bin/translit?TEMPLATE_FILE=data/translit_rule_edit.html",
-              "_TRANSLIT_EDIT",
-              "menubar,resizable,scrollbars");
+              "_TRANSLIT_EDIT");
+              //"menubar,resizable,scrollbars");
 }
 
-// Handler to open a new window for rule editing
-function openRuleEditor() {
-  getEditor().focus();
-  document.FORM.IS_EDITOR_OPEN.value = "1";
-}
-
-// Handler that gets called by the rule editing window when the user
-// wants to submit the new rules
-function submitRules(ruleWindow) {
-  // The custom rule data consists of an ID and rule text.
-  // We'll copy these to our form, add an entry to the TRANSLITERATOR_ID_1
-  // and TRANSLITERATOR_ID_2 selectors, and select that item in both.
-  // TODO -- clean up this logic
-  var f = document.FORM;
-  var id = f.USER_RULE_ID.value = ruleWindow.FORM.ID.value;
-  f.USER_RULE.value = ruleWindow.FORM.RULES.value;
-
-  f.COMPOUND_ID_1.value = id;
-  f.TRANSLITERATOR_ID_1.selectedIndex = 0; // Compound
-
-  f.EDIT_MODE.value = "1"; // Flag that we have rules now
-
-  // Put a helpful message in the Output 1 text area
-  f.OUTPUT_1.value =
-    "(CustomRules transliterator loaded.  To see results, modify the " +
-    "compound ID, if desired, then press the Transliterate " +
-    "button.)"
-
-  // Clear the second output area
-  f.OUTPUT_2.value = "";
-
-  // If the second transliterator is "(Inverse)" then set it to Null,
-  // since we don't support inverses of the custom transliterator yet.
-  if (f.TRANSLITERATOR_ID_2.selectedIndex == 0) {
-    var o = f.TRANSLITERATOR_ID_2.options;
-    for (i=2; i<o.length; ++i) {
-      if (o[i].text == "Null") {
-        f.TRANSLITERATOR_ID_2.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  window.focus();
-}
-
-// Handler that gets called by the rule editing window to load up
-// the rule fields.
-function retrieveRules(ruleWindow) {
-  if (document.FORM.EDIT_MODE.value) {
-    ruleWindow.FORM.ID.value = document.FORM.USER_RULE_ID.value;
-    ruleWindow.FORM.RULES.value = document.FORM.USER_RULE.value;
-  }
-}
-
-// Handler called when this window is unloaded
-function handleUnload() {
-  if (!DONT_CLOSE_EDITOR && document.FORM.IS_EDITOR_OPEN.value) {
-    getEditor().close();
-    document.FORM.IS_EDITOR_OPEN.value = "";
-  }
-}
-
-// TODO
-// THIS DOESN'T REALLY WORK -- NEED TO TUNE THE JAVASCRIPT MORE.
-//| window.onunload = handleUnload;
+//=// Handler that gets called by the rule editing window when the user
+//=// wants to submit the new rules
+//=function submitRules(ruleWindow) {
+//=  // The custom rule data consists of an ID and rule text.
+//=  // We'll copy these to our form, add an entry to the TRANSLITERATOR_ID_1
+//=  // and TRANSLITERATOR_ID_2 selectors, and select that item in both.
+//=  // TODO -- clean up this logic
+//=  var f = document.FORM;
+//=  var id = f.USER_RULE_ID.value = ruleWindow.FORM.ID.value;
+//=  f.USER_RULE.value = ruleWindow.FORM.RULES.value;
+//=
+//=  f.COMPOUND_ID_1.value = id;
+//=  f.TRANSLITERATOR_ID_1.selectedIndex = 0; // Compound
+//=
+//=  f.EDIT_MODE.value = "1"; // Flag that we have rules now
+//=
+//=  // Put a helpful message in the Output 1 text area
+//=  f.OUTPUT_1.value =
+//=    "(CustomRules transliterator loaded.  To see results, modify the " +
+//=    "compound ID, if desired, then press the Transliterate " +
+//=    "button.)"
+//=
+//=  // Clear the second output area
+//=  f.OUTPUT_2.value = "";
+//=
+//=  // If the second transliterator is "(Inverse)" then set it to Null,
+//=  // since we don't support inverses of the custom transliterator yet.
+//=  if (f.TRANSLITERATOR_ID_2.selectedIndex == 0) {
+//=    var o = f.TRANSLITERATOR_ID_2.options;
+//=    for (i=2; i<o.length; ++i) {
+//=      if (o[i].text == "Null") {
+//=        f.TRANSLITERATOR_ID_2.selectedIndex = i;
+//=        break;
+//=      }
+//=    }
+//=  }
+//=
+//=  window.focus();
+//=}
 </script>
 
-<body>
-
-<font face="arial,helvetica,sanserif">
-
-<!--
-<form method="POST" action="/developerworks/opensource/icu/translitdemo" name="FORM">
-<form method="POST" action="/cgi-bin/translit" name="FORM">
--->
-<form method="POST" action="/cgi-bin/translit" name="FORM">
-  <table width="100%">
-    <tr>
-      <td width="20%">
-      <a href="http://www.unicode.org/unicode/standard/WhatIsUnicode.html" target="_blank">Samples</a>
-      <a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Samples2</a>
-</td>
-      <td width="60%" align="center"><strong><big><big><big>Transliteration Demo</big></big></big></strong><br>
-<font size="-1">Running on ICU <b>$icuversion</b></font></td>
-      <td width="20%" align="right">
-      <a href=http://oss.software.ibm.com/icu/demo/translit_help.html target="_blank">Help</a>
-      </td>
-    </tr>
-  </table>
-  <hr>
-  <table width="100%">
-    <tr>
-      <td width="34%" align="center"><strong><big>Input</strong></td>
-      <td width="33%" align="center"><strong><big>Output 1</strong></td>
-      <td width="33%" align="center"><strong><big>Output 2</big></strong></td>
-    </tr>
-    <tr>
-      <td><input type="submit" value="Transliterate" name="SUBMIT"
-           onclick="submitForm()" class="wide"></td>
-      <td><select name="TRANSLITERATOR_ID_1" size="1"
-           onChange="translitID(1)" $idSelector1 class="wide">
-      $ids1</select></td>
-      <td><select name="TRANSLITERATOR_ID_2" size="1"
-           onChange="translitID(2)" $idSelector1 class="wide">
-      $ids2</select></td>
-    </tr>
-    <tr>
-	  <td>
-      &nbsp;
-      <!--Let's hide this for now -- and just put up the real one later
-      <input type="button" value="Edit Custom Rules" name="NEW"
-       onclick="openRuleEditor()" class="wide">
-       -->
-      </td>
-      <td rowspan="2"><textarea rows="2" name="COMPOUND_ID_1" class="wide"
-           onKeyPress="compoundKeyPress(1)">$compound1</textarea>
-      </td>
-      <td rowspan="2"><textarea rows="2" name="COMPOUND_ID_2" class="wide"
-           onKeyPress="compoundKeyPress(2)">$compound2</textarea>
-      </td>
-    </tr>
-    <tr>
-      <td><input type="button" value="Insert Samples" name="SAMPLES"
-           onclick="insertSamples()" class="wide">
-      </td>
-    </tr>
-    <tr>
-      <td><textarea rows="16" name="INPUT_TEXT" class="wide">$input</textarea></td>
-      <td><textarea rows="16" name="OUTPUT_1" readonly class="wide">$out1</textarea></td>
-      <td><textarea rows="16" name="OUTPUT_2" readonly class="wide">$out2</textarea></td>
-    </tr>
-  </table>
-<input type="hidden" name="EDIT_MODE" value="$EDIT_MODE">
-<input type="hidden" name="IS_EDITOR_OPEN" value="$IS_EDITOR_OPEN">
-<input type="hidden" name="USER_RULE_ID" value="$USER_RULE_ID">
-<input type="hidden" name="USER_RULE" value="$USER_RULE">
-<input type="hidden" name="TEMPLATE_FILE" value="data/translit_template.html">
-</form>
-$debug
-$stdout
-</font>
 </body>
 </html>

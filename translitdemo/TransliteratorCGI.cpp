@@ -1,8 +1,60 @@
 
+/**
+ * The CGI interacts with the template file by filling in variables of
+ * the form $FOO and reading text from fields.  Here is a complete
+ * list of operations.
+ *
+ * $ICU_VERSION
+ * Replaced by ICU version string.
+ *
+ * $AVAILABLE_IDS
+ * Replaced by semicolon delimited list of available system
+ * transliterator IDs.
+ *
+ * $USER_IDS
+ * Replaced by semicolon delimited list of user-defined transliterator
+ * IDs (from the TextCache).
+ *
+ * $OUTPUT1 / $OUTPUT2
+ * Replaced by the result of transliterating a field ARG_INPUT using
+ * ARG_ID and then ARG_ID2.  ARG_DIRECTION2 may be set to "REVERSE"
+ * to invoke ARG_ID2 in the reverse direction.
+ *
+ * $USER_RULE
+ * Replaced by the text for user rule ARG_ID.
+ *
+ * $RESULT
+ * Replaced by either "OK" or an error string.  This is a generic
+ * portal for operations whose primary result is not text output, but
+ * instead a side effect.  Takes argument ARG_OPERATION, which can
+ * have any of the values:
+ *
+ *   "COMPILE"
+ *   Takes arguments ARG_ID and ARG_RULES.  On success, stores the
+ *   given ID/rules pair in the user cache.
+ *
+ *   "REMOVE"
+ *   Takes argument ARG_ID.  On success, removes the given ID from the
+ *   user cache.
+ *
+ * List of fields:
+ * ARG_DIRECTION2
+ * ARG_ID
+ * ARG_ID2
+ * ARG_INPUT
+ * ARG_OPERATION
+ * ARG_RULES
+ *
+ * TEMPLATE_FILE is a special field that is used to tell the CGI what
+ * template file to use to generate its output.  It is a
+ * self-referential field.
+ */
+
 #include "TransliteratorCGI.h"
 #include "unicode/translit.h"
 #include "unicode/ustring.h"
 #include "unicode/rbt.h"
+#include "util.h"
 #include <stdio.h>
 #include <stdlib.h> // qsort (Linux)
 #include <string.h> // strncmp (Linux)
@@ -12,15 +64,11 @@
 
 // Special transliterator IDs
 #define NULL_ID "Null"
-#define COMPOUND_ID  "(Compound)"
-#define INVERSE_ID "(Inverse)"
-
-// emitAvailableIDs flags
-enum { WITH_COMPOUND = 1, WITH_INVERSE = 2 };
 
 static int _compareIDs(const void* arg1, const void* arg2);
 
-TransliteratorCGI::TransliteratorCGI() {
+TransliteratorCGI::TransliteratorCGI() :
+    ruleCache("data/cache/") {
     inputText = 0;
     availableIDs = 0;
     availableIDsCount = 0;
@@ -41,37 +89,6 @@ TransliteratorCGI::~TransliteratorCGI() {
 
     delete translit1;
     delete translit2;
-}
-
-/**
- * Return the input text in its original encoding.  This is computed
- * the first time and cached thereafter.
- */
-const char* TransliteratorCGI::getInputText() {
-    if (inputText == 0) {
-        const char* s = getParamValue("INPUT_TEXT");
-        inputText = strdup(s ? s : "");
-        // For some reason, on IE5.5/Win2K we are seeing (^M)+^J
-        // Delete all ^M's
-        char *p = inputText;
-        char *q = p;
-        while (*q) {
-            if (*q != 13) {
-                *p++ = *q;
-            }
-            ++q;
-        }
-        *p = 0;
-    }
-    return inputText;
-}
-
-const char* TransliteratorCGI::getID1() {
-    return getParamValue("TRANSLITERATOR_ID_1", NULL_ID);
-}
-
-const char* TransliteratorCGI::getID2() {
-    return getParamValue("TRANSLITERATOR_ID_2", INVERSE_ID);
 }
 
 /**
@@ -97,93 +114,17 @@ void TransliteratorCGI::handleEmitHeader(FILE* out) {
  */
 void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
 
-    if (strcmp(var, "ids1") == 0) {
-        emitAvailableIDs(out, getID1(), WITH_COMPOUND);
-    }
-
-    else if (strcmp(var, "ids2") == 0) {
-        emitAvailableIDs(out, getID2(), WITH_COMPOUND | WITH_INVERSE);
-    }
-
-    else if (strcmp(var, "input") == 0) {
-        fprintf(out, "%s", getInputText());
-    }
-
-    else if (strcmp(var, "out1") == 0) {
-        extractTo(out, getIntermediate());
-    }
-
-    else if (strcmp(var, "out2") == 0) {
-        UnicodeString temp, constructorError;
-        Transliterator *trans = getTranslit2(constructorError);
-        if (trans == 0) {
-            extractTo(out, constructorError);
-        } else {
-            transliterate(trans, getIntermediate(), temp);
-            if (!isIntermediateBogus) {
-                extractTo(out, temp);
+    if (strcmp(var, "AVAILABLE_IDS") == 0) {
+        char** ids = getAvailableIDs();
+        if (ids != 0) {
+            int i;
+            for (i=0; i<availableIDsCount; ++i) {
+                fprintf(out, ((i==0)?"%s":";%s"), ids[i]);
             }
         }
     }
 
-    else if (strcmp(var, "compound1") == 0) {
-        if (useCompound1()) {
-            fprintf(out, getParamValue("COMPOUND_ID_1", ""));
-        } else {
-            char* id = createChars(getEffectiveTranslitID1());
-            fprintf(out, "%s", id);
-            delete[] id;
-        }
-    }
-
-    else if (strcmp(var, "compound2") == 0) {
-        // If Use inverse is selected then compound2 is the inverse of compound1;
-        // otherwise it copies its original state.
-        if (useInverse()) {
-            UnicodeString constructorError;
-            Transliterator* trans = getTranslit2(constructorError);
-            if (trans != 0) {
-                char* id = createChars(trans->getID());
-                fprintf(out, "%s", id);
-                delete[] id;
-            }
-        } else {
-            fprintf(out, getParamValue("COMPOUND_ID_2", ""));
-        }
-    }
-
-    // [translit_rule_edit]
-    else if (strcmp(var, "MODE") == 0) {
-        const char* mode = getParamValue("MODE", "");
-        if (*mode) {
-            // BUILD mode indicates that the window has been
-            // initialized and the user has pressed the SUBMIT button.
-            // We check the rules, and if they are valid, regenerate
-            // the page with BUILD_OK mode.  If the rules are not
-            // valid, we enter BUILD_ERROR mode.  When the JavaScript
-            // detects BUILD_OK mode it submits the rules to the
-            // parent page.  When the JavaScript detects BUILD_ERROR
-            // mode it does a UI thing to indicate the error, and then
-            // changes the mode back to BUILD.
-            if (strcmp(mode, "BUILD") == 0) {
-                // Get the rules and try to build them.
-                UnicodeString id; // Not really used
-                Transliterator *t = buildUserRules(id, "RULES");
-                fprintf(out, "%s", (t==0) ? "BUILD_ERROR" : "BUILD_OK");
-                delete t;
-            }
-        }
-    }
-
-    // The cgiStdout variable is used to return error information
-    // etc. to the browser.
-    else if (strcmp(var, "stdout") == 0) {
-        char* s = createChars(cgiStdout);
-        fprintf(out, "%s", s);
-        delete[] s;
-    }
-
-    else if (strcmp(var, "icuversion") == 0) {
+    else if (strcmp(var, "ICU_VERSION") == 0) {
         char str[U_MAX_VERSION_STRING_LENGTH];
         UVersionInfo version;
         u_getVersion(version);
@@ -191,69 +132,89 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var) {
         fprintf(out, "%s", str);
     }
 
-#ifdef DEBUG
-    else if (strcmp(var, "debug") == 0) {
-        extractTo(out, debugLog);
+    else if (strcmp(var, "USER_IDS") == 0) {
+        ruleCache.visitKeys(handle_USER_IDS, (void*) out);
     }
-#endif
+
+    else if (strcmp(var, "USER_RULE") == 0) {
+        UnicodeString id(getParamValue("ARG_ID", ""), ENCODING);
+        UnicodeString rule;
+        if (ruleCache.get(id, rule)) {
+            util_fprintf(out, rule);
+        }
+    }
+
+    else if (strcmp(var, "OUTPUT1") == 0) {
+        util_fprintf(out, getIntermediate());
+    }
+
+    else if (strcmp(var, "OUTPUT2") == 0) {
+        UnicodeString constructorError;
+        Transliterator *trans = getTranslit2(constructorError);
+        if (trans == 0) {
+            util_fprintf(out, constructorError);
+        } else {
+            UnicodeString output2(getIntermediate());
+            if (!isIntermediateBogus) {
+                trans->transliterate(output2);
+                util_fprintf(out, output2);
+            }
+        }
+    }
+
+    else if (strcmp(var, "RESULT") == 0) {
+        const char* opcode = getParamValue("ARG_OPERATION", "");
+
+        if (strcmp(opcode, "COMPILE") == 0) {
+            // Get the rules and try to build them.
+            UnicodeString id(getParamValue("ARG_ID", ""), ENCODING);
+            UnicodeString rules(getParamValue("ARG_RULES", ""), ENCODING);
+            UnicodeString errMsg;
+            Transliterator *t = buildUserRules(id, rules, errMsg);
+            if (t != 0) {
+                fprintf(out, "OK");
+                delete t;
+                // We have a validated rule set; save it
+                ruleCache.put(id, rules);
+            } else {
+                util_fprintf(out, errMsg);
+            }
+        }
+
+        else if (strcmp(opcode, "REMOVE") == 0) {
+            UnicodeString id(getParamValue("ARG_ID", ""), ENCODING);
+            ruleCache.remove(id);
+            util_fprintf(out, "OK");
+        }
+    }
 
     else {
         TemplateCGI::handleTemplateVariable(out, var);
     }
 }
 
-/**
- * Return true if "Use inverse" is checked.
- */
-bool TransliteratorCGI::useInverse() {
-    // We used to have an explicit Inverse checkbox, so we did this:
-    //|return *getParamValue("USE_INVERSE", "") != 0;
-    // But now we have an INVERSE_ID in the second pop-up
-    return strcmp(getID2(), INVERSE_ID) == 0;
-}
 
 /**
- * Return true if "Compound" box #1 is checked.
+ * Return the input text in its original encoding.  This is computed
+ * the first time and cached thereafter.
  */
-bool TransliteratorCGI::useCompound1() {
-    // We used to have an explicit Compound checkbox, so we did this:
-    //|return *getParamValue("USE_COMPOUND_ID_1", "") != 0;
-    // But now we have a COMPOUND_ID in the first pop-up
-    return strcmp(getID1(), COMPOUND_ID) == 0;
-}
-
-/**
- * Return true if "Compound" box #2 will be checked.  This can
- * occur if the box is actually checked or if "Use inverse" is
- * checked and box #1 is checked.
- */
-bool TransliteratorCGI::useCompound2() {
-    // We used to have an explicit Compound checkbox, so we did this:
-    //|// If Use inverse is selected then useCompound2 mirrors useCompound1;
-    //|// otherwise it copies its original state.
-    //|const char* tag = "USE_COMPOUND_ID_2";
-    //|if (useInverse()) {
-    //|    tag = "USE_COMPOUND_ID_1";
-    //|}
-    //|return *getParamValue(tag, "") != 0;
-    // But now we have a COMPOUND_ID in the second pop-up
-    return strcmp(getID2(), COMPOUND_ID) == 0;
-}
-
-/**
- * Return the effective ID of transliterator 1.
- */
-UnicodeString TransliteratorCGI::getEffectiveTranslitID1() {
-    UnicodeString id;
-    if (useCompound1()) {
-        const char *raw = getParamValue("COMPOUND_ID_1", NULL_ID);
-        char *toDelete = copyAndCleanTranslitID(raw);
-        id = UnicodeString(toDelete, ENCODING);
-        delete[] toDelete;
-    } else {
-        id = getID1();
+const char* TransliteratorCGI::getInputText() {
+    if (inputText == 0) {
+        const char* s = getParamValue("ARG_INPUT");
+        inputText = strdup(s ? s : "");
+        // For some reason, on IE5.5/Win2K we are seeing (^M)+^J
+        // Delete all ^M's
+        char *p = inputText;
+        char *q = p;
+        while (*q) {
+            if (*q != 13) {
+                *p++ = *q;
+            }
+            ++q;
+        }
+        *p = 0;
     }
-    return id;
+    return inputText;
 }
 
 /**
@@ -262,9 +223,8 @@ UnicodeString TransliteratorCGI::getEffectiveTranslitID1() {
  * in constructorError.
  */
 Transliterator* TransliteratorCGI::getTranslit1(UnicodeString& constructorError) {
-    char *toDelete = 0;
     if (translit1 == 0) {
-        UnicodeString id = getEffectiveTranslitID1();
+        UnicodeString id(getParamValue("ARG_ID", NULL_ID), ENCODING);
         // We ALWAYS prepend an invisible Hex-Unicode transliterator.  This
         // just makes it possible for the user to type hex escapes in the
         // input area.
@@ -273,7 +233,7 @@ Transliterator* TransliteratorCGI::getTranslit1(UnicodeString& constructorError)
         translit1 = Transliterator::createInstance(id);
         if (translit1 == 0) {
             constructorError = UnicodeString("Error: Unable to create transliterator \"", "");
-            constructorError += getEffectiveTranslitID1();
+            constructorError += id;
             constructorError += "\"";
         }
     }
@@ -288,106 +248,20 @@ Transliterator* TransliteratorCGI::getTranslit1(UnicodeString& constructorError)
 Transliterator* TransliteratorCGI::getTranslit2(UnicodeString& constructorError) {
     if (translit2 == 0) {
         loadUserTransliterators();
-        if (useInverse()) {
-            UnicodeString id1 = getEffectiveTranslitID1();
-            Transliterator *t = Transliterator::createInstance(id1);
-            if (t != 0) {
-                translit2 = t->createInverse();
-                delete t;
-                if (translit2 == 0) {
-                    constructorError = UnicodeString("Error: Unable to create inverse of \"", "");
-                    constructorError += id1;
-                    constructorError += "\"";
-                }
-            }
+        UnicodeString id(getParamValue("ARG_ID2", NULL_ID), ENCODING);
+        UTransDirection dir = UTRANS_FORWARD;
+        if (strcmp(getParamValue("ARG_DIRECTION2", ""), "REVERSE") == 0) {
+            dir = UTRANS_REVERSE;
         }
-        else {
-            UnicodeString id;
-            if (useCompound2()) {
-                const char *raw = getParamValue("COMPOUND_ID_2", NULL_ID);
-                char *toDelete = copyAndCleanTranslitID(raw);
-                id = UnicodeString(toDelete, ENCODING);
-                delete[] toDelete;
-            } else {
-                id = getID2();
-            }
-            translit2 = Transliterator::createInstance(id);
-            if (translit2 == 0) {
-                constructorError = UnicodeString("Error: Unable to create transliterator \"", "");
-                constructorError += id;
-                constructorError += "\"";
-            }
+        translit2 = Transliterator::createInstance(id, dir);
+        if (translit2 == 0) {
+            constructorError = UnicodeString("Error: Unable to create transliterator \"", "");
+            constructorError += id;
+            constructorError += "\"";
         }
     }
     return translit2;
 }
-
-/**
- * Given a transliterator ID (which may be compound, and may contain
- * inline UnicodeSet patterns), clean it of extraneous whitespace.
- * Return a new ID with no whitespace (other than that embedded in
- * UnicodeSet patterns).  User owns and must delete result!
- */
-char* TransliteratorCGI::copyAndCleanTranslitID(const char* id) {
-    char* p = new char[strlen(id) + 1];
-	char* result = p;
-    int unicodeStringPatDepth = 0;
-    bool inEscape = false;
-    if (p != 0) {
-        for (; *id; ++id) {
-            char c = *id;
-            if (inEscape) {
-                *p++ = c;
-                inEscape = false;
-                continue;
-            }
-            if (unicodeStringPatDepth) {
-                *p++ = c;
-                if (c == '\\') {
-                    inEscape = true;
-                }
-                else if (c == '[') {
-                    ++unicodeStringPatDepth;
-                }
-                else if (c == ']') {
-                    --unicodeStringPatDepth;
-                }
-            } else {
-                if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
-                    continue;
-                }
-                *p++ = c;
-                if (c == '[') {
-                    unicodeStringPatDepth = 1;
-                }
-            }
-        }
-        // If unicodeStringPatDepth is != 0 or inEscape is true here, then
-        // the id is bogus.
-        *p = 0;
-    }
-    return result;
-}
-
-///**
-// * Trim the spaces from str and return a newly allocated string
-// * copy.
-// */
-//char* TransliteratorCGI::copyTrim(const char* str) {
-//    char* p = new char[strlen(str) + 1];
-//	char* result = p;
-//    if (p != 0) {
-//        while (*str) {
-//            if (*str != ' ' && *str != '\t' &&
-//                *str != '\n' && *str != '\r') {
-//                *p++ = *str;
-//            }
-//            ++str;
-//        }
-//        *p = 0;
-//    }
-//    return result;
-//}
 
 /**
  * Return the intermediate text.  Compute it if needed, or fetch it
@@ -402,35 +276,24 @@ UnicodeString& TransliteratorCGI::getIntermediate() {
             isIntermediateBogus = true;
             intermediate = constructorError;
         } else {
-            transliterate(trans, input, intermediate);
+            intermediate = input;
+            trans->transliterate(intermediate);
         }
     }
     return intermediate;
 }
 
 /**
- * Transliterate the given input string using a transliterator with
- * the given id.  Store the output in 'output'.
- */
-void TransliteratorCGI::transliterate(Transliterator* trans,
-                                      const UnicodeString& input,
-                                      UnicodeString& output) {
-    // assert(trans != 0)
-    output = input;
-    trans->transliterate(output);
-}
-
-/**
  * Given a tag (indicating a CGI param) retrieve the rules from that
  * tag and attempt to build them.  Return the resulting
  * transliterator, or NULL on failure.  On failure, put the relevant
- * error message in cgiStdout.
+ * error message in errMsg.
  *
  * Caller owns the result if it is non-NULL.
  */
 Transliterator* TransliteratorCGI::buildUserRules(const UnicodeString& id,
-                                                  const char* tag) {
-    UnicodeString rules(getParamValue(tag, ""), ENCODING);
+                                                  const UnicodeString& rules,
+                                                  UnicodeString& errMsg) {
     UParseError err;
     UErrorCode status = U_ZERO_ERROR;
     Transliterator *t = new RuleBasedTransliterator(id, rules,
@@ -439,9 +302,9 @@ Transliterator* TransliteratorCGI::buildUserRules(const UnicodeString& id,
     if (U_FAILURE(status)) {
         char buf[256];
         sprintf(buf, "Syntax error in the rule \"");
-        cgiStdout += buf;
-        cgiStdout += err.preContext;
-        cgiStdout += "\" ";
+        errMsg += buf;
+        errMsg += err.preContext;
+        errMsg += "\" ";
         delete t;
         t = 0;
     }
@@ -457,119 +320,9 @@ void TransliteratorCGI::loadUserTransliterators() {
         return;
     }
 
-    // Currently we support only one user-defined RBT, in the hidden
-    // fields USER_RULE and USER_RULE_ID.
-    UnicodeString id(getParamValue("USER_RULE_ID", ENCODING));
-    if (id.length() > 0) {
-        Transliterator *t = buildUserRules(id, "USER_RULE");
-        if (t != 0) {
-            UErrorCode status = U_ZERO_ERROR;
-            Transliterator::registerInstance(t, status);
-        }
-    }
+    ruleCache.visitKeys(registerUserRules, this);
 
     areUserTransliteratorsLoaded = true;
-}
-
-/**
- * Given a UnicodeString, extract its contents to a char* buffer using
- * ENCODING and return it.  Caller must delete returned pointer.
- * Return value will be 0 if out of memory.
- */
-char* TransliteratorCGI::createChars(const UnicodeString& str) {
-    // Preflight for size
-    int32_t len = str.extract(0, str.length(), NULL, 0, ENCODING) + 16;
-    char* charBuf = new char[len];
-    if (charBuf != 0) {
-        len = str.extract(0, str.length(), charBuf, len, ENCODING);
-        charBuf[len] = 0;
-    }
-    return charBuf;
-}
-
-/**
- * Send the given UnicodeString to 'out' using ENCODING.
- */
-void TransliteratorCGI::extractTo(FILE* out, const UnicodeString& str) {
-    char* charBuf = createChars(str);
-    if (charBuf == 0) {
-        fprintf(out, "Error: Out of memory");
-        return;
-    }
-    fprintf(out, "%s", charBuf);
-    delete[] charBuf;
-}
-
-/**
- * Emit a list of available IDs as OPTION elements, with the given
- * ID selected.
- * @flags WITH_INVERSE or WITH_COMPOUND or both or neither
- */
-void TransliteratorCGI::emitAvailableIDs(FILE* out, const char* selectedID,
-                                         int flags) {
-    int i;
-    char** ids = getAvailableIDs();
-    if (ids == 0) {
-        fprintf(out, "Error: Out of memory");
-        return;
-    }
-
-    // fprintf(out, "<!-- Selected: %s -->", selectedID);
-
-    /*
-    int selectedIndex = -1;
-    // Check to see if no IDs match selectedID -- in that case
-    // we want to select NULL_ID.
-    for (i=0; i<availableIDsCount; ++i) {
-        if (strcmp(selectedID, availableIDs[i]) == 0) {
-            selectedIndex = i;
-            break;
-        }        
-    }
-
-    // This section could be eliminated -- all it does is make it so
-    // that if the selectedID does not exist in our list, we select
-    // Null.  If we don't care about this, we can delete this loop and
-    // put the check (that happens above) directly into the loop
-    // below.
-    if (selectedIndex < 0) {
-        for (i=0; i<availableIDsCount; ++i) {
-            if (strcmp(NULL_ID, availableIDs[i]) == 0) {
-                selectedIndex = i;
-                break;
-            }        
-        }
-    }
-    */
-
-    // fprintf(out, "<!-- Selected: %s -->", selectedID);
-
-    // Output the HTML
-    // Use index i==-2 to be <Inverse> and i==-1 to be <Compound>
-    for (i=-2; i<availableIDsCount; ++i) {
-        char *option = NULL;
-        if (i==-2) {
-            if (flags & WITH_INVERSE) {
-                option = INVERSE_ID;
-            } else {
-                continue;
-            }
-        } else if (i==-1) {
-            if (flags & WITH_COMPOUND) {
-                option = COMPOUND_ID;
-            } else {
-                continue;
-            }
-        } else {
-            option = ids[i];
-        }
-        //fprintf(out, "<OPTION%s>%s</OPTION>\n",
-        //        selectedIndex == i ? " SELECTED" : "",
-        //        option);
-        fprintf(out, "<OPTION%s>%s</OPTION>\n",
-                strcmp(option, selectedID)==0 ? " SELECTED" : "",
-                option);
-    }
 }
 
 /**
@@ -608,6 +361,34 @@ char** TransliteratorCGI::getAvailableIDs() {
           sizeof(availableIDs[0]), _compareIDs);
 
     return availableIDs;
+}
+
+// TextCache::KeyVisitor
+void TransliteratorCGI::handle_USER_IDS(int32_t i, const UnicodeString& key,
+                                        void* context) {
+    FILE* out = (FILE*) context;
+    if (i != 0) {
+        fprintf(out, ";");
+    }
+    util_fprintf(out, key);
+}
+
+// TextCache::KeyVisitor
+void TransliteratorCGI::registerUserRules(int32_t i, const UnicodeString& id,
+                                          void* context) {
+    UnicodeString rules;
+    TransliteratorCGI* _this = (TransliteratorCGI*) context;
+    if (_this->ruleCache.get(id, rules)) {
+        UErrorCode status = U_ZERO_ERROR;
+        Transliterator *t = new RuleBasedTransliterator(id, rules,
+                                                        UTRANS_FORWARD,
+                                                        status);
+        if (U_SUCCESS(status)) {
+            Transliterator::registerInstance(t, status);
+        } else {
+            delete t;
+        }
+    }
 }
 
 /**
