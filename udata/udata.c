@@ -341,9 +341,165 @@ udata_close(UDataMemory *pData) {
 
 #elif defined (LINUX)||defined(POSIX)||defined(SOLARIS)||defined(AIX)||defined(HPUX)
 
+typedef struct {
+    uint16_t headerSize;
+    uint8_t magic1, magic2;
+} MappedData;
+
+#if defined(UDATA_DEBUG)
+#include <stdio.h>
+#endif
+
 #   if defined(UDATA_DLL) /* POSIX dll implementation ----------------------- */
 
-#       error the UDATA_DLL configuration is not implemented yet
+struct UDataMemory {
+    void *lib;
+    MappedData *p;
+};
+
+#ifndef UDATA_SO_SUFFIX
+# error   Please define UDATA_SO_SUFFIX to the shlib suffix (i.e. '.so' )
+#endif
+
+/* Do we need to check the platform here? */
+#include <dlfcn.h>
+
+static void *commonLib=NULL;
+
+static MappedData *
+getChoice(void *lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
+static UDataMemory *
+doOpenChoice(const char *type, const char *name,
+             UDataMemoryIsAcceptable *isAcceptable, void *context,
+             UErrorCode *pErrorCode) {
+    char buffer[40];
+    char symname[40];
+    UDataMemory *pData;
+    MappedData *p;
+    int nameLimit;
+    UErrorCode commonErrorCode=U_ZERO_ERROR;
+
+    if(commonLib==NULL) {
+        /* load the common library if necessary - outside the mutex block */
+        void *lib=dlopen("lib" COMMON_DATA_NAME UDATA_SO_SUFFIX, RTLD_LAZY|RTLD_GLOBAL);
+
+        if(lib!=NULL) {
+            /* in the mutex block, set the common library for this process */
+            umtx_lock(NULL);
+            if(commonLib==NULL) {
+                commonLib=lib;
+                lib=NULL;
+            }
+            umtx_unlock(NULL);
+
+            /* if a different thread set it first, then free the extra library instance */
+            if(lib!=NULL) {
+                dlclose(lib);
+            }
+        }
+    }
+
+    /* allocate the data structure */
+    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
+    if(pData==NULL) {
+        *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
+        return NULL;
+    }
+
+    /* set up the entry point name */
+    icu_strcpy(symname, name);
+    if(type!=NULL && *type!=0) {
+        icu_strcat(symname, "_");
+        icu_strcat(symname, type);
+    }
+
+    /* look for it in the common library */
+    if(commonLib!=NULL) {
+        p=getChoice(commonLib, symname, type, name, isAcceptable, context, &commonErrorCode);
+        if(p!=NULL) {
+            pData->lib=NULL;
+            pData->p=p;
+            return pData;
+        }
+    }
+
+    /* set up the dll filename */
+    icu_strcpy(buffer, "lib");
+    icu_strcat(buffer, symname);
+    icu_strcat(buffer, UDATA_SO_SUFFIX);
+
+    /* open the dll */
+    pData->lib=dlopen(buffer, RTLD_LAZY|RTLD_GLOBAL);
+    if(pData->lib==NULL) {
+        icu_free(pData);
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
+    }
+
+    buffer[nameLimit]=0;
+    p=getChoice(pData->lib, symname, type, name, isAcceptable, context, pErrorCode);
+    if(p!=NULL) {
+        pData->p=p;
+        return pData;
+    } else {
+        dlclose(pData->lib);
+        icu_free(pData);
+        *pErrorCode=commonErrorCode;
+        return NULL;
+    }
+}
+
+static MappedData *
+getChoice(void *lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode) {
+    MappedData *p;
+    UDataInfo *info;
+
+    /* get the data pointer */
+    p=(MappedData *)dlsym(lib, entry);
+    if(p==NULL) {
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+        return NULL;
+    }
+
+    /* check magic1 & magic2 */
+    if(p->magic1!=0xda || p->magic2!=0x27) {
+        *pErrorCode=U_INVALID_FORMAT_ERROR;
+        return NULL;
+    }
+
+    /* check for the byte ordering */
+    info=(UDataInfo *)(p+1);
+    if(info->isBigEndian!=U_IS_BIG_ENDIAN) {
+        *pErrorCode=U_INVALID_FORMAT_ERROR;
+        return NULL;
+    }
+
+    /* is this acceptable? */
+    if(isAcceptable!=NULL && !isAcceptable(context, type, name, info)) {
+        *pErrorCode=U_INVALID_FORMAT_ERROR;
+        return NULL;
+    }
+
+    return p;
+}
+
+U_CAPI void U_EXPORT2
+udata_close(UDataMemory *pData) {
+    if(pData!=NULL) {
+        if(pData->lib!=NULL) {
+            dlclose(pData->lib);
+        }
+        icu_free(pData);
+    }
+}
+
 
 #   else /* POSIX memory map implementation --------------------------------- */
 
@@ -351,11 +507,6 @@ udata_close(UDataMemory *pData) {
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/fcntl.h>
-
-typedef struct {
-    uint16_t headerSize;
-    uint8_t magic1, magic2;
-} MappedData;
 
 struct UDataMemory {
   size_t length;
@@ -421,8 +572,10 @@ doOpenChoice(const char *type, const char *name,
         return NULL;
       }
 
+#ifdef UDATA_DEBUG
     fprintf(stderr, "mmap of %s [%d bytes] succeeded, -> 0x%X\n",
             buffer, length, data); fflush(stderr);
+#endif
     
     close(fd); /* no longer needed */
 

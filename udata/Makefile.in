@@ -14,28 +14,32 @@ subdir = udata
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
 
+# if you don't have strip or it doesn't work, set this to 'true'
+# should come from autoconf!
+STRIP= strip
+
 ## Target information
 LIB_TARGET = libudata.$(SO) 
-LIB_OBJECTS = udata.o unames.o unewdata.o
-LIB_HEADERS = udata.h unames.h unewdata.h
+LIB_OBJECTS = udata.o unames.o
+LIB_HEADERS = udata.h unames.h 
 LIB_DEPS = $(LIB_OBJECTS:.o=.d)
 
 GEN_TARGET = gennames
-GEN_OBJECTS = gennames.o
+GEN_OBJECTS = gennames.o unewdata.o
 GEN_DEPS = $(GEN_OBJECTS:.o=.d)
 
 TST_TARGET =  udatatest
 TST_OBJECTS = udatatest.o
 TST_DEPS = $(TST_OBJECTS:.o=.d)
 
-TARGET = $(LIB_TARGET) $(GEN_TARGET) $(TST_TARGET)
+TARGET = $(LIB_TARGET) $(GEN_TARGET) $(TST_TARGET) genccode
 HEADERS = $(LIB_HEADERS)
 DEPS = $(GEN_DEPS) $(LIB_DEPS) $(TST_DEPS)
 OBJECTS = $(GEN_OBJECTS) $(LIB_OBJECTS) $(TST_OBJECTS)
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
-distclean distclean-local dist dist-local check check-local install-data
+distclean distclean-local dist dist-local check check-local generate-data install-data
 
 ## Clear suffix list
 .SUFFIXES :
@@ -52,7 +56,8 @@ all-local: $(TARGET)
 
 mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
-install-local: all-local install-headers install-library install-data
+install-local: all-local install-headers install-library generate-data install-data
+	$(INSTALL) genccode $(sbindir)/genccode
 
 install-library: all-local
 	$(mkinstalldirs) $(libdir)
@@ -71,8 +76,40 @@ ICUDATADIR=$(datadir)/$(PACKAGE)/$(VERSION)
 
 UNICODEDATA=$(ICUDATADIR)/UnicodeData-3.0.0.txt
 
+#################################################
+#################################################
+#           Begin data format choice
+#CPPFLAGS += -DUDATA_MAP=1
+
+################# DLL version #############
+CPPFLAGS += -DUDATA_DLL=1 -DUDATA_SO_SUFFIX=\".$(SO)\"
+LDFLAGS += -ldl
+
+install-data: libicudata.$(SO)
+	$(INSTALL) libicudata.$(SO) $(libdir)/$(LIB_TARGET)
+
+libicudata.$(SO): $(ICUDATADIR)/unames.dat ./genccode
+	-rm -f $(ICUDATADIR)/*.c
+	@for file in `ls $(ICUDATADIR)/*.dat`; do \
+	  echo genccode $$file; \
+	  ./genccode $$file; \
+	done;
+	$(COMPILE.c) -o icudata.o $(ICUDATADIR)/*.c
+	$(SHLIB.c) -o $@ icudata.o
+	-$(STRIP) $@
+	-rm -f $(ICUDATADIR)/*.c
+
+################# MMAP version ############
+# install-data: generate-data
+
+
+#           End data format choice
+##################################################
+##################################################
+
+
 #install other stuff
-install-data: $(ICUDATADIR)/unames.dat
+generate-data: $(ICUDATADIR)/unames.dat
 
 $(ICUDATADIR)/unames.dat: $(GEN_TARGET) $(LIB_TARGET) $(UNICODEDATA)
 	@echo "Generating names.."
@@ -100,10 +137,13 @@ $(LIB_TARGET) : $(LIB_OBJECTS)
 	$(SHLIB.c) -o $@ $^ $(ICULIBS)
 
 $(GEN_TARGET) : $(GEN_OBJECTS)
-	$(LINK.c) -o $@ $^ $(ICULIBS) -L. -ludata
+	$(LINK.c) -o $@ $^  -L. -ludata $(ICULIBS)
+
+genccode: genccode.c
+	$(LINK.c) -o $@ $^ $(ICULIBS)
 
 $(TST_TARGET) : $(TST_OBJECTS)
-	$(LINK.cc) -o $@ $^ $(ICULIBS) -L. -ludata
+	$(LINK.cc) -o $@ $^ -L. -ludata $(ICULIBS)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
