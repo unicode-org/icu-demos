@@ -1,0 +1,105 @@
+## Makefile.in for ICU - icuapps/xlitomatic
+## Steven  R. Loomis
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+
+# srcdir must be set before this is included
+include @ICU_MAKEFILE@
+
+
+## Build directory information
+top_builddir = ..
+subdir = xlitomatic
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~ *.res
+
+## Target information
+TARGET = xlitomatic
+
+LDFLAGS := $(LDFLAGS) -L../locexp/util -L../usort/lib
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licu-uc -lusort' ...
+ICULIBS    += -lustdio -llxutil -lusort
+
+# Want to make sure the usort.h dependency is not on the installed version .. 
+CPPFLAGS  := -I../locexp/util -I../usort/lib $(CPPFLAGS)
+
+OBJECTS = xlitomatic.o dsource.o filesource.o xlitsource.o urlsource.o
+
+DEPS = $(OBJECTS:.o=.d)
+
+## List of phony targets
+.PHONY : all all-local install install-local clean clean-local \
+distclean distclean-local dist dist-local check check-local
+
+## Clear suffix list
+.SUFFIXES :
+
+## List of standard targets
+all: all-local
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+all-local: $(TARGET) res-local
+
+install-local: all-local install-target install-res
+
+mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
+
+install-target: all-local
+	$(mkinstalldirs) $(bindir)
+	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
+
+dist-local:
+
+clean-local:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET)
+
+distclean-local: clean-local
+	rm -f Makefile $(DEPS)
+
+check-local:
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just
+#         '$(LIBS) -licu-uc -lusort' ...
+
+$(TARGET) : $(OBJECTS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
+
+ifneq ($(MAKECMDGOALS),distclean)
+-include $(DEPS)
+endif
+
+
+
+############## resource build info #################
+lxdatadir= $(datadir)/$(PACKAGE)/$(VERSION)/xlitomatic
+GENSRC=default.txt
+# No data yet.
+#SRC=en.txt
+ALLSRC = $(SRC) $(GENSRC)
+RES = $(ALLSRC:.txt=.res)
+%.res : %.txt
+	@echo Rebuilding $@
+	@$(sbindir)/genrb $<
+
+res-local: $(RES)
+
+install-res: res-local
+	$(mkinstalldirs) $(lxdatadir)
+	$(INSTALL) $(ALLSRC) $(RES) $(lxdatadir)
+
+default.txt: xlitomatic.cpp
+	env PATH=../locexp/tools:../uconv:$(PATH) extractStrings.sh ./xlitomatic.cpp > ./default.txt || ( rm -f ./default.txt ; false )
