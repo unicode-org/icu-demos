@@ -71,19 +71,25 @@ void writeFileObject( LXContext *lx, const char *path )
   UErrorCode status = U_ZERO_ERROR;
   UResourceBundle *n = NULL;
   UErrorCode s2 = U_ZERO_ERROR;
+  const char *thePath = NULL;
 
   if(strcmp(lx->chosenEncoding,"icudata"))
-    rb = ures_open(FSWF_bundlePath(), lx->cLocale, &status);  
+  {
+    thePath = FSWF_bundlePath();
+  }
   else
-    rb = ures_open(NULL, lx->cLocale, &status);  
+  {
+    thePath = NULL;
+  }
+
+  rb = ures_open(thePath, lx->cLocale, &status);  
 
   if(U_FAILURE(status))
   {
     printf("Content-type: text/html\r\n\r\n");
     printf("Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
            lx->cLocale,
-           u_getDataDirectory(),
-           FSWF_bundlePath(),
+           (thePath==NULL)?"NULL":thePath,
            path);
     printf("Error: %s\n", u_errorName(status));
     printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
@@ -134,7 +140,7 @@ void writeFileObject( LXContext *lx, const char *path )
       fprintf(lx->fOUT, "Error: Couldn't get [%s] in bundle [%s] in path [%s]<P>\r\n",
              path,
              lx->cLocale,
-             u_getDataDirectory());
+           (thePath==NULL)?"NULL":thePath);
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
       fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
       return;

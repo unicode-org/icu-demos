@@ -48,7 +48,7 @@ ICULIBS := -lustdio $(ICULIBS) -lusort -liculxutil
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
-LDFLAGS += -L../usort/lib -L./util -L./resource/out/ -llocexp
+LDFLAGS += -L../usort/lib -L./util -L./resource/out/ 
 
 # get the hostname the code is built on
 CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"$(host)\"
@@ -121,7 +121,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licuuc -lusort' ...
 
 $(TARGET) : $(LXOBJ) $(CGIOBJ)
-	$(LINK.cc) -o $@ $^ $(ICULIBS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS) -llocexp
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
