@@ -51,11 +51,11 @@ check: check-local
 
 all-local: $(TARGET) resfiles
 
-install-local: all-local install-target resinst
+install-local: all-local install-target
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(bindir)
-	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
+	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
+	$(INSTALL) $(TARGET) $(DESTDIR)$(bindir)/$(TARGET)
 
 dist-local:
 
@@ -79,7 +79,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 $(TARGET) : $(OBJECTS)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
 
-resfiles: $(RESFILES)
+resfiles: $(RESFILES) resinst
 
 $(RESDIR)/$(RESDIR).lst: Makefile resfiles.mk
 	@$(MKINSTALLDIRS) $(RESDIR)
@@ -89,7 +89,8 @@ $(RESDIR)/$(RESDIR).lst: Makefile resfiles.mk
 	done;
 
 resinst: $(RESFILES) $(RESDIR)/$(RESDIR).lst
-	$(INVOKE) $(sbindir)/pkgdata -p $(RESDIR) -O @ICU_MAKEFILE@ -m dll -v -c -d $(libdir)/$(PACKAGE)/$(VERSION) -T $(RESDIR) $(RESDIR)/$(RESDIR).lst
+	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)/$(PACKAGE)/$(VERSION)
+	$(INVOKE) $(sbindir)/pkgdata -p $(RESDIR) -O @ICU_MAKEFILE@ -m dll -v -c -d $(DESTDIR)$(libdir)/$(PACKAGE)/$(VERSION) -T $(RESDIR) $(RESDIR)/$(RESDIR).lst
 
 $(RESDIR)/%.res: ./%.txt
 	@$(MKINSTALLDIRS) $(RESDIR)

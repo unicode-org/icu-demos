@@ -22,3 +22,7 @@ locexp/tools/escapeForBundle
 locexp/tools/findSame
 locexp/util/*.d
 locexp/util/Makefile
+uconv/*.d
+uconv/Makefile
+uconv/uconv
+uconv/uconvmsg
