@@ -65,7 +65,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
             /* FALLBACK - load from root */
             len = ucol_getRulesEx(coll,UCOL_FULL_RULES, temp,UCA_LEN);
             s=temp;
-            status = U_USING_DEFAULT_ERROR;
+            status = U_USING_DEFAULT_WARNING;
         }
     }
     else
@@ -161,14 +161,13 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
                     }
                 }
 
-                len = u_normalize(s,
-                                  len,
-                                  UCOL_DECOMP_COMPAT_COMP_CAN,
-				/*UCOL_DECOMP_CAN_COMP_COMPAT, */
-                                  0,
-                                  comps,
-                                  len*3,
-                                  &status);
+                len = unorm_normalize(s,
+                                      len,
+                                      UNORM_NFKC,
+                                      0,
+                                      comps,
+                                      len*3,
+                                      &status);
 
               
 /*              u_fprintf(lx->OUT, "xlit: %d to %d<P>\n",
@@ -192,7 +191,6 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
   ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), COLLECT_lastResortCallback, &status);
   }
 */
-	      
                 if(*comps == 0)
 		{
                     u_fprintf(lx->OUT, "<I>%U</I>", FSWF("empty", "(Empty)"));

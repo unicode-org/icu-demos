@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2001, International Business Machines
+*   Copyright (C) 1999-2002, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 /*
@@ -10,8 +10,6 @@
   Not caching transliterators, anymore.
 
   Steven R. Loomis <srl@jtcsv.com>
-
-//        gTR[n] = utrans_open("Null", UTRANS_FORWARD, NULL, 0, NULL, &status);
 
 */
 
@@ -163,7 +161,7 @@ U_CAPI void
     while(fromUArgs->source < fromUArgs->sourceLimit)
     {
       /* TODO: UTF-16 support */
-        for(srclen=0; (fromUArgs->source+srclen)<fromUArgs->sourceLimit && u_charScript( fromUArgs->source[srclen] ) == scriptBlock  ; srclen++);
+        for(srclen=0; (fromUArgs->source+srclen)<fromUArgs->sourceLimit && ublock_getCode( fromUArgs->source[srclen] ) == scriptBlock  ; srclen++);
        
         if(srclen > 0)
         {
@@ -195,7 +193,7 @@ U_CAPI void
 
           n = 0; /* reset */
         }
-        scriptBlock = u_charScript(fromUArgs->source[srclen]);
+        scriptBlock = ublock_getCode(fromUArgs->source[srclen]);
 
         break;
     }

@@ -70,9 +70,9 @@ static void DECOMPOSE_uchar (void *context,
 
   
   /* First, attempt a decompose */
-  decomposedLen = u_normalize(codeUnits,
+  decomposedLen = unorm_normalize(codeUnits,
 			      length,
-			      UCOL_DECOMP_COMPAT,
+			      UNORM_NFKD,
 			      0,
 			      decomposedSequence,
 			      DECOMP_MAX,
@@ -90,7 +90,7 @@ static void DECOMPOSE_uchar (void *context,
     */
     const UChar *mySource;
 
-    *err = U_USING_FALLBACK_ERROR;
+    *err = U_USING_FALLBACK_WARNING;
     mySource = decomposedSequence;
     /* Nota Bene! we're going to recurse. Hang on tight. :) */
 
@@ -191,7 +191,7 @@ static void DECOMPOSE_uchar (void *context,
          (decomposedSequence[1] != 0) ) )
       {
         /* Yes! We have something different. Put it out.. */
-        *err = U_USING_FALLBACK_ERROR;
+        *err = U_USING_FALLBACK_WARNING;
         
         mySource = output;
         /* Nota Bene! we're likely to recurse. Hang on tight. :) */

@@ -88,13 +88,13 @@ UCNV_FROM_U_CALLBACK_BACKSLASH (const void *context,
   FromUBackslashContext *ctx;
 
   UConverterFromUCallback original = NULL;
-  void *originalContext;
+  const void *originalContext;
 
   UConverterFromUCallback ignoredCallback = NULL;
-  void *ignoredContext;
+  const void *ignoredContext;
 
   UConverterFromUCallback tCallback = NULL;
-  void *tContext;
+  const void *tContext;
 
   if((reason > UCNV_IRREGULAR) || (length <= 0))
   {

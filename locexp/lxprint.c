@@ -26,7 +26,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
                      FSWF("U_MISSING_RESOURCE_ERROR", "(missing resource)"));
         break;
 
-    case U_USING_FALLBACK_ERROR:
+    case U_USING_FALLBACK_WARNING:
         if(lx->parLocale && lx->parLocale->str)
 	{
             u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\">", lx->parLocale->str, tag);
@@ -41,7 +41,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
         u_fprintf(lx->OUT, "</A>");
         break;
 
-    case U_USING_DEFAULT_ERROR:
+    case U_USING_DEFAULT_WARNING:
 	u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
         u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %U)"), lx->locales->ustr); 
         u_fprintf(lx->OUT, "</A>");

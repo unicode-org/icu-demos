@@ -268,11 +268,11 @@ UBool isSupportedLocale(const char *locale, UBool includeChildren)
     }
     else
     {
-        if(status == U_USING_DEFAULT_ERROR)
+        if(status == U_USING_DEFAULT_WARNING)
         {
             supp = FALSE;
         }
-        else if( (!includeChildren) && (status == U_USING_FALLBACK_ERROR))
+        else if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
         {
             supp = FALSE;
         }
@@ -283,13 +283,13 @@ UBool isSupportedLocale(const char *locale, UBool includeChildren)
             status = U_ZERO_ERROR;
             ures_getStringByKey(newRB, "helpPrefix", &len, &status);
 
-            if(status == U_USING_DEFAULT_ERROR)
+            if(status == U_USING_DEFAULT_WARNING)
             {
                 supp = FALSE;
             }
             else
             {
-                if( (!includeChildren) && (status == U_USING_FALLBACK_ERROR))
+                if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
                 {
                     supp = FALSE;
                 }
@@ -311,8 +311,9 @@ UBool isExperimentalLocale(const char *locale)
     int32_t len;
 
     newRB = ures_open(NULL, locale, &status);
-    if(U_FAILURE(status))
+    if(U_FAILURE(status) || (status == U_USING_FALLBACK_WARNING) || (status == U_USING_DEFAULT_WARNING)) {
         supp = TRUE;
+    }
     else
     {
         const UChar *s = ures_getStringByKey(newRB, "Version", &len, &status);
