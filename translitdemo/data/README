@@ -1,0 +1,6 @@
+This directory contains HTML and JS files used by the transliteration demo.
+
+The js subdirectory contains JavaScript source.
+
+The cache subdirectory contains user rules.  This only lives on the "live"
+server; it is not checked into CVS.
