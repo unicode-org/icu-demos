@@ -361,7 +361,7 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
     } else {
         
         uidna_IDNToUnicode(s, length, tempOut,  length, UIDNA_DEFAULT, &parseError, &errorCode);
-        if(errorCode == U_IDNA_UNASSIGNED_CODEPOINT_FOUND_ERROR){
+        if(errorCode == U_IDNA_UNASSIGNED_ERROR){
             printUnassignedError  = TRUE;
         }
         errorCode = U_ZERO_ERROR;
@@ -443,7 +443,7 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
     } else {
         uidna_IDNToASCII(s, length, tempOut,  capacity, UIDNA_DEFAULT, &parseError, &errorCode);
 
-        if(errorCode == U_IDNA_UNASSIGNED_CODEPOINT_FOUND_ERROR){
+        if(errorCode == U_IDNA_UNASSIGNED_ERROR){
            printUnassignedError  = TRUE;
         }
         errorCode = U_ZERO_ERROR;
@@ -717,11 +717,11 @@ main(int argc, const char *argv[]) {
     printToUnicode (input, inputLength,unass2,std32,status);
     printToASCII   (input, inputLength);
     puts(endTable);
-    if(inputLength > 0  && (status == U_IDNA_UNASSIGNED_CODEPOINT_FOUND_ERROR || status == U_IDNA_STD3_ASCII_RULES_ERROR)){
+    if(inputLength > 0  && (status == U_IDNA_UNASSIGNED_ERROR || status == U_IDNA_STD3_ASCII_RULES_ERROR)){
         printf("<font size=\"4\"><b>Information </b></font><br>\n");
         if((std31==TRUE ||std32 ==TRUE)){
             printf(STD3Fail);
-        }else if(status !=  U_IDNA_UNASSIGNED_CODEPOINT_FOUND_ERROR){
+        }else if(status !=  U_IDNA_UNASSIGNED_ERROR){
             printf(STD3Pass);
         }
         printf("<br>\n");
