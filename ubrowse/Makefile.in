@@ -73,6 +73,10 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 -include local.mk
 
+# Run against HTMLTidy
+tidy: $(TARGET)
+	$(UBROWSEOPTS) $(INVOKE) ./$(TARGET) | tail +3 > ubrowse.html
+	tidy -utf8 -q ubrowse.html 2>&1 | sed -e "s%^ubrowse.html%"`pwd`"/ubrowse.html%g"
 
 $(TARGET) : $(OBJECTS)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
