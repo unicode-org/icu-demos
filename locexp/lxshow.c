@@ -714,7 +714,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     int32_t len;
     const UChar *s  = 0;
     int i;
-    const char *realKey;
+    /*const char *realKey;*/
     char   key2[1024];
     UBool userRequested = FALSE;
     UBool isDefault = FALSE;
@@ -734,9 +734,9 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
 
     showKeyAndStartItem(lx, key2, NULL, locale, FALSE, firstStatus);
 
-    if(realKey == key2) {
+/*    if(realKey == key2) {
       u_fprintf(lx->OUT, "(%s)<br>\r\n", lx->defaultCalendar);
-    }
+    }*/
 
     u_fprintf(lx->OUT, "<OL>\r\n");
 
@@ -797,7 +797,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode firstStatus;
     const UChar *s  = 0;
-    UChar *toShow =0;
+    const UChar *toShow =0;
     UChar nothing[] = {(UChar)0x00B3, (UChar)0x0000};
     UResourceBundle  *array = NULL, *item = NULL;
     int32_t len;
@@ -2051,8 +2051,6 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
   UResourceBundle *fillin1 = NULL;
   UResourceBundle *fillin2 = NULL;
   const char *key = "DefaultCalendar";
-  const UChar *s;
-  int32_t len;
 
 
   showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);

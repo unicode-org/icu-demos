@@ -8,6 +8,7 @@
 
 #include "locexp.h"
 #include <unicode/uscript.h>
+#include "uresimp.h"
 
 /* Explain what the status code means --------------------------------------------------------- */
 
@@ -28,38 +29,38 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 
     case U_USING_FALLBACK_WARNING:
         if(lx->parLocale && lx->parLocale->str)
-	{
+        {
             u_fprintf(lx->OUT, "<A HREF=\"?_=%s#%s\">", lx->parLocale->str, tag);
             u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->parLocale->ustr); 
-	}
+        }
         else
-	{
+        {
             u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
             u_fprintf_u(lx->OUT, FSWF("inherited", "(inherited)"));
-	}
+        }
 
         u_fprintf(lx->OUT, "</A>");
         break;
 
     case U_USING_DEFAULT_WARNING:
-	u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
-	if(lx->locales) {
-        u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->locales->ustr); 
-	} else {
-        u_fprintf_u(lx->OUT, "inherited ???"); 
-	}
+        u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
+        if(lx->locales) {
+            u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->locales->ustr); 
+        } else {
+            u_fprintf(lx->OUT, "inherited ???"); 
+        }
         u_fprintf(lx->OUT, "</A>");
         break;
 
     default:
         if(status != U_ZERO_ERROR)
-	{
+        {
             u_fprintf(lx->OUT, "(%d - %s)", (int) status,
                       u_errorName(status));
 #ifdef SRL_DEBUG
             fprintf(stderr,"locexp: caught Unknown err- %d %s\n", status, u_errorName(status)); 
 #endif
-	}
+        }
     }
 
     if(status != U_ZERO_ERROR)
@@ -850,9 +851,9 @@ void showKeywordMenu(LXContext *lx, const char *e, const char *kwVal, int32_t *n
   if(!strcmp(e, "collation")) {
     en = ucol_getKeywordValues(e, status);
   } else if(!strcmp(e, "currency")) {
-    en = ures_getKeywordValues( "ICUDATA", "Currencies", status);
+    en = ures_getKeywordValues( NULL, "Currencies", status);
   } else  {
-    en = ures_getKeywordValues( "ICUDATA", e, status);
+    en = ures_getKeywordValues( NULL, e, status);
   }
   while((s = uenum_next(en, NULL, status))) {
     UChar u[1024];

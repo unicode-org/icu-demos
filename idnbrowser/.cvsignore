@@ -1,6 +1,5 @@
 Makefile
 *.d
-locexp
-Makefile.local
+idnbrowser
 Release
 Debug

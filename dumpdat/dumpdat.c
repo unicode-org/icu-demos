@@ -363,8 +363,11 @@ doInteractive()
     UDataMemory *data=NULL;
 
     char linebuf[1024];
-    char *rl;
     char loaded[1024];
+#ifdef HAVE_READLINE
+    char *rl;
+#endif
+
     cmd_version(TRUE);
     cmd_path("p");
     printf("\nEntering interactive mode. Typing ? gets help.\n");

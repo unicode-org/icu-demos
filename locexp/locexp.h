@@ -19,6 +19,9 @@
 #ifndef snprintf
 #define snprintf _snprintf
 #endif
+#ifndef vsnprintf
+#define vsnprintf _vsnprintf
+#endif
 #endif
 
 

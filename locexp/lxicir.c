@@ -218,12 +218,8 @@ static void showICIRloc_rgn(LXContext *lx)
 static void showICIRloc(LXContext *lx)
 {
 	UErrorCode resStatus = U_ZERO_ERROR;
-	UChar uChars[1024];
-	UChar pChars[1024];
-	UChar lChars[1024];
     UResourceBundle *res;
-	UErrorCode status = U_ZERO_ERROR;
-    
+
     res = getCurrentBundle(lx, &resStatus);
     if(U_FAILURE(resStatus)) {
         explainStatus(lx,resStatus,NULL);
@@ -238,9 +234,9 @@ static void showICIRnumExample(LXContext *lx, UNumberFormat *unf, UNumberFormat 
     UChar u1[1024];
     UChar u2[1024];
     UChar u3[1024];
-	const char *part="";
-	char subpart[50];
-        
+    const char *part="";
+    char subpart[50];
+
     unum_formatDouble(urbnf,d,u1, 1024, 0, &status);
     unum_formatDouble(unf,d,u2, 1024, 0, &status);
     if(U_FAILURE(status)) {

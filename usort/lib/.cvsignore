@@ -1,1 +1,4 @@
 Makefile
+*.d
+Release
+Debug

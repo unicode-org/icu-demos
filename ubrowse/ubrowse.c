@@ -1510,16 +1510,9 @@ void printModeCHAR(UChar32 ch)
 
 void printModeSET(const char *qs, ESearchMode mode)
 {
-    UChar ssf[1024];
-    uint16_t ser[1024];
-    int32_t serLen = 1024;
-    char serChars[1024];
-    int32_t serCharLen = 1024;
-    int32_t ssc = 1024;
     const char *q;
     UErrorCode status = U_ZERO_ERROR;
     USet  *aSet = NULL;
-    int32_t n;
     UConverter *u7 = NULL;
     int32_t itemN = 0;
     int32_t charN = 0;
