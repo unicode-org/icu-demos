@@ -103,6 +103,7 @@ locexp/resource/root/lxbar_g.gif -text
 locexp/resource/root/lxbar_ibm.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/lxbar_icu.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/opened.gif -text
+locexp/resource/root/sortHelp.html svneol=native#text/html
 locexp/resource/root/tab_aleft.gif -text
 locexp/resource/root/tab_aright.gif -text
 locexp/resource/root/tab_bot.gif -text

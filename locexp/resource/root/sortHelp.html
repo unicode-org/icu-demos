@@ -1,0 +1,50 @@
+<!-- sortHelp.html - make this file ascii or somethign BOM detectable -->
+<p><b><i>Instructions:</i></b>
+<ul>
+  <li>Type in the lines of text you want to sort under <b>Input Text</b>.</li>
+  <li>Select the <i>Options</i> you want, and hit <b>Sort</b>.</li>
+  <li>The two output columns will show the original order and the sorted order,
+    each numbered according to the original line. Any lines in the same box
+    (with the same color) are sorted identically, according to the options you
+    provide.</li>
+  <li>If you want to try changing the sorting rules, hit <b>Edit Rules</b>. It
+    inserts the rules for the current locale, which you can then alter and try
+    sorting with. You will need to know the format of the rules: see <a href="http://oss.software.ibm.com/icu/userguide/Collate_Intro.html">Collation</a>
+    in the ICU User Guide for more information.
+    <ul>
+      <li><b>Note:</b> if you hit <b>Edit Rules</b> again, it will replace
+        whatever you have altered!</li>
+    </ul>
+  </li>
+</ul>
+<p><i><b>Options:</b></i></p>
+<ul>
+  <li>ICU implements the Unicode Collation Algorithm, which is a multi-level
+    sort.
+    <ol>
+      <li>If there are any differences in base letters, that determines the
+        result</li>
+      <li>Otherwise, if there are any differences in accents*, that determines
+        the results</li>
+      <li>Otherwise, if there are any differences in case*, that determines the
+        results</li>
+      <li>Otherwise, if there are any differences in punctuation*, that
+        determines the results</li>
+    </ol>
+  </li>
+  <li>The <i>Level</i> option determines which of the above levels to take into
+    account when sorting.</li>
+  <li>With <i>Force Case</i>, the normal case order (a &lt; A vs. A &lt; a) can
+    be changed.</li>
+  <li>If <i>Punctutation = Base</i>, then punctuation is treated like base
+    letters. If punctuation is <i>Shifted</i>, it is ignored except at L4.</li>
+  <li>A <i>Case</i> level can be used to keep a case level even if the strength
+    is L1 or L2.</li>
+  <li>A <i>Hiragana</i> level adds a special level for JIS compatibility. It is
+    only used if the level is L4 .. L5.</li>
+  <li><i>French</i> accents force accents to be considered backwards, for the
+    end of the string forwards.</li>
+  <li>With <i>Full Normalization</i>, all strings are compared</li>
+</ul>
+
+<!-- end sortHelp.html -->
