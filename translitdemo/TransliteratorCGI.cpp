@@ -267,9 +267,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             UnicodeString rules(r, ENCODING);
             delete[] r;
             UnicodeString errMsg;
-            Transliterator *t = buildUserRules(id, rules, errMsg);
-            if (t != 0) {
-                delete t;
+            if (buildUserRules(id, rules, errMsg)) {
                 // We have a validated rule set; save it
                 UBool ok = ruleCache.put(id, rules);
                 fprintf(out, ok ? "" : "Error: Internal CGI failure");
@@ -329,31 +327,37 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
  * transliterator, or NULL on failure.  On failure, put the relevant
  * error message in errMsg.
  *
- * Caller owns the result if it is non-NULL.
+ * Return TRUE on success.
  */
-Transliterator* TransliteratorCGI::buildUserRules(const UnicodeString& id,
-                                                  const UnicodeString& rules,
-                                                  UnicodeString& errMsg) {
-    UParseError err;
-    UErrorCode status = U_ZERO_ERROR;
-    Transliterator *t = Transliterator::createFromRules(id, rules,
-                                                    UTRANS_FORWARD,
-                                                    err, status);
-    if (U_FAILURE(status)) {
-        errMsg += "Error: ";
-        errMsg += u_errorName(status);
-        if (err.preContext[0]) {
-            errMsg += " at ";
-            errMsg += err.preContext;
-            if (err.postContext[0]) {
-                errMsg += " | ";
-                errMsg += err.postContext;
+bool TransliteratorCGI::buildUserRules(const UnicodeString& id,
+                                       const UnicodeString& rules,
+                                       UnicodeString& errMsg) {
+    bool success = true;
+    for (int loop=0; loop<2; ++loop) {
+        UTransDirection dir = (loop == 0) ? UTRANS_FORWARD : UTRANS_REVERSE;
+        UParseError err;
+        UErrorCode status = U_ZERO_ERROR;
+        Transliterator *t = xCreateFromRules(id, rules,
+                                             dir,
+                                             err, status);
+        if (U_FAILURE(status)) {
+            errMsg += "Error (";
+            errMsg += (dir == UTRANS_FORWARD) ? "FORWARD" : "REVERSE";
+            errMsg += "): ";
+            errMsg += u_errorName(status);
+            if (err.preContext[0]) {
+                errMsg += " at ";
+                errMsg += err.preContext;
+                if (err.postContext[0]) {
+                    errMsg += " | ";
+                    errMsg += err.postContext;
+                }
             }
+            success = false;
         }
         delete t;
-        t = 0;
     }
-    return t;
+    return success;
 }
 
 /**
@@ -461,17 +465,58 @@ void TransliteratorCGI::registerUserRules(int32_t i, const UnicodeString& id,
     UnicodeString rules;
     TransliteratorCGI* _this = (TransliteratorCGI*) context;
     if (_this->ruleCache.get(id, rules)) {
-        UErrorCode status = U_ZERO_ERROR;
-        UParseError err;
-        Transliterator *t = Transliterator::createFromRules(id, rules,
-                                                            UTRANS_FORWARD,
-                                                            err, status);
-        if (U_SUCCESS(status)) {
-            Transliterator::registerInstance(t);
-        } else {
-            delete t;
+        for (int loop=0; loop<2; ++loop) {
+            UErrorCode status = U_ZERO_ERROR;
+            UParseError err;
+
+            Transliterator *t = xCreateFromRules(id, rules,
+                                 (loop == 0) ? UTRANS_FORWARD : UTRANS_REVERSE,
+                                 err, status);
+            if (U_SUCCESS(status) && t != 0) {
+                Transliterator::registerInstance(t);
+            } else {
+                delete t;
+            }
         }
     }
+}
+
+Transliterator* TransliteratorCGI::xCreateFromRules(const UnicodeString& id,
+                                                    const UnicodeString& rules,
+                                                    UTransDirection dir,
+                                                    UParseError& err,
+                                                    UErrorCode& status) {
+    // Set id2 to id (for forward) or to its inverse (reverse)
+    UnicodeString id2;
+    if (dir == UTRANS_FORWARD) {
+        id2 = id;
+    } else {
+        // Change Foo-Bar/Baz to Bar-Foo/Baz
+        // Change Foo-Bar to Bar-Foo
+        // Change Foo/Baz to Foo-Any/Baz
+        // Change Foo to Foo-Any
+        int sep = id.indexOf((UChar)'-');
+        int var = id.indexOf((UChar)'/');
+        UnicodeString str;
+        id.extractBetween(sep+1,
+                          (var < 0) ? id.length() : var,
+                          id2);
+        if (sep < 0) {
+            id2.append("-Any");
+        } else {
+            id2.append("-");
+            id.extractBetween(0, sep, str);
+            id2.append(str);
+        }
+        if (var >= 0) {
+            id.extractBetween(var, id.length(), str);
+            id2.append(str);
+        }
+    }
+
+    return Transliterator::createFromRules(id2, rules,
+                                           dir,
+                                           err, status);
 }
 
 /**

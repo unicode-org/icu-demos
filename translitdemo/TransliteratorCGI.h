@@ -1,6 +1,7 @@
 #include "TemplateCGI.h"
 #include "unicode/utypes.h"
 #include "unicode/unistr.h"
+#include "unicode/utrans.h"
 #include "TextCache.h"
 
 class Transliterator;
@@ -28,9 +29,16 @@ class TransliteratorCGI : public TemplateCGI {
 
     static char* cleanupNewlines(const char*);
 
-    Transliterator* buildUserRules(const UnicodeString& id,
-                                   const UnicodeString& rules,
-                                   UnicodeString& errMsg);
+    static bool buildUserRules(const UnicodeString& id,
+                               const UnicodeString& rules,
+                               UnicodeString& errMsg);
+
+    static Transliterator* xCreateFromRules(const UnicodeString& id,
+                                            const UnicodeString& rules,
+                                            UTransDirection dir,
+                                            UParseError& err,
+                                            UErrorCode& status);
+
     void loadUserTransliterators();
     char** getAvailableIDs();
     char** getAvailableRBTIDs();
