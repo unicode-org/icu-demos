@@ -2,9 +2,9 @@
 #include "unicode/utypes.h"
 #include "unicode/unistr.h"
 #include "unicode/utrans.h"
-#include "TextCache.h"
+#include "unicode/translit.h"
 
-class Transliterator;
+#include "TextCache.h"
 
 class TransliteratorCGI : public TemplateCGI {
 

@@ -3,8 +3,8 @@
 
 #include "unicode/utypes.h"
 #include <stdio.h>
+#include "unicode/unistr.h"
 
-class UnicodeString;
 
 // Encoding we use
 #define ENCODING "UTF8"
