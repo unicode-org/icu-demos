@@ -156,6 +156,25 @@ char *parseAndCopy(char *dest, const char *source, int32_t len) {
     return dest;
 }
 
+/* The UTF-8 converter will try to convert non-shortest form, but it will return a
+   U_TRUNCATED_CHAR_FOUND error when you try to flush the character. The non-shortest
+   form of UTF-8 is illegal in Unicode, but the callback isn't called in that case
+   because the character isn't complete yet. This function tries to prevent showing
+   non-shortest form in the layout.
+   Please see http://www.unicode.org/unicode/reports/tr28/ for details. */
+UBool isShortestUTF8(char *source, int32_t size) {
+    if (source[0] == (char)0xc0 || source[0] == (char)0xc1 || source[0] > (char)0xf4
+        || (size >= 2
+            && ((source[0] == (char)0xE0 && source[1] < (char)0xA0)
+            || (source[0] == (char)0xED && source[1] > (char)0x9F)
+            || (source[0] == (char)0xF0 && source[1] < (char)0x90)
+            || (source[0] == (char)0xF4 && source[1] > (char)0x8F))))
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
 void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     int32_t col, row, utf8Size, startBytesLen, maxCharSize;
     char *sourceBuffer;
@@ -184,7 +203,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
 //    case UCNV_DBCS:
     case UCNV_MBCS:   /* Be careful. This can also act like DBCS */
     case UCNV_LATIN_1:
-//    case UCNV_UTF8:
+    case UCNV_UTF8:
 //    case UCNV_UTF16_BigEndian:
 //    case UCNV_UTF16_LittleEndian:
 //    case UCNV_UTF32_BigEndian:
@@ -239,7 +258,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         printf("<p>Currently showing the codepage starting with the bytes %s</p>\n", startBytes);
     }
 
-    ucnv_setToUCallBack(cnv, UCNV_TO_U_CALLBACK_SKIP, NULL, NULL, NULL, status);
+    ucnv_setToUCallBack(cnv, UCNV_TO_U_CALLBACK_STOP, NULL, NULL, NULL, status);
     sourceBuffer = new char[maxCharSize];
     sourceLimit = sourceBuffer + maxCharSize;
     targetBuffer = new UChar[maxCharSize*UTF_MAX_CHAR_LENGTH];
@@ -263,8 +282,12 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             target = targetBuffer;
             ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, TRUE, status);
 
-            U16_GET_UNSAFE(targetBuffer, 0, uniVal);
+            if (convType == UCNV_UTF8 && *status == U_TRUNCATED_CHAR_FOUND && !isShortestUTF8(sourceBuffer, source - sourceBuffer))
+            {
+                *status = U_ILLEGAL_CHAR_FOUND;
+            }
             if (U_SUCCESS(*status) && (target - targetBuffer) > 0) {
+                U16_GET_UNSAFE(targetBuffer, 0, uniVal);
                 const char *escapedChar = getEscapeChar(uniVal);
                 u_charName(uniVal, U_EXTENDED_CHAR_NAME, uniName, sizeof(uniName), status);
                 if (!escapedChar) {
