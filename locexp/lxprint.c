@@ -115,7 +115,7 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
 void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign)
 {
   u_fprintf(lx->OUT, "<a target=\"_new\" href=\"?_=%s&EXPLORE_%s=\">", locale, key);
-  u_fprintf(lx->OUT, "<img WIDTH=48 HEIGHT=20 BORDER=0 SRC=\"../_/explore.gif\"  %s ALT=\"%U\"   ",
+  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"../_/explore.gif\" %s ALT=\"%U\">",
               rightAlign?"ALIGN=RIGHT ":"",
             FSWF("exploreTitle", "Explore") );
   u_fprintf(lx->OUT, "</a>\r\n");
@@ -137,7 +137,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 /* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
-    u_fprintf(lx->OUT, "<TABLE summary=\"%U\" BORDER=0 CELLSPACING=0 WIDTH=100%%>", keyName);
+    u_fprintf(lx->OUT, "<TABLE summary=\"%U\" BORDER=0 CELLSPACING=0 WIDTH=\"100%%\">", keyName);
     u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"../_/c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
     u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s>", key);
     u_fprintf(lx->OUT,"</A>", keyName);
@@ -214,7 +214,7 @@ void printStatusTable(LXContext *lx)
     UErrorCode status = U_ZERO_ERROR;
     UChar *dateStr;
     
-    u_fprintf(lx->OUT, "<table border=0 cellspacing=0 width=100%%>");
+    u_fprintf(lx->OUT, "<table border=0 cellspacing=0 width=\"100%%\">");
     u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"../_/c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
     u_fprintf(lx->OUT, "  <tr>\r\n   <td colspan=3 width=0 valign=top bgcolor=" kXKeyBGColor "><a name=%s><b>", "YourSettings");
     
@@ -243,7 +243,7 @@ void printStatusTable(LXContext *lx)
         u_fprintf(lx->OUT, "\">");
     }
 
-    u_fprintf(lx->OUT, "<font size=+1>%s</font>", lx->convName);
+    u_fprintf(lx->OUT, "<font size=\"+1\">%s</font>", lx->convName);
   
     if(lx->inDemo == FALSE)
     {
@@ -356,15 +356,23 @@ void printStatusTable(LXContext *lx)
       u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/icu/source/data/locales/%s.txt\">%U</A>", 
                 lx->curLocaleName,
                 FSWF("sourceFile", "View Locale Source"));
-      
+     
+      if(!isExperimentalLocale(lx->curLocaleName)) {
       u_fprintf(lx->OUT, " &nbsp; ");
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/icu/xml/%s.xml\">%U</A>", 
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/common/xml/%s.xml\">%U</A>", 
                 lx->curLocaleName,
-                FSWF("LDMLsourceFile", "View LDML Source"));
+                FSWF("XMLsource", "XML Source"));
       
       u_fprintf(lx->OUT, " &nbsp; ");
-    }
 
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://oss.software.ibm.com/cvs/icu/~checkout~/locale/all_diff_xml/%s.html\">%U</A>", 
+                lx->curLocaleName,
+                FSWF("XMLcomp", "Compare"));
+      u_fprintf(lx->OUT, " &nbsp; ");
+
+      }
+}
+ u_fprintf(lx->OUT," &nbsp; ");
     
     u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%U</A>",
               FSWF("poweredby_filebug", "File a bug"));

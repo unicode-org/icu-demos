@@ -466,10 +466,10 @@ void showSort(LXContext *lx, const char *locale)
   }
 
   if(text) {
-
+    int32_t length;
     unescapeAndDecodeQueryField_enc(ruleChars, SORTSIZE, 
                                     text, lx->convRequested);
-    int32_t length = strlen(text);
+    length = strlen(text);
       
     if(length > (SORTSIZE-1)) {
       length = SORTSIZE-1; /* safety ! */
