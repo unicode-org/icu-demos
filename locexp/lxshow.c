@@ -1626,7 +1626,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   UBool userRequested = FALSE; /* Did the user request this string? */
   int32_t len;
   const char *key = "Currencies";
-  const UChar  *cflu = NULL;
+  const UChar  cflu[9] = { 0, 0, };
   char cfl[4] = {0};
   UBool sawDefault = FALSE;
 
@@ -1641,8 +1641,8 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
 
   if(U_SUCCESS(status)) {
     UErrorCode defCurSt = U_ZERO_ERROR;
-    cflu = ucurr_forLocale(locale, &defCurSt);
-    if(U_FAILURE(defCurSt) || !cflu) {
+    ucurr_forLocale(locale, cflu, sizeof(cflu)-1, &defCurSt);
+    if(U_FAILURE(defCurSt) || !cflu[0]) {
       u_fprintf(lx->OUT, "%U: ", FSWF("currNoDefault", "No Default Currency"));
       explainStatus(lx,defCurSt,key);
       u_fprintf(lx->OUT, "<BR>\r\n");
@@ -1747,7 +1747,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           
         u_fprintf(lx->OUT, "</TR>\r\n");
       }
-      if(!sawDefault && cflu) {
+      if(!sawDefault && cflu[0]) {
         UBool isChoiceFormat = FALSE;
         int32_t len = 0;
         UErrorCode subSta = U_ZERO_ERROR;
@@ -1772,4 +1772,8 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   u_fprintf(lx->OUT, "</td>");
   showKeyAndEndItem(lx, key, locale);
 }
+
+
+
+
 
