@@ -23,7 +23,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\icu\include,.\util,..\usort\lib,..\..\icu\source\common"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;LXHOSTNAME=\&quot;Win_NT\&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;LX_STATIC;LXHOSTNAME=\&quot;Win_NT\&quot;"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -39,11 +39,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuuc.lib icuin.lib icuio.lib"
+				AdditionalDependencies="icuuc.lib icuin.lib icuio.lib locexp.lib"
 				OutputFile=".\Release/locexp.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\icu\lib"
+				AdditionalLibraryDirectories="..\..\icu\lib;.\resource"
 				ProgramDatabaseFile=".\Release/locexp.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
@@ -84,7 +84,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\icu\include,.\util,..\usort\lib,..\..\icu\source\common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;LX_STATIC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -101,10 +101,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuucd.lib icuind.lib icuiod.lib"
+				AdditionalDependencies="icuucd.lib icuind.lib icuiod.lib locexp.lib"
 				OutputFile=".\..\..\icu\bin/locexp.exe"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\icu\lib"
+				AdditionalLibraryDirectories="..\..\icu\lib;.\resource"
 				IgnoreDefaultLibraryNames="libcd.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\..\..\icu\bin/locexp.pdb"
@@ -600,6 +600,25 @@
 		<Filter
 			Name="Build Scripts"
 			Filter="mk;mak">
+			<File
+				RelativePath=".\resource\makedata.mak">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd resource
+nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;"
+						Outputs="resource\locexp.lib"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd resource
+nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;"
+						Outputs="resource\locexp.lib"/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath="resource\resfiles.mk">
 			</File>
