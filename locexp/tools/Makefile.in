@@ -26,6 +26,8 @@ TARGET = escapeForBundle
 OBJECTS = escapeForBundle.o
 DEPS = $(OBJECTS:.o=.d)
 
+findSame: findSame.o
+	$(LINK.c) -o $@ $^ $(ICULIBS)
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
