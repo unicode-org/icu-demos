@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2004, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -39,7 +39,11 @@ U_CFUNC UBool gShowLanguages;
 #define OPTION_SEP_STR      "&"
 #define NBSP                "\xC2\xA0"  /* UTF-8 &nbsp; */
 #define PROGRAM_NAME        "Converter Explorer"
+#ifdef WIN32
+#define CGI_NAME            "convexp.exe"
+#else
 #define CGI_NAME            "convexp"
+#endif
 #define SHOW_LOCALES        "ShowLocales"
 #define SHOW_UNICODESET     "ShowSet"
 
