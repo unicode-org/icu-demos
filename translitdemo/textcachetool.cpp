@@ -12,7 +12,7 @@ void visitor(int32_t i, const UnicodeString& key, void* ccache) {
 }
 
 void usage() {
-    printf("Usage: ttt <cache-dir> [commands]\n");
+    printf("Usage: tct <cache-dir> [commands]\n");
     printf(" <cache-dir> Path to cache\n");
     printf("Commands:\n");
     printf(" put <key> <value>\n");

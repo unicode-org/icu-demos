@@ -16,7 +16,7 @@ ICU_INC=/usr/local/lib/icu/Makefile.inc
 include $(ICU_INC)
 
 # Name of your target
-TARGET=ttt
+TARGET=tct
 
 # All object files (C or C++)
 OBJECTS=util.o uhash.o TextCache.o textcachetool.o
