@@ -455,7 +455,7 @@ void addLocaleRecursive(MySortable *root, const char *thisLoc, const char *level
     
     /* advance the root to point to the parent of the next item to search in */
     if(j == -1) {
-        root = addSubLocaleTo(root, strdup(curStub), inLocale, localeCount);
+        root = addSubLocaleTo(root, curStub, inLocale, localeCount);
         if(level[0]=='_') {
             root->isVariant=1;
         }
