@@ -39,17 +39,16 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_DateTimePatterns_What","This example demonstrates the formatting of date and time patterns in this locale."));
   
     /* fetch the current pattern */
-    exploreFetchNextPattern(lx,pattern, strstr(lx->queryString,"EXPLORE_DateTimePatterns"));
+    exploreFetchNextPattern(lx,pattern, queryField(lx,"str"));
 
     df = udat_open(0,0,locale, NULL, -1, NULL, 0, &status);
     udat_applyPattern(df, TRUE, pattern, -1);
 
     status = U_ZERO_ERROR;
   
-    if ((tmp = strstr(lx->queryString,"NP_DBL"))) /* Double: UDate format input ============= */
+    if ((tmp = queryField(lx, "NP_DBL"))) /* Double: UDate format input ============= */
     {
         /* Localized # */
-        tmp += 7;
 
         unescapeAndDecodeQueryField(valueString, 1000, tmp);
         u_replaceChar(valueString, 0x0020, 0x00A0);
@@ -57,11 +56,10 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         status = U_ZERO_ERROR;
         now = unum_parseDouble(nf, valueString, -1, &parsePos, &status);
     }
-    else if((tmp = strstr(lx->queryString, "NP_DEF"))) /* Default: 'display' format input ============== */
+    else if((tmp = queryField(lx, "NP_DEF"))) /* Default: 'display' format input ============== */
     {
 
         /* Localized # */
-        tmp += 7;
 
         unescapeAndDecodeQueryField(valueString, 1000, tmp);
         /*      u_replaceChar(valueString, 0x0020, 0x00A0); */ /* NOt for the default pattern */
@@ -70,12 +68,9 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
       
         now = udat_parse(df_default, valueString, -1, &parsePos, &status);
     }
-    else if((tmp = strstr(lx->queryString, "NP_LOC"))) /* Localized: pattern format input ============== */
+    else if((tmp = queryField(lx, "NP_LOC"))) /* Localized: pattern format input ============== */
     {
-
-
         /* Localized # */
-        tmp += 7;
 
         unescapeAndDecodeQueryField(valueString, 1000, tmp);
         /*u_replaceChar(valueString, 0x0020, 0x00A0);  */
@@ -89,6 +84,9 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     if(U_FAILURE(status) || (now == 0))
     {
         u_fprintf(lx->OUT, "%S %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
+#if defined(LX_DEBUG)
+        u_fprintf(lx->OUT, "<tt>'tmp' was '%s'</tt><br/>\n", tmp);
+#endif
         explainStatus(lx,status,"EXPLORE_DateTimePatterns");
         status = U_ZERO_ERROR;
         now = ucal_getNow();
@@ -100,13 +98,13 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
         u_fprintf(lx->OUT, "%S: [%d] <P>", FSWF("formatExample_errorOpen", "Couldn't open the formatter"), (int) status);
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
-        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(lx->queryString,"EXPLORE_DateTimePatterns"), now, nf);
+        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", queryField(lx,"str"), now, nf);
     }
     else
     {
       
         /* now display the form */
-        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", strstr(lx->queryString,"EXPLORE_DateTimePatterns"), now, nf);
+        exploreShowPatternForm(lx,pattern, locale, "DateTimePatterns", queryField(lx,"str"), now, nf);
       
     }
   
@@ -138,9 +136,8 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
       
         u_fprintf(lx->OUT, "<B><I>%S</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
-        u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_DateTimePatterns\">\r\n");
-        u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_DateTimePatterns VALUE=\"");
+        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_DateTimePatterns\">\r\n", getLXBaseURL(lx, kNO_URL));
+        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=str VALUE=\"");
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\">\r\n");
 
@@ -168,9 +165,8 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
         /*  === local side */
         u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
-        u_fprintf(lx->OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_DateTimePatterns\">\r\n");
-        u_fprintf(lx->OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=EXPLORE_DateTimePatterns VALUE=\"");
+        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_DateTimePatterns\">\r\n", getLXBaseURL(lx,kNO_URL));
+        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=str VALUE=\"");
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\">\r\n");
       
@@ -200,8 +196,8 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
       char f[300];
       sprintf(f, "%f", now);
-      u_fprintf(lx->OUT, "<A HREF=\"?_=%s&EXPLORE_Calendar&NP_DBL=%s\">Calendar Demo...</A><br>\r\n",
-                locale, f);
+      u_fprintf(lx->OUT, "<A HREF=\"%s&NP_DBL=%s\">Calendar Demo...</A><br>\r\n",
+                getLXBaseURL(lx,kNO_URL|kNO_SECT), f);
     }
       
     showExploreCloseButton(lx, locale, "DateTimePatterns");
