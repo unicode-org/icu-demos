@@ -188,6 +188,29 @@ SOURCE=.\uchar_ob.c
 # Begin Source File
 
 SOURCE=.\unicode\uchar_ob.h
+
+!IF  "$(CFG)" == "obsolete - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\unicode\uchar_ob.h
+
+"..\include\unicode\uchar_ob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "obsolete - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\unicode\uchar_ob.h
+
+"..\include\unicode\uchar_ob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -196,6 +219,29 @@ SOURCE=.\ucol_ob.cpp
 # Begin Source File
 
 SOURCE=.\unicode\ucol_ob.h
+
+!IF  "$(CFG)" == "obsolete - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\unicode\ucol_ob.h
+
+"..\include\unicode\ucol_ob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "obsolete - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\unicode\ucol_ob.h
+
+"..\include\unicode\ucol_ob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -235,10 +281,56 @@ SOURCE=.\unistrob.cpp
 # Begin Source File
 
 SOURCE=.\unicode\unistrob.h
+
+!IF  "$(CFG)" == "obsolete - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\unicode\unistrob.h
+
+"..\include\unicode\unistrob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "obsolete - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\unicode\unistrob.h
+
+"..\include\unicode\unistrob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\unicode\unorm_ob.h
+
+!IF  "$(CFG)" == "obsolete - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\unicode\unorm_ob.h
+
+"..\include\unicode\unorm_ob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "obsolete - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\unicode\unorm_ob.h
+
+"..\include\unicode\unorm_ob.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy    $(InputPath)    ..\include\unicode
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Resource Files"
