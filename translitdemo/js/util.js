@@ -108,11 +108,13 @@ function getCookieKeys() {
  * of strings.
  * @param select select object
  * @param options array of strings
+ * @param selection the text of the current selection
  */
-function setOptions(select, options) {
+function setOptions(select, options, selection) {
     var a = select.options;
     var i;
     var j = 0;
+    var isel = -1;
     for (i=0; i<a.length && j<options.length; ++i) {
         if (a[i] == null) continue;
         a[i].text = a[i].value = options[j];
@@ -125,6 +127,14 @@ function setOptions(select, options) {
         ++j;
     }
     a.length = i;
+    if (selection) {
+        for (j=0; j<i; ++j) {
+            if (options[j] == selection) {
+                select.selectedIndex = j;
+                break;
+            }
+        }
+    }
 }
 
 /**
