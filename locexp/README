@@ -108,7 +108,7 @@ line that has 'LATIN_1' and a whole bunch of iso-8859's and other
 stuff.  At the end of the 'line' (which spans 3 lines on my screen)
 add these two words:
 
-   fonted transliteration
+   fonted transliterated
 
 This adds two new aliases to Latin-1.  You can select them normally in
 the locale explorer's converter-chooser.  But, they are special cased
