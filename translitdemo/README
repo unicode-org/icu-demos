@@ -30,6 +30,14 @@ The CGI expects it to be at the relative location (to the cgi) of
 data/translit_template.html.
 - This location is specified in TransliteratorCGI.cpp
 
+translit_rule_edit.html: Same.
+
+util.js: This will be loaded using a <SCRIPT SRC="..."> tag.  The CGI
+expects it at "../js/util.js".  On Apache this maps to
+/home/httpd/html/js/util.js in the standard configuration.  On Apache
+this file must not be under the cgi-bin directory, or the server will
+try to execute it.
+
 Library path: To let the CGI see the ICU shared libraries, set the
 library path.  One way is to use LD_LIBRARY_PATH:
   LD_LIBRARY_PATH=/usr/local/lib ./translit
@@ -49,5 +57,4 @@ include files.  In Apache, this means adding the line:
   AddType application/x-javascript .js
 
 to /etc/httpd/conf/httpd.conf.  (Then restart the server with
-  /etc/rc.d/init.d/httpd restart
-).
+"/etc/rc.d/init.d/httpd restart").
