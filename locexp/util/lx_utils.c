@@ -7,6 +7,7 @@
    Some random utilities..
 */
 
+#include <stdlib.h>
 #include "unicode/lx_utils.h"
 #include "unicode/ucnv_cb.h"
 
@@ -269,7 +270,7 @@ int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen)
   UChar *dst = chars;
 
   if(origLen == -1)
-     origLen == u_strlen(src); /* but we don't null terminate still */
+     origLen = u_strlen(src); /* but we don't null terminate still */
 
   while(origLen--)
     {
