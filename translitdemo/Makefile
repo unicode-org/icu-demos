@@ -6,28 +6,20 @@
 # 
 #  - do 'make install' of icu 
 #
-#  - change the following line to point to the $(prefix) that 
-#    was used (will look for $(prefix)/share/icu/Makefile.inc )
-#      OR 
-#   set the variable ICU_PREFIX to point at $(prefix)
+#  - if "icu-config" isn't in the PATH, add it to the path.
 #
-#  - ICU_COMMON_HEADERS must be set to were ICU's common/unicode directory
-#    is. 
+#  - We expect the ICU build to be relative to this directory (ICUAPPS),
+#     if NOT, change the ICU_COMMON_HEADERS variable to point to the location
+#     of  icu/source/common/uhash.h
 #  
 #  - do 'make' in this directory
+#
+#  - do make install.    This CGI needs to have the 'data' directory in the
+#  same directory as the translit CGI binary.
 
-ICU_DEFAULT_PREFIX=~/icu
-
-ifeq ($(strip $(ICU_PREFIX)),)
-  ICU_INC=$(ICU_DEFAULT_PREFIX)/share/icu/Makefile.inc
-else
-  ICU_INC=$(ICU_PREFIX)/share/icu/Makefile.inc
-endif
-ICUPATH=
-
-###########################################
-# HACK : TODO fix this
-ICU_INC=~/II/lib/icu/Makefile.inc
+ICU_CONFIG=icu-config
+ICU_INC=$(shell $(ICU_CONFIG) --incfile)
+BINDIR=$(shell $(ICU_CONFIG) --bindir)
 
 # Must find uhash.h
 ICU_COMMON_HEADERS=../../icu/source/common
@@ -55,21 +47,32 @@ CPPFLAGS += -I$(ICU_COMMON_HEADERS)
 
 CLEANFILES=*~ $(TARGET).out
 
-DEPS=$(OBJECTS:.o=.d)
-
 all: $(ICU_COMMON_HEADERS)/uhash.h $(TARGET)
+
 
 .PHONY: all clean distclean check report
 
 distclean clean:
 	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 	-$(RMV) $(OBJECTS) $(TARGET)
-	-$(RMV) $(DEPS)
 
 # Can change this to LINK.c if it is a C only program
 # Can add more libraries here. 
 $(TARGET): $(OBJECTS)
 	$(LINK.cc) -o $@ $^ $(ICULIBS)
+
+TRANSLITD=$(bindir)/data
+
+install: all
+	-mkdir $(bindir)
+	cp $(TARGET) $(bindir)
+	-mkdir $(TRANSLITD)
+	cp -R js $(TRANSLITD)/
+	cp -R data/*.html $(TRANSLITD)
+	-mkdir $(TRANSLITD)/cache
+	chmod a+rw $(TRANSLITD)/cache
+	find $(TRANSLITD) -type d -print | xargs chmod a+x
+	find $(TRANSLITD) -type f -print | xargs chmod a+r
 
 $(ICU_INC):
 	@echo "Please read the directions at the top of this file (Makefile)"
@@ -81,6 +84,3 @@ $(ICU_COMMON_HEADERS)/uhash.h:
 	@echo "Please change ICU_COMMON_HEADERS in this makefile."
 	@false
 
-ifneq ($(MAKECMDGOALS),distclean)
--include $(DEPS)
-endif

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "TemplateCGI.h"
 #include "util.h"
+#include <ctype.h>
 
 #ifdef _WIN32
   #include <direct.h>
@@ -71,6 +72,11 @@ const char* TemplateCGI::getParamValue(const char* key, const char* defValue) {
     debugLog += defValue;
     debugLog += "<br>\n";
 #endif
+    if(getenv(key) && *getenv(key))
+    {
+      return getenv(key);
+    }
+
     return defValue;
 }
 
@@ -79,13 +85,27 @@ int TemplateCGI::getParamCount() {
 }
 
 void TemplateCGI::run(FILE* out) {
-
     handleEmitHeader(out);
+    const char *fileName = getTemplateFile();
+    for(int i=0;fileName[i];i++)
+    {
+      if(!isprint(fileName[i])) /* reject nonprinting chars */
+      {
+        die("Bad template name.");
+      }
+    }
+    if(strstr(fileName,"..")) /* reject dot-dots */
+    {
+      die("Bad template name.");
+    }
 
     FILE *templateFile = fopen(getTemplateFile(), "r");
+
     if (templateFile == NULL) {
-        char buf[256], cwd[256];
-        getcwd(cwd, sizeof(cwd));
+      char buf[256], cwd[256] = "";
+#ifdef DEBUG
+        getcwd(cwd, sizeof(cwd));  /* finding CWD could help compromise us */
+#endif
         sprintf(buf, "Can't open template \"%s\" in dir \"%s\"",
                 getTemplateFile(),
                 cwd);

@@ -13,9 +13,10 @@ select   { font-family: Arial Unicode MS; font-size: 80% }
 <font face="arial,helvetica,sanserif">
 
 <script>
-  // We are on OSS running Apache
-  SELF = "/cgi-bin/icu/tr";
-  JS = "/icu/demo";
+
+// Load up this stuff relative to the CGI
+  SELF = "$SCRIPT_NAME";
+  JS = "$SCRIPT_NAME?TEMPLATE_FILE=data/js";
 
 // Load up the js/util.js script.  This works as long as we cloak the tag.
 document.writeln("\x3Cscript src=\"" + JS + "/util.js\">\x3C/script>");

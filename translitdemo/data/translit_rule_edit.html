@@ -9,19 +9,11 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 </head>
 
 <script>
-// Determine our location.  Are we on OSS or a local server?
-if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
-  SELF = "/cgi-bin/icu/tr";
-  JS = "/icu/demo";
-} else if (location.toString().search(/\/\/localhost/i) >= 0 ||
-           location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
-  // We are on a local Win32 box running Apache
-  SELF = "/cgi-bin/translitdemo";
-  JS = "../js";
-} else {
-  SELF = "/cgi-bin/translit";
-  JS = "../js";
-}
+
+// Load up this stuff relative to the CGI
+  SELF = "$SCRIPT_NAME";
+  JS = "$SCRIPT_NAME?TEMPLATE_FILE=data/js";
+
 
 // Load up the js/util.js script.  This works as long as we cloak the tag.
 document.writeln("\x3Cscript src=\"" + JS + "/util.js\">\x3C/script>");

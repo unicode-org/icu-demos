@@ -3,18 +3,10 @@
 <body onload="handleLoad()">
 
 <script>
-// Determine our location.  Are we on OSS or a local server?
-if (location.toString().search(/oss\.software\.ibm\.com/i) >= 0) {
-  // We are on OSS running Apache
-  SELF = "/cgi-bin/icu/tr";
-} else if (location.toString().search(/\/\/localhost/i) >= 0 ||
-           location.toString().search(/\/\/127\.0\.0\.1/i) >= 0) {
-  // We are on a local Win32 box running Apache
-  SELF = "/cgi-bin/translitdemo";
-} else {
-  // We are on a remote UNIX box running Apache
-  SELF = "/cgi-bin/translit";
-}
+
+// Load up this stuff relative to the CGI
+  SELF = "$SCRIPT_NAME";
+  JS = "$SCRIPT_NAME?TEMPLATE_FILE=data/js";
 
 // Invoke the CGI with opcode, arg1, and arg2.  Then invoke the
 // callback as: callback(context, result), where result is the
