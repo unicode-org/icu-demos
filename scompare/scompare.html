@@ -1,65 +1,140 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-
-<title>ICU String Compare Demo</title>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+   "http://www.w3.org/TR/html4/frameset.dtd">
+   
+<html>
+<head>
+<title>Unicode String Comparison</title>
+<meta http-equiv="Content-Language" content="en-us"> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
 <style type="text/css">
-   .box {background-color:yellow; border: groove black 3px; font-weight:bolder}
+<!--
+.output      { background-color: #DDDDFF }
+input        { font-size: 120% }
+textarea        { font-size: 120%; font-family: sans-serif }
+th, td         { vertical-align:top }
+-->
 </style>
 
 <script language="JavaScript" type="text/javascript">
-function doCompare() {
-   var form=document.getElementById("ourForm");
-   form.target = "resultFrame";
-   document.getElementById("d1").firstChild.nodeValue = "Submitted ";
-   document.getElementById("d2").firstChild.nodeValue = "Submitted ";
-   document.getElementById("d3").firstChild.nodeValue = "Submitted ";
-   document.getElementById("d4").firstChild.nodeValue = "Submitted ";
-   form.submit();
-   }
+<!--
+var resultDoc = null;
 
-function displayResults() {
-   var framex = document.getElementById("resultFrame");
-   var frameDoc = framex.contentDocument;
-   if (!frameDoc) {
-       // For IE only, a different way to get the document object from an iframe.
-       frameDoc = framex.Document;
-   }
-   if (frameDoc.getElementById("r1")) {
-       // Don't update displayed results if there are no results from cgi
-       //  This will be the case on the initial load of the page.
-       //  (Avoids script errors.)
-       var result1 = frameDoc.getElementById("r1").firstChild.nodeValue;
-       var result2 = frameDoc.getElementById("r2").firstChild.nodeValue;
-       var result3 = frameDoc.getElementById("r3").firstChild.nodeValue;
-       var result4 = frameDoc.getElementById("r4").firstChild.nodeValue;
-   
-       document.getElementById("d1").firstChild.nodeValue = result1;
-       document.getElementById("d2").firstChild.nodeValue = result2;
-       document.getElementById("d3").firstChild.nodeValue = result3;
-       document.getElementById("d4").firstChild.nodeValue = result4;
-   }
- 
+//
+//  Get a value that was returned from the server.
+//     Values come back as non-displayed strings that are children of <p>
+//     elements with id tags, allowing them to be directly
+//     accessed by name, using getElementById().
+//
+function getValue(id) {
+    var value = "";
+    var resultElem = resultDoc.getElementById(id);
+    if (resultElem && resultElem.hasChildNodes()) {
+        value = resultElem.firstChild.nodeValue;
+    }
+    return value.toString();
 }
+
+//
+//  Store a value into the visible (displayed) document.
+//      Each field intended to be updated is under an element
+//      (typically a <span> with an id, allowing it to be
+//      directly addressed.
+//
+function setField(destId, value) {
+    var el = document.getElementById(destId);
+    if (el) {
+        el.firstChild.nodeValue = value;
+    } else {
+        // alert("setField - can't get " + destId);
+    } 
+}
+
+//
+//  DoCompare()  Called in response to the user submitting the form.
+//
+function doCompare() {
+    var form=document.getElementById("ourForm");
+    form.target = "resultFrame";
+    setField("binary", "? ");  // Blank out all of the result fields until the server responds.
+    setField("case", "? ");
+    setField("equiv", "? ");
+    setField("eq_ca", "? ");
+    form.submit();
+    }
+
+
+//
+//  toHexStrings   Convert a string to a hex form, showing the a hex
+//                 representation of all characters in the input. 
+//                 Return the hexified string.  Input strin is unaltered.
+//
+var hexDigits = "0123456789ABCDEF";
+function toHexString(s) {
+    var hexStr  = "";
+    if (s==null) {
+       return hexStr;
+    }
+    for (var i=0; i<s.length; i++) {
+	 var cval = s.charCodeAt(i);
+         var b = 12;  // shift to access high digit of code point value.
+         var prefix = "\\u";
+         var trail=0;
+         if (cval>=0xd800 && cval<0xdc00 && i+1<s.length) {
+            trail = s.charCodeAt(i+1);
+            if (trail>=0xdc00 && trail<0xe000) {
+               // Surrogate Pair.
+               i++;
+               prefix = "\\U";
+               cval = ((cval&0x3ff)<<10) + (trail&0x3ff) + 0x10000;
+               b = 28;   
+            }
+         }
+         hexStr += prefix;
+	 for (; b>=0; b-=4) {
+	    var h = (cval >>> b)&0xf;
+	    hexStr += hexDigits.charAt(h);
+	}
+	hexStr+=" ";
+    }
+    return hexStr;
+}
+     
+//
+//  displayResults()  This function is called at onLoad of the cgi results
+//		      into the hidden frame.
+//
+function displayResults() {
+    // Get a reference to the document in the frame with the raw results returned from the CGI.
+    //   Browser dependent.
+    var resultFrame = document.getElementById("resultFrame");
+    resultDoc = resultFrame.contentDocument;
+    if (!resultDoc) {
+	// For IE only, a different way to get the document object from an iframe.
+	resultDoc = resultFrame.Document;
+	}
+    
+    //
+    //  Display the unescaped and hex-format strings.
+    //
+    setField("str1a", getValue("s1a"));
+    setField("str1b", getValue("s1b"));
+    setField("hex1a", toHexString(getValue("s1a")));
+    setField("hex1b", toHexString(getValue("s1b")));
+   
+    //
+    //  Stuff the compare results from the CGI into the displayed output.
+    //
+    var result = getValue("r1");
+    setField("binary", result.substr(0, 1));
+    setField("case", result.substr(1, 1));
+    setField("equiv", result.substr(2, 1));
+    setField("eq_ca", result.substr(3, 1));
+     }
+//     -->
 </script>
 
+</head>
 <body>
-<h1>ICU Unicode String Compare Demo</h1>
-
-<p>This page is a demonstation of ICU's string comparison functions, showing the
-     effects of the options for Unicode Normalization (canonical equivalence) and 
-     Case Insensitive comparisons.
-</p>
-
-<p>Enter the strings to be compared, then click on the "submit" button.  The strings may
-     contain \uhhhh and \Uhhhhhhhh hex escapes for characters that can not be entered 
-     directly from the keyboard.  For descriptions of additional escape sequences, 
-     see UnicodeString::unescape() in the 
-    <a href="http://oss.software.ibm.com/icu/apiref/classUnicodeString.html">
-     ICU API reference</a></p>
-
-<p> <button type="button" onClick="doCompare();" >Submit</button>
-</p>
 
 <!-- The form for entering the strings to be compared. 
 	The cgi results are placed into a non-displaying iframe that
@@ -68,60 +143,115 @@ function displayResults() {
 	transfers the results into the elements with id attributes d1, d2, etc.
 	appearing in this form.
 	-->
-<form id="ourForm" method="POST" action="/cgi-bin/icu/scompare"
-	accept-charset="utf-8">
-  <p><input size="40" name="s1a" value="first string"></input>
-       <input  size="40" name="s1b" value="second string"></input> 
-       <span class="box" id="d1">&nbsp;&lt;>&nbsp; </span>
-</p>
-<p><input size="40" name="s2a" value="">
-      <input  size="40" name="s2b" value="">
-      <span class="box" id="d2">&nbsp;=&nbsp;  </span>
-</p>
-<p><input size="40" name="s3a" value="">
-      <input  size="40" name="s3b" value="">
-      <span class="box" id="d3">&nbsp;=&nbsp;  </span>
-</p>
-<p><input size="40" name="s4a" value="">
-      <input  size="40" name="s4b" value="">
-      <span class="box" id="d4">&nbsp;=&nbsp;  </span>
-</p>
-<br/>
-<hr/>
-<p><b>Key to Results</b></p>
-<table border="1">
-<tr>
-<th><i>Result</i></th>  <th><i>Meaning</i></th><th><i>ICU API used</i></th>
-<tr>	<td>=</td>
-	<td>Strings are exactly equal</td>
-	<td>UnicodeString::compare()</td>
-	</tr>
-<tr>
-	<td>=(I)</td>
-	<td>Strings are equal in a case insensitive compare, unequal otherwise</td>
-	<td>UnicodeString::caseCompare()</td>
-</tr>
-<tr>
-	<td>=(N)</td>
-	<td>Strings are equal after normalization, unequal otherwise</td>
-	<td>Normalizer::compare(),  U_FOLD_CASE_DEFAULT option</td>
-</tr>
-<tr>
-	<td>=(NI)</td>  
-	<td>Strings are equal in a compare that is both case insensitive and 
-	considers canonical equavalence, unequal otherwise</td>
-	<td>Normalizer::compare(),  U_COMPARE_IGNORE_CASE option</td>
-</tr>
-<tr>
-	<td>&lt;></td>
-	<td>Strings are not equal</td>
-	<td>All of the above functions return not equal.</tr>
-</table>
 
+  <h1>Unicode String Comparison</h1>
+  <p>Enter the two strings to be compared, then click on the &quot;Submit&quot; button. The results are 
+  described in the <a href="#Key">Key</a>. For more information, see <a href="#Background">
+  Background</a>.</p>
+
+<!-- for oss server, action="/cgi-bin/icu/scompare"
+       for windows test, action= "/cgi-bin/scompare.exe"
+-->
+
+<form id="ourForm" accept-charset="utf-8" action="/cgi-bin/scompare.exe"
+	method="post" target="resultFrame">  
+
+<table border="1" cellpadding="2" cellspacing="0" style="border-collapse: collapse" width="100%" >
+    <tr>
+      <td rowspan="2" width="10%"><button tabindex="2" onclick="doCompare();">Submit</button></td>
+      <th rowspan="2">String 1</th>
+      <th rowspan="2">String 2</th>
+      <th colspan="4">Comparison Result</th>
+    </tr>
+    <tr>
+      <th><a href="#a_Binary">Binary</a></th>
+      <th><a href="#a_Caseless">Caseless</th>
+      <th><a href="#a_Equiv">Equiv</th>
+      <th><a href="#a_Equiv_Caseless">Equiv-Caseless</th>
+    </tr>
+    <tr>
+      <th align="left"  >Input</th>
+      <td><textarea tabindex="1" rows="2" name="s1a" >&#945;&#955;&#966;&#945;</textarea></td>
+      <td><textarea tabindex="1" rows="2" name="s1b" >&#945;&#955;&#966;&#945;</textarea></td>
+      <td class="output" align="center" id="binary"> - </td>
+      <td class="output" align="center" id="case">Y</td>
+      <td  class="output" align="center" id="equiv">Y</td>
+      <td  class="output" align="center" id="eq_ca">Y</td>
+    </tr>
+    <tr>
+      <th align="left" width="10%">Unescaped</th>
+      <td class="output"><span id="str1a"> - </span></td>
+      <td class="output"><span id="str1b"> - </span></td>
+    </tr>
+    <tr>
+      <th align="left" width="10%">Hex</th>
+      <td class="output"><span id="hex1a"> - </span></td>
+      <td class="output"><span id="hex1b"> - </span></td>
+    </tr>
+  </table>
+</form>
+<h2><a name="Key">Key</a></h2>
+<table border="1" cellspacing="0" style="border-collapse: collapse"  cellpadding="2">
+  <tr>
+    <th><i>Result</i></th>
+    <th><i>Meaning</i></th>
+  </tr>
+  <tr>
+    <td><a id="a_Binary"/>Binary</td>
+    <td>Strings have exactly the same code points in Unicode</td>
+  </tr>
+  <tr>
+    <td><a id="a_Caseless"/>Caseless</td>
+    <td>Strings are equal, case insensitive; thus case differences are discarded.   Examples: αλφα and Αλφα</td>
+  </tr>
+  <tr>
+    <td><a id="a_Equiv"/>Equiv</td>
+    <td>Strings are canonically equivalent; thus equal after normalization.   Examples: Åland and &#x212B;land,
+    or \u062f\u0650\u0651 and \u062f\u0651\u0650.  Note that Åland and &#x212B;land are also equal in a
+    caseless match because they both case-fold to the same string.</td>
+  </tr>
+  <tr>
+    <td><a id="a_Equiv_Caseless"/>Equiv-Caseless</td>
+    <td>Strings are canonically equivalent, case insensitive. Examples: åland and &#x212B;land</td>
+  </tr>
+  <tr>
+    <td>Hex</td>
+    <td>Display all input characters as hex values.</td>
+  </tr>
+</table>
+<h2><a name="Background">Background</a></h2>
+<ul>
+  <li>The above comparisons use only Unicode properties, and are invariant across locales. To 
+  compare two strings according to locale settings, see
+  <a href="http://oss.software.ibm.com/cgi-bin/icu/lx/en_US/?d_=en_US&amp;x=col&amp;_=root">ICU Collation 
+  Demo</a>. 
+  </li>
+  <li>The strings may contain \uhhhh and \Uhhhhhhhh hex escapes for characters that can not be 
+  entered directly from the keyboard. For descriptions of additional escape sequences, see 
+  UnicodeString::unescape() in the
+  <a href="http://oss.software.ibm.com/icu/apiref/classUnicodeString.html">ICU API reference</a>.</li>
+  <li>This tool is built using ICU's string comparison functions, showing the effects of the options 
+  for Unicode Normalization (canonical equivalence) and Case Insensitive comparisons.</li>
+</ul>
+<h2>Known Issues</h2>
+<ul>
+  <li>With Internet Explorer, leading and trailing spaces are removed from the input strings, and runs of spaces within
+  the input are reduced to a single space.  With other browsers all spaces are maintained as entered.</li>
+  <li>The hex format display of the input strings include spaces between the \uhhhh values.  
+  This hex display can not be pasted back into the input to recreate the original string without first
+  removing the spaces.  The spaces are needed because some browsers will not line-wrap the
+  output without them.</li>
+  <li>With some versions of Mozilla Firefox, the table display will occasionally fail to resize to correctly fit the hex form
+  of the input strings.  If this happens, reload the page. </li>
+  <li>With Opera, the unescaped and hex forms of the input string will fail to display if the previous case input string was empty.
+  Press the submit button again and the problem will correct itself.</li>
+</ul>
 
 <!-- resultFrame, a non-displaying frame to receive the results from the form submit -->
-<iframe id="resultFrame" height="0" width="0" frameborder="no"
+<iframe id="resultFrame" height="0" width=0" frameborder="0"
            name="resultFrame"  onload="displayResults();">
-  <h4>result frame</hr>
+  <h4>result frame</h4>
 </iframe>
 </body>
+
+</html>
