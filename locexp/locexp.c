@@ -68,6 +68,13 @@
 #include "string.h"
 /* #include "unicode/fontedcb.h" */
 
+
+#ifdef WIN32
+#include <stdlib.h>
+#include <fcntl.h>
+#include <io.h>
+#endif
+
 #include "locexp.h"
 
 # define uprv_strstr(a,b)  strstr(a,b)
@@ -215,6 +222,13 @@ int main(const char *argv[], int argc)
   const char  *fileObj = NULL;
   char portStr[100];
 
+#ifdef WIN32
+  if( setmode( fileno ( stdout ), O_BINARY ) == -1 ) {
+          perror ( "Cannot set stdout to binary mode" );
+          exit(-1);
+  }
+#endif
+
   /* INIT THE LX */
   memset(lx, 0, sizeof(*lx));
   strcpy(lx->cLocale, "en");
@@ -241,7 +255,7 @@ int main(const char *argv[], int argc)
 
 
 #ifdef  WIN32
-  u_setDataDirectory("c:\\o\\icu\\data\\");
+//  u_setDataDirectory("c:\\o\\icu\\source\\data\\");
 #endif
 
 
@@ -271,11 +285,7 @@ int main(const char *argv[], int argc)
     char newPath[500];
     strcpy(newPath, u_getDataDirectory());
 
-#ifdef WIN32
-    strcat(newPath, "locexp\\");
-#else
     strcat(newPath, "locexp");
-#endif
 
     FSWF_setBundlePath(newPath);
   }
@@ -302,6 +312,7 @@ int main(const char *argv[], int argc)
   {
     fprintf(stdout,"content-type: text/plain\r\n");
     fprintf(stdout,"\r\nFatal: can't open ICU Data (%s)\r\n", u_getDataDirectory());
+    fprintf(stdout,"ICU_DATA=%s\n", getenv("ICU_DATA"));
     exit(0);
 
     lx->couldNotOpenEncoding = lx->chosenEncoding; /* uhoh */
@@ -4568,8 +4579,7 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLoca
 #ifdef WIN32
 const char *ures_getTag(UResourceBundle *n)
 {
-	return "No ures_getTag() under win32!!";
-
+    return ures_getKey(n);
 }
 #endif
 

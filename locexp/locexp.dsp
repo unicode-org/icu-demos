@@ -115,5 +115,35 @@ SOURCE=.\util\utimzone.cpp
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Group "Build Scripts"
+
+# PROP Default_Filter "mk;mak"
+# Begin Source File
+
+SOURCE=.\resource\makedata.mak
+
+!IF  "$(CFG)" == "locexp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
+
+# Begin Custom Build
+ProjDir=.
+InputPath=.\resource\makedata.mak
+InputName=makedata
+
+"$(ProjDir)\..\..\icu\source\data\locexp.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cd $(ProjDir)\resource 
+	nmake /f $(InputName).mak icup=$(ProjDir)\..\..\..\icu CFG=Debug 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\resource\resfiles.mk
+# End Source File
+# End Group
 # End Target
 # End Project
