@@ -471,7 +471,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     puts(endTable);
 
-    puts("<h3><a name=\""SHOW_UNICODESET"\">Set of Unicode Code Points Representable By This Codepage</a></h3>");
+    puts("<h3><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h3>");
     if (gShowUnicodeSet) {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
