@@ -25,7 +25,7 @@ CLEANFILES = *~
 TARGET = libusort.$(SO)
 
 OBJECTS = usort.o 
-HEADERS = usort.h
+HEADERS = unicode/usort.h
 
 DEPS = $(OBJECTS:.o=.d)
 

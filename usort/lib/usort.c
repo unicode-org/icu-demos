@@ -197,11 +197,8 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, bool_t copy, void *u
   if(copy)
     {
       memcpy((UChar*)usort->lines[usort->count].chars, line, (len+1) * sizeof(UChar));
-#ifdef WIN32
-      (usort->lines[usort->count].chars[len]) = 0;
-#else
-      (UChar*)(usort->lines[usort->count].chars[len]) = 0;
-#endif
+
+      usort->lines[usort->count].chars[len] = 0;
     }
 
   /* now,  collate it. Note we do NOT include the null or newline in the collation. */
