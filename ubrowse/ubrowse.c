@@ -58,6 +58,8 @@ bool_t gSearchCharValid = FALSE;
 
 bool_t anyDecompose = FALSE;
 
+int enumHits = 0, foundCount = 0; /* # of enumerations, # of hits */
+
 void printCharName(UChar32 c)
 {
   char junkbuf[512];
@@ -252,8 +254,11 @@ UBool myEnumCharNamesFn(void *context,
                         const char *name,
                         UTextOffset length)
 {
+  enumHits++;
   if(strstr(name, gSearchName))
   {
+    foundCount ++;
+
     printf("<LI><A HREF=\"?k1=%06X#here\"><TT>%06X</TT> - %s\r\n",
            code, code, name);
     
@@ -716,16 +721,20 @@ main(int argc,
       UChar32 c;
       char *p;
       char buf[512];
-      UErrorCode status;
+      UErrorCode status = U_ZERO_ERROR;
 
       for(p=gSearchName;*p;p++)
-	*p = toupper(*p);
+        {
+          *p = toupper(*p);
+          if(*p == '+')
+            *p = ' ';
+        }
 
       /* "Be careful what you search for, you just might find it"
 	 (and 0x10FFFF of it's close friends!)
       */
 
-      printf("<H1>Searching for '%s'</H1>...\r\n", gSearchName);
+      printf("<H1>Searching for '%s'...</H1>\r\n", gSearchName);
       
       printf("<HR><UL>\r\n");
 
@@ -735,7 +744,12 @@ main(int argc,
                       U_UNICODE_CHAR_NAME,
                       &status);
 
-      printf("</UL><HR>\r\n");
+      if(foundCount == 0)
+        {
+          printf("<i>Not found.</i>\n");
+        }
+
+      printf("</UL><!-- %d tested --><HR>\r\n",enumHits);
       showSearchMenu( 0x0000 ); 
     }
   else if(mode == EEXACTNAME)
@@ -752,7 +766,7 @@ main(int argc,
             *p = ' ';
         }
 
-      printf("<H1>Searching for '%s'</H1>...\r\n", gSearchName);
+      printf("<H1>Searching for '%s'...</H1>\r\n", gSearchName);
       
       printf("<HR><UL>\r\n");
 
@@ -762,7 +776,11 @@ main(int argc,
 
       if(U_FAILURE(status))
         {
-          printf("Not found - %s %d<P>\n", u_errorName(status), status);
+          printf("Error - %s %d<P>\n", u_errorName(status), status);
+        }
+      else if(c == 0x00FFFF )
+        {
+          printf("<i>Not found.</i><p>Please note that this search requires an exact unicode name.\n");
         }
       else
         {
