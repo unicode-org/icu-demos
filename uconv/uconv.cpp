@@ -13,6 +13,8 @@
 // -f [codeset]  Convert file from this codeset
 // -t [codeset]  Convert file to this code set
 // -l            Display all available converters
+// -x [transliterator]  Run everything through a transliterator
+// -L            Display all available transliterators
 // If no file is given, uconv tries to read from stdin
 // 
 // To compile: c++ -o uconv -I${ICUHOME}/include -Wall -g uconv.cpp -L${ICUHOME}/lib -licu-uc -licu-i18n
@@ -23,12 +25,17 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
 
 // This is the UnicodeConverter headerfile
-#include <unicode/convert.h>
+#include "unicode/convert.h"
 
 // This is the UnicodeString headerfile
-#include <unicode/unistr.h>
+#include "unicode/unistr.h"
+
+// Our message printer..
+#include "unicode/uwmsg.h"
 
 #ifdef WIN32
 #include <string.h>
@@ -36,7 +43,9 @@
 #include <fcntl.h>
 #endif
 
-
+#ifdef USE_TRANSLIT
+# include "unicode/translit.h"
+#endif
 
 static const size_t buffsize = 4096;
 
@@ -52,8 +61,8 @@ void printAllConverters()
     const char* const* convtable = UnicodeConverter::getAvailableNames(num, err);
     if (U_FAILURE(err))
     {
-        fprintf(stderr, "getAvailableNames failed\n");
-        return;
+      u_wmsg("cantGetNames", u_wmsg_errorName(err));
+      return;
     }
 
     for (int32_t i = 0; i<num-1; i++)
@@ -92,21 +101,36 @@ bool convertFile(const char* fromcpage,
 
     size_t rd, totbuffsize;
 
+#if USE_TRANSLIT
+    const char *translit;
+
+    Transliterator *t = NULL;
+
+    translit = getenv("TRANSLIT");
+    if(translit != NULL && *translit)
+      {
+        t = Transliterator::createInstance(UnicodeString(translit, ""));
+        fprintf(stderr, "Opening transliterator: %s\n", translit, t);
+      }
+#endif
 
     // Create codepage converter. If the codepage or its aliases weren't
     // available, it returns NULL and a failure code
     convfrom = new UnicodeConverter(fromcpage, err);
     if (U_FAILURE(err))
     {
-        fprintf(stderr, "Unknown codepage: %s\n", fromcpage);
-        goto error_exit;
+      u_wmsg("cantOpenFromCodeset",UnicodeString(fromcpage,"").getUChars(),
+             u_wmsg_errorName(err));
+      goto error_exit;
     }
 
     convto = new UnicodeConverter(tocpage, err);
+
     if (U_FAILURE(err))
     {
-        fprintf(stderr, "Unknown codepage %s\n", tocpage);
-        goto error_exit;
+      u_wmsg("cantOpenToCodeset",UnicodeString(tocpage,"").getUChars(),
+             u_wmsg_errorName(err));
+      goto error_exit;
     }
 
     // To ensure that the buffer always is of enough size, we
@@ -121,7 +145,8 @@ bool convertFile(const char* fromcpage,
         rd = fread(buff, 1, readsize, infile);
         if (ferror(infile) != 0)
         {
-            fprintf(stderr, "Error reading from input file: %s\n", strerror(errno));
+            u_wmsg("cantRead", 
+                   UnicodeString(strerror(errno), "").getUChars());
             goto error_exit;
         }
             
@@ -142,7 +167,7 @@ bool convertFile(const char* fromcpage,
             
         if (U_FAILURE(err))
         {
-            fprintf(stderr, "Conversion to Unicode from codepage failed\n");
+            u_wmsg("problemCvtToU", u_wmsg_errorName(err));
             goto error_exit;
         }
             
@@ -150,7 +175,7 @@ bool convertFile(const char* fromcpage,
         // of chars read.
         if (flush && cbuffiter!=(buff+rd))
         {
-            fprintf(stderr, "Premature end of input, when converting from codepage to Unicode\n");
+            u_wmsg("premEndInput");
             goto error_exit;
         }
             
@@ -159,31 +184,46 @@ bool convertFile(const char* fromcpage,
         // And 'cuniiter' will be placed on the last converted unicode character
         // At the last conversion flush should be set to true to ensure that 
         // all characters left get converted
+
+        UnicodeString u(unibuff, uniiter-unibuff);
         buffiter = buff;
         cuniiter = unibuff;
+
+#ifdef USE_TRANSLIT
+        if(t) 
+          {
+            t->transliterate(u);
+            u.extract(0, u.length(), unibuff, 0);
+            uniiter = unibuff + u.length();
+            
+          }
+#endif
+
         convto->fromUnicode(buffiter, buffiter+totbuffsize, 
                            cuniiter, cuniiter+(size_t)(uniiter-unibuff),
                            NULL, flush, err);
             
         if (U_FAILURE(err))
         {
-            fprintf(stderr, "Problem converting from Unicode to codepage\n");
-            goto error_exit;
+           u_wmsg("problemCvtFromU", u_wmsg_errorName(err));
+           goto error_exit;
         }
                         
         // At the last conversion, the converted characters should be equal to number
         // of consumed characters.
         if (flush && cuniiter!=(unibuff+(size_t)(uniiter-unibuff)))
         {
-            fprintf(stderr, "Premature end of Unicode conversion to codepage\n");
-            goto error_exit;
+          u_wmsg("premEnd");
+          goto error_exit;
         }
             
         // Finally, write the converted buffer to the output file
         rd =  (size_t)(buffiter-buff);
         if (fwrite(buff, 1, rd, outfile) != rd)
         {
-            fprintf(stderr, "The converted text couldn't be written: %s \n", strerror(errno));
+          u_wmsg("cantWrite", 
+                 UnicodeString(strerror(errno),"").getUChars());
+
             goto error_exit;
         }
         
@@ -196,6 +236,10 @@ bool convertFile(const char* fromcpage,
     if (convfrom) delete convfrom;
     if (convto) delete convto;
 
+#ifdef USE_TRANSLIT
+    if ( t ) delete t;
+#endif
+
     // Close the created converters
     if (buff) delete [] buff;
     if (unibuff) delete [] unibuff;
@@ -204,12 +248,9 @@ bool convertFile(const char* fromcpage,
 
 void printUsage()
 {
-    printf("Usage: uconv [flag] [file]\n"
-           "-f [codeset]  Convert file from this codeset\n"
-           "-t [codeset]  Convert file to this code set\n"
-           "-h            Show this help text\n"
-           "-l            List all available codepages\n");
+  u_wmsg("usage");
 }
+
 
 int main(int argc, char** argv)
 {
@@ -220,8 +261,27 @@ int main(int argc, char** argv)
     const char* tocpage = 0;
     const char* infilestr = 0;
 
+
+    char dataPath[500];
+    UErrorCode err = U_ZERO_ERROR;
+
     char** iter = argv+1;
     char** end = argv+argc;    
+    
+
+    strcpy(dataPath, u_getDataDirectory());
+    strcat(dataPath, "uconvmsg");
+
+
+    u_wmsg_setPath(dataPath, &err);
+
+    if(U_FAILURE(err))
+    {
+      fprintf(stderr, "%s: ### Warning: can't open resource bundle %s [%s]\n", 
+              argv[0],
+              dataPath,
+              u_errorName(err));
+    }
 
     // First, get the arguments from command-line
     // to know the codepages to convert between
@@ -265,13 +325,15 @@ int main(int argc, char** argv)
 
     if (fromcpage==0)
     {
-        fprintf(stderr, "No conversion from codeset given (use -f)\n");
+      u_wmsg("noFromCodeset");
+      //"No conversion from codeset given (use -f)\n");
         goto error_exit;
     }
     if (tocpage==0)
     {
-        fprintf(stderr, "No conversion to codeset given (use -t)\n");
-        goto error_exit;
+      u_wmsg("noToCodeset");
+      // "No conversion to codeset given (use -t)\n");
+      goto error_exit;
     }
 
     // Open the correct input file or connect to stdin for reading input
@@ -280,8 +342,10 @@ int main(int argc, char** argv)
         file = fopen(infilestr, "rb");
         if (file==0)
         {
-            fprintf(stderr, "Couldn't open the input file: %s\n", strerror(errno));
-            return 1;
+          u_wmsg("cantOpenInputF", 
+                 UnicodeString(infilestr,"").getUChars(),
+                 UnicodeString(strerror(errno),"").getUChars());
+          return 1;
         }
         infile = file;
     }

@@ -18,19 +18,25 @@ include @ICU_MAKEFILE@
 top_builddir = ..
 subdir = uconv
 
+# RESSRC comes from resfiles.mk
+include resfiles.mk
+
+RESDIR=uconvmsg
+RESFILES=$(RESSRC:%.txt=$(RESDIR)/%.res)
+
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
 
 ## Target information
 TARGET = uconv
 
-OBJECTS = uconv.o
+OBJECTS = uconv.o uwmsg.o
 
 DEPS = $(OBJECTS:.o=.d)
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
-distclean distclean-local dist dist-local check check-local
+distclean distclean-local dist dist-local check check-local resfiles resinst
 
 ## Clear suffix list
 .SUFFIXES :
@@ -43,9 +49,9 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(TARGET)
+all-local: $(TARGET) resfiles
 
-install-local: all-local install-target
+install-local: all-local install-target resinst
 
 mkinstalldirs = $(SHELL) $(sbindir)/mkinstalldirs
 
@@ -56,11 +62,11 @@ install-target: all-local
 dist-local:
 
 clean-local:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES) $(RESFILES)
 	rm -f $(OBJECTS) $(TARGET)
 
 distclean-local: clean-local
-	rm -f Makefile $(DEPS)
+	rm -f Makefile $(DEPS) $(RESDIR)
 
 check-local:
 
@@ -75,9 +81,23 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 $(TARGET) : $(OBJECTS)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
 
+resfiles: $(RESFILES)
+
+$(RESDIR)/$(RESDIR).lst: Makefile resfiles.mk
+	@$(mkinstalldirs) $(RESDIR)
+	@-$(RMV) $@
+	@for file in $(RESFILES); do \
+	  echo `pwd`/$$file >> $@; \
+	done;
+
+resinst: $(RESFILES) $(RESDIR)/$(RESDIR).lst
+	$(sbindir)/pkgdata -p $(RESDIR) -O @ICU_MAKEFILE@ -m dll -v -c -d $(datadir)/$(PACKAGE)/$(VERSION) -T $(RESDIR) $(RESDIR)/$(RESDIR).lst
+
+$(RESDIR)/%.res: ./%.txt
+	@$(mkinstalldirs) $(RESDIR)
+	$(sbindir)/genrb -eutf-8 -d $(RESDIR) -s . $^
+
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)
 endif
-
-
 
