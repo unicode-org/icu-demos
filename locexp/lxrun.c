@@ -244,7 +244,7 @@ void setupLocaleExplorer(LXContext *lx)
   	if(!strcmp(lx->cLocale, "xol")) {
 		sprintf(id, "Latn-Ital");
 	}
-        fprintf(stderr, "LC=[%s]\n", id); 
+        /* fprintf(stderr, "LC=[%s]\n", id);  */
         trans = utrans_open(id, UTRANS_FORWARD, NULL, -1, NULL, &transStatus);
  	if(U_FAILURE(transStatus))	
 	{

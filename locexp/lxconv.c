@@ -455,7 +455,7 @@ UFILE *setLocaleAndEncodingAndOpenUFILE(LXContext *lx, char *chosenEncoding, UBo
 
     /* Now, did we get a file object? */
 
-    fprintf(stderr, "FO=%s\n", encoding);
+    /* fprintf(stderr, "FO=%s\n", encoding); */
 
     if(*didsetEncoding && pi && !strcmp(encoding, "_"))
     {
