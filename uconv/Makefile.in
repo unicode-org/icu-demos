@@ -1,4 +1,10 @@
-## Makefile.in for ICU - example/usort/client
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2000, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Makefile.in for ICU - uconv
 ## Steven  R. Loomis
 
 srcdir=@srcdir@

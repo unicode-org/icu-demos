@@ -1,6 +1,11 @@
 #!/bin/sh
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2000, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
 
-## (c) 1999 IBM, Inc.
 ## this script extracts strings of the form:
 ##    FSWF("myTag", "Fallback text for myTag");
 ##
