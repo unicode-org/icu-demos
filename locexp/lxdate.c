@@ -84,13 +84,23 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     if(U_FAILURE(status) || (now == 0))
     {
-        u_fprintf(lx->OUT, "%S %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
+      int32_t tmplen;
+      u_fprintf(lx->OUT, "%S %d<P>\r\n", FSWF("formatExample_errorParse", "Could not parse this, replaced with a default value. Formatted This many chars:"), parsePos);
 #if defined(LX_DEBUG)
-        u_fprintf(lx->OUT, "<tt>'tmp' was '%s'</tt><br/>\n", tmp);
+      u_fprintf(lx->OUT, "<tt>'tmp' was '%s'</tt><br/>\n", tmp);
 #endif
-        explainStatus(lx,status,"EXPLORE_DateTimePatterns");
-        status = U_ZERO_ERROR;
-        now = ucal_getNow();
+      tmplen = u_strlen(valueString);
+      if((parsePos >= 0) && (parsePos <= tmplen)) {
+        u_fprintf(lx->OUT, "<table border=1><tr><td>");
+        u_file_write(valueString, parsePos, lx->OUT);
+        u_fprintf(lx->OUT, "<b><font color=red>|</font></b>");
+        u_file_write(valueString+parsePos, tmplen-parsePos, lx->OUT);
+        u_fprintf(lx->OUT, "</td></tr></table>\n");
+      }
+      u_fprintf(lx->OUT, "<br>");
+      explainStatus(lx,status,"EXPLORE_DateTimePatterns");
+      status = U_ZERO_ERROR;
+      now = ucal_getNow();
     }
     status = U_ZERO_ERROR;
     /* ======================== End loading input date ================================= */
