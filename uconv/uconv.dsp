@@ -89,14 +89,55 @@ LINK32=link.exe
 
 SOURCE=.\uconv.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\uwmsg.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# End Group
-# Begin Group "Resource Files"
+# Begin Source File
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+SOURCE=.\unicode\uwmsg.h
+# End Source File
+# End Group
+# Begin Group "Resource Bundles"
+
+# PROP Default_Filter "txt"
+# Begin Source File
+
+SOURCE=.\root.txt
+# End Source File
+# End Group
+# Begin Group "Build Scripts"
+
+# PROP Default_Filter "mak;mk;bat"
+# Begin Source File
+
+SOURCE=.\makedata.mak
+
+!IF  "$(CFG)" == "uconv - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "uconv - Win32 Debug"
+
+# Begin Custom Build
+ProjDir=.
+InputPath=.\makedata.mak
+InputName=makedata
+
+"$(ProjDir)\..\..\icu\data\uconvmsg.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	nmake /f $(InputName).mak icup=$(ProjDir)\..\..\icu CFG=Debug
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\resfiles.mk
+# End Source File
 # End Group
 # End Target
 # End Project

@@ -21,6 +21,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 #define BUF_SIZE 128
 
@@ -97,24 +98,7 @@ U_CAPI void u_wmsg_setPath(const char *path, UErrorCode *err)
     UResourceBundle *b = NULL;
     b = ures_open(path, NULL, err);
 
-    if(U_FAILURE(*err)) 
-    {
-      return;
-    }
-
-    umtx_lock(NULL);
-      if(gBundle == NULL)
-      {
-        gBundle = b;
-        b = NULL;
-      }
-  umtx_unlock(NULL);
-    
-    if(b) /* if we still have a bundle, someone got to it first.*/
-    {
-      ures_close(b);
-      *err = U_ILLEGAL_ARGUMENT_ERROR;
-    }
+    gBundle = b;
   }
   
   return;
@@ -180,7 +164,7 @@ UChar * gInfoMessages[U_ERROR_INFO_LIMIT-U_ERROR_INFO_START] =
   { 0,0 };
 
 UChar * gErrMessages[U_ERROR_LIMIT] = 
-  { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+  { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
 static const UChar *fetchErrorName(UErrorCode err)
 {
@@ -196,7 +180,6 @@ U_CAPI const UChar *u_wmsg_errorName(UErrorCode err)
   int32_t msgLen;
   UErrorCode subErr = U_ZERO_ERROR;
   const char *textMsg = NULL;
-  UChar *toDelete = NULL;
 
   /* try the cache */
   msg = (UChar*)fetchErrorName(err);
@@ -222,29 +205,15 @@ U_CAPI const UChar *u_wmsg_errorName(UErrorCode err)
 
   if(msg == NULL)  /* Couldn't find it anywhere.. */
   {
-    
     textMsg = u_errorName(err);
     msg = (UChar*)malloc((strlen(textMsg)+1)*sizeof(msg[0]));
-    toDelete = msg;
     u_charsToUChars(textMsg, msg, strlen(textMsg)+1);
   }
 
-  /* another thread may have been to the cache first */
-  umtx_lock(NULL);
-    if(fetchErrorName(err) == NULL)
-    {
-      if(err>=0)
-        gErrMessages[err] = msg;
-      else
-        gInfoMessages[err-U_ERROR_INFO_START] = msg;
-      toDelete = NULL;
-    }
-  umtx_unlock(NULL);
-
-  if(toDelete)  /* allocated, not used */
-  {
-    free(toDelete);
-  }
+  if(err>=0)
+    gErrMessages[err] = msg;
+  else
+    gInfoMessages[err-U_ERROR_INFO_START] = msg;
 
   return msg;
 }

@@ -1,6 +1,6 @@
 // -*- Coding: utf-8; -*-  [all uconv resource files]
 // Copyright (c) 2000 IBM, Inc. and Others.
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // Root translation file for uconv messages.
 // So you want to translate this file??? Great!
@@ -17,7 +17,7 @@
 // 4. Make note of the location of {0}, {1}, etc.. they are taken from
 //    arguments to u_wmsg() in order..
 //
-// 5. Add se.txt to RESSRC= in Makefile.in, and to ??????? on 
+// 5. Add se.txt to RESSRC= in resfiles.mk and to the project file on 
 //    the Windows side.
 //
 // 6. Send it in to srl@jtcsv.com or ask on the ICU mailing list! thanks!
