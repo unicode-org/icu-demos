@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c on Fri Mar 23 01:20:32 CET 2001 on daphne
+// root file. Generated from ../locexp.c on Wed Jul 18 07:31:31 CEST 2001 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -59,6 +59,24 @@ root {
    NumberPatterns1  {  "Currency Pattern"  }
    NumberPatterns2  {  "Percent Pattern"  }
    NumberPatterns3  {  "Scientific Pattern"  }
+   UCOL_ALTERNATE_HANDLING  {  "Alternate handling"  }
+   UCOL_CASE_FIRST  {  "Case first"  }
+   UCOL_CASE_LEVEL  {  "Case level"  }
+   UCOL_FRENCH_COLLATION  {  "French collation"  }
+   UCOL_IDENTICAL  {  "Identical"  }
+   UCOL_LOWER_FIRST  {  "Lower first"  }
+   UCOL_NON_IGNORABLE  {  "Non-ignorable"  }
+   UCOL_NORMALIZATION_MODE  {  "Normalization mode"  }
+   UCOL_OFF  {  "Off"  }
+   UCOL_ON  {  "On"  }
+   UCOL_ON_WITHOUT_HANGUL  {  "On,without Hangul"  }
+   UCOL_PRIMARY  {  "Primary"  }
+   UCOL_QUATERNARY  {  "Quaternary"  }
+   UCOL_SECONDARY  {  "Secondary"  }
+   UCOL_SHIFTED  {  "Shifted"  }
+   UCOL_STRENGTH  {  "Strength"  }
+   UCOL_TERTIARY  {  "Tertiary"  }
+   UCOL_UPPER_FIRST  {  "Upper first"  }
    UNKNOWN_ERROR  {  "unknown error"  }
    U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
    aliasFor  {  "Really an alias for "  }
@@ -144,6 +162,7 @@ root {
    poweredby  {  "Powered by"  }
    poweredby_filebug  {  "File a bug"  }
    showAll  {  "Show All"  }
+   showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
    statusTableHeader  {  "Your settings:"  }
    statusTableHeaderChange  {  "(click to change)"  }
    stringClickToShow  {  "(Click here to show.)"  }
@@ -157,9 +176,13 @@ root {
    usortPrimary  {  "Primary only"  }
    usortSecondary  {  "Primary & Secondary"  }
    usortShow  {  "Show this example"  }
+   usortSorted  {  "Sorted"  }
    usortSource  {  "Source"  }
-   usortTertiary  {  "Primary-Tertiary"  }
+   usortTertiary  {  "Default"  }
    usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
+   usort_Custom  {  "Customize..."  }
+   usort_CustomClose  {  "Remove Customization"  }
+   usort_attrib  {  "Attributes"  }
    warningExperimentalLocale  {  "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>"  }
    warningInheritedLocale  {  "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"  }
    zoneStrings0  {  "Canonical"  }

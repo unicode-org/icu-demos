@@ -469,9 +469,7 @@ usort_setSortKeyFunction(USort *usort, SortKeyFunction skFunc) {
   usort->func = skFunc;
 }
 
-
-
-
-
-
-
+UCollator *usort_getCollator(USort *usort)
+{
+  return usort->collator;
+}

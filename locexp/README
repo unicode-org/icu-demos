@@ -188,3 +188,49 @@ A couple of design points -  #1, want to do any-any transliteration, #2 need to 
                 (buffer pool mgmt) 
 
  Then, we could evne transliterate Latin-Cyrillic [ex].. because no HTML tags would be transliterated.. 
+
+==========
+Todo: 
+   * generalized URL parse!
+   * POST data - esp for sorting!
+
+===========
+J1047
+
+The collation demo should be enhanced to make it more useful for outside people
+to test our rules.
+
+PHASE 1:
+
+Add UI to set each of the attributes that can be set on the collator. These can
+be pull-down lists. The contents should be:
+
+Strength: default, primary-only, primary-secondary, primary-tertiary,
+primary-quarternary, identical
+
+Ignore Punctuation: default, on, off
+
+Case first: default, upper, lower, off
+
+Case level: default, on, off
+
+Normalization mode: default, on, off
+
+French collation: default, on, off
+
+Note: these can be in a two or three column table (with invisible boundaries) to
+take up less vertical space, and keep from pushing the main test area off the
+bottom of the screen.
+
+
+PHASE 2:
+
+Add UI to set the locale directly. One pulldown for language, one for country,
+one for variant. The contents of the country depends on the current language
+showing. If none, the pulldown is grayed. Same goes for variant.
+
+
+PHASE 3:
+
+Add a window (like what Alan does for transliteration) that lets people edit
+their own rules.

@@ -175,6 +175,7 @@ endif
 iflx: flx
 	$(INSTALL) flx $(bindir)/flx
 	$(INSTALL) flx.sh $(bindir)/flx.sh
+	chmod u+s $(bindir)/flx
 	./kflx
 
 # fast locale explorer itself 

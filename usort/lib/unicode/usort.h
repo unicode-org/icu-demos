@@ -72,7 +72,17 @@
 #include <unicode/uloc.h>
 #include <stdio.h>  /* for FILE*'s */
 
-/* declaration for forward iterating function */
+/* Sort key function. Can be ucol_getSortKey or compatible.
+ * Get a sort key for a string from a UCollator.
+ * Sort keys may be compared using <TT>strcmp</TT>.
+ * @param coll The UCollator containing the collation rules.
+ * @param source The string to transform.
+ * @param sourecLength The length of source, or -1 if null-terminated.
+ * @param result A pointer to a buffer to receive the attribute.
+ * @param resultLength The maximum size of result.
+ * @return The size needed to fully store the sort key..
+ * @see ucol_getSortKey
+ */
 typedef int32_t SortKeyFunction(const    UCollator    *coll, const    UChar        *source,
         int32_t            sourceLength,
         uint8_t            *result,
@@ -155,7 +165,7 @@ T_USORT_API void
 usort_addLinesFromFILE( USort *sort, FILE *file, UConverter *inConverter, bool_t escapeMode);
 
 /**
- * Do the final sort. Finally!!
+ * Do the final sort.
  * @param usort The items to be sorted
  */
 
@@ -173,10 +183,24 @@ usort_sort(USort *usort);
 T_USORT_API void
 usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter);
 
+
+/**
+ * Set the function to be used for the sort. 
+ * @param usort The sorted list to be set
+ * @param skFunc The function to be used for key generation
+ */
 T_USORT_API void
 usort_setSortKeyFunction(USort *usort, SortKeyFunction skFunc);
 
+/**
+ * Get the internal UCollator object being used.
+ * @param usort The sort to be used
+ * @return The internal UCollator, used by the USort
+ */
+T_USORT_API UCollator *usort_getCollator(USort *usort);
+
 #endif /* _USORT */
+
 
 
 
