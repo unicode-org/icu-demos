@@ -24,8 +24,8 @@ CLEANFILES = *~
 ## Target information
 TARGET = ubrowse
 
-LDFLAGS := -L../locexp/util  $(LDFLAGS) -pg
-CPPFLAGS += -pg
+LDFLAGS := -L../locexp/util  $(LDFLAGS)
+CPPFLAGS +=
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
