@@ -54,3 +54,8 @@ U_CAPI const UChar* utz_hackyGetDisplayName(const UTimeZone *zone)
 
   ((const TimeZone*)zone)->getDisplayName(*(new UnicodeString())).getUChars();
 }
+
+U_CAPI void utz_setDefault(const UTimeZone *zone)
+{
+    TimeZone::setDefault(*((TimeZone*)zone));
+}

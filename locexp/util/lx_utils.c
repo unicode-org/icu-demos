@@ -708,6 +708,10 @@ static  struct
 	 these names.  -srl
       */
 
+      { "ibm-646", "us-ascii" },
+      { "transliterated", "utf-8" },
+      { "fonted", "iso-8859-1" },
+
       { "UTF8",     "utf-8" },
       { "LATIN_1",  "iso-8859-1" },
       { "ISO_2022", "iso-2022" },

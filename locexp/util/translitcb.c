@@ -22,6 +22,8 @@ UConverterFromUCallback TRANSLITERATED_lastResortCallback = UCNV_FROM_U_CALLBACK
 
 UTransliterator  **gTR;
 
+UConverter *gTR_utf8 = NULL;
+
 /* clone the converter, reset it, and then try to transcode the source into the
    target. If it fails, then transcode into the error buffer. 
 
@@ -40,15 +42,16 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
   const UChar      *sourceAlias = source;
   UErrorCode subErr = U_ZERO_ERROR;   
   char       *myTarget;
-  UConverter myConverter = *_this; /* bitwise copy */
 
-  ucnv_reset(&myConverter); /* necessary???? */
-
-  ucnv_setFromUCallBack (&myConverter, 
-			 (UConverterFromUCallback)  UCNV_FROM_U_CALLBACK_SUBSTITUTE,
-			 &subErr);
+  if(gTR_utf8 == NULL)
+  {
+      gTR_utf8 = ucnv_open("utf-8", &subErr);
+      ucnv_setFromUCallBack (gTR_utf8,
+                             (UConverterFromUCallback)  TRANSLITERATED_lastResortCallback,
+                             &subErr);
+  }
   
-  ucnv_fromUnicode (&myConverter,
+  ucnv_fromUnicode (gTR_utf8,
 		    target,
 		    targetLimit,
 		    &sourceAlias,
@@ -65,7 +68,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
       myTarget = _this->charErrorBuffer + _this->charErrorBufferLength;
 
       /* OK hit it */
-      ucnv_fromUnicode(&myConverter,
+      ucnv_fromUnicode(gTR_utf8,
 		       &myTarget,
 		       _this->charErrorBuffer + UCNV_ERROR_BUFFER_LENGTH,
 		       &sourceAlias,
@@ -104,6 +107,8 @@ UTransliterator loadTranslitFromCache(int n, const char *id)
     {
         gTR[n] = utrns_open("Null");
     }
+    
+/*    fprintf(stderr, "TR[%d:%s]=%p\n", n, id, gTR[n]); */
 
     return gTR[n];
 }
@@ -137,6 +142,9 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
 
     switch(script)
     {
+    case U_LATIN_EXTENDED_A:
+        return loadTranslitFromCache((int)script, "Maltese-Latin");
+
     case U_DEVANAGARI:
         return loadTranslitFromCache((int)script, "Devanagari-Latin");
         
@@ -169,7 +177,7 @@ UTransliterator *getTransliteratorForScript(UCharScript script)
 
 
     default:
-        return loadTranslitFromCache((int)0, "Unicode-Hex");
+        return loadTranslitFromCache((int)0, "Null");
         
     }
 }
@@ -245,6 +253,16 @@ U_CAPI void
         break;
     }
 
+    /* handle single char case */
+    if(n > 0)
+    {
+        len = utrns_transliterate(myTrans, totrans, n, tmpbuf, 300, &status2);
+        convertIntoTargetOrErrChars(_this, target, targetLimit, tmpbuf, tmpbuf+len, err);
+        (*source) += srclen; /* if any of the actual source was found */
+        
+        n = 0; /* reset */
+    }
+    
     convertIntoTargetOrErrChars(_this, target, targetLimit, endMark, endMark+u_strlen(endMark), err); 
 
 }

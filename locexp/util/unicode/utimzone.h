@@ -33,4 +33,6 @@ U_CAPI const UChar *utz_hackyGetDisplayName(const UTimeZone *zone);
 
 //U_CAPI bool_t utz_hasSameRules(const UTimeZone *zone, const UTimeZone *other);
 
+U_CAPI void utz_setDefault(const UTimeZone *zone);
+
 #endif

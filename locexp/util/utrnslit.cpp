@@ -37,8 +37,11 @@ U_CAPI void U_EXPORT2 T_fillOutputParams(const UnicodeString* temp,
 UTransliterator * 
 utrns_open(const char *id)
 {
+/*
+
     int c = Transliterator::countAvailableIDs();
     int i;
+
     
       for(i=0;i<c;i++)
       {
@@ -50,6 +53,7 @@ utrns_open(const char *id)
           fflush(stderr);
       }
     
+*/
     return (UTransliterator*) Transliterator::createInstance(UnicodeString(id, ""));
 }
 

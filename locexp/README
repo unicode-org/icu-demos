@@ -102,18 +102,13 @@ will assist you in using this data.
 
 HINDI - ASSYRIAN - TRANSLITERATION
 ----------------------------------
- To make the transliteration and/or fonted [syriac/hindi] support work,
-you need to modify and rebuild your converters.txt file.  Find the
-line that has 'LATIN_1' and a whole bunch of iso-8859's and other
-stuff.  At the end of the 'line' (which spans 3 lines on my screen)
-add these two words:
+To make 'fonted' and 'transliterated' work, go to '../xtradata/' and read
+the README there.
 
-   fonted transliterated
+'fonted' must be selected as a converter.
 
-This adds two new aliases to Latin-1.  You can select them normally in
-the locale explorer's converter-chooser.  But, they are special cased
-so as to cause transliteration or fontification to happen.
-
+Transliterated forces stuff through US-ASCII [7 bit] but eventually
+outputs utf-8.  [it will show up as 'utf-8' on the encoding list.]
 
 Here are user side isntructions for installing Hindi support:
 -----------------------------
@@ -146,8 +141,47 @@ xdvng.ttf into that control panel, or go to the file menu (in Fonts)
 
 TODO LIST for LOCEXP:
 
-   - see util/README for utility TODO's
+ ~ see util/README for utility TODO's [mostly done]
 
-   - coll rules under xliteration don't look right
+ X coll rules under xliteration don't look right
       they come out as: \u03BC , \u039C
 
+to summarize: [todo for LX besides whatyou mentioned below]
+
+ X transliterate via latin-1 but transliterate TO utf-8 - simply change
+the output converter.
+
+ X Fix bug where single characters aren't transliterated
+
+ X Try to make javascript pop windows to the top
+
+ ~ Transliteration OFF may go to default CP or may remember the old one.
+     (for now)
+
+ X get xlit docs posted
+
+ X rename 'g7' to 'multiple language sort demo' - add Swedish and 'bzt'
+string, move to 'demo' section on main page. 
+
+
+X - done
+ mark.davis@us.ibm.com typed the following on Feb 22, 2000 :
+ > The text at the top of the help file should be more general. How about:
+ > 
+ > This file contains the help text for Locale Explorer, organized by topic.
+ > If your question is not covered here, you can post your question on IBM's
+ > unicode news group (link to
+ > news://news.software.ibm.com/ibm.software.unicode). Please post any
+ > comments or suggestions for improvement of this help file on the ICU bug
+ > list (link to
+ > http://oss.software.ibm.com/developerworks/opensource/icu/bugs).
+
+-----------
+  -- lots of updates
+    - initSortable needs to init only a part of the name. 
+
+    - localize '>', ',' (list sep)
+
+    - improve the 'default' pattern in the DTexplorer
+
+    - better usort sample strings

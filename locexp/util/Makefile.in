@@ -30,8 +30,8 @@ OBJECTS += fontedcb.o devanagari.o
 HEADERS += fontedcb.h
 
 ## tz support
-#OBJECTS += utimzone.o
-#HEADERS += utimzone.h
+OBJECTS += utimzone.o
+HEADERS += utimzone.h
 
 DEPS = $(OBJECTS:.o=.d)
 

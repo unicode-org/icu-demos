@@ -12,7 +12,7 @@ mt {
 
     LocaleCodes  {  "Kodiåi ta' Lokali"  }
 
-   LocaleCodes_Country  {  "Pajji¿"  }
+   LocaleCodes_Country  {  "Pajji¿"  } // nbsp - workaround for xliterate problem
    LocaleCodes_Language  {  "Lingwi"  }
    LocaleCodes_Variant  {  "Varjazzonji"  }
 
@@ -39,7 +39,7 @@ mt {
    usortPrimary  {  "Primarju"  }
    usortSecondary  {  "Sekondarju"  }
    usortSort  {  "Sort"  }
-   usortTertiary  {  "Ter\u017Biarju"  } // ?
+   usortTertiary  {  "Terzziarju"  } // ?
    usortSource { "Minn" }
 
 // Translations FROM en.txt follow: [esp. from Mirka]

@@ -1,5 +1,5 @@
 // Generated copy of default.txt. Also look at 'en.txt'.
-// locexp default file. Generated from locexp.c on Mon Feb 21 19:08:42 PST 2000 on daphne
+// locexp default file. Generated from locexp.c on Thu Feb 24 16:14:17 PST 2000 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the DEFAULT.* source files and rebuild.
 
@@ -27,6 +27,7 @@ default {
    EXPLORE_CollationElements  {  "Collation (sorting) Example"  }
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
    EXPLORE_CollationElements_Sort  {  "Sort"  }
+   EXPLORE_CollationElements_g7sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
    EXPLORE_CollationElements_sampleString  {  "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"  }
    EXPLORE_CollationElements_strength  {  "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."  }
    EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
@@ -63,7 +64,7 @@ default {
    bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
    bigStringHide  {  "Hide"  }
    changeEncoding  {  "Change Your Encoding"  }
-   changeLocale  {  "Change Your Locale"  }
+   changeLocale  {  "Change the Locale used for Labels"  }
    char  {  "Char"  }
    charMeaning  {  "Meaning"  }
    charNum  {  "#"  }
@@ -74,6 +75,8 @@ default {
    converter_searching  {  "Searching for converters which match .."  }
    convsAvail  {  "%d converters available, %d aliases total."  }
    convsMatch  {  "%d converters match (out of %d), %d aliases total."  }
+   cumulative_notshown  {  "cumulative data from parent not shown"  }
+   demos  {  "Demos"  }
    display_ALT  {  "Display Problem?"  }
    display_GIF  {  "displayproblems.gif"  }
    display_OPTIONS  {  "ALIGN=RIGHT"  }
@@ -82,14 +85,10 @@ default {
    encodingOK1  {  "' is acceptable, or choose one from below."  }
    encoding_Missing  {  "The following characters could not be displayed properly by the current encoding:"  }
    encoding_PickABetter  {  "Click here to search for a better encoding"  }
-   encoding_Transliterate  {  "Transliterate it for me!"  }
-   encoding_translitmsg_0  {  "Transliteration courtesy of the ICU. Text in "  }
-   encoding_translitmsg_1  {  "green"  }
-   encoding_translitmsg_2  {  " has been transliterated."  }
+   encoding_translit_setting  {  "Transliteration:"  }
    exploreTitle  {  "Explore"  }
    explore_Button  {  "Explore"  }
-   explore_G7  {  "Try G7 Sorting"  }
-   explore_close  {  "Done"  }
+   explore_G7  {  "Try Multi-lingual Sorting"  }
    formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
    formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date"  }
    formatExample_DateTimePatterns_errorOpen  {  "Couldn't open the formatter"  }
@@ -139,16 +138,18 @@ default {
    locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
    locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported."  }
    myConverter  {  "Encoding:"  }
-   myLocale  {  "Locale:"  }
+   myLocale  {  "Label Locale:"  }
    none  {  "None"  }
+   off  {  "off"  }
+   on  {  "on"  }
    poweredby  {  "Powered by"  }
-   poweredby_filebug  {  "Found an error? Click here!"  }
-   poweredby_url  {  "http:oss.software.ibm.com/developerworks/opensource/icu/"  }
-   statusTableHeader  {  "Your settings:<BR>(click to change)"  }
+   poweredby_filebug  {  "File a bug"  }
+   statusTableHeader  {  "Your settings: (click to change)"  }
    stringClickToShow  {  "(Click here to show.)"  }
    sublocales  {  "Sublocales:"  }
    taggedarrayTag  {  "Tag"  }
    title  {  "ICU LocaleExplorer"  }
+   transliterate_help  {  "Transliteration Help"  }
    ubrowse  {  "Browse Unicode in this codepage"  }
    usortHide  {  "Hide this example"  }
    usortOriginal  {  "Original"  }
@@ -168,6 +169,8 @@ default {
    zoneStrings5  {  "Example City"  }
    zoneStrings6  {  "Raw Offset"  }
    zoneStrings_open_failed  {  "<I>Unknown</I>"  }
+   zone_set  {  "Set Timezone to:"  }
+   zone_warn  {  "Note: only works if you have cookies turned on."  }
 
 // Special Cases
 

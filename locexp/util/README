@@ -67,7 +67,9 @@ TODO:
  - translitcb
 
     - REALLY want to have a composite converter, etc..
-    - But in the meantime:   Transliterate runs of the same BLOCK all as one. Better yet,
+    X But in the meantime:   Transliterate runs of the same BLOCK all as one. Better yet,
       transliterate text that wants the same transliterator, all in
       one run.  That way things like {PHI}{epsilon} can turn into Phe and
-      not PHe. 
+      not PHe.  [NB i think this is done..]
+
+   - at least make transliteration locale sensitive 
