@@ -1,7 +1,0 @@
-1999-oct-11  srl@monkey.sbay.org
-
- This sample library (and client) demonstrate locale sensitive
-sorting using the ICU.
-
- To build it, simply run ./configure in the parent directory and
-then type Make here..

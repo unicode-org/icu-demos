@@ -1,1 +1,0 @@
-ERROR this file is obsolete..use sr.txt [which is now binary, in utf16-le form]
