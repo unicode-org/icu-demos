@@ -2213,7 +2213,7 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
 /* locale pattern chars */
 void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale)
 {
-    const UChar *charDescs[24];
+    const UChar *charDescs[25];
     
     charDescs[0] = FSWF("localPatternChars0", "Era");
     charDescs[1] = FSWF("localPatternChars1", "Year");
