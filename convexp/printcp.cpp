@@ -211,7 +211,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     }
 
     // Print the Unicode codepoint values
-    printf("<span style=\"font-size: 80%%\">");
+    printf("<span class=\"small\">");
     for (idx = 0; idx < targetSize; ) {
         if (idx != 0) {
             puts("<br />");
