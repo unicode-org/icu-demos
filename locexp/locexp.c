@@ -3527,7 +3527,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
 #endif
     }
   
-  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><XIMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
   /* ============ 'localized' side ================================= */
 
@@ -3778,7 +3778,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       
     }
   
-  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><XIMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
   /* ============ 'localized' side ================================= */
 
@@ -3960,7 +3960,7 @@ void showFlagImage(const char *locale, const char *extra)
 void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, UErrorCode showStatus)
 {
       u_fprintf(OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
-      u_fprintf(OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><XIMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+      u_fprintf(OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
       u_fprintf(OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s><B>", key);
 
       if(keyName == NULL)
