@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c on Mon Oct  9 22:32:46 PDT 2000 on daphne
+// root file. Generated from ../locexp.c on Wed Oct 11 17:41:09 PDT 2000 on daphne
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 

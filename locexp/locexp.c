@@ -4679,7 +4679,7 @@ void writeFileObject( LXContext *lx, const char *path )
     printf("\r\n");
     fflush(stdout);
     fwrite(bin, 1, len, stdout);
-    printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+    printf("\r\n");
     fflush(stdout);
   }
 
