@@ -11,6 +11,12 @@
 
 class HTMLFilter : public UnicodeFilter
 {
+  /* post 2.2: - stuff we have to add */
+private:
+  UnicodeString& toPattern(UnicodeString&, UBool)const { return *(new UnicodeString("Look, Mom, I'm on TV!")); }
+  signed char matchesIndexValue(uint8_t m)const { return m<<3;}
+  void addMatchSetTo(UnicodeSet&) const {}
+
 public:
 	HTMLFilter() :fState(0) {}
 	virtual ~HTMLFilter() {}
