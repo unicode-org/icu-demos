@@ -1,5 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// root file. Generated from ../locexp.c on Sat Feb  9 01:51:08 CET 2002 on filfla
+// root file. Generated from ../locexp.c ../calexp.c ../srchexp.c on Tue Mar 12 16:29:49 PST 2002 on akka
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -35,6 +35,10 @@ root {
    EXPLORE_NumberPatterns  {  "Explore &gt; Numbers"  }
    EXPLORE_NumberPatterns_defaultPattern  {  "#,###.###############"  }
    EXPLORE_change  {  "Change"  }
+   EXPLORE_search_found  {  "%d items were found."  }
+   EXPLORE_search_notfound  {  "Sorry, nothing was found."  }
+   EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
+   EXPLORE_search_searching  {  "Searching for <B>%U</B>..."  }
    LocaleCodes  {  "Locale Codes"  }
    LocaleCodes_2  {  "2"  }
    LocaleCodes_3  {  "3"  }
@@ -63,6 +67,25 @@ root {
    NumberPatterns2  {  "Percent Pattern"  }
    NumberPatterns3  {  "Scientific Pattern"  }
    Spellout  {  "Spellout"  }
+   UCAL_AM_PM  {  "AM/PM field"  }
+   UCAL_DATE  {  "Date field"  }
+   UCAL_DAY_OF_WEEK  {  "Day of week field"  }
+   UCAL_DAY_OF_WEEK_IN_MONTH  {  "Day of week in month field"  }
+   UCAL_DAY_OF_YEAR  {  "Day of year field"  }
+   UCAL_DOW_LOCAL  {  "Day of week localized (1..7)"  }
+   UCAL_DST_OFFSET  {  "DST offset field"  }
+   UCAL_ERA  {  "Era field"  }
+   UCAL_HOUR  {  "Hour field"  }
+   UCAL_HOUR_OF_DAY  {  "Hour of day field"  }
+   UCAL_MILLISECOND  {  "Millisecond field"  }
+   UCAL_MINUTE  {  "Minute field"  }
+   UCAL_MONTH  {  "Month field"  }
+   UCAL_SECOND  {  "Second field"  }
+   UCAL_WEEK_OF_MONTH  {  "Week of month field"  }
+   UCAL_WEEK_OF_YEAR  {  "Week of year field"  }
+   UCAL_YEAR  {  "Year field"  }
+   UCAL_YEAR_WOY  {  "Year / week of year"  }
+   UCAL_ZONE_OFFSET  {  "Zone offset field"  }
    UCOL_ALTERNATE_HANDLING  {  "Alternate handling"  }
    UCOL_CASE_FIRST  {  "Case first"  }
    UCOL_CASE_LEVEL  {  "Case level"  }
@@ -83,9 +106,11 @@ root {
    UCOL_UPPER_FIRST  {  "Upper first"  }
    UNKNOWN_ERROR  {  "unknown error"  }
    U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
-   aliasFor  {  "Really an alias for "  }
    bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
    bigStringHide  {  "Hide"  }
+   calexp_calTab  {  "Calendar"  }
+   calexp_errGet  {  "Can't get initial date: "  }
+   calexp_fieldsTab  {  "Fields"  }
    changeEncoding  {  "Change Your Encoding"  }
    changeLocale  {  "Change the Locale used for Labels"  }
    char  {  "Char"  }
@@ -112,6 +137,7 @@ root {
    encoding_translit_setting  {  "Transliteration:"  }
    exploreTitle  {  "Explore"  }
    explore_G7  {  "Try Multi-lingual Sorting"  }
+   explore_search  {  "Search"  }
    explore_xlitomatic  {  "Translit-o-matic"  }
    formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
    formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date."  }
@@ -163,6 +189,7 @@ root {
    none  {  "None"  }
    off  {  "off"  }
    on  {  "on"  }
+   otherLanguageSameCountryLocales  {  "<B>%U</B> under other languages"  }
    poweredby  {  "Powered by"  }
    poweredby_filebug  {  "File a bug"  }
    showAll  {  "Show All"  }
@@ -176,11 +203,9 @@ root {
    translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
    transliterate_help  {  "Transliteration Help"  }
    ubrowse  {  "Browse Unicode in this codepage"  }
-   usortHide  {  "Hide this example"  }
    usortOriginal  {  "Original"  }
    usortPrimary  {  "Primary only"  }
    usortSecondary  {  "Primary & Secondary"  }
-   usortShow  {  "Show this example"  }
    usortSorted  {  "Sorted"  }
    usortSource  {  "Source"  }
    usortTertiary  {  "Default"  }

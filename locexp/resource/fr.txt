@@ -125,12 +125,11 @@ fr
    formatExample_errorFormatDefault  {  "Le nombre n'a pas pu être formatté en utilisant le motif par défaut"  }
    formatExample_errorOpen  {  "Le formatteur n'a pas pu être ouvert"  }
    formatExample_errorOpenDefault  {  "Le format de nombres par défaut n'a pas pu être ouvert"  }
-   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
-   formatExample_errorParse3  {  "Could not parse this, replaced with a
-default value."  }
-   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
-   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
-   help  {  "Help"  }
+//   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
+//   formatExample_errorParse3  {  "Could not parse this, replaced with a default value."  }
+//   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
+//   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
+//   help  {  "Help"  }
    helpPrefix  {  "default_"  }
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "BORDER=0"  }
@@ -145,23 +144,23 @@ default value."  }
 //   introSpiel  {  "This demo illustrates the ICU ...... " }
 
    localPatternChars0  {  "Ères"  }
-   localPatternChars1  {  "Year"  }
-   localPatternChars10  {  "Day Of Year"  }
-   localPatternChars11  {  "Day Of Week In Month"  }
-   localPatternChars12  {  "Week Of Year"  }
-   localPatternChars13  {  "Week Of Month"  }
-   localPatternChars14  {  "Am/Pm"  }
-   localPatternChars15  {  "Hour 1"  }
-   localPatternChars16  {  "Hour 0"  }
-   localPatternChars17  {  "Timezone"  }
-   localPatternChars2  {  "Month"  }
-   localPatternChars3  {  "Date"  }
-   localPatternChars4  {  "Hour Of Day 1"  }
-   localPatternChars5  {  "Hour Of Day 0"  }
-   localPatternChars6  {  "Minute"  }
-   localPatternChars7  {  "Second"  }
-   localPatternChars8  {  "Millisecond"  }
-   localPatternChars9  {  "Day Of Week"  }
+//   localPatternChars1  {  "Year"  }
+//   localPatternChars10  {  "Day Of Year"  }
+//   localPatternChars11  {  "Day Of Week In Month"  }
+//   localPatternChars12  {  "Week Of Year"  }
+//   localPatternChars13  {  "Week Of Month"  }
+//   localPatternChars14  {  "Am/Pm"  }
+//   localPatternChars15  {  "Hour 1"  }
+//   localPatternChars16  {  "Hour 0"  }
+//   localPatternChars17  {  "Timezone"  }
+//   localPatternChars2  {  "Month"  }
+//   localPatternChars3  {  "Date"  }
+//   localPatternChars4  {  "Hour Of Day 1"  }
+//   localPatternChars5  {  "Hour Of Day 0"  }
+//   localPatternChars6  {  "Minute"  }
+//   localPatternChars7  {  "Second"  }
+//   localPatternChars8  {  "Millisecond"  }
+//   localPatternChars9  {  "Day Of Week"  }
 //   localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
 //   localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
 //   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular country."  }
@@ -172,21 +171,21 @@ default value."  }
    localeList_Sublocale  {  "Région"  }
 //   locale_experimental  {  "Locales in <I>Italics</I> are experimental and not officially supported."  }
 //   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported. [i think]"  }
-   myConverter  {  "Encoding:"  }
-   myLocale  {  "Label Locale:"  }
+//   myConverter  {  "Encoding:"  }
+//   myLocale  {  "Label Locale:"  }
    none  {  "None"  }
    off  {  "off"  }
    on  {  "on"  }
-   poweredby  {  "Powered by"  }
+//   poweredby  {  "Powered by"  }
    poweredby_filebug  {  "Communiquer un problème"  }
-   statusTableHeader  {  "Your settings: (click to change)"  }
-   stringClickToShow  {  "(Click here to show.)"  }
-   sublocales  {  "Sublocales:"  }
+//   statusTableHeader  {  "Your settings: "  }
+//   stringClickToShow  {  "(Click here to show.)"  }
+//   sublocales  {  "Sublocales:"  }
    taggedarrayTag  {  "Étiquette"  }
    title  {  "Explorateur de locales d'ICU"  }
 //   transliterate_help  {  "Aide de la translitération"  }  [YA]
    transliterate_help  {  "Aide à la translitération"  }
-   ubrowse  {  "Browse Unicode in this codepage"  }
+//   ubrowse  {  "Browse Unicode in this codepage"  }
    usortHide  {  "Cacher cet exemple"  }
    usortOriginal  {  "Originale"  }
    usortPrimary  {  "Primaire"  }
@@ -206,7 +205,6 @@ default value."  }
    zoneStrings5  {  "Exemple de ville"  }
    zoneStrings6  {  "Écart brut"  }
    zoneStrings_open_failed  {  "<I>Unknown</I>"  }
-   zone_set  {  "Set timezone to:"  }
    zone_warn  {  "Note : ne marche que si votre navigateur accepte les cookies."  }
 }
 

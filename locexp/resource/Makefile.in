@@ -41,6 +41,9 @@ SRC    = sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
 ALLSRC = $(SRC) $(GENSRC)
 RES = $(ALLSRC:.txt=.res)
 
+# C Source files to extract FSWF strings from.
+FSWF_SRC= ../locexp.c ../calexp.c ../srchexp.c
+
 %.res : %.txt
 	@echo Rebuilding $@
 	$(INVOKE) $(sbindir)/genrb -d. $<
@@ -72,8 +75,8 @@ Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 
 
 
-root.txt: ../locexp.c root.txt.inc ../tools/extractStrings.sh
-	env $(INVOKE) PATH=../tools:$(bindir):$(sbindir):$(PATH) extractStrings.sh ../locexp.c > ../resource/root.txt || ( rm -f root.txt ; false )
+root.txt: $(FSWF_SRC) root.txt.inc ../tools/extractStrings.sh
+	env $(INVOKE) PATH=../tools:$(bindir):$(sbindir):$(PATH) extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
 
 index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
 	sh ../tools/genIndex.sh $(SRC) root.txt > index.txt
