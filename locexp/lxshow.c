@@ -1716,7 +1716,22 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale, con
         u_fprintf(lx->OUT, "</TR>\r\n");
       }
       if(!sawDefault && cflu) {
-        u_fprintf(lx->OUT, "<tr><td><b>%U</b></td></tr>\r\n", cflu);
+        UBool isChoiceFormat = FALSE;
+        uint32_t len = 0;
+        UErrorCode subSta = U_ZERO_ERROR;
+        u_fprintf(lx->OUT, "<tr><td><b>%U</b></td><td><b>%U</b></td><td><b>%U</b></td><td>%d</td>\r\n", 
+                  cflu,
+                  ucurr_getName(cflu,locale,UCURR_SYMBOL_NAME,&isChoiceFormat,&len,&subSta),
+                  ucurr_getName(cflu,locale,UCURR_LONG_NAME,&isChoiceFormat,&len,&subSta),
+                  ucurr_getDefaultFractionDigits(cflu)
+                  );
+        if(U_FAILURE(subSta)) {
+          u_fprintf(lx->OUT, "<td>");
+          explainStatus(lx, subSta, key);
+          u_fprintf(lx->OUT, "</td>");
+        }
+        u_fprintf(lx->OUT, "<td><i>%U</i></td>\r\n", FSWF("currNotInLoc", "Note: This Currency was not found in this locale"));
+        u_fprintf(lx->OUT, "</tr>\r\n");
       }
       u_fprintf(lx->OUT, "</TABLE>\r\n<BR>");
       ures_close(taggedItem); /* todo: mem. management? */
