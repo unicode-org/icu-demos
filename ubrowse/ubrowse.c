@@ -360,7 +360,7 @@ UBool myEnumCharNamesFn(void *context,
 
     if((foundCount % 15) ==14) /* ------------ Search by name: too many hits --- */
     {
-      u_fprintf(gOut, "</table> <p><UL><H4><a href=\"?s=%s&cs=%04X\">Continue search for '%s' from U+%04X...</a></H4></UL><p>",
+        u_fprintf(gOut, "</table> <blockquote><H4><a href=\"?s=%s&amp;cs=%04X\">Continue search for '%s' from U+%04X...</a></H4></blockquote><p>",
              gSearchHTML, code+1, gSearchName, code+1);
       return FALSE;
     }
@@ -454,7 +454,6 @@ void printRowHeader(UBool showBlock)
     }
   u_fprintf(gOut, "<td><b>Script</b></td>"); /* 3 3/4 Script */
   u_fprintf(gOut, "<td><b>#</b></td>"); /* 4 digit */
-  u_fprintf(gOut, "<td><b>Wid</b></td>"); /* 5 width */
   u_fprintf(gOut, "<td><b>BiDi</b></td>"); /* 6 Direction (BiDi?) */
   u_fprintf(gOut, "</tr>\n");
 }
@@ -562,42 +561,10 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
   }
   u_fprintf(gOut, "</td>");
 
-          /** 5: cell width **/
-  u_fprintf(gOut, "<td>");
-  switch(u_charCellWidth(theChar)) {
-  case U_ZERO_WIDTH: u_fprintf(gOut, "0"); break; 
-  case U_HALF_WIDTH: u_fprintf(gOut, "%K", 0x00BD); break;  /* 1/2 */
-  case U_FULL_WIDTH: u_fprintf(gOut, "%K", 0xFF11); break;  /* 1 */
-  case U_NEUTRAL_WIDTH: u_fprintf(gOut, "-"); break; 
-  }
-
-  u_fprintf(gOut, "</td>");
-
           /** 6. direction **/
-  u_fprintf(gOut, "<td>");
-  switch(u_charDirection(theChar))
-    {
-    case U_LEFT_TO_RIGHT: u_fprintf(gOut, "LTR"); break; 
-    case U_RIGHT_TO_LEFT: u_fprintf(gOut, "RTL"); break; 
-    case U_EUROPEAN_NUMBER: u_fprintf(gOut, "European Number"); break; 
-    case U_EUROPEAN_NUMBER_SEPARATOR: u_fprintf(gOut, "Eur. Num. Sep"); break; 
-    case U_EUROPEAN_NUMBER_TERMINATOR: u_fprintf(gOut, "Eur. num. Term"); break; 
-    case U_ARABIC_NUMBER: u_fprintf(gOut, "Arabic Num."); break; 
-    case U_COMMON_NUMBER_SEPARATOR: u_fprintf(gOut, "Cmn Number Sep"); break; 
-    case U_BLOCK_SEPARATOR: u_fprintf(gOut, "Block Sep"); break; 
-    case U_SEGMENT_SEPARATOR: u_fprintf(gOut, "Segment Sep"); break; 
-    case U_WHITE_SPACE_NEUTRAL: u_fprintf(gOut, "White Space Neutral"); break; 
-    case U_OTHER_NEUTRAL: u_fprintf(gOut, "Other Neutral"); break; 
-    case U_LEFT_TO_RIGHT_EMBEDDING: u_fprintf(gOut, "LRE"); break; 
-    case U_LEFT_TO_RIGHT_OVERRIDE: u_fprintf(gOut, "LRO"); break; 
-    case U_RIGHT_TO_LEFT_ARABIC: u_fprintf(gOut, "RTL-Arabic"); break; 
-    case U_RIGHT_TO_LEFT_EMBEDDING: u_fprintf(gOut, "RLE"); break; 
-    case U_RIGHT_TO_LEFT_OVERRIDE: u_fprintf(gOut, "RLO"); break; 
-    case U_POP_DIRECTIONAL_FORMAT: u_fprintf(gOut, "PDF"); break; 
-    case U_DIR_NON_SPACING_MARK: u_fprintf(gOut, "Combining Class %d", u_getCombiningClass(theChar)); break; 
-    case U_BOUNDARY_NEUTRAL: u_fprintf(gOut, "BN"); break; 
-    default: u_fprintf(gOut, "Unknown Dir\n");
-    }
+u_fprintf(gOut, "<td>%s", u_getPropertyValueName(UCHAR_BIDI_CLASS,
+                                                      u_charDirection(theChar),
+                                                      U_SHORT_PROPERTY_NAME));
   /*  put the mirrored thing here. Not so common, keeps it out of the way. */
   if(u_isMirrored(theChar))
     {
@@ -811,6 +778,8 @@ if(!tmp) /* if there was no trailing '/' ... */
         char *ss = NULL;
         char *cs = NULL;
         char *p;
+
+        gSearchHTML[199]=0;
         
         block = 0;
         /* look for 'continue' tag */
@@ -842,6 +811,7 @@ if(!tmp) /* if there was no trailing '/' ... */
         strncpy(gSearchName,gSearchHTML,200);
         gSearchName[200] = 0;
 
+        u_fprintf(gOut, "<title>ICU UnicodeBrowser: search...</title>\n");
 
         /* de HTML ize. Note we dont' care about %s'. */
         for(p=gSearchName;*p;p++)
@@ -902,9 +872,6 @@ if(!tmp) /* if there was no trailing '/' ... */
   u_fprintf(gOut, "");
   u_fprintf(gOut, "</td>");
 
-  u_fprintf(gOut, "<td>\n"); 
-
-  u_fprintf(gOut, "</td>");  
 
 
   if(mode == ETOP) /* top level list of blocks ******************************** ETOP ********** */
@@ -1094,23 +1061,33 @@ if(!tmp) /* if there was no trailing '/' ... */
       u_fprintf(gOut, "</table>\n<br><br>\n");
 
       u_fprintf(gOut, "<table summary=\"Detailed Character Properties\" border=2>\n");
-                u_fprintf(gOut, "<tr><td><b>#</b></td><td><b>Type</b></td><td><b>Name</b></td><td><b>Number</b></td><td><b>Value</b></td></tr>\n");
+                u_fprintf(gOut, "<tr><td><b>PN</b></td><td><b>Type</b></td><td><b>Name</b></td><td><b>PVN</b></td><td><b>Value</b></td></tr>\n");
       
       {
 	UVersionInfo va;
 	char age[U_MAX_VERSION_STRING_LENGTH];
 	u_charAge(block, va);
 	u_versionToString(va, age);
-	u_fprintf(gOut, "<tr><td>-</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
+	u_fprintf(gOut, "<tr><td>-</td><td>%s</td><td>%s</td><td></td><td>%s</td></tr>\n",
 		  "Vers", "Derived Age", age);
       }
 
       for(i=UCHAR_BINARY_START;i<UCHAR_BINARY_LIMIT;i++) {
-	UBool has;
+#if 0
+          UBool has;
 	has = u_hasBinaryProperty(block, i);
 
 	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s%s%s</td><td>%s</td><td>%s</td></tr>\n",
            i, "bin", has?"<b>":"", getUPropertyName(i), has?"</b>":"",  has?"T":"f", u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+#endif
+        int32_t has;
+        has = u_getIntPropertyValue(block, i);
+
+        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+                  i, "bin", getUPropertyName(i), has,
+                  u_getIntPropertyMinValue(i),
+                  u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+        
       }
 
       for(i=UCHAR_INT_START;i<UCHAR_INT_LIMIT;i++) {
@@ -1120,12 +1097,13 @@ if(!tmp) /* if there was no trailing '/' ... */
 	u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
 		  i, "int", getUPropertyName(i), has,
 		  u_getIntPropertyMinValue(i),
-           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
+           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,(i!=UCHAR_GENERAL_CATEGORY)?u_getIntPropertyValue(block,i):U_MASK(u_getIntPropertyValue(block,i)),U_LONG_PROPERTY_NAME));
 
       }
 
       u_fprintf(gOut, "</table>\n");
 
+                u_fprintf(gOut, "<br> The PN column and the PVN column refer to the internal property number and property value number. Except in the case of the Canonical_Combining_Class, these numbers have no relevance outside of ICU. ");
 	
       u_fprintf(gOut, "<br><hr>\n");
       showSearchMenu( block + 1);
@@ -1135,7 +1113,7 @@ if(!tmp) /* if there was no trailing '/' ... */
     {
 #pragma mark ERADLST
       u_fprintf(gOut, "</table></form>");
-      u_fprintf(gOut, "<TABLE BORDER=1>");
+      u_fprintf(gOut, "<TABLE  summary=\"radical list\" BORDER=1>");
       u_fprintf(gOut, "<tr>");
       for(i=0;gKangXiRadicalTable[i];i+=2)
 	{
@@ -1185,7 +1163,7 @@ if(!tmp) /* if there was no trailing '/' ... */
     {
       UErrorCode status = U_ZERO_ERROR;
 
-      u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
+      u_fprintf(gOut, "</tr></table></form>"); /* closer */
 
       /* "Be careful what you search for, you just might find it"
 	 (and 0x10FFFE of it's close friends!)
@@ -1200,7 +1178,7 @@ if(!tmp) /* if there was no trailing '/' ... */
         u_fprintf(gOut, "<H1>Searching for '%s' from U+%04X...</H1>\n", gSearchName, block);
       }
       
-      u_fprintf(gOut, "<table border=1>");
+      u_fprintf(gOut, "<table summary=\"Search Results\" border=1>");
       
       myEnumCharNamesFn_setup(); /* break apart words */
 
@@ -1214,8 +1192,10 @@ if(!tmp) /* if there was no trailing '/' ... */
         {
           u_fprintf(gOut, "<tr><td><i>Not found.</i></td></tr>\n");
         }
-
-      u_fprintf(gOut, "</table><!-- %d tested --><hr>\n",enumHits);
+       if((foundCount % 15) !=14) {
+           u_fprintf(gOut, "</table>");
+       }
+        u_fprintf(gOut, "<!-- %d tested --><hr>\n",enumHits);
       showSearchMenu( 0x0000 ); 
     }
   else if(mode == EEXACTNAME) /************** EXACT NAME ********************************/
