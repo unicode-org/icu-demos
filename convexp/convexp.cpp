@@ -18,13 +18,17 @@
 *
 */
 
+#include "unicode/ucnv.h"
+#include "unicode/ustring.h"
+
+#include "uhash.h"
+#include "cstring.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "unicode/ucnv.h"
-#include "unicode/ustring.h"
-#include "uhash.h"
-#include "cstring.h"
+
+#include "printcp.h"
 
 #define PROGRAM_NAME "Converter Explorer"
 #define CGI_NAME "convexp"
@@ -42,10 +46,12 @@ static const char htmlHeader[]=
     "th.standard {white-space: nowrap; background-color: #EEEEEE; text-align: center;}\n"
     "td {white-space: nowrap;}\n"
     "td.value {font-family: monospace;}\n"
+    "td.reserved {background-color: #EEEEEE;}\n"
+    "div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: 1px, solid; font-size: 75%; font-family: monospace;}\n"
     "</style>\n"
     "</head>\n"
     "<body bgcolor=\"#FFFFFF\">\n"
-    "<table width=\"100%\"border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
+    "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
     "<tr><td>"
     "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
     "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;";
@@ -109,6 +115,7 @@ static const char ALL[]="ALL";
 
 int32_t gMaxStandards;
 char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
+char *gStartBytes = NULL;
 UHashtable *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
 
@@ -189,6 +196,7 @@ static void parseAllStandards(const char *queryStr, UErrorCode *status) {
     const char* src = queryStr;
     int srcLen = strlen(queryStr);
     const char* srcLimit = queryStr + srcLen;
+    static char gStartBytesBuffer[16];
 
     while (src < srcLimit) {
         const char *nextVal = strchr(src, VALUE_SEPARATOR);
@@ -214,10 +222,19 @@ static void parseAllStandards(const char *queryStr, UErrorCode *status) {
             }
             gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH-1] = 0;   // NULL terminate for safety
         }
+        else if (strncmp(src, "bytes=", 6) == 0) {
+            gStartBytes = gStartBytesBuffer;
+            strncpy(gStartBytes, nextVal, nextOpt - nextVal);
+            gStartBytes[sizeof(gStartBytesBuffer)-1] = 0;   // NULL terminate for safety
+        }
         else {
             // Woah! I don't know what this option is.
         }
         src = nextOpt+1;
+    }
+    if (!gCurrConverter) {
+        // Can't use the starter bytes without a converter! Someone made a mistake.
+        gStartBytes = NULL;
     }
 }
 
@@ -272,6 +289,9 @@ static void printOptions(UErrorCode *status) {
         checked = "";
     }
     printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\"%s> <em>All Aliases</em><br>\n", checked);
+    if (gStartBytes) {
+        printf("<input type=\"checkbox\" name=\"bytes\" value=\"%s\" checked> <em>All Aliases</em><br>\n", gStartBytes);
+    }
     puts("<br>");
 }
 
@@ -511,6 +531,10 @@ static void printConverterInfo(UErrorCode *status) {
 
     puts(endTable);
 
+    if (gStartBytes) {
+        printCPTable(gCurrConverter, status);
+    }
+
     if (ucnv_getType(cnv) == UCNV_UTF16 || ucnv_getType(cnv) == UCNV_UTF32) {
         puts("<p><strong><em>Note:</em></strong> The substitution byte sequence is platform dependent.\n"
              "It depends on the endianess of the platform.\n"
@@ -675,6 +699,7 @@ main(int argc, const char *argv[]) {
 //    if((cgi="conv=ISO_2022,locale=ja,version=0&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
+//    if((cgi="conv=windows-1256&bytes=")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {

@@ -91,10 +91,18 @@ LINK32=link.exe
 
 SOURCE=.\convexp.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\printcp.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\printcp.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
