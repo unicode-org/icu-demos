@@ -29,15 +29,16 @@
 #endif
 
 #define COMMON_DATA_NAME "icudata"
+#define COMMON_DATA_NAME_LENGTH 7
 #define DATA_TYPE "dat"
 
 static UDataMemory *
-doOpenChoice(const char *type, const char *name,
+doOpenChoice(const char *path, const char *type, const char *name,
              UDataMemoryIsAcceptable *isAcceptable, void *context,
              UErrorCode *pErrorCode);
 
 U_CAPI UDataMemory * U_EXPORT2
-udata_open(const char *type, const char *name,
+udata_open(const char *path, const char *type, const char *name,
            UErrorCode *pErrorCode) {
     if(pErrorCode==NULL || U_FAILURE(*pErrorCode)) {
         return NULL;
@@ -45,12 +46,12 @@ udata_open(const char *type, const char *name,
         *pErrorCode=U_ILLEGAL_ARGUMENT_ERROR;
         return NULL;
     } else {
-        return doOpenChoice(type, name, NULL, NULL, pErrorCode);
+        return doOpenChoice(path, type, name, NULL, NULL, pErrorCode);
     }
 }
 
 U_CAPI UDataMemory * U_EXPORT2
-udata_openChoice(const char *type, const char *name,
+udata_openChoice(const char *path, const char *type, const char *name,
                  UDataMemoryIsAcceptable *isAcceptable, void *context,
                  UErrorCode *pErrorCode) {
     if(pErrorCode==NULL || U_FAILURE(*pErrorCode)) {
@@ -59,7 +60,7 @@ udata_openChoice(const char *type, const char *name,
         *pErrorCode=U_ILLEGAL_ARGUMENT_ERROR;
         return NULL;
     } else {
-        return doOpenChoice(type, name, isAcceptable, context, pErrorCode);
+        return doOpenChoice(path, type, name, isAcceptable, context, pErrorCode);
     }
 }
 
@@ -73,6 +74,11 @@ udata_openChoice(const char *type, const char *name,
  * See after the platform-specific code.
  */
 #define UDATA_INDIRECT
+
+static bool_t
+isCommonDataAcceptable(void *context,
+                       const char *type, const char *name,
+                       UDataInfo *pInfo);
 
 #if defined(WIN32) /* Win32 implementations --------------------------------- */
 
@@ -92,20 +98,19 @@ struct UDataMemory {
 
 typedef HINSTANCE Library;
 
+static MappedData *
+getChoice(Library lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
+#define LIB_SUFFIX ".dll"
+
 #define GET_ENTRY(lib, entryName) (MappedData *)GetProcAddress(lib, entry)
-
-static Library
-loadLibrary(const char *name) {
-    char buffer[40];
-
-    /* set up the dll filename */
-    icu_strcpy(buffer, name);
-    icu_strcat(buffer, ".dll");
-    return LoadLibrary(buffer);
-}
 
 #define NO_LIBRARY NULL
 #define IS_LIBRARY(lib) ((lib)!=NULL)
+#define LOAD_LIBRARY(path, basename, isCommon) LoadLibrary(path);
 #define UNLOAD_LIBRARY(lib) FreeLibrary(lib)
 
 #   else /* Win32 memory map implementation --------------------------------- */
@@ -117,76 +122,79 @@ struct UDataMemory {
 
 typedef UDataMemory *Library;
 
+static MappedData *
+getChoice(Library lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
+#define LIB_SUFFIX ".dat"
+
 #define GET_ENTRY(lib, entryName) getCommonMapData(lib, entry)
 
-static UDataMemory *
-doOpenMap(const char *type, const char *name,
-          UErrorCode *pErrorCode) {
+#define NO_LIBRARY NULL
+#define IS_LIBRARY(lib) ((lib)!=NULL)
+#define UNLOAD_LIBRARY(lib) udata_close((UDataMemory *)(lib))
+
+static Library
+LOAD_LIBRARY(const char *path, const char *basename, bool_t isCommon) {
     char buffer[40];
     UDataMemory *pData;
     MappedData *p;
-
-    /* allocate the data structure */
-    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
-    if(pData==NULL) {
-        *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
-        return NULL;
-    }
+    HANDLE map;
+    UErrorCode errorCode=U_ZERO_ERROR;
 
     /* set up the mapping name and the filename */
     icu_strcpy(buffer, "icu ");
-    icu_strcat(buffer, name);
-    if(type!=NULL && *type!=0) {
-        icu_strcat(buffer, ".");
-        icu_strcat(buffer, type);
-    }
+    icu_strcat(buffer, basename);
 
     /* open the mapping */
-    pData->map=OpenFileMapping(FILE_MAP_READ, FALSE, buffer);
-    if(pData->map==NULL) {
+    map=OpenFileMapping(FILE_MAP_READ, FALSE, buffer);
+    if(map==NULL) {
         /* the mapping has not been created */
-        char filename[512];
-        const char *path;
         HANDLE file;
 
         /* open the input file */
-        path=uloc_getDataDirectory();
-        if(path!=NULL) {
-            icu_strcpy(filename, path);
-            icu_strcat(filename, buffer+4);
-            path=filename;
-        } else {
-            path=buffer+4;
-        }
         file=CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL,
                         OPEN_EXISTING,
                         FILE_ATTRIBUTE_NORMAL|FILE_FLAG_RANDOM_ACCESS, NULL);
         if(file==INVALID_HANDLE_VALUE) {
-            icu_free(pData);
-            *pErrorCode=U_FILE_ACCESS_ERROR;
             return NULL;
         }
 
         /* create the mapping */
-        pData->map=CreateFileMapping(file, NULL, PAGE_READONLY, 0, 0, buffer);
+        map=CreateFileMapping(file, NULL, PAGE_READONLY, 0, 0, buffer);
         CloseHandle(file);
-        if(pData->map==NULL) {
-            icu_free(pData);
-            *pErrorCode=U_FILE_ACCESS_ERROR;
+        if(map==NULL) {
             return NULL;
         }
     }
 
     /* get a view of the mapping */
-    pData->p=p=(MappedData *)MapViewOfFile(pData->map, FILE_MAP_READ, 0, 0, 0);
+    p=(MappedData *)MapViewOfFile(map, FILE_MAP_READ, 0, 0, 0);
     if(p==NULL) {
-        CloseHandle(pData->map);
-        icu_free(pData);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
+        CloseHandle(map);
         return NULL;
     }
 
-    return pData;
+    /* allocate the data structure */
+    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
+    if(pData==NULL) {
+        UnmapViewOfFile(pData->p);
+        CloseHandle(map);
+        return NULL;
+    }
+
+    pData->map=map;
+    pData->p=p;
+
+    /* is it acceptable? */
+    if(NULL==getChoice(pData, NULL, DATA_TYPE, COMMON_DATA_NAME, isCommonDataAcceptable, NULL, &errorCode)) {
+        udata_close(pData);
+        return NULL;
+    }
+
+    return (Library)pData;
 }
 
 U_CAPI void U_EXPORT2
@@ -226,26 +234,26 @@ struct UDataMemory {
 #   error Please define UDATA_SO_SUFFIX to the shlib suffix (i.e. '.so' )
 #endif
 
+#define LIB_PREFIX "lib"
+#define LIB_PREFIX_LENGTH 3
+#define LIB_SUFFIX UDATA_SO_SUFFIX
+
 /* Do we need to check the platform here? */
 #include <dlfcn.h>
 
 typedef void *Library;
 
+static MappedData *
+getChoice(Library lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
 #define GET_ENTRY(lib, entryName) (MappedData *)dlsym(lib, entry)
-
-static Library
-loadLibrary(const char *name) {
-    char buffer[40];
-
-    /* set up the dll filename */
-    icu_strcpy(buffer, "lib");
-    icu_strcat(buffer, name);
-    icu_strcat(buffer, UDATA_SO_SUFFIX);
-    return dlopen("lib" COMMON_DATA_NAME UDATA_SO_SUFFIX, RTLD_LAZY|RTLD_GLOBAL);
-}
 
 #define NO_LIBRARY NULL
 #define IS_LIBRARY(lib) ((lib)!=NULL)
+#define LOAD_LIBRARY(path, basename, isCommon) LoadLibrary(path);
 #define UNLOAD_LIBRARY(lib) dlclose(lib)
 
 #   else /* POSIX memory map implementation --------------------------------- */
@@ -262,14 +270,23 @@ struct UDataMemory {
 
 typedef UDataMemory *Library;
 
+static MappedData *
+getChoice(Library lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
+#define LIB_SUFFIX ".dat"
+
 #define GET_ENTRY(lib, entryName) getCommonMapData(lib, entry)
 
-static UDataMemory *
-doOpenMap(const char *type, const char *name,
-          UErrorCode *pErrorCode) {
-    char buffer[512];
+#define NO_LIBRARY NULL
+#define IS_LIBRARY(lib) ((lib)!=NULL)
+#define UNLOAD_LIBRARY(lib) udata_close((UDataMemory *)(lib))
+
+static Library
+LOAD_LIBRARY(const char *path, const char *basename, bool_t isCommon) {
     UDataMemory *pData;
-    MappedData *p;
     UDataInfo *info;
     int fd;
     int length;
@@ -277,67 +294,53 @@ doOpenMap(const char *type, const char *name,
     struct stat mystat;
     void *data;
 
-    /* allocate the data structure */
-    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
-    if(pData==NULL) {
-        *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
-        return NULL;
-    }
-
-    /* set up the mapping name and the filename */
-    dataDir = uloc_getDataDirectory();
-    if(dataDir != NULL) {
-        icu_strcpy(buffer, dataDir);
-    } else {
-        buffer[0] = 0;
-    }
-    icu_strcat(buffer, name);
-    if(type!=NULL && *type!=0) {
-        icu_strcat(buffer, ".");
-        icu_strcat(buffer, type);
-    }
-
     /* determine the length of the file */
-    if(stat(buffer, &mystat))
+    if(stat(path, &mystat))
       {
-        icu_free(pData);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
       }
 
     length = mystat.st_size;
 
-    fd = open(buffer, O_RDONLY);
+    fd = open(path, O_RDONLY);
 
     if(fd == -1)
       {
-        icu_free(pData);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
       }
 
+    /* get a view of the mapping */
     data = mmap(0, length, PROT_READ, MAP_SHARED, fd, 0);
+
+    close(fd); /* no longer needed */
 
     if(data == MAP_FAILED)
       {
         perror("mmap");
-        close(fd);
-        icu_free(pData);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
       }
 
 #ifdef UDATA_DEBUG
     fprintf(stderr, "mmap of %s [%d bytes] succeeded, -> 0x%X\n",
-            buffer, length, data); fflush(stderr);
+            path, length, data);
+    fflush(stderr);
 #endif
     
-    close(fd); /* no longer needed */
+    /* allocate the data structure */
+    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
+    if(pData==NULL) {
+        munmap(data, length);
+        return NULL;
+    }
 
-    /* get a view of the mapping */
-    pData->p =(MappedData *)data;
-    p = pData->p;
     pData->length = length;
+    pData->p =(MappedData *)data;
+
+    /* is it acceptable? */
+    if(NULL=getChoice(pData, NULL, DATA_TYPE, COMMON_DATA_NAME, isCommonDataAcceptable, NULL, &errorCode)) {
+        udata_close(pData);
+        return NULL;
+    }
 
     return pData;
 }
@@ -358,38 +361,38 @@ udata_close(UDataMemory *pData) {
 #include <stdio.h>
 
 #undef UDATA_INDIRECT
+#undef UDATA_DLL
+#define UDATA_MAP
 
 struct UDataMemory {
     uint16_t headerSize;
     uint8_t magic1, magic2;
 };
 
-static UDataMemory *
-doOpenChoice(const char *type, const char *name,
-             UDataMemoryIsAcceptable *isAcceptable, void *context,
-             UErrorCode *pErrorCode) {
+typedef UDataMemory MappedData;
+typedef UDataMemory *Library;
+
+static MappedData *
+getChoice(Library lib, const char *entry,
+          const char *type, const char *name,
+          UDataMemoryIsAcceptable *isAcceptable, void *context,
+          UErrorCode *pErrorCode);
+
+#define GET_ENTRY(lib, entryName) (lib)
+
+#define NO_LIBRARY NULL
+#define IS_LIBRARY(lib) ((lib)!=NULL)
+#define UNLOAD_LIBRARY(lib) icu_free(lib)
+
+static Library
+LOAD_LIBRARY(const char *path, const char *basename, bool_t isCommon) {
     FILE *file;
     UDataMemory *pData;
-    UDataInfo *info;
     long fileLength;
-    char filename[512];
-    const char *dataDir;
     
     /* open the input file */
-    dataDir=uloc_getDataDirectory();
-    if(dataDir!=NULL) {
-        icu_strcpy(filename, dataDir);
-    } else {
-        filename[0]=0;
-    }
-    icu_strcat(filename, name);
-    if(type!=NULL && *type!=0) {
-        icu_strcat(filename, ".");
-        icu_strcat(filename, type);
-    }
-    file=fopen(filename, "rb");
+    file=fopen(path, "rb");
     if(file==NULL) {
-        *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
     }
 
@@ -399,7 +402,6 @@ doOpenChoice(const char *type, const char *name,
     fseek(file, 0, SEEK_SET);
     if(ferror(file) || fileLength<=20) {
         fclose(file);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
         return NULL;
     }
 
@@ -420,27 +422,6 @@ doOpenChoice(const char *type, const char *name,
     }
 
     fclose(file);
-
-    /* check magic1 & magic2 */
-    if(pData->magic1!=0xda || pData->magic2!=0x27) {
-        icu_free(pData);
-        *pErrorCode=U_INVALID_FORMAT_ERROR;
-        return NULL;
-    }
-
-    /* get the header size */
-    info=(UDataInfo *)(pData+1);
-    if(info->isBigEndian!=U_IS_BIG_ENDIAN) {
-        pData->headerSize=pData->headerSize<<8|pData->headerSize>>8;
-        info->size=info->size<<8|info->size>>8;
-    }
-
-    /* is this acceptable? */
-    if(isAcceptable!=NULL && !isAcceptable(context, type, name, info)) {
-        icu_free(pData);
-        *pErrorCode=U_INVALID_FORMAT_ERROR;
-        return NULL;
-    }
 
     return pData;
 }
@@ -478,92 +459,289 @@ udata_getInfo(UDataMemory *pData, UDataInfo *pInfo) {
 }
 #endif
 
-/* common function implementations if UDATA_INDIRECT was not #undef'ed ------ */
+/* common function implementations ------------------------------------------ */
 
-#ifdef UDATA_INDIRECT
-
-static MappedData *
-getChoice(Library lib, const char *entry,
-          const char *type, const char *name,
-          UDataMemoryIsAcceptable *isAcceptable, void *context,
-          UErrorCode *pErrorCode);
-
-#   ifdef UDATA_DLL
-
-/* common DLL implementations */
-
-static Library commonLib=NULL;
+static Library commonLib=NO_LIBRARY;
 
 static UDataMemory *
-doOpenChoice(const char *type, const char *name,
+doOpenChoice(const char *path, const char *type, const char *name,
              UDataMemoryIsAcceptable *isAcceptable, void *context,
              UErrorCode *pErrorCode) {
-    char buffer[40];
-    UDataMemory *pData;
+    char pathBuffer[512];
+    char entryNameBuffer[40];
+    char *basename, *suffix;
+    const char *entryName;
+    bool_t isICUData, hasPath, hasBasename;
+
+    Library lib;
     MappedData *p;
     UErrorCode errorCode=U_ZERO_ERROR;
 
-    if(!IS_LIBRARY(commonLib)) {
-        /* load the common library if necessary - outside the mutex block */
-        Library lib=loadLibrary(COMMON_DATA_NAME);
-        if(IS_LIBRARY(lib)) {
-            /* in the mutex block, set the common library for this process */
-            umtx_lock(NULL);
-            if(!IS_LIBRARY(commonLib)) {
-                commonLib=lib;
+    /* set up path and basename */
+    if(path==NULL) {
+        isICUData=TRUE;
+        basename=pathBuffer;
+
+        /* copy the path to the path buffer */
+        path=uloc_getDataDirectory();
+        if(path!=NULL && *path!=0) {
+            int length=icu_strlen(path);
+            icu_memcpy(pathBuffer, path, length);
+            basename+=length;
+            hasPath=TRUE;
+        } else {
+            hasPath=FALSE;
+        }
+
+        /* add (prefix and) basename */
+#       ifndef LIB_PREFIX
+            icu_strcpy(basename, COMMON_DATA_NAME);
+            suffix=basename+COMMON_DATA_NAME_LENGTH;
+#       else
+            icu_memcpy(basename, LIB_PREFIX, LIB_PREFIX_LENGTH);
+            icu_strcpy(basename+LIB_PREFIX_LENGTH, COMMON_DATA_NAME);
+            suffix=basename+LIB_PREFIX_LENGTH+COMMON_DATA_NAME_LENGTH;
+#       endif
+        hasBasename=TRUE;
+    } else {
+        char *basename2;
+
+        isICUData=FALSE;
+
+        /* find the last file sepator */
+        basename=icu_strrchr(path, '/');
+        if(basename==NULL) {
+            basename=(char *)path;
+        } else {
+            ++basename;
+        }
+
+        basename2=icu_strrchr(basename, '\\');
+        if(basename2!=NULL) {
+            basename=basename2+1;
+        }
+
+        if(path!=basename) {
+#           ifndef LIB_PREFIX
+                /* copy the path/basename to the path buffer */
+                icu_strcpy(pathBuffer, path);
+                basename=pathBuffer+(basename-path);
+#           else
+                /* copy the path to the path buffer */
+                icu_memcpy(pathBuffer, path, basename-path);
+
+                /* add prefix and basename */
+                suffix=pathBuffer+(basename-path);
+                icu_memcpy(suffix, LIB_PREFIX, LIB_PREFIX_LENGTH);
+                icu_strcpy(suffix+LIB_PREFIX_LENGTH, basename);
+                basename=suffix;
+#           endif
+            hasPath=TRUE;
+        } else {
+            /* copy the path to the path buffer */
+            path=uloc_getDataDirectory();
+            if(path!=NULL && *path!=0) {
+                int length=icu_strlen(path);
+                icu_memcpy(pathBuffer, path, length);
+                suffix=pathBuffer+length;
+                hasPath=TRUE;
+            } else {
+                suffix=pathBuffer;
+                hasPath=FALSE;
+            }
+
+            /* add (prefix and) basename */
+#           ifndef LIB_PREFIX
+                icu_strcpy(suffix, basename);
+#           else
+                icu_memcpy(suffix, LIB_PREFIX, LIB_PREFIX_LENGTH);
+                icu_strcpy(suffix+LIB_PREFIX_LENGTH, basename);
+#           endif
+            basename=suffix;
+        }
+        hasBasename= *basename!=0;
+        if(hasBasename) {
+            suffix=basename+icu_strlen(basename);
+        }
+    }
+    path=pathBuffer;
+
+    /* set up the entry point name */
+    if(type!=NULL && *type!=0) {
+        icu_strcpy(entryNameBuffer, name);
+#       ifdef UDATA_DLL
+            icu_strcat(entryNameBuffer, "_");
+#       else
+            icu_strcat(entryNameBuffer, ".");
+#       endif
+        icu_strcat(entryNameBuffer, type);
+        entryName=entryNameBuffer;
+    } else {
+        entryName=name;
+    }
+
+    /* try the common data first */
+    p=NULL;
+
+#   ifdef UDATA_INDIRECT
+        if(hasBasename) {
+            /* get the common data */
+            /* do we have it cached? */
+            if(isICUData) {
+                lib=commonLib;
+            } else {
                 lib=NO_LIBRARY;
             }
-            umtx_unlock(NULL);
 
-            /* if a different thread set it first, then free the extra library instance */
+            /* load the common data if neccessary */
+            if(!IS_LIBRARY(lib)) {
+                /* try path/basename first */
+                icu_strcpy(suffix, LIB_SUFFIX);
+                lib=LOAD_LIBRARY(path, basename, TRUE);
+                if(!IS_LIBRARY(lib)) {
+                    /* try basename only next */
+                    lib=LOAD_LIBRARY(basename, basename, TRUE);
+                }
+
+                /* set the cache if appropriate */
+                if(isICUData && IS_LIBRARY(lib)) {
+                    bool_t setThisLib=FALSE;
+
+                    /* in the mutex block, set the common library for this process */
+                    umtx_lock(NULL);
+                    if(!IS_LIBRARY(commonLib)) {
+                        commonLib=lib;
+                        setThisLib=TRUE;
+                    }
+                    umtx_unlock(NULL);
+
+                    /* if a different thread set it first, then free the extra library instance */
+                    if(!setThisLib) {
+                        UNLOAD_LIBRARY(lib);
+                        lib=commonLib;
+                    }
+                }
+            }
+
             if(IS_LIBRARY(lib)) {
+                /* look for the entry point in this common data */
+                p=getChoice(lib, entryName, type, name, isAcceptable, context, &errorCode);
+                if(p!=NULL) {
+                    if(isICUData) {
+                        lib=NO_LIBRARY;
+                    }
+                } else {
+                    *pErrorCode=errorCode;
+                    if(!isICUData) {
+                        UNLOAD_LIBRARY(lib);
+                    }
+                }
+            }
+        }
+#   endif
+
+    /* if the data is not found in the common data, then look for a separate library */
+
+    /* try basename+"_"+entryName[+LIB_SUFFIX] first */
+    if(p==NULL && hasBasename) {
+        *suffix='_';
+        icu_strcpy(suffix+1, entryName);
+#       ifdef UDATA_DLL
+            icu_strcat(suffix+1, LIB_SUFFIX);
+#       endif
+
+        /* try path/basename first */
+        lib=LOAD_LIBRARY(path, basename, FALSE);
+        if(!IS_LIBRARY(lib)) {
+            /* try basename only next */
+            lib=LOAD_LIBRARY(basename, basename, FALSE);
+        }
+
+        if(IS_LIBRARY(lib)) {
+            /* look for the entry point */
+            p=getChoice(lib, entryName, type, name, isAcceptable, context, &errorCode);
+            if(p==NULL) {
+                *pErrorCode=errorCode;
                 UNLOAD_LIBRARY(lib);
             }
         }
     }
 
-    /* allocate the data structure */
-    pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
-    if(pData==NULL) {
-        *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
-        return NULL;
-    }
+    /* try entryName[+LIB_SUFFIX] next */
+    if(p==NULL) {
+#       ifndef LIB_PREFIX
+            icu_strcpy(basename, entryName);
+#       else
+            icu_strcpy(basename+LIB_PREFIX_LENGTH, entryName);
+#       endif
+#       ifdef UDATA_DLL
+            icu_strcat(basename, LIB_SUFFIX);
+#       endif
 
-    /* set up the entry point name */
-    icu_strcpy(buffer, name);
-    if(type!=NULL && *type!=0) {
-        icu_strcat(buffer, "_");
-        icu_strcat(buffer, type);
-    }
+        /* try path/basename first */
+        lib=LOAD_LIBRARY(path, basename, FALSE);
+        if(!IS_LIBRARY(lib)) {
+            /* try basename only next */
+            lib=LOAD_LIBRARY(basename, basename, FALSE);
+        }
 
-    /* look for it in the common library */
-    if(commonLib!=NULL) {
-        p=getChoice(commonLib, buffer, type, name, isAcceptable, context, &errorCode);
-        if(p!=NULL) {
-            pData->lib=NULL;
-            pData->p=p;
-            return pData;
+        if(IS_LIBRARY(lib)) {
+            /* look for the entry point */
+            p=getChoice(lib, entryName, type, name, isAcceptable, context, &errorCode);
+            if(p==NULL) {
+                *pErrorCode=errorCode;
+                UNLOAD_LIBRARY(lib);
+            }
         }
     }
 
-    /* try to open a specific dll */
-    pData->lib=loadLibrary(buffer);
-    if(pData->lib==NULL) {
-        icu_free(pData);
-        *pErrorCode=U_FILE_ACCESS_ERROR;
-        return NULL;
-    }
-
-    p=getChoice(pData->lib, buffer, type, name, isAcceptable, context, pErrorCode);
+    /* return the data if found */
     if(p!=NULL) {
+        UDataMemory *pData;
+
+#       ifndef UDATA_INDIRECT
+            /* for direct mappings, Library==UDataMemory==MappedData */
+            return (UDataMemory *)lib;
+#       elif defined(UDATA_MAP)
+            if(IS_LIBRARY(lib)) {
+                /* for mapped files, Library==UDataMemory */
+                pData=(UDataMemory *)lib;
+                pData->p=p;
+                return pData;
+            }
+#       endif
+
+        /* allocate the data structure */
+        pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
+        if(pData==NULL) {
+            if(IS_LIBRARY(lib)) {
+                UNLOAD_LIBRARY(lib);
+            }
+            *pErrorCode=U_MEMORY_ALLOCATION_ERROR;
+            return NULL;
+        }
+
+#       ifdef UDATA_DLL
+            pData->lib=lib;
+#       else
+            /* defined(UDATA_MAP) && !IS_LIBRARY(lib) */
+            icu_memset(pData, 0, sizeof(pData));
+#       endif
+
         pData->p=p;
         return pData;
-    } else {
-        UNLOAD_LIBRARY(pData->lib);
-        icu_free(pData);
-        return NULL;
     }
+
+    /* data not found */
+    if(U_SUCCESS(*pErrorCode)) {
+        *pErrorCode=U_FILE_ACCESS_ERROR;
+    }
+    return NULL;
 }
+
+#   ifdef UDATA_DLL
+
+/* common DLL implementations */
 
 U_CAPI void U_EXPORT2
 udata_close(UDataMemory *pData) {
@@ -578,87 +756,6 @@ udata_close(UDataMemory *pData) {
 #   else
 
 /* common implementation of use of common memory map */
-
-static UDataMemory *commonData=NULL;
-
-static bool_t
-isCommonDataAcceptable(void *context,
-                       const char *type, const char *name,
-                       UDataInfo *pInfo);
-
-static UDataMemory *
-doOpenChoice(const char *type, const char *name,
-             UDataMemoryIsAcceptable *isAcceptable, void *context,
-             UErrorCode *pErrorCode) {
-    UDataMemory *pData;
-    MappedData *p;
-    UErrorCode errorCode;
-
-    if(commonData==NULL) {
-        /* load the common library if necessary - outside the mutex block */
-        errorCode=U_ZERO_ERROR;
-        pData=doOpenMap(DATA_TYPE, COMMON_DATA_NAME, &errorCode);
-        if(pData!=NULL) {
-            p=getChoice(pData, NULL, DATA_TYPE, COMMON_DATA_NAME, isCommonDataAcceptable, NULL, &errorCode);
-            if(p!=NULL) {
-                /* in the mutex block, set the common data for this process */
-                umtx_lock(NULL);
-                if(commonData==NULL) {
-                    commonData=pData;
-                    pData=NULL;
-                }
-                umtx_unlock(NULL);
-            }
-
-            /* if an error occured or a different thread set it first, then close the extra data instance */
-            if(pData!=NULL) {
-                udata_close(pData);
-            }
-        }
-    }
-
-    /* look in the common data first */
-    if(commonData!=NULL) {
-        char buffer[40];
-        const char *dataName;
-
-        /* get the data name */
-        if(type==NULL || *type==0) {
-            dataName=name;
-        } else {
-            icu_strcpy(buffer, name);
-            icu_strcat(buffer, ".");
-            icu_strcat(buffer, type);
-            dataName=buffer;
-        }
-
-        errorCode=U_ZERO_ERROR;
-        p=getChoice(commonData, dataName, type, name, isAcceptable, context, &errorCode);
-        if(p!=NULL) {
-            /* allocate the data structure */
-            UDataMemory *pData=(UDataMemory *)icu_malloc(sizeof(UDataMemory));
-            if(pData==NULL) {
-                /* U_MEMORY_ALLOCATION_ERROR */
-            } else {
-                icu_memset(pData, 0, sizeof(UDataMemory));
-                pData->p=p;
-                return pData;
-            }
-        }
-    }
-
-    /* look for a specific map file */
-    pData=doOpenMap(type, name, pErrorCode);
-    if(pData!=NULL) {
-        p=getChoice(pData, NULL, type, name, isAcceptable, context, pErrorCode);
-        if(p=NULL) {
-            udata_close(pData);
-            pData=NULL;
-        }
-    }
-
-    return pData;
-}
 
 /* this is the memory-map version of GET_ENTRY(), used by getChoice() */
 static MappedData *
@@ -710,8 +807,6 @@ isCommonDataAcceptable(void *context,
 
 #   endif
 
-/* common implementations of other functions */
-
 static MappedData *
 getChoice(Library lib, const char *entry,
           const char *type, const char *name,
@@ -741,6 +836,10 @@ getChoice(Library lib, const char *entry,
 
     return p;
 }
+
+/* common implementations of other functions for indirect mappings */
+
+#ifdef UDATA_INDIRECT
 
 U_CAPI const void * U_EXPORT2
 udata_getMemory(UDataMemory *pData) {

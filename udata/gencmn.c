@@ -31,7 +31,7 @@
 #include "cstring.h"
 
 #define STRING_STORE_SIZE 100000
-#define MAX_FILEE_COUNT 2000
+#define MAX_FILE_COUNT 2000
 
 #define COMMON_DATA_NAME "icudata"
 #define DATA_TYPE "dat"
@@ -70,7 +70,7 @@ typedef struct {
     uint32_t basenameLength, basenameOffset, fileSize, fileOffset;
 } File;
 
-static File files[MAX_FILEE_COUNT];
+static File files[MAX_FILE_COUNT];
 static uint32_t fileCount=0;
 
 /* prototypes --------------------------------------------------------------- */
@@ -225,7 +225,7 @@ addFile(const char *filename) {
     char *s;
     uint32_t length;
 
-    if(fileCount==MAX_FILEE_COUNT) {
+    if(fileCount==MAX_FILE_COUNT) {
         fprintf(stderr, "gencmn: too many files\n");
         exit(U_BUFFER_OVERFLOW_ERROR);
     }

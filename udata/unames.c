@@ -106,7 +106,7 @@ u_charName(uint32_t code, UCharNameChoice nameChoice,
         UDataMemory *data;
 
         /* open the data outside the mutex block */
-        data=udata_openChoice(DATA_TYPE, DATA_NAME, isAcceptable, NULL, pErrorCode);
+        data=udata_openChoice(NULL, DATA_TYPE, DATA_NAME, isAcceptable, NULL, pErrorCode);
         if(U_FAILURE(*pErrorCode)) {
             return 0;
         }

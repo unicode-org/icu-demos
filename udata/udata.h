@@ -85,31 +85,70 @@ typedef struct {
 
 /* API for reading data -----------------------------------------------------*/
 
-/* forward declaration of the data memory type */
+/**
+ * Forward declaration of the data memory type.
+ */
 typedef struct UDataMemory UDataMemory;
 
-/* callback function for udata_openChoice(), returns TRUE if the current data memory is acceptable */
+/**
+ * Callback function for udata_openChoice().
+ * @return TRUE if the current data memory is acceptable
+ */
 typedef bool_t
 UDataMemoryIsAcceptable(void *context,
                         const char *type, const char *name,
                         UDataInfo *pInfo);
 
 
+/**
+ * Convenience function.
+ * This function works the same as <code>udata_openChoice</code>
+ * except that any data that matches the type and name
+ * is assumed to be acceptable.
+ */
 U_CAPI UDataMemory * U_EXPORT2
-udata_open(const char *type, const char *name,
+udata_open(const char *path, const char *type, const char *name,
            UErrorCode *pErrorCode);
 
+/**
+ *
+ */
 U_CAPI UDataMemory * U_EXPORT2
-udata_openChoice(const char *type, const char *name,
+udata_openChoice(const char *path, const char *type, const char *name,
                  UDataMemoryIsAcceptable *isAcceptable, void *context,
                  UErrorCode *pErrorCode);
 
+/**
+ * Close the data memory.
+ * This function must be called to allow the system to
+ * release resources associated with this data memory.
+ */
 U_CAPI void U_EXPORT2
 udata_close(UDataMemory *pData);
 
+/**
+ * Get the pointer to the actual data inside the data memory.
+ */
 U_CAPI const void * U_EXPORT2
 udata_getMemory(UDataMemory *pData);
 
+/**
+ * Get the information from the data memory header.
+ * This allows to get access to the header containing
+ * platform data properties etc. which is not part of
+ * the data itself and can therefore not be accessed
+ * via the pointer that <code>udata_getMemory()</code> returns.
+ *
+ * @param pData pointer to the data memory object
+ * @param pInfo pointer to a UDataInfo object;
+ *              its <code>size</code> field must be set correctly,
+ *              typically to <code>sizeof(UDataInfo)</code>.
+ *
+ * <code>*pInfo</code> will be filled with the UDataInfo structure
+ * in the data memory object. If this structure is smaller than
+ * <code>pInfo->size</code>, then the <code>size</code> will be
+ * adjusted and only part of the structure will be filled.
+ */
 U_CAPI void U_EXPORT2
 udata_getInfo(UDataMemory *pData, UDataInfo *pInfo);
 
