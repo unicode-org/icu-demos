@@ -195,7 +195,7 @@ const char *myBundlePath()
 
   if(gMyBundlePath[0] == 0)
     {
-      strcpy(gMyBundlePath, icu_getDefaultDataDirectory());
+      strcpy(gMyBundlePath, u_getDataDirectory());
       strcat(gMyBundlePath, "locexp/");
     }
   

@@ -18,15 +18,15 @@ CLEANFILES = *~
 ## Target information
 TARGET = ubrowse
 
-LDFLAGS := -L../locexp/util -L../udata $(LDFLAGS)
+LDFLAGS := -L../locexp/util  $(LDFLAGS)
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licu-uc -lusort' ...
 # -ldl is needed for DLL version
-ICULIBS    += -llxutil -lustdio -ludata -ldl
+ICULIBS    += -llxutil -lustdio 
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  := -I../locexp/util -I../udata $(CPPFLAGS)
+CPPFLAGS  := -I../locexp/util  $(CPPFLAGS)
 
 OBJECTS = ubrowse.o 
 

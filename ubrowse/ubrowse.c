@@ -38,8 +38,6 @@ extern int srl_mode;
 
 #include "decompcb.h" /* from locexp/util */
 
-#include <unames.h>   /* from udata */
-
 #define HAVE_KANGXI
 #include <kangxi.h> /* Kang-Xi Radical mapping table */
 
