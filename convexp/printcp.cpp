@@ -301,13 +301,13 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
         break;  // This is an easy encoding to display.
     default:
         if (!gShowStartBytes) {
-            puts("<br /><p style=\"margin: 1em\">Codepage layout information is not available for this converter at this time.</p>");
+            puts("<br /><p>Codepage layout information is not available for this converter at this time.</p>");
             return;
         }
         hideContinueBytes = TRUE;
     }
     puts("<br /><br />\n"
-        "<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\" summary=\"A 16 by 16 table with headers on each side of the table representing the nibble of a byte.\">\n"
+        "<table width=\"100%\" border=\"1\" cellspacing=\"0\" class=\"data-table-2\" summary=\"A 16 by 16 table with headers on each side of the table representing the nibble of a byte.\">\n"
         "<caption><em><a name=\"layout\">Codepage Layout</a></em></caption>");
     printf("<tr><td colspan=\"18\">");
 

@@ -81,11 +81,13 @@ static const char htmlHeader[]=
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
     "p.value {font-family: monospace;}\n"
+    "table.data-table-2 td,\n"
+    "table.data-table-2 th{ padding-left:3px; padding-right:3px; padding-top:3px; }\n"
     "table.data-table-2 caption {border-bottom:#fff solid 0px;}\n"
     "table.data-table-2 td.alias {white-space: nowrap;}\n"
     "table.data-table-2 td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
     "table.data-table-2 td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
-    "table.data-table-2 div.iso {margin-top: 0.4em; margin-bottom: 0.4em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
+    "table.data-table-2 div.iso {margin-top: 0.2em; margin-bottom: 0.2em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
     "table.data-table-2 div.glyph {font-size: 160%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
@@ -96,10 +98,10 @@ static const char htmlHeader[]=
 
     "<body>\n"
 
-    "<table width=\"760\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
     "<tr valign=\"top\">\n"
-    "<td width=\"110\" class=\"bbg\"><a href=\"http://www.ibm.com/\"><img width=\"110\" src=\"//www.ibm.com/i/v14/t/ibm-logo.gif\" height=\"52\" border=\"0\" alt=\"IBM&reg;\"/></a></td>\n"
-    "<td width=\"650\" class=\"mbbg\" align=\"right\">\n"
+    "<td class=\"bbg\"><a href=\"http://www.ibm.com/\"><img width=\"110\" src=\"//www.ibm.com/i/v14/t/ibm-logo.gif\" height=\"52\" border=\"0\" alt=\"IBM&reg;\"/></a></td>\n"
+    "<td width=\"100%\" class=\"mbbg\" align=\"right\">\n"
     "<table align=\"right\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
     "<tr class=\"cty-tou\">\n"
     "<td class=\"upper-masthead-corner\" width=\"17\" rowspan=\"2\"><a href=\"#main\"><img alt=\"Skip to main content\" height=\"1\" width=\"1\" border=\"0\" src=\"//www.ibm.com/i/c.gif\"/></a></td>\n"
@@ -141,7 +143,7 @@ static const char htmlHeader[]=
     "</tr>\n"
     "<tr>\n"
     "<td colspan=\"2\" class=\"blbg\">\n"
-    "<table width=\"760\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
     "<tr>\n"
     "<td>\n"
     "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
@@ -201,7 +203,7 @@ static const char startUCharEscape[]="\\u%04X";
 static const char trailingUCharEscape[]="\\u%04X";
 
 static const char startForm[]=
-    "<table width=\"745\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 1em\">\n"
+    "<table width=\"97%%\" border=\"0\" cellspacing=\"0\" style=\"margin: 1em 0em 1em 1em\">\n"
     "<tr><td style=\"white-space: nowrap\">\n"
     "<form method=\"get\" action=\"%s\">\n"
     "<p>Select a standard to view:<br />\n"
@@ -232,7 +234,7 @@ static const char startTable[]=
 static const char endTable[]="</table>";
 
 static const char versions[]=
-"<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0\">Powered by "
+    "<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0\">Powered by "
     "<a href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a> %s</p><br />\n";
 
 static void printOptions(UErrorCode *status) {
@@ -454,7 +456,7 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
     if (U_FAILURE(*status)) {
         return;
     }
-    puts("<br /><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\" style=\"margin: 1em\">\n");
+    puts("<br /><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\">\n");
     puts("<caption><em><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></em></caption>\n");
     if (!gShowLanguages) {
         printf("<tr><td><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></td></tr>\n",
@@ -521,7 +523,7 @@ static void printConverterInfo(UErrorCode *status) {
         printf("<p>Warning: Nothing is known about this converter.</p>");
         return;
     }
-    puts("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\" style=\"margin: 1em\">\n");
+    puts("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\">\n");
     puts("<caption><em>Information About This Converter</em></caption>\n");
     convType = ucnv_getType(cnv);
     printf("<tr><th>Type of converter</th><td>%s</td></tr>\n", getConverterType(convType));
@@ -577,7 +579,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     printLanguages(cnv, status);
 
-    puts("<br /><h2 style=\"margin: 1em\"><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
+    puts("<br /><h2><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
     if (gShowUnicodeSet) {
         myStatus = U_ZERO_ERROR;
         USet *cnvSet = uset_open(0, 0);
@@ -589,10 +591,10 @@ static void printConverterInfo(UErrorCode *status) {
             myStatus = U_ZERO_ERROR;
             patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
             u_strToUTF8(patBufferUTF8, patLen * U8_MAX_LENGTH, NULL, patBuffer, patLen, &myStatus);
-            printf("<p class=\"value\" style=\"margin: 1em\">%s</p>\n", patBufferUTF8);
+            printf("<p class=\"value\">%s</p>\n", patBufferUTF8);
         }
         else {
-            puts("<p style=\"margin: 1em\">Not Available</p>");
+            puts("<p>Not Available</p>");
         }
         uset_close(cnvSet);
         free(patBuffer);
@@ -600,7 +602,7 @@ static void printConverterInfo(UErrorCode *status) {
         *status = U_ZERO_ERROR;
     }
     else {
-        printf("<p style=\"margin: 1em\"><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
+        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
             gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
     }
 
@@ -723,7 +725,7 @@ static void printAliasTable() {
     UErrorCode status = U_ZERO_ERROR;
     UEnumeration *convEnum;
 
-    puts("<br /><table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\" style=\"margin: 1em\">\n");
+    puts("<br /><table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\">\n");
     puts("<caption><em>List of Converter Aliases</em></caption>");
     printStandardHeaders(&status);
 
