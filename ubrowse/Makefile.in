@@ -24,7 +24,7 @@ CLEANFILES = *~
 ## Target information
 TARGET = ubrowse
 
-LDFLAGS := -L../locexp/util  $(LDFLAGS) 
+LDFLAGS += -L../locexp/util 
 CPPFLAGS +=
 
 # ICULIBS includes all standard ICU libraries.

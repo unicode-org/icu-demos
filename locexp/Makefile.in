@@ -42,7 +42,7 @@ ICULIBS += -lusort -llxutil -lustdio
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
-LDFLAGS := -L../usort/lib -L./util $(LDFLAGS)
+LDFLAGS += -L../usort/lib -L./util 
 
 # get the hostname the code is built on
 CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS)
