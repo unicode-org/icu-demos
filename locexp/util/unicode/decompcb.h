@@ -15,17 +15,25 @@
 
 #include "unicode/ucnv.h"
 
-extern  UConverterFromUCallback DECOMPOSE_lastResortCallback;
+typedef struct
+{
+  UConverterFromUCallback  subCallback;
+  void                    *subContext;
+
+  /* special data here */
+} FromUDecomposeContext;
+
+
 
 U_CAPI void 
-  UCNV_FROM_U_CALLBACK_DECOMPOSE (UConverter * _this,
-					    char **target,
-					    const char *targetLimit,
-					    const UChar ** source,
-					    const UChar * sourceLimit,
-					    int32_t *offsets,
-					    bool_t flush,
-					    UErrorCode * err);
+  UCNV_FROM_U_CALLBACK_DECOMPOSE  (void *context,
+                                UConverterFromUnicodeArgs *fromUArgs,
+                                const UChar* codeUnits,
+                                int32_t length,
+                                UChar32 codePoint,
+                                UConverterCallbackReason reason,
+                                UErrorCode *err);
+
 
 /* NOTE: returns USING_FALLBACK_ERROR instead of ZERO_ERROR if 
    decomposition occurs. (does NOT occur in INDEX_OUTOFBOUNDS cases) */

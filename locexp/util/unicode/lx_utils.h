@@ -130,28 +130,23 @@ U_CAPI UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
  */
 UChar *dateAt(UDate date, const UChar *tz, UDateFormatStyle style, UErrorCode *status);
 
+typedef struct
+{
+  UConverterFromUCallback  subCallback;
+  void                    *subContext;
+
+  UBool                    html;
+} FromUBackslashContext;
 
 /* substitute with value, of the form: <B>\uXXXX</B>  */
 U_CAPI void
-UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML (UConverter * _this,
-			 char **target,
-			 const char *targetLimit,
-			 const UChar ** source,
-			 const UChar * sourceLimit,
-			 int32_t *offsets,
-			 bool_t flush,
-			 UErrorCode * err);
-
-/* substitute with value, of the form: \uXXXX  */
-U_CAPI void
-UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
-			 char **target,
-			 const char *targetLimit,
-			 const UChar ** source,
-			 const UChar * sourceLimit,
-			 int32_t *offsets,
-			 bool_t flush,
-			 UErrorCode * err);
+UCNV_FROM_U_CALLBACK_BACKSLASH (void *context,
+                                UConverterFromUnicodeArgs *fromUArgs,
+                                const UChar* codeUnits,
+                                int32_t length,
+                                UChar32 codePoint,
+                                UConverterCallbackReason reason,
+                                UErrorCode *err);
 
 /**
  * Replace all instances of 'from' with 'to'.

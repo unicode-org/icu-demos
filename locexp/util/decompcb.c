@@ -24,8 +24,6 @@
 #define HAVE_KANGXI
 #include "unicode/kangxi.h"
 
-UConverterFromUCallback DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
-
 static UChar block0300Subs[] =
     { 0x0060, 0x00b4, 0x005e, 0x007e, 0x007e, 0x00af, 0x0306, 0x0307, 0x00a8, 0x0309, 0x00b0, 0x0022, 0x030c, 0x0022 }; 
 
@@ -44,152 +42,104 @@ static UChar block0390Subs[] =
   0x0049
 };
 
-/* clone the converter, reset it, and then try to transcode the source into the
-   target. If it fails, then transcode into the error buffer. 
-
-   source isn't modified because this fcn is expected to deal with all of it.
-   
-   This would be a very useful function for other callbacks.
-*/
-static void convertIntoTargetOrErrChars(UConverter *_this,
-					char **target,
-					const char *targetLimit,
-					const UChar *source,
-					const UChar *sourceLimit,
-					UErrorCode *err)
-{
-  const UChar      *sourceAlias = source;
-  UErrorCode subErr = U_ZERO_ERROR;   
-  char       *myTarget;
-  UConverter myConverter = *_this; /* bitwise copy */
-
-  ucnv_reset(&myConverter); /* necessary???? */
-
-  /*  ucnv_setFromUCallBack (&myConverter,               <-- unneeded
-			 (UConverterFromUCallback)  UCNV_FROM_U_CALLBACK_DECOMPOSE,
-			 &err2);*/
-  
-  ucnv_fromUnicode (&myConverter,
-		    target,
-		    targetLimit,
-		    &sourceAlias,
-		    sourceLimit,
-		    NULL,
-		    TRUE,
-		    &subErr); /* pass them the real error. */
-  
-  if(subErr == U_INDEX_OUTOFBOUNDS_ERROR)
-    {
-      /* it didn't fit. */
-      subErr = U_ZERO_ERROR;
-
-      myTarget = _this->charErrorBuffer + _this->charErrorBufferLength;
-
-      /* OK hit it */
-      ucnv_fromUnicode(&myConverter,
-		       &myTarget,
-		       _this->charErrorBuffer + UCNV_ERROR_BUFFER_LENGTH,
-		       &sourceAlias,
-		       sourceLimit,
-		       NULL,
-		       TRUE,
-		       &subErr);
-      /* fix the charBufferLength */
-
-      /* **todo: check err here! */
-      _this->charErrorBufferLength = ((unsigned char *)myTarget - _this->charErrorBuffer);
-
-      *err = U_INDEX_OUTOFBOUNDS_ERROR;
-    }
-}
-
-
-
-
-
 /* called for each char */
-static void DECOMPOSE_uchar(UConverter * _this,
-			    const UChar **source,
-			    const UChar *sourceLimit,
-		  char **target,
-		  const char *targetLimit,
-		  UChar theChar,
-		  UErrorCode * err)
+static void DECOMPOSE_uchar (void *context,
+                             UConverterFromUnicodeArgs *fromUArgs,
+                             const UChar* codeUnits,
+                             int32_t length,
+                             UErrorCode *err)
 {
   UChar      decomposedSequence[DECOMP_MAX];
-  const UChar     *tempSource, *output;
+  const UChar    *output;
   int32_t    decomposedLen;
   UErrorCode err2 = U_ZERO_ERROR;
-  UConverterFromUCallback oldCallback = NULL;
+
+  FromUDecomposeContext *ctx = (FromUDecomposeContext*)context;
 
   bool_t     changedSomething = FALSE;  /* have we had *any* effect here? 
 					   Used to exit when this fcn isn't doing
 					   any good. */
 
+  const UChar *mySource;
 
+  UConverterFromUCallback oldCallback = NULL;
+  void *oldContext                    = NULL;
+  UConverterFromUCallback junkCallback = NULL;
+  void *junkContext                    = NULL;
 
   
-  tempSource = &theChar;
-
   /* First, attempt a decompose */
-  decomposedLen = u_normalize(&theChar,
-			      1,
+  decomposedLen = u_normalize(codeUnits,
+			      length,
 			      UCOL_DECOMP_COMPAT,
 			      0,
 			      decomposedSequence,
 			      DECOMP_MAX,
 			      &err2);
 
-  if( (decomposedLen != 1)  ||
-      u_strncmp(&theChar, decomposedSequence, 1) )
+  if( (decomposedLen != length)  ||
+      u_strncmp(codeUnits, decomposedSequence, length) )
+  {
+    /* Since we changed something, we'll try doing another conversion.
+       Guess what callback we use! */
+    
+    /* Q:: In fact, do we even need a new converter here? would it mess things up here to
+       simply use _this as the converter?? the state would be kinda-ok then. 
+       Need opinions! 
+    */
+    const UChar *mySource;
+
+    *err = U_USING_FALLBACK_ERROR;
+    mySource = decomposedSequence;
+    /* Nota Bene! we're going to recurse. Hang on tight. :) */
+
+    ucnv_cbFromUWriteUChars(fromUArgs, 
+                            &mySource,
+                            mySource+decomposedLen,
+                            0,
+                            err);
+
+    /* Put it back */
+    if(oldCallback != NULL)
     {
-      *err = U_USING_FALLBACK_ERROR;
-
-      /* Since we changed something, we'll try doing another conversion.
-         Guess what callback we use! */
-
-      /* Q:: In fact, do we even need a new converter here? would it mess things up here to
-	 simply use _this as the converter?? the state would be kinda-ok then. 
-	 Need opinions! 
-      */
-      
-      convertIntoTargetOrErrChars(_this, 
-				  target,
-				  targetLimit,
-				  decomposedSequence,
-				  decomposedSequence+decomposedLen,
-				  err);
-
-      return;
-
+      ucnv_setFromUCallBack(fromUArgs->converter,
+                            oldCallback,
+                            oldContext,
+                            &junkCallback,
+                            &junkContext,
+                            &err2);
     }
+
+    return;
+  }
 
 
   /* Try other substitutions */
-  decomposedSequence[0] = theChar;
-  decomposedSequence[1] = 0;
+  u_strncpy(decomposedSequence, codeUnits, length);
+  decomposedSequence[length] = 0;
   output = decomposedSequence;
-
 
   /* the following switch statement can either:  
      1). change 'output' to a totally different string,
      2). modify the string in 'decomposedSequence', OR
      3). do nothing, in which case the SUBSTITUTE callback will be called.
   */
-  
-  switch(theChar & 0xFF00)
+  if(length == 1) /* we don't handle non BMP chars yet... */
+  {
+    UChar theChar = decomposedSequence[0];
+    switch(theChar & 0xFF00)
     {
     case 0x0000:
       switch(theChar)
-	{
-	case 0x00E6:
-	  decomposedSequence[0] = 'a'; /* ASCIISM */
-	  decomposedSequence[1] = 'e'; /* ASCIISM */
-	  decomposedSequence[2] = 0;
-	  break;
-	}
+      {
+      case 0x00E6:
+        decomposedSequence[0] = 'a'; /* ASCIISM */
+        decomposedSequence[1] = 'e'; /* ASCIISM */
+        decomposedSequence[2] = 0;
+        break;
+      }
       break;
-
+      
     case 0x0300: /* combining diacriticals ------------------ 0300 */
       if(theChar < (0x0300 + (sizeof(block0300Subs)/sizeof(UChar))))
 	{
@@ -197,9 +147,13 @@ static void DECOMPOSE_uchar(UConverter * _this,
 	  decomposedSequence[0] = block0300Subs[theChar & 0x00FF];
 	  
 	  /* Prevent a loop from [for example] U+0308 -> U+00A8 -> U+0308...*/
-	  oldCallback = ucnv_getFromUCallBack(_this);
-	  ucnv_setFromUCallBack(_this, DECOMPOSE_lastResortCallback, &setStatus);
-
+          
+          ucnv_setFromUCallBack(fromUArgs->converter,
+                                ctx->subCallback,
+                                ctx->subContext,
+                                &oldCallback,
+                                &oldContext,
+                                &setStatus);
 	}
 #if 0
       else if( (theChar >= 0x0391) && (theChar <= (0x0390 - 1 + (sizeof(block0390Subs)/sizeof(UChar)))))
@@ -230,101 +184,97 @@ static void DECOMPOSE_uchar(UConverter * _this,
       break;
 #endif
     }
-
-  if((output != decomposedSequence) ||       /* if it's a different ptr */
-     ( (decomposedSequence[0] != theChar) || /* if the decomposedSeq changed*/
-       (decomposedSequence[1] != 0) ) )
-    {
-      /* Yes! We have something different. Put it out.. */
-      *err = U_USING_FALLBACK_ERROR;
+    
+    if((output != decomposedSequence) ||       /* if it's a different ptr */
+       ( (decomposedSequence[0] != theChar) || /* if the decomposedSeq changed*/
+         (decomposedSequence[1] != 0) ) )
+      {
+        /* Yes! We have something different. Put it out.. */
+        *err = U_USING_FALLBACK_ERROR;
+        
+        mySource = output;
+        /* Nota Bene! we're likely to recurse. Hang on tight. :) */
+        ucnv_cbFromUWriteUChars(fromUArgs, 
+                                &mySource,
+                                mySource+decomposedLen,
+                                0,
+                                err);
+        
+        if(oldCallback != NULL)
+          {
+            ucnv_setFromUCallBack(fromUArgs->converter,
+                                  oldCallback,
+                                  oldContext,
+                                  &junkCallback,
+                                  &junkContext,
+                                  &err2);
+          }
+        
+        return;
+      }
+  }
+  else
+  {
+    /* non bmp .... handle here! */
+  }
 
   
-      
-      convertIntoTargetOrErrChars(_this, 
-				  target,
-				  targetLimit,
-				  output,
-				  output+u_strlen(output),
-				  err);
+  /* nothing WE can do ship it out.... */
+  if(oldCallback == NULL)
+  {
+    ucnv_setFromUCallBack(fromUArgs->converter,
+                          ctx->subCallback,
+                          ctx->subContext,
+                          &oldCallback,
+                          &oldContext,
+                          &err2);
+  }
 
-      if(oldCallback)
-	{
-	  ucnv_setFromUCallBack (_this, oldCallback, err);
-	}
-
-      return;
-    }
-
-
-  /* nothing WE can do .. */
+  /* write it out . */
+  {
+    const UChar *mySource;
+    mySource = output;
+    *err = U_ZERO_ERROR;
+    /* Nota Bene! we're likely to recurse. Hang on tight. :) */
+    ucnv_cbFromUWriteUChars(fromUArgs, 
+                            &mySource,
+                            mySource+u_strlen(output),
+                            0,
+                            err);
+  }
   
-  (*DECOMPOSE_lastResortCallback)(_this,
-				  target,
-				  targetLimit,
-				  source, /* source shouldn't be needed */
-				  sourceLimit, /* sourcelimit doesn't matter */
-				  0, /* offsets, */
-				  TRUE, /* flush, */
-				  err);
+  /* clean up */
 
-  if(oldCallback)
-    {
-      ucnv_setFromUCallBack (_this, oldCallback, err);
-    }
+  ucnv_setFromUCallBack(fromUArgs->converter,
+                        oldCallback,
+                        oldContext,
+                        &junkCallback,
+                        &junkContext,
+                        &err2);
 }
 
 U_CAPI void 
-  UCNV_FROM_U_CALLBACK_DECOMPOSE (UConverter * _this,
-					    char **target,
-					    const char *targetLimit,
-					    const UChar ** source,
-					    const UChar * sourceLimit,
-					    int32_t *offsets,
-					    bool_t flush,
-					    UErrorCode * err)
+UCNV_FROM_U_CALLBACK_DECOMPOSE  (void *context,
+                                 UConverterFromUnicodeArgs *fromUArgs,
+                                 const UChar* codeUnits,
+                                 int32_t length,
+                                 UChar32 codePoint,
+                                 UConverterCallbackReason reason,
+                                 UErrorCode *err)
 {
   int32_t i;
   char   *oldTarget;
 
-#ifdef WIN32
-  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
-#else
-  if (CONVERSION_U_SUCCESS (*err))
+  if(reason > UCNV_IRREGULAR)
+  {
     return;
-#endif
-
-  for(i=0;i<_this->invalidUCharLength;i++)
-    {
-      oldTarget = *target;
-
-      /* 
-	 TODO: [optimization]
-	 if(target == targetLimit)
-	    theirTarget = _this->charErrorBuffer;
-	 etc.
-
-	 Then, after calling the fcn, update the charErrorLen.
-
-	 This way, the subfunc won't have to copy back into the charErrorLen
-      */
-
-      DECOMPOSE_uchar(_this,
-		      source,
-		      sourceLimit,
-		      target,
-		      targetLimit,
-		      _this->invalidUCharBuffer[i],
-		      err);
-
-      /* TODO:
-	 o  update offsets[0..(target-oldTarget)]
-	 o  offsets += [target-oldTarget]
-
-	 thank you. 
-	    --american P
-      */
-    }
-
+  }
+  
+  DECOMPOSE_uchar(context,
+                  fromUArgs,
+                  codeUnits,
+                  length,
+                  err);
 
   return;
 }

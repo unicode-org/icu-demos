@@ -60,212 +60,147 @@ static void
   return;
 }
 
+static UBool backslashInit = FALSE;
+
+U_STRING_DECL(backslashBegin,     "\\u"   , 2);
+U_STRING_DECL(backslashBeginHTML, "<B>\\u", 5);
+U_STRING_DECL(backslashEnd,       ""      , 0);
+U_STRING_DECL(backslashEndHTML,   "</B>"  , 4);
+
 void 
-UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML  (UConverter * _this,
-					    char **target,
-					    const char *targetLimit,
-					    const UChar ** source,
-					    const UChar * sourceLimit,
-					    int32_t *offsets,
-					    bool_t flush,
-					    UErrorCode * err)
+UCNV_FROM_U_CALLBACK_BACKSLASH (void *context,
+                                UConverterFromUnicodeArgs *fromUArgs,
+                                const UChar* codeUnits,
+                                int32_t length,
+                                UChar32 codePoint,
+                                UConverterCallbackReason reason,
+                                UErrorCode *err)
 {
-  UChar valueString[100];
+
+  UChar valueString[40];
   int32_t valueStringLength = 0;
-  UChar codepoint[100];
   int32_t i = 0;
-  /*Makes a bitwise copy of the converter passwd in */
-  UConverter myConverter = *_this;
-  char myTarget[100];
-  char *myTargetAlias = myTarget;
+
   const UChar *myValueSource = NULL;
   UErrorCode err2 = U_ZERO_ERROR;
+  FromUBackslashContext *ctx;
 
+  UConverterFromUCallback original = NULL;
+  void *originalContext;
 
-#ifdef WIN32
-  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
-#else
-  if (CONVERSION_U_SUCCESS (*err))
+  UConverterFromUCallback ignoredCallback = NULL;
+  void *ignoredContext;
+
+  UConverterFromUCallback tCallback = NULL;
+  void *tContext;
+
+  if (reason > UCNV_IRREGULAR)
+  {
     return;
-#endif
+  }
 
-  ucnv_reset (&myConverter);
-  ucnv_setFromUCallBack (&myConverter,
-			 (UConverterFromUCallback) UCNV_FROM_U_CALLBACK_STOP,
-			 &err2);
+  if(backslashInit == FALSE)
+  {
+    U_STRING_INIT(backslashBegin,     "\\u"   , 2);
+    U_STRING_INIT(backslashBeginHTML, "<B>\\u", 5);
+    U_STRING_INIT(backslashEnd,       ""      , 0);
+    U_STRING_INIT(backslashEndHTML,   "</B>"  , 4);
+    
+    backslashInit = TRUE;
+  }
+
+  ctx = (FromUBackslashContext *) context;
+
+  ucnv_getFromUCallBack(fromUArgs->converter, 
+                        &tCallback,
+                        &tContext);
+  
+
+  ucnv_setFromUCallBack (fromUArgs->converter,
+                         (UConverterFromUCallback)ctx->subCallback,
+                         ctx->subContext,
+                         &original,
+                         &originalContext,
+                         &err2);
+
+  ucnv_getFromUCallBack(fromUArgs->converter, 
+                        &tCallback,
+                        &tContext);
+
+  if (U_FAILURE (err2))
+  {
+    *err = err2;
+    return;
+  }
+  
+  /*
+   * ### TODO:
+   * This should actually really work with the codePoint, not with the codeUnits;
+   * how do we represent a code point > 0xffff? It should be one single escape, not
+   * two for a surrogate pair!
+   */
+  while (i < length)
+  {
+    if(ctx->html)
+    {
+      u_strcpy(valueString+valueStringLength,backslashBeginHTML);
+      valueStringLength += u_strlen(backslashBeginHTML);
+    }
+    else
+    {
+      u_strcpy(valueString+valueStringLength,backslashBegin);
+      valueStringLength += u_strlen(backslashBegin);
+    }
+
+    itou (valueString + valueStringLength, codeUnits[i++], 16, 4);
+    valueStringLength += 4;
+
+    if(ctx->html)
+    {
+      u_strcpy(valueString+valueStringLength,backslashEndHTML);
+      valueStringLength += u_strlen(backslashEndHTML);
+    }
+    else
+    {
+      u_strcpy(valueString+valueStringLength,backslashEnd);
+      valueStringLength += u_strlen(backslashEnd);
+    }
+  }
+
+  myValueSource = valueString;
+
+  /* reset the error */
+  *err = U_ZERO_ERROR;
+
+  ucnv_cbFromUWriteUChars(fromUArgs, &myValueSource, myValueSource+valueStringLength, 0, err);
+
+
+
+  ucnv_getFromUCallBack(fromUArgs->converter, 
+                        &tCallback,
+                        &tContext);
+
+  ucnv_setFromUCallBack (fromUArgs->converter,
+                         (UConverterFromUCallback)original,
+                         originalContext,
+                         &ignoredCallback,
+                         &ignoredContext,
+                         &err2);
+
+
+  ucnv_getFromUCallBack(fromUArgs->converter, 
+                        &tCallback,
+                        &tContext);
+
   if (U_FAILURE (err2))
     {
       *err = err2;
       return;
-    }
-  u_uastrcpy(codepoint,"<B>\\u");
-
-  while (i < _this->invalidUCharLength)
-    {
-      itou (codepoint + 5, _this->invalidUCharBuffer[i++], 16, 4);
-      u_uastrcpy(codepoint+9, "</B>");
-      memcpy (valueString + valueStringLength, codepoint, sizeof (UChar) * (5+4+4) );
-      valueStringLength += (5+4+4) ;
-    }
-
-  myValueSource = valueString;
-
-  /*converts unicode escape sequence */
-  ucnv_fromUnicode (&myConverter,
-		    &myTargetAlias,
-		    myTargetAlias + 100,
-		    &myValueSource,
-		    myValueSource + (5+4+4),
-		    NULL,
-		    TRUE,
-		    &err2);
-
-  if (U_FAILURE (err2))
-    {
-      UCNV_FROM_U_CALLBACK_SUBSTITUTE (_this,
-				       target,
-				       targetLimit,
-				       source,
-				       sourceLimit,
-				       offsets,
-				       flush,
-				       err);
-      return;
-    }
-
-  valueStringLength = myTargetAlias - myTarget;
-
-  /*if we have enough space on the output buffer we just copy
-   * the subchar there and update the pointer
-   */
-  if ((targetLimit - *target) >= valueStringLength)
-    {
-      memcpy (*target, myTarget, valueStringLength);
-      *target += valueStringLength;
-      *err = U_ZERO_ERROR;
-    }
-  else
-    {
-      /*if we don't have enough space on the output buffer
-       *we copy as much as we can to it, update that pointer.
-       *copy the rest in the internal buffer, and increase the
-       *length marker
-       */
-      memcpy (*target, valueString, (targetLimit - *target));
-      memcpy (_this->charErrorBuffer + _this->charErrorBufferLength,
-		  valueString + (targetLimit - *target),
-		  valueStringLength - (targetLimit - *target));
-      _this->charErrorBufferLength += valueStringLength - (targetLimit - *target);
-      *target += (targetLimit - *target);
-      *err = U_INDEX_OUTOFBOUNDS_ERROR;
-    }
-
-  return;
-}
-
-void 
-UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
-			      char **target,
-			      const char *targetLimit,
-			      const UChar ** source,
-			      const UChar * sourceLimit,
-			      int32_t *offsets,
-			      bool_t flush,
-			      UErrorCode * err)
-{
-  UChar valueString[100];
-  int32_t valueStringLength = 0;
-  UChar codepoint[100];
-  int32_t i = 0;
-  /*Makes a bitwise copy of the converter passwd in */
-  UConverter myConverter = *_this;
-  char myTarget[100];
-  char *myTargetAlias = myTarget;
-  const UChar *myValueSource = NULL;
-  UErrorCode err2 = U_ZERO_ERROR;
-
-
-#ifdef WIN32
-  if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
-#else
-  if (CONVERSION_U_SUCCESS (*err))
-    return;
-#endif
-
-  ucnv_reset (&myConverter);
-  ucnv_setFromUCallBack (&myConverter,
-			 (UConverterFromUCallback) UCNV_FROM_U_CALLBACK_STOP,
-			 &err2);
-  if (U_FAILURE (err2))
-    {
-      *err = err2;
-      return;
-    }
-  u_uastrcpy(codepoint,"\\u");
-
-  while (i < _this->invalidUCharLength)
-    {
-      itou (codepoint + 2, _this->invalidUCharBuffer[i++], 16, 4);
-      memcpy (valueString + valueStringLength, codepoint, sizeof (UChar) * (2+4) );
-      valueStringLength += (2+4) ;
-    }
-
-  myValueSource = valueString;
-
-  /*converts unicode escape sequence */
-  ucnv_fromUnicode (&myConverter,
-		    &myTargetAlias,
-		    myTargetAlias + 100,
-		    &myValueSource,
-		    myValueSource + (2+4),
-		    NULL,
-		    TRUE,
-		    &err2);
-
-  if (U_FAILURE (err2))
-    {
-      UCNV_FROM_U_CALLBACK_SUBSTITUTE (_this,
-				       target,
-				       targetLimit,
-				       source,
-				       sourceLimit,
-				       offsets,
-				       flush,
-				       err);
-      return;
-    }
-
-  valueStringLength = myTargetAlias - myTarget;
-
-  /*if we have enough space on the output buffer we just copy
-   * the subchar there and update the pointer
-   */
-  if ((targetLimit - *target) >= valueStringLength)
-    {
-      memcpy (*target, myTarget, valueStringLength);
-      *target += valueStringLength;
-      *err = U_ZERO_ERROR;
-    }
-  else
-    {
-      /*if we don't have enough space on the output buffer
-       *we copy as much as we can to it, update that pointer.
-       *copy the rest in the internal buffer, and increase the
-       *length marker
-       */
-      memcpy (*target, valueString, (targetLimit - *target));
-      memcpy (_this->charErrorBuffer + _this->charErrorBufferLength,
-		  valueString + (targetLimit - *target),
-		  valueStringLength - (targetLimit - *target));
-      _this->charErrorBufferLength += valueStringLength - (targetLimit - *target);
-      *target += (targetLimit - *target);
-      *err = U_INDEX_OUTOFBOUNDS_ERROR;
     }
 
   return;
 }
 /*******************************************************end of borrowed code from ucnv_err.c **/
-
 
 
 void doDecodeQueryField(const char *in, char *out, int32_t length)
@@ -695,75 +630,15 @@ void mySort(MySortable *s, UErrorCode *status, bool_t recurse)
 /* convert from our internal names to a MIME friendly name .. ----------------------------  */
 const char *MIMECharsetName(const char *n)
 {
-  int i;
+  UErrorCode err = U_ZERO_ERROR;
+  const char *mime;
 
-static  struct
-  {
-    char old[20];
-    char new[20];
-  } mapping[] = 
-    {
-      /* NOTA BENE:   the 'mime' standard (or nonstandard) names for encoders
-	 seems like a useful property. We really should have API for dealing with
-	 these names.  -srl
-      */
-
-      { "ibm-646", "us-ascii" },
-      { "transliterated", "utf-8" },
-      { "fonted", "iso-8859-1" },
-
-      { "UTF8",     "utf-8" },
-      { "LATIN_1",  "iso-8859-1" },
-      { "ISO_2022", "iso-2022" },
-      { "ibm-1089", "iso-8859-6" },
-      { "ibm-1252", "windows-1252" },
-      { "ibm-1386", "gb" },
-      { "ibm-813",  "iso-8859-7" },
-      { "ibm-912",  "iso-8859-2" },
-      { "ibm-913",  "iso-8859-3" }, 
-      { "ibm-914",  "iso-8859-4" },
-      { "ibm-915",  "iso-8859-5" },
-      { "ibm-916",  "iso-8859-8" },
-      { "ibm-920",  "iso-8859-9" },
-      { "ibm-923",  "iso-8859-15" },
-      { "ibm-943",  "shift_jis" },
-      { "ibm-949",  "ksc-5601" },
-      { "ibm-954",  "euc-jp" },
-      { "ibm-964",  "euc-tw" },
-      { "ibm-970",  "euc-kr" },
-      { "ibm-1361", "ksc" },
-      { "ibm-1383", "euc-cn" },
-      { "ibm-874",  "windows-874" },
-      { "ibm-878",  "koi8-r" },
-      { "ibm-1250", "windows-1250" },
-      { "ibm-1251", "windows-1251" },
-      { "ibm-1252", "windows-1252" },
-      { "ibm-1253", "windows-1253" },
-      { "ibm-1254", "windows-1254" },
-      { "ibm-1255", "windows-1255" },
-      { "ibm-1256", "windows-1256" },
-      { "ibm-1257", "windows-1257" },
-      { "ibm-1258", "windows-1258" },
-      { "ibm-1275", "mac" },
-      { "ibm-860",  "cp860" },
-      { "ibm-861",  "cp861" },
-      { "ibm-862",  "cp862" },
-      { "ibm-863",  "cp863" },
-      { "ibm-864",  "cp864" },
-      { "ibm-865",  "cp865" },
-      { "ibm-866",  "cp866" },
-      { "ibm-867",  "cp867" },
-      { "ibm-868",  "cp868" },
-      { "ibm-869",  "cp869" },
-      { "\0", "\0" }
-    };
-
-  for(i=0;mapping[i].old[0];i++)
-    {
-      if(!strcmp(n,mapping[i].old))
-	return mapping[i].new;
-    }
-  return n;
+  mime = ucnv_getStandardName(n, "MIME", &err);
+  if(U_FAILURE(err)||!mime) {
+    return n;
+  } else {
+    return mime;
+  }
 }
 
 
@@ -977,14 +852,19 @@ bool_t testConverter(const char *converter,
   UConverter *cnv;
   bool_t      worked = FALSE;  
   int8_t     *target;
+  void       *oldContext;
+  UConverterFromUCallback *oldAction;
 
   cnv = ucnv_open(converter, &status);
   if(U_FAILURE(status))
     return FALSE;
 
   target = buffer;
+
   
-  ucnv_setFromUCallBack(cnv, UCNV_FROM_U_CALLBACK_STOP, &status);
+  
+  ucnv_setFromUCallBack(cnv, UCNV_FROM_U_CALLBACK_STOP,  NULL,
+                        &oldAction, &oldContext, &status);
 
   ucnv_fromUnicode (cnv,
 		    (char**)&target,
