@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 icuuc17.lib icuin17.lib icuio17.lib icusr17.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\icu\lib\release" /libpath:"..\..\..\icu\lib\release"
+# ADD LINK32 icuuc.lib icuin.lib icuio.lib icusr.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\icu\lib\release" /libpath:"..\..\..\icu\lib\release"
 
 !ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
 
@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 icuuc17d.lib icuin17d.lib icuio17d.lib icusr17d.lib util.lib kernel32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcd.lib" /pdbtype:sept /libpath:"..\..\icu\lib\debug"
+# ADD LINK32 icuucd.lib icuind.lib icuiod.lib icusrd.lib util.lib kernel32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcd.lib" /pdbtype:sept /libpath:"..\..\icu\lib\debug"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ENDIF 
@@ -86,6 +86,14 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\calexp.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\cgimain.c
+# End Source File
 # Begin Source File
 
 SOURCE=.\util\decompcb.c
@@ -104,7 +112,15 @@ SOURCE=.\util\lx_utils.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\util\translitcb.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\util\utimzone.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\wfobject.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -123,6 +139,17 @@ SOURCE=.\util\utimzone.cpp
 SOURCE=.\resource\makedata.mak
 
 !IF  "$(CFG)" == "locexp - Win32 Release"
+
+# Begin Custom Build
+ProjDir=.
+InputPath=.\resource\makedata.mak
+InputName=makedata
+
+"$(ProjDir)\..\..\..\icu\source\data\locexp.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cd $(ProjDir)\resource 
+	nmake /f $(InputName).mak icup=$(ProjDir)\..\..\..\icu CFG=Release 
+	
+# End Custom Build
 
 !ELSEIF  "$(CFG)" == "locexp - Win32 Debug"
 

@@ -41,14 +41,7 @@ RESDIR=.  #$(ICUP)\..\icuapps\uconv\$(RESNAME)
 RESFILES=resfiles.mk
 ICUDATA=$(ICUP)\data
 
-#If ICU_DATA is not set, we want to output stuff in binary directory
-!IF "$(ICU_DATA)" == ""
-DLL_OUTPUT=$(ICUP)\bin\$(CFG)
-!MESSAGE ICU_DATA is not set! $(RESNAME).dll will go to $(DLL_OUTPUT)
-!ELSE
-DLL_OUTPUT=$(ICUDATA)
-!ENDIF
-
+DLL_OUTPUT=$(ICUP)\source\data
 
 ICD=$(ICUDATA)^\
 DATA_PATH=$(ICUP)\data^\

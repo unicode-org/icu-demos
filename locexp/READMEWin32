@@ -22,20 +22,13 @@ Locexp is automatically built by using using the provided locexp.dsw
 work space in this directory, or by using all.dsw workspace in ..\all
 directory. 
 
-A copy of locexp.exe file will be made in cgi-bin directory. If your
-cgi-bin dir differs from "c:\program files\apache group\apache\cgi-bin"
-you will want to change post-build step "install to cgi-bin" so that it
-reflects your situation.
-
 When you build locexp, you should get an executable file locexp.exe in
 your debug or release directory, depending on the type of build.
 
-Next, you need to build resource files for locexp. Resource files are in
-resource directory. They should be built by invoking genrb on each of them.
+put that binary in for example "c:\program files\apache group\apache\cgi-bin"
 
-After creating .res files, make a new directory in icu\data directory and
-name it 'locexp'. Copy all the .res files there.
-
+Locexp will automatically build its data file, LOCEXP.DLL, into icu\source\data.
+You probably want to either add icu\source\data to the system PATH, or copy the dlls contained therein to 
 
 RUNNING LOCALE EXPLORER
 -----------------------
@@ -58,8 +51,8 @@ If you are using Apache for Win32 you should add the line:
 SetEnv ICU_DATA c:\icu\icu\data\ #or whatever is the path to your icu\data dir
 to the end of httpd.conf file.
 
-2) Copy file icudata.dll from icu data directory to any directory on PATH. 
-(Good candidates are icu\bin\debug or icu\bin\release).
+2) Copy file icudt17l.dll from icu data directory to any directory on PATH. 
+(Good candidates are icu\source\data).
 
 3) Copy locexp.exe to cgi-bin directory of your web server.
 

@@ -230,11 +230,7 @@ void initLX()
     char newPath[500];
     strcpy(newPath, u_getDataDirectory());
 
-#ifdef WIN32
-    strcat(newPath, "locexp\\");
-#else
     strcat(newPath, "locexp");
-#endif
 
     FSWF_setBundlePath(newPath);
   }
