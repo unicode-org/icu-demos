@@ -167,26 +167,26 @@ static const char htmlHeader[]=
     "<script type=\"text/javascript\" language=\"JavaScript\" src=\"//www.ibm.com/common/v14/pmh.js\">\n"
     "</script>\n"
     "\n"
-    "\n"
+    "<br/>\n"
 
     "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" summary=\"This is the navigation bar\">\n"
-    "<tr><td>"
-    "<a href=\"//www.ibm.com/software/\">Software</a> &gt;\n"
-    "<a href=\"//www.ibm.com/software/globalization/\">Globalization</a> &gt;\n"
-    "<a href=\"//www.ibm.com/software/globalization/icu/\">ICU</a> &gt;\n"
-    "<a href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a> &gt;";
+    "<tr><td>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/demo/\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
     "<strong>" PROGRAM_NAME "</strong>\n";
 
 static const char navigationSubHeader[]=
-    "<a href=\"%s?%s\">" PROGRAM_NAME "</a> &gt;\n"
+    "<a class=\"bctl\" href=\"%s?%s\">" PROGRAM_NAME "</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<strong>%s</strong>\n";
 
 static const char navigationEndHeader[]=
     "</td>"
     "<td align=\"right\">"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">Help</a>"
+    "<a href=\"http://oss.software.ibm.com/icu/demo/convexp_help.html\">" PROGRAM_NAME " Help</a>"
     "</td></tr>\n"
     "</table>\n"
     "<h1><br />ICU " PROGRAM_NAME "</h1>\n";
