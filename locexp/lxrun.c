@@ -21,7 +21,8 @@ void initContext ( LXContext *ctx )
     ctx->parLocale = NULL;
     ctx -> numLocales = 0;
     /* END INIT LX */
-
+    ctx->headers = NULL;
+    ctx->headerLen = 0;
     ctx->OUT = NULL;
     ctx->fOUT = NULL;
 }
@@ -52,9 +53,8 @@ void closeLX(LXContext *theContext)
     FSWF_close();
     if(theContext != NULL)
     {
-        fflush(theContext->fOUT); /* and that, as they say, is that. */
-        destroyLocaleTree(theContext->locales);
-        theContext->locales = NULL;
+      destroyLocaleTree(theContext->locales);
+      theContext->locales = NULL;
     }
 }
 
@@ -180,7 +180,7 @@ void setupLocaleExplorer(LXContext *lx)
         {
             char junk[200];
             u_austrcpy(junk, lx->newZone);
-            fprintf(lx->headerOut,"Set-Cookie: TZ=%s;path=/;\r\n", junk);
+            appendHeader(lx, "Set-Cookie", "TZ=%s;path=/;", junk);
         }
     }
 
@@ -199,9 +199,7 @@ void setupLocaleExplorer(LXContext *lx)
   
     /* Print the encoding and last HTTP header... */
 
-    fprintf(lx->headerOut, "Content-Type: text/html;charset=%s\r\n", lx->convName);
-    /*fflush(lx->fOUT);*/
-
+    appendHeader(lx, "Content-Type", "text/html;charset=%s", lx->convName);
 
     /*  what will this do?
        {
@@ -271,16 +269,21 @@ void setupLocaleExplorer(LXContext *lx)
         lx->timeZone = NULL;
     }
 
-    fflush(lx->fOUT); /* All UFILE from here.. */
 }
 
 /** 
  * TODO - move this stuff elsewhere 
  */
 
-#ifdef __USE_GNU
+#ifndef LX_BUF_OUT
+#error Sorry - locexp will not compile without lx_buf_out at present.
+#endif
+
+
+#ifdef _GNU_SOURCE
 #define LX_OPEN_MEMSTREAM
 #else
+#error sorry - non-memstream is broken at present.  Try defining _GNU_SOURCE if you can.
 #define LX_TMPFILE
 #endif
 
@@ -289,36 +292,31 @@ void runLocaleExplorer(LXContext *lx)
 {
 
 #ifdef LX_BUF_OUT
-#if defined(LX_TMPFILE)
   FILE *tmpf;
   FILE *realout;
+#if defined(LX_TMPFILE)
   long int len;
 /* #elif ..etc.. */
 #else
-#error not implemented
+  char *buf;
+  size_t len;
 #endif 
 #endif /* LX_BUF_OUT */
 
   lx->convRequested = "utf-8";
   lx->convName = "utf-8";
-  lx->headerOut = lx->fOUT;
   
   setLocaleAndEncoding(lx);
   
-  if(lx->fileObj) { /* file output */
-    writeFileObject(lx, lx->fileObj);
-    lx->OUT = NULL;
-    return;
-  }
-
 #ifdef LX_BUF_OUT
-#ifdef LX_TMPFILE
   realout = lx->fOUT;
+#ifdef LX_TMPFILE
   tmpf = tmpfile();
   lx->fOUT = tmpf;
-  lx->headerOut = realout;
 #else
-#error Not implemented
+  len = 16384;
+  buf = malloc(len);
+  lx->fOUT = open_memstream(&buf, &len);
 #endif
 #endif
   
@@ -329,16 +327,32 @@ void runLocaleExplorer(LXContext *lx)
     return;
   }
   
-  setupLocaleExplorer(lx); /* and output initial headers */
+  if(lx->fileObj) { /* file output */
+    writeFileObject(lx, lx->fileObj);
+  } else {
+    setupLocaleExplorer(lx); /* and output initial headers */
+  }
+
+    
+  if(!lx->fileObj) {
+    displayLocaleExplorer(lx);
+  }
   
-  if(lx->OUT) {
+
 #ifndef LX_BUF_OUT
     /* write end of headers */
     fprintf(lx->fOUT, "\r\n");
     fflush(lx->fOUT);
 #endif
+
+#ifdef LX_BUF_OUT
+    fflush(lx->fOUT);
+    appendHeader(lx, "Content-length", "%d", len);
+#endif
+
+    strcat(lx->headers, "\n");
+
     
-    displayLocaleExplorer(lx);
 
 #ifdef LX_BUF_OUT
 #if defined(LX_TMPFILE)
@@ -354,7 +368,6 @@ void runLocaleExplorer(LXContext *lx)
       fprintf(stderr, "wrote %ld to tmp file\n", len);
       fflush(stderr);
 #endif
-      fprintf(realout,"Content-length: %d\n\n", len);
       fflush(realout);
       rewind(tmpf);
 #ifdef LX_BUF_DEBUG
@@ -379,12 +392,16 @@ void runLocaleExplorer(LXContext *lx)
       }
       fflush(realout);
       fclose(tmpf);
-    }
+
 #else
-#error not implemented
+    /* mem stream */
+      
+      fwrite(lx->headers,1,strlen(lx->headers),realout); /* write out in one chunk */
+      fwrite(buf,1,len,realout); /* write out in one chunk ( omit if HEAD ! ) */
+      free(buf);
+      fflush(realout);
 #endif
 #endif
-  }
 }
 
 UResourceBundle *getCurrentBundle(LXContext *lx, UErrorCode *status) 
@@ -475,32 +492,34 @@ void setLocaleAndEncoding(LXContext *lx)
       char *newLocale;
       /* OK, if they haven't set a locale, maybe their web browser has. */
       if(!(tmp=strchr(lx->acceptLanguage,','))) /* multiple item separator */
-        if(!(tmp=strchr(lx->acceptLanguage,'='))) /* strength separator */
-          tmp = lx->acceptLanguage + strlen(lx->acceptLanguage);
-      newLocale = strdup(lx->acceptLanguage);
-      newLocale[my_min(100,tmp-lx->acceptLanguage)]=0;
+        if(!(tmp=strchr(lx->acceptLanguage,'='))) { /* strength separator */
+          const char *lang;
 
-      /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight.  */
-      
-      /* half hearted attempt at canonicalizing the locale string. */
-      newLocale[0] = tolower(newLocale[0]);
-      newLocale[1] = tolower(newLocale[1]);
-      if(newLocale[2] == '-')
-        newLocale[2] = '_';
-      if(newLocale[5] == '-')
-        newLocale[5] = '_';
-      
-        newLocale[3] = toupper(newLocale[3]);
-        newLocale[4] = toupper(newLocale[4]);
-
-        if(isSupportedLocale(newLocale, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
-          lx->dispLocale =  newLocale;
-          lx->dispLocaleSet = TRUE;
-        } else {
-          free(newLocale);
+          lang = lx->acceptLanguage + strlen(lx->acceptLanguage);
+          newLocale = strdup(lx->acceptLanguage);
+          newLocale[my_min(100,lang-lx->acceptLanguage)]=0;
+          
+          /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight.  */
+          
+          /* half hearted attempt at canonicalizing the locale string. */
+          newLocale[0] = tolower(newLocale[0]);
+          newLocale[1] = tolower(newLocale[1]);
+          if(newLocale[2] == '-')
+            newLocale[2] = '_';
+          if(newLocale[5] == '-')
+            newLocale[5] = '_';
+          
+          newLocale[3] = toupper(newLocale[3]);
+          newLocale[4] = toupper(newLocale[4]);
+          
+          if(isSupportedLocale(newLocale, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
+            lx->dispLocale =  newLocale;
+            lx->dispLocaleSet = TRUE;
+          } else {
+            free(newLocale);
+          }
         }
-
-        /* that might at least get something.. It's better than defaulting to en_US */
+      /* that might at least get something.. It's better than defaulting to en_US */
     }
   
     if(!lx->convSet) {

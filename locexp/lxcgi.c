@@ -4,7 +4,8 @@
 ***********************************************************************/
 #include "locexp.h"
 #include <unicode/ustdio.h>
-
+#include <stdarg.h>
+#include <stdio.h>
 
 static const char *getenvOrEmpty(const char *env)
 {
@@ -190,4 +191,33 @@ UBool hasQueryField(LXContext* lx, const char *field)
   } else {
     return TRUE; 
   }
+}
+
+void appendHeader(LXContext* lx, const char *header, const char *fmt, ...)
+{
+  va_list ap;
+  char buf[1024];
+  int32_t len;
+  int32_t hdrlen;
+
+  va_start(ap, fmt);
+
+  strcpy(buf,header);
+  strcat(buf,": ");
+  
+  vsnprintf(buf+strlen(buf), 1024-3-(strlen(buf)), fmt, ap);
+  strcat(buf,"\n");
+  
+  len = strlen(buf);
+  if(!lx->headers) {
+    lx->headers = malloc(1024);
+    lx->headerLen = 1024;
+    lx->headers[0] = 0;
+  }
+  hdrlen = strlen(lx->headers);
+  if((hdrlen+len+5) > lx->headerLen) { /* 5 = \r\n\r\n\0 */ 
+    lx->headerLen = hdrlen + len + 5;
+    lx->headers = realloc(lx->headers,lx->headerLen);
+  }
+  strcat(lx->headers,buf);
 }

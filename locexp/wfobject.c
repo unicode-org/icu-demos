@@ -99,20 +99,21 @@ void writeFileObject( LXContext *lx, const char *path )
 
   if(U_FAILURE(status))
   {
-    printf("Content-type: text/html;charset=utf-8\r\n\r\n");
-    printf("Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
+    appendHeader(lx, "Content-type", "text/html;charset=utf-8");
+    fprintf(lx->fOUT, "Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
            lx->dispLocale,
            (thePath==NULL)?"NULL":thePath,
            path);
-    printf("Error: %s\n", u_errorName(status));
-    printf("<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
+    fprintf(lx->fOUT, "Error: %s\n", u_errorName(status));
+    fprintf(lx->fOUT, "<hr><A HREF=\"http://oss.software.ibm.com/icu\">ICU Home</A>\r\n");
     return;
   }
 
   if(!path || !(*path) || (*path == '/'))
   {
 
-    fprintf(lx->fOUT, "Content-type: text/html;charset=utf-8\r\n\r\n");
+    appendHeader(lx, "Content-type", "text/html;charset=utf-8");
+
     fprintf(lx->fOUT, "<html><head><title>bundle list for %s</title></head>\r\n",
            lx->dispLocale);
     fprintf(lx->fOUT, "<body>");
@@ -149,7 +150,7 @@ void writeFileObject( LXContext *lx, const char *path )
     n = ures_getByKey(rb, path, n, &s2);
     if(U_FAILURE(s2))
     {
-      fprintf(lx->fOUT, "Content-type: text/html\r\n\r\n");
+      appendHeader(lx, "Content-type", "text/html");
       fprintf(lx->fOUT, "Error: Couldn't get [%s] in bundle [%s] in path [%s]<P>\r\n",
              path,
              lx->dispLocale,
@@ -163,7 +164,7 @@ void writeFileObject( LXContext *lx, const char *path )
     bin = ures_getBinary(n, &len, &s2);
     if(U_FAILURE(s2))
     {
-      fprintf(lx->fOUT, "Content-type: text/html\r\n\r\n");
+      appendHeader(lx, "Content-type", "text/html");
       fprintf(lx->fOUT, "Error: Couldn't get binary [%s] in bundle [%s] in path [%s]<P>\r\n",
              path,
              lx->dispLocale,
@@ -174,21 +175,23 @@ void writeFileObject( LXContext *lx, const char *path )
     }
     /* whew! */
     
-    if(strstr(path, ".html"))
-      fprintf(lx->fOUT, "Content-type: text/html\r\n");
-    else if(strstr(path, ".gif"))
-      fprintf(lx->fOUT, "Content-type: image/gif\r\n");
-    else if(strstr(path, ".jpg"))
-      fprintf(lx->fOUT, "Content-type: image/jpeg\r\n");
-    else
-      fprintf(lx->fOUT, "Content-type: application/octet-stream\r\n");
+    {
+      const char *type;
 
-    fprintf(lx->fOUT, "Content-length: %d\r\n", len);
-    fprintf(lx->fOUT, "\r\n");
-    fflush(lx->fOUT);
+      if(strstr(path, ".html"))
+        type = "text/html";
+      else if(strstr(path, ".gif"))
+        type = "image/gif";
+      else if(strstr(path, ".jpg"))
+        type = "image/jpeg";
+      else
+        type = "application/octet-stream";
+
+      appendHeader(lx, "Content-type", type);
+    }
+    
+    appendHeader(lx, "X-Content-length", "%d", len);
     fwrite(bin, 1, len, lx->fOUT);
-    fprintf(lx->fOUT, "\r\n");
-    fflush(lx->fOUT);
   }
 
   ures_close(n);

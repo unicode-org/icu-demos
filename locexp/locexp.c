@@ -126,6 +126,7 @@ void displayLocaleExplorer(LXContext *lx)
 
     u_fprintf(lx->OUT, "<br><hr>");
 
+#if 0
     {
       const char *agent;
       const char *server;
@@ -136,6 +137,7 @@ void displayLocaleExplorer(LXContext *lx)
                   FSWF("ieWarning","IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."));
       }
     }
+#endif
 
     if(localeParam && *localeParam && !lx->curLocale && strcmp(lx->curLocaleName,"g7"))
       {
@@ -374,7 +376,7 @@ void displayLocaleExplorer(LXContext *lx)
     
     u_fclose(lx->OUT);
     
-    fflush(stderr);
+    /*     fflush(stderr); */
     
     if(lx->dispRB)
         ures_close(lx->dispRB);

@@ -73,7 +73,9 @@ typedef struct
   /* ============= IO */
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
-  FILE  *headerOut;  /* write headers here*/
+  
+  char    *headers;     /* append headers here (use appendHeader function, below) */
+  int32_t  headerLen;  /* length of header *buffer*  */
 
   /* ============= ENCODING */
   const char *couldNotOpenEncoding;      /* contains error string if nonnull */
@@ -274,6 +276,15 @@ void closePOSTFromFILE(LXContext* lx);
 const char *fieldInQuery(LXContext* lx, const char *query, const char *field);
 const char *queryField(LXContext* lx, const char *field);
 UBool hasQueryField(LXContext* lx, const char *field);
+
+/* header management */
+/**
+ * Add a header to the list.  Do not add trailing cr/lf.
+ * @param lx the context
+ * @param header the header name (e.g. "Content-type")
+ * @param fmt stdio (host, not unicode!) format string + params (e.g. "text/plain; charset=%s", "btf-5") 
+ */
+void appendHeader(LXContext* lx, const char *header, const char *fmt, ...);
 
 
 #endif
