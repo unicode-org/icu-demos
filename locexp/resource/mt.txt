@@ -12,82 +12,104 @@ mt {
   //   USING_FALLBACK_ERROR  {  "(wirt)"  } // Inherited
   //   chooseLocale1 { "' huwa." }
   //   chooseLocale2 { "Jew, agħzel hawn taht.. " } 
-  AmPmMarkers { "AM u PM" }
-  CollationElements { "Collation rules" }
-  Countries { "Pajjiż uri l-ismijiet" }
-  CurrencyElements { "Currency Elements" }
-  DateTimePatterns { "Forma ta' Data u Ħin" }
 
-   DateTimePatterns0  {  "Ħin Sħiħ"  }
-   DateTimePatterns1  {  "Ħin Twil"  }
-   DateTimePatterns2  {  "Ħin Medju"  }
-   DateTimePatterns3  {  "Ħin Qasir"  }
-   DateTimePatterns4  {  "Data Sħiħa"  }
-   DateTimePatterns5  {  "Data Twila"  }
-   DateTimePatterns6  {  "Data Medja"  }
-   DateTimePatterns7  {  "Data Qasira"  }
-   DateTimePatterns8  {  "Ordni ta' Data u Ħin<BR>{0} = Ħin, {1} = Data"  }
 
-   Eras { "Epoka" }
-  Day { "Ġurnata" }
-  DefaultEncoding{  "utf-8"  }
-  Languages { "Lingwa uri l-ismijiet" }
-  LocaleCodes  {  "Kodiċi tal-Lokal"  }
-  LocaleCodes_Country  {  "Pajjiż"  }
-  LocaleCodes_Language  {  "Lingwi"  }
-  LocaleCodes_Variant  {  "Varjazzjoni"  }
-  LocaleID      { "Windows Locale ID" }
-  Month { "Xahar" }
-  NumberElements { "Number Elements" }
-  NumberElements3{ "Persentaġġ" }
-  NumberPatterns { "Forom ta' Numri" }
-
-   NumberPatterns0  {  "Decimal Pattern"  }
-   NumberPatterns1  {  "Forma ta' Flus"  }
-   NumberPatterns2  {  "Percent Pattern"  }
-   NumberPatterns3  {  "Scientific Pattern"  }
-
-  UNKNOWN_ERROR  {  "(żball mhux magħruf)"  }
-  Version { "ICU Data Version" }
-  changeLocale { "Il-lingwa u pajjiż tiegħi :" }
-  chooseLocale { "Il-lingwa u pajjiż tiegħi :" }
-  encoding_translit_setting { "Transliterazzjoni:" }
-  help { "Għen" }
-  helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
-  inherited  {  "(jintirtu)"  }
-  inherited_from  {  "(jintirtu mill-%U)"  }
 //  localPatternChars { "Localized Date Pattern Chars" }
-  localeList_Locale { "Il-Lingwi" }
-  localeList_Sublocale{ "Il-Pajjiżi" }
-  myConverter{ "Kodiċi:" }
-  myLocale { "Lokal:" }
-  none { "Xejn" }
-  on { "Mixgħul" }
-  off { "Mitfi" }
-   poweredby  {  "Miġjub minn"  }
-  statusTableHeader  {  "Għażla: "  }
-  statusTableHeaderChange { "(Ikklikkja biex turi)" }
-  title  {  "MERĦBA!! ICU LocaleExplorer"  }
-  usortIdentical  {  "Identiku"  }
-  usortPrimary  {  "Primarju"  }
-  usortSecondary  {  "Sekondarju"  }
-  usortSort  {  "Sort"  }
-  usortSource { "Minn" }
-  usortTertiary  {  "Terzziarju"  } // ?
-  zoneStrings { "Time Zones" }
+AmPmMarkers { "AM u PM" }
+CollationElements { "Collation rules" }
+Countries { "Pajjiż uri l-ismijiet" }
+CurrencyElements { "Simboli tal-Flus" }
+CurrencyElements0 { "Simbolu tal-Flus" }
+CurrencyElements1 { "Simbolu tal-Flus Internazzjonali" } // Int'l
+CurrencyElements2 { "Punt Deċimali tal-Flus" }
+DateTimeElements { "Settings tad-Data u l-Ħin" }
+DateTimeElements0 { "L-Ewwel Jum tal-Ġimgħa" }
+DateTimeElements1 { "L-Ammont Minimu ta' Jiem fl-Ewwel Ġimgħa" }
 
-  DayAbbreviations { "Ismijiet Qosra" }
-  DayNames { "Ismijiet Twal" }
-  MonthAbbreviations { "Ismijiet Qosra" }
-  MonthNames { "Ismijiet Twal" }
+DateTimePatterns { "Forma ta' Data u Ħin" }
+DateTimePatterns0  {  "Ħin Sħiħ"  }
+DateTimePatterns1  {  "Ħin Twil"  }
+DateTimePatterns2  {  "Ħin Medju"  }
+DateTimePatterns3  {  "Ħin Qasir"  }
+DateTimePatterns4  {  "Data Sħiħa"  }
+DateTimePatterns5  {  "Data Twila"  }
+DateTimePatterns6  {  "Data Medja"  }
+DateTimePatterns7  {  "Data Qasira"  }
+DateTimePatterns8  {  "Ordni ta' Data u Ħin<BR>{0} = Ħin, {1} = Data"  }
+Day { "Ġurnata" }
+DayAbbreviations { "Ismijiet Qosra" }
+DayNames { "Ismijiet Twal" }
+DefaultEncoding{  "utf-8"  }
+Eras { "Epoka" }
+Languages { "Lingwa uri l-ismijiet" }
+LocaleCodes  {  "Kodiċi tal-Lokal"  }
+LocaleCodes_Country  {  "Pajjiż"  }
+LocaleCodes_Language  {  "Lingwi"  }
+LocaleCodes_Variant  {  "Varjazzjoni"  }
+LocaleID      { "Kodiċi tal-Lokal tal-Windows" }
+LocaleScript { "Skritt tal-Lokal" }
+LocaleScriptAbbreviations  {  "Forma Qasira"  }
+LocaleScriptNames  {  "Forma Twila"  }
+Month { "Xahar" }
+MonthAbbreviations { "Ismijiet Qosra" }
+MonthNames { "Ismijiet Twal" }
+NumberElements { "Number Elements" }
+NumberElements1 { "Simbolu ta' bejn l-Eluf" } // 'grupp' ?
+NumberElements2 { "Simbolu ta' bejn l-Pattern" }
+NumberElements4 { "Simbolu taż-żero" } // srl
+NumberElements0 { "Punt Deċimali" }
+NumberElements3{ "Persentaġġ" }
+NumberElements5 { "Numru" } // ?????
+NumberElements6 { "Simbolu għan-Negattiv" }
+NumberElements7 { "Esponenzjali" }
+NumberElements8 { "Kull Elf [/1000]" }
+NumberElements9 { "Infinit" }
+NumberElements10 { "Mhux Numru" } // ? need to be more precise here
+NumberPatterns { "Forom ta' Numri" }
+NumberPatterns0  {  "Pattern Deċimali"  }
+NumberPatterns1  {  "Forma ta' Flus"  }
+NumberPatterns2  {  "Percent Pattern"  }
+NumberPatterns3  {  "Scientific Pattern"  }
+UNKNOWN_ERROR  {  "(żball mhux magħruf)"  }
+Version { "Verżjoni tad-Data tal-ICU" }
+bigStringClickToShow { "(Mneħħi minħabba l-ammont kbir t'informazzjoni. Ikklikja hawn biex tara kollox.)" }
+bigStringHide { "(Aħbi)" }
+changeLocale { "Il-lingwa u pajjiż tiegħi :" }
+chooseLocale { "Il-lingwa u pajjiż tiegħi :" }
+cumulative_notshown { "data kumulattiva li intertet mhix murija" }
+display_ALT { "Problemi biex tara l-karattri?" }
+encoding_translit_setting { "Transliterazzjoni:" }
+help { "Għajnuna" }
+helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
+inherited  {  "(jintirtu)"  }
+inherited_from  {  "(jintirtu mill-%U)"  }
+localeList_Locale { "Il-Lingwi" }
+localeList_Sublocale{ "Il-Pajjiżi" }
+myConverter{ "Kodiċi:" }
+myLocale { "Lokal:" }
+none { "Xejn" }
+off { "Mitfi" }
+on { "Mixgħul" }
+poweredby  {  "Miġjub minn"  }
+poweredby_filebug  {  "Irraporta Żball"  }
+statusTableHeader  {  "Għażla: "  }
+statusTableHeaderChange { "(Ikklikkja biex turi)" }
+stringClickToShow { "(Ikklikja hawn biex taraha.)" }
+title  {  "MERĦBA!! Esploratur tal-Lokali tal-ICU"  }
+usortIdentical  {  "Identiku"  }
+usortPrimary  {  "Primarju"  }
+usortSecondary  {  "Sekondarju"  }
+usortSort  {  "Sort"  }
+usortSource { "Minn" }
+usortTertiary  {  "Terzziarju"  } // ?
+zoneStrings { "Time Zones" }
 
-  EXPLORE_CollationElements_sampleString { 
+EXPLORE_CollationElements_sampleString { 
 
       "G\u0127allem|"
       "xog\u0127ol|"
       "zokkor|"
-      "ie\u0126or|"
-      "Iemes|"
+      "ie\u0127or|"
       "\u010Bikkulata|"
       "id-dudu|"
       "\u0120urdien|"
