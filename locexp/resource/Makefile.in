@@ -73,7 +73,7 @@ Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 
 
 root.txt: ../locexp.c root.txt.inc ../tools/extractStrings.sh
-	env PATH=../tools:../../uconv:$(PATH) extractStrings.sh ../locexp.c > ../resource/root.txt || ( rm -f root.txt ; false )
+	env $(INVOKE) PATH=../tools:$(bindir):$(sbindir):$(PATH) extractStrings.sh ../locexp.c > ../resource/root.txt || ( rm -f root.txt ; false )
 
 index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
 	sh ../tools/genIndex.sh $(SRC) root.txt > index.txt
