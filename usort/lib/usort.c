@@ -180,37 +180,46 @@ USort*
 usort_open(const char *locale, UCollationStrength strength, UBool ownText,
            UErrorCode *status)
 {
+  UCollator *newColl;
+  
+  if(U_FAILURE(*status)) return NULL;
+
+  newColl = ucol_open(locale, status);
+  if(newColl && (strength != UCOL_DEFAULT)) {
+    ucol_setStrength(newColl, strength);
+  }
+
+  return usort_openWithCollator(newColl, ownText, status);
+}
+
+USort*
+usort_openWithCollator(UCollator *adopt, UBool ownText,
+                       UErrorCode *status)
+{
   USort *n;
   
-  if(U_FAILURE(*status))
-    return 0;
+  if(U_FAILURE(*status)) return NULL;
 
   n = malloc(sizeof(USort));
 
-  if(!n)
-    {
-      *status = U_MEMORY_ALLOCATION_ERROR;
-      return n;
-    }
+  if(!n) {
+    *status = U_MEMORY_ALLOCATION_ERROR;
+    return n;
+  }
 
   n->lines  = 0;
   n->size =0;
   n->count = 0;
   n->ownsText = ownText;
-  n->collator = ucol_open(locale, status);
+  n->collator = adopt;
   n->func = ucol_getSortKey;
   n->trim = FALSE;
 
   if(U_FAILURE(*status)) /* Failed to open the collator. */
-    {
-      free(n);
-      return 0;
-    }
-  if(strength != UCOL_DEFAULT) 
   {
-    ucol_setStrength(n->collator, strength);
+    free(n);
+    return 0;
   }
-
   return n;
 }
 
@@ -221,14 +230,22 @@ usort_close(USort *usort)
     return;
 
   free(usort->collator);
+  usort_remove(usort);
+  free(usort);
+}
+
+void usort_remove(USort *usort)
+{
   if(usort->ownsText)
-    {
-      /* TO DO */
-    }
+  {
+    /* TO DO */
+  }
 
   free(usort->lines);
-  
-  free(usort);
+
+  usort->size =0;
+  usort->count=0;
+  usort->lines=0;
 }
 
 void

@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-*   Copyright (C) 1999-2000, International Business Machines
+*   Copyright (C) 1999-2003, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -9,10 +9,9 @@
    using the usort library.
 
    for the IBM Classes for Unicode
-   <http://www10.software.ibm.com/developerworks/opensource/icu> 
+   http://oss.software.ibm.com/icu/
 
-
-   Steven R. Loomis <srl@monkey.sbay.org>
+   Steven R. Loomis <srl@jtcsv.com>
 
    Usage: 
       mySort =  usort_open()..
@@ -128,6 +127,17 @@ usort_open(const char *locale, UCollationStrength strength, UBool ownText,
            UErrorCode *status);
 
 /**
+ * Open a USort object with a custom Collator
+ * @param adopt Collator to adopt
+ * @param ownText TRUE if this object should own its' text.
+ * @param status Error code. [values?]
+ */
+
+T_USORT_API USort*
+usort_openWithCollator(UCollator *adopt, UBool ownText,
+                       UErrorCode *status);
+
+/**
  * Close a USort object. If the ownsText was set, then delete the
  * 0wned text.
  * @param usort The USort to be closed.
@@ -172,6 +182,12 @@ usort_addLinesFromFILE( USort *sort, FILE *file, UConverter *inConverter, UBool 
 
 T_USORT_API void 
 usort_sort(USort *usort);
+
+/**
+ * Remove all lines
+ */
+T_USORT_API void
+usort_remove(USort *usort);
 
 /**
  * Print out the contents of the sorted list to some FILE
