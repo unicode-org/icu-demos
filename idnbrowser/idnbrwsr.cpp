@@ -494,7 +494,7 @@ main(int argc, const char *argv[]) {
 #   endif
 #endif
     if((cgi=getenv("QUERY_STRING"))!=NULL) {
-        parseQueryString(cgi,strlen(cgi),sizeof(options)/sizeof(options[0]),options);
+        parseQueryString(cgi,strlen(cgi),LENGTHOF(options),options);
 //        if(options[INPUT_TYPE].doesOccur){
             const char* inputType = options[INPUT_TYPE].value;
             int32_t len = options[INPUT_TYPE].valueLen;

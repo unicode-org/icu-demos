@@ -43,7 +43,7 @@ struct QueryOption {
 
 /* macro for an entry in a declaration of UOption[] */
 #define QUERY_OPTION_DEF(longName, optionFn, context) \
-    { longName, NULL, optionFn, context, 0 }
+    { longName, NULL, 0, optionFn, context, 0 }
 
 
 /**
@@ -57,3 +57,5 @@ U_CAPI int U_EXPORT2
 parseQueryString(const char* src,int32_t srcLen, int32_t optionCount, QueryOption options[]);
 
 #endif
+
+
