@@ -8,7 +8,7 @@ AC_INIT(usort/lib/unicode/usort.h)
 AC_PREFIX_PROGRAM(genrb)
 
 # Cross compiling is taken care of becuase you're pointing to an entire set of configuration options
-AC_CHECK_FILE($prefix/share/icu/Makefile.inc,,AC_MSG_ERROR([Could not find the installed ICU. Re-run ./configure with --prefix=XXX where XXX is the same prefix that the ICU was configured with. ]))
+AC_CHECK_FILE($prefix/lib/icu/Makefile.inc,,AC_MSG_ERROR([Could not find the installed ICU. Re-run ./configure with --prefix=XXX where XXX is the same prefix that the ICU was configured with. ]))
 
 OLDCPPFLAGS=${CPPFLAGS}
 CPPFLAGS="${CPPFLAGS} -I$prefix/include"

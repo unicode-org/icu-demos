@@ -788,16 +788,16 @@ else
 fi
 
 
-ac_safe=`echo "$prefix/share/icu/Makefile.inc" | sed 'y%./+-%__p_%'`
-echo $ac_n "checking for $prefix/share/icu/Makefile.inc""... $ac_c" 1>&6
-echo "configure:794: checking for $prefix/share/icu/Makefile.inc" >&5
+ac_safe=`echo "$prefix/lib/icu/Makefile.inc" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for $prefix/lib/icu/Makefile.inc""... $ac_c" 1>&6
+echo "configure:794: checking for $prefix/lib/icu/Makefile.inc" >&5
 if eval "test \"`echo '$''{'ac_cv_file_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   if test "$cross_compiling" = yes; then
     { echo "configure: error: Cannot check for file existence when cross compiling" 1>&2; exit 1; }
 else
-  if test -r $prefix/share/icu/Makefile.inc; then
+  if test -r $prefix/lib/icu/Makefile.inc; then
     eval "ac_cv_file_$ac_safe=yes"
   else
     eval "ac_cv_file_$ac_safe=no"
