@@ -84,7 +84,7 @@ int main(int argc, char **argv);
 void doDecodeQueryField(const char *in, char *out);
  const char * up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *status);  
 void printType(int8_t type);
-void printBlock(UCharScript block);
+void printBlock(UCharBlock block);
 UChar32 doSearchBlock(int32_t, UChar32 startFrom);
 UChar32 doSearchType(int8_t, UChar32 startFrom);
 void showSearchMenu(UChar32 startFrom);
@@ -117,7 +117,6 @@ int enumHits = 0, foundCount = 0; /* # of enumerations, # of hits */
 void printCharName(UChar32 c)
 {
   char junkbuf[512];
-  int i;
   UErrorCode status = U_ZERO_ERROR;
   u_charName(c, U_UNICODE_CHAR_NAME, junkbuf, 512, &status);
 
@@ -284,7 +283,6 @@ void printBasicBlockInfo(UChar32 theChar)
 {
   char  theString[100];
   UChar chars[5];
-  int n;
   UErrorCode status = U_ZERO_ERROR;
   int offset = 0;
 
@@ -417,7 +415,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
             if(searchedFor)
               printf("<B>");
             
-            printf("<A HREF=\"?scr=%d&b=%04X\">", (u_charScript(theChar)+1)%U_CHAR_SCRIPT_COUNT, theChar);
+            printf("<A HREF=\"?scr=%d&b=%04X\">", (u_charScript(theChar)+1)%U_SCRIPT_BLOCK_COUNT, theChar);
             printBlock(u_charScript(theChar));
             printf("</A>");
             
@@ -508,7 +506,6 @@ main(int argc,
   char *qs;
   char *pi;
   char *tmp;
-  char theString[800];
   UChar chars[800];
   UChar32 theChar;
   int n,i,r,c,uc;
@@ -745,7 +742,7 @@ main(int argc,
              );
 
       printf("<B>Blocks:</B>");
-      for(i=U_BASIC_LATIN;i<U_CHAR_SCRIPT_COUNT;i++)
+      for(i=U_BASIC_LATIN_BLOCK;i<U_SCRIPT_BLOCK_COUNT;i++)
       {
         printf("<A HREF=\"?scr=%d&b=0\">", i);
         printBlock(i);
@@ -978,9 +975,6 @@ main(int argc,
 #endif /* RADICAL_LIST */
   else if(mode == ENAME) /************************ NAME ***************************/
     {
-      UChar32 c;
-      char *p;
-      char buf[512];
       UErrorCode status = U_ZERO_ERROR;
 
       printf("</td></tr></table></form>"); /* closer */
@@ -1017,8 +1011,6 @@ main(int argc,
   else if(mode == EEXACTNAME) /************** EXACT NAME ********************************/
     {
       UChar32 c;
-      char *p;
-      char buf[512];
       UErrorCode status = U_ZERO_ERROR;
 
       printf("</td></tr></table></form>"); // closer
@@ -1098,7 +1090,6 @@ up_u2c(char *buf, const UChar *src, int32_t len, UErrorCode *cnvStatus)
   int32_t sourceLen;
   const UChar *mySource;
   const UChar *mySourceEnd;
-  const UChar *myConsumed;
   char *myTarget;
   int32_t arraySize;
   UErrorCode  status = U_ZERO_ERROR;
@@ -1195,97 +1186,97 @@ void printType(int8_t type)
 }
 
 
-void printBlock(UCharScript block)
+void printBlock(UCharBlock block)
 {
   switch(block)
     {
-case U_BASIC_LATIN: printf("Basic Latin"); return;
-case U_LATIN_1_SUPPLEMENT: printf("Latin-1 Supplement"); return;
-case U_LATIN_EXTENDED_A: printf("Latin Extended A"); return;
-case U_LATIN_EXTENDED_B: printf("Latin Extended B"); return;
-case U_IPA_EXTENSIONS: printf("IPA Extensions"); return;
-case U_SPACING_MODIFIER_LETTERS: printf("Spacing Modifier Letters"); return;
-case U_COMBINING_DIACRITICAL_MARKS: printf("Combining Diacritical Marks"); return;
-case U_GREEK: printf("Greek"); return;
-case U_CYRILLIC: printf("Cyrillic"); return;
-case U_ARMENIAN: printf("Armenian"); return;
-case U_HEBREW: printf("Hebrew"); return;
-case U_ARABIC: printf("Arabic"); return;
-case U_SYRIAC: printf("Syriac"); return;
-case U_THAANA: printf("Thaana"); return;
-case U_DEVANAGARI: printf("Devanagari"); return;
-case U_BENGALI: printf("Bengali"); return;
-case U_GURMUKHI: printf("Gurmukhi"); return;
-case U_GUJARATI: printf("Gujarati"); return;
-case U_ORIYA: printf("Oriya"); return;
-case U_TAMIL: printf("Tamil"); return;
-case U_TELUGU: printf("Telugu"); return;
-case U_KANNADA: printf("Kannada"); return;
-case U_MALAYALAM: printf("Malayalam"); return;
-case U_SINHALA: printf("Sinhala"); return;
-case U_THAI: printf("Thai"); return;
-case U_LAO: printf("Lao"); return;
-case U_TIBETAN: printf("Tibetan"); return;
-case U_MYANMAR: printf("Myanmar"); return;
-case U_GEORGIAN: printf("Georgian"); return;
-case U_HANGUL_JAMO: printf("Hangul-Jamo"); return;
-case U_ETHIOPIC: printf("Ethiopic"); return;
-case U_CHEROKEE: printf("Cherokee"); return;
-case U_UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS: printf("Unified Canadian Aboriginal Syllabics"); return;
-case U_OGHAM: printf("Ogham"); return;
-case U_RUNIC: printf("Runic"); return;
-case U_KHMER: printf("Khmer"); return;
-case U_MONGOLIAN: printf("Mongolian"); return;
-case U_LATIN_EXTENDED_ADDITIONAL: printf("Latin Extended Additional"); return;
-case U_GREEK_EXTENDED: printf("Greek Extended"); return;
-case U_GENERAL_PUNCTUATION: printf("General Punctuation"); return;
-case U_SUPERSCRIPTS_AND_SUBSCRIPTS: printf("Superscripts and Subscripts"); return;
-case U_CURRENCY_SYMBOLS: printf("Currency Symbols"); return;
-case U_COMBINING_MARKS_FOR_SYMBOLS: printf("Combining Marks for Symbols"); return;
-case U_LETTERLIKE_SYMBOLS: printf("Letterlike Symbols"); return;
-case U_NUMBER_FORMS: printf("Number Forms"); return;
-case U_ARROWS: printf("Arrows"); return;
-case U_MATHEMATICAL_OPERATORS: printf("Mathematical Operators"); return;
-case U_MISCELLANEOUS_TECHNICAL: printf("Miscellaneous Technical"); return;
-case U_CONTROL_PICTURES: printf("Control Pictures"); return;
-case U_OPTICAL_CHARACTER_RECOGNITION: printf("Optical Character Recognition"); return;
-case U_ENCLOSED_ALPHANUMERICS: printf("Enclosed Alphanumerics"); return;
-case U_BOX_DRAWING: printf("Box Drawing"); return;
-case U_BLOCK_ELEMENTS: printf("Block Elements"); return;
-case U_GEOMETRIC_SHAPES: printf("Geometric Shapes"); return;
-case U_MISCELLANEOUS_SYMBOLS: printf("Miscellaneous Symbols"); return;
-case U_DINGBATS: printf("Dingbats"); return;
-case U_BRAILLE_PATTERNS: printf("Braille Patterns"); return;
-case U_CJK_RADICALS_SUPPLEMENT: printf("CJK Radicals Supplement"); return;
-case U_KANGXI_RADICALS: printf("KangXi Radicals"); return;
-case U_IDEOGRAPHIC_DESCRIPTION_CHARACTERS: printf("Ideographic Description Characters"); return;
-case U_CJK_SYMBOLS_AND_PUNCTUATION: printf("CJK Symbols and Punctuation"); return;
-case U_HIRAGANA: printf("Hiragana"); return;
-case U_KATAKANA: printf("Katakana"); return;
-case U_BOPOMOFO: printf("Bopomofo"); return;
-case U_HANGUL_COMPATIBILITY_JAMO: printf("Hangul Compatibility Jamo"); return;
-case U_KANBUN: printf("Kanbun"); return;
-case U_BOPOMOFO_EXTENDED: printf("Bopomofo Extended"); return;
-case U_ENCLOSED_CJK_LETTERS_AND_MONTHS: printf("Enclosed CJK Letters and Months"); return;
-case U_CJK_COMPATIBILITY: printf("CJK Compatibility"); return;
-case U_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A: printf("CJK Unified Ideographs Extension A"); return;
-case U_CJK_UNIFIED_IDEOGRAPHS: printf("CJK Unified Ideographs"); return;
-case U_YI_SYLLABLES: printf("Yi Syllables"); return;
-case U_YI_RADICALS: printf("Yi Radicals"); return;
-case U_HANGUL_SYLLABLES: printf("Hangul Syllables"); return;
-case U_HIGH_SURROGATES: printf("High Surrogates"); return;
-case U_HIGH_PRIVATE_USE_SURROGATES: printf("High Private-Use Surrogates"); return;
-case U_LOW_SURROGATES: printf("Low Surrogates"); return;
-case U_PRIVATE_USE_AREA /* PRIVATE_USE */: printf("Private Use Area"); return;
-case U_CJK_COMPATIBILITY_IDEOGRAPHS: printf("CJK Compatibility Ideographs"); return;
-case U_ALPHABETIC_PRESENTATION_FORMS: printf("Alphabetic Presentation Forms"); return;
-case U_ARABIC_PRESENTATION_FORMS_A: printf("Arabic Presentation Forms A"); return;
-case U_COMBINING_HALF_MARKS: printf("Combining Half Marks"); return;
-case U_CJK_COMPATIBILITY_FORMS: printf("CJK Compatibility Forms"); return;
-case U_SMALL_FORM_VARIANTS: printf("Small Form Variants"); return;
-case U_ARABIC_PRESENTATION_FORMS_B: printf("Arabic Presentation Forms B"); return;
-case U_SPECIALS: printf("Specials"); return;
-case U_HALFWIDTH_AND_FULLWIDTH_FORMS: printf("Halfwidth and Fullwidth Forms"); return;
+case U_BASIC_LATIN_BLOCK: printf("Basic Latin"); return;
+case U_LATIN_1_SUPPLEMENT_BLOCK: printf("Latin-1 Supplement"); return;
+case U_LATIN_EXTENDED_A_BLOCK: printf("Latin Extended A"); return;
+case U_LATIN_EXTENDED_B_BLOCK: printf("Latin Extended B"); return;
+case U_IPA_EXTENSIONS_BLOCK: printf("IPA Extensions"); return;
+case U_SPACING_MODIFIER_LETTERS_BLOCK: printf("Spacing Modifier Letters"); return;
+case U_COMBINING_DIACRITICAL_MARKS_BLOCK: printf("Combining Diacritical Marks"); return;
+case U_GREEK_BLOCK: printf("Greek"); return;
+case U_CYRILLIC_BLOCK: printf("Cyrillic"); return;
+case U_ARMENIAN_BLOCK: printf("Armenian"); return;
+case U_HEBREW_BLOCK: printf("Hebrew"); return;
+case U_ARABIC_BLOCK: printf("Arabic"); return;
+case U_SYRIAC_BLOCK: printf("Syriac"); return;
+case U_THAANA_BLOCK: printf("Thaana"); return;
+case U_DEVANAGARI_BLOCK: printf("Devanagari"); return;
+case U_BENGALI_BLOCK: printf("Bengali"); return;
+case U_GURMUKHI_BLOCK: printf("Gurmukhi"); return;
+case U_GUJARATI_BLOCK: printf("Gujarati"); return;
+case U_ORIYA_BLOCK: printf("Oriya"); return;
+case U_TAMIL_BLOCK: printf("Tamil"); return;
+case U_TELUGU_BLOCK: printf("Telugu"); return;
+case U_KANNADA_BLOCK: printf("Kannada"); return;
+case U_MALAYALAM_BLOCK: printf("Malayalam"); return;
+case U_SINHALA_BLOCK: printf("Sinhala"); return;
+case U_THAI_BLOCK: printf("Thai"); return;
+case U_LAO_BLOCK: printf("Lao"); return;
+case U_TIBETAN_BLOCK: printf("Tibetan"); return;
+case U_MYANMAR_BLOCK: printf("Myanmar"); return;
+case U_GEORGIAN_BLOCK: printf("Georgian"); return;
+case U_HANGUL_JAMO_BLOCK: printf("Hangul-Jamo"); return;
+case U_ETHIOPIC_BLOCK: printf("Ethiopic"); return;
+case U_CHEROKEE_BLOCK: printf("Cherokee"); return;
+case U_UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS_BLOCK: printf("Unified Canadian Aboriginal Syllabics"); return;
+case U_OGHAM_BLOCK: printf("Ogham"); return;
+case U_RUNIC_BLOCK: printf("Runic"); return;
+case U_KHMER_BLOCK: printf("Khmer"); return;
+case U_MONGOLIAN_BLOCK: printf("Mongolian"); return;
+case U_LATIN_EXTENDED_ADDITIONAL_BLOCK: printf("Latin Extended Additional"); return;
+case U_GREEK_EXTENDED_BLOCK: printf("Greek Extended"); return;
+case U_GENERAL_PUNCTUATION_BLOCK: printf("General Punctuation"); return;
+case U_SUPERSCRIPTS_AND_SUBSCRIPTS_BLOCK: printf("Superscripts and Subscripts"); return;
+case U_CURRENCY_SYMBOLS_BLOCK: printf("Currency Symbols"); return;
+case U_COMBINING_MARKS_FOR_SYMBOLS_BLOCK: printf("Combining Marks for Symbols"); return;
+case U_LETTERLIKE_SYMBOLS_BLOCK: printf("Letterlike Symbols"); return;
+case U_NUMBER_FORMS_BLOCK: printf("Number Forms"); return;
+case U_ARROWS_BLOCK: printf("Arrows"); return;
+case U_MATHEMATICAL_OPERATORS_BLOCK: printf("Mathematical Operators"); return;
+case U_MISCELLANEOUS_TECHNICAL_BLOCK: printf("Miscellaneous Technical"); return;
+case U_CONTROL_PICTURES_BLOCK: printf("Control Pictures"); return;
+case U_OPTICAL_CHARACTER_RECOGNITION_BLOCK: printf("Optical Character Recognition"); return;
+case U_ENCLOSED_ALPHANUMERICS_BLOCK: printf("Enclosed Alphanumerics"); return;
+case U_BOX_DRAWING_BLOCK: printf("Box Drawing"); return;
+case U_BLOCK_ELEMENTS_BLOCK: printf("Block Elements"); return;
+case U_GEOMETRIC_SHAPES_BLOCK: printf("Geometric Shapes"); return;
+case U_MISCELLANEOUS_SYMBOLS_BLOCK: printf("Miscellaneous Symbols"); return;
+case U_DINGBATS_BLOCK: printf("Dingbats"); return;
+case U_BRAILLE_PATTERNS_BLOCK: printf("Braille Patterns"); return;
+case U_CJK_RADICALS_SUPPLEMENT_BLOCK: printf("CJK Radicals Supplement"); return;
+case U_KANGXI_RADICALS_BLOCK: printf("KangXi Radicals"); return;
+case U_IDEOGRAPHIC_DESCRIPTION_CHARACTERS_BLOCK: printf("Ideographic Description Characters"); return;
+case U_CJK_SYMBOLS_AND_PUNCTUATION_BLOCK: printf("CJK Symbols and Punctuation"); return;
+case U_HIRAGANA_BLOCK: printf("Hiragana"); return;
+case U_KATAKANA_BLOCK: printf("Katakana"); return;
+case U_BOPOMOFO_BLOCK: printf("Bopomofo"); return;
+case U_HANGUL_COMPATIBILITY_JAMO_BLOCK: printf("Hangul Compatibility Jamo"); return;
+case U_KANBUN_BLOCK: printf("Kanbun"); return;
+case U_BOPOMOFO_EXTENDED_BLOCK: printf("Bopomofo Extended"); return;
+case U_ENCLOSED_CJK_LETTERS_AND_MONTHS_BLOCK: printf("Enclosed CJK Letters and Months"); return;
+case U_CJK_COMPATIBILITY_BLOCK: printf("CJK Compatibility"); return;
+case U_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A_BLOCK: printf("CJK Unified Ideographs Extension A"); return;
+case U_CJK_UNIFIED_IDEOGRAPHS_BLOCK: printf("CJK Unified Ideographs"); return;
+case U_YI_SYLLABLES_BLOCK: printf("Yi Syllables"); return;
+case U_YI_RADICALS_BLOCK: printf("Yi Radicals"); return;
+case U_HANGUL_SYLLABLES_BLOCK: printf("Hangul Syllables"); return;
+case U_HIGH_SURROGATES_BLOCK: printf("High Surrogates"); return;
+case U_HIGH_PRIVATE_USE_SURROGATES_BLOCK: printf("High Private-Use Surrogates"); return;
+case U_LOW_SURROGATES_BLOCK: printf("Low Surrogates"); return;
+case U_PRIVATE_USE_AREA_BLOCK /* PRIVATE_USE */: printf("Private Use Area"); return;
+case U_CJK_COMPATIBILITY_IDEOGRAPHS_BLOCK: printf("CJK Compatibility Ideographs"); return;
+case U_ALPHABETIC_PRESENTATION_FORMS_BLOCK: printf("Alphabetic Presentation Forms"); return;
+case U_ARABIC_PRESENTATION_FORMS_A_BLOCK: printf("Arabic Presentation Forms A"); return;
+case U_COMBINING_HALF_MARKS_BLOCK: printf("Combining Half Marks"); return;
+case U_CJK_COMPATIBILITY_FORMS_BLOCK: printf("CJK Compatibility Forms"); return;
+case U_SMALL_FORM_VARIANTS_BLOCK: printf("Small Form Variants"); return;
+case U_ARABIC_PRESENTATION_FORMS_B_BLOCK: printf("Arabic Presentation Forms B"); return;
+case U_SPECIALS_BLOCK: printf("Specials"); return;
+case U_HALFWIDTH_AND_FULLWIDTH_FORMS_BLOCK: printf("Halfwidth and Fullwidth Forms"); return;
   /*case U_CHAR_SCRIPT_COUNT: printf("Script Count"); return; */
 case U_NO_SCRIPT: printf("No Script"); return;
 
@@ -1338,7 +1329,7 @@ void showSearchMenu(UChar32 startFrom)
          "\r\n");
 
   printf("<SELECT NAME=scr>");
-  for(i=U_BASIC_LATIN;i<=U_CHAR_SCRIPT_COUNT;i++)
+  for(i=U_BASIC_LATIN_BLOCK;i<=U_SCRIPT_BLOCK_COUNT;i++)
     {
       printf("  <OPTION ");
       if(i == gSearchBlock)
