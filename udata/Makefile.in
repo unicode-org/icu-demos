@@ -76,7 +76,7 @@ install-data: $(ICUDATADIR)/unames.dat
 
 $(ICUDATADIR)/unames.dat: $(GEN_TARGET) $(LIB_TARGET) $(UNICODEDATA)
 	@echo "Generating names.."
-	$(GEN_TARGET) $(UNICODEDATA)
+	./$(GEN_TARGET) $(UNICODEDATA)
 
 dist-local:
 
