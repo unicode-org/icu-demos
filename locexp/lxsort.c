@@ -52,8 +52,8 @@ void printRuleString(LXContext *lx, const UChar*s)
 
   while(*s) {
     switch(*s) {
-    case '\r': break;
-    case '\n': break;
+    case '\r': if(!isNL(s[1])) { u_fprintf(lx->OUT, "\r\n"); } break;
+    case '\n': if(!isNL(s[1])) { u_fprintf(lx->OUT, "\r\n"); } break;
     case '&':  u_fprintf(lx->OUT, "\n&amp;"); break;
     case ']': u_fprintf(lx->OUT, "]\n"); break;
     case '<': 
@@ -442,7 +442,7 @@ void showSort(LXContext *lx, const char *locale)
         value = UCOL_OFF;
       }
 
-      u_fprintf(lx->OUT, "<input type=hidden name=lxCustSortOpts value=> <input type=checkbox %s name=fr> %U <BR>\r\n",
+      u_fprintf(lx->OUT, "<input type=hidden name=lxCustSortOpts value=x> <input type=checkbox %s name=fr> %U <BR>\r\n",
                 (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -620,13 +620,13 @@ void showSort(LXContext *lx, const char *locale)
       if(bund) array = ures_getByKey(bund, "CollationElements", NULL, &err);
       if(array) s = ures_getStringByKey(array, "Sequence", &len, &err);
       if(U_SUCCESS(err) && s && *s) {
-        u_fprintf(lx->OUT, "# %s.txt Rules\r\n", lx->curLocaleName, queryField(lx,"usortRulesLocale"));
+        u_fprintf(lx->OUT, "# %s.txt Rules\r\n\r\n", lx->curLocaleName, queryField(lx,"usortRulesLocale"));
         printRuleString(lx,s);
       } else { 
         u_fprintf(lx->OUT, "err %s", u_errorName(err));
       }
     } else if (ruleUrlChars[0]) { /* user has entered a custom rule */
-      printRuleString(lx,ruleChars);
+      printRuleString(lx,ruleChars); 
     }
     u_fprintf(lx->OUT, "</textarea>\r\n");
     
@@ -714,6 +714,7 @@ void showSort(LXContext *lx, const char *locale)
           aSort = customSort;
           if(n>0 && !lxCustSortOpts) {
             /* don't setstrength on 1st item (default) if custom options have been set */
+            u_fprintf(lx->OUT, "<td>SET STRENGTH</td>\r\n");
             ucol_setStrength(usort_getCollator(aSort), UCOL_DEFAULT);
           }
           
@@ -742,6 +743,7 @@ void showSort(LXContext *lx, const char *locale)
           if(n != 0) {
             usort_sort(aSort); /* first item is 'original' */
           }
+          
           
           u_fprintf(lx->OUT, " <TD VALIGN=TOP>");
           
@@ -813,10 +815,12 @@ void showSort(LXContext *lx, const char *locale)
   u_fprintf(lx->OUT, "</TR></TABLE><P>");
 
   u_fprintf(lx->OUT, "</form>\r\n");
-  
+
+#if 0  
   if(mode != kG7Mode)
     u_fprintf(lx->OUT, "<P><P>%U", FSWF("EXPLORE_CollationElements_strength", "You see four different columns as output. The first is the original text for comparison. The lines are numbered to show their original position. The remaining columns show sorting by different strengths (available as a parameter to the collation function). Groups of lines that sort precisely the same are separated by an underline. Since collation treats these lines as identical, lines in the same group could appear in any order (depending on the precise sorting algorithm used). "));
-  
+#endif  
+
   u_fprintf(lx->OUT, "<P>\r\n");
   u_fprintf(lx->OUT, "%U <a href=\"http://oss.software.ibm.com/icu/userguide/Collate_Intro.html\">%U</a><p>\r\n",
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
