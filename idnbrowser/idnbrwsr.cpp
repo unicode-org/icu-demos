@@ -641,38 +641,40 @@ main(int argc, const char *argv[]) {
         parseQueryString(cgi,strlen(cgi),LENGTHOF(options),options);
         const char* inputType = options[INPUT_TYPE].value;
         int32_t len = (options[INPUT].valueLen * 2);
-        inputIsUTF8=TRUE;
-        buffer = (char*) malloc( len );
-	inputLength=parseEscaped(options[INPUT].value,options[INPUT].valueLen, buffer, len, errorCode);
-        if(U_FAILURE(errorCode)){
-	   printf("#### len = %i valueLen = %i %s\n", len, options[INPUT].valueLen,buffer);
+	if ( len != 0 ) {
+	  inputIsUTF8=TRUE;
+	  buffer = (char*) malloc( len );
+	  inputLength=parseEscaped(options[INPUT].value,options[INPUT].valueLen, buffer, len, errorCode);
+	  if(U_FAILURE(errorCode)){
+	    printf("#### len = %i valueLen = %i %s\n", len, options[INPUT].valueLen,buffer);
+	  }
+	  buffer16 = (UChar*) malloc ( U_SIZEOF_UCHAR * (inputLength+10));
+	  u_strFromUTF8(buffer16, inputLength+10, &inputLength,
+			buffer, inputLength,
+			&errorCode);
+	  us.append((const UChar *)buffer16, inputLength); 
+	  us = us.unescape();
+	  
+	  if(errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+	    errorCode=U_BUFFER_OVERFLOW_ERROR;
+	  }
+	  if(U_FAILURE(errorCode)){
+	    printf("#### inputLength = %i \n", inputLength);
+	  }
+	  input = (UChar*) us.getBuffer();
+	  inputLength = us.length();
+	  input8  = (char*) malloc( inputLength * 9); 
+	  int32_t reqLength =0;
+	  u_strToUTF8(input8,inputLength*8 , &reqLength,
+		      input, inputLength,
+		      &errorCode);
+	  if(inputLength !=0 && errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+	    errorCode=U_BUFFER_OVERFLOW_ERROR;
+	  }
+	  if(U_FAILURE(errorCode)){
+	    printf("#### inputLength = %i capacity = %i reqLength = %i \n", inputLength, inputLength * 8, reqLength);
+	  }
 	}
-	buffer16 = (UChar*) malloc ( U_SIZEOF_UCHAR * (inputLength+10));
-        u_strFromUTF8(buffer16, inputLength+10, &inputLength,
-                      buffer, inputLength,
-                      &errorCode);
-        us.append((const UChar *)buffer16, inputLength); 
-        us = us.unescape();
-
-        if(errorCode==U_STRING_NOT_TERMINATED_WARNING) {
-              errorCode=U_BUFFER_OVERFLOW_ERROR;
-        }
-        if(U_FAILURE(errorCode)){
-           printf("#### inputLength = %i \n", inputLength);
-        }
-        input = (UChar*) us.getBuffer();
-        inputLength = us.length();
-        input8  = (char*) malloc( inputLength * 9); 
-        int32_t reqLength =0;
-	u_strToUTF8(input8,inputLength*8 , &reqLength,
-                    input, inputLength,
-                    &errorCode);
-        if(inputLength !=0 && errorCode==U_STRING_NOT_TERMINATED_WARNING) {
-             errorCode=U_BUFFER_OVERFLOW_ERROR;
-        }
-        if(U_FAILURE(errorCode)){
-           printf("#### inputLength = %i capacity = %i reqLength = %i \n", inputLength, inputLength * 8, reqLength);
-        }
     }
 
     if(U_FAILURE(errorCode)) {
