@@ -1,5 +1,20 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
 
-/* #include a bunch of stuff before this file... */
+/*
+
+  A callback that applies Unicode decomposition and other tables
+  looking for a better character fit.
+
+*/
+
+#ifndef _DECOMPCB
+#define _DECOMPCB
+
+#include "ucnv.h"
+
 
 extern UConverterFromUCallback DECOMPOSE_lastResortCallback;
 
@@ -17,3 +32,4 @@ U_CAPI void
    decomposition occurs. (does NOT occur in INDEX_OUTOFBOUNDS cases) */
 
 
+#endif

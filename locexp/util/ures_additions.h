@@ -1,3 +1,18 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
+
+/*
+  srl's Pet Peeves.  Do not feed the animals. :)
+
+  A collection of functions that wish they were in the ICU's api,
+  but aren't.
+
+  (Just because they want to is no reason to bloat the ICU.)
+
+*/
+
 #ifndef URES_ADDITIONS_H
 #define URES_ADDITIONS_H
 

@@ -20,7 +20,7 @@ CLEANFILES = *~ *.res
 GENSRC = default.txt index.txt
 
 # resource files
-SRC    = en.txt mt.txt el.txt ja.txt
+SRC    = en.txt mt.txt el.txt ja.txt sr.txt
 
 ALLSRC = $(SRC) $(GENSRC)
 RES = $(ALLSRC:.txt=.res)
@@ -106,3 +106,10 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 # index.txt:
 # 	genIndex.sh > index.txt
+
+sr.txt:  sr.utf16.txt escapeABundle
+	$(bindir)/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt
+
+
+escapeABundle: escapeABundle.c
+	cc -o escapeABundle escapeABundle.c

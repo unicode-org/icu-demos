@@ -1,3 +1,8 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
+
 #include "stdio.h"
 #include "stddef.h"
 

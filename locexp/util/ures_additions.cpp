@@ -1,3 +1,7 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
 #include "ures_additions.h"
 #include "resbund.h"
 #include "ustring.h"
@@ -85,3 +89,6 @@ unum_applyPattern(            UNumberFormat     *format,
   else
     ((DecimalFormat*)format)->applyPattern(pat, status);
 }
+
+
+

@@ -1,7 +1,19 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
+
+
 #include "kangxi.h"
 
 /*
    Table of the Kang-Xi Radicals to the ideographs they represent
+
+   This data was taken from the COMMENTS in the  NamesList file from
+   ftp://ftp.unicode.org/  [Unicode 3.0.0 beta]
+
+   TODO:  use the compatibility decomposition of these chars from the Unicode
+   properties files.
 */
 
 /* form:  

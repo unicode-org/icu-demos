@@ -1,3 +1,7 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
 /*
   TODO's:
 
@@ -10,20 +14,14 @@
 
     - improve the 'default' pattern in the DTexplorer
 
+    - better usort sample strings
+
+ FIX:
   TOO MANY COMMENTS ;)
 */
 
 
-/*
-*******************************************************************************
-*                                                                             *
-* COPYRIGHT:                                                                  *
-*   (C) Copyright International Business Machines Corporation, 1998, 1999     *
-*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
-*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
-*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
-*                                                                             *
-*******************************************************************************
+/*----------------------------------------------------------------------------
 *
 * File listrb.c
 *
@@ -70,6 +68,20 @@
 #include "ures_additions.h"
 #include "decompcb.h"
 
+#ifdef LX_USE_FONTED
+# include "fontedcb.h"
+#endif
+
+#include "translitcb.h"
+
+#ifdef LX_USE_UTIMZONE
+# include "utimzone.h"
+#endif
+
+#include "collectcb.h"
+#include "usort.h"
+#include "ucnv.h"
+
 /********************** Some Konstants **** and structs ***************/
 
 #ifndef URLPREFIX
@@ -82,7 +94,9 @@
 
 
 /* Define the following to enable 'demonstrate collation' */
-#define kUSort "/home/srl/icu/source/samples/usort/usort"
+#ifndef kUSort
+#define kUSort "/home/srl/II/bin/usort"
+#endif
 
 #define kStatusBG "\"#EEEEEE\" " 
 
@@ -117,6 +131,8 @@ void printPath(const MySortable *leaf, const MySortable *current, bool_t styled)
 /* selection of locales and converter */
 void chooseLocale(bool_t toOpen, const char *current, const char *restored);
 void chooseConverter(const char *restored);
+void chooseConverterMatching(const char *restored, const UChar *sample);
+void chooseConverterFrom(const char *restored, USort *list);
 void listBundles(char *b);
 
 /* fcns for dumping the contents of a particular rb */
@@ -148,14 +164,25 @@ void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char 
 void showKeyAndEndItem(const char *key, const char *locale);
 
 
-/* fetch string with fallback */
-const UChar *FSWF(const char *key, const char *fallback);
+/**
+ * (for CGI programs)
+ * Build a UFILE based on the user's preference for locale and encoding.
+ * Try to figure out what a good encoding to use is.
+ * 
+ * @param chosenEncoding (on return) the encoding that was chosen
+ * @param didSetLocale   (on return) TRUE if a locale was chosen
+ * @return the new UFILE. Doesn't set any callbacks
+ */
+UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didSetEncoding);
+
+
 
 /* write a string in \uXXXX format */
 void writeEscaped(const UChar *s);
 
 /* is this a locale we should advertise as supported? */
-bool_t isSupportedLocale(const char *locale, bool_t includeChildren);
+bool_t isSupportedLocale(const char *locale, bool_t includeChildren); /* for LX interface */
+bool_t isExperimentalLocale(const char *local); /* for real data */
 
 
 void printHelpTag(const char *helpTag, const UChar *str);
@@ -169,14 +196,12 @@ void exploreShowPatternForm(UChar *dstPattern, const char *locale, const char *k
 UFILE *OUT = NULL;                     /* used everywhere */
 const char *couldNotOpenEncoding;      /* contains error string if nonnull */
 const char *ourCharsetName = "iso-8859-1"; /* HTML friendly name of the current charset */
+char        chosenEncoding[128];
 
 bool_t setEncoding = FALSE;            /* what is our state? What's setup? */
 bool_t setLocale = FALSE;
 
-UResourceBundle *gRB  = 0;             /* the RB to get our localized strs from (for this app) */
 UResourceBundle *defaultRB = 0;        /* RB in the selected locale */
-
-UErrorCode rbErr = U_ZERO_ERROR;         /* errorcode if above is null */
 
 /* ====== locale navigation ===== */
 MySortable      *locales   = NULL;     /* tree of locales */
@@ -187,56 +212,6 @@ MySortable      *parLocale = NULL;     /* Parent locale of current */
 int32_t          numLocales = 0;
 /************************ fcns *************************/
 
-/*UChar x[2] = { 0x0030, 0x0000 };*/ /* test string */
-
-const char *myBundlePath()
-{
-  static char gMyBundlePath[500] = "";
-
-  if(gMyBundlePath[0] == 0)
-    {
-      strcpy(gMyBundlePath, u_getDataDirectory());
-      strcat(gMyBundlePath, "locexp/");
-    }
-  
-  return gMyBundlePath;
-}
-
-/*** fetch string with fallback -------------------------------------------------*/
-const UChar *FSWF(const char *key, const char *fallback)
-{
-  UErrorCode status = U_ZERO_ERROR;
-  const UChar *str = 0;
-  static UChar   gFSWFTempChars[1024];
-
-  if(strlen(fallback) >  1020)
-    ((char*)fallback)[1020] = 0; /* const violation. Tough. */
-
-  if(gRB == 0)
-    {
-      gRB = ures_open(  myBundlePath(), NULL, &status);
-      if(U_FAILURE(status))
-	{
-	  gRB = 0;
-	  rbErr = status;
-	}
-    }
-
-  status = U_ZERO_ERROR;
-
-  if(gRB != 0)
-    str = ures_get( gRB, key, &status);
-
-  if(str == 0) /* failed to get a str */
-    {
-      /* fallback: use our temp buffer [NON MT safe] and do a strcpy.. */
-      u_uastrcpy(gFSWFTempChars, fallback);
-      str = malloc((u_strlen(gFSWFTempChars)+1) * sizeof(UChar)); /* LEAK but who cares, it's an error case */
-      u_strcpy((UChar*)str,gFSWFTempChars);
-    }
-
-  return str;
-}
 
 /* main function. we write the outside html page here as well. ----------------------------*/
 
@@ -247,21 +222,79 @@ int main(const char *argv[], int argc)
   UChar subTitle[1024];
   int32_t n;
 
+  /** Below is useful for debugging. */
   /*  fprintf(stderr, "PID=%d\n", getpid()); */
   /*   system("sleep 20");  */
   
   status = U_ZERO_ERROR;
 
-  ourCharsetName = MIMECharsetName(ucnv_getDefaultName()); /* for some sanity */
+  /* Set up some initial values, just in case something goes wrong later. */
+  strcpy(chosenEncoding, "LATIN_1");
+  ourCharsetName = "iso-8859-1";
 
-  OUT = setLocaleAndEncodingAndOpenUFILE();
+  /* set the path for FSWF */
+  {
+    char newPath[500];
+    strcpy(newPath, u_getDataDirectory());
+    strcat(newPath, "locexp/");
+    
+    FSWF_setBundlePath(newPath);
+  }
+
+  OUT = setLocaleAndEncodingAndOpenUFILE(chosenEncoding, &setLocale, &setEncoding);
   if(!OUT)
     doFatal("u_finit trying to open file", 0);
   
-  setupLocaleTree();
 
-  printf("content-type: text/html;charset=%s\r\n\r\n\r\n\n", ourCharsetName);
-  fflush(stdout);
+  ourCharsetName = MIMECharsetName(chosenEncoding); /* for some sanity */
+
+  /** Setup the callbacks **/
+  /* put our special error handler in */
+  /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML, &status); */
+
+
+  COLLECT_alnum = TRUE; /* only char about alphanumerics. */
+  COLLECT_setSize(16);
+
+#ifdef LX_USE_FONTED
+  if(!strcmp(chosenEncoding, "fonted"))
+    {
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_FONTED, &status);
+      FONTED_lastResortCallback   =  UCNV_FROM_U_CALLBACK_COLLECT;
+      COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
+    }
+  else
+#endif
+
+  if(!strcmp(chosenEncoding, "transliterated"))
+    {
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_TRANSLITERATED, &status);
+      TRANSLITERATED_lastResortCallback   =  UCNV_FROM_U_CALLBACK_COLLECT;
+      COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
+    }
+  else
+
+    {
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_COLLECT, &status);
+      COLLECT_lastResortCallback =  UCNV_FROM_U_CALLBACK_DECOMPOSE;
+    }
+
+
+#ifdef LX_USE_NAMED
+  /* overrides */
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_NAMED, &status);
+#endif
+
+  /* Change what DECOMPOSE calls as it's last resort */
+  DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML;
+
+  /* parse & sort the list of locales */
+  setupLocaleTree();
+  /* Open an RB in the default locale */
+  defaultRB = ures_open(NULL, NULL, &status);
+
+  /* Print the encoding and last HTML header... */
+  printf("Content-Type: text/html;charset=%s\r\n\r\n", ourCharsetName);
 
   /* 
      kore wa nandesuka?
@@ -273,9 +306,6 @@ int main(const char *argv[], int argc)
     uloc_getLanguage(NULL,langBuf,100,&status);
   printf("Content-Language: %s\r\n", langBuf);
   }*/
-
-  printf("\n" );
-
 
   fflush(stdout); /* and that, as they say, is that.  All UFILE from here.. */
 
@@ -292,13 +322,14 @@ int main(const char *argv[], int argc)
   u_fprintf(OUT, "</TITLE>\r\n");
   
   if(!getenv("PATH_INFO") || !getenv("PATH_INFO")[0])
-    u_fprintf(OUT, "<BASE HREF=\"http://%s%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME")); /* Ensure that all relative paths have the cgi name followed by a slash. */
+    u_fprintf(OUT, "<!-- STUPID --> <BASE HREF=\"http://%s%s/\">\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME")); /* Ensure that all relative paths have the cgi name followed by a slash. */
   
   
   u_fprintf(OUT, "%U", 
 	    FSWF ( /* NOEXTRACT */ "htmlHEAD",
 		   "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
 	    );
+
   /* now see what we're gonna do */
   tmp = getenv ( "QUERY_STRING" );
   
@@ -313,7 +344,6 @@ int main(const char *argv[], int argc)
       printPath(curLocale, curLocale, FALSE);
       u_fprintf(OUT, "</FONT><P>");
 
-
     }
   else
     {
@@ -327,8 +357,13 @@ int main(const char *argv[], int argc)
 	  u_fprintf(OUT, "<UL><B>%U  [%U]</B></UL>\r\n",
 		    FSWF("warningInheritedLocale", "Note: You're viewing a non existent locale. The ICU will support this with inherited information. But the Locale Explorer is not designed to understand such locales. Inheritance information may be wrong!"), dispName);
 	}
-
-
+      
+      if(isExperimentalLocale(curLocaleName) && tmp && tmp[0] )
+	{
+	  u_fprintf(OUT, "<UL><B>%U</B></UL>\r\n",
+		    FSWF("warningExperimentalLocale", "Note: You're viewing an experimental locale. This locale is not part of the official ICU installation! <FONT COLOR=red>Please do not file bugs against this locale.</FONT>") );
+	}
+      
       u_fprintf(OUT, "<TABLE WIDTH=100%%><TR><TD ALIGN=LEFT VALIGN=TOP>");
 
       u_fprintf(OUT, "<FONT SIZE=+1>");
@@ -346,18 +381,42 @@ int main(const char *argv[], int argc)
 
       if(curLocale && curLocale->nSubLocs)
 	{
+	  bool_t hadExperimentalLocales = FALSE;
+
 	  u_fprintf(OUT, "%U<BR><UL>", FSWF("sublocales", "Sublocales:"));
 
 	  mySort(curLocale, &status, FALSE); /* Sort sub locales */
 
 	  for(n=0;n<curLocale->nSubLocs;n++)
 	    {
+	      bool_t wasExperimental = FALSE;
+
 	      if(n != 0)
 		u_fprintf(OUT, ", ");
-	      u_fprintf(OUT, "<A HREF=\"?_=%s\">%U</A>",
-			curLocale->subLocs[n].str,
-			curLocale->subLocs[n].ustr);
+	      u_fprintf(OUT, "<A HREF=\"?_=%s\">", 
+			curLocale->subLocs[n].str);
+		
+	      if(isExperimentalLocale(curLocale->subLocs[n].str))
+		{
+		  u_fprintf(OUT, "<I><FONT COLOR=\"#9999FF\">");
+		  hadExperimentalLocales = TRUE;
+		  wasExperimental = TRUE;
+		}
+	      u_fputs(curLocale->subLocs[n].ustr, OUT);
+
+	      if(wasExperimental)
+		{
+		  u_fprintf(OUT, "</FONT></I>");
+		}
+
+	      u_fprintf(OUT, "</A>");
+
+			
 	    }
+	  
+	  if(hadExperimentalLocales)
+	    u_fprintf(OUT, "<BR>%U", FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."));
+	  
 	  u_fprintf(OUT, "</UL>");
 	}
       u_fprintf(OUT, "</TD></TR></TABLE>\r\n");
@@ -369,7 +428,7 @@ int main(const char *argv[], int argc)
   if ( tmp == NULL )
     tmp = ""; /* for sanity */
 
-  if( ((!*tmp) && !setLocale && !setEncoding) || strstr(tmp, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
+  if( ((!*tmp) && !setLocale && !(setEncoding)) || strstr(tmp, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
   {
     u_fprintf(OUT, "</H2>"); /* close the 'title text */
 
@@ -394,9 +453,9 @@ int main(const char *argv[], int argc)
 	restored = "converter"; /* what to go on to */
 
       if(setLocale)
-	u_fprintf(OUT, ": %U</H2>\r\n", FSWF("changeLocale", ": Change Your Locale"));
+	u_fprintf(OUT, "<H2>%U</H2>\r\n", FSWF("changeLocale", "Change Your Locale"));
       else
-	u_fprintf(OUT, ": %U</H2>\r\n", FSWF("chooseLocale", ": Choose Your Locale."));
+	u_fprintf(OUT, "<H2>%U</H2>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
 
 
       u_fprintf(OUT, "<TABLE WIDTH=\"70%\"><TR>");
@@ -409,6 +468,9 @@ int main(const char *argv[], int argc)
       u_fprintf(OUT, "</TD></TR></TABLE>\r\n");
 
       chooseLocale(FALSE, (char*)uloc_getDefault(), restored);
+      
+
+
     }
   else if (!strncmp(tmp,"converter", 9))  /* ?converter */
     {
@@ -425,7 +487,33 @@ int main(const char *argv[], int argc)
 	u_fprintf(OUT, ": %U</H2>\r\n", FSWF("chooseEncoding", "Choose Your Encoding"));
       */
       u_fprintf(OUT, "<HR>");
-      chooseConverter(restored);
+
+      if(tmp[9] == '=')
+	{
+	  /* choose from encodings that match a string */
+	  char *sample;
+	  char *end;
+	  UChar usample[256];
+	  
+	  sample = tmp + 10;
+	  end    = strchr(sample, '&');
+	  
+	  if(end == NULL)
+	    {
+	      end = sample + strlen(sample);
+	    }
+	  
+	  unescapeAndDecodeQueryField(usample, 256, sample);
+
+	  *end = 0;
+	  u_fprintf(OUT, "%U: %s<P>\r\n", FSWF("converter_matchesTo", "Looking for matches to these chars: "), sample);
+	  chooseConverterMatching(restored, usample);
+	}
+      else
+	{
+	  /* choose from all the converters */
+	  chooseConverter(restored);
+	}
     }
   else
     {
@@ -437,7 +525,7 @@ int main(const char *argv[], int argc)
   u_fprintf(OUT, "<I>%U</I> <A HREF=\"%U\">%U</A> * <A HREF=\"http://www10.software.ibm.com/developerworks/opensource/icu/bugs\">%U</A><BR>", 
 	    FSWF("poweredby", "Powered by"),
 	    FSWF("poweredby_url", "http://www10.software.ibm.com/developerworks/opensource/icu/"),
-	    FSWF("poweredby_vers", "ICU 1.3.1"),
+	    FSWF("poweredby_vers", "ICU 1.3.1 + "),
 	    FSWF("poweredby_filebug", "Found an error? Click here!")
 	    );
 
@@ -445,13 +533,56 @@ int main(const char *argv[], int argc)
 
   u_fprintf(OUT, "%U", date(NULL,UDAT_FULL,&status));
   
-  if(!gRB)
+  if(!FSWF_getBundle())
     {
       /* No reason to use FSWF, this error means we have nothing to fetch strings from! */
-      u_fprintf(OUT, "<HR><B><I>Note: Could not open our private resource bundle %s, err %d </I></B><P>\r\n",
-		myBundlePath(), rbErr);
+      u_fprintf(OUT, "<HR><B><I>Note: Could not open our private resource bundle %s </I></B><P> - [%s]\r\n",
+		FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
 
+
+  if(COLLECT_getChars()[0] != 0x0000)
+    {
+      UConverterFromUCallback oldCallback;
+      UErrorCode status2 = U_ZERO_ERROR;
+      
+      oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(OUT)));
+
+      u_fprintf(OUT, "<TABLE WIDTH=100%% BORDER=1><TR><TD>%U<BR>", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
+      
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_ESCAPE, &status2);
+      
+      u_fprintf(OUT, "%U", COLLECT_getChars());
+      
+      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status2);
+
+      u_fprintf(OUT, "<BR><A HREF=\"?converter=");
+      writeEscaped(COLLECT_getChars());
+      
+      if(strncmp(getenv("QUERY_STRING"), "converter",9))
+	u_fprintf(OUT,"&%s", getenv("QUERY_STRING"));
+      u_fprintf(OUT, "\">");
+      u_fprintf(OUT, "%U</A>\r\n",
+		FSWF("encoding_PickABetter", "Click here to search for a better encoding"));
+
+      u_fprintf(OUT, "</TD></TR></TABLE>\r\n");
+    }
+
+  if(!strcmp(chosenEncoding, "transliterated"))
+  {
+      u_fprintf(OUT, "<BR>%U <FONT COLOR=green>%U</FONT>%U<P>\r\n",
+                FSWF("encoding_translitmsg_0", "Transliteration courtesy of the ICU. Text in "),
+                FSWF("encoding_translitmsg_1", "green"),
+                FSWF("encoding_translitmsg_2", " has been transliterated."));
+  }
+  else
+  {
+      u_fprintf(OUT, "<BR> <A HREF=\"%s/%s/transliterated/?%s\">%U</A>",
+                getenv("SCRIPT_NAME"),
+                uloc_getDefault(),
+                getenv("QUERY_STRING"),
+                FSWF("encoding_Transliterate", "Transliterate it for me!"));
+  }
   
   u_fprintf(OUT, "%U", FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
     
@@ -463,7 +594,7 @@ int main(const char *argv[], int argc)
 	 - lists the locales to browse
   */
 
-#ifndef NO_LOCALE_CHANGE
+#ifndef LX_NO_LOCALE_CHANGE
   u_fprintf(OUT, "<A HREF=\"%s/en/iso-8859-1/?PANICDEFAULT\"><IMG SRC=\"%s/localeexplorer/incorrect.gif\" ALT=\"Click here if text displays incorrectly\"></A>", getenv("SCRIPT_NAME"), kStaticURLPrefix);
 #endif
 
@@ -474,8 +605,7 @@ int main(const char *argv[], int argc)
 
   u_fclose(OUT);
 
-  if(gRB)
-    ures_close(gRB);
+  FSWF_close();
 
   if(defaultRB)
     ures_close(defaultRB);
@@ -496,216 +626,9 @@ const UChar *defaultLanguageDisplayName()
 }
 
 /* snag the locale, followed optionally by the encoding, from the path_info -----------------
-This is the only fcn which should be calling ucnv_setDefaultName
 */
 
-#ifdef HACKY_DEV_TIEIN
-  extern int srl_mode;
-#endif
 
-UFILE *setLocaleAndEncodingAndOpenUFILE()
-{
-  char *pi;
-  char *tmp;
-  const char *locale = NULL;
-  const char *encoding = NULL;
-  UErrorCode status = U_ZERO_ERROR;
-  char *acceptLanguage;
-  char newLocale[100];
-  UFILE *f;
-
-  uloc_setDefault("en", &status); /* BASELINE */
-
-  locale = (const char *)uloc_getDefault();
-  encoding = ucnv_getDefaultName(); 
-
-  pi = getenv("PATH_INFO");
-  if( (pi) && (*pi && '/') )
-    {
-      pi++; /* eat first slash */
-      tmp = strchr(pi, '/');
-      
-      if(tmp)
-	*tmp = 0; /* tie off at the slash */
-
-      status = U_ZERO_ERROR;
-      locale = pi;
-
-      if ( *locale != 0) /* don't want 0-length locales */
-	{
-	  uloc_setDefault(locale, &status);
-	  if(U_FAILURE(status))
-	    {
-	      doFatal("uloc_setDefault", status);
-	      /* doesn't return */
-	    }
-	  setLocale = TRUE;
-	}
-
-      if(tmp) /* have encoding */
-	{
-  
-	  tmp++; /* skip '/' */
-  
-	  pi = tmp;
-
-	  tmp = strchr(tmp, '/');
-	  if(tmp)
-	    *tmp = 0;
-  
-	  if(*pi) /* don't want 0 length encodings */
-	    {
-	      encoding = pi;
-	      setEncoding = TRUE; 
-
-
-
-	      ourCharsetName = MIMECharsetName(encoding);
-	    }
-	}
-    }
-
-  if(!setLocale && (acceptLanguage=getenv("HTTP_ACCEPT_LANGUAGE")) && acceptLanguage[0] )
-    {
-
-      /* OK, if they haven't set a locale, maybe their web browser has. */
-	if(!(tmp=strchr(acceptLanguage,','))) /* multiple item separator */
-      if(!(tmp=strchr(acceptLanguage,'='))) /* strength separator */
-	  tmp = acceptLanguage + strlen(acceptLanguage);
-
-      strncpy(newLocale, acceptLanguage, my_min(100,tmp-acceptLanguage));
-      newLocale[my_min(100,tmp-acceptLanguage)] = 0;
-      /*      fprintf(stderr," NL=[%s], al=[%s]\r\n", newLocale, acceptLanguage);
-	      fflush(stderr);*/
-
-      /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight. Oh well. */
-      
-      status = U_ZERO_ERROR;
-
-      /* half hearted attempt at canonicalizing the locale string. */
-      newLocale[0] = tolower(newLocale[0]);
-      newLocale[1] = tolower(newLocale[1]);
-      if(newLocale[2] == '-')
-	newLocale[2] = '_';
-      if(newLocale[5] == '-')
-	newLocale[5] = '_';
-
-      newLocale[3] = toupper(newLocale[3]);
-      newLocale[4] = toupper(newLocale[4]);
-
-      if(isSupportedLocale(newLocale, TRUE)) /* DO NOT pick an unsupported locale from the browser's settings! */
-	uloc_setDefault(newLocale, &status);
-      status = U_ZERO_ERROR;
-
-      /* that might at least get something.. It's better than defaulting to en_US */
-    }
-  
-  if(!setEncoding)
-    {
-      const char *accept;
-      const char *agent;
-            char *newEncoding;
-
-      accept = getenv("HTTP_ACCEPT_CHARSET");
-
-
-      if(accept && strstr(accept, "utf-8"))
-	{
-	  encoding = "utf-8"; /* use UTF8 if they have it ! */
-	}
-      else if( (agent = (const char *)getenv("HTTP_USER_AGENT")) &&
-	   (strstr(agent, "MSIE 4") || strstr(agent, "MSIE 5")) &&
-	   (strstr(agent, "Windows NT")))
-	{
-	  encoding = "utf-8"; /* MSIE can handle utf8 but doesn't request it. */
-	}
-      else /* OK, see if we can find a valid codepage */
-	{
-	  const UChar *defaultCodepage;
-	  int32_t i = 0;
-	  UErrorCode status;
-
-	  FSWF( /*NOEXTRACT*/ "",""); /* just to init it.. */
-	  if(gRB)
-	    {
-	      while( (defaultCodepage = ures_getArrayItem(gRB, "DefaultEncoding", i++, &status)) &&
-		     U_SUCCESS(status) )
-		{
-		  newEncoding = malloc(u_strlen(defaultCodepage) + 1);
-		  u_austrcpy((char*)newEncoding, defaultCodepage);
-
-		  if(accept)
-		    {
-		      fprintf(stderr,"Looking for %s in %s..\n", newEncoding, accept);
-		      if(strstr(accept,newEncoding) || strchr(accept,'*'))
-			encoding = newEncoding;
-		      break;
-		    }
-		  else
-		    free(newEncoding);
-		}
-
-	      fprintf(stderr,"Got %d on try %d for defaultencoding [bnd%s]\n", status, i-1, uloc_getDefault() );
-	    }
-	  else
-	    {
-	      /* default wasn't accepted. */
-	    }
-
-	}
-
-    }
-
-  if(encoding)
-    {
-      ourCharsetName = MIMECharsetName(encoding);
-
-#ifdef HACKY_DEV_TIEIN
-
-      if(!strcmp(encoding, "x-devanagari"))
-	{
-	  ourCharsetName = encoding;
-	  srl_mode = 3; /* turn on dev processing */
-	  encoding = "iso-8859-1";
-	}
-#endif
-
-      ucnv_setDefaultName(encoding);
-    }
-
-  /* Open an RB in the default locale */
-  defaultRB = ures_open(NULL, NULL, &status);
-
-  /* now, open the file */
-  f = u_finit(stdout, locale, encoding);
-
-  if(!f)
-    {
-      couldNotOpenEncoding = encoding;
-      f = u_finit(stdout, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
-      if(!f)
-	return f; /* :( */
-    }
-
-
-  /* we know that ufile won't muck withthe locale.
-     But we are curious what encoding it chose, and we will propagate it. */
-  if(encoding == NULL)
-    {
-      encoding = u_fgetcodepage(f);
-      ucnv_setDefaultName(encoding);
-    }
-
-  /* put our special error handler in */
-  /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(f), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML, &status); */
-
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(f), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
-
-  /* Change what DECOMPOSE calls as it's last resort */
-  DECOMPOSE_lastResortCallback = UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE_HTML;
-
-  return f;
-}
 
 void setupLocaleTree()
 {
@@ -761,6 +684,9 @@ void doFatal(const char *what, UErrorCode err)
 void writeEscaped(const UChar *s)
 {
   UErrorCode status = U_ZERO_ERROR;
+  UConverterFromUCallback oldCallback;
+
+  oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(OUT)));
 
   ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
 
@@ -781,13 +707,17 @@ void writeEscaped(const UChar *s)
   
   /* should 'get/restore' here. */
   /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status);
 }
 
 void writeEscapedQuery(const UChar *s)
 {
   UErrorCode status = U_ZERO_ERROR;
 
+  UConverterFromUCallback oldCallback;
+
+  oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(OUT)));
+
   ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
 
   if(u_strchr(s, 0x00A0))
@@ -805,9 +735,7 @@ void writeEscapedQuery(const UChar *s)
   else
     u_fprintf(OUT, "%U", s); 
   
-  /* should 'get/restore' here. */
-  /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status);
 }
 
 
@@ -827,7 +755,7 @@ void printStatusTable()
 	   FSWF("statusTableHeader", "Your settings:<BR>(click to change)"));
   u_fprintf(OUT, "</TD>");
   
-#ifndef NO_LOCALE_CHANGE
+#ifndef LX_NO_LOCALE_CHANGE
   u_fprintf(OUT, "<TD ALIGN=RIGHT><B>");
 
   u_fprintf(OUT, "%U</B></TD><TD>", FSWF("myLocale", "Locale:"));
@@ -842,17 +770,16 @@ void printStatusTable()
 
   u_fprintf(OUT, "</A>\r\n");
 
-  
-  u_fprintf(OUT, "</TD>");
-#else
+#endif
+
   if(!isSupportedLocale(uloc_getDefault(), TRUE))
     {
       u_fprintf(OUT, "<TD COLSPAN=2 ALIGN=RIGHT><FONT COLOR=\"#FF0000\">");
       u_fprintf_u(OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), uloc_getDefault());
       u_fprintf(OUT, "</FONT></TD>");
     }
-#endif
 
+  u_fprintf(OUT, "</TD>");
 
 
   u_fprintf(OUT, "</TR>");
@@ -932,8 +859,22 @@ void printPath(const MySortable *leaf, const MySortable *current, bool_t styled)
 }
 
 
-static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, const char *restored)
+static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, const char *restored, bool_t *hadUnsupportedLocales)
 {
+  bool_t supported;
+
+  if ( toOpen == FALSE)
+    {
+      /* locales for LOCEXP TEXT */
+      supported = isSupportedLocale(l->str, TRUE);
+    }
+  else
+    {
+      /* locales for VIEWING */
+      supported = !isExperimentalLocale(l->str);
+    }
+
+
   u_fprintf(OUT, "<A HREF=\"");
   
   if(toOpen == TRUE)
@@ -942,7 +883,7 @@ static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, c
 		getenv("SCRIPT_NAME"),
 		(char*)uloc_getDefault());
       if(setEncoding)
-	u_fprintf(OUT,"%s/", ucnv_getDefaultName());	  
+	u_fprintf(OUT,"%s/", chosenEncoding);	  
 	  u_fprintf(OUT,"?_=%s&", l->str);
     }
   else
@@ -951,7 +892,7 @@ static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, c
 		getenv("SCRIPT_NAME"),
 		l->str);
       if(setEncoding)
-	u_fprintf(OUT,"%s/", ucnv_getDefaultName());
+	u_fprintf(OUT,"%s/", chosenEncoding);
       
       if(restored)
 	u_fprintf(OUT, "?%s", restored);
@@ -959,17 +900,29 @@ static void printLocaleLink(bool_t toOpen, MySortable *l, const char *current, c
   
   
   u_fprintf(OUT,"\">");
-  u_fprintf(OUT, " %U", l->ustr);
+
+  if(!supported)
+    {
+      u_fprintf(OUT, "<I><FONT COLOR=\"#9999FF\">");
+      *hadUnsupportedLocales = TRUE;
+    }
+
+  u_fprintf(OUT, "%U", l->ustr);
+
+  if(!supported)
+    u_fprintf(OUT, "</FONT></I>");
   
   u_fprintf(OUT,"</A>");
+
   
 }
 
-static void printLocaleAndSubs(bool_t toOpen, MySortable *l, const char *current, const char *restored)
+static void printLocaleAndSubs(bool_t toOpen, MySortable *l, const char *current, const char *restored, bool_t *hadUnsupportedLocales)
 {
   int32_t n;
 
-  printLocaleLink(toOpen,l,current,restored);
+
+  printLocaleLink(toOpen,l,current,restored, hadUnsupportedLocales);
   
   if(l->nSubLocs)
     {
@@ -977,7 +930,7 @@ static void printLocaleAndSubs(bool_t toOpen, MySortable *l, const char *current
 
       for(n=0;n<(l->nSubLocs);n++)
 	{
-	  printLocaleAndSubs(toOpen, &(l->subLocs[n]), current, restored);
+	  printLocaleAndSubs(toOpen, &(l->subLocs[n]), current, restored, hadUnsupportedLocales);
 	}
       
 	u_fprintf(OUT, "&nbsp;</FONT SIZE=-1>]");
@@ -991,6 +944,7 @@ void chooseLocale(bool_t toOpen, const char *current, const char *restored)
   bool_t  hit = FALSE;
   int32_t n, j;
   UErrorCode status = U_ZERO_ERROR;
+  bool_t  hadUnsupportedLocales = FALSE;
 
   u_fprintf(OUT, "<TABLE BORDER=2 CELLPADDING=2 CELLSPACING=2>\r\n");
 
@@ -1005,6 +959,12 @@ void chooseLocale(bool_t toOpen, const char *current, const char *restored)
 
   for(n=0;n<locales->nSubLocs;n++)
     {
+#ifndef LX_SHOW_ALL_DISPLAY_LOCALES
+      /* This will hide display locales that don't exist. */
+      if((toOpen == FALSE) && !isSupportedLocale(locales->subLocs[n].str, TRUE))
+	continue;
+#endif
+
       u_fprintf(OUT, "<TR>\r\n");
 
 
@@ -1021,7 +981,7 @@ void chooseLocale(bool_t toOpen, const char *current, const char *restored)
 	u_fprintf(OUT, "<b>");
       
       
-      printLocaleLink(toOpen, &(locales->subLocs[n]), current, restored);
+      printLocaleLink(toOpen, &(locales->subLocs[n]), current, restored, &hadUnsupportedLocales);
 
       if(hit)
 	u_fprintf(OUT, "</b>");
@@ -1036,10 +996,16 @@ void chooseLocale(bool_t toOpen, const char *current, const char *restored)
 	  
 	  for(j=0;j< (locales->subLocs[n].nSubLocs); j++)
 	    {
+#ifndef LX_SHOW_ALL_DISPLAY_LOCALES
+	      /* This will hide display locales that don't exist. */
+	      if((toOpen == FALSE) && !isSupportedLocale(locales->subLocs[n].subLocs[j].str, TRUE))
+		continue;
+#endif
+
 	      if(j>0)
 		u_fprintf(OUT, ", ");
 	      
-	      printLocaleAndSubs(toOpen, &(locales->subLocs[n].subLocs[j]), current, restored);
+	      printLocaleAndSubs(toOpen, &(locales->subLocs[n].subLocs[j]), current, restored, &hadUnsupportedLocales);
 	      
 	    }
 
@@ -1052,20 +1018,203 @@ void chooseLocale(bool_t toOpen, const char *current, const char *restored)
     }
 
   u_fprintf(OUT, "</TABLE>\r\n");
+
+  if(hadUnsupportedLocales)
+    u_fputs(FSWF("locale_experimental", "Locales in <I>Italics</I> are experimental and not officially supported."), OUT);
 }
 
 
 /* chooseconverter ----------------------------------------------------------------------------- */
+
+/* Choose from among all converters */
 void chooseConverter(const char *restored)
 {
-  int32_t  ncnvs;
-  int32_t  i;
-  int32_t  COLS = 8; /* number of columns */
+  int32_t  ncnvs, naliases;
+  int32_t i;
+  int32_t j;
+
+  USort *mysort;
+
+  UErrorCode status = U_ZERO_ERROR;
+
+  ncnvs = ucnv_countAvailable();
+
+  mysort = usort_open(NULL, UCOL_DEFAULT_STRENGTH, TRUE, &status);
+  
+  if(U_FAILURE(status))
+    {
+      u_fprintf(OUT, "%U<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+      return;
+    }
+
+  for(i=0;i<ncnvs;i++)
+    {
+      const char *name;
+      const char *alias;
+      char        dispName[200];
+      const char *number;
+      UErrorCode  err = U_ZERO_ERROR;
+
+      name = ucnv_getAvailableName(i);
+      
+      if(number = strstr(name, "ibm-"))
+	number+= 4;      /* ibm-[949] */
+      else
+	number = name; /* '[fullnameofconverter]' */
+
+      /*      fprintf(stderr, "c%d] %s : ", i, name); */
+      
+/*      for(j=0;U_SUCCESS(err);j++) */ j = 0; /* ?????? */
+	{
+	  alias = ucnv_io_getAlias(name, j, &err);
+
+	  /*	  fprintf(stderr, " <%d>:%s-[%s]", 
+		  j, alias, u_errorName(err)); */
+	  
+	  if(!alias)
+	    break;
+	  
+	  if(!strstr(alias, "ibm-") || !strstr(alias,name))
+	    sprintf(dispName, "%s [%s]", alias, number);
+	  else
+	    strcpy(dispName, alias);
+
+	  if(!strcmp(alias,"fonted"))
+	    usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)"fonted");
+	  else
+	    usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)name);
+	}
+
+      /*      fprintf(stderr, "\n"); */
+    }
+  
+
+  naliases = (mysort->count);
+  u_fprintf_u(OUT, FSWF("convsAvail","%d converters available, %d aliases total."), ncnvs, naliases);
+
+
+  usort_sort(mysort);
+  
+  chooseConverterFrom(restored, mysort);
+
+  usort_close(mysort);
+
+
+}
+
+
+/* Choose a converter which can properly convert the sample string. */
+void chooseConverterMatching(const char *restored, const UChar *sample)
+{
+  int32_t  ncnvs, naliases, nmatch = 0;
+  int32_t i;
+  int32_t j;
+  int32_t sampleLen;
+
+  USort *mysort;
+  
+  int8_t junkChars[1024];
+
+  UErrorCode status = U_ZERO_ERROR;
+
+  sampleLen = u_strlen(sample);
+
+  /* A little bit of sanity. c'mon, FFFD is just the subchar.. */
+  for(i=0;i<sampleLen;i++)
+    {
+      if( (sample[i] == 0xFFFD) ||  /* subchar */
+          (sample[i] == 0x221E) ||  /* infinity */
+          (sample[i] == 0x2030)     /* permille */
+       ) 
+	sample[i] = 0x0020;
+    }
+  
+  ncnvs = ucnv_countAvailable();
+
+  mysort = usort_open(NULL, UCOL_DEFAULT_STRENGTH, TRUE, &status);
+  
+  if(U_FAILURE(status))
+    {
+      u_fprintf(OUT, "%U<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+      return;
+    }
+
+  u_fprintf(OUT, "%U<BR>\r\n",
+	    FSWF("converter_searching", "Searching for converters which match .."));
+
+
+  for(i=0;i<ncnvs;i++)
+    {
+      const char *name;
+      const char *alias;
+      char        dispName[200];
+      const char *number;
+      UErrorCode  err = U_ZERO_ERROR;
+
+      name = ucnv_getAvailableName(i);
+
+      if(testConverter(name, sample, sampleLen, junkChars, 1023) == FALSE)
+	continue; /* Too bad.. */
+
+      nmatch++;
+      
+      if(number = strstr(name, "ibm-"))
+	number+= 4;      /* ibm-[949] */
+      else
+	number = name; /* '[fullnameofconverter]' */
+
+      /*      fprintf(stderr, "c%d] %s : ", i, name); */
+      
+      for(j=0;U_SUCCESS(err);j++)
+	{
+	  alias = ucnv_io_getAlias(name, j, &err);
+
+	  /*	  fprintf(stderr, " <%d>:%s-[%s]", 
+		  j, alias, u_errorName(err)); */
+	  
+	  if(!alias)
+	    break;
+	  
+	  if(!strstr(alias, "ibm-") || !strstr(alias,name))
+	    sprintf(dispName, "%s [%s]", alias, number);
+	  else
+	    strcpy(dispName, alias);
+
+	  if(!strcmp(alias,"fonted"))
+	    usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)"fonted");
+	  else
+	    usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)name);
+	}
+
+      /*      fprintf(stderr, "\n"); */
+    }
+
+  naliases = (mysort->count);
+  u_fprintf_u(OUT, FSWF("convsMatch","%d converters match (out of %d), %d aliases total."), nmatch,ncnvs, naliases);
+  
+  usort_sort(mysort);
+  
+  chooseConverterFrom(restored, mysort);
+
+  usort_close(mysort);
+}
+
+/* Show a list of converters based on the USort passed in */
+void chooseConverterFrom(const char *restored, USort *list)
+{
+  int32_t naliases, ncnvs;
+  int32_t  i, j;
+  int32_t  COLS = 4; /* number of columns */
   int32_t rows;
   const char *cnvMime, *defaultMime;
 
-  defaultMime = MIMECharsetName(ucnv_getDefaultName());
+  UErrorCode status = U_ZERO_ERROR;
 
+  defaultMime = MIMECharsetName(chosenEncoding);
+  
+  ncnvs = ucnv_countAvailable();
+
+  naliases = list->count;
   
  if(!restored)
 	restored = "";
@@ -1073,15 +1222,13 @@ void chooseConverter(const char *restored)
   u_fprintf(OUT,"<A HREF=\"?%s\"><H2>%U%s%U</H2></A>\r\n",
 	     restored,
 	     FSWF("encodingOK0", "Click here if the encoding '"),
-	     ucnv_getDefaultName(),
+	     chosenEncoding,
 	     FSWF("encodingOK1", "' is acceptable, or choose one from below."));
 
 
-  ncnvs = ucnv_countAvailable();
+  /*  fprintf(stderr, " cnt = %d\n", list->count); */
 
-  u_fprintf_u(OUT, FSWF("convsAvail","%d converters available."), ncnvs);
-
-  rows = (ncnvs / COLS) + 1;
+  rows = (naliases / COLS) + 1;
 
   u_fprintf(OUT, "<P><TABLE cellpadding=3 cellspacing=2 >\r\n"
 	         "<TR>\r\n");
@@ -1096,15 +1243,18 @@ void chooseConverter(const char *restored)
       u_fprintf(OUT, "<!-- %d -->", i);
 
       theCell=(rows * (i%COLS)) + (i/COLS); 
-      if(theCell >= ncnvs)
+      if(theCell >= naliases)
 	{
-	  u_fprintf(OUT,"<td></td>");
+	  u_fprintf(OUT,"<td><!-- Overflow %d --></td>", theCell);
 	  if(((i+1)%COLS) == 0)
 	    u_fprintf(OUT,"</TR>\n<TR>");
 	  continue;
 	}
 
-      cnv = (const char *)ucnv_getAvailableName(theCell);
+      cnv = (const char*)list->lines[theCell].userData;
+
+      if(cnv < 0x100)
+	return;
 
       if(!cnv)
 	continue;
@@ -1139,7 +1289,7 @@ void chooseConverter(const char *restored)
 	u_fprintf(OUT, "?%s", restored); 
       
       u_fprintf(OUT,"\">");
-      u_fprintf(OUT, "%s", MIMECharsetName(cnv));
+      u_fprintf(OUT, "%U", list->lines[theCell].chars);
       /*       theCnvale.getDisplayName(o.GetLocale(),tmp); */
       u_fprintf(OUT,"</A>\n");
       
@@ -1198,11 +1348,38 @@ void chooseConverter(const char *restored)
       }
     u_fprintf(OUT, "%s\n", ts);
 
-    u_fprintf(OUT, "<A TARGET=unibrowse HREF=\"http://%s%s/../ubrowse/%s/\">%U</A>\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME"), defaultMime,
+#if defined(LX_UBROWSE_PATH)
+    u_fprintf(OUT, "<A TARGET=unibrowse HREF=\"%U/%s/\">%U</A>\r\n", getenv("SERVER_NAME"), getenv("SCRIPT_NAME"), 
+	      FSWF( /* NOEXTRACT */ "ubrowse_path", LX_UBROWSE_PATH),
+	      defaultMime,
 	      FSWF("ubrowse", "Browse Unicode in this codepage"));
+#endif
     
+    u_fprintf(OUT, "<LI>Aliases:<OL>\r\n");
+    {
+      int i;
+      UErrorCode status = U_ZERO_ERROR;
+      char *name;
+      char *alias;
+
+      name = ucnv_getName(u, &status);
+
+      for(i=0;U_SUCCESS(status);i++)
+	{
+	  alias = ucnv_io_getAlias(name, i, &status);
+
+	  if(!alias)
+	    break;
+
+	  u_fprintf(OUT, "  <LI>%s\r\n", alias);
+	}
+    }
+    u_fprintf(OUT, "</OL>\r\n");
+
+
     u_fprintf(OUT, "</UL>\r\n");
   }
+  
 	      
 }
 
@@ -1245,6 +1422,14 @@ void listBundles(char *b)
   if(! locale )
     {
       chooseLocale(TRUE, b, "");
+
+      u_fprintf(OUT, "<TABLE BORDER=1 ALIGN=RIGHT><TR><TD>%U<BR>",
+                FSWF("explore_G7", "Try G7 Sorting"));
+      showExploreButton(NULL, "g7",
+                        FSWF("EXPLORE_CollationElements_sampleString","bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t"),
+                        "CollationElements");
+      u_fprintf(OUT, "</TD></TR></TABLE>\r\n");
+
       return;
     }
 
@@ -1439,14 +1624,19 @@ void listBundles(char *b)
       showDateTimeElements(myRB, locale);
 
       { 
-	const UChar *zsDesc[6];
+	const UChar *zsDesc[8];
 	zsDesc[0] = FSWF("zoneStrings0", "Canonical");
 	zsDesc[1] = FSWF("zoneStrings1", "Normal Name");
 	zsDesc[2] = FSWF("zoneStrings2", "Normal Abbrev");
 	zsDesc[3] = FSWF("zoneStrings3", "Summer/DST Name");
 	zsDesc[4] = FSWF("zoneStrings4", "Summer/DST Abbrev");
 	zsDesc[5] = FSWF("zoneStrings5", "Example City");
+#ifdef LX_USE_UTIMZONE
+	zsDesc[6] = FSWF("zoneStrings6", "Raw Offset");
+#else
 	zsDesc[6] = 0;
+#endif
+	zsDesc[7] = 0;
 
 	show2dArrayWithDescription(myRB, locale, zsDesc, b, "zoneStrings");
       }
@@ -1539,6 +1729,8 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
   int32_t len;
+  UConverterFromUCallback oldCallback;
+
 
   s = ures_get(rb, key, &status);
 
@@ -1621,12 +1813,17 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 	      len = u_normalize(s,
 			  len,
 			  UCOL_DECOMP_COMPAT_COMP_CAN,
+				/*UCOL_DECOMP_CAN_COMP_COMPAT, */
 			  0,
 			  comps,
 			  len*2,
 			  &status);
 
-
+	      /* DO NOT collect chars from the normalization rules.
+		 Sorry, but they contain decomposed chars which mess up the codepage selection.. */
+	      oldCallback = ucnv_getFromUCallBack((UConverter*)u_fgetConverter(OUT));
+	      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), COLLECT_lastResortCallback, &status);
+	      
 	      if(*comps == 0)
 		{
 		  u_fprintf(OUT, "<I>%U</I>", FSWF("empty", "(Empty)"));
@@ -1646,6 +1843,9 @@ void showCollationElements( UResourceBundle *rb, const char *locale, const char 
 		  
 		  comps++;
 		};
+
+	      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status);
+
 	    }
 	  else
 	    explainStatus(status, key);
@@ -2008,6 +2208,41 @@ void showArrayWithDescription( UResourceBundle *rb, const char *locale, const UC
       showExploreButton(rb, locale, toShow, key);
     }
 
+#ifdef LX_USE_CURRENCY
+  /* Currency Converter link */
+  if(!strcmp(key, "CurrencyElements"))
+    {
+      UErrorCode curStatus = U_ZERO_ERROR;
+      UChar *curStr = NULL, *homeStr = NULL;
+
+      /* index [1] is the int'l currency symbol */
+      curStr = ures_getArrayItem(rb, key, 1, &curStatus);
+      if(defaultRB)
+	homeStr = ures_getArrayItem(defaultRB, key, 1, &curStatus);
+      else
+	homeStr = (const UChar[]){0x0000};
+      
+      /* OANDA doesn't quite follow the same conventions for currency.  
+
+	 TODO:
+
+ 	  RUR->RUB
+	  ...
+      */
+
+      
+      u_fprintf(OUT, "<FORM TARGET=\"_currency\" METHOD=\"POST\" ACTION=\"http://www.oanda.com/converter/travel\" ENCTYPE=\"x-www-form-encoded\"><INPUT TYPE=\"hidden\" NAME=\"result\" VALUE=\"1\"><INPUT TYPE=\"hidden\" NAME=\"lang\" VALUE=\"%s\"><INPUT TYPE=\"hidden\" NAME=\"date_fmt\" VALUE=\"us\"><INPUT NAME=\"exch\" TYPE=HIDDEN VALUE=\"%U\"><INPUT TYPE=HIDDEN NAME=\"expr\" VALUE=\"%U\">",
+		"en", /* uloc_getDefault() */
+		curStr,
+		homeStr
+		);
+
+      u_fprintf(OUT, "<INPUT TYPE=IMAGE WIDTH=48 HEIGHT=20 BORDER=0 SRC=/developerworks/opensource/icu/project/localeexplorer/explore.gif  ALIGN=RIGHT   ");
+      u_fprintf(OUT, " VALUE=\"%U\"></FORM>",
+	    FSWF("explore_Button", "Explore"));
+      u_fprintf(OUT, "</FORM>");
+    }
+#endif
   u_fprintf(OUT, "</TD>"); /* Now, we're done with the ShowKey.. cell */
 
 
@@ -2340,7 +2575,16 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
   bool_t userRequested = FALSE; /* Did the user request this string? */
   const char *tmp1, *tmp2;
 
+  bool_t isTZ = FALSE; /* do special TZ processing */
+
   ures_count2dArrayItems(rb, key, &rows, &cols, &status);
+
+#ifdef LX_USE_UTIMZONE
+  isTZ = !strcmp(key, "zoneStrings");
+  if(isTZ)
+    cols = 7;
+#endif
+
 
   if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff) || (cols > kShow2dArrayColCutoff)) )
     {
@@ -2388,12 +2632,36 @@ void show2dArrayWithDescription( UResourceBundle *rb, const char *locale, const 
 	  
 	  for(v=0;v<rows;v++)
 	    {
+	      const UChar *zn = NULL;
+	      
 	      u_fprintf(OUT,"<TR><TD><B>%d</B></TD>", v);
 	      for(h=0;h<cols;h++)
 		{
 		  status = U_ZERO_ERROR;
 		  
-		  s = ures_get2dArrayItem(rb, key, v, h, &status);
+#ifdef LX_USE_UTIMZONE
+		  if(isTZ && (h == 6))
+		    {
+		      UTimeZone *zone = utz_open(zn);
+
+		      s = NULL;
+
+		      if(zone == NULL)
+			s = FSWF("zoneStrings_open_failed", "<I>Unknown</I>");
+		      else
+			{
+			  s = utz_hackyGetDisplayName(zone);
+			  utz_close(zone); /* s will be NULL, so nothing will get printed below. */
+			}
+		    }
+		  else
+#endif
+		    {
+		      s = ures_get2dArrayItem(rb, key, v, h, &status);
+		    }
+
+		  if(isTZ && (h == 0)) /* save off zone for later use */
+		    zn = s;
 		  
 		  /*      if((h == 0) && (v==0))
 			  firstStatus = status; */ /* Don't need to track firstStatus, countArrayItems should do that for us. */
@@ -2469,7 +2737,7 @@ void showTaggedArray( UResourceBundle *rb, const char *locale, const char *query
 	  u_fprintf(OUT,"<TR><TD><B>%U</B></TD><TD><I>%U</I></TD><TD><B>%U</B></TD></TR>",
 		    FSWF("taggedarrayTag", "Tag"),
 		    defaultLanguageDisplayName(),
-		    curLocale->ustr);
+		    curLocale ? curLocale->ustr : FSWF("none","None"));
 	  
 	  for(v=0;v<rows;v++)
 	    {
@@ -2732,6 +3000,10 @@ void exploreShowPatternForm(UChar *dstPattern, const char *locale, const char *k
   UErrorCode status = U_ZERO_ERROR;
   UChar tmp[1024];
 
+  UConverterFromUCallback oldCallback;
+
+  oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(OUT)));
+
   /**********  Now we've got the pattern from the user. Now for the form.. ***/
   u_fprintf(OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_%s\">\r\n",
 	    key);
@@ -2748,14 +3020,14 @@ void exploreShowPatternForm(UChar *dstPattern, const char *locale, const char *k
   u_fprintf(OUT, "<TEXTAREA ROWS=2 COLS=60 NAME=\"EXPLORE_%s\">",
 	    key);
 
+
   ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE, &status); 
 
   u_fprintf(OUT, "%U", dstPattern); 
 
 	    /* should 'get/restore' here. */
   /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
-
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status);
   
   u_fprintf(OUT, "</TEXTAREA><P>\r\n<INPUT TYPE=SUBMIT VALUE=Format><INPUT TYPE=RESET VALUE=Reset></FORM>\r\n");
 
@@ -2780,11 +3052,17 @@ void showSort(const char *locale, const char *b)
   char *p;
   int32_t length;
   UChar  strChars[1024];
-
-  /* Actually, we don't need to convert the input text to Unicode. the usort program will
-     accept it in the specified charset.. */
+  bool_t  doingG7 = FALSE;
+  int    i;
+  char   G7s[7][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr_FR", "it_IT", "ja_JP" };
+  UErrorCode status = U_ZERO_ERROR;
 
   strChars[0] = 0;
+
+  if(strcmp(uloc_getDefault(),"g7"))
+  {
+      doingG7 = TRUE;
+  }
 
   text = strstr(b, "EXPLORE_CollationElements");
   if(text)
@@ -2802,7 +3080,9 @@ void showSort(const char *locale, const char *b)
       if(length > 1023)
 	length = 1023; /* safety ! */
 
-      doDecodeQueryField(text, inputChars, length); /* length limited */
+      strncpy(inputChars, text, length);
+      inputChars[length] = 0;
+      /*      doDecodeQueryField(text, inputChars, length); *//* length limited */
     }
   else
     {
@@ -2812,80 +3092,174 @@ void showSort(const char *locale, const char *b)
   u_fprintf(OUT, "%U<P>\r\n", FSWF("EXPLORE_CollationElements_Prompt", "Type in some lines of text to be sorted."));
 
   u_fprintf(OUT, "<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH=100% HEIGHT=100%><TR><TD><B>%U</B></TD>\r\n",
-	    FSWF("usortSource", "Source"));
-  
-  if(inputChars[0])
-    u_fprintf(OUT, "<TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD>",
-	      FSWF("usortPrimary", "Primary"),
-	      FSWF("usortSecondary", "Secondary"),
-	      FSWF("usortTertiary", "Tertiary"));
-  
-  u_fprintf(OUT, "</TR><TR><TD VALIGN=TOP>");
+            FSWF("usortSource", "Source"));
 
+  if(inputChars[0])
+  {
+      if(doingG7 == FALSE)
+      {
+          u_fprintf(OUT, "<TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD><TD><B>%U</B></TD>",
+                    FSWF("usortOriginal", "Original"),
+                    FSWF("usortPrimary", "Primary"),
+                    FSWF("usortSecondary", "Secondary"),
+                    FSWF("usortTertiary", "Tertiary"));
+      }
+      else
+      {
+          for(i=0;i<7;i++)
+          {
+              UChar junk[1000];
+              uloc_getDisplayName(G7s[i], uloc_getDefault(), junk, 1000, &status);
+              u_fprintf(OUT, "<TD>%U</TD>",junk);
+          }
+                        
+      }
+  }
+      
+  u_fprintf(OUT, "</TR><TR><TD VALIGN=TOP>");
+  
   u_fprintf(OUT, "<FORM ACTION=\"#EXPLORE_CollationElements\" METHOD=GET>\r\n");
   u_fprintf(OUT, "<INPUT TYPE=HIDDEN NAME=\"_\" VALUE=\"%s\">\r\n", locale);
-  u_fprintf(OUT, "<TEXTAREA ROWS=10 COLUMNS=25 COLS=40 NAME=\"EXPLORE_CollationElements\">");
-
-  writeEscaped(strChars);
-  /*  if(*inputChars)
-      u_fprintf(OUT, "%s", inputChars); */
-
+  u_fprintf(OUT, "<TEXTAREA ROWS=10 COLUMNS=20 COLS=20 NAME=\"EXPLORE_CollationElements\">");
+  
+  writeEscaped(strChars); 
+  /* if(*inputChars)
+     u_fprintf(OUT, "%s", inputChars);  */
+  
   u_fprintf(OUT, "</TEXTAREA><BR>\r\n");
-
+  
   u_fprintf(OUT, "<INPUT TYPE=SUBMIT VALUE=\"%U\"></FORM><P>\r\n",
-	    FSWF("EXPLORE_CollationElements_Sort", "Sort"));
-
+            FSWF("EXPLORE_CollationElements_Sort", "Sort"));
+  
   u_fprintf(OUT, "</TD>");
-
+  
   if(inputChars[0] != 0)
-    {
-      FILE *sortpipe;
-      char sortTypes[4][10] = { "-1", "-2", "-3", "-I" };
-      int n;
+      {
+          FILE *sortpipe;
+          UCollationStrength sortTypes[] = { UCOL_IDENTICAL /* not used */, UCOL_PRIMARY, UCOL_SECONDARY, UCOL_TERTIARY };
+          int n;
 
-      /* have some text to sort */
+          UChar in[1024];
+          int32_t inLen, outLen;
+          UErrorCode status2 = U_ZERO_ERROR;
+      
+          /* have some text to sort */
+          unescapeAndDecodeQueryField(in, 1024, inputChars);
+          u_replaceChar(in, 0x000D, 0x000A); /* CRLF */
+      
+          if(doingG7 == FALSE)
+          {
+              /* Loop through each sort method */
+              for(n=0;n<4;n++) /* not 4 */
+              {
+                  USort *aSort;
+                  UErrorCode sortErr = U_ZERO_ERROR;
+                  UChar *first, *next;
+                  int32_t i, count=0;
+                  
+                  aSort = usort_open(locale, sortTypes[n], TRUE, &sortErr);
+                  
+                  /* add lines from buffer */
+                  
+                  /* For now, we pass TRUE to clone the text. Wasteful! But, 
+                     it avoids having to modify the in text AND keep track of the
+                     ptrs. Now if a usort could be cloned and resorted before
+                     output.. */
+                  first = in;
+                  next = first;
+                  while(*next)
+                  {
+                      if(*next == 0x000A)
+                      {
+                          if(first != next)
+                          {
+                              usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+                          }
+                          first = next+1;
+                      }
+                      next++;
+                  }
+                  
+                  if(first != next) /* get the LAST line */
+                  {
+                      usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+                  }      
+                  
+                  if(n != 0)
+                      usort_sort(aSort); /* first item is 'original' */
+                  
+                  
+                  u_fprintf(OUT, " <TD VALIGN=TOP>");
+                  
+                  for(i=0;i<aSort->count;i++)
+                  {
+                      u_fprintf(OUT, "%02d.%U<BR>\n", (int32_t)aSort->lines[i].userData, aSort->lines[i].chars);
+                  }
+                  
+                  u_fprintf(OUT, "</TD>");	  
+                  
+                  usort_close(aSort);
+              }
+          }
+          else
+          {
+              /* g7 demo */
+              for(n=0;n<7;n++)
+              {
+                  USort *aSort;
+                  UErrorCode sortErr = U_ZERO_ERROR;
+                  UChar *first, *next;
+                  int32_t i, count=0;
+                  
+                  aSort = usort_open(G7s[n], UCOL_TERTIARY, TRUE, &sortErr);
+                  
+                  /* add lines from buffer */
+                  
+                  /* For now, we pass TRUE to clone the text. Wasteful! But, 
+                     it avoids having to modify the in text AND keep track of the
+                     ptrs. Now if a usort could be cloned and resorted before
+                     output.. */
+                  first = in;
+                  next = first;
+                  while(*next)
+                  {
+                      if(*next == 0x000A)
+                      {
+                          if(first != next)
+                          {
+                              usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+                          }
+                          first = next+1;
+                      }
+                      next++;
+                  }
+                  
+                  if(first != next) /* get the LAST line */
+                  {
+                      usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+                  }      
+                  
+                  if(n != 0)
+                      usort_sort(aSort); /* first item is 'original' */
+                  
+                  
+                  u_fprintf(OUT, " <TD VALIGN=TOP>");
+                  
+                  for(i=0;i<aSort->count;i++)
+                  {
+                      u_fprintf(OUT, "%02d.%U<BR>\n", (int32_t)aSort->lines[i].userData, aSort->lines[i].chars);
+                  }
+                  
+                  u_fprintf(OUT, "</TD>");	  
+                  
+                  usort_close(aSort);
+              }
+          } /* end G7 demo */
+      }
+      u_fprintf(OUT, "</TR></TABLE><P>");
 
-      /* * set up the env vars */
-      sprintf(tmpChars, "LANG=%s", locale);
-      putenv(tmpChars);
-
-      sprintf(tmpChars, "ICU_ENCODING=%s", ucnv_getDefaultName() );
-      putenv(tmpChars);
-
-
-      /* Loop through each sort method */
-      for(n=0;n<3;n++) /* not 4 */
-	{
-	  u_fprintf(OUT, " <TD><PRE>");
-
-	  sprintf(tmpChars, "%s -T %s %s %s ", kUSort, ourCharsetName, " -D -escape",  sortTypes[n]); /* pass the -escape string if they asked for it */
-	  
-	  fprintf(stderr, "OPENED: %s\n", tmpChars);
-
-	  sortpipe = popen(tmpChars, "w");
-
-	  if(!sortpipe)
-	    {
-	      u_fprintf(OUT, "<B>%U</B><BR>%s\r\n", FSWF("EXPLORE_CollationElements_PopenFailed", "Sorry, failed to popen the sort program!"), tmpChars);
-	    }
-	  else
-	    {
-	      fflush(stdout);
-	      fflush(stderr);
-
-	      fprintf(sortpipe, "%s\n", inputChars);
-	      fflush(sortpipe);
-	      pclose(sortpipe); /* that oughtta do it.. */
-
-	      fflush(stdout);
-	      fflush(stderr);
-	    } 
-	  u_fprintf(OUT, "</PRE></TD>");	  
-	}
-    }
-
-  u_fprintf(OUT, "</TR></TABLE><P>");
-  u_fprintf(OUT, "<P><P>%U", FSWF("EXPLORE_CollationElements_strength", "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."));
+      if(doingG7 == FALSE)
+          u_fprintf(OUT, "<P><P>%U", FSWF("EXPLORE_CollationElements_strength", "There are four different strengths which may be used in collation.<P> Primary means that only primary differences are considered, such as letters. <P>Secondary considers letters, and also the secondary characteristics of accent marks. <P>Tertiary considers these two, and the case of the letter. <P> A strength of Identical means that all Unicode features are considered in determining a match."));
 
   u_fprintf(OUT, "<P>\r\n");
   showExploreCloseButton(locale, "CollationElements");
@@ -3067,6 +3441,10 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
     }
   else
     {
+      UConverterFromUCallback oldCallback;
+      
+      oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(OUT)));
+
       u_fprintf(OUT, "<B><I>%U</I></B><BR>\r\n", defaultLanguageDisplayName());
 #if 0
       /* Just the pattern */
@@ -3084,7 +3462,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
       
       /* should 'get/restore' here. */
       /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status);
 
       status = U_ZERO_ERROR;
       
@@ -3092,7 +3470,7 @@ void showExploreDateTimePatterns(UResourceBundle *myRB, const char *locale, cons
 #endif
     }
   
-  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
   /* ============ 'localized' side ================================= */
 
@@ -3318,6 +3696,10 @@ void showExploreNumberPatterns(const char *locale, const char *b)
     }
   else
     {
+  UConverterFromUCallback oldCallback;
+
+  oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(OUT)));
+
       u_fprintf(OUT, "<B><I>%U</I></B><BR>\r\n", defaultLanguageDisplayName());
       u_fprintf(OUT, "<FORM METHOD=GET ACTION=\"#EXPLORE_NumberPatterns\">\r\n");
       u_fprintf(OUT, "<INPUT NAME=_ TYPE=HIDDEN VALUE=%s>\r\n", locale);
@@ -3331,7 +3713,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       
       /* should 'get/restore' here. */
       /*  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &SubstituteWithValueHTML, &status); */
-      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
+  ucnv_setFromUCallBack((UConverter*)u_fgetConverter(OUT), oldCallback, &status);
 
       status = U_ZERO_ERROR;
       
@@ -3339,7 +3721,7 @@ void showExploreNumberPatterns(const char *locale, const char *b)
       
     }
   
-  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+  u_fprintf(OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
 
   /* ============ 'localized' side ================================= */
 
@@ -3394,7 +3776,7 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
   UErrorCode       status = U_ZERO_ERROR;
   bool_t           supp   = TRUE;
 
-  newRB = ures_open(myBundlePath(), locale, &status);
+  newRB = ures_open(FSWF_bundlePath(), locale, &status);
   if(U_FAILURE(status))
     supp = FALSE;
   else
@@ -3419,6 +3801,28 @@ bool_t isSupportedLocale(const char *locale, bool_t includeChildren)
   return supp;
 }
 
+bool_t isExperimentalLocale(const char *locale)
+{
+  UResourceBundle *newRB;
+  UErrorCode       status = U_ZERO_ERROR;
+  bool_t           supp   = FALSE;
+
+  newRB = ures_open(NULL, locale, &status);
+  if(U_FAILURE(status))
+    supp = TRUE;
+  else
+    {
+      UChar *s = ures_get(newRB, "Version", &status);
+      
+      if(*s == 0x0078) /* If it starts with an 'x'.. */
+	supp = TRUE;
+
+      ures_close(newRB);
+    }
+
+  return supp;
+}
+
 #if 0
 char standardFlags[] = "AAACAFAJALAMANAOAQARASATAUAVBABBBCBDBEBFBGBHBIBKBLBMBNBOBPBQBRBSBTBUBVBXBYCACBCDCECFCGCHCICJCKCMCNCOCQCRCSCTCUCVCWCYDJDODQDRECEGEIEKENERESETEUEZFAFGFIFJFMFOFPFQFRFSGAGBGGGHGIGJGKGLGMGOGPGQGRGTGVGYHAHKHMHOHQHRHUIDIMINIOIPIRISITIVIZJEJMJNJOJQJUKEKGKNKQKRKSKTKUKZLALELGLHLILOLQLSLTLULYMAMBMCMDMFMGMHMIMKMLMNMOMPMQMRMTMUMVMXMYMZNCNENFNGNHNINLNONPNRNSNTNUNZPAPCPEPKPLPMPOPPPSPUQARERMRORPRQRSRWSASBSCSESFSGSHSISLSMSNSOSPSTSUSVSWSXSYSZTCTDTETHTITKTLTNTOTPTSTUTVTWTXTZUGUKUPUSUVUYUZVCVEVIVMVQVTWAWFWQWSWZYMZAZIVNUATRSKPTLVJPILDZDK";
 
@@ -3435,7 +3839,7 @@ void showFlagImage(const char *locale, const char *extra)
 
     flagPath[0] = 0;
 
-    flagRB = ures_open(  myBundlePath(), locale, &status);
+    flagRB = ures_open(  FSWF_bundlePath(), locale, &status);
     if(U_SUCCESS(status) && (status != U_USING_DEFAULT_ERROR)) /* Important! don't want default flags.. */
       {
 	flagImage = ures_get(flagRB, "flag", &status);
@@ -3499,7 +3903,7 @@ void showFlagImage(const char *locale, const char *extra)
 void showKeyAndStartItemShort(const char *key, const UChar *keyName, const char *locale, UErrorCode showStatus)
 {
       u_fprintf(OUT, "<P><TABLE BORDER=0 CELLSPACING=0 WIDTH=100%%>");
-      u_fprintf(OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=/developerworks/opensource/icu/project/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
+      u_fprintf(OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=/developerworks/opensource/icu/project/images/c.gif ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
       u_fprintf(OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s><B>", key);
 
       if(keyName == NULL)
@@ -3522,4 +3926,191 @@ void showKeyAndStartItem(const char *key, const UChar *keyName, const char *loca
 void showKeyAndEndItem(const char *key, const char *locale)
 {
   u_fprintf(OUT, "</TR></TABLE>\r\n");
+}
+
+
+/* ----------------- setencoding */
+UFILE *setLocaleAndEncodingAndOpenUFILE(char *chosenEncoding, bool_t *didSetLocale, bool_t *didSetEncoding)
+{
+  char *pi;
+  char *tmp;
+  const char *locale = NULL;
+  const char *encoding = NULL;
+  UErrorCode status = U_ZERO_ERROR;
+  char *acceptLanguage;
+  char newLocale[100];
+  UFILE *f;
+  UChar x[2];
+
+  uloc_setDefault("en", &status); /* BASELINE */
+
+  locale = (const char *)uloc_getDefault();
+  encoding = chosenEncoding; 
+
+  pi = getenv("PATH_INFO");
+  if( (pi) && (*pi && '/') )
+    {
+      pi++; /* eat first slash */
+      tmp = strchr(pi, '/');
+      
+      if(tmp)
+	*tmp = 0; /* tie off at the slash */
+
+      status = U_ZERO_ERROR;
+      locale = pi;
+
+      if ( *locale != 0) /* don't want 0-length locales */
+	{
+	  uloc_setDefault(locale, &status);
+	  if(U_FAILURE(status))
+	    {
+	      doFatal("uloc_setDefault", status);
+	      /* doesn't return */
+	    }
+	  *didSetLocale = TRUE;
+	}
+
+      if(tmp) /* have encoding */
+	{
+  
+	  tmp++; /* skip '/' */
+  
+	  pi = tmp;
+
+	  tmp = strchr(tmp, '/');
+	  if(tmp)
+	    *tmp = 0;
+  
+	  if(*pi) /* don't want 0 length encodings */
+	    {
+	      encoding = pi;
+              fprintf(stderr, "DSE1+%s\n", pi);
+	      *didSetEncoding = TRUE; 
+
+	    }
+	}
+    }
+
+  if(!(*didSetLocale) && (acceptLanguage=getenv("HTTP_ACCEPT_LANGUAGE")) && acceptLanguage[0] )
+    {
+
+      /* OK, if they haven't set a locale, maybe their web browser has. */
+	if(!(tmp=strchr(acceptLanguage,','))) /* multiple item separator */
+      if(!(tmp=strchr(acceptLanguage,'='))) /* strength separator */
+	  tmp = acceptLanguage + strlen(acceptLanguage);
+
+      strncpy(newLocale, acceptLanguage, my_min(100,tmp-acceptLanguage));
+      newLocale[my_min(100,tmp-acceptLanguage)] = 0;
+      /*      fprintf(stderr," NL=[%s], al=[%s]\r\n", newLocale, acceptLanguage);
+	      fflush(stderr);*/
+
+      /* Note we don't do the PROPER thing here, which is to sort the possible languages by weight. Oh well. */
+      
+      status = U_ZERO_ERROR;
+
+      /* half hearted attempt at canonicalizing the locale string. */
+      newLocale[0] = tolower(newLocale[0]);
+      newLocale[1] = tolower(newLocale[1]);
+      if(newLocale[2] == '-')
+	newLocale[2] = '_';
+      if(newLocale[5] == '-')
+	newLocale[5] = '_';
+
+      newLocale[3] = toupper(newLocale[3]);
+      newLocale[4] = toupper(newLocale[4]);
+
+      if(isSupportedLocale(newLocale, TRUE)) /* DO NOT pick an unsupported locale from the browser's settings! */
+	uloc_setDefault(newLocale, &status);
+
+      status = U_ZERO_ERROR;
+
+      /* that might at least get something.. It's better than defaulting to en_US */
+    }
+  
+  if(!(*didSetEncoding))
+    {
+      const char *accept;
+      const char *agent;
+            char *newEncoding;
+
+      accept = getenv("HTTP_ACCEPT_CHARSET");
+
+      fprintf(stderr, "AC=%s\n", accept);
+      
+      if(accept && strstr(accept, "utf-8"))
+	{
+	  encoding = "utf-8"; /* use UTF8 if they have it ! */
+	}
+      else if( (agent = (const char *)getenv("HTTP_USER_AGENT")) &&
+	   (strstr(agent, "MSIE 4") || strstr(agent, "MSIE 5")) &&
+	   (strstr(agent, "Windows NT")))
+	{
+	  encoding = "utf-8"; /* MSIE can handle utf8 but doesn't request it. */
+	}
+#if 0	 
+      else /* OK, see if we can find a valid codepage */
+	{
+	  /** OLD code to choose a preferred encoding for a locale. */
+
+	  const UChar *defaultCodepage;
+	  int32_t i = 0;
+	  UErrorCode status;
+
+	  FSWF( /*NOEXTRACT*/ "",""); /* just to init it.. */
+	  if(gRB)
+	    {
+	      while( (defaultCodepage = ures_getArrayItem(gRB, "DefaultEncoding", i++, &status)) &&
+		     U_SUCCESS(status) )
+		{
+		  newEncoding = malloc(u_strlen(defaultCodepage) + 1);
+		  u_austrcpy((char*)newEncoding, defaultCodepage);
+
+		  if(accept)
+		    {
+		      /* fprintf(stderr,"Looking for %s in %s..\n", newEncoding, accept);*/
+		      if(strstr(accept,newEncoding) || strchr(accept,'*'))
+			encoding = newEncoding;
+		      break;
+		    }
+		  else
+		    free(newEncoding);
+		}
+	      /* fprintf(stderr,"Got %d on try %d for defaultencoding [bnd%s]\n", status, i-1, uloc_getDefault() ); */
+	    }
+	  else
+	    {
+	      /* default wasn't accepted. */
+	    }
+
+	}
+#endif
+
+    }
+
+  if(encoding)
+    {
+      strcpy(chosenEncoding, encoding);
+    }
+
+
+  /* now, open the file */
+  f = u_finit(stdout, locale, encoding);
+
+  if(!f)
+    {
+      /* couldNotOpenEncoding = encoding; */
+      f = u_finit(stdout, locale, "LATIN_1"); /* this fallback should only happen if the encoding itself is bad */
+      if(!f)
+	return f; /* :( */
+    }
+
+
+  /* we know that ufile won't muck withthe locale.
+     But we are curious what encoding it chose, and we will propagate it. */
+  if(encoding == NULL)
+    {
+      encoding = u_fgetcodepage(f);
+      strcpy(chosenEncoding, encoding);
+    }
+  return f;
 }

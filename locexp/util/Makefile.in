@@ -1,3 +1,7 @@
+#/**********************************************************************
+#*   Copyright (C) 1999, International Business Machines
+#*   Corporation and others.  All Rights Reserved.
+#***********************************************************************/
 ## Makefile.in for ICUAPPS - icuapps/locexp/util
 ## Steven  R. Loomis
 
@@ -18,8 +22,16 @@ CLEANFILES = *~
 ## Target information
 TARGET = liblxutil.$(SO)
 
-OBJECTS = decompcb.o lx_utils.o ures_additions.o kangxi.o
-HEADERS = decompcb.h lx_utils.h ures_additions.h kangxi.h
+OBJECTS = decompcb.o lx_utils.o ures_additions.o kangxi.o collectcb.o translitcb.o utrnslit.o
+HEADERS = decompcb.h lx_utils.h ures_additions.h kangxi.h collectcb.h translitcb.h utrnslit.h
+
+## fontedcd  support
+OBJECTS += fontedcb.o devanagari.o
+HEADERS += fontedcb.h
+
+## tz support
+#OBJECTS += utimzone.o
+#HEADERS += utimzone.h
 
 DEPS = $(OBJECTS:.o=.d)
 

@@ -1,3 +1,12 @@
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
+
+/*****************************************
+   Some random utilities..
+*/
+
 #include "lx_utils.h"
 
 /* Realloc broken on linux????? */
@@ -26,7 +35,7 @@ static void
   int32_t j;
   UChar temp;
 
-  while (i > radix)
+  while (i >= radix)
     {
       num = i / radix;
       digit = (int8_t) (i - num * radix);
@@ -782,10 +791,19 @@ void ucharsToEscapedUrlQuery(char *urlQuery, const UChar *src)
 
 /* date [from udate by Stephen F. Booth] ----------------------------------------------------- */
 /* Format the date */
+
+
+
+
 UChar *
 date(const UChar *tz,
      UDateFormatStyle style,
      UErrorCode *status)
+{
+  return dateAt(ucal_getNow(), tz, style, status);
+}
+
+UChar *dateAt(UDate adate, const UChar *tz, UDateFormatStyle style, UErrorCode *status)
 {
   UChar *s = 0;
   int32_t len = 0;
@@ -797,7 +815,7 @@ date(const UChar *tz,
     *status = U_ZERO_ERROR;
     s = (UChar*) malloc(sizeof(UChar) * (len+1));
     if(s == 0) goto finish;
-    udat_format(fmt, ucal_getNow(), s, len + 1, 0, status);
+    udat_format(fmt, adate, s, len + 1, 0, status);
     if(U_FAILURE(*status)) goto finish;
   }
 
@@ -856,3 +874,150 @@ void u_replaceChar(UChar *str, UChar from, UChar to)
 	*str = to;
     } while( *(str++) );
 }
+
+/**
+ * Duplicate a string from the host encoding to Unicode 
+ * caller owns storage
+ * @param hostchars chars in host encoding
+ * @return ptr to new unichars, or NULL if allocation failed.
+ */
+
+U_CFUNC UChar *uastrdup(const char *hostchars)
+{
+  UChar *chr;
+
+  if(!hostchars)
+    return NULL;
+  
+  chr = malloc((strlen(hostchars)+1)*sizeof(UChar));
+
+  if(!chr)
+    return NULL;
+
+  return u_uastrcpy(chr, hostchars);
+}
+
+bool_t testConverter(const char *converter, 
+                     const UChar *sample,
+		     int32_t sampleLen, 
+		     int8_t *buffer,
+		     int32_t bufLen)
+{
+  UErrorCode  status = U_ZERO_ERROR;
+  UConverter *cnv;
+  bool_t      worked = FALSE;  
+  int8_t     *target;
+
+  cnv = ucnv_open(converter, &status);
+  if(U_FAILURE(status))
+    return FALSE;
+
+  target = buffer;
+  
+  ucnv_setFromUCallBack(cnv, UCNV_FROM_U_CALLBACK_STOP, &status);
+
+  ucnv_fromUnicode (cnv,
+		    &target,
+		    buffer + bufLen,
+		    &sample,
+		    sample + sampleLen,
+		    NULL,
+		    TRUE,
+		    &status);
+  
+  if(U_FAILURE(status))
+    {
+      fprintf(stderr, "cnv [%s] failed on [%04X]\r\n", converter, sample[-1]);
+    }
+  
+  ucnv_close(cnv);
+
+  if(U_SUCCESS(status))
+    return TRUE;
+  else
+    return FALSE;
+}
+
+UErrorCode  FSWF_bundleErr = U_ZERO_ERROR;
+
+UResourceBundle *FSWF_getBundle()
+{
+  static UResourceBundle *gRB = NULL;
+
+  if(gRB == 0)
+    {
+      FSWF_bundleErr = U_ZERO_ERROR;
+      gRB = ures_open(  FSWF_bundlePath(), NULL, &FSWF_bundleErr);
+      if(U_FAILURE(FSWF_bundleErr))
+	{
+	  gRB = 0;
+	}
+    }
+  return gRB;
+
+}
+
+
+/*** fetch string with fallback -------------------------------------------------*/
+const UChar *FSWF(const char *key, const char *fallback)
+{
+  UErrorCode status = U_ZERO_ERROR;
+  const UChar *str = 0;
+  static UChar   gFSWFTempChars[1024];
+  UChar *fswfTempChars = gFSWFTempChars;
+  UResourceBundle *rb;
+
+  if(strlen(fallback) >  1020)
+    fswfTempChars = malloc(sizeof(UChar)*(strlen(fallback)+1));
+      
+  rb = FSWF_getBundle();
+
+  status = U_ZERO_ERROR;
+
+  if(rb != 0)
+    str = ures_get( rb, key, &status);
+
+  if(str == 0) /* failed to get a str */
+    {
+      /* fallback: use our temp buffer [NON MT safe] and do a strcpy.. */
+      u_uastrcpy(gFSWFTempChars, fallback);
+      str = malloc((u_strlen(gFSWFTempChars)+1) * sizeof(UChar)); /* LEAK but who cares, it's an error case */
+      u_strcpy((UChar*)str,gFSWFTempChars);
+    }
+
+  return str;
+}
+
+
+void FSWF_close()
+{
+  ures_close(FSWF_getBundle());
+}
+
+static char FSWF_path[500] = "";
+
+/* Set the path for FSWF. Default: icudata/FSWF/ */
+U_CAPI void FSWF_setBundlePath(char *newPath)
+{
+  strcpy(FSWF_path, newPath);
+}
+
+const char *FSWF_bundlePath()
+{
+  if(FSWF_path[0] == 0)
+    {
+      strcpy(FSWF_path, u_getDataDirectory());
+      strcat(FSWF_path, "FSWF/");
+    }
+  
+  return FSWF_path;
+}
+
+U_CAPI UErrorCode FSWF_bundleError()
+{
+  return FSWF_bundleErr;
+}
+
+
+
+

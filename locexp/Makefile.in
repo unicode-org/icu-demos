@@ -1,19 +1,20 @@
 ## Makefile.in for ICUapps - icuapps/locexp
 ## Steven  R. Loomis
 
-# Uncomment the following to set a custom URL prefix on things such as
-# gifs, etc.   Put the contents of html/ somewhere where this URL can
-# access them.   The example below would construct a URL such as
-#   /~srl/localeexplorer/closed.gif
-#  ^^^^^^^  
-#
-#URLPREFIX=-DURLPREFIX=\"/~srl\"
 
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 
 # srcdir must be set before this is included
 include @ICU_MAKEFILE@
+
+# See the end of this makefile for documentation on the 
+# following line.
+LXOPTIONS = -DLX_USE_FONTED
+
+-include Makefile.local
+
+CPPFLAGS += $(LXOPTIONS)
 
 ## Build directory information
 top_builddir = ..
@@ -127,7 +128,53 @@ icudata-conv: icudata-dir
 	$(sbindir)/makeconv icudata/*.ucm
 
 icudata-clean: icudata-dir
-	-rm -f icudata/*.cnv icudata/*.res
+	-rm -f icudata/*.cnv icudata/*.res icudata/*~
 
 icudata-tgz: icudata-clean
 	tar cvfpz icudata.tgz icudata/
+
+#  
+#   You can put your own settings for locale explorer
+#   into a 'Makefile.local' file.  Lines starting with '###'
+#   are suggestions.
+#  
+#* URLPREFIX
+#  
+#     Use this to set a custom URL prefix on things such as
+#   gifs, etc.   Put the contents of html/ somewhere where 
+#   this URL can access them.   The example below would
+#   construct a URL such as
+#     /~srl/localeexplorer/closed.gif
+#    ^^^^^^^  
+#  
+###     URLPREFIX=-DURLPREFIX=\"/~srl\"
+#
+#* LXOPTIONS
+#
+#
+#  -DLX_SHOW_ALL_DISPLAY_LOCALES  - this will let you change LX's display
+#                                   locale to ANY locale, not just implemented
+#                                   ones. (this is the locale of it's UI)
+#
+#  
+#  -DLX_UBROWSE_PATH=\"path\"      - Path to the ubrowse CGI, ex:
+#                                     /developerworks/opensource/icu/ubrowse
+#
+#  -DLX_NO_LOCALE_CHANGE           - disable changing of display locale
+#
+#  -DLX_USE_FONTED
+#
+#  -DLX_USE_CURRENCY           - make the 'currencypatterns demo' be a link
+#                                    to oanda.com currency charts
+#
+#  -DLX_USE_TIMEZONE            Try to do timezone manipulation
+#                            Also, add 'utimezon.o' to util/Makefile.in OBJECTS
+#
+###     LXOPTIONS +=    -DLX_SHOW_ALL_DISPLAY_LOCALES 
+#
+#OR [to replace]
+#  
+#   LXOPTIONS = -DLX_USE_FONTED  
+#  (standard options won't be used)
+
+

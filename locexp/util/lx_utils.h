@@ -1,13 +1,8 @@
-/*
-*******************************************************************************
-*                                                                             *
-* COPYRIGHT:                                                                  *
-*   (C) Copyright International Business Machines Corporation, 1998, 1999     *
-*   Licensed Material - Program-Property of IBM - All Rights Reserved.        *
-*   US Government Users Restricted Rights - Use, duplication, or disclosure   *
-*   restricted by GSA ADP Schedule Contract with IBM Corp.                    *
-*                                                                             *
-*******************************************************************************
+/**********************************************************************
+*   Copyright (C) 1999, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************
+*
 *
 * File LX_utils.h
 *
@@ -124,6 +119,16 @@ void doDecodeQueryField(const char *in, char *out, int32_t length);
  */
 UChar *date(const UChar *tz, UDateFormatStyle style, UErrorCode *status);
 
+/**
+ * Format a date in the given style
+ * @param date date to format
+ * @param tz The timezone to format in (NULL for default)
+ * @param style Style to format in (try UDAT_FULL)
+ * @param status [returned] status of formatting, etc.
+ * @return pointer to the formatted chars. Caller must dispose of them.
+ */
+UChar *dateAt(UDate date, const UChar *tz, UDateFormatStyle style, UErrorCode *status);
+
 
 /* substitute with value, of the form: <B>\uXXXX</B>  */
 void
@@ -156,4 +161,52 @@ UCNV_FROM_U_CALLBACK_BACKSLASH_ESCAPE (UConverter * _this,
 
 void u_replaceChar(UChar *str, UChar from, UChar to);
 
+/**
+ * Duplicate a string from the host encoding to Unicode 
+ * caller owns storage
+ * @param hostchars chars in host encoding
+ * @return ptr to new unichars
+ */
+
+U_CFUNC UChar *uastrdup(const char *hostchars);
+
+
+/**
+ * Test whether a particular converter handles the sample text
+ * @param converter Which converter to test
+ * @param sample Sample uchars to test
+ * @param sampleLen length of sample uchars
+ * @param buffer output buffer for the test
+ * @param bufLen length of the output buffer
+ * @return TRUE if the converter handles the test, FALSE otherwise.
+ */
+
+
+bool_t testConverter(const char *converter, 
+                     const UChar *sample,
+		     int32_t sampleLen, 
+		     int8_t *buffer,
+		     int32_t bufLen);
+
+
+/** FSWF. All functions are NON multithread safe! */
+
+/* fetch string with fallback */
+U_CAPI const UChar *FSWF(const char *key, const char *fallback);
+
+/* Return a ptr to FSWF's bundle */
+U_CAPI UResourceBundle *FSWF_getBundle();
+
+U_CAPI UErrorCode FSWF_bundleError();
+
+/* close FSWF's bundle */
+U_CAPI void FSWF_close();
+
+/* returns a path to load FSWF's bundle from..  */
+U_CAPI const char *FSWF_bundlePath();
+
+/* Set the path for FSWF. Default: icudata/FSWF/ */
+U_CAPI void FSWF_setBundlePath(char *newPath);
+
 #endif
+
