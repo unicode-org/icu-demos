@@ -1,5 +1,9 @@
-/* 
- * (c) 1999 IBM, Inc. All Rights Reserved.
+/******************************************************************************
+*
+*   Copyright (C) 1999-2000, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+*
+*******************************************************************************
  *
  * <srl@monkey.sbay.org>
  *

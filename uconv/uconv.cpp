@@ -1,3 +1,9 @@
+/******************************************************************************
+*
+*   Copyright (C) 1999-2000, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+*
+*******************************************************************************/
 //
 // uconv demonstration example of ICU and codepage conversion
 // Purpose is to be a similar tool as the UNIX iconv program.

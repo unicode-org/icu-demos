@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-* Copyright (C) 1996-1999, International Business Machines Corporation and    *
+* Copyright (C) 1996-2000, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 *******************************************************************************
 * HTML Design by Josh Mast <josh@hivehaus.org>                                *
@@ -283,6 +283,7 @@ main(int argc,
     printf("content-type: text/html;charset=x-dvng\r\n\r\n");
   else
     {
+      if(*pi==0) pi = NULL;
       ucnv_setDefaultName(pi);
       printf("content-type: text/html;charset=%s\r\n\r\n",pi);
     }
@@ -290,9 +291,15 @@ main(int argc,
   printf("<HTML><HEAD>\r\n");
   if(!tmp) /* if there was no trailing '/' ... */
     {
-      printf("<BASE HREF=\"http://%s%s/%s/\">\r\n", getenv("SERVER_NAME"),
-	     getenv("SCRIPT_NAME"),
-	     pi);
+      if(pi!=NULL) {
+          printf("<BASE HREF=\"http://%s%s/%s/\">\r\n", getenv("SERVER_NAME"),
+	         getenv("SCRIPT_NAME"),
+	         pi);
+      } else {
+          printf("<BASE HREF=\"http://%s%s/\">\r\n", getenv("SERVER_NAME"),
+	         getenv("SCRIPT_NAME"));
+      }
+
     }
 
   /* Now, see what we're supposed to do */
@@ -769,7 +776,7 @@ up_u2c(char *buf, const UChar *src, UErrorCode *cnvStatus)
   if(gConverter == NULL) /* open just one of these */
     {
       /* open a default converter */
-      gConverter = ucnv_open(0, &status);
+      gConverter = ucnv_open(NULL, &status);
       if(U_FAILURE(status))
 	{
 	  puts("Could not open the default converter.");

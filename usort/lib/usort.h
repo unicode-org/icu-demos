@@ -1,8 +1,12 @@
-/*
+/******************************************************************************
+*
+*   Copyright (C) 1999-2000, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+*
+*******************************************************************************
+
    usort - library to perform locale-sensitive sorting of text lines
    using the usort library.
-
-   Copyright (c) 1999 IBM, Inc.
 
    for the IBM Classes for Unicode
    <http://www10.software.ibm.com/developerworks/opensource/icu> 

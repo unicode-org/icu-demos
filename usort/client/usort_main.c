@@ -1,6 +1,9 @@
-/**
- * (c) 1999 IBM, Inc.
- *
+/******************************************************************************
+*
+*   Copyright (C) 1999-2000, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+*
+*******************************************************************************
  * Steven R. Loomis <srl@monkey.sbay.org>
  *
  * Main file for usort. Gives a simple 

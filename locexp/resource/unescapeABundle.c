@@ -3,12 +3,8 @@
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 /*
-   This little program takes utf16_be input and outputs 
-   escaped text suitable for inclusion in a resource bundle.
-
-   Use it like this:
-
-    uconv -f <srccodepage> -t utf16_be | escapeForBundle >> myResource.txt
+   This little program takes escaped text and converts it to utf16.
+   Endianess depends on platform!
 */
 
 #include <stdio.h>

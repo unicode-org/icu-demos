@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999, International Business Machines
+*   Copyright (C) 1999-2000, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 /*
@@ -69,7 +69,6 @@
 #include "decompcb.h"
 
 #ifdef WIN32
-#include "ucnv_io.h"
 #include "unicode/uchar.h"
 #include "unicode/umsg.h"
 #include "kangxi.h"
@@ -1112,7 +1111,7 @@ void chooseConverter(const char *restored)
       
       for(j=0;U_SUCCESS(err);j++)
 	{
-	  alias = ucnv_io_getAlias(name, j, &err);
+	  alias = ucnv_getAlias(name, j, &err);
 
 	  /*	  fprintf(stderr, " <%d>:%s-[%s]", 
 		  j, alias, u_errorName(err)); */
@@ -1217,7 +1216,7 @@ void chooseConverterMatching(const char *restored, const UChar *sample)
       
       for(j=0;U_SUCCESS(err);j++)
 	{
-	  alias = ucnv_io_getAlias(name, j, &err);
+	  alias = ucnv_getAlias(name, j, &err);
 
 	  /*	  fprintf(stderr, " <%d>:%s-[%s]", 
 		  j, alias, u_errorName(err)); */
@@ -1416,7 +1415,7 @@ void chooseConverterFrom(const char *restored, USort *list)
 
       for(i=0;U_SUCCESS(status);i++)
 	{
-	  alias = ucnv_io_getAlias(name, i, &status);
+	  alias = ucnv_getAlias(name, i, &status);
 
 	  if(!alias)
 	    break;
