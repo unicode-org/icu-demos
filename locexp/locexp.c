@@ -1511,9 +1511,25 @@ void chooseConverterFrom(const char *restored, USort *list)
       case UCNV_UTF16_LittleEndian: ts = "UTF-16 Little Endian"; break;
       case UCNV_EBCDIC_STATEFUL: ts = "EBCDIC Stateful"; break;
       case UCNV_ISO_2022: ts = "iso-2022 meta-converter"; break;
+      case UCNV_LMBCS_1: ts="UCNV_LMBCS_1"; break;
+      case UCNV_LMBCS_2: ts="UCNV_LMBCS_2"; break; 
+      case UCNV_LMBCS_3: ts="UCNV_LMBCS_3"; break;		
+      case UCNV_LMBCS_4: ts="UCNV_LMBCS_4"; break;
+      case UCNV_LMBCS_5: ts="UCNV_LMBCS_5"; break;
+      case UCNV_LMBCS_6: ts="UCNV_LMBCS_6"; break;
+      case UCNV_LMBCS_8: ts="UCNV_LMBCS_8"; break;
+      case UCNV_LMBCS_11: ts="UCNV_LMBCS_11"; break;
+      case UCNV_LMBCS_16: ts="UCNV_LMBCS_16"; break;
+      case UCNV_LMBCS_17: ts="UCNV_LMBCS_17"; break;
+      case UCNV_LMBCS_18: ts="UCNV_LMBCS_18"; break;
+      case UCNV_LMBCS_19: ts="UCNV_LMBCS_19"; break;
+
+#if 0
       case UCNV_JIS: ts = "JIS (Japan Industrial Society?)"; break;
       case UCNV_EUC: ts = "EUC"; break; /* ? */
       case UCNV_GB: ts = "GB"; break; /* ? */
+#endif
+
       default: ts = tmp; sprintf(tmp, "Unknown type %d", ucnv_getType(u));
       }
     u_fprintf(lx->OUT, "%s\n", ts);

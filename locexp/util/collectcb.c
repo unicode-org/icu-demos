@@ -11,11 +11,6 @@
 #include "unicode/uchar.h"
 #include "unicode/collectcb.h"
 
-U_CAPI bool_t U_EXPORT2 u_isalnum(UChar c)
-{
-  return (u_isalpha(c) || u_isdigit(c));
-}
-
 UConverterFromUCallback COLLECT_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
 bool_t                  COLLECT_alnum = FALSE;
 
