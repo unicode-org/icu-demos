@@ -12,8 +12,8 @@ textarea { font-family: Arial Unicode MS; font-size: 100% }
 <font face="arial,helvetica,sanserif">
 
 <script>
-// Determine our location.
-if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo") {
+// Determine our location.  Are we on OSS or a local server?
+if (location.toString().search(/oss.software.ibm.com/i) >= 0) {
   SELF = "/developerworks/opensource/icu/translitdemo";
   JS = "../icu/project/demo";
 } else {
@@ -21,11 +21,15 @@ if (location == "http://oss.software.ibm.com/developerworks/opensource/icu/trans
   JS = "../js";
 }
 
-// Load up the js/util.js script.  Unbelievably, this works.
-document.writeln("\x3Cscript src=\"" + JS + "/util.js\"\x3E\x3C\x2Fscript\x3E");
+// Load up the js/util.js script.  This works as long as we cloak the tag.
+document.writeln("\x3Cscript src=\"" + JS + "/util.js\">\x3C/script>");
 </script>
 
 <script>
+if ((typeof UTIL_LOADED) == "undefined" || !UTIL_LOADED) {
+  alert("Internal Error: util.js not loaded.\nThis page will not function properly.");
+}
+
 // Load available IDs from CGI and populate select elems
 AVAILABLE_IDS = "$AVAILABLE_IDS".split(";");
 USER_IDS = "$USER_IDS".split(";");
