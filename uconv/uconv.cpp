@@ -7,7 +7,7 @@
 //
 // uconv demonstration example of ICU and codepage conversion
 // Purpose is to be a similar tool as the UNIX iconv program.
-// Shows the usage of the ICU classes: UnicodeConverterCPP, UnicodeString
+// Shows the usage of the ICU classes: UnicodeConverter, UnicodeString
 //
 // Usage: uconv [flag] [file]
 // -f [codeset]  Convert file from this codeset
@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-// This is the UnicodeConverterCPP headerfile
+// This is the UnicodeConverter headerfile
 #include <unicode/convert.h>
 
 // This is the UnicodeString headerfile
@@ -49,7 +49,7 @@ void printAllConverters()
     static const size_t maxline = 70;
 
     // getAvailable returns a string-table with all available codepages
-    const char* const* convtable = UnicodeConverterCPP::getAvailableNames(num, err);
+    const char* const* convtable = UnicodeConverter::getAvailableNames(num, err);
     if (U_FAILURE(err))
     {
         fprintf(stderr, "getAvailableNames failed\n");
@@ -77,8 +77,8 @@ bool convertFile(const char* fromcpage,
                  FILE* outfile)
 {
     bool ret = true;
-    UnicodeConverterCPP* convfrom = 0;
-    UnicodeConverterCPP* convto = 0;
+    UnicodeConverter* convfrom = 0;
+    UnicodeConverter* convto = 0;
     UErrorCode err = U_ZERO_ERROR;
     bool  flush;
     const char* cbuffiter;
@@ -95,14 +95,14 @@ bool convertFile(const char* fromcpage,
 
     // Create codepage converter. If the codepage or its aliases weren't
     // available, it returns NULL and a failure code
-    convfrom = new UnicodeConverterCPP(fromcpage, err);
+    convfrom = new UnicodeConverter(fromcpage, err);
     if (U_FAILURE(err))
     {
         fprintf(stderr, "Unknown codepage: %s\n", fromcpage);
         goto error_exit;
     }
 
-    convto = new UnicodeConverterCPP(tocpage, err);
+    convto = new UnicodeConverter(tocpage, err);
     if (U_FAILURE(err))
     {
         fprintf(stderr, "Unknown codepage %s\n", tocpage);
