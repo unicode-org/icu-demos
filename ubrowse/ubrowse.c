@@ -83,6 +83,11 @@ int validate_sanity();
 
 typedef enum { ECHAR, ETOP, EBLOCK, ECOLUMN, ERADLST, ERADICAL, ENAME, EEXACTNAME, ESET, ESETCHUNK } ESearchMode;
 
+#define kSetChunkWidth 10  /* chars per row in unicode set chunk */
+#define kSetChunkHeight 10 /* chars per column in unicode set chunk */
+#define kSetChunkSize (kSetChunkWidth*kSetChunkHeight)
+#define kSetListSize 10
+
 /* Protos */
 int main(int argc, char **argv);
 
@@ -90,7 +95,8 @@ UChar32 doSearchBlock(int32_t, UChar32 startFrom);
 UChar32 doSearchType(int8_t, UChar32 startFrom);
 void showSearchMenu(UChar32 startFrom);
 void printCharName(UChar32 ch);
-
+void printModeCHAR(UChar32 ch);
+void printModeSET(const char *qs, ESearchMode mode);
 /**
  * Print a row (like in "Column" view)
  * @param theChar Char to show
@@ -294,7 +300,23 @@ void printOneUChar32(UChar32 theChar)
   chars[offset] = 0; 
   u_fprintf(gOut, "%S", chars);
   u_fflush(gOut);
+}
 
+
+void explainOneUChar32(UChar32 theChar)
+{
+  UChar chars[20];
+  int offset = 0;
+
+  chars[0]=0;
+  UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar); 
+  chars[offset] = 0; 
+  u_fprintf(gOut, "<a STYLE=\"text-decoration:  none\" href=\"?ch=%04X\" ", theChar); 
+  u_fprintf(gOut, " title=\"%04X: ", theChar);
+  printCharName(theChar);
+  u_fprintf(gOut, "\">%S", chars);
+  u_fprintf(gOut, "</a>");
+  u_fflush(gOut);
 }
 
 int words_count = 0;
@@ -997,7 +1019,7 @@ if(!tmp) /* if there was no trailing '/' ... */
                   
                   
                   /* print the simple data */
-                  printOneUChar32(theChar);
+                  explainOneUChar32(theChar);
                   
                   u_fprintf(gOut, "</td>");
                 }
@@ -1010,7 +1032,7 @@ if(!tmp) /* if there was no trailing '/' ... */
       u_fprintf(gOut, "<hr>\n");
       if(block <= 0xFFFF)
         {
-          u_fprintf(gOut, "<a href=\"http://charts.unicode.org/Unicode.charts/normal/U%04X.html#Glyphs\">this block on charts.unicode.org</a>\n", block);
+          u_fprintf(gOut, "<a href=\"http://www.unicode.org/charts/PDF/U%04X.pdf\">PDF of block U%04X from .unicode.org</a>\n", block, block);
         }
       showSearchMenu( block + 0x0100);
     }
@@ -1090,104 +1112,10 @@ if(!tmp) /* if there was no trailing '/' ... */
   else if(mode == ECHAR) /************************* CHAR *****************************/
     {
 #pragma mark ECHAR
-      int i;
-
       u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
-      u_fprintf(gOut, "<table summary=\"Canonical Equivalents\" border=5 cellpadding=3 cellspacing=6><tr><td>&nbsp;<font size=+5>");
-      printOneUChar32(block);
-      u_fprintf(gOut, "</font>&nbsp;</td><td>");
+      printModeCHAR(block);
 
-      printCanonEquivs(block);
-
-      u_fprintf(gOut, "</td></tr></table><br><br>\n");
-
-      u_fprintf(gOut, "<table summary=\"Character Basic Row\" border=2>");
-      printRowHeader(TRUE);
-      printRow(block, TRUE, "", "k1");
-      u_fprintf(gOut, "</table>\n<br><br>\n");
-
-      u_fprintf(gOut, "<table summary=\"Detailed Character Properties\" border=2>\n");
-                u_fprintf(gOut, "<tr><td><b>PN</b></td><td><b>Type</b></td><td><b>Name</b></td><td><b>PVN</b></td><td><b>Value</b></td></tr>\n");
-      
-      {
-        UVersionInfo va;
-        char age[U_MAX_VERSION_STRING_LENGTH];
-        u_charAge(block, va);
-        u_versionToString(va, age);
-        u_fprintf(gOut, "<tr><td>-</td><td>%s</td><td>%s</td><td></td><td>%s</td></tr>\n",
-                  "Vers", "Derived Age", age);
-      }
-
-      for(i=UCHAR_BINARY_START;i<UCHAR_BINARY_LIMIT;i++) {
-#if 0
-          UBool has;
-        has = u_hasBinaryProperty(block, i);
-
-        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s%s%s</td><td>%s</td><td>%s</td></tr>\n",
-           i, "bin", has?"<b>":"", getUPropertyName(i), has?"</b>":"",  has?"T":"f", u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
-#endif
-        int32_t has;
-        has = u_getIntPropertyValue(block, i);
-
-        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
-                  i, "bin", getUPropertyName(i), has,
-                  u_getIntPropertyMinValue(i),
-                  u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
-        
-      }
-
-      for(i=UCHAR_INT_START;i<UCHAR_INT_LIMIT;i++) {
-        int32_t has;
-        has = u_getIntPropertyValue(block, i);
-
-        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
-                  i, "int", getUPropertyName(i), has,
-                  u_getIntPropertyMinValue(i),
-           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
-
-
-      }
-
-      for(i=UCHAR_MASK_START;i<UCHAR_MASK_LIMIT;i++) {
-        int32_t has;
-        has = u_getIntPropertyValue(block, i);
-
-        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
-                  i, "int", getUPropertyName(i), has,
-                  u_getIntPropertyMinValue(i),
-           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
-
-      }
-
-#if 0
-      for(i=UCHAR_DOUBLE_START;i<UCHAR_DOUBLE_LIMIT;i++) {
-        double has;
-        has = u_getDoublePropertyValue(block, i);
-
-        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%g (%ld..%ld)</td><td>%s</td></tr>\n",
-                  i, "int", getUPropertyName(i), has,
-                  u_getIntPropertyMinValue(i),
-           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
-
-      }
-
-      for(i=UCHAR_STRING_START;i<UCHAR_STRING_LIMIT;i++) {
-        int32_t has;
-        has = u_getIntPropertyValue(block, i);
-
-        u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
-                  i, "int", getUPropertyName(i), has,
-                  u_getIntPropertyMinValue(i),
-           u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(block,i),U_LONG_PROPERTY_NAME));
-
-      }
-#endif
-
-      u_fprintf(gOut, "</table>\n");
-
-                u_fprintf(gOut, "<br> The PN column and the PVN column refer to the internal property number and property value number. Except in the case of the Canonical_Combining_Class, these numbers have no relevance outside of ICU. ");
-        
       u_fprintf(gOut, "<br><hr>\n");
       showSearchMenu( block + 1);
     }
@@ -1317,158 +1245,7 @@ if(!tmp) /* if there was no trailing '/' ... */
       u_fprintf(gOut, "</UL><hr>\n");
       showSearchMenu( 0x0000 ); 
     } else if((mode == ESET)||(mode=ESETCHUNK)) {  /************** UnicodeSet****************/
-    UChar ssf[1024];
-    uint16_t ser[1024];
-    int32_t serLen = 1024;
-    char serChars[1024];
-    int32_t serCharLen = 1024;
-    int32_t ssc = 1024;
-    const char *q;
-    UErrorCode status = U_ZERO_ERROR;
-    USet  *aSet = NULL;
-    int32_t n;
-    UConverter *u7 = NULL;
-    int32_t itemN = 0;
-    int32_t charN = 0;
-    int32_t len;
-    int32_t countDown;
-    UChar32 start = 0;
-    UChar32 end = 0;
-    UChar32 cur = 0xFFFF; /* cur>end = invalid */
-    int32_t iCount; /* item count */
-    UChar   littleBuffer[412];
-    UBool charNSet = FALSE;
-    int bCount =0;
-
-    if(mode==ESET) {
-      countDown = 10;
-    } else { /* block */
-      countDown = 100;
-    }
-    u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
-
-    if((q = strstr(qs,"itemN="))) {
-      q += 6;    itemN=atoi(q);
-    }
-    if((q = strstr(qs,"charN="))) {
-      q += 6;    charN=atoi(q);
-      charNSet = TRUE;
-    }
-
-#if defined (UB_DEBUG)
-    u_fprintf(gOut, "Usf: |%S|<br>\n", usf);
-#endif
-    aSet = uset_openPattern(usf, -1, &status);
-
-    if(U_FAILURE(status)) {
-      goto uFailIt;
-    }
-
-    iCount = uset_getItemCount(aSet);
-
-#if defined (UB_DEBUG)
-    u_fprintf(gOut, "chars %d, items %d<p>\n", uset_size(aSet), uset_getItemCount(aSet));
-#endif
-
-    u_fprintf(gOut, "<table summary=\"Search Results\" border=1>");
-    if(mode == ESETCHUNK) {
-      u_fprintf(gOut, "<tr>");
-    }
-
-    while((countDown--) && /* haven't gone too far and */
-          (itemN<iCount ||  /* more items OR */
-           cur<=end)) {    /* more to go on this item */
-      UErrorCode iStatus = U_ZERO_ERROR;
-      if(cur>end) { /* fetch another item */
-        len = uset_getItem(aSet, itemN, &start, &end, littleBuffer, 
-                           (sizeof(littleBuffer)/sizeof(littleBuffer[0]))-1,&iStatus);
-        if(U_FAILURE(iStatus) || (len==-1)) {
-          cur=1;
-          start=end=0;
-          if(U_FAILURE(iStatus)) {
-            u_fprintf(gOut, "<tr><td colspan=3><b>err %s</b></td></tr>\n", u_errorName(iStatus));
-          } else {
-            u_fprintf(gOut, "<tr><td colspan=3><b>err - out of range</b></td></tr>\n");
-          }
-        } else {
-          if(len == 0) { /* range */
-            if(charNSet == FALSE) {
-              cur=start;
-            } else {
-              cur=start+charN;
-            }
-          } else { /* string */
-            u_fprintf(gOut, "<tr><td colspan=3><B>string:</B> '<tt>%S</tt>'</td></tr>\n", 
-                      littleBuffer);
-            cur=1; /* no range. */
-            end=0;
-            start=0;
-          }
-          itemN++;
-        }
-
-        /* make sure charN is always 0 apart from first load */
-        if(charNSet) {
-          charNSet = FALSE;
-        } else {
-          charN = 0;
-        }
-      } /* end fetch-next-item */
-
-      if(cur<=end) { /* valid char within range */
-        if(mode == ESET) {
-          /**
-           * print char 
-           */
-          printRow(cur, TRUE, "",  "ch");
-        } else {
-          if(mode==ESETCHUNK && ((bCount++)%10)==0) {
-            u_fprintf(gOut, "</tr><tr>");
-          }
-          u_fprintf(gOut, "<td>%C</td>", (UChar)cur);
-        }
-
-        cur++;
-        charN++;
-      }
-    }
-    if(mode == ESETCHUNK) {
-      u_fprintf(gOut, "</tr>");
-    }
-    u_fprintf(gOut, "</table>");
-
-#if defined (UB_DEBUG)
-    u_fprintf(gOut, "on item %d, char %d (of %d)<br/>\n", 
-              itemN, charN, (end-start));
-#endif
-
-    if((end-start) && (cur<=end)) {
-      itemN--; /* reread 'current' item (because we already incremented above) */
-#if defined (UB_DEBUG)
-      u_fprintf(gOut, "need to resume on %d:%d<br>\n", itemN, charN);
-#endif
-    } else if(itemN<iCount) {
-      charN = 0; /* reset to beginning */
-#if defined (UB_DEBUG)
-      u_fprintf(gOut, "need to resume on %d:<br>\n", itemN);
-    } else {
-      u_fprintf(gOut, "finished.<br>\n");
-#endif
-    }
-
-    if(itemN < iCount) { /* continuation? */
-      u_fprintf(gOut, "<form method=\"GET\" action=\"?\">");
-      u_fprintf(gOut, "<input type=hidden name=itemN value=\"%d\"><input type=hidden name=charN value=\"%d\">\n", itemN, charN);
-      u_fprintf(gOut, "<input type=hidden name=us value=\"%S\">\n", usf);
-      u_fprintf(gOut, "<input type=submit name=goset%c value=Next>",
-                (mode==ESET)?'k':'n');
-      u_fprintf(gOut, "</form>\n");
-    }
-
-    uset_close(aSet);
-  uFailIt:
-    u_fprintf(gOut, "<hr width=\"22%%\">\nstatus is %s<p>\n", u_errorName(status));
-      
+    printModeSET(qs, mode);
     u_fprintf(gOut, "<P><P><P><P><P>\n");
   }  else /************************************* ????????????????????????? ****************/
     {
@@ -1540,7 +1317,7 @@ UChar32 doSearchBlock(int32_t block, UChar32 startFrom)
 UChar32 doSearchType(int8_t type, UChar32 startFrom)
 {
   UChar32 end = (startFrom-1);
-#ifdef DEBUG_UBROWSE
+#if defined(UB_DEBUG)
   int tick  =0;
 #endif
   if(end > UCHAR_MAX_VALUE) {
@@ -1558,7 +1335,7 @@ UChar32 doSearchType(int8_t type, UChar32 startFrom)
       return startFrom;
 
 
-#ifdef DEBUG_UBROWSE
+#if defined (UB_DEBUG)
     tick++;
 
     if((tick%1024) ==0) {
@@ -1632,3 +1409,289 @@ void showSearchMenu(UChar32 startFrom)
 
 }
 
+void printModeCHAR(UChar32 ch) 
+{
+  int i;
+  u_fprintf(gOut, "<table summary=\"Canonical Equivalents\" border=5 cellpadding=3 cellspacing=6><tr><td>&nbsp;<font size=+5>");
+  printOneUChar32(ch);
+  u_fprintf(gOut, "</font>&nbsp;</td><td>");
+  
+  printCanonEquivs(ch);
+  
+  u_fprintf(gOut, "</td></tr></table><br><br>\n");
+  
+  u_fprintf(gOut, "<table summary=\"Character Basic Row\" border=2>");
+  printRowHeader(TRUE);
+  printRow(ch, TRUE, "", "k1");
+  u_fprintf(gOut, "</table>\n<br><br>\n");
+  
+  u_fprintf(gOut, "<table summary=\"Detailed Character Properties\" border=2>\n");
+  u_fprintf(gOut, "<tr><td><b>PN</b></td><td><b>Type</b></td><td><b>Name</b></td><td><b>PVN</b></td><td><b>Value</b></td></tr>\n");
+  
+  {
+    UVersionInfo va;
+    char age[U_MAX_VERSION_STRING_LENGTH];
+    u_charAge(ch, va);
+    u_versionToString(va, age);
+    u_fprintf(gOut, "<tr><td>-</td><td>%s</td><td>%s</td><td></td><td>%s</td></tr>\n",
+              "Vers", "Derived Age", age);
+  }
+  
+  for(i=UCHAR_BINARY_START;i<UCHAR_BINARY_LIMIT;i++) {
+#if 0
+    UBool has;
+    has = u_hasBinaryProperty(ch, i);
+    
+    u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s%s%s</td><td>%s</td><td>%s</td></tr>\n",
+              i, "bin", has?"<b>":"", getUPropertyName(i), has?"</b>":"",  has?"T":"f", u_getPropertyValueName(i,u_getIntPropertyValue(ch,i),U_LONG_PROPERTY_NAME));
+#endif
+    int32_t has;
+    has = u_getIntPropertyValue(ch, i);
+    
+    u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+              i, "bin", getUPropertyName(i), has,
+              u_getIntPropertyMinValue(i),
+              u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(ch,i),U_LONG_PROPERTY_NAME));
+    
+  }
+  
+  for(i=UCHAR_INT_START;i<UCHAR_INT_LIMIT;i++) {
+    int32_t has;
+    has = u_getIntPropertyValue(ch, i);
+    
+    u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+              i, "int", getUPropertyName(i), has,
+              u_getIntPropertyMinValue(i),
+              u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(ch,i),U_LONG_PROPERTY_NAME));
+    
+    
+  }
+  
+  for(i=UCHAR_MASK_START;i<UCHAR_MASK_LIMIT;i++) {
+    int32_t has;
+    has = u_getIntPropertyValue(ch, i);
+    
+    u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+              i, "int", getUPropertyName(i), has,
+              u_getIntPropertyMinValue(i),
+              u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(ch,i),U_LONG_PROPERTY_NAME));
+    
+  }
+  
+#if 0
+  for(i=UCHAR_DOUBLE_START;i<UCHAR_DOUBLE_LIMIT;i++) {
+    double has;
+    has = u_getDoublePropertyValue(ch, i);
+    
+    u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%g (%ld..%ld)</td><td>%s</td></tr>\n",
+              i, "int", getUPropertyName(i), has,
+              u_getIntPropertyMinValue(i),
+              u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(ch,i),U_LONG_PROPERTY_NAME));
+    
+  }
+  
+  for(i=UCHAR_STRING_START;i<UCHAR_STRING_LIMIT;i++) {
+    int32_t has;
+    has = u_getIntPropertyValue(ch, i);
+    
+    u_fprintf(gOut, "<tr><td>%d</td><td>%s</td><td>%s</td><td>%ld (%ld..%ld)</td><td>%s</td></tr>\n",
+              i, "int", getUPropertyName(i), has,
+              u_getIntPropertyMinValue(i),
+              u_getIntPropertyMaxValue(i) ,u_getPropertyValueName(i,u_getIntPropertyValue(ch,i),U_LONG_PROPERTY_NAME));
+    
+  }
+#endif
+  
+  u_fprintf(gOut, "</table>\n");
+  
+  u_fprintf(gOut, "<br> The PN column and the PVN column refer to the internal property number and property value number. Except in the case of the Canonical_Combining_Class, these numbers have no relevance outside of ICU. ");
+  
+}
+
+void printModeSET(const char *qs, ESearchMode mode)
+{
+    UChar ssf[1024];
+    uint16_t ser[1024];
+    int32_t serLen = 1024;
+    char serChars[1024];
+    int32_t serCharLen = 1024;
+    int32_t ssc = 1024;
+    const char *q;
+    UErrorCode status = U_ZERO_ERROR;
+    USet  *aSet = NULL;
+    int32_t n;
+    UConverter *u7 = NULL;
+    int32_t itemN = 0;
+    int32_t charN = 0;
+    int32_t len;
+    int32_t countDown;
+    UChar32 start = 0;
+    UChar32 end = 0;
+    UChar32 cur = 0xFFFF; /* cur>end = invalid */
+    int32_t iCount; /* item count */
+    int32_t charCount; /* chars count */
+    UChar   littleBuffer[412];
+    UBool charNSet = FALSE;
+    int bCount =0;
+
+    u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
+    
+    if((q = strstr(qs,"itemN="))) {
+      q += 6;    itemN=atoi(q);
+    }
+    if((q = strstr(qs,"charN="))) {
+      q += 6;    charN=atoi(q);
+      charNSet = TRUE;
+    }
+
+#if defined (UB_DEBUG)
+    u_fprintf(gOut, "Usf: |%S|<br>\n", usf);
+#endif
+    aSet = uset_openPattern(usf, -1, &status);
+
+    if(U_FAILURE(status)) {
+      goto uFailIt;
+    }
+
+    iCount = uset_getItemCount(aSet);
+    charCount = uset_size(aSet);
+
+    if(charCount == 1) {
+      mode = ECHAR; 
+    } else if (mode==ESETCHUNK) {
+      if(charCount <= kSetListSize) {
+        countDown = kSetListSize;
+        mode = ESET;
+      } else {
+        countDown = kSetChunkSize;
+      }
+    } else { /* ESET */
+      countDown = kSetListSize;
+    }
+    
+#if defined (UB_DEBUG)
+    u_fprintf(gOut, "chars %d, items %d<p>\n", charCount, iCount);
+#endif
+    
+    if(mode == ECHAR) {
+      UErrorCode iStatus = U_ZERO_ERROR;
+      len = uset_getItem(aSet, 0, &start, &end, littleBuffer, 
+                         (sizeof(littleBuffer)/sizeof(littleBuffer[0]))-1,&iStatus);
+      if(U_FAILURE(iStatus)) {
+        u_fprintf(gOut, "<b>err %s</b><p>\n", u_errorName(iStatus));
+      } else if(len == -1) {
+        u_fprintf(gOut, "<b>err - out of range</b><p>\n");
+      } else if(len == 0) {
+        printModeCHAR(start);
+      } else {
+        u_fprintf(gOut, "<B>string:</B> '<tt>%S</tt>'<p>\n", littleBuffer);
+      }
+      itemN++;
+    } else { /* MODE=ESET... */
+      u_fprintf(gOut, "<table summary=\"Search Results\" border=1>");
+      if(mode == ESETCHUNK) {
+        u_fprintf(gOut, "<tr>");
+      }
+    
+      while((countDown--) && /* haven't gone too far and */
+            (itemN<iCount ||  /* more items OR */
+             cur<=end)) {    /* more to go on this item */
+        UErrorCode iStatus = U_ZERO_ERROR;
+        if(cur>end) { /* fetch another item */
+          len = uset_getItem(aSet, itemN, &start, &end, littleBuffer, 
+                             (sizeof(littleBuffer)/sizeof(littleBuffer[0]))-1,&iStatus);
+          if(U_FAILURE(iStatus) || (len==-1)) {
+            cur=1;
+            start=end=0;
+            if(U_FAILURE(iStatus)) {
+              u_fprintf(gOut, "<tr><td colspan=3><b>err %s</b></td></tr>\n", u_errorName(iStatus));
+            } else {
+              u_fprintf(gOut, "<tr><td colspan=3><b>err - out of range</b></td></tr>\n");
+            }
+          } else {
+            if(len == 0) { /* range */
+              if(charNSet == FALSE) {
+                cur=start;
+              } else {
+                cur=start+charN;
+              }
+            } else { /* string */
+              u_fprintf(gOut, "<tr><td colspan=3><B>string:</B> '<tt>%S</tt>'</td></tr>\n", 
+                        littleBuffer);
+              cur=1; /* no range. */
+              end=0;
+              start=0;
+            }
+            itemN++;
+          }
+          
+          /* make sure charN is always 0 apart from first load */
+          if(charNSet) {
+            charNSet = FALSE;
+          } else {
+            charN = 0;
+          }
+        } /* end fetch-next-item */
+        
+        if(cur<=end) { /* valid char within range */
+          if(mode == ESET) {
+            /**
+             * print char 
+             */
+            printRow(cur, TRUE, "",  "ch");
+          } else {
+            if(mode==ESETCHUNK && ((bCount++)%10)==0) {
+              u_fprintf(gOut, "</tr><tr>");
+            }
+            u_fprintf(gOut, "<td>");
+            explainOneUChar32(cur);
+            u_fprintf(gOut, "</td>");
+          }
+          
+          cur++;
+          charN++;
+        }
+      }
+      if(mode == ESETCHUNK) {
+        u_fprintf(gOut, "</tr>");
+      }
+      u_fprintf(gOut, "</table>");
+    } /* mode != ESETCHAR */
+#if defined (UB_DEBUG)
+    u_fprintf(gOut, "on item %d, char %d (of %d)<br/>\n", 
+              itemN, charN, (end-start));
+#endif
+    
+    if((end-start) && (cur<=end)) {
+      itemN--; /* reread 'current' item (because we already incremented above) */
+#if defined (UB_DEBUG)
+      u_fprintf(gOut, "need to resume on %d:%d<br>\n", itemN, charN);
+#endif
+    } else if(itemN<iCount) {
+      charN = 0; /* reset to beginning */
+#if defined (UB_DEBUG)
+      u_fprintf(gOut, "need to resume on %d:<br>\n", itemN);
+    } else {
+      u_fprintf(gOut, "finished.<br>\n");
+#endif
+    }
+
+    if(itemN < iCount) { /* continuation? */
+      u_fprintf(gOut, "<form method=\"GET\" action=\"?\">");
+      u_fprintf(gOut, "<input type=hidden name=itemN value=\"%d\"><input type=hidden name=charN value=\"%d\">\n", itemN, charN);
+      u_fprintf(gOut, "<input type=hidden name=us value=\"%S\">\n", usf);
+      u_fprintf(gOut, "<input type=submit name=goset%c value=Next>",
+                (mode==ESET)?'k':'n');
+      u_fprintf(gOut, "</form>\n");
+    }
+
+    uset_close(aSet);
+  uFailIt:
+#if !defined(UB_DEBUG)
+    if(U_FAILURE(status)) {
+#endif
+      u_fprintf(gOut, "<hr width=\"22%%\">\nstatus is %s<p>\n", u_errorName(status));
+#if !defined(UB_DEBUG)
+    }
+#endif
+}
