@@ -23,6 +23,15 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name EscapeABundle
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name unescapeABundle
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name util
+    End Project Dependency
 }}}
 
 ###############################################################################
