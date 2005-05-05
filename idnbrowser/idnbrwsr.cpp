@@ -385,7 +385,7 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
 
 static void
 printToUnicode (const UChar *s, int32_t length) {
-    UChar *output = (UChar*) malloc(U_SIZEOF_UCHAR * length);
+    UChar *output = NULL;
     int32_t tempOutLen = length * 9;
     UChar *tempOut = (UChar*) malloc(U_SIZEOF_UCHAR * tempOutLen) ;
     int32_t outputLength;
@@ -402,6 +402,9 @@ printToUnicode (const UChar *s, int32_t length) {
 */
     errorCode=U_ZERO_ERROR;
     tempOutLen =  uidna_IDNToASCII(s,length,tempOut, tempOutLen, UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
+
+    length = tempOutLen * 9;
+    output = (UChar*) malloc(U_SIZEOF_UCHAR * length);
 
     outputLength= uidna_IDNToUnicode(tempOut, tempOutLen, output, length,UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
 
