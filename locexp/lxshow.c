@@ -244,7 +244,7 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
     showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "<table summary=\"%S\" border=1><tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<table summary=\"%S\"><tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleCodes", "Locale Codes"),
               FSWF("LocaleCodes_Language", "Language"),
               FSWF("LocaleCodes_Country", "Region"),
@@ -331,7 +331,7 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
 
     showKeyAndStartItem(lx, "LocaleScript", FSWF("LocaleScript", "Locale Script"), locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "<table summary=\"%S\" border=1>\r\n",
+    u_fprintf(lx->OUT, "<table summary=\"%S\">\r\n",
               FSWF("LocaleScript", "Locale Script"));
     u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleScriptAbbreviations", "Short Names"),
@@ -681,7 +681,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
   
         if(U_SUCCESS(status))
         {
-            u_fprintf(lx->OUT, "<table summary=\"String\" BORDER=1 WIDTH=100%%>");
+            u_fprintf(lx->OUT, "<table summary=\"String\" WIDTH=100%%>");
             u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
                 FSWF("charNum", "#"),
                 FSWF("char", "Char"),
@@ -954,12 +954,12 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 #endif
     u_fprintf(lx->OUT, "</td>"); /* Now, we're done with the ShowKey.. cell */
 
-    u_fprintf(lx->OUT, "</TR><tr><td colspan=2><table border=2 width=\"100%%\">\r\n");
+    u_fprintf(lx->OUT, "</TR><tr><td colspan=2><table width=\"100%%\">\r\n");
 
     for(i=0;desc[i];i++)
     {
       
-        u_fprintf(lx->OUT, "<tr><td width=5>%d</td><td>%S</td><td>",
+        u_fprintf(lx->OUT, "<tr><th>%d</th><td>%S</td><td>",
                   i, desc[i]);
 
         status = U_ZERO_ERROR;
@@ -1157,7 +1157,7 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
     if(exampleNF) unum_close(exampleNF);
 
-    u_fprintf(lx->OUT, "<table border=2 width=\"100%%\">\r\n");
+    u_fprintf(lx->OUT, "<table width=\"100%%\">\r\n");
 
     for(k=0;k<sizeof(styles)/sizeof(styles[0]);k++) {
       u_fprintf(lx->OUT, "<tr><td colspan=2><b>%s</b></td></tr>\r\n", stylen[k]);
@@ -1339,7 +1339,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
     if(U_FAILURE(status)) {
       explainStatus(lx, status, keyStem);
     } else { 
-      u_fprintf(lx->OUT, "<table border=1 w_idth=\"100%%\"><tr><th>#</th>");
+      u_fprintf(lx->OUT, "<table w_idth=\"100%%\"><tr><th>#</th>");
       maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
         u_fprintf(lx->OUT, "<th>%S", stuff[i].title);
@@ -1368,7 +1368,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       u_fprintf(lx->OUT, "</tr>\n");
 
       for(j=0;j<maxCount;j++) {
-        u_fprintf(lx->OUT, " <tr><td>%d</td>", j);
+        u_fprintf(lx->OUT, " <tr><th>%d</th>", j);
         for(i=0;i<stuffCount;i++) {
           if(i>=stuff[i].count) {
             u_fprintf(lx->OUT, "<td></td>");
@@ -1392,7 +1392,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       u_fprintf(lx->OUT, "</table>\n");
     }
 #if 0
-    u_fprintf(lx->OUT, "<table border=1 w_idth=\"100%%\"><tr><td><b>#</b></td><td><b>%S</b> ", shortName);
+    u_fprintf(lx->OUT, "<table w_idth=\"100%%\"><tr><td><b>#</b></td><td><b>%S</b> ", shortName);
     explainStatus(lx, shortStatus, keyStem);
     u_fprintf(lx->OUT, "</td><td><b>%S</b> ", longName);
     explainStatus(lx, longStatus, keyStem);
@@ -1403,7 +1403,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
     {
         char *key;
 
-        u_fprintf(lx->OUT, " <tr><td>%d</td><td>", i);
+        u_fprintf(lx->OUT, " <tr><th>%d</th><td>", i);
 
         /* get the normal name */
         status = U_ZERO_ERROR;
@@ -1505,7 +1505,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
         if(U_SUCCESS(status))
         {
-            u_fprintf(lx->OUT,"<table border=1>\r\n");
+            u_fprintf(lx->OUT,"<table>\r\n");
 
             /* print the top row */
             u_fprintf(lx->OUT,"<tr><td></td>");
@@ -1640,7 +1640,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
             if(lx->dispRB) {
                 defaultTagged =  ures_getByKey(lx->dispRB, key, NULL, &status);
             }
-            u_fprintf(lx->OUT,"<table border=1>\r\n");
+            u_fprintf(lx->OUT,"<table >\r\n");
             
             /* print the top row */
             u_fprintf(lx->OUT,"<tr><td><b>%S</b></td>",
@@ -1807,7 +1807,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
       if(lx->dispRB) {
         defaultTagged =  ures_getByKey(lx->dispRB, key, NULL, &status);
       }
-      u_fprintf(lx->OUT,"<table border=1>\r\n");
+      u_fprintf(lx->OUT,"<table >\r\n");
         
       /* print the top row */
       u_fprintf(lx->OUT,"<tr><th>%S</th><th>%S</th><th>%S</th><th>%S</th>",
@@ -1883,7 +1883,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         {
           UChar ucn[8];
           u_charsToUChars(tag, ucn,4);
-          u_fprintf(lx->OUT, "<td>%d</td>", ucurr_getDefaultFractionDigits(ucn, &status));
+          u_fprintf(lx->OUT, "<th>%d</th>", ucurr_getDefaultFractionDigits(ucn, &status));
         }
 
         if(isDefault) {

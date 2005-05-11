@@ -53,10 +53,8 @@ void displayLocaleExplorer(LXContext *lx)
 
     /* -------------- */
     
-    u_fprintf(lx->OUT, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\""
-              " \"http://www.w3.org/TR/html4/loose.dtd\"> \r\n");
     uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
-    u_fprintf(lx->OUT,"<html lang=\"%s\">", langName);
+    u_fprintf(lx->OUT,"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"%s\"  lang=\"%s\">", langName, langName);
     
     u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer %s \r\n  " ICU_URL "  \r\n\r\n-->\r\n",
               U_COPYRIGHT_STRING);

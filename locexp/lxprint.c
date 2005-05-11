@@ -165,13 +165,13 @@ void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyNa
 {
     u_fprintf(lx->OUT, "<TABLE summary=\"%S\" BORDER=0 CELLSPACING=0 WIDTH=\"100%%\">", keyName);
     u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
-    u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor "><A NAME=%s>", key);
-    u_fprintf(lx->OUT,"</A>", keyName);
+    u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor ">");
 
     if(keyName == NULL)
 	keyName = FSWF( key, key );
-
+    u_fprintf(lx->OUT, "<span class=\"subTitle\">");
     printHelpTag(lx, key, keyName);
+    u_fprintf(lx->OUT, "</span>\n");
 
 
     if(cumulative == TRUE )

@@ -53,6 +53,10 @@ $(PKG)_%.res : %.txt
 	@echo Rebuilding $@
 	@$(INVOKE) $(GENRB) -d. --package-name $(PKG) $<
 
+#%.d : %.txt
+#	@echo Dep for $@
+#	@echo $@ $(PKG)_`basename $@`.res ":" `$(INVOKE) $(GENRB) -E -d. --package-name $(PKG) $< | grep '^DEP' | cut -f2` > $@
+
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
 distclean distclean-local dist dist-local check check-local res-local
@@ -121,6 +125,10 @@ $(PKG)_sr.res : sr.txt
 	echo Rebuilding $@ - utf-16le
 	$(INVOKE)  $(GENRB) --package-name $(PKG) -d. -eutf-16le $<
 
+$(PKG)_root.res : root.txt
+	echo Rebuilding $@ - utf-8
+	$(INVOKE)  $(GENRB) --package-name $(PKG) -d. -eutf-8 $<
+
 escapeABundle: escapeABundle.c
 	cc -o escapeABundle escapeABundle.c
 
@@ -129,3 +137,5 @@ root_SAMPLE.txt: root.txt
 	echo "// Generated copy of root.txt. Also look at 'en.txt'." > root_SAMPLE.txt
 	cat < root.txt >> root_SAMPLE.txt
 
+
+-include *.d
