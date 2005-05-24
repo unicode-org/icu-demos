@@ -98,14 +98,15 @@ static const char *endForm=
     " <input type=\"radio\" name=\"uv\" value=\"0\" %s>current"
     " <input type=\"radio\" name=\"uv\" value=\"1\" %s>Unicode 3.2"
     "<br>\n"
-    "<input type=\"submit\" value=\"Go\">"
+    "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" name=\"<name>\" value=\"Submit\" />\n"
     " (<a href=\"#help\">Help</a>)"
     "</p>\n"
     "</form>\n";
 
 static const char *startTable=
-    "<table border=\"1\">\n"
-    "<tr><th>Mode</th><th>quick check</th><th>normalized</th><th>text</th></tr>\n"
+    "<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\">\n"
+    "<caption><em>Normalization Results</em></caption>\n"
+    "<tr><th>Mode</th><th>Quick Check</th><th>Normalized</th><th>Text</th></tr>\n"
     "<tr><th>Input</th><td>&nbsp;</td><td>";
 
 static const char *endTable="</table>";
