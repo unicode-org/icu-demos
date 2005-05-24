@@ -86,6 +86,9 @@ XMLConverter/samples/test.xml -text svneol=unset#text/xml
 XMLConverter/samples/testit.xml -text svneol=unset#text/xml
 XMLConverter/samples/utf8-sm_jis.xml -text svneol=unset#text/xml
 XMLConverter/samples/x.xml -text svneol=unset#text/xml
+apputil/data/common-footer.html svneol=native#text/html
+apputil/data/common-leftnav.html svneol=native#text/html
+apputil/data/common-masthead.html svneol=native#text/html
 locexp/resource/fr/displayproblems.gif -text
 locexp/resource/fr/explore.gif -text
 locexp/resource/fr/lx.jpg -text svneol=unset#image/jpeg

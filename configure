@@ -834,7 +834,7 @@ ac_abs_top_srcdir=`cd "$ac_dir" && cd $ac_top_srcdir && pwd`
     else
       echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2
     fi
-    cd "$ac_popdir"
+    cd $ac_popdir
   done
 fi
 
@@ -1031,7 +1031,7 @@ _ASBOX
       echo "$as_me: caught signal $ac_signal"
     echo "$as_me: exit $exit_status"
   } >&5
-  rm -f core *.core &&
+  rm -f core core.* *.core &&
   rm -rf conftest* confdefs* conf$$* $ac_clean_files &&
     exit $exit_status
      ' 0
@@ -1402,7 +1402,7 @@ if test "$srcdir" = "."; then
 fi
 
 
-                                                                                                                                                                                                                            ac_config_files="$ac_config_files icuapps.mk Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile dumpdat/Makefile xlitomatic/Makefile rtfcvrt/Makefile XMLConverter/Makefile nbrowser/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile idnbrowser/Makefile convexp/Makefile scompare/Makefile"
+                                                                                                                                                                                                                                      ac_config_files="$ac_config_files icuapps.mk Makefile apputil/Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile nbrowser/Makefile idnbrowser/Makefile convexp/Makefile scompare/Makefile xlitomatic/Makefile dumpdat/Makefile rtfcvrt/Makefile XMLConverter/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -1955,6 +1955,7 @@ do
   # Handling of arguments.
   "icuapps.mk" ) CONFIG_FILES="$CONFIG_FILES icuapps.mk" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+  "apputil/Makefile" ) CONFIG_FILES="$CONFIG_FILES apputil/Makefile" ;;
   "usort/Makefile" ) CONFIG_FILES="$CONFIG_FILES usort/Makefile" ;;
   "usort/lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES usort/lib/Makefile" ;;
   "usort/client/Makefile" ) CONFIG_FILES="$CONFIG_FILES usort/client/Makefile" ;;
@@ -1963,18 +1964,18 @@ do
   "locexp/util/Makefile" ) CONFIG_FILES="$CONFIG_FILES locexp/util/Makefile" ;;
   "locexp/resource/Makefile" ) CONFIG_FILES="$CONFIG_FILES locexp/resource/Makefile" ;;
   "ubrowse/Makefile" ) CONFIG_FILES="$CONFIG_FILES ubrowse/Makefile" ;;
-  "dumpdat/Makefile" ) CONFIG_FILES="$CONFIG_FILES dumpdat/Makefile" ;;
+  "nbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES nbrowser/Makefile" ;;
+  "idnbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES idnbrowser/Makefile" ;;
+  "convexp/Makefile" ) CONFIG_FILES="$CONFIG_FILES convexp/Makefile" ;;
+  "scompare/Makefile" ) CONFIG_FILES="$CONFIG_FILES scompare/Makefile" ;;
   "xlitomatic/Makefile" ) CONFIG_FILES="$CONFIG_FILES xlitomatic/Makefile" ;;
+  "dumpdat/Makefile" ) CONFIG_FILES="$CONFIG_FILES dumpdat/Makefile" ;;
   "rtfcvrt/Makefile" ) CONFIG_FILES="$CONFIG_FILES rtfcvrt/Makefile" ;;
   "XMLConverter/Makefile" ) CONFIG_FILES="$CONFIG_FILES XMLConverter/Makefile" ;;
-  "nbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES nbrowser/Makefile" ;;
   "obsolete/Makefile" ) CONFIG_FILES="$CONFIG_FILES obsolete/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "test/testdata/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/testdata/Makefile" ;;
   "test/obstest/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/obstest/Makefile" ;;
-  "idnbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES idnbrowser/Makefile" ;;
-  "convexp/Makefile" ) CONFIG_FILES="$CONFIG_FILES convexp/Makefile" ;;
-  "scompare/Makefile" ) CONFIG_FILES="$CONFIG_FILES scompare/Makefile" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
