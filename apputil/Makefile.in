@@ -26,6 +26,8 @@ CPPFLAGS += -I$(ICU_SOURCE)/common
 
 OBJECTS =# printcp.o params.o convexp.o
 
+DATA_DIR=$(BINDIR)/data
+
 ## List of standard targets
 all: all-local
 install: install-local
@@ -40,11 +42,8 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR)
-	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
-	-mkdir $(bindir)
-	#cp $(TARGET) $(bindir)
-	-mkdir $(DATA_DIR)
+	$(MKINSTALLDIRS) $(BINDIR) $(DATA_DIR)
+	#$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
 	cp -R data/*.html $(DATA_DIR)
 
 dist-local:
