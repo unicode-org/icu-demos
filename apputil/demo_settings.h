@@ -20,8 +20,9 @@
 #ifndef DEMO_SETTINGS_H
 #define DEMO_SETTINGS_H 1
 
-DEMO_COMMON_MASTHEAD "data/common-masthead.html"
-DEMO_COMMON_LEFTNAV "data/common-leftnav.html"
-DEMO_COMMON_FOOTER "data/common-footer.html"
+#define DEMO_COMMON_MASTHEAD "data/common-masthead.html"
+#define DEMO_COMMON_LEFTNAV "data/common-leftnav.html"
+#define DEMO_COMMON_FOOTER "data/common-footer.html"
 
 #endif
+
