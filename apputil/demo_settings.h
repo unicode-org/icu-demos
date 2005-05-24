@@ -24,5 +24,14 @@
 #define DEMO_COMMON_LEFTNAV "data/common-leftnav.html"
 #define DEMO_COMMON_FOOTER "data/common-footer.html"
 
+#define DEMO_BEGIN_LEFT_NAV "<table width=\"100%\" border=\"0\""\
+"cellspacing=\"0\" cellpadding=\"0\" id=\"v14-body-table\">\n"\
+"<tr valign=\"top\">\n"\
+"<td width=\"150\" id=\"navigation\">\n"
+
+#define DEMO_END_LEFT_NAV "</td>\n"
+#define DEMO_BEGIN_CONTENT "<td><a name=\"main\"></a>\n"
+#define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
+
 #endif
 
