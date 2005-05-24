@@ -25,6 +25,7 @@ TARGET = nbrowser
 #LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
 #LDFLAGS += $(LDFLAGS_TOOLUTIL)
 CPPFLAGS += -I$(ICU_SOURCE)/common
+CPPFLAGS += -I$(top_srcdir)/apputil
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
@@ -52,6 +53,7 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(BINDIR)
 	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+	$(INSTALL) normalization-header.html $(BINDIR)/data
 
 dist-local:
 

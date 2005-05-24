@@ -20,10 +20,6 @@
 *   This code works only if compiled and run with an ASCII-based charset!
 */
 
-#ifndef ICU_URL
-# define ICU_URL "http://ibm.com/software/globalization/icu"
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -33,6 +29,7 @@
 #include "unicode/unistr.h"
 #include "unicode/unorm.h"
 #include "unormimp.h"           // ### TODO internal file, for normalization prototype
+#include "demo_settings.h"
 
 #define LENGTHOF(array) (sizeof(array)/sizeof((array)[0]))
 
@@ -40,14 +37,19 @@ static const char *htmlHeader=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
     "<html lang=\"en-US\">\n"
-    "<head>\n"
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-    "<title>Normalization Browser</title>\n"
+    "<head>\n";
+
+static const char endHeaderBeginBody[] =
     "</head>\n"
-    "<body>\n"
-    "<a href=\"" ICU_URL "\">ICU</a> &gt;\n"
-    "<a href=\"" ICU_URL "/chartsdemostools.jsp\">Demo</a> &gt;<br>\n"
+    "<body>\n";
+
+static const char breadCrumbMainHeader[]=
+    DEMO_BREAD_CRUMB_BAR
     "<h1>Normalization Browser</h1>\n";
+
+static const char defaultHeader[]=
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
+    "<title>Normalization Browser</title>\n";
 
 static const char *htmlFooter=
     "</body>";
@@ -282,6 +284,37 @@ parseString(const char *s,
     }
 }
 
+/**
+ * @returns 1 if open failed
+ */
+static int printTemplateFile(char *templateFileName) {
+    size_t size = 0;
+    size_t savedPos;
+    char *buffer;
+    FILE *templateFile = fopen(templateFileName, "r");
+    
+    if (templateFileName == NULL) {
+        printf("<!-- ERROR: %s cannot be opened -->", templateFileName);
+        return 1;
+    }   
+    
+    /* Go to the end, find the size, and go back to the beginning. */
+    savedPos = ftell(templateFile);
+    fseek(templateFile, 0, SEEK_END);
+    size = ftell(templateFile);
+    fseek(templateFile, savedPos, SEEK_SET);
+    
+    /* Read in the whole file and print it out */
+    buffer = (char *)malloc(size+1);
+    fread(buffer, size, 1, templateFile);
+    buffer[size] = 0;    // NULL terminate for printing.
+    printf("%s", buffer);
+    
+    free(buffer);
+    fclose(templateFile);
+    return 0;
+}
+
 extern int
 main(int argc, const char *argv[]) {
     UChar input[100], buffer16[600]; // buffer16 should be 6 times longer than input for \\uhhhh
@@ -295,12 +328,22 @@ main(int argc, const char *argv[]) {
 
     script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
+    if (printTemplateFile(DEMO_COMMON_DIR "normalization-header.html")) {
+        puts(defaultHeader);
+    }
+    puts(endHeaderBeginBody);
+    printTemplateFile(DEMO_COMMON_MASTHEAD);
+    puts(DEMO_BEGIN_LEFT_NAV);
+    printTemplateFile(DEMO_COMMON_LEFTNAV);
+    puts(DEMO_END_LEFT_NAV);
+    puts(DEMO_BEGIN_CONTENT);
+    puts(breadCrumbMainHeader);
 
     inputLength=options=0;
     inputIsUTF8=FALSE;
     errorCode=U_ZERO_ERROR;
 
-    if((cgi=getenv("QUERY_STRING"))!=NULL) {
+    if((cgi=getenv("QUERY_STRING"))!=NULL && cgi[0]!=0) {
         // get input from cgi variable, e.g. t=a\\u0308%EA%B0%81&s=0061+0308&op1=on
         const char *in;
 
@@ -381,6 +424,9 @@ main(int argc, const char *argv[]) {
     u_versionToString(iv, ivString);
     printf(versions, uvString, ivString);
 
+    puts(DEMO_END_CONTENT);
+    printTemplateFile(DEMO_COMMON_FOOTER);
     puts(htmlFooter);
+
     return 0;
 }

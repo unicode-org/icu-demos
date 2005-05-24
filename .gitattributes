@@ -89,6 +89,7 @@ XMLConverter/samples/x.xml -text svneol=unset#text/xml
 apputil/data/common-footer.html svneol=native#text/html
 apputil/data/common-leftnav.html svneol=native#text/html
 apputil/data/common-masthead.html svneol=native#text/html
+idnbrowser/idna-header.html svneol=native#text/html
 locexp/resource/fr/displayproblems.gif -text
 locexp/resource/fr/explore.gif -text
 locexp/resource/fr/lx.jpg -text svneol=unset#image/jpeg
@@ -119,6 +120,7 @@ locexp/resource/zh_SG/displayproblems.gif -text
 locexp/resource/zh_SG/dp.gif -text
 locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
+nbrowser/normalization-header.html svneol=native#text/html
 scompare/scompare-content-templ.html svneol=native#text/html
 scompare/scompare-page-templ.html svneol=native#text/html
 scompare/scompare.html svneol=native#text/html
