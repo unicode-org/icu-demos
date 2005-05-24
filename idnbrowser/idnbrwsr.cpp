@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003, International Business Machines
+*   Copyright (C) 2003-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -30,6 +30,7 @@
 #include "unicode/uscript.h"
 #include "unicode/uniset.h"
 #include "idnbrwsr.h"
+#include "demo_settings.h"
 
 #ifdef WIN32
 #   define _WIN32_WINNT 0x0400 
@@ -43,19 +44,28 @@
 static const char *htmlHeader=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
     "<html lang=\"en-US\">\n"
-    "<head>\n"
+    "<head>\n";
+
+static const char defaultHeader[]=
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-    "<title>IDNA Demo</title>\n"
-    "</head>\n"
-    "<body bgcolor=\"#FFFFFF\">\n"
-    "<style>\n"
-    "span {background-color: white; color: red; border-left:"
-    " 1px solid  blue; border-right: 1px solid blue}.word {background-color:#DDFFFF}.num"
-    " {background-color:#FFDDFF} body  {font-size: 12pt}\n"
+    "<title>IDNA Demo</title>\n";
+
+static const char endHeaderBeginBody[] =
+    "<style type=\"text/css\">\n"
+    ".highlight {background-color: white; color: red; border-left: 1px solid  blue; border-right: 1px solid blue}\n"
+    ".word {background-color:#DDFFFF}\n"
+    ".num {background-color:#FFDDFF} body  {font-size: 12pt}\n"
     "</style>\n"
-    "<a href=\"http://ibm.com/software/globalization/icu\">ICU</a> &gt;\n"
-    "<a href=\"http://ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a> &gt;<br><hr>\n"
+    "</head>\n"
+    "<body>\n";
+
+static const char breadCrumbMainHeader[]=
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<h1>IDNA Demo</h1>\n";
 
 static const char *htmlFooter=
@@ -105,7 +115,7 @@ static const char *endString="";
 static const char *startForm=
     "<form method=\"GET\" action=\"%s\">\n"
     "<p>Enter the domain name to be converted in UTF-8 or escaped Unicode text (\\uXXXX or \\UXXXXXXXX) :<br>"
-    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"164\" value=\"%s\"> </p>\n";
+    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\"> </p>\n";
 
 static const char *endForm=
             "<input type=\"submit\" value=\"Perform IDNA\" size=\"100\">\n"
@@ -121,14 +131,14 @@ static const char *STD3Fail = "<b> The input does not satisfy STD3 ASCII rules</
 static const char *STD3Pass = "The input satisfies STD3 ASCII rules\n";
 static const char *unassignedFail = "<b> The input contains unassigned code points, can be used for query operations only.</b>\n";
 static const char *unassignedPass = "The input does not contain any unassigned code points"; 
-static const char *http = "http://";
+static const char *http = "//";
 #define HTTP_LEN strlen(http);
 
 static const char *modeNames[]={ "(null)", "(None)", "ToASCII(input)", "ToUnicode(input)", "ToUnicode(ToASCII(input))", "ToASCII(ToUnicode(input))"};
 
 static const char *versions=
-    "<p>Unicode version used by IDNA %s &mdash; "
-    "<a href=\"http://ibm.com/software/globalization/icu/\">ICU</a> %s</p>\n";
+    "<p>Unicode version used by IDNA %s &mdash; Powered by "
+    "<a href=\"//www.ibm.com/software/globalization/icu/\">ICU</a> %s</p>\n";
 
 static const char *samples[] = { "www.&#x65E5;&#x672C;&#x5E73;.jp","www.&#x30CF;&#x30F3;&#x30C9;&#x30DC;&#x30FC;&#x30EB;&#x30B5;&#x30E0;&#x30BA;.com","www.f&#x00E4;rgbolaget.nu","www.b&#x00FC;cher.de","www.br&#x00E6;ndendek&#x00E6;rlighed.com","www.r&#x00E4;ksm&#x00F6;rg&#x00E5;s.se",  "www.&#xC608;&#xBE44;&#xAD50;&#xC0AC;.com", "&#x7406;&#x5BB9;&#x30CA;&#x30AB;&#x30E0;&#x30E9;.com", "&#x3042;&#x30FC;&#x308B;&#x3044;&#x3093;.com", "www.f&#xE4;rjestadsbk.net", "www.m&#xE4;kitorppa.com", NULL };
 
@@ -288,7 +298,7 @@ static void breakScripts(const UChar* src, int32_t srcLength, UnicodeString& res
         if (inSpan){
             result += "</span>";
         }else{
-            result += "<span>";
+            result += "<span class=\"highlight\">";
         }
         lastScript = script;
         inSpan = !inSpan;
@@ -591,6 +601,37 @@ parseString(const char *s, int32_t srcLen,
     return length;
 }
 
+/**
+ * @returns 1 if open failed
+ */
+static int printTemplateFile(char *templateFileName) {
+    size_t size = 0;
+    size_t savedPos;
+    char *buffer;
+    FILE *templateFile = fopen(templateFileName, "r");
+
+    if (templateFileName == NULL) {
+        printf("<!-- ERROR: %s cannot be opened -->", templateFileName);
+        return 1;
+    }
+
+    /* Go to the end, find the size, and go back to the beginning. */
+    savedPos = ftell(templateFile);
+    fseek(templateFile, 0, SEEK_END);
+    size = ftell(templateFile);
+    fseek(templateFile, savedPos, SEEK_SET);
+
+    /* Read in the whole file and print it out */
+    buffer = (char *)malloc(size+1);
+    fread(buffer, size, 1, templateFile);
+    buffer[size] = 0;    // NULL terminate for printing.
+    printf("%s", buffer);
+
+    free(buffer);
+    fclose(templateFile);
+    return 0;
+}
+
 enum QueryOptionsEnum {
     INPUT,
     INPUT_TYPE,
@@ -614,8 +655,19 @@ main(int argc, const char *argv[]) {
     UnicodeString us;
     const char *cgi, *script;
     UBool inputIsUTF8;
+
     script=getenv("SCRIPT_NAME"); 
     puts(htmlHeader);
+    if (printTemplateFile(DEMO_COMMON_DIR "idna-header.html")) {
+        puts(defaultHeader);
+    }
+    puts(endHeaderBeginBody);
+    printTemplateFile(DEMO_COMMON_MASTHEAD);
+    puts(DEMO_BEGIN_LEFT_NAV);
+    printTemplateFile(DEMO_COMMON_LEFTNAV);
+    puts(DEMO_END_LEFT_NAV);
+    puts(DEMO_BEGIN_CONTENT);
+    puts(breadCrumbMainHeader);
 
     inputLength=0;
     inputIsUTF8=FALSE;
@@ -640,7 +692,8 @@ main(int argc, const char *argv[]) {
     
 #   endif
 #endif
-    if((cgi=getenv("QUERY_STRING"))!=NULL) {
+    cgi=getenv("QUERY_STRING");
+    if(cgi != NULL && cgi[0] != 0) {
         parseQueryString(cgi,strlen(cgi),LENGTHOF(options),options);
         const char* inputType = options[INPUT_TYPE].value;
         int32_t len = (options[INPUT].valueLen * 2);
@@ -685,7 +738,7 @@ main(int argc, const char *argv[]) {
         inputLength=0;
     }
 
-    printf(startForm, script ? script : "",  input8 );
+    printf(startForm, script ? script : "", input8 ? input8 : "");
 
     printf(endForm, "", "", "",
          "checked" );
@@ -755,8 +808,11 @@ main(int argc, const char *argv[]) {
     u_versionToString(iv, ivString);
     printf(versions, "3.2", ivString);
     
-    us.releaseBuffer();
+    puts(DEMO_END_CONTENT);
+    printTemplateFile(DEMO_COMMON_FOOTER);
     puts(htmlFooter);
+
+    us.releaseBuffer();
     free(buffer);
     free(buffer16);
     free(input8);
