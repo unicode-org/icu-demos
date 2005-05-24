@@ -35,6 +35,7 @@ TODO:
 
 #include "printcp.h"
 #include "params.h"
+#include "demo_settings.h"
 
 /*
 IANA states that an alias may be up to 40 characters.
@@ -96,81 +97,9 @@ static const char htmlHeader[]=
     "\n"
     "</head>\n"
 
-    "<body>\n"
+    "<body>\n";
 
-    "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-    "<tr valign=\"top\">\n"
-    "<td class=\"bbg\"><a href=\"http://www.ibm.com/\"><img width=\"110\" src=\"//www.ibm.com/i/v14/t/ibm-logo.gif\" height=\"52\" border=\"0\" alt=\"IBM&reg;\"/></a></td>\n"
-    "<td width=\"100%\" class=\"mbbg\" align=\"right\">\n"
-    "<table align=\"right\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-    "<tr class=\"cty-tou\">\n"
-    "<td class=\"upper-masthead-corner\" width=\"17\" rowspan=\"2\"><a href=\"#main\"><img alt=\"Skip to main content\" height=\"1\" width=\"1\" border=\"0\" src=\"//www.ibm.com/i/c.gif\"/></a></td>\n"
-    "<td align=\"left\">\n"
-    "<table align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-    "<tr>\n"
-    "<td><span class=\"spacer\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b class=\"country\">Country/region</b><span class=\"spacer\">&nbsp;[</span><a href=\"http://www.ibm.com/planetwide/select/selector.html\" class=\"ur-link\">select</a><span class=\"spacer\">]</span></td>\n"
-    "<td class=\"upper-masthead-divider\" width=\"29\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
-    "<td align=\"left\"><a href=\"http://www.ibm.com/legal/\" class=\"ur-link\">Terms of use</a></td>\n"
-    "</tr>\n"
-    "</table>\n"
-    "</td>\n"
-    "<td width=\"40\">&nbsp;</td>\n"
-    "</tr>\n"
-    "<tr>\n"
-    "<td colspan=\"2\" height=\"1\" class=\"cty-tou-border\"><img width=\"1\" height=\"1\" alt=\"\" src=\"//www.ibm.com/i/c.gif\"/></td>\n"
-    "</tr>\n"
-    "<tr>\n"
-    "<td colspan=\"3\"><img width=\"1\" src=\"//www.ibm.com/i/c.gif\" height=\"8\" alt=\"\"/></td>\n"
-    "</tr>\n"
-    "<tr>\n"
-    "<td>&nbsp;</td>\n"
-    "<td colspan=\"2\" align=\"center\">\n"
-    "<form title=\"Search form\" name=\"search-form\" method=\"get\" action=\"http://www.ibm.com/Search\">\n"
-    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-    "<tr>\n"
-    "<td width=\"1\"><label for=\"q\"><img alt=\"Search for:\" height=\"1\" width=\"1\" src=\"//www.ibm.com/i/c.gif\"/></label></td>\n"
-    "<td align=\"right\"><input value=\"\" type=\"text\" size=\"15\" name=\"q\" maxlength=\"100\" id=\"q\" class=\"input\"/></td>\n"
-    "<td width=\"7\">&nbsp;<input type=\"hidden\" name=\"v\" value=\"14\"/><input type=\"hidden\" name=\"lang\" value=\"en\"/><input type=\"hidden\" name=\"cc\" value=\"zz\"/><input type=\"hidden\" value=\"utf\" name=\"en\"/></td>\n"
-    "<td><input value=\"Search\" type=\"image\" src=\"//www.ibm.com/i/v14/t/zz/en/search.gif\" name=\"Search\" alt=\"Search\"/></td>\n"
-    "<td width=\"20\">&nbsp;</td>\n"
-    "</tr>\n"
-    "</table>\n"
-    "</form>\n"
-    "</td>\n"
-    "</tr>\n"
-    "</table>\n"
-    "</td>\n"
-    "</tr>\n"
-    "<tr>\n"
-    "<td colspan=\"2\" class=\"blbg\">\n"
-    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-    "<tr>\n"
-    "<td>\n"
-    "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-    "<tr>\n"
-    "<td><span class=\"spacer\">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>\n"
-    "<td><a href=\"http://www.ibm.com/\" class=\"masthead-mainlink\">Home</a></td>\n"
-    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
-    "<td><a href=\"http://www.ibm.com/products/\" class=\"masthead-mainlink\">Products</a></td>\n"
-    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
-    "<td><a href=\"http://www.ibm.com/servicessolutions/\" class=\"masthead-mainlink\">Services &amp; solutions</a></td>\n"
-    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
-    "<td><a href=\"http://www.ibm.com/support/\" class=\"masthead-mainlink\">Support &amp; downloads</a></td>\n"
-    "<td width=\"27\" class=\"masthead-divider\">&nbsp;&nbsp;&nbsp;&nbsp;</td>\n"
-    "<td><a href=\"http://www.ibm.com/account/\" class=\"masthead-mainlink\">My account</a></td>\n"
-    "<td><span class=\"spacer\">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>\n"
-    "</tr>\n"
-    "</table>\n"
-    "</td>\n"
-    "</tr>\n"
-    "</table>\n"
-    "</td>\n"
-    "</tr>\n"
-    "</table>\n"
-    "<script type=\"text/javascript\" language=\"JavaScript\" src=\"//www.ibm.com/common/v14/pmh.js\">\n"
-    "</script>\n"
-    "\n"
-
+static const char breadCrumbMainHeader[]=
     "<div style=\"font-size: 6px\">"NBSP"</div>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
@@ -234,7 +163,7 @@ static const char startTable[]=
 static const char endTable[]="</table>";
 
 static const char versions[]=
-    "<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0\">Powered by "
+    "<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0; width: 99%\">Powered by "
     "<a href=\"//www.ibm.com/software/globalization/icu\">ICU</a> %s</p><br />\n";
 
 static void printOptions(UErrorCode *status) {
@@ -809,6 +738,33 @@ static void printAliasTable() {
     printf(endTable);
 }
 
+static void printTemplateFile(char *templateFileName) {
+    size_t size = 0;
+    size_t savedPos;
+    char *buffer;
+    FILE *templateFile = fopen(templateFileName, "r");
+
+    if (templateFileName == NULL) {
+        printf("<!-- ERROR: %s cannot be opened -->", templateFileName);
+        return;
+    }
+
+    /* Go to the end, find the size, and go back to the beginning. */
+    savedPos = ftell(templateFile);
+    fseek(templateFile, 0, SEEK_END);
+    size = ftell(templateFile);
+    fseek(templateFile, savedPos, SEEK_SET);
+
+    /* Read in the whole file and print it out */
+    buffer = (char *)malloc(size+1);
+    fread(buffer, size, 1, templateFile);
+    buffer[size] = 0;    // NULL terminate for printing.
+    printf("%s", buffer);
+
+    free(buffer);
+    fclose(templateFile);
+}
+
 U_CDECL_BEGIN
 static int32_t U_CALLCONV
 convexp_hashPointer(const UHashTok key) {
@@ -833,26 +789,13 @@ main(int argc, const char *argv[]) {
     gScriptName=getenv("SCRIPT_NAME"); 
 
     puts(htmlHeader);
+    printTemplateFile(DEMO_COMMON_MASTHEAD);
+    puts(DEMO_BEGIN_LEFT_NAV);
+    printTemplateFile(DEMO_COMMON_LEFTNAV);
+    puts(DEMO_END_LEFT_NAV);
+    puts(DEMO_BEGIN_CONTENT);
+    puts(breadCrumbMainHeader);
     
-/* on win32 systems to debug uncomment the block below
- * Invoke the CGI application. 
- * Attach a debugger (such as Visual C) to the CGI process while a message box is on the screen. 
- * When the debugger is attached, open the source file and set a break point. 
- * Click OK to dismiss the message box. When the message box is dismissed, 
- * the CGI execution will resume and the break point will be hit. 
- */
-#if 0
-#   ifdef WIN32
-  
-    char szMessage [256];
-    
-    wsprintf (szMessage, "Please attach a debugger to the process 0x%X (%s) and click OK",
-              GetCurrentProcessId(),"idnbrowser");
-    MessageBox(NULL, szMessage, "CGI Debug Time!",
-               MB_OK|MB_SERVICE_NOTIFICATION);
-    
-#   endif
-#endif
     gStandardsSelected = uhash_open(convexp_hashPointer, convexp_comparePointer, &errorCode);
     gMaxStandards = ucnv_countStandards();
 
@@ -916,6 +859,8 @@ main(int argc, const char *argv[]) {
     u_versionToString(icuVer, icuVString);
     printf(versions, icuVString);
     
+    puts(DEMO_END_CONTENT);
+    printTemplateFile(DEMO_COMMON_FOOTER);
     puts(htmlFooter);
 
     uhash_close(gStandardsSelected);
