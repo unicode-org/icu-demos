@@ -11,7 +11,6 @@
 +        { "Kanji-OnRomaji", "", "kanjion" }
 +        { "Latin-Maltese", "Maltese-Latin", "lmaltese" }
 +        { "HTMLEntities-Unicode", "Unicode-HTMLEntities", "htmlent" }
-+        { "Latin-Tamil", "Tamil-Latin", "ltamil" }
 +        { "TamilKeyboard", "", "tamilkb" }
 +
      }
