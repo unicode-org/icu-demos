@@ -32,16 +32,16 @@
 #include "idnbrwsr.h"
 #include "demo_settings.h"
 
-#ifdef WIN32
-#   define _WIN32_WINNT 0x0400 
-#   include "windows.h"
-#endif
+//#ifdef WIN32
+//#   define _WIN32_WINNT 0x0400 
+//#   include "windows.h"
+//#endif
 
 #include "parseqs.h"
 
 #define LENGTHOF(array) (sizeof(array)/sizeof((array)[0]))
 
-static const char *htmlHeader=
+static const char htmlHeader[]=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
@@ -606,9 +606,6 @@ parseString(const char *s, int32_t srcLen,
  * @returns 1 if open failed
  */
 static int printTemplateFile(char *templateFileName) {
-    size_t size = 0;
-    size_t savedPos;
-    char *buffer;
     FILE *templateFile = fopen(templateFileName, "r");
 
     if (templateFile == NULL) {
@@ -616,19 +613,15 @@ static int printTemplateFile(char *templateFileName) {
         return 1;
     }
 
-    /* Go to the end, find the size, and go back to the beginning. */
-    savedPos = ftell(templateFile);
-    fseek(templateFile, 0, SEEK_END);
-    size = ftell(templateFile);
-    fseek(templateFile, savedPos, SEEK_SET);
-
     /* Read in the whole file and print it out */
-    buffer = (char *)malloc(size+1);
-    memset(buffer, 0, size+1);  // Make sure the whole buffer is NULL terminated
-    fread(buffer, size, 1, templateFile);
-    printf("%s", buffer);
+    while (!feof(templateFile)) {
+        int ch = fgetc(templateFile);
+        if (ch == -1) {
+            break;
+        }
+        printf("%c", ch);
+    }
 
-    free(buffer);
     fclose(templateFile);
     return 0;
 }

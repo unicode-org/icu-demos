@@ -289,29 +289,22 @@ parseString(const char *s,
  * @returns 1 if open failed
  */
 static int printTemplateFile(char *templateFileName) {
-    size_t size = 0;
-    size_t savedPos;
-    char *buffer;
     FILE *templateFile = fopen(templateFileName, "r");
-    
+
     if (templateFile == NULL) {
         printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
         return 1;
-    }   
-    
-    /* Go to the end, find the size, and go back to the beginning. */
-    savedPos = ftell(templateFile);
-    fseek(templateFile, 0, SEEK_END);
-    size = ftell(templateFile);
-    fseek(templateFile, savedPos, SEEK_SET);
-    
+    }
+
     /* Read in the whole file and print it out */
-    buffer = (char *)malloc(size+1);
-    memset(buffer, 0, size+1);  // Make sure the whole buffer is NULL terminated
-    fread(buffer, size, 1, templateFile);
-    printf("%s", buffer);
-    
-    free(buffer);
+    while (!feof(templateFile)) {
+        int ch = fgetc(templateFile);
+        if (ch == -1) {
+            break;
+        }
+        printf("%c", ch);
+    }
+
     fclose(templateFile);
     return 0;
 }
