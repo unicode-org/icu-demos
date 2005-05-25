@@ -36,7 +36,8 @@
 static const char *htmlHeader=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
-    "<html lang=\"en-US\">\n"
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
     "<head>\n";
 
 static const char endHeaderBeginBody[] =
@@ -69,7 +70,7 @@ static const char *helpText=
     "text is canonically ordered. \"Normalizing to FCD\" does not generate\n"
     "a unique form but only one of potentially many that are canonically ordered.\n"
     "See <a href=\"http://www.unicode.org/notes/tn5/\">UTN #5 Canonical Equivalence in Applications</a>.</p>"
-    "<hr>";
+    "<hr />";
 
 static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
@@ -82,22 +83,22 @@ static const char *midString=" %04x";
 static const char *endString="";
 
 static const char *startForm=
-    "<form method=\"GET\" action=\"%s\">\n"
-    "<p>Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes<br>\n"
-    "<input size=\"80\" name=\"t\" value=\"%s\"><br>\n"
-    "or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)<br>\n"
+    "<form method=\"get\" action=\"%s\">\n"
+    "<p>Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes<br />\n"
+    "<input size=\"80\" name=\"t\" value=\"%s\" /><br />\n"
+    "or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)<br />\n"
     "<input size=\"80\" name=\"s\" value=\"";
 
 static const char *endForm=
-    "\"></p>\n"
+    "\" /></p>\n"
     "<p>Decomposition exclusions:"
-    " <input type=\"checkbox\" name=\"op0\" %s> Hangul"
-    " <input type=\"checkbox\" name=\"op1\" %s> CJK Compat."
-    "<br>\n"
+    " <input type=\"checkbox\" name=\"op0\" %s /> Hangul"
+    " <input type=\"checkbox\" name=\"op1\" %s /> CJK Compat."
+    "<br />\n"
     "Unicode version:"
-    " <input type=\"radio\" name=\"uv\" value=\"0\" %s>current"
-    " <input type=\"radio\" name=\"uv\" value=\"1\" %s>Unicode 3.2"
-    "<br>\n"
+    " <input type=\"radio\" name=\"uv\" value=\"0\" %s />current"
+    " <input type=\"radio\" name=\"uv\" value=\"1\" %s />Unicode 3.2"
+    "<br />\n"
     "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
     " (<a href=\"#help\">Help</a>)"
     "</p>\n"

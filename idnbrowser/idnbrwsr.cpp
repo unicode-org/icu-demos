@@ -45,19 +45,21 @@ static const char htmlHeader[]=
     "Content-Type: text/html; charset=utf-8\n"
     "\n"
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-    "<html lang=\"en-US\">\n"
-    "<head>\n";
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
+    "<head>\n"
+    "<style type=\"text/css\">\n"
+    "/*<![CDATA[*/\n"
+    ".highlight {background-color: white; color: red; border-left: 1px solid  blue; border-right: 1px solid blue}\n"
+    ".word {background-color:#DDFFFF}\n"
+    ".num {background-color:#FFDDFF} body  {font-size: 12pt}\n"
+    "/*]]>*/\n"
+    "</style>\n";
 
 static const char defaultHeader[]=
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
     "<title>IDNA Demo</title>\n";
 
 static const char endHeaderBeginBody[] =
-    "<style type=\"text/css\">\n"
-    ".highlight {background-color: white; color: red; border-left: 1px solid  blue; border-right: 1px solid blue}\n"
-    ".word {background-color:#DDFFFF}\n"
-    ".num {background-color:#FFDDFF} body  {font-size: 12pt}\n"
-    "</style>\n"
     "</head>\n"
     "<body>\n";
 
@@ -91,8 +93,8 @@ static const char *helpText=
     " confusable. For example, many CJK Radicals are identical in appearance to CJK"
     " Ideographs. Mixtures of simplified and traditional characters can also be visually"
     " highlighted, to help signal possible user errors.</p>\n"
-    " <br> <i>Examples</i>\n"
-    " <br>You can either paste in Unicode text into the above box, or you can use Unicode escapes.\n"
+    " <br /> <i>Examples</i>\n"
+    " <br />You can either paste in Unicode text into the above box, or you can use Unicode escapes.\n"
     " For example, you can either use \"&#x00E4;\" or \"\\u00E4\", or could use the decomposition \"a\\u0308\".\n"
     " You can also copy some interesting Unicode text samples from the following pages:\n"
     " <ul>\n"
@@ -100,7 +102,7 @@ static const char *helpText=
     "	<li><a href=\"/software/globalization/icu/demo/unicode\">Unicode Browser </a></li>\n"
     "<li><a href=\"/software/globalization/icu/demo/locales\">Locale Explorer </a></li>\n"
     " </ul>\n" 
-    "<hr>";
+    "<hr />";
 
 static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
@@ -113,9 +115,9 @@ static const char *midString=" %04X";
 static const char *endString="";
 
 static const char *startForm=
-    "<form method=\"GET\" action=\"%s\">\n"
-    "<p>Enter the domain name to be converted in UTF-8 or escaped Unicode text (\\uXXXX or \\UXXXXXXXX) :<br>"
-    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\"> </p>\n";
+    "<form method=\"get\" action=\"%s\">\n"
+    "<p>Enter the domain name to be converted in UTF-8 or escaped Unicode text (\\uXXXX or \\UXXXXXXXX) :<br />"
+    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\" /> </p>\n";
 
 static const char *endForm=
             "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
@@ -124,7 +126,7 @@ static const char *endForm=
 static const char *startTable=
     "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"data-table-2\" style=\"margin-right: 5px;\">\n"
     "<caption><em>Results of Operation</em></caption>\n"
-    "<tr><th>Mode</th><th>Text</th><th>Code Points</th></tr>\n"
+    "<tr><th>Mode</th><th style=\"width: 8em;\">Text</th><th>Code Points</th></tr>\n"
     "<tr><td>Input</td>";
 
 static const char *endTable="</table>";
@@ -180,9 +182,9 @@ printStringUTF8(const UChar *s, int32_t length) {
         int32_t destLen = 0;	
 	u_strToUTF8(c,length*8,&destLen,s,length,&status);
 	if(U_FAILURE(status)){
-		printf("<br>%s<br>\n", u_errorName(status));
+		printf("<br />%s<br />\n", u_errorName(status));
 	}else{
-		printf("<br>%s<br>\n",c);
+		printf("<br />%s<br />\n",c);
 	}
     }
 }
@@ -323,12 +325,12 @@ printTableText(const UChar *s, int32_t length, UBool useBreakScripts, UBool make
     UnicodeString result;
     UnicodeString str(s,length);
     if(makeLink == TRUE){
-    	result.append("<a href=\"");
-   	if(str.indexOf(http)==-1){
-	   result.append(http);
-    	}
-    	result.append(s,length);
-    	result.append("\">");
+        result.append("<a href=\"");
+        if(str.indexOf(http)==-1){
+            result.append(http);
+        }
+        result.append(s,length);
+        result.append("\">");
     }
     if(useBreakScripts){
         breakScripts(s,length, result);
@@ -336,13 +338,17 @@ printTableText(const UChar *s, int32_t length, UBool useBreakScripts, UBool make
         result.append(s,length);
     }
     if(makeLink == TRUE){
-    	result.append("</a>\n");
+        result.append("</a>\n");
     }
     u_strToUTF8(buffer, sizeof(buffer), &utf8Length, result.getBuffer(), result.length(), &errorCode);
     result.releaseBuffer();
-    if(U_FAILURE(errorCode) || errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+    if(length==0) {
+        printf("<td>&nbsp;</td>");
+    }
+    else if(U_FAILURE(errorCode) || errorCode==U_STRING_NOT_TERMINATED_WARNING) {
         printf("<td>%s</td>", u_errorName(errorCode));
-    } else {
+    }
+    else {
         printf("<td>%s</td>", buffer);
     }
 }
@@ -369,7 +375,10 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
     errorCode=U_ZERO_ERROR;
     outputLength= uidna_IDNToUnicode(s, length, output, length,UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
 
-    if(U_FAILURE(errorCode)) {
+    if(length==0) {
+        printf("<td>&nbsp;</td><td>&nbsp;</td>");
+    }
+    else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
         
@@ -419,13 +428,14 @@ printToUnicode (const UChar *s, int32_t length) {
 
     outputLength= uidna_IDNToUnicode(tempOut, tempOutLen, output, length,UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
 
-    if(U_FAILURE(errorCode)) {
+    if(length==0) {
+        printf("<td>&nbsp;</td><td>&nbsp;</td>");
+    }
+    else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
-        
         printTableText(output, outputLength, TRUE,FALSE);
         printTableString(output,outputLength);
-
     }
 
     puts("</tr>");
@@ -454,13 +464,16 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
     errorCode=U_ZERO_ERROR;
     outputLength= uidna_IDNToASCII(s, length, output, capacity, UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
 
-    if(U_FAILURE(errorCode)) {
+    if(length==0) {
+        printf("<td>&nbsp;</td><td>&nbsp;</td>");
+    }
+    else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
         uidna_IDNToASCII(s, length, tempOut,  capacity, UIDNA_DEFAULT, &parseError, &errorCode);
 
         if(errorCode == U_IDNA_UNASSIGNED_ERROR){
-           printUnassignedError  = TRUE;
+            printUnassignedError  = TRUE;
         }
         errorCode = U_ZERO_ERROR;
         uidna_IDNToASCII(s, length, tempOut, capacity, UIDNA_USE_STD3_RULES, &parseError, &errorCode);
@@ -471,6 +484,7 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
         printTableText(output, outputLength,FALSE,TRUE);
         printTableString(output, outputLength);
     }
+
 
     puts("</tr>");
     
@@ -501,7 +515,10 @@ printToASCII (const UChar *s, int32_t length) {
 
     outputLength= uidna_IDNToASCII(tempOut, tempOutLen, output, capacity,UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
 
-    if(U_FAILURE(errorCode)) {
+    if(length==0) {
+        printf("<td>&nbsp;</td><td>&nbsp;</td>");
+    }
+    else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
         printTableText(output, outputLength,FALSE,TRUE);
@@ -772,13 +789,13 @@ main(int argc, const char *argv[]) {
     printToASCII   (input, inputLength);
     puts(endTable);
     if(inputLength > 0  && (status == U_IDNA_UNASSIGNED_ERROR || status == U_IDNA_STD3_ASCII_RULES_ERROR)){
-        printf("<font size=\"4\"><b>Information </b></font><br>\n");
+        printf("<font size=\"4\"><b>Information </b></font><br />\n");
         if((std31==TRUE ||std32 ==TRUE)){
             printf(STD3Fail);
         }else if(status !=  U_IDNA_UNASSIGNED_ERROR){
             printf(STD3Pass);
         }
-        printf("<br>\n");
+        printf("<br />\n");
         if(unass1==TRUE || unass2 ==TRUE){
             printf(unassignedFail);
         }else{
@@ -787,7 +804,7 @@ main(int argc, const char *argv[]) {
     }
     char uvString[16], ivString[16];
     UVersionInfo uv, iv;
-    printf("<table border=0><tr><td>Or choose a sample from this list:</td><td> <form method=\"GET\" action=\"%s\"><SELECT NAME='t'>", "?");
+    printf("<table border=0><tr><td>Or choose a sample from this list:</td><td> <form method=\"get\" action=\"%s\"><SELECT NAME='t'>", "?");
     printf("<option SELECTED value=\"\">(samples...)</option>\n");
     for(int j=0;samples[j];j++) {
       printf("<option value=\"%s\">%s</option>", samples[j], samples[j]);
