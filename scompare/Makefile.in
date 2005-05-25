@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2004, International Business Machines
+## *   Copyright (C) 1999-2005, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -25,16 +25,17 @@ TARGET = scompare
 #LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
 #LDFLAGS += $(LDFLAGS_TOOLUTIL)
 CPPFLAGS += -I$(ICU_SOURCE)/common
+CPPFLAGS += -I$(top_srcdir)/apputil
+# Want to make sure the usort.h dependency is not on the installed version .. 
+#CPPFLAGS  += -I../locexp/util
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
 # -ldl is needed for DLL version
 ICULIBS    +=  -licuio
 
-# Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  += -I../locexp/util
-
 OBJECTS = scompare.o 
+HTML_FILES = scompare-content-templ.html scompare-page-templ.html
 
 ## List of standard targets
 all: all-local
@@ -50,8 +51,9 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR)
+	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
 	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+	$(INSTALL) $(HTML_FILES) $(BINDIR)/data
 
 dist-local:
 
