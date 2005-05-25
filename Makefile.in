@@ -17,7 +17,7 @@ include $(top_builddir)/icuapps.mk
 
 ## Locale Explorer depends on usort [runtime].
 # Don't change this ordering!
-SUBDIRS= obsolete  usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare
+SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare
 # calexpo
 
 
