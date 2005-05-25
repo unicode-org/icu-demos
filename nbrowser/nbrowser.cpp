@@ -98,16 +98,16 @@ static const char *endForm=
     " <input type=\"radio\" name=\"uv\" value=\"0\" %s>current"
     " <input type=\"radio\" name=\"uv\" value=\"1\" %s>Unicode 3.2"
     "<br>\n"
-    "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" name=\"<name>\" value=\"Submit\" />\n"
+    "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
     " (<a href=\"#help\">Help</a>)"
     "</p>\n"
     "</form>\n";
 
 static const char *startTable=
-    "<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\">\n"
+    "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"data-table-2\">\n"
     "<caption><em>Normalization Results</em></caption>\n"
     "<tr><th>Mode</th><th>Quick Check</th><th>Normalized</th><th>Text</th></tr>\n"
-    "<tr><th>Input</th><td>&nbsp;</td><td>";
+    "<tr><td>Input</td><td>&nbsp;</td><td>";
 
 static const char *endTable="</table>";
 
@@ -172,7 +172,7 @@ printNormalized(const UChar *s, int32_t length,
     UNormalizationCheckResult qc;
     UErrorCode errorCode;
 
-    printf("<tr><th>%s</th>", modeNames[mode]);
+    printf("<tr><td>%s</td>", modeNames[mode]);
 
     errorCode=U_ZERO_ERROR;
     qc=unorm_quickCheckWithOptions(s, length, mode, options, &errorCode);
