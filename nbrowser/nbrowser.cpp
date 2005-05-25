@@ -294,8 +294,8 @@ static int printTemplateFile(char *templateFileName) {
     char *buffer;
     FILE *templateFile = fopen(templateFileName, "r");
     
-    if (templateFileName == NULL) {
-        printf("<!-- ERROR: %s cannot be opened -->", templateFileName);
+    if (templateFile == NULL) {
+        printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
         return 1;
     }   
     
@@ -307,8 +307,8 @@ static int printTemplateFile(char *templateFileName) {
     
     /* Read in the whole file and print it out */
     buffer = (char *)malloc(size+1);
+    memset(buffer, 0, size+1);  // Make sure the whole buffer is NULL terminated
     fread(buffer, size, 1, templateFile);
-    buffer[size] = 0;    // NULL terminate for printing.
     printf("%s", buffer);
     
     free(buffer);

@@ -52,32 +52,6 @@ static const char htmlHeader[]=
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
     "<head>\n"
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
-    "<meta http-equiv=\"PICS-Label\" content='(PICS-1.1 \"http://www.icra.org/ratingsv02.html\" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1) \"http://www.rsac.org/ratingsv01.html\" l gen true r (n 0 s 0 v 0 l 0) \"http://www.classify.org/safesurf/\" l gen true r (SS~~000 1))' />\n"
-    "<link rel=\"schema.DC\" href=\"http://purl.org/DC/elements/1.0/\"/>\n"
-    "<link rel=\"SHORTCUT ICON\" href=\"http://www.ibm.com/favicon.ico\"/>\n"
-    "<meta name=\"Description\" content=\"Here is a demonstration of how ICU conversion works.\"/>\n"
-    "<meta name=\"IBM.Country\" content=\"ZZ\"/>\n"
-    "<meta name=\"DC.Date\" scheme=\"iso8601\" content=\"2005-02-01\"/>\n"
-    "<meta name=\"Source\" content=\"v14 Template Generator, Template 14.7\"/>\n"
-    "<meta name=\"DC.Type\" scheme=\"IBM_ContentClassTaxonomy\" content=\"ZZ999\"/>\n"
-    "<meta name=\"Abstract\" content=\"Here is a demonstration of how ICU conversion works.\"/>\n"
-    "<meta name=\"Keywords\" content=\"ICU, ICU4C, converter, conversion, charset, character set, codepage, encoding\"/>\n"
-    "<meta name=\"DC.Subject\" scheme=\"IBM_SubjectTaxonomy\" content=\"57006, 2001220, 2001102\"/>\n"
-    "<meta name=\"DC.Language\" scheme=\"rfc1766\" content=\"en\"/>\n"
-    "<meta name=\"Security\" content=\"Public\"/>\n"
-    "<meta name=\"IBM.Industry\" scheme=\"IBM_IndustryTaxonomy\" content=\"ZZ\"/>\n"
-    "<meta name=\"Robots\" content=\"index,nofollow\"/>\n"
-    "<meta name=\"DC.Publisher\" content=\"IBM Corporation - Software Group - Globalization Center of Competency (GCoC) - ICU Department\"/>\n"
-    "<meta name=\"IBM.Effective\" scheme=\"W3CDTF\" content=\"2005-01-01\"/>\n"
-    "<meta name=\"Owner\" content=\"Icu Intl/Cupertino/IBM@IBMUS\"/>\n"
-    "<meta name=\"DC.Rights\" content=\"Copyright (c) 2005 by IBM Corporation\"/>\n"
-    "\n"
-    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n"
-    "<link rel=\"stylesheet\" type=\"text/css\" href=\"//www.ibm.com/common/v14/main.css\" />\n"
-    "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"//www.ibm.com/common/v14/screen.css\" />\n"
-    "<link rel=\"stylesheet\" type=\"text/css\" media=\"print\" href=\"//www.ibm.com/common/v14/print.css\" />\n"
-    "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen,print\" href=\"//www.ibm.com/common/v14/table.css\" />\n"
     // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
@@ -92,11 +66,14 @@ static const char htmlHeader[]=
     "table.data-table-2 div.glyph {font-size: 160%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
-    "<script src=\"//www.ibm.com/common/v14/detection.js\" language=\"JavaScript\" type=\"text/javascript\">\n"
-    "</script>\n"
-    "\n"
-    "</head>\n"
+    "\n";
 
+static const char defaultHeader[]=
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n";
+
+static const char endHeaderBeginBody[]=
+    "</head>\n"
     "<body>\n";
 
 static const char breadCrumbMainHeader[]=
@@ -140,7 +117,7 @@ static const char startForm[]=
     "\n";
 
 static const char endForm[]=
-    "<input type=\"submit\" value=\"View Results\" size=\"100\" />\n"
+    "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/go.gif\" alt=\"Go\" value=\"Go\" />\n"
     "</p>"
     "</form>\n"
     "</td>\n"
@@ -738,15 +715,18 @@ static void printAliasTable() {
     printf(endTable);
 }
 
-static void printTemplateFile(char *templateFileName) {
+/**
+ * @returns 1 if open failed
+ */
+static int printTemplateFile(char *templateFileName) {
     size_t size = 0;
     size_t savedPos;
     char *buffer;
     FILE *templateFile = fopen(templateFileName, "r");
 
-    if (templateFileName == NULL) {
-        printf("<!-- ERROR: %s cannot be opened -->", templateFileName);
-        return;
+    if (templateFile == NULL) {
+        printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
+        return 1;
     }
 
     /* Go to the end, find the size, and go back to the beginning. */
@@ -757,12 +737,13 @@ static void printTemplateFile(char *templateFileName) {
 
     /* Read in the whole file and print it out */
     buffer = (char *)malloc(size+1);
+    memset(buffer, 0, size+1);  // Make sure the whole buffer is NULL terminated
     fread(buffer, size, 1, templateFile);
-    buffer[size] = 0;    // NULL terminate for printing.
     printf("%s", buffer);
 
     free(buffer);
     fclose(templateFile);
+    return 0;
 }
 
 U_CDECL_BEGIN
@@ -789,6 +770,10 @@ main(int argc, const char *argv[]) {
     gScriptName=getenv("SCRIPT_NAME"); 
 
     puts(htmlHeader);
+    if (printTemplateFile(DEMO_COMMON_DIR "idna-header.html")) {
+        puts(defaultHeader);
+    }
+    puts(endHeaderBeginBody);
     printTemplateFile(DEMO_COMMON_MASTHEAD);
     puts(DEMO_BEGIN_LEFT_NAV);
     printTemplateFile(DEMO_COMMON_LEFTNAV);

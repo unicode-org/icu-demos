@@ -611,8 +611,8 @@ static int printTemplateFile(char *templateFileName) {
     char *buffer;
     FILE *templateFile = fopen(templateFileName, "r");
 
-    if (templateFileName == NULL) {
-        printf("<!-- ERROR: %s cannot be opened -->", templateFileName);
+    if (templateFile == NULL) {
+        printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
         return 1;
     }
 
@@ -624,8 +624,8 @@ static int printTemplateFile(char *templateFileName) {
 
     /* Read in the whole file and print it out */
     buffer = (char *)malloc(size+1);
+    memset(buffer, 0, size+1);  // Make sure the whole buffer is NULL terminated
     fread(buffer, size, 1, templateFile);
-    buffer[size] = 0;    // NULL terminate for printing.
     printf("%s", buffer);
 
     free(buffer);
@@ -698,40 +698,40 @@ main(int argc, const char *argv[]) {
         parseQueryString(cgi,strlen(cgi),LENGTHOF(options),options);
         const char* inputType = options[INPUT_TYPE].value;
         int32_t len = (options[INPUT].valueLen * 2);
-	if ( len != 0 ) {
-	  inputIsUTF8=TRUE;
-	  buffer = (char*) malloc( len );
-	  inputLength=parseEscaped(options[INPUT].value,options[INPUT].valueLen, buffer, len, errorCode);
-	  if(U_FAILURE(errorCode)){
-	    printf("#### len = %i valueLen = %i %s\n", len, options[INPUT].valueLen,buffer);
-	  }
-	  buffer16 = (UChar*) malloc ( U_SIZEOF_UCHAR * (inputLength+10));
-	  u_strFromUTF8(buffer16, inputLength+10, &inputLength,
-			buffer, inputLength,
-			&errorCode);
-	  us.append((const UChar *)buffer16, inputLength); 
-	  us = us.unescape();
-	  
-	  if(errorCode==U_STRING_NOT_TERMINATED_WARNING) {
-	    errorCode=U_BUFFER_OVERFLOW_ERROR;
-	  }
-	  if(U_FAILURE(errorCode)){
-	    printf("#### inputLength = %i \n", inputLength);
-	  }
-	  input = (UChar*) us.getBuffer();
-	  inputLength = us.length();
-	  input8  = (char*) malloc( inputLength * 9); 
-	  int32_t reqLength =0;
-	  u_strToUTF8(input8,inputLength*8 , &reqLength,
-		      input, inputLength,
-		      &errorCode);
-	  if(inputLength !=0 && errorCode==U_STRING_NOT_TERMINATED_WARNING) {
-	    errorCode=U_BUFFER_OVERFLOW_ERROR;
-	  }
-	  if(U_FAILURE(errorCode)){
-	    printf("#### inputLength = %i capacity = %i reqLength = %i \n", inputLength, inputLength * 8, reqLength);
-	  }
-	}
+        if ( len != 0 ) {
+            inputIsUTF8=TRUE;
+            buffer = (char*) malloc( len );
+            inputLength=parseEscaped(options[INPUT].value,options[INPUT].valueLen, buffer, len, errorCode);
+            if(U_FAILURE(errorCode)){
+                printf("#### len = %i valueLen = %i %s\n", len, options[INPUT].valueLen,buffer);
+            }
+            buffer16 = (UChar*) malloc ( U_SIZEOF_UCHAR * (inputLength+10));
+            u_strFromUTF8(buffer16, inputLength+10, &inputLength,
+                buffer, inputLength,
+                &errorCode);
+            us.append((const UChar *)buffer16, inputLength); 
+            us = us.unescape();
+
+            if(errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+                errorCode=U_BUFFER_OVERFLOW_ERROR;
+            }
+            if(U_FAILURE(errorCode)){
+                printf("#### inputLength = %i \n", inputLength);
+            }
+            input = (UChar*) us.getBuffer();
+            inputLength = us.length();
+            input8  = (char*) malloc( inputLength * 9); 
+            int32_t reqLength =0;
+            u_strToUTF8(input8,inputLength*8 , &reqLength,
+                input, inputLength,
+                &errorCode);
+            if(inputLength !=0 && errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+                errorCode=U_BUFFER_OVERFLOW_ERROR;
+            }
+            if(U_FAILURE(errorCode)){
+                printf("#### inputLength = %i capacity = %i reqLength = %i \n", inputLength, inputLength * 8, reqLength);
+            }
+        }
     }
 
     if(U_FAILURE(errorCode)) {

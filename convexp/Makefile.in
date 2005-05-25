@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2003, International Business Machines
+## *   Copyright (C) 1999-2005, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -40,8 +40,9 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR)
+	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
 	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+	$(INSTALL) convexp-header.html $(BINDIR)/data
 
 dist-local:
 

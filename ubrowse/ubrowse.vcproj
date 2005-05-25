@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\icu\include,..\locexp\util"
+				AdditionalIncludeDirectories="..\..\icu\include;..\locexp\util;..\apputil"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -84,7 +84,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\icu\include,..\locexp\util"
+				AdditionalIncludeDirectories="..\..\icu\include;..\locexp\util;..\apputil"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
@@ -182,14 +182,16 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot; CFG=Debug"
+						CommandLine="nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot; CFG=Debug
+"
 						Outputs="Debug\ubrowseres.lib"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot; CFG=Release"
+						CommandLine="nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot; CFG=Release
+"
 						Outputs="Release\ubrowseres.lib"/>
 				</FileConfiguration>
 			</File>
