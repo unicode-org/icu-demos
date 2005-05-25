@@ -89,6 +89,7 @@ XMLConverter/samples/x.xml -text svneol=unset#text/xml
 apputil/data/common-footer.html svneol=native#text/html
 apputil/data/common-leftnav.html svneol=native#text/html
 apputil/data/common-masthead.html svneol=native#text/html
+convexp/convexp-header.html svneol=native#text/html
 idnbrowser/idna-header.html svneol=native#text/html
 locexp/resource/fr/displayproblems.gif -text
 locexp/resource/fr/explore.gif -text
