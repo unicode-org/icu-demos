@@ -21,6 +21,7 @@
 #include <unicode/uchar.h>
 #include <unicode/ustdio.h>
 
+#include "demo_settings.h"
 
 //
 // Function gets one parameter by name out of the string of data POSTed by
@@ -93,6 +94,7 @@ void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &
     UnicodeString vCopy(val);           
     vCopy.findAndReplace("&", "&amp;"); 
     vCopy.findAndReplace("<", "&lt;");
+    vCopy.findAndReplace(">", "&gt;");
     content.findAndReplace(fieldName, vCopy);
 }
 
@@ -176,16 +178,16 @@ void doCompare(const char *postData, UnicodeString &content) {
     UnicodeString caseless_equiv("-");
 
     if (s1.compare(s2) == 0) {
-        binary = 'Y';
+        binary = (UChar)'Y';
     }
     if (s1.caseCompare(s2, U_FOLD_CASE_DEFAULT) == 0) {
-        caseless = 'Y';
+        caseless = (UChar)'Y';
     }
     if (Normalizer::compare(s1, s2, U_FOLD_CASE_DEFAULT, status) == 0) {
-        equiv = 'Y';
+        equiv = (UChar)'Y';
     }
     if (Normalizer::compare(s1, s2, U_COMPARE_IGNORE_CASE, status) == 0) {
-        caseless_equiv = 'Y';
+        caseless_equiv = (UChar)'Y';
     }
     content.findAndReplace("%%binary%%", binary);
     content.findAndReplace("%%case%%", caseless);
@@ -246,6 +248,7 @@ void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
 int main(int argc, const char **argv) {
     UErrorCode      status = U_ZERO_ERROR;
     const char     *request_method;
+    const char     *script_name;
     UnicodeString   outputText;
 
     u_init(&status); 
@@ -257,8 +260,8 @@ int main(int argc, const char **argv) {
     //   by the IBM template generator.
     //   The second contains the page content specific to this demo app.
     //
-    insertTemplateFile(outputText, "scompare-page-templ.html", NULL);
-    insertTemplateFile(outputText, "scompare-content-templ.html",
+    insertTemplateFile(outputText, DEMO_COMMON_DIR "scompare-page-templ.html", NULL);
+    insertTemplateFile(outputText, DEMO_COMMON_DIR "scompare-content-templ.html",
         "%%space content space table here%%");
 
  
@@ -274,6 +277,15 @@ int main(int argc, const char **argv) {
         outputText.append("<!-- Error in scompare.cpp while inserting table.css -->\n");
     }
 
+
+    UnicodeString originalScriptName("/software/globalization/icu/demo/compare");
+    script_name=getenv("SCRIPT_NAME"); 
+    where = outputText.indexOf(originalScriptName);
+    if (where>0) {
+        outputText.findAndReplace(originalScriptName, UnicodeString(script_name));
+    } else {
+        outputText.append("<!-- Error in scompare.cpp while inserting $SCRIPT_NAME -->\n");
+    }
 
 
     //
