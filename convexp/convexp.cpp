@@ -763,7 +763,7 @@ main(int argc, const char *argv[]) {
     gScriptName=getenv("SCRIPT_NAME"); 
 
     puts(htmlHeader);
-    if (printTemplateFile(DEMO_COMMON_DIR "idna-header.html")) {
+    if (printTemplateFile(DEMO_COMMON_DIR "convexp-header.html")) {
         puts(defaultHeader);
     }
     puts(endHeaderBeginBody);
