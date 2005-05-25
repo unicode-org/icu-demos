@@ -34,5 +34,12 @@
 #define DEMO_BEGIN_CONTENT "<td style=\"padding-left: 5px;\"><a name=\"main\"></a>\n"
 #define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
 
+#define ICU_URL "http://www.ibm.com/software/globalization/icu/"
+
+#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+
 #endif
 
