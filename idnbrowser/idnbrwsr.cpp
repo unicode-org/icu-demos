@@ -118,13 +118,14 @@ static const char *startForm=
     "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\"> </p>\n";
 
 static const char *endForm=
-            "<input type=\"submit\" value=\"Perform IDNA\" size=\"100\">\n"
+            "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
             "</form>\n";
 
 static const char *startTable=
-    "<table border=\"1\">\n"
+    "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"data-table-2\" style=\"margin-right: 5px;\">\n"
+    "<caption><em>Results of Operation</em></caption>\n"
     "<tr><th>Mode</th><th>Text</th><th>Code Points</th></tr>\n"
-    "<tr><th>Input</th>";
+    "<tr><td>Input</td>";
 
 static const char *endTable="</table>";
 static const char *STD3Fail = "<b> The input does not satisfy STD3 ASCII rules</b>\n";
@@ -357,7 +358,7 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
     printUnassignedError = FALSE;
     printSTD3Error = FALSE;
 
-    printf("<tr><th>%s</th>", modeNames[3]);
+    printf("<tr><td>%s</td>", modeNames[3]);
 /*
     UnicodeString str(s,length);
     if(str.indexOf(http)!=-1){
@@ -402,7 +403,7 @@ printToUnicode (const UChar *s, int32_t length) {
     UErrorCode errorCode;
     UParseError parseError;
 
-    printf("<tr><th>%s</th>", modeNames[4]);
+    printf("<tr><td>%s</td>", modeNames[4]);
 /*
     UnicodeString str(s,length);
     if(str.indexOf(http)!=-1){
@@ -442,7 +443,7 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
     UParseError parseError;
     printUnassignedError = FALSE;
     printSTD3Error = FALSE;
-    printf("<tr><th>%s</th>", modeNames[2]);
+    printf("<tr><td>%s</td>", modeNames[2]);
 /*    
     UnicodeString str(s,length);
     if(str.indexOf(http)!=-1){
@@ -487,7 +488,7 @@ printToASCII (const UChar *s, int32_t length) {
     UErrorCode errorCode;
     UParseError parseError;
 
-    printf("<tr><th>%s</th>", modeNames[5]);
+    printf("<tr><td>%s</td>", modeNames[5]);
 /* 
     UnicodeString str(s,length);
     if(str.indexOf(http)!=-1){
@@ -798,7 +799,7 @@ main(int argc, const char *argv[]) {
     for(int j=0;samples[j];j++) {
       printf("<option value=\"%s\">%s</option>", samples[j], samples[j]);
     }
-    puts("</select>\n<input type=submit value=\"Load\"></form></td></tr></table>\n");
+    puts("</select>\n<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/go.gif\" alt=\"Go\" value=\"Load\" /></form></td></tr></table>\n");
 
     puts(helpText);
 
