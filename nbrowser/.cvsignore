@@ -2,5 +2,6 @@ Debug
 Release
 Makefile
 *.d
+*.o
 nbrowser
 Makefile.local

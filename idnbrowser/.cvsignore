@@ -1,5 +1,6 @@
 Makefile
 *.d
+*.o
 idnbrowser
 Release
 Debug
