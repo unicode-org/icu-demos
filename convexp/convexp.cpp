@@ -719,22 +719,29 @@ static void printAliasTable() {
  * @returns 1 if open failed
  */
 static int printTemplateFile(char *templateFileName) {
-    FILE *templateFile = fopen(templateFileName, "r");
-
+    size_t size = 0;
+    size_t savedPos;
+    char *buffer;
+    FILE *templateFile = fopen(templateFileName, "rb");
+    
     if (templateFile == NULL) {
         printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
         return 1;
-    }
-
+    }   
+    
+    /* Go to the end, find the size, and go back to the beginning. */
+    savedPos = ftell(templateFile);
+    fseek(templateFile, 0, SEEK_END);
+    size = ftell(templateFile);
+    fseek(templateFile, savedPos, SEEK_SET);
+    
     /* Read in the whole file and print it out */
-    while (!feof(templateFile)) {
-        int ch = fgetc(templateFile);
-        if (ch == -1) {
-            break;
-        }
-        printf("%c", ch);
-    }
-
+    buffer = (char *)malloc(size+1);
+    fread(buffer, size, 1, templateFile);
+    buffer[size] = 0;    // NULL terminate for printing.
+    printf("%s", buffer);
+    
+    free(buffer);
     fclose(templateFile);
     return 0;
 }
