@@ -107,7 +107,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="icuucd.lib icuind.lib"
 				OutputFile=".\Debug/translitdemo.exe"
-				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\icu\lib"
 				GenerateDebugInformation="TRUE"
