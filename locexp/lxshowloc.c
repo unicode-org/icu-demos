@@ -50,7 +50,7 @@ void showOneLocale(LXContext *lx)
 
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT,"<B>An error occured [%d] opening that resource bundle [%s]. Perhaps it doesn't exist? </B><BR><HR>\r\n",status, locale);
+        u_fprintf(lx->OUT,"<b>An error occured [%d] opening that resource bundle [%s]. Perhaps it doesn't exist? </b><br /><hr />\r\n",status, locale);
         return;
     }
 
@@ -111,7 +111,7 @@ void showOneLocale(LXContext *lx)
     else if (!strcmp(lx->section, "srl"))
     {
         UChar ustr[] = { 0x0394, 0x03b5, 0x03c5, 0x03c4, 0x03ad, 0x03c1, 0x03b1, 0x0000 };
-        u_fprintf(lx->OUT, "<HR>GRK: %S<BR><HR>\n", ustr);
+        u_fprintf(lx->OUT, "<hr />GRK: %S<br /><hr />\n", ustr);
     }
     else if (!strcmp(lx->section, "brk"))
     {
@@ -123,7 +123,7 @@ void showOneLocale(LXContext *lx)
         
         u_fprintf(lx->OUT, "<table width=100%%><tr>\r\n"); 
 
-        u_fprintf(lx->OUT, "<TD VALIGN=TOP ALIGN=RIGHT>");
+        u_fprintf(lx->OUT, "<TD valign=\"top\" align=\"right\">");
         printHelpTag(lx, "EXPLORE_CollationElements", NULL);
         u_fprintf(lx->OUT, "</TD>");
 
@@ -136,7 +136,7 @@ void showOneLocale(LXContext *lx)
     else /* ================================= Normal ShowXXXXX calls ===== */
     {
 	if(!getenv("SERVER_NAME") || strncmp(getenv("SERVER_NAME"),"oss",3)) {
-		u_fprintf(lx->OUT, "<a href=\"%s&x=iloc\">%S</a><br>",
+		u_fprintf(lx->OUT, "<a href=\"%s&amp;x=iloc\">%S</a><br />",
 			getLXBaseURL(lx, kNO_SECT),
 			FSWF("icirView", "Switch to Survey View"));
 	 } else {
@@ -144,15 +144,15 @@ void showOneLocale(LXContext *lx)
 	}
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   LOCALE ID section %%%*/
-        u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%%\"><tr><td valign=TOP>");
+        u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%%\"><tr><td valign=\"top\">");
         showLocaleCodes(lx, myRB, locale);
-        u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
+        u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=\"top\">");
 
         showKeyAndStartItem(lx, "LocaleID", NULL, locale, FALSE, status);
         u_fprintf(lx->OUT, "0x%X</TD>", uloc_getLCID(locale));
         showKeyAndEndItem(lx, "LocaleID", locale);
 
-        u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=TOP>");
+        u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=\"top\">");
         showString(lx, myRB, locale, "Version", FALSE);
         u_fprintf(lx->OUT, "</td></tr></table>");
 

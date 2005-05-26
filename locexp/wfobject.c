@@ -54,11 +54,11 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	}
       }
       break;
-    case RES_BINARY: fprintf(lx->fOUT, "<A HREF=\"./%s\">BINARY</A>", ures_getKey(n)); break;
+    case RES_BINARY: fprintf(lx->fOUT, "<a href=\"./%s\">BINARY</A>", ures_getKey(n)); break;
     case RES_TABLE: fprintf(lx->fOUT, "TABLE"); break;
     case RES_INT: fprintf(lx->fOUT, "INT=%d", ures_getInt(n, &s2)); break;
     case RES_ARRAY: fprintf(lx->fOUT, "ARRAY");
-      fprintf(lx->fOUT, "<BR><OL>\r\n");
+      fprintf(lx->fOUT, "<br /><ol>\r\n");
       {
 	int i;
 	for(i=0;i<ures_getSize(n);i++)
@@ -66,7 +66,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	  s2 = U_ZERO_ERROR;
 	  sub = ures_getByIndex(n, i, sub, &s2);
 	  if(U_FAILURE(s2)) break;
-	  fprintf(lx->fOUT, " <LI> ");
+	  fprintf(lx->fOUT, " <li> ");
 	  writeSubObject(lx, sub);
 	}
       }
@@ -106,7 +106,7 @@ void writeFileObject( LXContext *lx, const char *path )
            (thePath==NULL)?"NULL":thePath,
            path);
     fprintf(lx->fOUT, "Error: %s\n", u_errorName(status));
-    fprintf(lx->fOUT, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
+    fprintf(lx->fOUT, "<hr /><a href=\"" ICU_URL "\">ICU Home</a>\r\n");
     return;
   }
 
@@ -153,12 +153,12 @@ void writeFileObject( LXContext *lx, const char *path )
     if(U_FAILURE(s2))
     {
       appendHeader(lx, "Content-type", "text/html");
-      fprintf(lx->fOUT, "Error: Couldn't get [%s] in bundle [%s] in path [%s]<P>\r\n",
+      fprintf(lx->fOUT, "Error: Couldn't get [%s] in bundle [%s] in path [%s]<p>\r\n",
              path,
              lx->dispLocale,
            (thePath==NULL)?"NULL":thePath);
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
-      fprintf(lx->fOUT, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
+      fprintf(lx->fOUT, "<hr /><a href=\"" ICU_URL "\">ICU Home</a>\r\n");
       return;
     }
 
@@ -172,7 +172,7 @@ void writeFileObject( LXContext *lx, const char *path )
              lx->dispLocale,
              u_getDataDirectory());
       fprintf(lx->fOUT, "Error: %s\n", u_errorName(s2));
-      fprintf(lx->fOUT, "<hr><A HREF=\"" ICU_URL "\">ICU Home</A>\r\n");
+      fprintf(lx->fOUT, "<hr /><a href=\"" ICU_URL "\">ICU Home</a>\r\n");
       return ;
     }
     /* whew! */

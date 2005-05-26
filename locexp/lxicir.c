@@ -20,7 +20,7 @@ static void showICIRSubMenu(LXContext *lx, const char *section, const UChar* nam
         isSelected = FALSE;
         u_fprintf(lx->OUT,"");
     }
-    u_fprintf(lx->OUT,"<a href=\"%s&x=%s\">%S</a>", getLXBaseURL(lx,kNO_SECT), section, name);
+    u_fprintf(lx->OUT,"<a href=\"%s&amp;x=%s\">%S</a>", getLXBaseURL(lx,kNO_SECT), section, name);
    
     if(isSelected) {
         u_fprintf(lx->OUT,"</b>&nbsp;\n");
@@ -40,7 +40,7 @@ static void showICIRMenu(LXContext *lx, const char *superSection, const char *su
         isSelected = FALSE;
         u_fprintf(lx->OUT,"<td>");
     }
-    u_fprintf(lx->OUT,"<a href=\"%s&x=%s\">%S</a>", getLXBaseURL(lx,kNO_SECT), section, name);
+    u_fprintf(lx->OUT,"<a href=\"%s&amp;x=%s\">%S</a>", getLXBaseURL(lx,kNO_SECT), section, name);
    
     if(isSelected) {
         u_fprintf(lx->OUT,"</b>\n");
@@ -80,7 +80,7 @@ static void	showICIRFieldRow(LXContext *lx,
     u_fprintf(lx->OUT, "<td bgcolor=\"#FFFFDF\">%S</td>\n", pChars);
     u_fprintf(lx->OUT, "<td bgcolor=\"#DDDDFF\">%S</td>\n", uChars);
 	u_fprintf(lx->OUT, "<td bgcolor=\"#FFFFFF\"><b><input onChange=\"handleMarkChanged('c_%s_%s')\" "
-		"  name=\"c_%s_%s\" value=\"%S\" size=60>"
+		"  name=\"c_%s_%s\" value=\"%S\" size=60 />"
 		"</b></td>\n", part, subpart,part, subpart,lChars);
 	u_fprintf(lx->OUT, "<td>");
 	showICIRFieldTwoggles(lx,part,subpart,status);
@@ -181,7 +181,7 @@ static void showICIRloc_lng_menu(LXContext *lx)
                 ?(lx->locales->nSubLocs-1):i+ITEMS_PER_PAGE-1]->ustr );
 	}
     u_fprintf(lx->OUT, "</select>\n");
-    u_fprintf(lx->OUT,"<input type=submit value=Go></form>\n");
+    u_fprintf(lx->OUT,"<input type=submit value=Go /></form>\n");
 }
 
 static void showICIRloc_lng(LXContext *lx)
@@ -246,7 +246,7 @@ static void showICIRnumExample(LXContext *lx, UNumberFormat *unf, UNumberFormat 
         return;
     }
     u_fprintf(lx->OUT, "<tr><td bgcolor=\"#666666\">&nbsp;</td></tr>\n<tr><th align=middle bgcolor=\"#DDFFDD\">");
-    u_fprintf(lx->OUT, "%S<br>%S", u1, u2);
+    u_fprintf(lx->OUT, "%S<br />%S", u1, u2);
     u_fprintf(lx->OUT, "</th></tr><tr><td align=middle>");
     unum_formatDouble(nf,d,u3, 1024, 0, &status);
     if(U_FAILURE(status)) {
@@ -255,7 +255,7 @@ static void showICIRnumExample(LXContext *lx, UNumberFormat *unf, UNumberFormat 
     }
 	sprintf(subpart,"%f",d);
     u_fprintf(lx->OUT, "<input onChange=\"handleMarkChanged('c_%s_%s')\" "
-		"  name=\"c_%s_%s\" value=\"%S\" size=60>"
+		"  name=\"c_%s_%s\" value=\"%S\" size=60 />"
 		"\n", part, subpart,part, subpart,u3);
 		
 	showICIRFieldTwoggles(lx,part,subpart,&status);
@@ -313,7 +313,7 @@ static void showICIRdatExample(LXContext *lx, UDateFormat *udf, UDateFormat *df,
 
 	sprintf(subpart, "%.0f", d);
     u_fprintf(lx->OUT, "<input onChange=\"handleMarkChanged('c_%s_%s')\" "
-		"  name=\"c_%s_%s\" value=\"%S\" size=60>"
+		"  name=\"c_%s_%s\" value=\"%S\" size=60 />"
 		"\n", part, subpart,part, subpart,u2);
 		
 	showICIRFieldTwoggles(lx,part,subpart,&status);
@@ -556,14 +556,14 @@ void showICIR(LXContext* lx)
 	}
     
 	
-    u_fprintf(lx->OUT, "<hr><table><tr>\n");
+    u_fprintf(lx->OUT, "<hr /><table><tr>\n");
     u_fprintf(lx->OUT, "<th>%S</th>\n", FSWF("icir_menu", "Section: "));
     /* Note: could use other strings here, if it's translated better elsewhere in LX. */
     showICIRMenu(lx, superSection, subSection, "iloc", FSWF("iloc", "Display Names"));
     showICIRMenu(lx,  superSection, subSection, "inum", FSWF("inum", "Numbers"));
     showICIRMenu(lx,  superSection, subSection, "idat", FSWF("idat", "Date and Time"));
     showICIRMenu(lx,  superSection, subSection, "", FSWF(/*NOTRANSLATE*/ "icir_imain", "Return to Normal View"));
-    u_fprintf(lx->OUT, "</tr></table><hr>\n");
+    u_fprintf(lx->OUT, "</tr></table><hr />\n");
 
 	if(!strcmp(lx->section,"isubmit")) {
 		submitICIR(lx);
@@ -615,14 +615,14 @@ void showICIR(LXContext* lx)
     u_fprintf(lx->OUT, "<i>");
     u_fprintf_u(lx->OUT, FSWF("icir_intro","Each section below has an example in %S (as determined by the 'Display Locale' setting at the bottom of the page), followed by the translation in %S.<!-- sorry, order of the %%S's is important. -->"), dispName, locName);
     u_fprintf(lx->OUT, "</i>\n");
-    u_fprintf(lx->OUT, "<form method=POST action=\"?\">");
-	u_fprintf(lx->OUT, "<input type=hidden name=x value=\"isubmit\">", lx->section);
-	u_fprintf(lx->OUT, "<input type=hidden name=ox value=\"%s\">", lx->section);
-	u_fprintf(lx->OUT, "<input type=hidden name=_ value=\"%s\">", lx->curLocaleBlob.base);
-	u_fprintf(lx->OUT, "<input type=hidden name=calendar value=\"%s\">", lx->curLocaleBlob.calendar);
-	u_fprintf(lx->OUT, "<input type=hidden name=currency value=\"%s\">", lx->curLocaleBlob.currency);
-	u_fprintf(lx->OUT, "<input type=hidden name=collator value=\"%s\">", lx->curLocaleBlob.collation);
-	u_fprintf(lx->OUT, "<input type=hidden name=d_ value=\"%s\">", lx->dispLocale);
+    u_fprintf(lx->OUT, "<form method=\"post\" action=\"?\">");
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=x value=\"isubmit\" />", lx->section);
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=ox value=\"%s\" />", lx->section);
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=_ value=\"%s\" />", lx->curLocaleBlob.base);
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=calendar value=\"%s\" />", lx->curLocaleBlob.calendar);
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=currency value=\"%s\" />", lx->curLocaleBlob.currency);
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=collator value=\"%s\" />", lx->curLocaleBlob.collation);
+	u_fprintf(lx->OUT, "<input type=\"hidden\" name=d_ value=\"%s\" />", lx->dispLocale);
 
     u_fprintf(lx->OUT, "<table border=0>\n");
     if(!strcmp(superSection+1,"num")) {
@@ -649,11 +649,11 @@ void showICIR(LXContext* lx)
         u_fprintf(lx->OUT, "<B>Unknown section. Please click one of the items above.</b>"); /* internal error, someone was playing with the URL. */
     }
     u_fprintf(lx->OUT, "</table>\n");
-    u_fprintf(lx->OUT, "<hr>");
+    u_fprintf(lx->OUT, "<hr />");
 #if 0
-    u_fprintf(lx->OUT, "<b>%S:<input name=email value=\"\">", FSWF("icir_email","Email Address: (required for submissions)"));
+    u_fprintf(lx->OUT, "<b>%S:<input name=email value=\"\" />", FSWF("icir_email","Email Address: (required for submissions)"));
 #endif
-    u_fprintf(lx->OUT, "<input type=submit value=\"%S\">\n", FSWF("icir_submit","Submit"));
+    u_fprintf(lx->OUT, "<input type=submit value=\"%S\" />\n", FSWF("icir_submit","Submit"));
 	u_fprintf(lx->OUT, "</form>\n");
 }
 

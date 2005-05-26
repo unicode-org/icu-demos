@@ -136,8 +136,8 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
         q = p+1;
         p = " : ";
     }
-    u_fprintf(lx->OUT, "<li><A HREF=\"?_=%s\">%S</A> :", loc->str, loc->ustr);
-    u_fprintf(lx->OUT, " <A HREF=\"?_=%s#%s\">%S</A>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
+    u_fprintf(lx->OUT, "<li><a href=\"?_=%s\">%S</A> :", loc->str, loc->ustr);
+    u_fprintf(lx->OUT, " <a href=\"?_=%s#%s\">%S</A>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
     u_fprintf(lx->OUT, "%s%s\r\n", p?p:"", q?q:"");
   }
   
@@ -157,11 +157,11 @@ void showExploreSearchForm(LXContext *lx, const UChar *valueString)
     UChar nulls[] = { 0x0000 } ;
     if(valueString == NULL) { valueString = nulls; }
 
-    u_fprintf(lx->OUT, "<FORM><INPUT TYPE=hidden NAME=_ VALUE=\"%s\">\r\n",
+    u_fprintf(lx->OUT, "<form><input type=\"hidden\" name=\"_\" value=\"%s\" />\r\n",
               lx->curLocaleName);
-    u_fprintf(lx->OUT, "<INPUT VALUE=\"%S\" NAME=EXPLORE_search> \r\n", valueString);
-    u_fprintf(lx->OUT, "<INPUT TYPE=SUBMIT VALUE=\"%S\">\r\n", FSWF("explore_search", "Search"));
-    u_fprintf(lx->OUT, "</FORM>\r\n");
+    u_fprintf(lx->OUT, "<input value=\"%S\" name=\"EXPLORE_search\" /> \r\n", valueString);
+    u_fprintf(lx->OUT, "<input type=SUBMIT value=\"%S\" />\r\n", FSWF("explore_search", "Search"));
+    u_fprintf(lx->OUT, "</form>\r\n");
 }
 
 
@@ -205,7 +205,7 @@ extern void showExploreSearch( LXContext *lx)
         return;
     }
         
-    u_fprintf(lx->OUT,"<hr>\r\n");
+    u_fprintf(lx->OUT,"<hr />\r\n");
     
     if(U_FAILURE(status)) { fprintf(lx->fOUT, " showExploreSearch() - ? %s\n", u_errorName(status));  return; }
     
@@ -233,10 +233,10 @@ extern void showExploreSearch( LXContext *lx)
     u_fprintf(lx->OUT, "<I>");
     u_fprintf_u(lx->OUT, FSWF("EXPLORE_search_searching","Searching for <B>%S</B>..."),
             valueString);
-    u_fprintf(lx->OUT, "</I>\r\n<OL>\r\n");
+    u_fprintf(lx->OUT, "</I>\r\n<ol>\r\n");
 
     doSearch(lx, valueString, lx->curLocale?lx->curLocale:lx->locales, &totalHits, search);
-    u_fprintf(lx->OUT, "</OL>\r\n");
+    u_fprintf(lx->OUT, "</ol>\r\n");
             
     if(totalHits == 0) 
     {
@@ -250,8 +250,8 @@ extern void showExploreSearch( LXContext *lx)
 
     usearch_close(search);
     
-    u_fprintf(lx->OUT, "<hr>\r\nThis searching is an experimental service. Please write srl@jtcsv.com "
+    u_fprintf(lx->OUT, "<hr />\r\nThis searching is an experimental service. Please write srl@jtcsv.com "
             "with any comments or complaints you might have!"
-	      "Results brought to you by the ICU Unicode Search Capability.<P>\r\n");
+	      "Results brought to you by the ICU Unicode Search Capability.<p>\r\n");
     
 }

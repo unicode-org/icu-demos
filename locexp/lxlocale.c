@@ -175,7 +175,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     if(showAll == FALSE && toOpen == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"" LDATA_PATH "closed.gif\" alt=\"\">%S</A>\r\n<BR>",
+        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"" LDATA_PATH "closed.gif\" alt=\"\" />%S</a>\r\n<br />",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }
@@ -192,7 +192,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
     {
       u_fprintf(lx->OUT, "%S", FSWF("sublocales", "Sublocales:"));
       if(!suffix || !*suffix) {
-        u_fprintf(lx->OUT, "<br><div style=\"margin-left: 2.5em; margin-top: 1em; margin-bottom: 1em\">", FSWF("sublocales", "Sublocales:"));
+        u_fprintf(lx->OUT, "<br /><div style=\"margin-left: 2.5em; margin-top: 1em; margin-bottom: 1em\">", FSWF("sublocales", "Sublocales:"));
       } 
       mySort(lx->curLocale, &status, FALSE);  /* Sort sub locales */
       
@@ -205,7 +205,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
         
         if(lx->curLocale->subLocs[n]->isVariant) u_fprintf(lx->OUT, " [");
         
-        u_fprintf(lx->OUT, "<a href=\"%s&_=%s\">", 
+        u_fprintf(lx->OUT, "<a href=\"%s&amp;_=%s\">", 
                   getLXBaseURL(lx, kNO_URL|kNO_LOC),
                   lx->curLocale->subLocs[n]->str);
         
@@ -262,7 +262,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
                       lx->curLocale->ustr);
           u_fprintf(lx->OUT, ": ");
         }
-        u_fprintf(lx->OUT, "<a href=\"%s&_=%s\">", 
+        u_fprintf(lx->OUT, "<a href=\"%s&amp;_=%s\">", 
                   getLXBaseURL(lx, kNO_URL|kNO_LOC), buf);
         
         if(isExperimentalLocale(buf)) {
@@ -280,14 +280,14 @@ void printSubLocales(LXContext *lx, const char *suffix)
       }
     }
     if(count > 0) {
-      u_fprintf(lx->OUT, "<br>\r\n");
+      u_fprintf(lx->OUT, "<br />\r\n");
     }
   }
   
   
   /* this notice covers sublocs and sibling locs */
   if(hadExperimentalSubLocales)
-    u_fprintf(lx->OUT, "<br>%S", FSWF("locale_experimental", "Locales in <I>Italics</I> are Draft and not officially supported."));
+    u_fprintf(lx->OUT, "<br />%S", FSWF("locale_experimental", "Locales in <I>Italics</I> are Draft and not officially supported."));
   
   
 }
@@ -317,7 +317,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
     if(leaf == current) {
       u_fprintf(lx->OUT, "<b>");
     }
-    u_fprintf(lx->OUT, "<a href=\"%s&_=%s\">", getLXBaseURL(lx, kNO_URL|kNO_LOC), leaf->str);
+    u_fprintf(lx->OUT, "<a href=\"%s&amp;_=%s\">", getLXBaseURL(lx, kNO_URL|kNO_LOC), leaf->str);
   }
   u_fprintf_u(lx->OUT, leaf->ustr);
   if(styled) {
@@ -366,7 +366,7 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
     if(toOpen == TRUE)
     {
         u_fprintf(lx->OUT, "%s", getLXBaseURL(lx, kNO_LOC));
-        u_fprintf(lx->OUT,"&_=%s", l->str);
+        u_fprintf(lx->OUT,"&amp;_=%s", l->str);
     }
     else
     {

@@ -30,7 +30,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     showKeyAndStartItem(lx, "EXPLORE_NumberPatterns", FSWF("EXPLORE_NumberPatterns", "Explore &gt; Numbers"), locale, FALSE, U_ZERO_ERROR);
 
-    u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_NumberPatterns_What","This example demonstrates formatting of numbers in this locale."));
+    u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_NumberPatterns_What","This example demonstrates formatting of numbers in this locale."));
 
     exploreFetchNextPattern(lx, pattern, queryField(lx, "str")); 
 
@@ -38,7 +38,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>%S: ", FSWF("formatExample_errorOpen", "Couldn't open the formatter"));
+        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><p><hr />%S: ", FSWF("formatExample_errorOpen", "Couldn't open the formatter"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
         return; /* ? */
     }
@@ -49,7 +49,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>  %S<P>", FSWF("formatExample_errorToPattern", "Couldn't convert the pattern [toPattern]"));
+        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><p><hr />  %S<p>", FSWF("formatExample_errorToPattern", "Couldn't convert the pattern [toPattern]"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
         return;
     }
@@ -59,7 +59,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "</TD></TR></TABLE></TD></TR></TABLE><P><HR>%S<P>", FSWF("formatExample_errorOpenDefault", "Couldn't open the default number fmt"));
+        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><p><hr />%S<p>", FSWF("formatExample_errorOpenDefault", "Couldn't open the default number fmt"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
         return;
     }
@@ -152,31 +152,31 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
+        u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
     }
     else
     {
       
-        u_fprintf(lx->OUT, "<B><I>%S</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
-        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+        u_fprintf(lx->OUT, "<b><i>%S</i></b><br />\r\n", defaultLanguageDisplayName(lx));
+        u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_NumberPatterns\">\r\n",
                   getLXBaseURL(lx, kNO_URL));
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"str\" VALUE=\"");
+        u_fprintf(lx->OUT, "<input type=HIDDEN name=\"str\" VALUE=\"");
         writeEscaped(lx, pattern);
-        u_fprintf(lx->OUT, "\">\r\n");
+        u_fprintf(lx->OUT, "\" />\r\n");
 
-        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=20>");
+        u_fprintf(lx->OUT, "<textarea name=NP_DEF rows=1 cols=20>");
         lx->backslashCtx.html = FALSE;
         u_fprintf(lx->OUT, "%S", tempChars); 
         lx->backslashCtx.html = TRUE;
       
         status = U_ZERO_ERROR;
       
-        u_fprintf(lx->OUT, "</TEXTAREA><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</textarea><input type=submit value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
       
     }
   
-    u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG SRC=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+    u_fprintf(lx->OUT, "</td><td width=1 bgcolor=\"#EEEEEE\"><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=\"0\" height=\"0\" /></td><td>");
 
     /* ============ 'localized' side ================================= */
 
@@ -184,51 +184,51 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
+        u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
     }
     else
     {
         /*  === local side */
-        u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
-        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+        u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><br />\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
+        u_fprintf(lx->OUT, "<form method=\"post\" ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
                   getLXBaseURL(lx, kNO_URL));
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"str\" VALUE=\"");
+        u_fprintf(lx->OUT, "<input type=HIDDEN NAME=\"str\" value=\"");
         writeEscaped(lx, pattern);
-        u_fprintf(lx->OUT, "\">\r\n");
+        u_fprintf(lx->OUT, "\" />\r\n");
       
-        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_LOC ROWS=1 COLS=20>");
+        u_fprintf(lx->OUT, "<textarea name=NP_LOC rows=1 cols=20>");
         writeEscaped(lx, tempChars);
-        u_fprintf(lx->OUT, "</TEXTAREA><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</textarea><input type=SUBMIT value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
 
         if(localValueErr)
             u_fprintf(lx->OUT, "<P>%S", localValueErr);
     }
     /*  ============== End of the default/localized split =============== */
 
-    u_fprintf(lx->OUT, "</TD></TR>");
+    u_fprintf(lx->OUT, "</td></tr>");
 
 
     /* ============== Spellout ================== */
     u_fprintf(lx->OUT, "<tr><td colspan=3>\r\n");
-    u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+    u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_NumberPatterns\">\r\n",
               getLXBaseURL(lx, kNO_URL));
-    u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=\"str\" VALUE=\"");
+    u_fprintf(lx->OUT, "<input type=HIDDEN name=\"str\" value=\"");
     writeEscaped(lx, pattern);
-    u_fprintf(lx->OUT, "\">\r\n");
+    u_fprintf(lx->OUT, "\" />\r\n");
 
-    u_fprintf(lx->OUT, "<B>%S</B> ", FSWF("Spellout", "Spellout"));
+    u_fprintf(lx->OUT, "<b>%S</b> ", FSWF("Spellout", "Spellout"));
 
 
     if(hasQueryField(lx, "NP_SPL"))
     {  
-        u_fprintf(lx->OUT, "<BR>%S<BR>\r\n", valueString);
+        u_fprintf(lx->OUT, "<br />%S<br />\r\n", valueString);
     }
 
     unum_formatDouble(nf_spellout, value, tempChars, 1024,0, &status);
 
 
-    u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_SPL ROWS=1 COLS=60>");
+    u_fprintf(lx->OUT, "<textarea name=NP_SPL rows=1 cols=60>");
     lx->backslashCtx.html = FALSE;
     if(U_FAILURE(status))
     {
@@ -243,13 +243,13 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     status = U_ZERO_ERROR;
   
-    u_fprintf(lx->OUT, "</TEXTAREA><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
+    u_fprintf(lx->OUT, "</textarea><input type=SUBMIT value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
   
     /* == end spellout == */
 
     u_fprintf(lx->OUT, "</td></tr>\r\n");
 
-    u_fprintf(lx->OUT, "</TABLE>");
+    u_fprintf(lx->OUT, "</table>");
 
     if(nf)
         unum_close(nf);
@@ -261,9 +261,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
         unum_close(nf_spellout);
   
     showExploreCloseButton(lx, locale, "NumberPatterns");
-    u_fprintf(lx->OUT, "</TD><TD ALIGN=LEFT VALIGN=TOP>");
+    u_fprintf(lx->OUT, "</td><td align=\"left\" valign=\"top\">");
     printHelpTag(lx, "EXPLORE_NumberPatterns", NULL);
-    u_fprintf(lx->OUT, "</TD>\r\n");
+    u_fprintf(lx->OUT, "</td>\r\n");
 
   
     showKeyAndEndItem(lx, "EXPLORE_NumberPatterns", locale);

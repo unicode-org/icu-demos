@@ -18,7 +18,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
         tag = "_top_";
 
     if(status != U_ZERO_ERROR)
-        u_fprintf(lx->OUT, " <B><FONT SIZE=-1>");
+        u_fprintf(lx->OUT, " <b><font size=-1>");
 
     switch(status)
     {
@@ -35,21 +35,21 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
         }
         else
         {
-            u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
+            u_fprintf(lx->OUT, "<a href=\"?_=root#%s\">", tag);
             u_fprintf_u(lx->OUT, FSWF("inherited", "(inherited)"));
         }
 
-        u_fprintf(lx->OUT, "</A>");
+        u_fprintf(lx->OUT, "</a>");
         break;
 
     case U_USING_DEFAULT_WARNING:
-        u_fprintf(lx->OUT, "<A HREF=\"?_=root#%s\">", tag);
+        u_fprintf(lx->OUT, "<a href=\"?_=root#%s\">", tag);
         if(lx->locales) {
             u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->locales->ustr); 
         } else {
             u_fprintf(lx->OUT, "inherited ???"); 
         }
-        u_fprintf(lx->OUT, "</A>");
+        u_fprintf(lx->OUT, "</a>");
         break;
 
     default:
@@ -64,7 +64,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
     }
 
     if(status != U_ZERO_ERROR)
-        u_fprintf(lx->OUT, "</FONT></B>");
+        u_fprintf(lx->OUT, "</font></b>");
 }
 
 /* Convenience function.  print <A HREF="..."> for a link to the correct Help page.  if str=null it defaults to Help*/
@@ -77,17 +77,17 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
       
         printHelpImg(lx, helpTag, FSWF("help", "Help"), 
                      FSWF("helpgif", "help.gif"),
-                     FSWF("helpgif_opt", "BORDER=0"));
+                     FSWF("helpgif_opt", "border=0"));
 
     } else {
-      u_fprintf(lx->OUT, "<A TARGET=\"icu_lx_help\" HREF=\"" LDATA_PATH "help.html#%s\">%S</A>",
-                helpTag,str);
+        u_fprintf(lx->OUT, "<a target=\"icu_lx_help\" HREF=\"" LDATA_PATH "help.html#%s\">%S</A>",
+                  helpTag,str);
     }
 }
 
 void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH "%S\" align=right alt=\"%S\"></a>",
+    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH "%S\" align=\"right\" alt=\"%S\" /></a>",
               helpTag, 
               options, src, alt);
 }
@@ -122,14 +122,14 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
     if(!sampleString)
         sampleString = nullString;
 
-    u_fprintf(lx->OUT, "\r\n<form target=\"_new\" method=POST name=EXPLORE_%s action=\"%s#EXPLORE_%s\">\r\n"
-              "<input type=hidden name=\"x\" value=\"%s\">"
+    u_fprintf(lx->OUT, "\r\n<form target=\"_new\" method=\"post\" name=EXPLORE_%s action=\"%s#EXPLORE_%s\">\r\n"
+              "<input type=hidden name=\"x\" value=\"%s\" />"
               "<input type=hidden name=\"str\" value=\"",
               section, getLXBaseURL(lx, kNO_URL | kNO_SECT), section,section);
     writeEscaped(lx, sampleString);
-    u_fprintf(lx->OUT, "\">\r\n");
+    u_fprintf(lx->OUT, "\" />\r\n");
   
-    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" align=right value=\"%S\"></form>",
+    u_fprintf(lx->OUT, "<input type=image valign=top width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" align=right value=\"%S\" /></form>",
               FSWF("exploreTitle", "Explore"));
 }
 
@@ -138,9 +138,9 @@ void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *loca
     const char *section;  
     section = keyToSection(key);
 
-    u_fprintf(lx->OUT, "<a target=\"_new\" href=\"%s&x=%s\">", getLXBaseURL(lx, kNO_URL|kNO_SECT), section);
-  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" %s ALT=\"%S\">",
-              rightAlign?"ALIGN=RIGHT ":"",
+    u_fprintf(lx->OUT, "<a target=\"_new\" href=\"%s&amp;x=%s\">", getLXBaseURL(lx, kNO_URL|kNO_SECT), section);
+  u_fprintf(lx->OUT, "<img width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" %s alt=\"%S\" />",
+              rightAlign?"align=\"right\" ":"",
             FSWF("exploreTitle", "Explore") );
   u_fprintf(lx->OUT, "</a>\r\n");
 }
@@ -154,7 +154,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
     if(!sampleString)
         sampleString = nullString;
 
-    u_fprintf(lx->OUT, "<A TARGET=\"lx_explore_%s_%s\" HREF=\"%s&x=%s&str=",
+    u_fprintf(lx->OUT, "<a target=\"lx_explore_%s_%s\" HREF=\"%s&amp;x=%s&str=",
               locale,key,getLXBaseURL(lx, kNO_URL | kNO_SECT),section);
     writeEscaped(lx, sampleString);
     u_fprintf(lx->OUT, "&\">");
@@ -163,9 +163,9 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 /* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
-    u_fprintf(lx->OUT, "<TABLE summary=\"%S\" BORDER=0 CELLSPACING=0 WIDTH=\"100%%\">", keyName);
-    u_fprintf(lx->OUT, "<TR><TD HEIGHT=5 BGCOLOR=\"#AFA8AF\" COLSPAN=2><IMG SRC=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD></TR>\r\n");
-    u_fprintf(lx->OUT, "<TR><TD COLSPAN=1 WIDTH=0 VALIGN=TOP BGCOLOR=" kXKeyBGColor ">");
+    u_fprintf(lx->OUT, "<table summary=\"%S\" border=\"0\" cellspacing=\"0\" width=\"100%%\">", keyName);
+    u_fprintf(lx->OUT, "<tr><td height=\"5\" bgcolor=\"#AFA8AF\" colspan=2><img src=\"" LDATA_PATH "c.gif\" ALT=\"---\" width=\"0\" height=\"0\" /></td></tr>\r\n");
+    u_fprintf(lx->OUT, "<tr><td colspan=\"1\" width=\"0\" valign=\"top\" bgcolor=" kXKeyBGColor ">");
 
     if(keyName == NULL)
 	keyName = FSWF( key, key );
@@ -179,14 +179,14 @@ void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyNa
         u_fprintf(lx->OUT, " (%S)", FSWF("cumulative_notshown", "cumulative data from parent not shown"));
     }
 
-    u_fprintf(lx->OUT," </TD><TD BGCOLOR=" kXKeyBGColor "   VALIGN=TOP ALIGN=RIGHT>");
+    u_fprintf(lx->OUT," </td><td bgcolor=" kXKeyBGColor " valign=\"top\" align=\"right\">");
     explainStatus(lx, showStatus, key);
 }
 
 void showKeyAndStartItem(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
     showKeyAndStartItemShort(lx, key,keyName,locale, cumulative, showStatus);
-    u_fprintf(lx->OUT,"&nbsp;</TD></TR><TR><TD COLSPAN=2>\r\n");
+    u_fprintf(lx->OUT,"&nbsp;</td></tr><tr><td colspan=2>\r\n");
 }
 
 void showKeyAndEndItem(LXContext *lx, const char *key, const char *locale)
@@ -204,18 +204,18 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
     UChar tmp[1024];
 
     /**********  Now we've got the pattern from the user. Now for the form.. ***/
-    u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_%s\">\r\n",
+    u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_%s\">\r\n",
               getLXBaseURL(lx, kNO_URL), key);
 
     if(valueFmt)
     {
       
-        u_fprintf(lx->OUT, "<INPUT NAME=NP_DBL TYPE=HIDDEN VALUE=\"");
+        u_fprintf(lx->OUT, "<input name=NP_DBL type=HIDDEN value=\"");
         tmp[0] = 0;
         unum_formatDouble(valueFmt, value, tmp, 1000, 0, &status);
-        u_fprintf(lx->OUT, "%S\">", tmp);
+        u_fprintf(lx->OUT, "%S\" />", tmp);
     }
-    u_fprintf(lx->OUT, "<TEXTAREA ROWS=2 COLS=60 NAME=\"str\">");
+    u_fprintf(lx->OUT, "<textarea rows=2 cols=60 name=\"str\">");
 
     lx->backslashCtx.html = FALSE;
 
@@ -223,7 +223,7 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
 
     lx->backslashCtx.html = TRUE;
   
-    u_fprintf(lx->OUT, "</TEXTAREA><P>\r\n<INPUT TYPE=SUBMIT VALUE=Format><INPUT TYPE=RESET VALUE=Reset></FORM>\r\n");
+    u_fprintf(lx->OUT, "</textarea><p>\r\n<input type=SUBMIT value=Format /><input type=RESET value=Reset /></form>\r\n");
 
 }
 
@@ -238,8 +238,8 @@ void printStatusTable(LXContext *lx)
     UChar *dateStr;
     
     u_fprintf(lx->OUT, "<table border=0 cellspacing=0 width=\"100%%\">");
-    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=0 height=0></td></tr>\r\n");
-    u_fprintf(lx->OUT, "  <tr>\r\n   <td colspan=3 width=0 valign=top bgcolor=" kXKeyBGColor "><a name=%s><b>", "YourSettings");
+    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#0F080F\" colspan=3><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=\"0\" height=\"0\" /></td></tr>\r\n");
+    u_fprintf(lx->OUT, "  <tr>\r\n   <td colspan=3 width=0 valign=top bgcolor=" kXKeyBGColor "><a name=\"%s\"><b>", "YourSettings");
     
     /* PrintHelpTag */
     u_fprintf_u(lx->OUT, FSWF("statusTableHeader", "Your settings:"));
@@ -279,7 +279,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "<tr><td></td><td></td>");
     u_fprintf(lx->OUT, "<td align=right rowspan=3>\r\n"); /* ====== begin right hand thingy ======== */
 
-    u_fprintf(lx->OUT, "<a href=\"" ICU_URL "\"><i>%S</i> %S</a><br>",
+    u_fprintf(lx->OUT, "<a href=\"" ICU_URL "\"><i>%S</i> %S</a><br />",
               FSWF("poweredby", "Powered by"),
               FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION) );
 
@@ -292,12 +292,12 @@ void printStatusTable(LXContext *lx)
 #ifdef LX_SET_TZ
     u_fprintf(lx->OUT, "</a>");
 #endif
-    u_fprintf(lx->OUT, "<br>\r\n");
+    u_fprintf(lx->OUT, "<br />\r\n");
 
 #if 0
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH "incorrect.gif\" alt=\"Click here if text displays incorrectly\"></A>", lx->scriptName);
+        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH "incorrect.gif\" alt=\"Click here if text displays incorrectly\" /></a>", lx->scriptName);
     }
 #endif
 
@@ -354,18 +354,18 @@ void printStatusTable(LXContext *lx)
 
     if(!FSWF_getBundle()) {
       /* No reason to use FSWF, this error means we have nothing to fetch strings from! */
-      u_fprintf(lx->OUT, "<TR><TD COLSPAN=3><B><I>Note: Could not open our private resource bundle %s </I></B><P> - [%s]</TD></TR>\r\n",
+      u_fprintf(lx->OUT, "<tr><td colspan=3><B><I>Note: Could not open our private resource bundle %s </I></B><P> - [%s]</TD></TR>\r\n",
                 FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
     
     if(!isSupportedLocale(lx->dispLocale, TRUE)) {  /* consider it 'supported' if it's been translated. */
-      u_fprintf(lx->OUT, "<TD COLSPAN=3 ><FONT COLOR=\"#FF0000\">");
+      u_fprintf(lx->OUT, "<td colspan=3 ><font color=\"#FF0000\">");
       u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <U>%s</U>, is unsupported."), lx->dispLocale);
-      u_fprintf(lx->OUT, "</FONT></TD>");
+      u_fprintf(lx->OUT, "</font></td>");
     }
 
 
-    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#AFA8AF\" colspan=3><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=0 height=0></TD></TR>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=5 bgcolor=\"#AFA8AF\" colspan=\"3\"><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=\"0\" height=\"0\" /></td></tr>\r\n");
     
     u_fprintf(lx->OUT, "</table>\r\n");
     u_fprintf(lx->OUT, "<center>\r\n");
@@ -400,14 +400,14 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT," &nbsp; ");
     
     if(!lx->noBug) {
-      u_fprintf(lx->OUT, "<a target=\"_new\" HREF=\"http://www.jtcsv.com/cgibin/icu-bugs\">%S</A>",
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://bugs.icu-project.org/cgibin/icu-bugs\">%S</A>",
                 FSWF("poweredby_filebug", "File a bug"));
     } else {
-      u_fprintf(lx->OUT, "<FONT size=-2 COLOR=red><b>%S</b></FONT>",
+      u_fprintf(lx->OUT, "<font size=-2 COLOR=red><b>%S</b></font>",
           FSWF("warningNoBug", "Please do not file bugs against this locale."));
     }
     
-    u_fprintf(lx->OUT, "</center><p>\r\n");
+    u_fprintf(lx->OUT, "</center>\r\n");
 
     if(lx->couldNotOpenEncoding) {
       /* Localize this when it actually works! */
@@ -523,13 +523,13 @@ void writeEscapedQuery(LXContext *lx, const UChar *s)
 void doFatal(LXContext *lx, const char *what, UErrorCode err)
 {
     fprintf(lx->fOUT, "Content-type:text/html\r\n\r\n");
-    fprintf(lx->fOUT, "<TITLE>ICU LocaleExplorer: Error</TITLE>\r\n");
-    fprintf(lx->fOUT, "<H1>ICU LocaleExplorer: Error</H1>\r\n");
-    fprintf(lx->fOUT, "<dd>An error of type %d occured while trying to %s.</dd><HR><P>\r\n",err,what);
+    fprintf(lx->fOUT, "<title>ICU LocaleExplorer: Error</title>\r\n");
+    fprintf(lx->fOUT, "<h1>ICU LocaleExplorer: Error</h1>\r\n");
+    fprintf(lx->fOUT, "<dd>An error of type %d occured while trying to %s.</dd><hr /><p>\r\n",err,what);
 #if defined (LX_DEBUG)
     fprintf(stderr, "locexp: err %d trying to %s\n",err,what);
 #endif
-    fprintf(lx->fOUT, "You can try <A HREF=\"%s\">starting over</A>, or complain to srl.<P>\r\n",
+    fprintf(lx->fOUT, "You can try <a href=\"%s\">starting over</a>, or complain to srl.<p>\r\n",
             lx->scriptName);
     fflush(lx->fOUT);
     exit(0);
@@ -561,8 +561,8 @@ void exPrintChangeLocale(LXContext *lx)
   UErrorCode status = U_ZERO_ERROR;
 
   uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispname, 1023, &status);
-  u_fprintf(lx->OUT, "Now: [%s]<br>\n", lx->curLocaleName);
-  u_fprintf(lx->OUT, "= %S<br>\n", dispname);
+  u_fprintf(lx->OUT, "Now: [%s]<br />\n", lx->curLocaleName);
+  u_fprintf(lx->OUT, "= %S<br />\n", dispname);
   u_fprintf(lx->OUT, "<form method=GET action=\"?_=%s\">\n", lx->curLocaleName);
 
   u_fprintf(lx->OUT, "<select name=l>\n");
@@ -609,7 +609,7 @@ void exPrintChangeLocale(LXContext *lx)
   showKeywordMenu(lx, "currency", &status);
   if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
   
-  u_fprintf(lx->OUT, "<input type=submit>\n");
+  u_fprintf(lx->OUT, "<input type=submit />\n");
   u_fprintf(lx->OUT, "</form>\n");
 }
 #endif
@@ -679,7 +679,7 @@ void printChangeKeyword(LXContext *lx, const char *locale, const char *prefix,
     }
     
     u_fprintf(lx->OUT, "%s%S%s<br/>", LX_FSECTION_START, keyBuf, LX_FSECTION_END);
-    u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
+    u_fprintf(lx->OUT, "<a href=\"%s&amp;x=ch%s%c&amp;ox=%s\">",
               getLXBaseURL(lx, kNO_URL | kNO_SECT),
               prefix, type, lx->section);
     if(valBuf[0]) {
@@ -694,7 +694,7 @@ void printChangeA(LXContext *lx, const char *locale, const char *prefix)
 {
   u_fprintf(lx->OUT, "<table border=3><tr>\r\n");
   u_fprintf(lx->OUT, "<td>%s%S%s<br/>", LX_FSECTION_START, FSWF("LocaleCodes_Language", "Language"), LX_FSECTION_END);
-  u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
+  u_fprintf(lx->OUT, "<a href=\"%s&amp;x=ch%s%c&amp;ox=%s\">",
             getLXBaseURL(lx, kNO_URL | kNO_SECT),
             prefix, 'l', lx->section);
   printChangeField(lx, locale, prefix, 'l');
@@ -704,7 +704,7 @@ void printChangeA(LXContext *lx, const char *locale, const char *prefix)
   u_fprintf(lx->OUT, "<td>%s%S / %S%s<br/>", LX_FSECTION_START,
             FSWF("LocaleCodes_Country", "Region"),
             FSWF("LocaleCodes_Variant", "Variant"),LX_FSECTION_END);
-  u_fprintf(lx->OUT, "<a href=\"%s&x=ch%s%c&ox=%s\">",
+  u_fprintf(lx->OUT, "<a href=\"%s&amp;x=ch%s%c&amp;ox=%s\">",
             getLXBaseURL(lx, kNO_URL | kNO_SECT),
             prefix, 'r', lx->section);
   printChangeField(lx, locale, prefix, 'r');
@@ -727,7 +727,7 @@ void printChangeA(LXContext *lx, const char *locale, const char *prefix)
 void printChangeLocale(LXContext *lx)
 {
 #if defined(LX_DEBUG)
-  u_fprintf(lx->OUT, "<br><tt>base URL= %s</tt><br>\n", getLXBaseURL(lx,0));
+  u_fprintf(lx->OUT, "<br /><tt>base URL= %s</tt><br />\n", getLXBaseURL(lx,0));
 #endif
   printChangeA(lx, lx->curLocaleName, "");
 }
@@ -889,7 +889,7 @@ void showChangePage(LXContext *lx)
 
   ox = queryField(lx, "ox");
   if(ox && *ox) {
-    strcpy(oxStr,"&x=");
+    strcpy(oxStr,"&amp;x=");
     strcat(oxStr, ox);
   } else {
     oxStr[0]=0;
