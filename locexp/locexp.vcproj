@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\icu\include,.\util,..\usort\lib,..\..\icu\source\common"
+				AdditionalIncludeDirectories="..\..\icu\include;.\util;..\usort\lib;..\..\icu\source\common;..\apputil"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;LX_STATIC;LXHOSTNAME=\&quot;Win_NT\&quot;"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -83,7 +83,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\icu\include,.\util,..\usort\lib,..\..\icu\source\common"
+				AdditionalIncludeDirectories="..\..\icu\include;.\util;..\usort\lib;..\..\icu\source\common;..\apputil"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;LX_STATIC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -607,7 +607,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="cd resource
-nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;"
+nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;
+"
 						Outputs="resource\locexp.lib"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -615,7 +616,8 @@ nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;"
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="cd resource
-nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;"
+nmake /nologo /f $(InputName).mak icup=&quot;$(ProjectDir)..\..&quot;
+"
 						Outputs="resource\locexp.lib"/>
 				</FileConfiguration>
 			</File>

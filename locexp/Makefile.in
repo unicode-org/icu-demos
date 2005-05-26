@@ -17,6 +17,7 @@ subdir = locexp
 include $(top_builddir)/icuapps.mk
 -include $(shell $(ICU_CONFIG) --incfile) 
 
+CPPFLAGS+=-I../apputil
 CPPFLAGS+=-I../../icu/source/common
 
 
@@ -48,7 +49,7 @@ OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
 DEPS = $(OBJECTS:.o=.d)
 
 LXLIBS=  -L../usort/lib -lusort -L./util -liculxutil$(ICULIBSUFFIX)   -L./resource/out/ -llocexp
-ICULIBS := $(LDFLAGS_USTDIO) $(ICULIBS)  $(LXLIBS) $(LDFLAGS_TOOLUTIL)
+ICULIBS := $(LDFLAGS_ICUIO) $(ICULIBS) -L../apputil -lapputil $(LXLIBS) $(LDFLAGS_TOOLUTIL)
 
 # We want to get the local copies of these files first, as the
 # dependency. Even though they do get exported.
@@ -57,6 +58,7 @@ LDFLAGS += -L../usort/lib -L./util -L./resource/out/
 # get the hostname the code is built on
 CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"$(host)\"
 CPPFLAGS += $(LXOPTIONS) -DLX_STATIC
+CPPFLAGS += -I../apputil
 CPPFLAGS += -I.
 
 ## List of phony targets
