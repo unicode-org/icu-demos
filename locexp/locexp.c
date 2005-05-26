@@ -103,12 +103,12 @@ void displayLocaleExplorer(LXContext *lx)
       u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\" />\r\n", lx->convRequested);
     }
 
-    printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_DIR "locexp-header.html");
+    printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
     showSortStyle(lx);
     u_fprintf(lx->OUT, "%s", "</head>\r\n<body>\r\n");
-    if (printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_MASTHEAD)) {
+    if (printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
         u_fprintf(lx->OUT, "%s", DEMO_BEGIN_LEFT_NAV);
-        printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_LEFTNAV);
+        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_LEFTNAV);
         u_fprintf(lx->OUT, "%s", DEMO_END_LEFT_NAV);
         u_fprintf(lx->OUT, "%s", DEMO_BEGIN_CONTENT);
     }
@@ -326,7 +326,7 @@ void displayLocaleExplorer(LXContext *lx)
 #endif
     
     u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-    printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_FOOTER);
+    printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_FOOTER);
     
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */
