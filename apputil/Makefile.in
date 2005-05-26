@@ -68,6 +68,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licuuc -lusort' ...
+ICULIBS := $(LDFLAGS_ICUIO) $(ICULIBS)
 
 -include local.mk
 

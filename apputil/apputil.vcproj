@@ -40,7 +40,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuuc.lib icuin.lib icutu.lib"
+				AdditionalDependencies="icuuc.lib icuin.lib icuio.lib icutu.lib"
 				OutputFile="..\..\icu\bin\apputil.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -105,7 +105,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="icuucd.lib icuind.lib icutud.lib"
+				AdditionalDependencies="icuucd.lib icuind.lib icuiod.lib icutud.lib"
 				OutputFile="..\..\icu\bin\apputild.dll"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\icu\lib"

@@ -15,13 +15,42 @@
 */
 
 #include "demoutil.h"
+#include "unicode/ustring.h"
+#include "unicode/unistr.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-U_CAPI int printHTMLFragment(char * package, char * locale, char *templateFileName) {
+U_CAPI int printHTMLFragment(UFILE *fileOut, UResourceBundle *displayBundle, char *templateFileName) {
     size_t size = 0;
     size_t savedPos;
     char *buffer;
+
+    if (displayBundle) {
+        int32_t len = 0;
+        UErrorCode status = U_ZERO_ERROR;
+        const UChar *displayResString = ures_getStringByKey(displayBundle, templateFileName, &len, &status);
+        if (U_SUCCESS(status)) {
+            if (fileOut) {
+                u_fprintf(fileOut, "%S", displayResString);
+            }
+            else {
+                int32_t utf8Size = len * U8_MAX_LENGTH + 1;
+                buffer = (char *)malloc(utf8Size);
+                u_strToUTF8(buffer, utf8Size, &utf8Size, displayResString, len, &status);
+                printf("%s", buffer);
+                free(buffer);
+            }
+            return 1;
+        }
+        else if (fileOut) {
+            u_fprintf(fileOut, "<!-- ERROR: %s resource cannot be opened. Resorting to file instead. -->\n", templateFileName);
+        }
+        else {
+            printf("<!-- ERROR: %s resource cannot be opened. Resorting to file instead. -->\n", templateFileName);
+        }
+    }
+
     FILE *templateFile = fopen(templateFileName, "rb");
     
     if (templateFile == NULL) {
@@ -39,7 +68,13 @@ U_CAPI int printHTMLFragment(char * package, char * locale, char *templateFileNa
     buffer = (char *)malloc(size+1);
     fread(buffer, size, 1, templateFile);
     buffer[size] = 0;    // NULL terminate for printing.
-    printf("%s", buffer);
+    if (fileOut) {
+        UnicodeString unistrBuf(buffer, "UTF-8");
+        u_fprintf(fileOut, "%S", unistrBuf.getTerminatedBuffer());
+    }
+    else {
+        printf("%s", buffer);
+    }
     
     free(buffer);
     fclose(templateFile);

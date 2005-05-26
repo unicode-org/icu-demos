@@ -18,14 +18,16 @@
 #define DEMOUTIL_H 1
 
 #include "unicode/utypes.h"
+#include "unicode/ures.h"
+#include "unicode/ustdio.h"
 
 /**
- * @param package load HTML fragment from resource bundle package.
- *      Leave NULL, if no package is used.
- * @param locale to specify which for which HTML fragment to use.
- *      Leave NULL, if demo is unlocalized.
+ * Print a file as UTF-8
+ * @param file_out If non-NULL, print to this output, otherwise use stdout.
+ * @param displayBundle If non-NULL, try to load this
+ *      fragment from a resource bundle instead of from the file system.
  * @returns 0 on error and 1 on success.
  */
-U_CAPI int printHTMLFragment(char * package, char * locale, char *templateFileName);
+U_CAPI int printHTMLFragment(UFILE *fileOut, UResourceBundle *displayBundle, char *templateFileName);
 
 #endif
