@@ -15,8 +15,7 @@
    lxbar_g.gif:import { "root/lxbar_g.gif" }
    lxbar_ibm.jpg:import { "root/lxbar_ibm.jpg" }
    lxbar_icu.jpg:import { "root/lxbar_icu.jpg" }
-   htmlHEAD:include { "root/head.html" }
-   htmlTAIL:include { "root/tail.html" }
+   "data/locexp-header.html":include { "root/locexp-header.html" }
 
 // tab
    tab_bot.gif:import { "root/tab_bot.gif" }

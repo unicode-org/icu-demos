@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -25,33 +25,19 @@
 
 #include "locexp.h"
 
+#include "demo_settings.h"
+#include "demoutil.h"
+
 void displayLocaleExplorer(LXContext *lx)
 {
-  const char *localeParam;
-  UErrorCode status = U_ZERO_ERROR;
-  char portStr[100];
-  char langName[ULOC_FULLNAME_CAPACITY] = {0};
-  
-  localeParam = queryField(lx, "_");
-    
-    /* set up the port string */
-    {
-        const char *port;
-        port = getenv("SERVER_PORT");
-        
-        if(port && strcmp(port,"80"))
-        {
-            portStr[0] = ':';
-            strncpy(portStr+1,port,7);
-            portStr[7]=0;
-        }
-        else
-        {
-            portStr[0] = 0;
-        }
-    }
+    const char *localeParam;
+    UErrorCode status = U_ZERO_ERROR;
+    char langName[ULOC_FULLNAME_CAPACITY] = {0};
+
+    localeParam = queryField(lx, "_");
 
     /* -------------- */
+    u_fprintf(lx->OUT,"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n");
     
     uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
     u_fprintf(lx->OUT,"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"%s\"  lang=\"%s\">", langName, langName);
@@ -93,8 +79,8 @@ void displayLocaleExplorer(LXContext *lx)
         {
             host = "";
         }
-        sprintf(lx->myBaseURL, "http://%s%s%s/", host, portStr, lx->scriptName);
-        u_fprintf(lx->OUT, "<base href=\"%s%s/\">\r\n",  lx->myBaseURL,
+        sprintf(lx->myBaseURL, "http://%s%s/", host, lx->scriptName);
+        u_fprintf(lx->OUT, "<base href=\"%s%s/\" />\r\n",  lx->myBaseURL,
                   (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); /* Ensure that all relative paths have the cgi name followed by a slash.  */
     }
 
@@ -103,33 +89,36 @@ void displayLocaleExplorer(LXContext *lx)
     /* Robot Exclusion */
     if(hasQueryField(lx,"PANICDEFAULT") ||
        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) {
-      u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" Content=\"nofollow,noindex\" />\r\n");
     } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
-      u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" CONTENT=\"nofollow\" />\r\n");
     } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
-      u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" Content=\"nofollow,noindex\" />\r\n");
     } else if(lx->convRequested && lx->convRequested[0] && !strstr(lx->convRequested, "utf-8")) {
-      u_fprintf(lx->OUT, "<META NAME=\"robots\" Content=\"nofollow,noindex\">\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" Content=\"nofollow,noindex\" />\r\n");
     } else if(strstr(lx->queryString, "_=")) {
-      u_fprintf(lx->OUT, "<META NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" CONTENT=\"nofollow\" />\r\n");
     }
     if(lx->convRequested && lx->convRequested[0]) {
-      u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\">\r\n", lx->convRequested);
+      u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\" />\r\n", lx->convRequested);
     }
 
+    printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_DIR "locexp-header.html");
     showSortStyle(lx);
-    
-    u_fprintf(lx->OUT, "%S", 
-              FSWF ( /* NOEXTRACT */ "htmlHEAD",
-                     "</HEAD>\r\n<BODY BGCOLOR=\"#FFFFFF\" > \r\n")
-              );
+    u_fprintf(lx->OUT, "%s", "</head>\r\n<body>\r\n");
+    if (printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_MASTHEAD)) {
+        u_fprintf(lx->OUT, "%s", DEMO_BEGIN_LEFT_NAV);
+        printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_LEFTNAV);
+        u_fprintf(lx->OUT, "%s", DEMO_END_LEFT_NAV);
+        u_fprintf(lx->OUT, "%s", DEMO_BEGIN_CONTENT);
+    }
 
     printHelpImg(lx, "display", 
                  FSWF("display_ALT", "Display Problems?"),
                  FSWF("display_GIF", "displayproblems.gif"),
-                 FSWF("display_OPTIONS", "valign=top ALIGN=RIGHT"));
+                 FSWF("display_OPTIONS", "valign=top"));
 
-    u_fprintf(lx->OUT, "<br><hr>");
+    u_fprintf(lx->OUT, "<br /><hr />\r\n");
 
 #if 0
     {
@@ -138,7 +127,7 @@ void displayLocaleExplorer(LXContext *lx)
       agent = getenv("HTTP_USER_AGENT");
       server = getenv("SERVER_SOFTWARE");
       if(agent && strstr(agent,"MSIE") && (!server || strncmp(server,"Null",4))) {
-        u_fprintf(lx->OUT, "<i>%S</i><br>\r\n",
+        u_fprintf(lx->OUT, "<i>%S</i><br />\r\n",
                   FSWF("ieWarning","IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."));
       }
     }
@@ -166,7 +155,7 @@ void displayLocaleExplorer(LXContext *lx)
       }
       
       if(lx->noBug) {
-        u_fprintf(lx->OUT, "<br><FONT COLOR=red><b>%S</b></FONT></blockquote>",
+        u_fprintf(lx->OUT, "<br /><font color=red><b>%S</b></FONT></blockquote>",
                   FSWF("warningNoBug", "Please do not file bugs against this locale."));
       }
       
@@ -242,7 +231,7 @@ void displayLocaleExplorer(LXContext *lx)
         else
         u_fprintf(lx->OUT, ": %S</H2>\r\n", FSWF("chooseEncoding", "Choose Your Encoding"));
         */
-        u_fprintf(lx->OUT, "<hr>");
+        u_fprintf(lx->OUT, "<hr />");
         
         if(lx->queryString[9] == '=')
         {
@@ -281,7 +270,7 @@ void displayLocaleExplorer(LXContext *lx)
             u_fprintf(lx->OUT, "Time there =%S\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&subStatus));
         }
         
-        u_fprintf(lx->OUT, "%S: <form><input name=\"SETTZ\" value=\"%S\"><input type=submit></form>\r\n", 
+        u_fprintf(lx->OUT, "%S: <form><input name=\"SETTZ\" value=\"%S\" /><input type=submit /></form>\r\n", 
             FSWF("zone_set", "Set timezone to:"),
             lx->newZone);
         u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%S</i></div>\r\n", 
@@ -315,7 +304,7 @@ void displayLocaleExplorer(LXContext *lx)
         
         oldCallback = ucnv_getFromUCallBack(((UConverter*)u_fgetConverter(lx->OUT)));
         
-        u_fprintf(lx->OUT, "<table width=\"100%%\" border=1><tr><td>%S<br>", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
+        u_fprintf(lx->OUT, "<table width=\"100%%\" border=1><tr><td>%S<br />", FSWF("encoding_Missing", "The following characters could not be displayed properly by the current encoding:"));
         
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), &UCNV_FROM_U_CALLBACK_ESCAPE, &status2);
         
@@ -323,7 +312,7 @@ void displayLocaleExplorer(LXContext *lx)
         
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), oldCallback, &status2);
         
-        u_fprintf(lx->OUT, "<br><a href=\"?converter=");
+        u_fprintf(lx->OUT, "<br /><a href=\"?converter=");
         writeEscaped(lx, COLLECT_getChars());
         
         if(strncmp(lx->queryString, "converter",9)) /* TODO: FIXME */
@@ -336,7 +325,8 @@ void displayLocaleExplorer(LXContext *lx)
     }
 #endif
     
-    u_fprintf(lx->OUT, "%S",  FSWF( /* NOEXTRACT */ "htmlTAIL", "<!-- No HTML footer -->"));
+    u_fprintf(lx->OUT, "</td></tr></table>\r\n");
+    printHTMLFragment(lx->OUT, lx->dispRB, DEMO_COMMON_FOOTER);
     
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */
@@ -442,46 +432,54 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patte
 
 
 const char *getLXBaseURL(LXContext* lx, uint32_t o) {
-  if(!(o&kNO_URL)) {
-    strcpy(lx->myURL, lx->myBaseURL);
-  } else {
-    lx->myURL[0] = 0;
-  }
-  strcat(lx->myURL, "?");
-  if(!(o&kNO_LOC) && lx->curLocaleBlob.base[0]) {
-    strcat(lx->myURL, "_=");
-    strcat(lx->myURL, lx->curLocaleBlob.base);
-    strcat(lx->myURL, "&");
-  }
-  if(!(o&kNO_DISPLOC) && lx->dispLocaleBlob.base[0]) {
-    strcat(lx->myURL, "d_=");
-    strcat(lx->myURL, lx->dispLocaleBlob.base);
-    strcat(lx->myURL, "&");
-  }
-  if(!(o&kNO_SECT) && lx->section[0]) {
-    strcat(lx->myURL, "x=");
-    strcat(lx->myURL, lx->section);
-    strcat(lx->myURL, "&");
-  }
-  if(!(o&kNO_LOC)) {
-    if(!(o&kNO_COLL) && lx->curLocaleBlob.collation[0]) {
-      strcat(lx->myURL, "collation=");
-      strcat(lx->myURL, lx->curLocaleBlob.collation);
-      strcat(lx->myURL, "&");
+    if(!(o&kNO_URL)) {
+        strcpy(lx->myURL, lx->myBaseURL);
+    } else {
+        lx->myURL[0] = 0;
     }
-    if(!(o&kNO_CAL) && lx->curLocaleBlob.calendar[0]) {
-      strcat(lx->myURL, "calendar=");
-      strcat(lx->myURL, lx->curLocaleBlob.calendar);
-      strcat(lx->myURL, "&");
+    strcat(lx->myURL, "?");
+    if(!(o&kNO_LOC) && lx->curLocaleBlob.base[0]) {
+        strcat(lx->myURL, "_=");
+        strcat(lx->myURL, lx->curLocaleBlob.base);
+        strcat(lx->myURL, "&amp;");
     }
-    if(!(o&kNO_CURR) && lx->curLocaleBlob.currency[0]) {
-      strcat(lx->myURL, "currency=");
-      strcat(lx->myURL, lx->curLocaleBlob.currency);
-      strcat(lx->myURL, "&");
+    if(!(o&kNO_DISPLOC) && lx->dispLocaleBlob.base[0]) {
+        strcat(lx->myURL, "d_=");
+        strcat(lx->myURL, lx->dispLocaleBlob.base);
+        strcat(lx->myURL, "&amp;");
     }
-  }
-  if(lx->myURL[strlen(lx->myURL)-1]=='&') {
-    lx->myURL[strlen(lx->myURL)-1]=0;
-  }
-  return lx->myURL;
+    if(!(o&kNO_SECT) && lx->section[0]) {
+        strcat(lx->myURL, "x=");
+        strcat(lx->myURL, lx->section);
+        strcat(lx->myURL, "&amp;");
+    }
+    if(!(o&kNO_LOC)) {
+        if(!(o&kNO_COLL) && lx->curLocaleBlob.collation[0]) {
+            strcat(lx->myURL, "collation=");
+            strcat(lx->myURL, lx->curLocaleBlob.collation);
+            strcat(lx->myURL, "&amp;");
+        }
+        if(!(o&kNO_CAL) && lx->curLocaleBlob.calendar[0]) {
+            strcat(lx->myURL, "calendar=");
+            strcat(lx->myURL, lx->curLocaleBlob.calendar);
+            strcat(lx->myURL, "&amp;");
+        }
+        if(!(o&kNO_CURR) && lx->curLocaleBlob.currency[0]) {
+            strcat(lx->myURL, "currency=");
+            strcat(lx->myURL, lx->curLocaleBlob.currency);
+            strcat(lx->myURL, "&amp;");
+        }
+    }
+    /* Remove trailing &amp; */
+    {
+        char *lastAmp = NULL, *ampIter = lx->myURL;
+        while (ampIter && (ampIter = strstr(ampIter, "&amp;"))) {
+            lastAmp = ampIter;
+            ampIter++;
+        }
+        if(lastAmp != NULL && strcmp(lastAmp, "&amp;") == 0) {
+            *lastAmp=0;
+        }
+    }
+    return lx->myURL;
 }
