@@ -15,16 +15,20 @@ subdir = apputil
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
+include $(shell $(ICU_CONFIG) --incfile) 
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
 
 ## Target information
-TARGET =# convexp
+SO_TARGET = libapputil.$(SO)
 
 CPPFLAGS += -I$(ICU_SOURCE)/common
+CXXFLAGS += $(SHAREDLIBCXXFLAGS)
+CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
+CFLAGS += $(SHAREDLIBCFLAGS)
 
-OBJECTS =# printcp.o params.o convexp.o
+OBJECTS = demoutil.o
 
 DATA_DIR=$(BINDIR)/data
 
@@ -36,21 +40,21 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(TARGET)
+all-local: $(SO_TARGET)
 
 install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR) $(DATA_DIR)
-	#$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+	$(MKINSTALLDIRS) $(libdir) $(BINDIR) $(DATA_DIR)
+	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
 	cp -R data/*.html $(DATA_DIR)
 
 dist-local:
 
 clean-local:
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(SO_TARGET)
 
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
@@ -67,7 +71,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 -include local.mk
 
-$(TARGET) : $(OBJECTS)
-	$(LINK.cc) -o $@ $^ $(ICULIBS)
+$(SO_TARGET) : $(OBJECTS)
+	$(SHLIB.cc) -o $@ $^ $(ICULIBS)
 
 

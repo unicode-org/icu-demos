@@ -5,6 +5,12 @@ XMLConverter/Debug
 XMLConverter/Makefile
 XMLConverter/Release
 XMLConverter/XMLConverter
+apputil/*.d
+apputil/*.o
+apputil/*.so
+apputil/Debug
+apputil/Makefile
+apputil/Release
 /config.cache
 /config.log
 /config.status

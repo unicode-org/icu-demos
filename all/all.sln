@@ -1,6 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "idnbrowser", "..\idnbrowser\idnbrowser.vcproj", "{77B06247-9A24-419D-B4C2-C281D265F1C5}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "locexp", "..\locexp\locexp.vcproj", "{B1EC30F8-575C-4271-B806-10ECDFFB227B}"
@@ -33,6 +34,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort_lib", "..\usort\lib\u
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convexp", "..\convexp\convexp.vcproj", "{148CF56D-7211-41FB-9F0C-BE29C4185347}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\locexp\util\util.vcproj", "{967A8361-DC2F-4AF9-9156-0C685511FC52}"
@@ -41,6 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\locexp\util\util
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbrowser", "..\nbrowser\nbrowser.vcproj", "{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\scompare.vcproj", "{F4E8422B-9C62-4771-B37E-1F9309291C70}"
@@ -48,6 +51,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\sco
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "translitdemo", "..\translitdemo\translitdemo.vcproj", "{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "apputil", "..\apputil\apputil.vcproj", "{FA1A8048-E5D1-4245-93BB-49B570441153}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -105,6 +112,10 @@ Global
 		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Debug.Build.0 = Debug|Win32
 		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Release.ActiveCfg = Release|Win32
 		{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}.Release.Build.0 = Release|Win32
+		{FA1A8048-E5D1-4245-93BB-49B570441153}.Debug.ActiveCfg = Debug|Win32
+		{FA1A8048-E5D1-4245-93BB-49B570441153}.Debug.Build.0 = Debug|Win32
+		{FA1A8048-E5D1-4245-93BB-49B570441153}.Release.ActiveCfg = Release|Win32
+		{FA1A8048-E5D1-4245-93BB-49B570441153}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
