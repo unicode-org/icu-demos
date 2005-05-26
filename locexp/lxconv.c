@@ -25,7 +25,7 @@ void chooseConverter(LXContext *lx, const char *restored)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%S<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+        u_fprintf(lx->OUT, "%S<hr />\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
         explainStatus(lx, status, NULL);
         return;
     }
@@ -113,11 +113,11 @@ void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%S<HR>\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
+        u_fprintf(lx->OUT, "%S<hr />\r\n", FSWF("convERR", "AN error occured trying to sort the converters.\n"));
         return;
     }
 
-    u_fprintf(lx->OUT, "%S<BR>\r\n",
+    u_fprintf(lx->OUT, "%S<br />\r\n",
               FSWF("converter_searching", "Searching for converters which match .."));
 
 
@@ -189,18 +189,18 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
     if(!restored)
 	restored = "";
 
-    u_fprintf(lx->OUT,"<A HREF=\"?%s\"><H2>%S%s%S</H2></A>\r\n",
+    u_fprintf(lx->OUT,"<a href=\"?%s\"><h2>%S%s%S</h2></a>\r\n",
               restored,
               FSWF("encodingOK0", "Click here if the encoding '"),
               lx->convRequested,
               FSWF("encodingOK1", "' is acceptable, or choose one from below."));
 
-    u_fprintf(lx->OUT,"<I>%S</I>\r\n", 
+    u_fprintf(lx->OUT,"<i>%S</i>\r\n", 
               FSWF("encoding_mime","Note (ICU 1.6 release): This list has been pared down to only show MIME aliases that browsers would understand. I'll add a 'show all' button later.<!--If you translate this, remember it'll go away soon -->"));
     rows = (naliases / COLS) + 1;
 
-    u_fprintf(lx->OUT, "<P><TABLE cellpadding=3 cellspacing=2 >\r\n"
-              "<TR>\r\n");
+    u_fprintf(lx->OUT, "<p><table cellpadding=3 cellspacing=2 >\r\n"
+              "<tr>\r\n");
 
     for(i=0;i<(rows * COLS);i++)
     {
@@ -216,7 +216,7 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 	{
             u_fprintf(lx->OUT,"<td><!-- Overflow %d --></td>", theCell);
             if(((i+1)%COLS) == 0)
-                u_fprintf(lx->OUT,"</TR>\n<TR>");
+                u_fprintf(lx->OUT,"</tr>\n<tr>");
             continue;
 	}
 
@@ -233,16 +233,16 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
         hit = !strcmp(cnvMime, defaultMime);
 
         if(hit)
-            u_fprintf(lx->OUT,"<TD BGCOLOR=\"#FFDDDD\">");
+            u_fprintf(lx->OUT,"<td bgcolor=\"#FFDDDD\">");
         else
-            u_fprintf(lx->OUT,"<TD>");
+            u_fprintf(lx->OUT,"<td>");
 
-        u_fprintf(lx->OUT, "<FONT SIZE=-1>");
+        u_fprintf(lx->OUT, "<font size=-1>");
 
         if(hit)  
             u_fprintf(lx->OUT, "<b>");
       
-        u_fprintf(lx->OUT, "<A HREF=\"");
+        u_fprintf(lx->OUT, "<a href=\"");
 
 
         u_fprintf(lx->OUT, "%s/%s/",
@@ -255,18 +255,18 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
         u_fprintf(lx->OUT,"\">");
         u_fprintf(lx->OUT, "%S", list->lines[theCell].chars);
         /*       theCnvale.getDisplayName(o.GetLocale(),tmp); */
-        u_fprintf(lx->OUT,"</A>\n");
+        u_fprintf(lx->OUT,"</a>\n");
       
         if(hit)
             u_fprintf(lx->OUT, "</b>");
       
-        u_fprintf(lx->OUT, "</FONT>");
-        u_fprintf(lx->OUT, "</FONT>");
-        u_fprintf(lx->OUT, "</TD>");
+        u_fprintf(lx->OUT, "</font>");
+        u_fprintf(lx->OUT, "</font>");
+        u_fprintf(lx->OUT, "</td>");
         if(((i+1)%COLS) == 0)
-            u_fprintf(lx->OUT, "</TR>\n<TR>");
+            u_fprintf(lx->OUT, "</tr>\n<tr>");
     }
-    u_fprintf(lx->OUT,"</TABLE>\r\n");
+    u_fprintf(lx->OUT,"</table>\r\n");
  
 
     { /* Todo: localize */
@@ -279,12 +279,12 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
 
         status = U_ZERO_ERROR;
 
-        u_fprintf(lx->OUT,"<HR>");
-        u_fprintf(lx->OUT,"<H3>Information about <B><TT>%s</TT></B></H3>\r\n",
+        u_fprintf(lx->OUT,"<hr />");
+        u_fprintf(lx->OUT,"<h3>Information about <b><tt>%s</tt></b></h3>\r\n",
                   lx->convRequested);
-        u_fprintf(lx->OUT,"<UL>");
+        u_fprintf(lx->OUT,"<ul>");
     
-        u_fprintf(lx->OUT,"  <LI>ID = %d, platform=%s, name=%s\n",
+        u_fprintf(lx->OUT,"  <li>ID = %d, platform=%s, name=%s\n",
                   ucnv_getCCSID(u,&status),
                   (ucnv_getPlatform(u,&status) == UCNV_IBM) ? "IBM" : "other",
                   ucnv_getName(u, &status) );
@@ -293,21 +293,21 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
         status = U_ZERO_ERROR;
         tmp2 = ucnv_getStandardName(lx->convRequested, "MIME", &status);
         if(tmp2 && U_SUCCESS(status)) {
-            u_fprintf(lx->OUT, "  <LI>MIME: %s\n", tmp2);
+            u_fprintf(lx->OUT, "  <li>MIME: %s\n", tmp2);
         }
 
         status = U_ZERO_ERROR;
         tmp2 = ucnv_getStandardName(lx->convRequested, "IANA", &status);
         if(tmp2 && U_SUCCESS(status)) {
-            u_fprintf(lx->OUT, "  <LI>IANA: %s\n", tmp2);
+            u_fprintf(lx->OUT, "  <li>IANA: %s\n", tmp2);
         }
         status = U_ZERO_ERROR;
 	      
-        u_fprintf(lx->OUT,"  <LI>min/max chars: %d to %d\n",
+        u_fprintf(lx->OUT,"  <li>min/max chars: %d to %d\n",
                   ucnv_getMinCharSize(u),
                   ucnv_getMaxCharSize(u));
 
-        u_fprintf(lx->OUT,"  <LI>Type=");
+        u_fprintf(lx->OUT,"  <li>Type=");
         switch(ucnv_getType(u))
         {
         case UCNV_UNSUPPORTED_CONVERTER:  ts = "Unsupported"; break;
@@ -365,13 +365,13 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
                 if(!alias)
                     break;
 
-                u_fprintf(lx->OUT, "  <LI>%s\r\n", alias);
+                u_fprintf(lx->OUT, "  <li>%s\r\n", alias);
             }
         }
-        u_fprintf(lx->OUT, "</OL>\r\n");
+        u_fprintf(lx->OUT, "</ol>\r\n");
 
 
-        u_fprintf(lx->OUT, "</UL>\r\n");
+        u_fprintf(lx->OUT, "</ul>\r\n");
     }
   
 	      

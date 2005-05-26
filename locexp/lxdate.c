@@ -97,7 +97,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         u_file_write(valueString+parsePos, tmplen-parsePos, lx->OUT);
         u_fprintf(lx->OUT, "</td></tr></table>\n");
       }
-      u_fprintf(lx->OUT, "<br>");
+      u_fprintf(lx->OUT, "<br />");
       explainStatus(lx,status,"EXPLORE_DateTimePatterns");
       status = U_ZERO_ERROR;
       now = ucal_getNow();
@@ -133,26 +133,26 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     /* =======================  Now, collect the new date values ====================== */
 
     /* Now, display the results in <default> and in their locale */
-    u_fprintf(lx->OUT, "<TABLE BORDER=1><TR><TD>\r\n");
+    u_fprintf(lx->OUT, "<table border=1><tr><td>\r\n");
 
 
     /* ============ 'default' side of the table  */
 
     if(U_FAILURE(defStatus))
     {
-        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
+        u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_errorFormatDefault", "Unable to format number using default version of the pattern"));
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
     }
     else
     {
       
-        u_fprintf(lx->OUT, "<B><I>%S</I></B><BR>\r\n", defaultLanguageDisplayName(lx));
-        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_DateTimePatterns\">\r\n", getLXBaseURL(lx, kNO_URL));
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=str VALUE=\"");
+        u_fprintf(lx->OUT, "<b><i>%S</i></b><br />\r\n", defaultLanguageDisplayName(lx));
+        u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_DateTimePatterns\">\r\n", getLXBaseURL(lx, kNO_URL));
+        u_fprintf(lx->OUT, "<input type=\"hidden\" name=str value=\"");
         writeEscaped(lx, pattern);
-        u_fprintf(lx->OUT, "\">\r\n");
+        u_fprintf(lx->OUT, "\" />\r\n");
 
-        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_DEF ROWS=1 COLS=50>");
+        u_fprintf(lx->OUT, "<textarea name=NP_DEF rows=1 cols=50>");
 
         lx->backslashCtx.html = FALSE;
         u_fprintf(lx->OUT, "%S", defChars); 
@@ -160,35 +160,35 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
       
         status = U_ZERO_ERROR;
       
-        u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</textarea><br /><input type=submit value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
     }
   
-    u_fprintf(lx->OUT, "</TD><TD WIDTH=1 BGCOLOR=\"#EEEEEE\"><IMG src=\"" LDATA_PATH "c.gif\" ALT=\"---\" WIDTH=0 HEIGHT=0></TD><TD>");
+    u_fprintf(lx->OUT, "</td><td width=1 bgcolor=\"#EEEEEE\"><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=\"0\" height=\"0\" /></td><td>");
 
     /* ============ 'localized' side ================================= */
 
     if(U_FAILURE(locStatus))
     {
-        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
+        u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_DateTimePatterns_errorFormat", "Couldn't format the date."));
         explainStatus(lx, status, "EXPLORE_DateTimePatterns");
     }
     else
     {
         /*  === local side */
-        u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><BR>\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
-        u_fprintf(lx->OUT, "<FORM METHOD=POST ACTION=\"%s#EXPLORE_DateTimePatterns\">\r\n", getLXBaseURL(lx,kNO_URL));
-        u_fprintf(lx->OUT, "<INPUT TYPE=HIDDEN NAME=str VALUE=\"");
+        u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<b>%S</b><br />\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
+        u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_DateTimePatterns\">\r\n", getLXBaseURL(lx,kNO_URL));
+        u_fprintf(lx->OUT, "<input type=\"hidden\" name=str VALUE=\"");
         writeEscaped(lx, pattern);
-        u_fprintf(lx->OUT, "\">\r\n");
+        u_fprintf(lx->OUT, "\" />\r\n");
       
-        u_fprintf(lx->OUT, "<TEXTAREA NAME=NP_LOC ROWS=1 COLS=50>");
+        u_fprintf(lx->OUT, "<textarea name=NP_LOC rows=1 cols=50>");
         writeEscaped(lx, tempChars);
-        u_fprintf(lx->OUT, "</TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE=\"%S\"></FORM>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</textarea><br /><input type=SUBMIT value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
     }
     /*  ============== End of the default/localized split =============== */
 
-    u_fprintf(lx->OUT, "</TD></TR>");
-    u_fprintf(lx->OUT, "</TABLE>");
+    u_fprintf(lx->OUT, "</td></tr>");
+    u_fprintf(lx->OUT, "</table>");
   
 
     /* =============== All done ========================== */
@@ -202,20 +202,20 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     if(nf)
         unum_close(nf);
 
-    u_fprintf(lx->OUT, "<P><P>");
+    u_fprintf(lx->OUT, "<p><p>");
     
     {
       char f[300];
       sprintf(f, "%f", now);
-      u_fprintf(lx->OUT, "<A HREF=\"%s&NP_DBL=%s\">Calendar Demo...</A><br>\r\n",
+      u_fprintf(lx->OUT, "<a href=\"%s&NP_DBL=%s\">Calendar Demo...</A><br />\r\n",
                 getLXBaseURL(lx,kNO_URL|kNO_SECT), f);
     }
       
     showExploreCloseButton(lx, locale, "DateTimePatterns");
 
-    u_fprintf(lx->OUT, "</TD><TD ALIGN=LEFT VALIGN=TOP>");
+    u_fprintf(lx->OUT, "</td><td align=\"left\" valign=\"top\">");
     printHelpTag(lx, "EXPLORE_DateTimePatterns", NULL);
-    u_fprintf(lx->OUT, "</TD>\r\n");
+    u_fprintf(lx->OUT, "</td>\r\n");
 
     showKeyAndEndItem(lx, "EXPLORE_DateTimePatterns", locale);
   

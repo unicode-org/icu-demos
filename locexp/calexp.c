@@ -184,11 +184,11 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
 {
   /* if(type==thisType) */  /* LEFT tab A */
   {
-    u_fprintf(lx->OUT, "<TD BGCOLOR=\"#00cc99\" WIDTH=\"20%%\" HEIGHT=9><IMG ALIGN=LEFT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"" LDATA_PATH "tab_aleft.gif\">");
-    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&x=cal&EXPLORE_Calendar=%c&NP_DBL=%s\">%S</A>", 
+    u_fprintf(lx->OUT, "<td bgcolor=\"#00cc99\" width=\"20%%\" height=9><img align=left width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aleft.gif\">");
+    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar=%c&NP_DBL=%s\">%S</A>", 
               lx->curLocaleName,
               thisType, num, name);
-    u_fprintf(lx->OUT, "<IMG ALIGN=RIGHT WIDTH=15 HEIGHT=30 ALT=\"\" SRC=\"" LDATA_PATH "tab_aright.gif\"></TD>");
+    u_fprintf(lx->OUT, "<img align=\"right\" width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aright.gif\" /></td>");
     
   }
 }
@@ -210,15 +210,15 @@ void printCalMenuBar( LXContext *lx, const char *num, char type )
         type='f';
     }
   
-    u_fprintf(lx->OUT, "<TABLE cellspacing=0 border=0 cellpadding=0><TR>");
+    u_fprintf(lx->OUT, "<table cellspacing=0 border=0 cellpadding=0><tr>");
   
     printCalMenuSection(lx, num, type,
                         'f', FSWF("calexp_fieldsTab", "Fields"));
-    u_fprintf(lx->OUT, "<TD HEIGHT=4 WIDTH=\"3%%\">&nbsp</TD>");
+    u_fprintf(lx->OUT, "<td height=4 width=\"3%%\">&nbsp</td>");
     printCalMenuSection(lx, num, type,
                         'c', FSWF("calexp_calTab", "Calendar"));
-    u_fprintf(lx->OUT, "<TD HEIGHT=2 COLSPAN=3 WIDTH=100%%><!-- D -->&nbsp;</TD></TR>");
-    u_fprintf(lx->OUT, "<TR><TD COLSPAN=10 HEIGHT=3 BACKGROUND=\"" LDATA_PATH "tab_bot.gif\"></TD><FONT SIZE=4>&nbsp;</FONT></TR></TABLE>\r\n");
+    u_fprintf(lx->OUT, "<td height=2 colspan=3 width=100%%><!-- D -->&nbsp;</td></tr>");
+    u_fprintf(lx->OUT, "<tr><td colspan=10 height=3 background=\"" LDATA_PATH "tab_bot.gif\"></td><font size=4>&nbsp;</font></tr></table>\r\n");
 }
 
 
@@ -332,28 +332,28 @@ extern void showExploreCalendar( LXContext *lx)
                     char num[100];
 
                     sprintf(num, "%f", ucal_getMillis(cal2, &status));
-                    u_fprintf(lx->OUT, "<A HREF=\"?_=%s&x=cal&EXPLORE_Calendar&NP_DBL=%s\">",
+                    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar&NP_DBL=%s\">",
                               lx->curLocaleName,
                               num);
                     u_fprintf(lx->OUT, "%s", nam[j]);
-                    u_fprintf(lx->OUT, "</A>");
+                    u_fprintf(lx->OUT, "</a>");
                 }
                 else
                 {
-                    u_fprintf(lx->OUT, "<FONT COLOR=\"#99D999\">");
+                    u_fprintf(lx->OUT, "<font color=\"#99D999\">");
                     u_fprintf(lx->OUT, "%s", nam[j]);
-                    u_fprintf(lx->OUT, "</FONT>");
+                    u_fprintf(lx->OUT, "</font>");
           
                 }
         
                 ucal_close(cal2);
             }
-            u_fprintf(lx->OUT, "    </TD>\r\n");
+            u_fprintf(lx->OUT, "    </td>\r\n");
       
             if(fieldNames[i]) {
-              u_fprintf(lx->OUT, "    <TD>%S</TD>\r\n", fieldNames[i]);
+              u_fprintf(lx->OUT, "    <td>%S</td>\r\n", fieldNames[i]);
             } else {
-              u_fprintf(lx->OUT, "    <TD>#%d</TD>\r\n", i);
+              u_fprintf(lx->OUT, "    <td>#%d</td>\r\n", i);
             }
             
             {
@@ -363,20 +363,20 @@ extern void showExploreCalendar( LXContext *lx)
               fMin = ucal_getLimit(cal, i, UCAL_MINIMUM, &status);
               fMax = ucal_getLimit(cal, i, UCAL_MAXIMUM, &status);
 
-              u_fprintf(lx->OUT, "<TD>%d..%d</TD>\r\n", fMin, fMax);
+              u_fprintf(lx->OUT, "<td>%d..%d</td>\r\n", fMin, fMax);
             }
             
-            u_fprintf(lx->OUT, "  </TR>\r\n");
+            u_fprintf(lx->OUT, "  </tr>\r\n");
         }
         if(U_FAILURE(status))
         {
-            u_fprintf(lx->OUT, "  <TR><TD COLSPAN=2>ERR: %s</TD></TR>\r\n",
+            u_fprintf(lx->OUT, "  <tr><td colspan=2>ERR: %s</td></tr>\r\n",
                       u_errorName(status));
         }
         
-        u_fprintf(lx->OUT, "</TABLE>\r\n");
+        u_fprintf(lx->OUT, "</table>\r\n");
         
-        u_fprintf(lx->OUT, "<P><B>%S</B><BR>&lt; %S<BR>- %S<BR>+ %S<BR>&gt; %S<BR><P>\r\n",
+        u_fprintf(lx->OUT, "<p><b>%S</b><br />&lt; %S<br />- %S<br />+ %S<br />&gt; %S<br /><p>\r\n",
                   FSWF("calexp_chg","Change buttons:"),
                   FSWF("calexp_chg_roll_decr", "Roll down"),
                   FSWF("calexp_chg_set_decr", "Decrement"),

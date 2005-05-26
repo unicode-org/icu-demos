@@ -40,9 +40,9 @@ void showExploreBreak(LXContext *lx, const char *locale)
 
 
     showExploreCloseButton(lx, locale, "Break");
-    u_fprintf(lx->OUT, "</TD><TD ALIGN=LEFT VALIGN=TOP>");
+    u_fprintf(lx->OUT, "</td><td align=\"left\" valign=\"top\">");
     printHelpTag(lx, "EXPLORE_Break", NULL);
-    u_fprintf(lx->OUT, "</TD>\r\n");
+    u_fprintf(lx->OUT, "</td>\r\n");
 
   
     showKeyAndEndItem(lx, "EXPLORE_Break", locale);

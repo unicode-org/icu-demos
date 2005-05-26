@@ -5,13 +5,10 @@
 #ifndef LOCEXP_
 #define LOCEXP_
 
-#ifndef ICU_URL
-# define ICU_URL "http://ibm.com/software/globalization/icu"
-#endif
-
 /** Headers. Watch out for too many unixy things, tends to break win32 **/
 
 #include "unicode/utypes.h"
+#include "demo_settings.h"
 
 #include <stdlib.h>
 #include <stdio.h>
