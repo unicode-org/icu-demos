@@ -29,7 +29,9 @@
 #include "unicode/unistr.h"
 #include "unicode/unorm.h"
 #include "unormimp.h"           // ### TODO internal file, for normalization prototype
+
 #include "demo_settings.h"
+#include "demoutil.h"
 
 #define LENGTHOF(array) (sizeof(array)/sizeof((array)[0]))
 
@@ -286,37 +288,6 @@ parseString(const char *s,
     }
 }
 
-/**
- * @returns 1 if open failed
- */
-static int printTemplateFile(char *templateFileName) {
-    size_t size = 0;
-    size_t savedPos;
-    char *buffer;
-    FILE *templateFile = fopen(templateFileName, "rb");
-    
-    if (templateFile == NULL) {
-        printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
-        return 1;
-    }   
-    
-    /* Go to the end, find the size, and go back to the beginning. */
-    savedPos = ftell(templateFile);
-    fseek(templateFile, 0, SEEK_END);
-    size = ftell(templateFile);
-    fseek(templateFile, savedPos, SEEK_SET);
-    
-    /* Read in the whole file and print it out */
-    buffer = (char *)malloc(size+1);
-    fread(buffer, size, 1, templateFile);
-    buffer[size] = 0;    // NULL terminate for printing.
-    printf("%s", buffer);
-    
-    free(buffer);
-    fclose(templateFile);
-    return 0;
-}
-
 extern int
 main(int argc, const char *argv[]) {
     UChar input[100], buffer16[600]; // buffer16 should be 6 times longer than input for \\uhhhh
@@ -330,15 +301,16 @@ main(int argc, const char *argv[]) {
 
     script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
-    if (printTemplateFile(DEMO_COMMON_DIR "normalization-header.html")) {
+    if (!printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "normalization-header.html")) {
         puts(defaultHeader);
     }
     puts(endHeaderBeginBody);
-    printTemplateFile(DEMO_COMMON_MASTHEAD);
-    puts(DEMO_BEGIN_LEFT_NAV);
-    printTemplateFile(DEMO_COMMON_LEFTNAV);
-    puts(DEMO_END_LEFT_NAV);
-    puts(DEMO_BEGIN_CONTENT);
+    if (printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD)) {
+        puts(DEMO_BEGIN_LEFT_NAV);
+        printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
+        puts(DEMO_END_LEFT_NAV);
+        puts(DEMO_BEGIN_CONTENT);
+    }
     puts(breadCrumbMainHeader);
 
     inputLength=options=0;
@@ -427,7 +399,7 @@ main(int argc, const char *argv[]) {
     printf(versions, uvString, ivString);
 
     puts(DEMO_END_CONTENT);
-    printTemplateFile(DEMO_COMMON_FOOTER);
+    printHTMLFragment(NULL, NULL, DEMO_COMMON_FOOTER);
     puts(htmlFooter);
 
     return 0;

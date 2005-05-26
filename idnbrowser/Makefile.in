@@ -22,15 +22,13 @@ CLEANFILES = *~
 ## Target information
 TARGET = idnbrowser 
 
-#LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
-#LDFLAGS += $(LDFLAGS_TOOLUTIL)
 CPPFLAGS += -I$(ICU_SOURCE)/common
 CPPFLAGS += -I$(top_srcdir)/apputil
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
 # -ldl is needed for DLL version
-#ICULIBS    +=  -lustdio 
+ICULIBS += -L../apputil -lapputil
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
 CPPFLAGS  += -I../locexp/util

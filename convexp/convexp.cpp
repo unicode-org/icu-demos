@@ -35,7 +35,9 @@ TODO:
 
 #include "printcp.h"
 #include "params.h"
+
 #include "demo_settings.h"
+#include "demoutil.h"
 
 /*
 IANA states that an alias may be up to 40 characters.
@@ -715,37 +717,6 @@ static void printAliasTable() {
     printf(endTable);
 }
 
-/**
- * @returns 1 if open failed
- */
-static int printTemplateFile(char *templateFileName) {
-    size_t size = 0;
-    size_t savedPos;
-    char *buffer;
-    FILE *templateFile = fopen(templateFileName, "rb");
-    
-    if (templateFile == NULL) {
-        printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
-        return 1;
-    }   
-    
-    /* Go to the end, find the size, and go back to the beginning. */
-    savedPos = ftell(templateFile);
-    fseek(templateFile, 0, SEEK_END);
-    size = ftell(templateFile);
-    fseek(templateFile, savedPos, SEEK_SET);
-    
-    /* Read in the whole file and print it out */
-    buffer = (char *)malloc(size+1);
-    fread(buffer, size, 1, templateFile);
-    buffer[size] = 0;    // NULL terminate for printing.
-    printf("%s", buffer);
-    
-    free(buffer);
-    fclose(templateFile);
-    return 0;
-}
-
 U_CDECL_BEGIN
 static int32_t U_CALLCONV
 convexp_hashPointer(const UHashTok key) {
@@ -767,18 +738,22 @@ main(int argc, const char *argv[]) {
     UErrorCode errorCode = U_ZERO_ERROR;
     const char *cgi;
 
-    gScriptName=getenv("SCRIPT_NAME"); 
+    gScriptName=getenv("SCRIPT_NAME");
+    if (gScriptName == NULL) {
+        gScriptName = "convexp";
+    }
 
     puts(htmlHeader);
-    if (printTemplateFile(DEMO_COMMON_DIR "convexp-header.html")) {
+    if (!printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "convexp-header.html")) {
         puts(defaultHeader);
     }
     puts(endHeaderBeginBody);
-    printTemplateFile(DEMO_COMMON_MASTHEAD);
-    puts(DEMO_BEGIN_LEFT_NAV);
-    printTemplateFile(DEMO_COMMON_LEFTNAV);
-    puts(DEMO_END_LEFT_NAV);
-    puts(DEMO_BEGIN_CONTENT);
+    if (printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD)) {
+        puts(DEMO_BEGIN_LEFT_NAV);
+        printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
+        puts(DEMO_END_LEFT_NAV);
+        puts(DEMO_BEGIN_CONTENT);
+    }
     puts(breadCrumbMainHeader);
     
     gStandardsSelected = uhash_open(convexp_hashPointer, convexp_comparePointer, &errorCode);
@@ -845,7 +820,7 @@ main(int argc, const char *argv[]) {
     printf(versions, icuVString);
     
     puts(DEMO_END_CONTENT);
-    printTemplateFile(DEMO_COMMON_FOOTER);
+    printHTMLFragment(NULL, NULL, DEMO_COMMON_FOOTER);
     puts(htmlFooter);
 
     uhash_close(gStandardsSelected);

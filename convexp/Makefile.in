@@ -23,6 +23,7 @@ CLEANFILES = *~
 TARGET = convexp
 
 CPPFLAGS += -I$(ICU_SOURCE)/common -I$(top_srcdir)/apputil
+ICULIBS += -L../apputil -lapputil
 
 OBJECTS = printcp.o params.o convexp.o
 

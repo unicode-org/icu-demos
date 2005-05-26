@@ -30,7 +30,9 @@
 #include "unicode/uscript.h"
 #include "unicode/uniset.h"
 #include "idnbrwsr.h"
+
 #include "demo_settings.h"
+#include "demoutil.h"
 
 //#ifdef WIN32
 //#   define _WIN32_WINNT 0x0400 
@@ -619,37 +621,6 @@ parseString(const char *s, int32_t srcLen,
     return length;
 }
 
-/**
- * @returns 1 if open failed
- */
-static int printTemplateFile(char *templateFileName) {
-    size_t size = 0;
-    size_t savedPos;
-    char *buffer;
-    FILE *templateFile = fopen(templateFileName, "rb");
-    
-    if (templateFile == NULL) {
-        printf("<!-- ERROR: %s cannot be opened -->\n", templateFileName);
-        return 1;
-    }   
-    
-    /* Go to the end, find the size, and go back to the beginning. */
-    savedPos = ftell(templateFile);
-    fseek(templateFile, 0, SEEK_END);
-    size = ftell(templateFile);
-    fseek(templateFile, savedPos, SEEK_SET);
-    
-    /* Read in the whole file and print it out */
-    buffer = (char *)malloc(size+1);
-    fread(buffer, size, 1, templateFile);
-    buffer[size] = 0;    // NULL terminate for printing.
-    printf("%s", buffer);
-    
-    free(buffer);
-    fclose(templateFile);
-    return 0;
-}
-
 enum QueryOptionsEnum {
     INPUT,
     INPUT_TYPE,
@@ -676,15 +647,16 @@ main(int argc, const char *argv[]) {
 
     script=getenv("SCRIPT_NAME"); 
     puts(htmlHeader);
-    if (printTemplateFile(DEMO_COMMON_DIR "idna-header.html")) {
+    if (!printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "idna-header.html")) {
         puts(defaultHeader);
     }
     puts(endHeaderBeginBody);
-    printTemplateFile(DEMO_COMMON_MASTHEAD);
-    puts(DEMO_BEGIN_LEFT_NAV);
-    printTemplateFile(DEMO_COMMON_LEFTNAV);
-    puts(DEMO_END_LEFT_NAV);
-    puts(DEMO_BEGIN_CONTENT);
+    if (printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD)) {
+        puts(DEMO_BEGIN_LEFT_NAV);
+        printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
+        puts(DEMO_END_LEFT_NAV);
+        puts(DEMO_BEGIN_CONTENT);
+    }
     puts(breadCrumbMainHeader);
 
     inputLength=0;
@@ -827,7 +799,7 @@ main(int argc, const char *argv[]) {
     printf(versions, "3.2", ivString);
     
     puts(DEMO_END_CONTENT);
-    printTemplateFile(DEMO_COMMON_FOOTER);
+    printHTMLFragment(NULL, NULL, DEMO_COMMON_FOOTER);
     puts(htmlFooter);
 
     us.releaseBuffer();
