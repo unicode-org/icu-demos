@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
@@ -670,7 +670,12 @@ void setLocaleAndEncoding(LXContext *lx)
     }
     uenum_close(available);
   }
-  /* that might at least get something.. It's better than defaulting to en_US */
+  /* english fallback */
+  if(!lx->dispLocale[0]) {
+    setBlobFromLocale(lx, &lx->dispLocaleBlob, "en", &status);
+    strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
+  }
+    
   
   if(!lx->convSet) {
     const char *accept;
