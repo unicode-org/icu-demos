@@ -75,7 +75,7 @@ distclean :  distclean-local
 dist:  dist-local
 check:  check-local
 
-all-local: res-local root_SAMPLE.txt
+all-local: build-dirs res-local root_SAMPLE.txt
 
 res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
 	$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
@@ -102,7 +102,7 @@ $(OUT)/locexp.lst: build-dirs Makefile
 	  echo `pwd`/$$file >> $@; \
 	done;
 
-install-res:
+install-res: all-local
 	$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst -I $(libdir)
 
 dist-local:
