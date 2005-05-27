@@ -244,7 +244,7 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
     showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "<table summary=\"%S\"><tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<table summary=\"%S\">\r\n<tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleCodes", "Locale Codes"),
               FSWF("LocaleCodes_Language", "Language"),
               FSWF("LocaleCodes_Country", "Region"),

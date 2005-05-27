@@ -163,7 +163,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 /* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
-    u_fprintf(lx->OUT, "<table summary=\"%S\" border=\"0\" cellspacing=\"0\" width=\"100%%\">", keyName);
+    u_fprintf(lx->OUT, "<table summary=\"%S\" border=\"0\" cellspacing=\"0\" width=\"100%%\">\r\n", keyName);
     u_fprintf(lx->OUT, "<tr><td height=\"5\" bgcolor=\"#AFA8AF\" colspan=2><img src=\"" LDATA_PATH "c.gif\" ALT=\"---\" width=\"0\" height=\"0\" /></td></tr>\r\n");
     u_fprintf(lx->OUT, "<tr><td colspan=\"1\" width=\"0\" valign=\"top\" bgcolor=" kXKeyBGColor ">");
 

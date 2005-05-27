@@ -118,7 +118,7 @@ void displayLocaleExplorer(LXContext *lx)
                  FSWF("display_GIF", "displayproblems.gif"),
                  FSWF("display_OPTIONS", "valign=top"));
 
-    u_fprintf(lx->OUT, "<br /><hr />\r\n");
+    u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
 
 #if 0
     {
@@ -176,7 +176,7 @@ void displayLocaleExplorer(LXContext *lx)
     }
     else
     {
-      u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\"><tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
+      u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
 
       if(lx->curLocaleName[0]) { /* don't show a completely empty locale control */
         u_fprintf(lx->OUT, "<font size=\"+1\">");
@@ -187,7 +187,7 @@ void displayLocaleExplorer(LXContext *lx)
       
       u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
       
-      u_fprintf(lx->OUT, "\r\n</TD></TR><TR><TD>");
+      u_fprintf(lx->OUT, "\r\n</td></tr>\r\n<tr><td>");
       
       printSubLocales(lx, NULL);
       u_fprintf(lx->OUT, "</td></tr></table>\r\n");

@@ -92,22 +92,22 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     UBool  hadUnsupportedLocales = FALSE;
     static UBool initStr = TRUE;
     U_STRING_DECL(BEGIN_HIT_CELL, "<td valign=top bgcolor=\"#FFDDDD\"><b>", 36);
-    U_STRING_DECL(END_HIT_CELL, "</b></td>", 10);
-    U_STRING_DECL(BEGIN_CELL, "<td valign=top>", 15);
-    U_STRING_DECL(END_CELL, "</td>", 6);
+    U_STRING_DECL(END_HIT_CELL, "</b></td>\r\n", 12);
+    U_STRING_DECL(BEGIN_CELL, "<td valign=\"top\">", 17);
+    U_STRING_DECL(END_CELL, "</td>\r\n", 8);
     U_STRING_DECL(COMMA_SPACE, ",&nbsp; ", 9);
     if (initStr) {
         U_STRING_INIT(BEGIN_HIT_CELL, "<td valign=top bgcolor=\"#FFDDDD\"><b>", 36);
-        U_STRING_INIT(END_HIT_CELL, "</b></td>", 10);
-        U_STRING_INIT(BEGIN_CELL, "<td valign=top>", 15);
-        U_STRING_INIT(END_CELL, "</td>", 6);
+        U_STRING_INIT(END_HIT_CELL, "</b></td>\r\n", 12);
+        U_STRING_INIT(BEGIN_CELL, "<td valign=\"top\">", 17);
+        U_STRING_INIT(END_CELL, "</td>\r\n", 8);
         U_STRING_INIT(COMMA_SPACE, ", &nbsp;", 9);
         initStr = FALSE;
     }
 
     u_fprintf(lx->OUT, "<table border=2 cellpadding=2 cellspacing=2>\r\n");
 
-    u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><th align=\"left\">%S</th>\r\n<th align=\"left\">%S</th></tr>\r\n",
               FSWF("localeList_Locale", "Languages"),
               FSWF("localeList_Sublocale", "Regions"));
 
