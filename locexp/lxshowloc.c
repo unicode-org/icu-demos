@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2004, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -38,7 +38,7 @@ void showOneLocale(LXContext *lx)
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
 
 #ifdef LX_HAVE_XLITOMATIC
-        u_fprintf(lx->OUT, "<LI><A HREF=\"/II/xlitomatic/%s/%s/\">%S</A>\r\n",
+        u_fprintf(lx->OUT, "<li><a href=\"/II/xlitomatic/%s/%s/\">%S</a>\r\n",
                   lx->dispLocale, lx->chosenEncoding,
                   FSWF("explore_xlitomatic", "Translit-o-matic"));
 #endif
@@ -56,7 +56,7 @@ void showOneLocale(LXContext *lx)
 
     explainStatus(lx, status,"top");
 
-    /*   u_fprintf(lx->OUT, "</TD></TR><TR><TD COLSPAN=2>"); */
+    /*   u_fprintf(lx->OUT, "</td></tr><tr><td colspan=2>"); */
 
     /* analyze what kind of locale we've got.  Should this be a little smarter? */
 #if 0
@@ -123,9 +123,9 @@ void showOneLocale(LXContext *lx)
         
         u_fprintf(lx->OUT, "<table width=100%%><tr>\r\n"); 
 
-        u_fprintf(lx->OUT, "<TD valign=\"top\" align=\"right\">");
+        u_fprintf(lx->OUT, "<td valign=\"top\" align=\"right\">");
         printHelpTag(lx, "EXPLORE_CollationElements", NULL);
-        u_fprintf(lx->OUT, "</TD>");
+        u_fprintf(lx->OUT, "</td>");
 
         showKeyAndEndItem(lx, "EXPLORE_CollationElements", locale);
     }
@@ -135,24 +135,25 @@ void showOneLocale(LXContext *lx)
     }
     else /* ================================= Normal ShowXXXXX calls ===== */
     {
-	if(!getenv("SERVER_NAME") || strncmp(getenv("SERVER_NAME"),"oss",3)) {
+		u_fprintf(lx->OUT, "<br />\r\n");
+	/*if(!getenv("SERVER_NAME") || strncmp(getenv("SERVER_NAME"),"oss",3)) {
 		u_fprintf(lx->OUT, "<a href=\"%s&amp;x=iloc\">%S</a><br />",
 			getLXBaseURL(lx, kNO_SECT),
 			FSWF("icirView", "Switch to Survey View"));
 	 } else {
 		u_fprintf(lx->OUT, "<!-- survey disabled -->");
-	}
+	}*/
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   LOCALE ID section %%%*/
-        u_fprintf(lx->OUT, "<table border=0 cellspacing=0 cellpadding=0 width=\"100%%\"><tr><td valign=\"top\">");
+        u_fprintf(lx->OUT, "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%%\"><tr><td valign=\"top\">");
         showLocaleCodes(lx, myRB, locale);
-        u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=\"top\">");
+        u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
 
         showKeyAndStartItem(lx, "LocaleID", NULL, locale, FALSE, status);
-        u_fprintf(lx->OUT, "0x%X</TD>", uloc_getLCID(locale));
+        u_fprintf(lx->OUT, "0x%X</td>", uloc_getLCID(locale));
         showKeyAndEndItem(lx, "LocaleID", locale);
 
-        u_fprintf(lx->OUT, "</TD><td>&nbsp;</td><td valign=\"top\">");
+        u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
         showString(lx, myRB, locale, "Version", FALSE);
         u_fprintf(lx->OUT, "</td></tr></table>");
 

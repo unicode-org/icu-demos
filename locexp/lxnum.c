@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -143,7 +143,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
 
     /* Now, display the results in <default> and in their locale */
-    u_fprintf(lx->OUT, "<TABLE BORDER=1><TR><TD>\r\n");
+    u_fprintf(lx->OUT, "<table border=\"1\"><tr><td>\r\n");
 
 
     /* ============ 'default' side of the table ==========  */
@@ -176,7 +176,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
       
     }
   
-    u_fprintf(lx->OUT, "</td><td width=1 bgcolor=\"#EEEEEE\"><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=\"0\" height=\"0\" /></td><td>");
+    u_fprintf(lx->OUT, "</td><td width=1 bgcolor=\"#EEEEEE\"><img src=\"" LDATA_PATH "c.gif\" width=\"0\" height=\"0\" alt=\"-\" /></td><td>");
 
     /* ============ 'localized' side ================================= */
 

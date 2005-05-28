@@ -42,7 +42,7 @@ void displayLocaleExplorer(LXContext *lx)
     uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
     u_fprintf(lx->OUT,"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"%s\"  lang=\"%s\">", langName, langName);
     
-    u_fprintf(lx->OUT, "%s", "\r\n<!-- Locale Explorer %s \r\n  " ICU_URL "  \r\n\r\n-->\r\n",
+    u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer %s \r\n  " ICU_URL "  \r\n\r\n-->\r\n",
               U_COPYRIGHT_STRING);
     
     u_fprintf(lx->OUT, "<head><title>");
@@ -89,15 +89,15 @@ void displayLocaleExplorer(LXContext *lx)
     /* Robot Exclusion */
     if(hasQueryField(lx,"PANICDEFAULT") ||
        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) {
-      u_fprintf(lx->OUT, "<meta name=\"robots\" Content=\"nofollow,noindex\" />\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow,noindex\" />\r\n");
     } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
-      u_fprintf(lx->OUT, "<meta name=\"robots\" CONTENT=\"nofollow\" />\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow\" />\r\n");
     } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
-      u_fprintf(lx->OUT, "<meta name=\"robots\" Content=\"nofollow,noindex\" />\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow,noindex\" />\r\n");
     } else if(lx->convRequested && lx->convRequested[0] && !strstr(lx->convRequested, "utf-8")) {
-      u_fprintf(lx->OUT, "<meta name=\"robots\" Content=\"nofollow,noindex\" />\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow,noindex\" />\r\n");
     } else if(strstr(lx->queryString, "_=")) {
-      u_fprintf(lx->OUT, "<meta name=\"robots\" CONTENT=\"nofollow\" />\r\n");
+      u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow\" />\r\n");
     }
     if(lx->convRequested && lx->convRequested[0]) {
       u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\" />\r\n", lx->convRequested);
@@ -162,30 +162,30 @@ void displayLocaleExplorer(LXContext *lx)
    if(strstr(lx->queryString,"EXPLORE")) {
       const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
 
-      u_fprintf(lx->OUT, "<font size=\"+1\">");
+      u_fprintf(lx->OUT, "<big>");
       printPath(lx, lx->curLocale, lx->curLocale, TRUE);
 
       if(queryField(lx, "EXPLORE_CollationElements")) {
         u_fprintf(lx->OUT, " &gt; %S", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
       }
 
-      u_fprintf(lx->OUT, "</font><p>");
+      u_fprintf(lx->OUT, "</big><p>");
       if(suffix) {
         printSubLocales(lx, suffix);
       }
     }
     else
     {
-      u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=left valign=top>", FSWF("title", "ICU LocaleExplorer"));
+      u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=\"left\" valign=\"top\">", FSWF("title", "ICU LocaleExplorer"));
 
       if(lx->curLocaleName[0]) { /* don't show a completely empty locale control */
-        u_fprintf(lx->OUT, "<font size=\"+1\">");
+        u_fprintf(lx->OUT, "<big>");
         printPath(lx, lx->curLocale, lx->curLocale, TRUE);
-        u_fprintf(lx->OUT, "</font>");
+        u_fprintf(lx->OUT, "</big>");
         printChangeLocale(lx);
       }
       
-      u_fprintf(lx->OUT, "</td><td rowspan=2 align=right valign=top width=1>");
+      u_fprintf(lx->OUT, "</td><td rowspan=\"2\" align=\"right\" valign=\"top\" width=\"1\">");
       
       u_fprintf(lx->OUT, "\r\n</td></tr>\r\n<tr><td>");
       

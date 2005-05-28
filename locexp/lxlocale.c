@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -105,13 +105,13 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
         initStr = FALSE;
     }
 
-    u_fprintf(lx->OUT, "<table border=2 cellpadding=2 cellspacing=2>\r\n");
+    u_fprintf(lx->OUT, "<table border=\"2\" cellpadding=\"2\" cellspacing=\"2\">\r\n");
 
     u_fprintf(lx->OUT, "<tr><th align=\"left\">%S</th>\r\n<th align=\"left\">%S</th></tr>\r\n",
               FSWF("localeList_Locale", "Languages"),
               FSWF("localeList_Sublocale", "Regions"));
 
-    u_fprintf(lx->OUT, "<tr><td colspan=2><a href=\"?_=%s\">%S</a></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><td colspan=\"2\"><a href=\"?_=%s\">%S</a></td></tr>\r\n",
               lx->locales->str, lx->locales->ustr); /* default */ 
 
     mySort(lx->locales, &status, TRUE); /* need the whole thing sorted */
@@ -175,7 +175,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     if(showAll == FALSE && toOpen == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"" LDATA_PATH "closed.gif\" alt=\"\" />%S</a>\r\n<br />",
+        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<br />",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }
@@ -433,7 +433,7 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
     /* SRL todo: cull unsupported locales!  */
     if(l->nSubLocs)
     {
-        u_fprintf(lx->OUT, "&nbsp;[<font size=-1>&nbsp;");
+        u_fprintf(lx->OUT, "&nbsp;[<small>&nbsp;");
         
         for(n=0;n<(l->nSubLocs);n++)
         {
@@ -444,7 +444,7 @@ void printLocaleAndSubs(LXContext *lx, UBool toOpen, MySortable *l, const char *
             printLocaleAndSubs(lx, toOpen, l->subLocs[n], current, restored, hadUnsupportedLocales);
         }
         
-        u_fprintf(lx->OUT, "&nbsp;</font>]");
+        u_fprintf(lx->OUT, "&nbsp;</small>]");
     }
 }
 

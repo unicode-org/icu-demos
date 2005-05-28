@@ -1,4 +1,8 @@
-/* Copyright (c) 2002-2003 IBM. and Others. All Rights Reserved. */
+/**********************************************************************
+*   Copyright (C) 2002-2005, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
+
 /* Search Explorer... search the Locales looking for strings */
 
 #include "locexp.h"
@@ -136,8 +140,8 @@ static void doSearch( LXContext *lx, const UChar *str, MySortable *loc, int *tot
         q = p+1;
         p = " : ";
     }
-    u_fprintf(lx->OUT, "<li><a href=\"?_=%s\">%S</A> :", loc->str, loc->ustr);
-    u_fprintf(lx->OUT, " <a href=\"?_=%s#%s\">%S</A>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
+    u_fprintf(lx->OUT, "<li><a href=\"?_=%s\">%S</a> :", loc->str, loc->ustr);
+    u_fprintf(lx->OUT, " <a href=\"?_=%s#%s\">%S</a>",  loc->str, lastTag, FSWF/**/(/**/lastTag,lastTag));
     u_fprintf(lx->OUT, "%s%s\r\n", p?p:"", q?q:"");
   }
   

@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -163,7 +163,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
         u_fprintf(lx->OUT, "</textarea><br /><input type=submit value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
     }
   
-    u_fprintf(lx->OUT, "</td><td width=1 bgcolor=\"#EEEEEE\"><img src=\"" LDATA_PATH "c.gif\" alt=\"---\" width=\"0\" height=\"0\" /></td><td>");
+    u_fprintf(lx->OUT, "</td><td width=1 bgcolor=\"#EEEEEE\"><img src=\"" LDATA_PATH "c.gif\" width=\"0\" height=\"0\" alt=\"-\" /></td><td>");
 
     /* ============ 'localized' side ================================= */
 
@@ -207,7 +207,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
       char f[300];
       sprintf(f, "%f", now);
-      u_fprintf(lx->OUT, "<a href=\"%s&NP_DBL=%s\">Calendar Demo...</A><br />\r\n",
+      u_fprintf(lx->OUT, "<a href=\"%s&NP_DBL=%s\">Calendar Demo...</a><br />\r\n",
                 getLXBaseURL(lx,kNO_URL|kNO_SECT), f);
     }
       

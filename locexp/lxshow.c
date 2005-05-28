@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -104,13 +104,13 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
     showKeyAndStartItemShort(lx, key, NULL, locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "&nbsp;</td></tr><tr><td></td><td>");
+    u_fprintf(lx->OUT, "&nbsp;</td>\r\n</tr>\r\n<tr>\r\n<td></td>\r\n<td>");
   
     showExploreButtonSort(lx, rb,locale,  "CollationElements", TRUE);
 
-    u_fprintf(lx->OUT, "</td>"); /* Now, we're done with the ShowKey.. cell */
+    u_fprintf(lx->OUT, "</td>\r\n"); /* Now, we're done with the ShowKey.. cell */
 
-    u_fprintf(lx->OUT, "</tr><tr><td colspan=\"2\">");
+    u_fprintf(lx->OUT, "</tr>\r\n<tr>\r\n<td colspan=\"2\">");
 
     if(U_SUCCESS(status))
     {
@@ -123,7 +123,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
         {
             if(bigString)
             {
-                u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\"> %S</A><p>\r\n",
+                u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\"> %S</a><p>\r\n",
                     locale,
                     key,
                     FSWF("bigStringHide", "Hide"));
@@ -208,10 +208,10 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
 /* **	      ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), oldCallback, &status); */
 
-	    }
+            }
             else
                 explainStatus(lx, status, key);
-	}
+        }
     }
 
     status = U_ZERO_ERROR;
@@ -223,7 +223,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
                   FSWF("Version","Version"),s);
     }
 
-    u_fprintf(lx->OUT, "</td>");
+    u_fprintf(lx->OUT, "</p></td>");
   
 
     free(scopy);
@@ -491,7 +491,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 #if defined (LX_UBROWSE_PATH)
     u_fprintf(lx->OUT, "<form method=GET action=\"%s\">\n", LX_UBROWSE_PATH);
     u_fprintf(lx->OUT, "<input type=\"hidden\" name=GO /><input type=\"hidden\" name=us value=\"%S\" /><input type=\"hidden\" name=gosetn value=\"\" />\n", s);
-    u_fprintf(lx->OUT, "<input type=IMAGE width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\"  align=right   ");
+    u_fprintf(lx->OUT, "<input type=IMAGE width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH "explore.gif\"  align=right   ");
     u_fprintf(lx->OUT, " value=\"%S\"></form>",
               FSWF("exploreTitle", "Explore"));
     u_fprintf(lx->OUT, "</form>");
@@ -506,7 +506,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 
         if(userRequested) /* it's not hidden. */
         {
-            u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" SRC=\"" LDATA_PATH "opened.gif\"> %S</a>\r\n",
+            u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\"> %S</a>\r\n",
                       locale,
                       key,
                       FSWF("bigStringShorten", "Don't show all"));
@@ -514,7 +514,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     }
 
     /** RULES **/
-    u_fprintf(lx->OUT, "<table border=1 summary=\"Rules\" cellpadding=3 cellspacing=3><tr><td><b>%S</b></td><td>\r\n",
+    u_fprintf(lx->OUT, "<table border=\"1\" summary=\"Rules\" cellpadding=\"3\" cellspacing=\"3\"><tr><td><b>%S</b></td><td>\r\n",
               FSWF("rules", "Rules"));
 
     /* Always do this loop */
@@ -537,7 +537,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     if(len != rulesLen)
     {
         u_fprintf(lx->OUT, "%S", FSWF("...", "..."));
-        u_fprintf(lx->OUT, "<br /><a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" ALT=\"\"><i>%S</i> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
+        u_fprintf(lx->OUT, "<br /><a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" /><i>%S</i> ", locale, key,key, FSWF("bigStringClickToExpand","Truncated due to size. Click here to show. "));
         u_fprintf_u(lx->OUT, FSWF("bigStringSize", "(%d of %d shown)"), len, rulesLen);
         u_fprintf(lx->OUT, " </a>\r\n");
     }
@@ -681,7 +681,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
   
         if(U_SUCCESS(status))
         {
-            u_fprintf(lx->OUT, "<table summary=\"String\" WIDTH=100%%>");
+            u_fprintf(lx->OUT, "<table summary=\"String\" width=\"100%%\">");
             u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
                 FSWF("charNum", "#"),
                 FSWF("char", "Char"),
@@ -693,7 +693,7 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
                 if(!s[i])
                     break;
 
-                u_fprintf(lx->OUT, "<tr><td width=5>%d</td><td>%C</td><td>%S</td></tr>\r\n",
+                u_fprintf(lx->OUT, "<tr><td width=\"5\">%d</td><td>%C</td><td>%S</td></tr>\r\n",
                     i,
                     s[i],
                     desc[i]);
@@ -749,26 +749,23 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
         }
 
         if((i > 10) && !userRequested) {
-          u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" SRC=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<p>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+          u_fprintf(lx->OUT, "<li><a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a></li>\r\n",
+              locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
           break;
         }
 
         item = ures_getByIndex(array, i, item, &status);
         s  = ures_getString(item, &len, &status);
 
-        if(!s)
-            break;
-
-        if(U_SUCCESS(status))
-            u_fprintf(lx->OUT, "<li> %S\r\n", s);
+        if(U_SUCCESS(status) && s)
+            u_fprintf(lx->OUT, "<li>%S</li>\r\n", s);
         else
         {
             u_fprintf(lx->OUT, "<li>");
             explainStatus(lx, status, key);
-            u_fprintf(lx->OUT, "\r\n");
+            u_fprintf(lx->OUT, "</li>\r\n");
             break;
         }
-
     }
     u_fprintf(lx->OUT, "</ol>");
     if((i>=10) && userRequested) {
@@ -946,7 +943,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                   homeStr
             );
 
-        u_fprintf(lx->OUT, "<input type=IMAGE width=48 height=20 border=0 src=\"" LDATA_PATH "explore.gif\" align=\"right\" ");
+        u_fprintf(lx->OUT, "<input type=IMAGE width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" ");
         u_fprintf(lx->OUT, " value=\"%S\"></form>",
                   FSWF("exploreTitle", "Explore"));
         u_fprintf(lx->OUT, "</form>");
@@ -954,12 +951,12 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 #endif
     u_fprintf(lx->OUT, "</td>"); /* Now, we're done with the ShowKey.. cell */
 
-    u_fprintf(lx->OUT, "</tr><tr><td colspan=2><table width=\"100%%\">\r\n");
+    u_fprintf(lx->OUT, "</tr><tr><td colspan=\"2\"><table width=\"100%%\">\r\n");
 
     for(i=0;desc[i];i++)
     {
       
-        u_fprintf(lx->OUT, "<tr><th>%d</th><td>%S</td><td>",
+        u_fprintf(lx->OUT, "<tr>\r\n<th>%d</th><td>%S</td><td>",
                   i, desc[i]);
 
         status = U_ZERO_ERROR;
@@ -1022,7 +1019,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 ;
             }
 
-            u_fprintf(lx->OUT, "%S\r\n", toShow);
+            u_fprintf(lx->OUT, "%S", toShow);
         }
         else
         {
@@ -1160,7 +1157,7 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     u_fprintf(lx->OUT, "<table width=\"100%%\">\r\n");
 
     for(k=0;k<sizeof(styles)/sizeof(styles[0]);k++) {
-      u_fprintf(lx->OUT, "<tr><td colspan=2><b>%s</b></td></tr>\r\n", stylen[k]);
+      u_fprintf(lx->OUT, "<tr><td colspan=\"2\"><b>%s</b></td></tr>\r\n", stylen[k]);
       for(n=0;n<(sizeof(examples)/sizeof(examples[0]));n++) {
         status = U_ZERO_ERROR;
         tempChars[0] = 0;
@@ -1267,7 +1264,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
         u_fprintf(lx->OUT, "\r\n");
     }
 
-    u_fprintf(lx->OUT, "</TD>");
+    u_fprintf(lx->OUT, "</td>");
 
     showKeyAndEndItem(lx, key, locale);
     ures_close(array);
@@ -1495,7 +1492,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
     {
         if(bigString)
         {
-            u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" SRC=\"" LDATA_PATH "opened.gif\" /> %S</a>\r\n",
+            u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\" /> %S</a>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1517,7 +1514,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
                 u_fprintf(lx->OUT, "<td><b>");
                 if(h == 0)
                 {
-                    u_fprintf(lx->OUT, "<a target=lx_tz href=\"http://icu.sourceforge.net/userguide/dateTimezone.html\">");
+                    u_fprintf(lx->OUT, "<a target=\"lx_tz\" href=\"http://icu.sourceforge.net/userguide/dateTimezone.html\">");
                 }
                 u_fprintf(lx->OUT,"%S", desc[h]);
                 if(h == 0)
@@ -1535,7 +1532,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
                 row   = ures_getByIndex(array, v, row, &status);
 
                 if(U_FAILURE(status)) {
-                    u_fprintf(lx->OUT, "<TR><TD><B>ERR: ");
+                    u_fprintf(lx->OUT, "<tr><td><b>ERR: ");
                     explainStatus(lx, status, NULL);
                     status = U_ZERO_ERROR;
                     continue;
@@ -1622,7 +1619,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
 
   if(bigString && !userRequested) /* it's hidden. */  {
     /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
-    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</A>\r\n<p>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<p>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
       u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\" /> %S</a>\r\n",
@@ -1660,17 +1657,17 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                 status = U_ZERO_ERROR;
                 taggedItem = ures_getByIndex(tagged, v, NULL, &status);
                 tag = ures_getKey(taggedItem);
-                
+
                 /*tag = ures_getTaggedArrayTag(rb, key, v, &status);*/
                 if(!tag)
                     break;
-                
-                u_fprintf(lx->OUT,"<tr> ");
-                
+
+                u_fprintf(lx->OUT,"<tr>");
+
                 if(U_SUCCESS(status)) {
-                    u_fprintf(lx->OUT, "<td><tt>%s</tt></td> ", tag);
-                    
-                    
+                    u_fprintf(lx->OUT, "<td><tt>%s</tt></td>", tag);
+
+
                     if(compareToDisplay) {
                         if(lx->dispRB) {
                             item = ures_getByKey(defaultTagged, tag, item, &status);
@@ -1792,7 +1789,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
     u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
-      u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" SRC=\"" LDATA_PATH "opened.gif\" /> %S</a>\r\n",
+      u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\" /> %S</a>\r\n",
                 locale,
                 key,
                 FSWF("bigStringHide", "Hide"));
@@ -1810,7 +1807,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
       u_fprintf(lx->OUT,"<table>\r\n");
         
       /* print the top row */
-      u_fprintf(lx->OUT,"<tr><th>%S</th><th>%S</th><th>%S</th><th>%S</th>",
+      u_fprintf(lx->OUT,"<tr><th>%S</th><th>%S</th><th>%S</th><th>%S</th></tr>\r\n",
                 FSWF("currCode", "Code"),
                 FSWF("currSymbol", "Symbol"),
                 FSWF("currName", "Name"),
@@ -1818,7 +1815,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         
       for(v=0;v<rows;v++) {
         const char *tag;
-	UBool isDefault = FALSE;
+        UBool isDefault = FALSE;
           
         status = U_ZERO_ERROR;
         taggedItem = ures_getByIndex(tagged, v, NULL, &status);
@@ -1827,12 +1824,12 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         if(!tag)
           break;
 
-	if(!strcmp(tag,cfl)) {
-		isDefault = TRUE;
-	}
-          
+        if(!strcmp(tag,cfl)) {
+            isDefault = TRUE;
+        }
+
         u_fprintf(lx->OUT,"<tr> ");
-          
+
         if(U_SUCCESS(status)) {
           u_fprintf(lx->OUT, "<td><tt>%s%s%s</tt></td> ", 
                     isDefault?"<b>":"",
@@ -1875,7 +1872,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
             break;
               
           default:
-            u_fprintf(lx->OUT, "<TD><i>unknown resource type=%d</i></TD>", ures_getType(taggedItem));
+            u_fprintf(lx->OUT, "<td><i>unknown resource type=%d</i></td>", ures_getType(taggedItem));
           } /* switch */
         }
           
@@ -1887,11 +1884,11 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         }
 
         if(isDefault) {
-            u_fprintf(lx->OUT, "<td><B>%S</B></td>",
+            u_fprintf(lx->OUT, "<td><b>%S</b></td>",
               FSWF("currDefault","Default Currency for this locale"));
         }
 
-        u_fprintf(lx->OUT, "</TR>\r\n");
+        u_fprintf(lx->OUT, "</tr>\r\n");
       }
       if(!sawDefault && cflu[0]) {
         UBool isChoiceFormat = FALSE;
@@ -2010,9 +2007,9 @@ void calPrintDefaultWarning(LXContext *lx) {
                                 valBuf,
                                 1024,
                                 &status);
-    u_fprintf(lx->OUT, "<font size=-2>");
+    u_fprintf(lx->OUT, "<small>");
     u_fprintf_u(lx->OUT, FSWF(/**/"inherited_from", "from: %S"), valBuf);
-    u_fprintf(lx->OUT, "</font>\n");
+    u_fprintf(lx->OUT, "</small>\n");
 }
 
  void loadDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *locale) {
@@ -2087,7 +2084,7 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
     }
   }
 
-  u_fprintf(lx->OUT, "</TD>");
+  u_fprintf(lx->OUT, "</td>");
   showKeyAndEndItem(lx, key, locale);
 }
 
@@ -2158,7 +2155,7 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
   showShortLongCal(lx, myRB, locale, "dayNames"); 
   showShortLongCal(lx, myRB, locale, "monthNames");
   
-  u_fprintf(lx->OUT, "&nbsp;<table cellpadding=0 cellspacing=0 width=\"100%%\"><tr><td valign=\"top\">");
+  u_fprintf(lx->OUT, "&nbsp;<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%%\"><tr><td valign=\"top\">");
   
   {
     const UChar *ampmDesc[3];

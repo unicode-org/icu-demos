@@ -1,4 +1,7 @@
-/* Copyright (c) 2000-2003 IBM. and Others, all rights reserved */
+/**********************************************************************
+*   Copyright (C) 2000-2005, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
 
 #include "locexp.h"
 #include "unicode/ustdio.h"
@@ -57,7 +60,7 @@ void printCalendar( LXContext *lx, UCalendar *cal )
     
     udat_format(dfmt, d, s, BUF_SIZE, 0, &status);
     
-    u_fprintf(lx->OUT, "<table border=3><tr><td colspan=%d><h1>%S</h1></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<table border=\"3\"><tr><td colspan=\"%d\"><h1>%S</h1></td></tr>\r\n",
         dayCount, s);
     
     u_fprintf(lx->OUT, "<tr>");
@@ -185,7 +188,7 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
   /* if(type==thisType) */  /* LEFT tab A */
   {
     u_fprintf(lx->OUT, "<td bgcolor=\"#00cc99\" width=\"20%%\" height=9><img align=left width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aleft.gif\">");
-    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar=%c&NP_DBL=%s\">%S</A>", 
+    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar=%c&NP_DBL=%s\">%S</a>", 
               lx->curLocaleName,
               thisType, num, name);
     u_fprintf(lx->OUT, "<img align=\"right\" width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aright.gif\" /></td>");
@@ -294,7 +297,7 @@ extern void showExploreCalendar( LXContext *lx)
         static const  int32_t amt [NR_ITEMS] =  {    -1 ,  -1  ,  1   ,  1   };
         static const char    *nam [NR_ITEMS] =  { "&lt;", "-"  , "+"  , "&gt;"};
 
-        u_fprintf(lx->OUT, "<TABLE BORDER=2>\r\n");
+        u_fprintf(lx->OUT, "<table border=\"2\">\r\n");
         u_fprintf(lx->OUT, "<tr><td><b>val</b></td><td><b>chg</b></td><td><b>name</b></td><td><b>range</b></td></tr>\r\n");
         for (i=0;i<UCAL_FIELD_COUNT;i++)
         {
@@ -302,15 +305,15 @@ extern void showExploreCalendar( LXContext *lx)
             status = U_ZERO_ERROR;
             val=ucal_get(cal, (UCalendarDateFields)i, &status);
 
-            u_fprintf(lx->OUT, "  <TR>\r\n");
+            u_fprintf(lx->OUT, "  <tr>\r\n");
       
-            u_fprintf(lx->OUT, "    <TD %s>%ld</TD>\r\n", 
+            u_fprintf(lx->OUT, "    <td %s>%ld</td>\r\n", 
                       (ucal_isSet(cal, (UCalendarDateFields)i)?
                        (U_FAILURE(status)?"BGCOLOR=#FF0000":""):"BGCOLOR=#999999"),
                       val);
       
             /* roll/set table */
-            u_fprintf(lx->OUT, "    <TD>\r\n");
+            u_fprintf(lx->OUT, "    <td>\r\n");
             status = U_ZERO_ERROR;
             for(j=0;j<NR_ITEMS;j++)
             {
@@ -370,7 +373,7 @@ extern void showExploreCalendar( LXContext *lx)
         }
         if(U_FAILURE(status))
         {
-            u_fprintf(lx->OUT, "  <tr><td colspan=2>ERR: %s</td></tr>\r\n",
+            u_fprintf(lx->OUT, "  <tr><td colspan=\"2\">ERR: %s</td></tr>\r\n",
                       u_errorName(status));
         }
         

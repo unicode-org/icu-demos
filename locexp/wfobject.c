@@ -1,4 +1,7 @@
-/* Copyright (c) 2000-2003 IBM all rights reserved */
+/**********************************************************************
+*   Copyright (C) 2000-2005, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+***********************************************************************/
 
 /* Write an object out of the LX virtual path to stdout */
 
@@ -54,7 +57,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
 	}
       }
       break;
-    case RES_BINARY: fprintf(lx->fOUT, "<a href=\"./%s\">BINARY</A>", ures_getKey(n)); break;
+    case RES_BINARY: fprintf(lx->fOUT, "<a href=\"./%s\">BINARY</a>", ures_getKey(n)); break;
     case RES_TABLE: fprintf(lx->fOUT, "TABLE"); break;
     case RES_INT: fprintf(lx->fOUT, "INT=%d", ures_getInt(n, &s2)); break;
     case RES_ARRAY: fprintf(lx->fOUT, "ARRAY");

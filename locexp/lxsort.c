@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -705,7 +705,7 @@ void showSort(LXContext *lx, const char *locale)
         value = UCOL_OFF;
       }
 
-      u_fprintf(lx->OUT, "<input type=hidden name=lxCustSortOpts value=\"x\" /> <input type=checkbox %s name=\"fr\" /> %S <br />\r\n",
+      u_fprintf(lx->OUT, "<input type=\"hidden\" name=\"lxCustSortOpts\" value=\"x\" /> <input type=checkbox %s name=\"fr\" /> %S <br />\r\n",
                 (value==UCOL_ON)?"checked":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
