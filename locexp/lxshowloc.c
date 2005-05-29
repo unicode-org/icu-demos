@@ -126,7 +126,6 @@ void showOneLocale(LXContext *lx)
 
         u_fprintf(lx->OUT, "<td valign=\"top\" align=\"right\">");
         printHelpTag(lx, "EXPLORE_CollationElements", NULL);
-        u_fprintf(lx->OUT, "</td>");
 
         showKeyAndEndItem(lx, "EXPLORE_CollationElements", locale);
     }
@@ -151,7 +150,7 @@ void showOneLocale(LXContext *lx)
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
 
         showKeyAndStartItem(lx, "LocaleID", NULL, locale, FALSE, status);
-        u_fprintf(lx->OUT, "0x%X</td>", uloc_getLCID(locale));
+        u_fprintf(lx->OUT, "0x%X", uloc_getLCID(locale));
         showKeyAndEndItem(lx, "LocaleID", locale);
 
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");

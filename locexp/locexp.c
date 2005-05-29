@@ -117,7 +117,7 @@ void displayLocaleExplorer(LXContext *lx)
     printHelpImg(lx, "display", 
                 FSWF("display_ALT", "Display Problems?"),
                 FSWF("display_GIF", "displayproblems.gif"),
-                FSWF("display_OPTIONS", "valign=\x22top\x22"));
+                FSWF("display_OPTIONS", ""));
 
     u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
 

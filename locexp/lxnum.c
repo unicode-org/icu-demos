@@ -38,7 +38,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><p><hr />%S: ", FSWF("formatExample_errorOpen", "Couldn't open the formatter"));
+        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><br /><hr />%S: ", FSWF("formatExample_errorOpen", "Couldn't open the formatter"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
         return; /* ? */
     }
@@ -49,7 +49,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><p><hr />  %S<p>", FSWF("formatExample_errorToPattern", "Couldn't convert the pattern [toPattern]"));
+        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><br /><hr />  %S<p>", FSWF("formatExample_errorToPattern", "Couldn't convert the pattern [toPattern]"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
         return;
     }
@@ -59,7 +59,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><p><hr />%S<p>", FSWF("formatExample_errorOpenDefault", "Couldn't open the default number fmt"));
+        u_fprintf(lx->OUT, "</td></tr></table></td></tr></table><br /><hr />%S<p>", FSWF("formatExample_errorOpenDefault", "Couldn't open the default number fmt"));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
         return;
     }
@@ -263,9 +263,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     showExploreCloseButton(lx, locale, "NumberPatterns");
     u_fprintf(lx->OUT, "</td><td align=\"left\" valign=\"top\">");
     printHelpTag(lx, "EXPLORE_NumberPatterns", NULL);
-    u_fprintf(lx->OUT, "</td>\r\n");
 
-  
     showKeyAndEndItem(lx, "EXPLORE_NumberPatterns", locale);
 }
 

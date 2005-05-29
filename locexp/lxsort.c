@@ -369,7 +369,7 @@ void showSortStyle(LXContext *lx)
 {
 
   u_fprintf(lx->OUT, "%s",  "\r\n<style type=\"text/css\">\r\n"
-            "<!--\r\n"
+            "/*<![CDATA[*/"
 /*
             ".box0 { border: 1px inset gray; margin: 1px }\r\n"
             ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
@@ -385,7 +385,7 @@ void showSortStyle(LXContext *lx)
             "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
             "               color: black; vertical-align: top; border: 1px solid black; \r\n"
             "               padding: 5px }\r\n");
-	u_fprintf(lx->OUT, "%s",
+    u_fprintf(lx->OUT, "%s",
             ".noborder    { border: 1px none white }\r\n"
             ".widenoborder { width: 100%; border: 1px none white }\r\n"
             ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
@@ -393,7 +393,8 @@ void showSortStyle(LXContext *lx)
             ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
             "tt.count { font-size: 80%; color: #0000FF }\r\n"
             "tt.key { font-size: 70%; color: #666666 }\r\n"
-            "-->\r\n</style>\r\n");
+            "/*]]>*/\r\n"
+            "</style>\r\n");
   
 }
   

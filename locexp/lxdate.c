@@ -215,7 +215,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     u_fprintf(lx->OUT, "</td><td align=\"left\" valign=\"top\">");
     printHelpTag(lx, "EXPLORE_DateTimePatterns", NULL);
-    u_fprintf(lx->OUT, "</td>\r\n");
 
     showKeyAndEndItem(lx, "EXPLORE_DateTimePatterns", locale);
   

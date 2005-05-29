@@ -175,7 +175,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     if(showAll == FALSE && toOpen == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale_all&amp;%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<br />",
+        u_fprintf(lx->OUT, "<a href=\"?locale_all&amp;%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" alt=\"+\"/>%S</a>\r\n<br />",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }

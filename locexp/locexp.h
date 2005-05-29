@@ -293,6 +293,9 @@ extern void setLocaleAndEncoding(LXContext *lx);
 extern void writeEscaped(LXContext *lx, const UChar *s);
 extern char *createEscapedSortList(const UChar *source);
 
+/* Write escaped strings (e.g. escape these characters & < > */
+extern void writeEscapedHTMLChars(LXContext *lx, const char *s);
+
 /* is this a locale we should advertise as supported? */
 extern UBool isSupportedLocale(const char *locale, UBool includeChildren); /* for LX interface */
 extern UBool isExperimentalLocale(const char *local); /* for real data */
