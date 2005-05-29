@@ -129,7 +129,7 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
     writeEscaped(lx, sampleString);
     u_fprintf(lx->OUT, "\" />\r\n");
   
-    u_fprintf(lx->OUT, "<input type=\"image\" valign=\"top\" width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" value=\"%S\" /></form>",
+    u_fprintf(lx->OUT, "<input type=\"image\" width=\"48\" height=\"20\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" value=\"%S\" /></form>",
               FSWF("exploreTitle", "Explore"));
 }
 
@@ -191,7 +191,7 @@ void showKeyAndStartItem(LXContext *lx, const char *key, const UChar *keyName, c
 
 void showKeyAndEndItem(LXContext *lx, const char *key, const char *locale)
 {
-    u_fprintf(lx->OUT, "</tr></table>\r\n");
+    u_fprintf(lx->OUT, "<br />\r\n</td>\r\n</tr>\r\n</table>\r\n");
     u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
 }
 
@@ -327,18 +327,20 @@ void printStatusTable(LXContext *lx)
 #else
     /* Transliteration is OK */
     if(lx->inDemo == FALSE)  {
-      if(!strcmp(lx->convRequested, "transliterated")) {
-        u_fprintf(lx->OUT, "<td><b>*%S*</b> / <a href=\"%s/%s/?%s\">%S</a></td>",
+      if(strstr(lx->pathInfo,"/transliterated/")) {
+        u_fprintf(lx->OUT, "<td><b>*%S*</b> / <a href=\"%s/%s/?",
                   FSWF("on","on"),
                   lx->scriptName,
-                  lx->dispLocale,
-                  lx->queryString,
+                  lx->dispLocale);
+        writeEscapedHTMLChars(lx, lx->queryString);
+        u_fprintf(lx->OUT, "\">%S</a></td>\r\n",
                   FSWF("off","off"));
       } else {
-        u_fprintf(lx->OUT, "<td><a href=\"%s/%s/transliterated/?%s\">%S</a> / <b>*%S*</b></td>",
+        u_fprintf(lx->OUT, "<td><a rel=\"nofollow\" href=\"%s/%s/transliterated/?",
                   lx->scriptName,
-                  lx->dispLocale,
-                  lx->queryString,
+                  lx->dispLocale);
+        writeEscapedHTMLChars(lx, lx->queryString);
+        u_fprintf(lx->OUT, "\">%S</a> / <b>*%S*</b></td>\r\n",
                   FSWF("on","on"),
                   FSWF("off","off"));
       }
@@ -471,6 +473,25 @@ char *createEscapedSortList(const UChar *source)
     *p = 0; /* null */
     return out;
 }
+
+void writeEscapedHTMLChars(LXContext *lx, const char *s)
+{
+    lx->backslashCtx.html = FALSE;
+
+    while(*s) {
+        switch (*s) {
+        case '&': u_fprintf(lx->OUT, "&amp;"); break;
+        case '<': u_fprintf(lx->OUT, "&lt;"); break;
+        case '>': u_fprintf(lx->OUT, "&gt;"); break;
+        default: u_fputc((UChar)*s, lx->OUT); break;
+        }
+        s++;
+    }
+
+    /* should 'get/restore' here. */
+    lx->backslashCtx.html = TRUE;
+}
+
 void writeEscaped(LXContext *lx, const UChar *s)
 {
     lx->backslashCtx.html = FALSE;
@@ -478,14 +499,14 @@ void writeEscaped(LXContext *lx, const UChar *s)
     if(u_strchr(s, 0x00A0))
     {
         while(*s)
-	{
+        {
             if(*s == 0x00A0)
                 u_fprintf(lx->OUT, " ");
             else
                 u_fprintf(lx->OUT, "%C", *s);
-	  
+
             s++;
-	}
+        }
     }
     else
         u_fprintf(lx->OUT, "%S", s); 
@@ -501,14 +522,14 @@ void writeEscapedQuery(LXContext *lx, const UChar *s)
     if(u_strchr(s, 0x00A0))
     {
         while(*s)
-	{
+        {
             if(*s == 0x00A0)
                 u_fprintf(lx->OUT, " ");
             else
                 u_fprintf(lx->OUT, "%C", *s);
-	  
+
             s++;
-	}
+        }
     }
     else
         u_fprintf(lx->OUT, "%S", s); 
@@ -614,8 +635,8 @@ void exPrintChangeLocale(LXContext *lx)
 }
 #endif
 
-#define LX_FSECTION_START  "<font size=\"-2\" color=\"#888888\">"
-#define LX_FSECTION_END    "</font>"
+#define LX_FSECTION_START  "<small><span style=\"color: #888888;\">"
+#define LX_FSECTION_END    "</span></small>"
 
 void printChangeField(LXContext *lx, const char *locale, const char *prefix, char part)
 {
@@ -820,9 +841,9 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
   }
   selected = (!strcmp(str,current));
   if(selected) {
-    u_fprintf(lx->OUT, "<td bgcolor=\"#BBBBFF\">", lx->OUT);
+    u_fprintf(lx->OUT, "<td style=\"background-color: #BBBBFF;\">", lx->OUT);
   } else if(couldBold && !doBold) {
-    u_fprintf(lx->OUT, "<td b_gcolor=\"#888888\">", lx->OUT); 
+      u_fprintf(lx->OUT, "<td style=\"background-color: #888888;\">", lx->OUT); 
   } else {
     u_fprintf(lx->OUT, "<td>");
   }
@@ -831,9 +852,9 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
             prefix,
             partStr,
             str,
-            doBold?"<b>":(couldBold?"<font color=\"#444444\">":""),
+            doBold?"<b>":(couldBold?"<span style=\"color: #444444\">":""),
             ustr,
-            doBold?"</b>":(couldBold?"</font>":""));
+            doBold?"</b>":(couldBold?"</span>":""));
   u_fprintf(lx->OUT, "</td>\r\n");
 }
 
