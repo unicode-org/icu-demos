@@ -4,6 +4,7 @@
 ***********************************************************************/
 
 #include "locexp.h"
+#include "unicode/udata.h"
 
 /*  Main function for dumping the contents of a particular locale ---------------------------- */
 
@@ -25,15 +26,15 @@ void showOneLocale(LXContext *lx)
         chooseLocale(lx, TRUE, "", "", FALSE);
 
         /* show the demos */
-        u_fprintf(lx->OUT, "<table border=0 width=\"100%%\" summary=\"--\"><tr><td valign=top>");
+        u_fprintf(lx->OUT, "<table border=\"0\" width=\"100%%\"><tr><td valign=\"top\">");
         u_fprintf(lx->OUT, " %S\r\n",
                   FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
         showExploreButtonSort(lx, NULL,"g7", "CollationElements", FALSE);
 
-        u_fprintf(lx->OUT, "<td width=\"50%%\"></td><td valign=top>\r\n");
+        u_fprintf(lx->OUT, "<td width=\"50%%\"></td><td valign=\"top\">\r\n");
 
-        u_fprintf(lx->OUT, "<b>%S</b>:</td><td valign=top>", FSWF("explore_search", "Search"));
+        u_fprintf(lx->OUT, "<b>%S</b>:</td><td valign=\"top\">", FSWF("explore_search", "Search"));
         showExploreSearchForm(lx, NULL);
         u_fprintf(lx->OUT, "</td></tr></table>\r\n");
 
@@ -121,7 +122,7 @@ void showOneLocale(LXContext *lx)
     {
         showSort(lx, locale);
         
-        u_fprintf(lx->OUT, "<table width=100%%><tr>\r\n"); 
+        u_fprintf(lx->OUT, "<table width=\"100%%\"><tr>\r\n"); 
 
         u_fprintf(lx->OUT, "<td valign=\"top\" align=\"right\">");
         printHelpTag(lx, "EXPLORE_CollationElements", NULL);
@@ -202,11 +203,23 @@ void showOneLocale(LXContext *lx)
       
             showArrayWithDescription(lx, myRB, locale, numDesc, "NumberPatterns", kNormal);
         }
-    
-        showSpelloutExample(lx, myRB, locale);
-        showString(lx, myRB, locale, "SpelloutRules", TRUE);
-        showString(lx, myRB, locale, "OrdinalRules", TRUE);
-        showString(lx, myRB, locale, "DurationRules", TRUE);
+
+        {
+            UResourceBundle* nfrb = ures_open(U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "rbnf", locale, &status);
+            if (status != U_USING_DEFAULT_WARNING) {
+                showSpelloutExample(lx, nfrb, locale);
+                showString(lx, nfrb, locale, "SpelloutRules", TRUE);
+                showString(lx, nfrb, locale, "OrdinalRules", TRUE);
+                showString(lx, nfrb, locale, "DurationRules", TRUE);
+            }
+            else {
+                /* No data at all :-( */
+                showString(lx, myRB, locale, "SpelloutRules", TRUE);
+                showString(lx, myRB, locale, "OrdinalRules", TRUE);
+                showString(lx, myRB, locale, "DurationRules", TRUE);
+            }
+            ures_close(nfrb);
+        }
 
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   Collation section %%%*/

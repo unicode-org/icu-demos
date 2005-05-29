@@ -624,7 +624,7 @@ void showICIR(LXContext* lx)
 	u_fprintf(lx->OUT, "<input type=\"hidden\" name=collator value=\"%s\" />", lx->curLocaleBlob.collation);
 	u_fprintf(lx->OUT, "<input type=\"hidden\" name=d_ value=\"%s\" />", lx->dispLocale);
 
-    u_fprintf(lx->OUT, "<table border=0>\n");
+    u_fprintf(lx->OUT, "<table border=\"0\">\n");
     if(!strcmp(superSection+1,"num")) {
         showICIRnum(lx);
     } else if(!strcmp(superSection+1,"dat")) {

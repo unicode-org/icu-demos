@@ -191,18 +191,18 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     {
         /*  === local side */
         u_fprintf(lx->OUT, "\r\n\r\n<!--  LOCALIZED SIDE -->\r\n<B>%S</B><br />\r\n",lx->curLocale?lx->curLocale->ustr:FSWF("NoLocale","MISSING LOCALE NAME") );
-        u_fprintf(lx->OUT, "<form method=\"post\" ACTION=\"%s#EXPLORE_NumberPatterns\">\r\n",
+        u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_NumberPatterns\">\r\n",
                   getLXBaseURL(lx, kNO_URL));
-        u_fprintf(lx->OUT, "<input type=HIDDEN NAME=\"str\" value=\"");
+        u_fprintf(lx->OUT, "<input type=\"hidden\" name=\"str\" value=\"");
         writeEscaped(lx, pattern);
         u_fprintf(lx->OUT, "\" />\r\n");
       
-        u_fprintf(lx->OUT, "<textarea name=NP_LOC rows=1 cols=20>");
+        u_fprintf(lx->OUT, "<textarea name=\"NP_LOC\" rows=\"1\" cols=\"20\">");
         writeEscaped(lx, tempChars);
-        u_fprintf(lx->OUT, "</textarea><input type=SUBMIT value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
+        u_fprintf(lx->OUT, "</textarea><input type=\"submit\" value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
 
         if(localValueErr)
-            u_fprintf(lx->OUT, "<P>%S", localValueErr);
+            u_fprintf(lx->OUT, "<p>%S", localValueErr);
     }
     /*  ============== End of the default/localized split =============== */
 
@@ -213,7 +213,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     u_fprintf(lx->OUT, "<tr><td colspan=3>\r\n");
     u_fprintf(lx->OUT, "<form method=\"post\" action=\"%s#EXPLORE_NumberPatterns\">\r\n",
               getLXBaseURL(lx, kNO_URL));
-    u_fprintf(lx->OUT, "<input type=HIDDEN name=\"str\" value=\"");
+    u_fprintf(lx->OUT, "<input type=\"hidden\" name=\"str\" value=\"");
     writeEscaped(lx, pattern);
     u_fprintf(lx->OUT, "\" />\r\n");
 
@@ -232,7 +232,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     lx->backslashCtx.html = FALSE;
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%S<P>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
+        u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
         explainStatus(lx, status, "EXPLORE_NumberPattern");
     }
     else
@@ -243,7 +243,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     status = U_ZERO_ERROR;
   
-    u_fprintf(lx->OUT, "</textarea><input type=SUBMIT value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
+    u_fprintf(lx->OUT, "</textarea><input type=\"submit\" value=\"%S\" /></form>", FSWF("EXPLORE_change", "Change"));
   
     /* == end spellout == */
 

@@ -164,7 +164,7 @@ void showExploreSearchForm(LXContext *lx, const UChar *valueString)
     u_fprintf(lx->OUT, "<form><input type=\"hidden\" name=\"_\" value=\"%s\" />\r\n",
               lx->curLocaleName);
     u_fprintf(lx->OUT, "<input value=\"%S\" name=\"EXPLORE_search\" /> \r\n", valueString);
-    u_fprintf(lx->OUT, "<input type=SUBMIT value=\"%S\" />\r\n", FSWF("explore_search", "Search"));
+    u_fprintf(lx->OUT, "<input type=\"submit\" value=\"%S\" />\r\n", FSWF("explore_search", "Search"));
     u_fprintf(lx->OUT, "</form>\r\n");
 }
 

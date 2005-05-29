@@ -104,7 +104,7 @@ void writeFileObject( LXContext *lx, const char *path )
   if(U_FAILURE(status))
   {
     appendHeader(lx, "Content-type", "text/html;charset=utf-8");
-    fprintf(lx->fOUT, "Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
+    fprintf(lx->fOUT, "Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<p>\r\n",
            lx->dispLocale,
            (thePath==NULL)?"NULL":thePath,
            path);
@@ -170,7 +170,7 @@ void writeFileObject( LXContext *lx, const char *path )
     if(U_FAILURE(s2))
     {
       appendHeader(lx, "Content-type", "text/html");
-      fprintf(lx->fOUT, "Error: Couldn't get binary [%s] in bundle [%s] in path [%s]<P>\r\n",
+      fprintf(lx->fOUT, "Error: Couldn't get binary [%s] in bundle [%s] in path [%s]<p>\r\n",
              path,
              lx->dispLocale,
              u_getDataDirectory());

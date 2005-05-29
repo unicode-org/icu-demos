@@ -213,15 +213,15 @@ void printCalMenuBar( LXContext *lx, const char *num, char type )
         type='f';
     }
   
-    u_fprintf(lx->OUT, "<table cellspacing=0 border=0 cellpadding=0><tr>");
+    u_fprintf(lx->OUT, "<table cellspacing=\"0\" border=\"0\" cellpadding=\"0\"><tr>");
   
     printCalMenuSection(lx, num, type,
                         'f', FSWF("calexp_fieldsTab", "Fields"));
-    u_fprintf(lx->OUT, "<td height=4 width=\"3%%\">&nbsp</td>");
+    u_fprintf(lx->OUT, "<td height=\"4\" width=\"3%%\">&nbsp</td>");
     printCalMenuSection(lx, num, type,
                         'c', FSWF("calexp_calTab", "Calendar"));
-    u_fprintf(lx->OUT, "<td height=2 colspan=3 width=100%%><!-- D -->&nbsp;</td></tr>");
-    u_fprintf(lx->OUT, "<tr><td colspan=10 height=3 background=\"" LDATA_PATH "tab_bot.gif\"></td><font size=4>&nbsp;</font></tr></table>\r\n");
+    u_fprintf(lx->OUT, "<td height=\"2\" colspan=\"3\" width=\"100%%\"><!-- D -->&nbsp;</td></tr>");
+    u_fprintf(lx->OUT, "<tr><td colspan=\"10\" height=\"3\" background=\"" LDATA_PATH "tab_bot.gif\"></td><font size=4>&nbsp;</font></tr></table>\r\n");
 }
 
 
@@ -272,7 +272,7 @@ extern void showExploreCalendar( LXContext *lx)
   
     sprintf(num, "%f", now);
 
-    u_fprintf(lx->OUT, "[%D %T]<P>", now, now );
+    u_fprintf(lx->OUT, "[%D %T]<p>", now, now );
 
     cal = ucal_open(lx->timeZone, -1, lx->curLocaleName, UCAL_TRADITIONAL, &status);
     ucal_setMillis(cal, now, &status);
@@ -287,7 +287,7 @@ extern void showExploreCalendar( LXContext *lx)
     status = U_ZERO_ERROR;
 
     /* printCalMenuBar( lx, num, type ); */
-    u_fprintf(lx->OUT, "<table border=0><tr><td>\r\n");
+    u_fprintf(lx->OUT, "<table border=\"0\"><tr><td>\r\n");
 
 
         /**************** calendar fields **********************/
@@ -388,7 +388,7 @@ extern void showExploreCalendar( LXContext *lx)
 
     } /* end calendar table [f] */
     
-    u_fprintf(lx->OUT, "</td><td valign=top>\r\n");
+    u_fprintf(lx->OUT, "</td><td valign=\"top\">\r\n");
 
     printCalendar( lx, cal );
 

@@ -77,7 +77,7 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
       
         printHelpImg(lx, helpTag, FSWF("help", "Help"), 
                      FSWF("helpgif", "help.gif"),
-                     FSWF("helpgif_opt", "border=0"));
+                     FSWF("helpgif_opt", "border=\x22\x30\x22"));
 
     } else {
         u_fprintf(lx->OUT, "<a target=\"icu_lx_help\" href=\"" LDATA_PATH "help.html#%s\">%S</a>",
@@ -157,7 +157,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
     u_fprintf(lx->OUT, "<a target=\"lx_explore_%s_%s\" href=\"%s&amp;x=%s&str=",
               locale,key,getLXBaseURL(lx, kNO_URL | kNO_SECT),section);
     writeEscaped(lx, sampleString);
-    u_fprintf(lx->OUT, "&\">");
+    u_fprintf(lx->OUT, "\">");
 }
 
 /* Show the 'short' HTML for a line item. It is short because it has not closed out the table yet - the caller can put in their own push button before closing the table cell/column. */
@@ -210,12 +210,12 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
     if(valueFmt)
     {
       
-        u_fprintf(lx->OUT, "<input name=NP_DBL type=HIDDEN value=\"");
+        u_fprintf(lx->OUT, "<input name=\"NP_DBL\" type=\"hidden\" value=\"");
         tmp[0] = 0;
         unum_formatDouble(valueFmt, value, tmp, 1000, 0, &status);
         u_fprintf(lx->OUT, "%S\" />", tmp);
     }
-    u_fprintf(lx->OUT, "<textarea rows=2 cols=60 name=\"str\">");
+    u_fprintf(lx->OUT, "<textarea rows=\"2\" cols=\"60\" name=\"str\">");
 
     lx->backslashCtx.html = FALSE;
 
@@ -223,7 +223,7 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
 
     lx->backslashCtx.html = TRUE;
   
-    u_fprintf(lx->OUT, "</textarea><p>\r\n<input type=SUBMIT value=Format /><input type=RESET value=Reset /></form>\r\n");
+    u_fprintf(lx->OUT, "</textarea><br /><br />\r\n<input type=\"submit\" value=\"Format\" /><input type=\"reset\" value=\"Reset\" /></form>\r\n");
 
 }
 
@@ -262,7 +262,7 @@ void printStatusTable(LXContext *lx)
     {
         u_fprintf(lx->OUT, "<a href=\"?converter");
         if(strncmp(lx->queryString, "converter",9)) /* fixme */
-            u_fprintf(lx->OUT,"&%s", lx->queryString);
+            u_fprintf(lx->OUT,"&amp;%s", lx->queryString);
         u_fprintf(lx->OUT, "\">");
     }
 
@@ -566,9 +566,9 @@ void exPrintChangeLocale(LXContext *lx)
   u_fprintf(lx->OUT, "<form method=GET action=\"?_=%s\">\n", lx->curLocaleName);
 
   u_fprintf(lx->OUT, "<select name=l>\n");
-  u_fprintf(lx->OUT, " <option value=\"\">\n");
+  u_fprintf(lx->OUT, " <option value=\"\"></option>\n");
   for(n=0;n<lx->locales->nSubLocs;n++) {
-    u_fprintf(lx->OUT, " <option %s value=\"%s\">%S\n",
+    u_fprintf(lx->OUT, "<option %s value=\"%s\">%S</option>\n",
               !strcmp(lx->locales->subLocs[n]->str,lx->curLocaleL)?"selected":"",
               lx->locales->subLocs[n]->str,
               lx->locales->subLocs[n]->ustr);
@@ -576,9 +576,9 @@ void exPrintChangeLocale(LXContext *lx)
   u_fprintf(lx->OUT, "</select>\n");
 
   u_fprintf(lx->OUT, "<select name=s>\n");
-  u_fprintf(lx->OUT, " <option value=\"\">\n");
+  u_fprintf(lx->OUT, " <option value=\"\"></option>\n");
   for(n=0;n<USCRIPT_CODE_LIMIT;n++) {
-    u_fprintf(lx->OUT, " <option %s value=\"%s\">%s\n",
+    u_fprintf(lx->OUT, " <option %s value=\"%s\">%s</option>\n",
               !strcmp(uscript_getShortName((UScriptCode)n),lx->curLocaleS)?"selected":"",
               uscript_getShortName((UScriptCode)n),
               uscript_getName((UScriptCode)n)); /* change to localized */
@@ -586,14 +586,14 @@ void exPrintChangeLocale(LXContext *lx)
   u_fprintf(lx->OUT, "</select>\n");
 
   u_fprintf(lx->OUT, "<select name=r>\n");
-  u_fprintf(lx->OUT, " <option value=\"\">\n");
+  u_fprintf(lx->OUT, " <option value=\"\"></option>\n");
   for(n=0;n<lx->regions->nSubLocs;n++) {
     char rgn[128];
     
     uloc_getCountry(lx->regions->subLocs[n]->str, rgn, 128, &status);
 
-    u_fprintf(lx->OUT, " <option %s value=\"%s\">%S\n",
-              !strcmp(rgn,lx->curLocaleR)?"selected":"",
+    u_fprintf(lx->OUT, " <option %s value=\"%s\">%S</option>\n",
+              !strcmp(rgn,lx->curLocaleR)?"selected=\"selected\"":"",
               rgn,
               lx->regions->subLocs[n]->ustr);
   }
@@ -816,7 +816,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
   default: ;
   }
   if(n>0 && (n%5)==0) {
-    u_fprintf(lx->OUT, "</tr>\n<tr>");
+    u_fprintf(lx->OUT, "</tr>\n<tr>\r\n");
   }
   selected = (!strcmp(str,current));
   if(selected) {
@@ -826,7 +826,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
   } else {
     u_fprintf(lx->OUT, "<td>");
   }
-  u_fprintf(lx->OUT, " <a href=\"%s&%s%s=%s&\">%s%S%s</a>\n",
+  u_fprintf(lx->OUT, "<a href=\"%s&amp;%s%s=%s\">%s%S%s</a>",
             myURL,
             prefix,
             partStr,
@@ -834,7 +834,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
             doBold?"<b>":(couldBold?"<font color=\"#444444\">":""),
             ustr,
             doBold?"</b>":(couldBold?"</font>":""));
-  u_fprintf(lx->OUT, "</td>");
+  u_fprintf(lx->OUT, "</td>\r\n");
 }
 
 static void endCell(LXContext *lx)

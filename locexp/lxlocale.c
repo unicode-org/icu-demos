@@ -91,13 +91,13 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     UErrorCode status = U_ZERO_ERROR;
     UBool  hadUnsupportedLocales = FALSE;
     static UBool initStr = TRUE;
-    U_STRING_DECL(BEGIN_HIT_CELL, "<td valign=top bgcolor=\"#FFDDDD\"><b>", 36);
+    U_STRING_DECL(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#FFDDDD\"><b>", 38);
     U_STRING_DECL(END_HIT_CELL, "</b></td>\r\n", 12);
     U_STRING_DECL(BEGIN_CELL, "<td valign=\"top\">", 17);
     U_STRING_DECL(END_CELL, "</td>\r\n", 8);
     U_STRING_DECL(COMMA_SPACE, ",&nbsp; ", 9);
     if (initStr) {
-        U_STRING_INIT(BEGIN_HIT_CELL, "<td valign=top bgcolor=\"#FFDDDD\"><b>", 36);
+        U_STRING_INIT(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#FFDDDD\"><b>", 38);
         U_STRING_INIT(END_HIT_CELL, "</b></td>\r\n", 12);
         U_STRING_INIT(BEGIN_CELL, "<td valign=\"top\">", 17);
         U_STRING_INIT(END_CELL, "</td>\r\n", 8);
@@ -175,7 +175,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
 
     if(showAll == FALSE && toOpen == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"?locale_all&%s\"><img border=0 width=16 height=16 src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<br />",
+        u_fprintf(lx->OUT, "<a href=\"?locale_all&amp;%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<br />",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
                   FSWF("showAll", "Show All"));
     }

@@ -156,7 +156,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
                 if(U_FAILURE(status))
                 {
                     free(compsBuf);
-                    u_fprintf(lx->OUT, "xlit failed -} %s<P>\n",
+                    u_fprintf(lx->OUT, "xlit failed -} %s<p>\n",
                               u_errorName(status));
                     comps = (UChar*)s;
                     compsBuf = comps;
@@ -1185,7 +1185,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
     const UChar *s  = 0;
     int32_t    len;
     const int32_t   *elements;
-
+    UBool isDefault = FALSE;
     UResourceBundle *array = NULL, *item = NULL;
 
     const char *key = "DateTimeElements";
@@ -1196,7 +1196,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
     status = U_ZERO_ERROR;
 
-    array = ures_getByKey(rb, key, array, &status);
+    array = loadCalRes(lx, key, &isDefault, &status);
     elements = ures_getIntVector(array, &len, &status);
 
     showKeyAndStartItem(lx, key, FSWF("DateTimeElements","Date and Time Options"), locale, FALSE, status);
@@ -1222,7 +1222,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
         /* here's something fun: try to fetch that day from the user's current locale */
         status = U_ZERO_ERROR;
       
-        if(lx->dispRB && U_SUCCESS(status))
+        if(lx->dispRB)
         {
             /* don't use 'array' here because it's the DTE resource */
             item = ures_getByKey(lx->dispRB, "DayNames", item, &status);
@@ -1528,6 +1528,7 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
             for(v=0;v<rows;v++)
             {
                 const UChar *zn = NULL;
+                status = U_ZERO_ERROR;
 
                 row   = ures_getByIndex(array, v, row, &status);
 
@@ -1786,7 +1787,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   }
 
   if(bigString && !userRequested) /* it's hidden. */  {
-    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<P>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
+    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" />%S</a>\r\n<p>", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
       u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\" /> %S</a>\r\n",
