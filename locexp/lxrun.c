@@ -219,7 +219,7 @@ void setupLocaleExplorer(LXContext *lx)
     /* Open an RB in the default locale */
     lx->dispRB = ures_open(NULL, lx->dispLocale, &status);
 
-    if(!strcmp(lx->convRequested, "transliterated"))
+    if(strstr(lx->pathInfo,"/transliterated/"))
     {
         char id[200];
         UErrorCode transStatus = U_ZERO_ERROR;
