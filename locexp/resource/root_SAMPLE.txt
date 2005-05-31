@@ -24,7 +24,7 @@ root {
    DateTimePatterns5  {  "Long Date"  }
    DateTimePatterns6  {  "Medium Date"  }
    DateTimePatterns7  {  "Short Date"  }
-   DateTimePatterns8  {  "Date-Time pattern.<BR>{0} = time, {1} = date"  }
+   DateTimePatterns8  {  "Date-Time pattern.<br />{0} = time, {1} = date"  }
    DayAbbreviations  {  "Short Names"  }
    DayNames  {  "Long Names"  }
    DayNarrow  {  "Narrow Names"  }
@@ -151,7 +151,7 @@ root {
    currSymbol  {  "Symbol"  }
    display_ALT  {  "Display Problems?"  }
    display_GIF  {  "displayproblems.gif"  }
-   display_OPTIONS  {  "valign=top ALIGN=RIGHT"  }
+   display_OPTIONS  {  ""  }
    empty  {  "(Empty)"  }
    encodingOK0  {  "Click here if the encoding '"  }
    encodingOK1  {  "' is acceptable, or choose one from below."  }
@@ -176,7 +176,7 @@ root {
    formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
    help  {  "Help"  }
    helpgif  {  "help.gif"  }
-   helpgif_opt  {  "BORDER=0"  }
+   helpgif_opt  {  "border=\x22\x30\x22"  }
    icirView  {  "Switch to Survey View"  }
    icir_Basics  {  "Basics"  }
    icir_Misc  {  "Misc"  }
@@ -231,7 +231,7 @@ root {
    localeList_None  {  "(none)"  }
    localeList_Sublocale  {  "Regions"  }
    locale_experimental  {  "Locales in <I>Italics</I> are Draft and not officially supported."  }
-   locale_unsupported  {  "This display locale, <U>%s</U>, is unsupported."  }
+   locale_unsupported  {  "This display locale, <u>%s</u>, is unsupported."  }
    myConverter  {  "Encoding:"  }
    myLocale  {  "Label Locale:"  }
    none  {  "None"  }
@@ -298,8 +298,7 @@ root {
    lxbar_g.gif:import { "root/lxbar_g.gif" }
    lxbar_ibm.jpg:import { "root/lxbar_ibm.jpg" }
    lxbar_icu.jpg:import { "root/lxbar_icu.jpg" }
-   htmlHEAD:include { "root/head.html" }
-   htmlTAIL:include { "root/tail.html" }
+   "data/locexp-header.html":include { "root/locexp-header.html" }
 
 // tab
    tab_bot.gif:import { "root/tab_bot.gif" }
