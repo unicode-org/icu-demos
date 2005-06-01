@@ -1298,9 +1298,10 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       int32_t count;
       UResourceBundle *bund;
       UBool isDefault;
-    } stuff[] = { {"narrow", NULL, -1, NULL, FALSE},
-                  {"abbreviated", NULL, -1, NULL, FALSE},
-                  {"wide", NULL, -1, NULL, FALSE} };
+      UErrorCode status;
+    } stuff[] = { {"narrow", NULL, -1, NULL, FALSE, U_ZERO_ERROR},
+                  {"abbreviated", NULL, -1, NULL, FALSE, U_ZERO_ERROR},
+                  {"wide", NULL, -1, NULL, FALSE, U_ZERO_ERROR} };
  
     stuffCount = sizeof(stuff)/sizeof(stuff[0]);
     stuff[0].title = FSWF("DayNarrow", "Narrow Names");
@@ -1311,10 +1312,12 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
 /* FSWF("MonthNames", "  - NOT USED - see DayNames ") */
 
     for(i=0;i<stuffCount;i++) {
-      stuff[i].bund = loadCalRes3(lx, keyStem, type, stuff[i].style, &stuff[i].isDefault, &status);
-      stuff[i].count = ures_getSize(stuff[i].bund);
-      if(stuff[i].count > maxCount) {
-        maxCount = stuff[i].count;
+      stuff[i].bund = loadCalRes3(lx, keyStem, type, stuff[i].style, &stuff[i].isDefault, &stuff[i].status);
+      if(!U_FAILURE(stuff[i].status)) {
+          stuff[i].count = ures_getSize(stuff[i].bund);
+          if(stuff[i].count > maxCount) {
+            maxCount = stuff[i].count;
+          }
       }
     }
 
@@ -1324,13 +1327,17 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       u_fprintf(lx->OUT, "<table w_idth=\"100%%\"><tr><th>#</th>");
       maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
+        if(U_FAILURE(stuff[i].status)) {
+            continue;
+        }
         u_fprintf(lx->OUT, "<th>%S", stuff[i].title);
-        if((strcmp(type,"format")||(i==0)) &&
+        if((type!=NULL) &&
+            (strcmp(type,"format")||(i==0)) &&
            !strcmp(ures_getLocaleByType(stuff[i].bund,ULOC_ACTUAL_LOCALE,&status),"root") &&
            (!lx->curLocaleName[0]||strcmp(lx->curLocaleName,"root"))) {
           UChar tmp[2048]; /* FSWF is not threadsafe. Use a buffer */
           u_fprintf(lx->OUT, "<br />");
-          if(strcmp(type,"format")) {
+          if((type!=NULL) &&strcmp(type,"format")) {
             u_sprintf(tmp, "%S type",  FSWF("Calendar_type_format", "Formatting"));
           } else if(i==0) {
             /* narrow (0) inherits from abbreviated (1) */
@@ -1352,7 +1359,10 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       for(j=0;j<maxCount;j++) {
         u_fprintf(lx->OUT, " <tr><th>%d</th>", j);
         for(i=0;i<stuffCount;i++) {
-          if(i>=stuff[i].count) {
+         if(U_FAILURE(stuff[i].status)) {
+            continue;
+         }
+         if(i>=stuff[i].count) {
             u_fprintf(lx->OUT, "<td></td>");
           } else {
             const UChar *s;
@@ -1373,59 +1383,6 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
 
       u_fprintf(lx->OUT, "</table>\n");
     }
-#if 0
-    u_fprintf(lx->OUT, "<table w_idth=\"100%%\"><tr><td><b>#</b></td><td><b>%S</b> ", shortName);
-    explainStatus(lx, shortStatus, keyStem);
-    u_fprintf(lx->OUT, "</td><td><b>%S</b> ", longName);
-    explainStatus(lx, longStatus, keyStem);
-    u_fprintf(lx->OUT, "</td></tr>\r\n");
-
- 
-    for(i=0;i<num;i++)
-    {
-        char *key;
-
-        u_fprintf(lx->OUT, " <tr><th>%d</th><td>", i);
-
-        /* get the normal name */
-        status = U_ZERO_ERROR;
-        key = longKey;
-        item = ures_getByIndex(longArray, i, item, &status);
-        s    = ures_getString(item, &len, &status);
-
-        if(i==0)
-            longStatus = status;
-  
-        if(U_SUCCESS(status))
-            u_fprintf(lx->OUT, " %S ", s);
-        else
-            explainStatus(lx, status, keyStem); /* if there was an error */
-
-        u_fprintf(lx->OUT, "</td><td>");
-
-        /* get the short name */
-        status = U_ZERO_ERROR;
-        key = shortKey;
-        item = ures_getByIndex(shortArray, i, item, &status);
-        s    = ures_getString(item, &len, &status);
-
-        if(i==0) {
-          shortStatus = status;
-        }
-  
-        if(U_SUCCESS(status)) {
-          u_fprintf(lx->OUT, " %S ", s);
-        } else {
-          explainStatus(lx, status, keyStem); /* if there was an error */
-        }
-
-        u_fprintf(lx->OUT, "</td></tr>");
-    }
-
-    u_fprintf(lx->OUT, "</table>");
-
-#endif
-
     if(U_SUCCESS(status)) {
       for(i=0;i<stuffCount;i++) {
         ures_close(stuff[i].bund);
@@ -1908,6 +1865,7 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
   *isDefault = FALSE;
   if(U_FAILURE(*status)) { return NULL; }
   if(!lx->calMyBundle) {
+    u_fprintf(lx->OUT, "LCR - no bundle!<br/>");
 #if defined(LX_DEBUG)
     fprintf(stderr, "loadCalRes - no calMyBundle ! \n");
 #endif
@@ -1915,13 +1873,15 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
     return NULL;
   } else {
     item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
+/*    u_fprintf(lx->OUT, "loading [%s]-%s<br/>", keyStem, u_errorName(*status)); */
   }
   
   if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
     *status = U_ZERO_ERROR;
     *isDefault = TRUE;
     item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
-  }
+/*     u_fprintf(lx->OUT, "loading3 [%s]-%s<br/>", keyStem, u_errorName(*status));*/
+ }
 
   if(U_FAILURE(*status)) {
     ures_close(item1);
@@ -1932,7 +1892,11 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
 }
 
 UResourceBundle *loadCalRes3(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UErrorCode *status) {
-	return loadCalRes3x(lx,keyStem,type,style,isDefault,lx->calMyBundle,status);
+    if(type == NULL) {
+       return loadCalRes(lx, keyStem, isDefault, status);
+    } else {
+        return loadCalRes3x(lx,keyStem,type,style,isDefault,lx->calMyBundle,status);
+    }
 }
 
 UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UResourceBundle *bnd, UErrorCode *status) {
@@ -1949,9 +1913,13 @@ UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *ty
     *status = U_INTERNAL_PROGRAM_ERROR;
     return NULL;
   } else {
+/*    u_fprintf(lx->OUT, "<tt>lcr3(%s/%s/%s) </tt><br/>", keyStem, type, style); */
     item1 = ures_getByKeyWithFallback(bnd, keyStem, item1, status);
+/*    u_fprintf(lx->OUT, "<tt>0[%s]:=[%s]</tt></br>", keyStem, u_errorName(*status)); */
     item2 = ures_getByKeyWithFallback(item1, type, item2, status);
+/* u_fprintf(lx->OUT, "<tt>1[%s]:=[%s]</tt></br>", type, u_errorName(*status)); */
     item3 = ures_getByKeyWithFallback(item2, style, item3, status);
+/*    u_fprintf(lx->OUT, "<tt>2[%s]:=[%s]</tt></br>", style, u_errorName(*status)); */
   }
   
   if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
@@ -2149,8 +2117,13 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
     showArrayWithDescription(lx, myRB, locale, ampmDesc, "AmPmMarkers", kCal);
   }
   u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
-  showArray(lx, myRB, locale, "eras", kCal);
-  u_fprintf(lx->OUT, "</td></tr></table>");
+/* showArray(lx, myRB, locale, "eras", kCal); */
+  {
+    showKeyAndStartItem(lx, "eras", NULL, locale, TRUE, U_ZERO_ERROR);
+    showShortLongCalType( lx, myRB, locale, "eras", NULL);
+    showKeyAndEndItem(lx, "eras", locale);    
+  }
+u_fprintf(lx->OUT, "</td></tr></table>");
   
   
   {
