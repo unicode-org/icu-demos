@@ -18,9 +18,6 @@
 *   This code works only if compiled and run with an ASCII-based charset!
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "unicode/utypes.h"
 #include "unicode/uchar.h"
 #include "unicode/ustring.h"
@@ -29,17 +26,20 @@
 #include "unicode/uidna.h"
 #include "unicode/uscript.h"
 #include "unicode/uniset.h"
-#include "idnbrwsr.h"
 
 #include "demo_settings.h"
 #include "demoutil.h"
 
+#include "idnbrwsr.h"
+#include "parseqs.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 //#ifdef WIN32
 //#   define _WIN32_WINNT 0x0400 
 //#   include "windows.h"
 //#endif
-
-#include "parseqs.h"
 
 #define LENGTHOF(array) (sizeof(array)/sizeof((array)[0]))
 
