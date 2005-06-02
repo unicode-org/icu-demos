@@ -25,7 +25,7 @@
 				AdditionalIncludeDirectories="..\..\..\icu\include,..\..\..\icu\source\tools\toolutil"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;USORT_LIB_EXPORTS"
 				StringPooling="TRUE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/usort_lib.pch"
