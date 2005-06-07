@@ -1818,11 +1818,14 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           } /* switch */
         }
           
+        status = U_ZERO_ERROR;
+
         /* Currency additions */
         {
           UChar ucn[8];
           u_charsToUChars(tag, ucn,4);
-          u_fprintf(lx->OUT, "<th>%d</th>", ucurr_getDefaultFractionDigits(ucn, &status));
+          u_fprintf(lx->OUT, "<th>%d", ucurr_getDefaultFractionDigits(ucn, &status));
+ 	u_fprintf(lx->OUT, "<br/>code: %S, status: %s</th>", ucn, u_errorName(status));
         }
 
         if(isDefault) {
