@@ -59,7 +59,7 @@ static const char endHeaderBeginBody[] =
     "/*<![CDATA[*/\n"
     ".highlight {background-color: white; color: red; border-left: 1px solid  blue; border-right: 1px solid blue}\n"
     ".word {background-color:#DDFFFF}\n"
-    ".num {background-color:#FFDDFF} body  {font-size: 12pt}\n"
+    ".num {background-color:#FFDDFF}\n"
     "/*]]>*/\n"
     "</style>\n"
     "</head>\n"
