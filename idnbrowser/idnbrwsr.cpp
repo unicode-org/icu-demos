@@ -48,20 +48,20 @@ static const char htmlHeader[]=
     "\n"
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
-    "<head>\n"
-    "<style type=\"text/css\">\n"
-    "/*<![CDATA[*/\n"
-    ".highlight {background-color: white; color: red; border-left: 1px solid  blue; border-right: 1px solid blue}\n"
-    ".word {background-color:#DDFFFF}\n"
-    ".num {background-color:#FFDDFF} body  {font-size: 12pt}\n"
-    "/*]]>*/\n"
-    "</style>\n";
+    "<head>\n";
 
 static const char defaultHeader[]=
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
     "<title>IDNA Demo</title>\n";
 
 static const char endHeaderBeginBody[] =
+    "<style type=\"text/css\">\n"
+    "/*<![CDATA[*/\n"
+    ".highlight {background-color: white; color: red; border-left: 1px solid  blue; border-right: 1px solid blue}\n"
+    ".word {background-color:#DDFFFF}\n"
+    ".num {background-color:#FFDDFF} body  {font-size: 12pt}\n"
+    "/*]]>*/\n"
+    "</style>\n"
     "</head>\n"
     "<body>\n";
 
@@ -73,7 +73,8 @@ static const char breadCrumbMainHeader[]=
     "<h1>IDNA Demo</h1>\n";
 
 static const char *htmlFooter=
-    "</body>";
+    "</body>\n"
+    "</html>";
 
 static const char *helpText=
     "<a name=\"help\"></a><h2>About this demo</h2>\n"
@@ -96,7 +97,7 @@ static const char *helpText=
     " Ideographs. Mixtures of simplified and traditional characters can also be visually"
     " highlighted, to help signal possible user errors.</p>\n"
     " <br /> <i>Examples</i>\n"
-    " <br />You can either paste in Unicode text into the above box, or you can use Unicode escapes.\n"
+    " <br /> You can either paste in Unicode text into the above box, or you can use Unicode escapes.\n"
     " For example, you can either use \"&#x00E4;\" or \"\\u00E4\", or could use the decomposition \"a\\u0308\".\n"
     " You can also copy some interesting Unicode text samples from the following pages:\n"
     " <ul>\n"
@@ -118,8 +119,8 @@ static const char *endString="";
 
 static const char *startForm=
     "<form method=\"get\" action=\"%s\">\n"
-    "<p>Enter the domain name to be converted in UTF-8 or escaped Unicode text (\\uXXXX or \\UXXXXXXXX) :<br />"
-    "<input type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\" /> </p>\n";
+    "<label for=\"domainname\">Enter the domain name to be converted in UTF-8 or escaped Unicode text (\\uXXXX or \\UXXXXXXXX) :</label><br />\n"
+    "<input id=\"domainname\" type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\" /> \n";
 
 static const char *endForm=
             "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
@@ -731,7 +732,7 @@ main(int argc, const char *argv[]) {
     printf(startForm, script ? script : "", input8 ? input8 : "");
 
     printf(endForm, "", "", "",
-         "checked" );
+         "checked=\"checked\"" );
 
 
     printf(startTable);
@@ -783,12 +784,12 @@ main(int argc, const char *argv[]) {
     }
     char uvString[16], ivString[16];
     UVersionInfo uv, iv;
-    printf("<table border=0><tr><td>Or choose a sample from this list:</td><td> <form method=\"get\" action=\"%s\"><SELECT NAME='t'>", "?");
-    printf("<option SELECTED value=\"\">(samples...)</option>\n");
+    printf("<form method=\"get\" action=\"%s\"><table border=\"0\"><tr><td><label for=\"samples\">Or choose a sample from this list:</label></td><td><select id=\"samples\" name='t'>", "?");
+    printf("<option selected=\"selected\" value=\"\">(samples...)</option>\n");
     for(int j=0;samples[j];j++) {
       printf("<option value=\"%s\">%s</option>", samples[j], samples[j]);
     }
-    puts("</select>\n<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/go.gif\" alt=\"Go\" value=\"Load\" /></form></td></tr></table>\n");
+    puts("</select>\n<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/go.gif\" alt=\"Go\" value=\"Load\" /></td></tr></table></form>\n");
 
     puts(helpText);
 
