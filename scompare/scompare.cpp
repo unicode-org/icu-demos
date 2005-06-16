@@ -336,7 +336,7 @@ int main(int argc, const char **argv) {
     u_file_write(htmlBuf, outputText.length(), u_stdout);
     // Debugging aid - put the raw post data back into the generated html,
     //                 as an html comment.
-    u_fprintf(u_stdout, "<!--%s-->\n", postData);
+    //u_fprintf(u_stdout, "<!--%s-->\n", postData);
     u_fclose(u_stdout);
 
     delete[] allocatedContent;

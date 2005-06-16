@@ -55,7 +55,8 @@ static const char defaultHeader[]=
     "<title>Normalization Browser</title>\n";
 
 static const char *htmlFooter=
-    "</body>";
+    "</body>\n"
+    "</html>";
 
 static const char *helpText=
     "<a name=\"help\"></a><h2>About this demo</h2>\n"
@@ -86,20 +87,24 @@ static const char *endString="";
 
 static const char *startForm=
     "<form method=\"get\" action=\"%s\">\n"
-    "<p>Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes<br />\n"
-    "<input size=\"80\" name=\"t\" value=\"%s\" /><br />\n"
-    "or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)<br />\n"
-    "<input size=\"80\" name=\"s\" value=\"";
+    "<label for=\"normstr1\">Input string: Enter a string with \\uhhhh and \\Uhhhhhhhh escapes</label><br />\n"
+    "<input id=\"normstr1\" type=\"text\" size=\"80\" name=\"t\" value=\"%s\" /><br />\n"
+    "<label for=\"normstr2\">or enter code points (e.g. 0061 0308 0304 ac01 f900 50000)</label><br />\n"
+    "<input id=\"normstr2\" type=\"text\" size=\"80\" name=\"s\" value=\"";
 
 static const char *endForm=
-    "\" /></p>\n"
+    "\" />\n"
     "<p>Decomposition exclusions:"
-    " <input type=\"checkbox\" name=\"op0\" %s /> Hangul"
-    " <input type=\"checkbox\" name=\"op1\" %s /> CJK Compat."
+    " <input id=\"Hangul\" type=\"checkbox\" name=\"op0\" %s />"
+    " <label for=\"Hangul\">Hangul</label>"
+    " <input id=\"CJKCompat.\" type=\"checkbox\" name=\"op1\" %s />"
+    " <label for=\"CJKCompat.\">CJK Compat.</label>"
     "<br />\n"
     "Unicode version:"
-    " <input type=\"radio\" name=\"uv\" value=\"0\" %s />current"
-    " <input type=\"radio\" name=\"uv\" value=\"1\" %s />Unicode 3.2"
+    " <input id=\"current\" type=\"radio\" name=\"uv\" value=\"0\" %s />"
+    " <label for=\"current\">current</label>"
+    " <input id=\"Unicode3.2\" type=\"radio\" name=\"uv\" value=\"1\" %s />"
+    " <label for=\"Unicode3.2\">Unicode 3.2</label>"
     "<br />\n"
     "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
     " (<a href=\"#help\">Help</a>)"
@@ -368,10 +373,10 @@ main(int argc, const char *argv[]) {
         printString(input, inputLength);
     }
     printf(endForm,
-        options&1 ? "checked" : "",
-        options&2 ? "checked" : "",
-        (options&0xe0)==0 ? "checked" : "",
-        (options&0xe0)==UNORM_UNICODE_3_2 ? "checked" : "");
+        options&1 ? "checked=\"checked\"" : "",
+        options&2 ? "checked=\"checked\"" : "",
+        (options&0xe0)==0 ? "checked=\"checked\"" : "",
+        (options&0xe0)==UNORM_UNICODE_3_2 ? "checked=\"checked\"" : "");
 
     printf(startTable);
     printString(input, inputLength);
