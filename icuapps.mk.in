@@ -1,7 +1,7 @@
 # -*-makefile-*-
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 2002, International Business Machines
+## *   Copyright (C) 2002-2005, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -22,8 +22,7 @@ CPPFLAGS=$(shell @ICU_CONFIG@ --cppflags)
 CFLAGS=$(shell @ICU_CONFIG@ --cflags)
 CXXFLAGS=$(shell @ICU_CONFIG@ --cxxflags)
 LDFLAGS =$(shell @ICU_CONFIG@ --ldflags)
-LDFLAGS_USTDIO =$(shell @ICU_CONFIG@ --ldflags-icuio)
-LDFLAGS_ICUIO=$(LDFLAGS_USTDIO)
+LDFLAGS_ICUIO =$(shell @ICU_CONFIG@ --ldflags-icuio)
 LDFLAGS_OBSOLETE =$(shell @ICU_CONFIG@ --ldflags-obsolete)
 INVOKE =$(shell @ICU_CONFIG@ --invoke)
 SO =$(shell @ICU_CONFIG@ --so)
