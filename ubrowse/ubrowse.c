@@ -949,27 +949,26 @@ main(int argc,
       u_fprintf(gOut, "<b>Blocks:</b> ");
       for(i=UBLOCK_BASIC_LATIN;i<UBLOCK_COUNT;i++)
       {
-        u_fprintf(gOut, "<a href=\"?scr=%d&amp;b=0\">", i);
-        u_fprintf(gOut, "%s", getUBlockCodeName(i));
-        u_fprintf(gOut, "</a> | &nbsp;");
+        if (UBLOCK_BASIC_LATIN != i) {
+          u_fprintf(gOut, " | &nbsp;");
+        }
+        u_fprintf(gOut, "<a href=\"?scr=%d&amp;b=0\">%s</a>", i, getUBlockCodeName(i));
       }
-      u_fprintf(gOut, "<br />");
-      u_fprintf(gOut, "<br />");
+      u_fprintf(gOut, "<br />\n<br />\n");
       
 
       u_fprintf(gOut, "<b>General Categories:</b> ");
       for(i=U_UNASSIGNED;i<U_CHAR_CATEGORY_COUNT;i++)
       {
-          u_fprintf(gOut, "<a href=\"?typ=%d&amp;b=0\">", i);
-        u_fprintf(gOut, "%s", getUCharCategoryName(i));
-        u_fprintf(gOut, "</a> | &nbsp;");
+        if (U_UNASSIGNED != i) {
+          u_fprintf(gOut, " | &nbsp;");
+        }
+        u_fprintf(gOut, "<a href=\"?typ=%d&amp;b=0\">%s</a>", i, getUCharCategoryName(i));
       }
-        u_fprintf(gOut, "<br />");
+      u_fprintf(gOut, "<br />");
 
 
-      u_fprintf(gOut, 
-             "</td></tr></table>\n"
-             );
+      u_fprintf(gOut, "</td></tr></table>\n");
 
 /*       u_fprintf(gOut, "\n</td></tr><tr><td align=right>\n"); */
       
