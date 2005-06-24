@@ -21,6 +21,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obstest", "..\test\obstest\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ubrowse", "..\ubrowse\ubrowse.vcproj", "{35185E79-0A5D-448F-B879-4F17DB7A222E}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 		{967A8361-DC2F-4AF9-9156-0C685511FC52} = {967A8361-DC2F-4AF9-9156-0C685511FC52}
 	EndProjectSection
 EndProject
