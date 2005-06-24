@@ -946,7 +946,7 @@ main(int argc,
       u_fprintf(gOut, "</td></tr><tr><td bgcolor=\"#eeeeee\">\n"
              );
 
-      u_fprintf(gOut, "<b>Blocks:</b>");
+      u_fprintf(gOut, "<b>Blocks:</b> ");
       for(i=UBLOCK_BASIC_LATIN;i<UBLOCK_COUNT;i++)
       {
         u_fprintf(gOut, "<a href=\"?scr=%d&amp;b=0\">", i);
@@ -957,7 +957,7 @@ main(int argc,
       u_fprintf(gOut, "<br />");
       
 
-      u_fprintf(gOut, "<b>General Categories:</b>");
+      u_fprintf(gOut, "<b>General Categories:</b> ");
       for(i=U_UNASSIGNED;i<U_CHAR_CATEGORY_COUNT;i++)
       {
           u_fprintf(gOut, "<a href=\"?typ=%d&amp;b=0\">", i);
