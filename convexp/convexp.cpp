@@ -54,13 +54,10 @@ static const char htmlHeader[]=
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
     "<head>\n"
-    "\n";
+#if 0
+    This causes the following error...
+    <meta http-equiv="Content-Type" content="text/html; "[Valid CharSet]"> must be the first element after the <head> tag. Please see the help file. [3.3.0.HTML_Authoring.MetatagsContentType] 
 
-static const char defaultHeader[]=
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
-    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n";
-
-static const char endHeaderBeginBody[]=
     // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
@@ -75,6 +72,15 @@ static const char endHeaderBeginBody[]=
     "table.data-table-2 div.glyph {font-size: 160%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
+    "\n"
+#endif
+    ;
+
+static const char defaultHeader[]=
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n";
+
+static const char endHeaderBeginBody[]=
     "</head>\n"
     "<body>\n";
 
@@ -90,10 +96,10 @@ static const char navigationMainHeader[]=
 
 static const char navigationSubHeader[]=
     "<a class=\"bctl\" href=\"%s?%s\">" PROGRAM_NAME "</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<strong class=\"bctl\">%s</strong>\n";
+    "\n";
 
 static const char navigationEndHeader[]=
-    "<h1>ICU " PROGRAM_NAME "</h1>\n";
+    "<h1>%s</h1>\n";
 
 static const char htmlFooter[]=
     "</body>\n"
@@ -792,13 +798,12 @@ main(int argc, const char *argv[]) {
     }
 
     if (*gCurrConverter) {
-        printf(navigationSubHeader, gScriptName, getStandardOptionsURL(&errorCode), gCurrConverter);
+        printf(navigationSubHeader, gScriptName, getStandardOptionsURL(&errorCode));
+        printf(navigationEndHeader, gCurrConverter);
     }
     else {
-        printf(navigationMainHeader);
+        printf(navigationEndHeader, PROGRAM_NAME);
     }
-
-    puts(navigationEndHeader);
 
     printf(startForm, gScriptName ? gScriptName : "");
 
