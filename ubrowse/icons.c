@@ -10,6 +10,7 @@
 #include "unicode/ustdio.h"
 #include "unicode/ures.h"
 #include "icons.h"
+#include "demo_settings.h"
 
 #include <string.h>
 
@@ -39,7 +40,7 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
 
   if(U_FAILURE(status))
   {
-    fprintf(stdout, "Content-type: text/html;charset=utf-8");
+    fprintf(stdout, "Content-type: text/html;charset=utf-8\n\n");
     fprintf(stdout, "Error: Couldn't open bundle [%s] in path [%s], looking for [%s].<P>\r\n",
 	    "icons",
            (thePath==NULL)?"NULL":thePath,
@@ -54,7 +55,7 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
 #if 1
     fprintf(stdout, "Content-type: text/html;charset=utf-8\n\n<i>an error has occured.</i>\n");
 #else
-    fprintf(stdout, "Content-type", "text/html;charset=utf-8");
+    fprintf(stdout, "Content-type", "text/html;charset=utf-8\n\n");
 
     fprintf(lx->fOUT, "<html><head><title>bundle list for %s</title></head>\r\n",
            lx->dispLocale);

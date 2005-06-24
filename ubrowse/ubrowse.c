@@ -76,6 +76,9 @@
 #include "unicode/uset.h"
 #include "icons.h"
 
+#include "demo_settings.h"
+#include "demoutil.h"
+
 int validate_sanity();
 
 #define HAVE_KANGXI
@@ -120,10 +123,35 @@ UBool gSearchCharValid = FALSE;
 
 UBool anyDecompose = FALSE;
 
-const char *gOurEncoding = NULL;
 UFILE      *gOut = NULL;
 
 int enumHits = 0, foundCount = 0; /* # of enumerations, # of hits */
+
+static const char htmlHeader[]=
+    "Content-Type: text/html; charset=utf-8\n"
+    "\n"
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
+    "<head>\n";
+
+static const char defaultHeader[]=
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
+    "<title>IBM: ICU Demonstration - Unicode Browser</title>\n";
+
+static const char endHeaderBeginBody[] =
+    "</head>\n"
+    "<body>\n";
+
+static const char breadCrumbMainHeader[]=
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<h1>Unicode Browser</h1>\n";
+
+static const char *htmlFooter=
+    "</body>\n"
+    "</html>";
 
 void printCharName(UChar32 c)
 {
@@ -299,7 +327,12 @@ void printOneUChar32(UChar32 theChar)
   chars[0]=0;
   UTF_APPEND_CHAR_UNSAFE(chars, offset, theChar); 
   chars[offset] = 0; 
-  u_fprintf(gOut, "%S", chars);
+  if (chars[0] == '>')
+    u_fprintf(gOut, "&gt;");
+  else if (chars[0] == '<')
+    u_fprintf(gOut, "&lt;");
+  else
+    u_fprintf(gOut, "%S", chars);
   u_fflush(gOut);
 }
 
@@ -424,12 +457,12 @@ UBool myEnumCharNamesFn(void *context,
 
 void printIconMenu(const char *alt, const char *name, ESearchMode target, ESearchMode current)
 {
-  u_fprintf(gOut, "<input TYPE=image "
-	    " border=0 width=32 height=32 "
+  u_fprintf(gOut, "<input type=\"image\" "
+	    " border=\"0\" width=\"32\" height=\"32\" "
 	    "alt=\"%s%s%s\" value=\"%s%s%s\" "
 	    "name=\"%s\" "
 	    "src=\"%s/_/%s%s.gif\" "
-	    ">",
+	    " />\n",
 	    (current==target)?"[":"", alt,  (current==target)?"]":"",
 	    (current==target)?"[":"", alt,  (current==target)?"]":"",
 	    name, 
@@ -463,11 +496,11 @@ void printCanonEquivs(UChar32 block)
       if(!u_strcmp(buf,ch)) continue;
       
       if(!bannered) {
-        u_fprintf(gOut, "<p><b>Canonical Equivalencies:</b>\n");
+        u_fprintf(gOut, "<p><b>Canonical Equivalencies:</b></p>\n");
         u_fprintf(gOut, "<ol>\n");
       }
       
-      u_fprintf(gOut, "<li>%S<br>\n", buf);
+      u_fprintf(gOut, "<li>%S<br />\n", buf);
       
       /* now show it as codepoints */
       for(i=0;buf[i];) {
@@ -475,8 +508,8 @@ void printCanonEquivs(UChar32 block)
         u_fprintf(gOut, "%s <a href=\"?ch=%04X\">U+%04X</a> ", (shownComma++)?",":"", c, c);
         printCharName(c);
       }
-      u_fprintf(gOut, "<br>\n");
-      u_fprintf(gOut, "<br>\n");
+      u_fprintf(gOut, "<br />\n");
+      u_fprintf(gOut, "<br /></li>\n");
       bannered =1;
     }
     if(bannered) {
@@ -510,7 +543,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 {
   UBool searchedFor;
 
-  u_fprintf(gOut, "<TR %s >", hilite);
+  u_fprintf(gOut, "<tr %s >", hilite);
 
 
   /** 1 The Char **/
@@ -518,10 +551,10 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
 
   /* TODO: 'if matches(theChar)' */
 
-  u_fprintf(gOut, "%s ALIGN=CENTER>\n", hilite);
+  u_fprintf(gOut, "%s align=\"center\">\n", hilite);
           
   if((theChar == gSearchChar) && gSearchCharValid)
-    u_fprintf(gOut, "<A name=here></a>");
+    u_fprintf(gOut, "<a name=here></a>");
           
           /* print the simple data (i.e. the actual char ) */
   printOneUChar32(theChar);
@@ -535,9 +568,9 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
     {
       u_fprintf(gOut, "<a href=\"?%s=%04X#here\">", link, theChar);
     }
-  u_fprintf(gOut, "<font size=-1>U+%04X ", theChar);
+  u_fprintf(gOut, "<small>U+%04X ", theChar);
   printCharName(theChar);
-  u_fprintf(gOut, "</font>");
+  u_fprintf(gOut, "</small>");
   if(link != NULL)
     {
       u_fprintf(gOut, "</a>");
@@ -674,34 +707,27 @@ main(int argc,
     return 0;
   }
 
-  if(pi && !strcmp(pi,"/")) {
-    gOurEncoding = "utf-8";
-    tmp="";
-  } else if(pi && *pi) {
-    pi++;    
-    tmp = strchr(pi, '/');
-    if(tmp) {
-      *tmp = 0; /* terminate */
-    }
 
-    if(pi && *pi==0) {
-      gOurEncoding = "utf-8";
-    } else {
-      gOurEncoding = pi;
-    }
-  } else {
-    gOurEncoding = "utf-8";
-  }
-
-  printf("Content-Type: text/html;charset=%s\n\n",gOurEncoding);
-
-  gOut = u_finit(stdout, "en_US", gOurEncoding);
+  gOut = u_finit(stdout, "en_US", "UTF-8");
 
   if(gOut == NULL)
   {
-      /**/printf("Couldnt' open output file in encoding %s.\n", gOurEncoding);
+      printf("Couldnt' open output file.\n");
       return 0;
   }
+
+  u_fprintf(gOut, htmlHeader);
+  if (!printHTMLFragment(gOut, NULL, DEMO_COMMON_DIR "ubrowse-header.html")) {
+      u_fprintf(gOut, defaultHeader);
+  }
+  u_fprintf(gOut, endHeaderBeginBody);
+  if (printHTMLFragment(gOut, NULL, DEMO_COMMON_MASTHEAD)) {
+      u_fprintf(gOut, DEMO_BEGIN_LEFT_NAV);
+      printHTMLFragment(gOut, NULL, DEMO_COMMON_LEFTNAV);
+      u_fprintf(gOut, DEMO_END_LEFT_NAV);
+      u_fprintf(gOut, DEMO_BEGIN_CONTENT);
+  }
+  u_fprintf(gOut, breadCrumbMainHeader);
 
   if(lxu_validate_property_sanity()) {
     u_fprintf(gOut, "<H1>Err, uchar.h changed without update to lx_utils.c</H1>\n");
@@ -719,16 +745,10 @@ main(int argc,
   ucnv_setFromUCallBack(gConverter, &UCNV_FROM_U_CALLBACK_DECOMPOSE, &status);
 #endif
   
-
-/*  ucnv_setDefaultName(gOurEncoding); */
-u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
-  u_fprintf(gOut, "<html>\n");
-  
-  u_fprintf(gOut, "<head>");
-
   /* Now, see what we're supposed to do */
   qs = getenv("QUERY_STRING");
-  
+  if (qs==NULL)
+      qs = "";
   mode = ETOP;
 
   if(qs)
@@ -741,19 +761,16 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         {
           if(strstr(qs,"ch.x="))
           {
-            u_fprintf(gOut, "<title>ICU UnicodeBrowser: char U+%04X</title>\n", block);
             mode = ECHAR;
           }
           else if(strstr(qs,"k.x="))
           {
             block &= 0x1FFFF0;
-            u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X</title>\n", block);
             mode = ECOLUMN;
           }
           else if(strstr(qs, "n.x="))
           {
             block &= 0x1FFF00;
-            u_fprintf(gOut, "<title>ICU UnicodeBrowser: block U+%04X</title>\n", block);
             mode = EBLOCK;
           }
           else
@@ -764,13 +781,11 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         }
       else if(sscanf(qs,"ch=%x", &block)== 1)
         {
-          u_fprintf(gOut, "<title>ICU UnicodeBrowser: char U+%04X</title>\n", block);
           mode = ECHAR;
         }
       else if(sscanf(qs,"n=%x", &block)== 1)
         {
           block &= 0x1FFF00;
-          u_fprintf(gOut, "<title>ICU UnicodeBrowser: block U+%04X</title>\n", block);
           mode = EBLOCK;
         }
       else if(sscanf(qs, "k1=%x", &block) == 1)
@@ -778,13 +793,11 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
           gSearchChar = block;
           gSearchCharValid = TRUE;
           block &= 0x1FFFF0;
-          u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X</title>\n", block);
           mode = ECOLUMN;
         }
       else if(sscanf(qs, "k=%x", &block) == 1)
         {
           block &= 0x1FFFF0;
-          u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X</title>\n", block);
           mode = ECOLUMN;
         }
       else if(sscanf(qs, "scr=%d&b=%x", &gSearchBlock, &block) == 2)
@@ -792,14 +805,12 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
           mode = ECOLUMN;
           block = doSearchBlock(gSearchBlock, block);
           block &= 0x1FFFF0;
-          u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X, %s</title>\n", block, getUBlockCodeName(gSearchBlock));
         }
       else if(sscanf(qs, "typ=%d&b=%x", &gSearchType, &block) == 2)
         {
           mode = ECOLUMN;
           block = doSearchType(gSearchType, block);
           block &= 0x1FFFF0;
-          u_fprintf(gOut, "<title>ICU UnicodeBrowser: column U+%04X, %s</title>\n", block, getUCharCategoryName(gSearchType));
         }
 /* For: search -> block (not column) 
       else if(sscanf(qs, "scr=%d&n=%x", &gSearchBlock, &block) == 2)
@@ -861,9 +872,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         strncpy(gSearchName,gSearchHTML,200);
         gSearchName[200] = 0;
 
-        u_fprintf(gOut, "<title>ICU UnicodeBrowser: search...</title>\n");
-
-        /* de HTML ize. Note we dont' care about %s'. */
+        /* de HTML ize. Note we don't care about %s'. */
         for(p=gSearchName;*p;p++)
         {
           *p = toupper(*p);
@@ -874,24 +883,11 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
       }
     }
 
-  if(mode == ETOP)  {
-      u_fprintf(gOut, "<title>ICU UnicodeBrowser</title>\n");
-  }
-
-  u_fprintf(gOut, "<meta NAME=\"robots\" CONTENT=\"nofollow\">\r\n");
-  u_fprintf(gOut, "</head>\n");
-
-  u_fprintf(gOut, "<body bgcolor=\"#FFFFFF\" link=\"#00AA00\" vlink=\"#884400\">\n");
-
-  u_fprintf(gOut, "<a href=\"" ICU_URL "\">ICU</a> &gt;\n"
-         "<a href=\"" ICU_URL "/chartsdemostools.jsp\">Demo</a> &gt;\n"
-         "<b>Unicode Browser</b><BR>\n");
-
-  u_fprintf(gOut, "<FORM ACTION=\"%s\"><table summary=\"Navigation Control\" border=1 cellpadding=1 cellspacing=1><tr>", getenv("SCRIPT_NAME"));
+  u_fprintf(gOut, "<form method=\"get\" action=\"%s\"><table summary=\"Navigation Control\" border=\"1\" cellpadding=\"1\" cellspacing=\"1\"><tr>", getenv("SCRIPT_NAME"));
 
   u_fprintf(gOut, "<td >");
 
-  u_fprintf(gOut, "Go: <input size=7 name=go value=\"%04X\">", block);
+  u_fprintf(gOut, "<label for=\"go\">Go: </label><input id=\"go\" type=\"text\" size=\"7\" name=\"go\" value=\"%04X\" />\n", block);
 
   /* show which item we're on */
   printIconMenu("ch", "ch", ECHAR, mode);
@@ -934,7 +930,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
     unescapeAndDecodeQueryField_enc(usf, 1023,
                                     q, "UTF-8");
   }
-  u_fprintf(gOut, "<input name=\"us\" size=\"60\" value=\"%S\">", usf);
+  u_fprintf(gOut, "<label for=\"set\">Set:</label><input id=\"set\" type=\"text\" name=\"us\" size=\"60\" value=\"%S\" />", usf);
 
   printIconMenu("column", "gosetk", ESET, mode);
   printIconMenu("block", "gosetn", ESETCHUNK, mode);
@@ -944,9 +940,9 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
   {
       u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
-      u_fprintf(gOut, "<table summary=\"UnicodeBrowser\" border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\n");
+      u_fprintf(gOut, "<br /><table summary=\"UnicodeBrowser\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><td bgcolor=\"#cccccc\">\n");
 
-      u_fprintf(gOut, "<b>Unicode Browser</b> - Click on a type of character view it in more detail<br>\n");
+      u_fprintf(gOut, "<b>Unicode Browser</b> - Click on a type of character view it in more detail<br />\n");
       u_fprintf(gOut, "</td></tr><tr><td bgcolor=\"#eeeeee\">\n"
              );
 
@@ -957,8 +953,8 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         u_fprintf(gOut, "%s", getUBlockCodeName(i));
         u_fprintf(gOut, "</a> | &nbsp;");
       }
-      u_fprintf(gOut, "<br>");
-      u_fprintf(gOut, "<br>");
+      u_fprintf(gOut, "<br />");
+      u_fprintf(gOut, "<br />");
       
 
       u_fprintf(gOut, "<b>General Categories:</b>");
@@ -968,7 +964,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         u_fprintf(gOut, "%s", getUCharCategoryName(i));
         u_fprintf(gOut, "</a> | &nbsp;");
       }
-        u_fprintf(gOut, "<br>");
+        u_fprintf(gOut, "<br />");
 
 
       u_fprintf(gOut, 
@@ -989,7 +985,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
       n = 0;
       /*      for(n=0; n<0x100; n += 0x080) */
         {
-          u_fprintf(gOut, "<table summary=\"Block View\" border=1>");
+          u_fprintf(gOut, "<table summary=\"Block View\" border=\"1\">");
           u_fprintf(gOut, "<tr><td></td>");
           for(c = n;c<(n + 0x100);c+= 0x10)
             {
@@ -1022,9 +1018,9 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
             }
         }
         u_fprintf(gOut, "</tr>");
-        u_fprintf(gOut, "<tr><td COLSPAN=18 ALIGN=CENTER><I>Click on a column number to zoom in.</I></td></tr>\n");
+        u_fprintf(gOut, "<tr><td colspan=\"18\" align=\"center\"><i>Click on a column number to zoom in.</i></td></tr>\n");
         u_fprintf(gOut, "</table>");
-      u_fprintf(gOut, "<hr>\n");
+      u_fprintf(gOut, "<hr />\n");
       if(block <= 0xFFFF)
         {
           u_fprintf(gOut, "<a href=\"http://www.unicode.org/charts/PDF/U%04X.pdf\">PDF of block U%04X from .unicode.org</a>\n", block, block);
@@ -1070,7 +1066,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
 
 
 
-      u_fprintf(gOut, "<TABLE summary=\"Unicode Column\" BORDER=1>");
+      u_fprintf(gOut, "<table summary=\"Unicode Column\" border=\"1\">");
 
 
       printRowHeader(showBlock);
@@ -1082,7 +1078,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
           /* Do we have a match? for cell highlighting */ 
           if( (ublock_getCode(theChar) == gSearchBlock) || (u_charType(theChar) == gSearchType) || ((theChar == gSearchChar) && gSearchCharValid))
           {
-            hilite = " bgcolor=\"#FFdddd\" ";
+            hilite = " bgcolor=\"#ffdddd\" ";
           }
           else if(u_charType(theChar) == U_UNASSIGNED)
           {
@@ -1098,7 +1094,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         }
       
 
-      u_fprintf(gOut, "</table><hr>");
+      u_fprintf(gOut, "</table><hr />");
 
       showSearchMenu( block + 0x0010);
 
@@ -1109,14 +1105,14 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
 
       printModeCHAR(block);
 
-      u_fprintf(gOut, "<br><hr>\n");
+      u_fprintf(gOut, "<br /><hr />\n");
       showSearchMenu( block + 1);
     }
 #ifdef RADICAL_LIST 
   else if(mode == ERADLST) /************************ RADICAL LIST ********************/
     {
       u_fprintf(gOut, "</table></form>");
-      u_fprintf(gOut, "<TABLE  summary=\"radical list\" BORDER=1>");
+      u_fprintf(gOut, "<table  summary=\"radical list\" border=\"1\">");
       u_fprintf(gOut, "<tr>");
       for(i=0;gKangXiRadicalTable[i];i+=2)
         {
@@ -1144,7 +1140,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
       u_fprintf(gOut, " (radical %d)</b> \n",block);
       printCharName(gKangXiRadicalTable[(block-1)*2]);
       sprintf(s,"/home/srl/icu/data/PSI/rad%03d.lst", block);
-      u_fprintf(gOut, "<TABLE BORDER=1>");
+      u_fprintf(gOut, "<table border=\"1\">");
       f = fopen(s,"r");
       i=0;
       u_fprintf(gOut, "<tr>");
@@ -1181,7 +1177,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
         u_fprintf(gOut, "<H1>Searching for '%s' from U+%04X...</H1>\n", gSearchName, block);
       }
       
-      u_fprintf(gOut, "<table summary=\"Search Results\" border=1>");
+      u_fprintf(gOut, "<table summary=\"Search Results\" border=\"1\">");
       
       myEnumCharNamesFn_setup(); /* break apart words */
 
@@ -1198,7 +1194,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
        if((foundCount % 15) !=14) {
            u_fprintf(gOut, "</table>");
        }
-        u_fprintf(gOut, "<!-- %d tested --><hr>\n",enumHits);
+        u_fprintf(gOut, "<!-- %d tested --><hr />\n",enumHits);
       showSearchMenu( 0x0000 ); 
     }
   else if(mode == EEXACTNAME) /************** EXACT NAME ********************************/
@@ -1212,7 +1208,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
       u_fprintf(gOut, "<H1>Searching for '%s'...</H1>\n", gSearchName);
       
       
-      u_fprintf(gOut, "<hr><UL>\n");
+      u_fprintf(gOut, "<hr /><ul>\n");
 
       c = u_charFromName(U_UNICODE_CHAR_NAME,
                          gSearchName,
@@ -1228,13 +1224,13 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
       }
       else
       {
-        u_fprintf(gOut, "<LI><a href=\"?k1=%04X#here\"><tt>%04X</tt> - %s\n",
+        u_fprintf(gOut, "<li><a href=\"?k1=%04X#here\"><tt>%04X</tt> - %s\n",
                c,c,gSearchName);
         printOneUChar32(c);
         
       }
 
-      u_fprintf(gOut, "</UL><hr>\n");
+      u_fprintf(gOut, "</ul><hr />\n");
       showSearchMenu( 0x0000 ); 
     } else if((mode == ESET)||(mode=ESETCHUNK)) {  /************** UnicodeSet****************/
     printModeSET(qs, mode);
@@ -1243,7 +1239,7 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
     {
       u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
 
-      u_fprintf(gOut, "Unknown search mode ! <hr>\n");
+      u_fprintf(gOut, "Unknown search mode ! <hr />\n");
     }
   
 
@@ -1263,16 +1259,18 @@ u_fprintf(gOut, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\
   uvi[2]=0xFF;
   uvi[3]=0xFF;
   u_getUnicodeVersion(uvi);
-  u_fprintf(gOut, "<a href=\"http://www.unicode.org/\">Based on Unicode ");
+  u_fprintf(gOut, "<br /><a href=\"http://www.unicode.org/\">Based on Unicode ");
   for(uc=0;uc<U_MAX_VERSION_LENGTH;uc++) {
     if((uc < 3) || (uvi[uc] != 0)) /* don't show trailing zero in 4th place. */
       u_fprintf(gOut, "%d.",uvi[uc]);
   }
   u_fprintf(gOut, "</a>\n");
 
-  u_fprintf(gOut, "<BR>Powered by <a href=\"" ICU_URL "\">ICU %s</a>\n", U_ICU_VERSION);
+  u_fprintf(gOut, "<br />Powered by <a href=\"" ICU_URL "\">ICU %s</a>\n", U_ICU_VERSION);
   
-  u_fprintf(gOut, "</BODY><!-- SFCBugibba design 12 ta' Mejju 2001 --></HTML>\n");
+  u_fprintf(gOut, DEMO_END_CONTENT);
+  printHTMLFragment(gOut, NULL, DEMO_COMMON_FOOTER);
+  u_fprintf(gOut, htmlFooter);
 
   u_fclose(gOut);
 
@@ -1344,57 +1342,58 @@ void showSearchMenu(UChar32 startFrom)
 {
   int32_t i;
     /* was: width=100% */
-  u_fprintf(gOut, "<table summary=\"Search Menu\" border=0 cellpadding=0 cellspacing=0 ><tr><td bgcolor=\"#000000\">\n"
-            "<table summary=\"\" border=0 cellpadding=1 cellspacing=1><tr><td bgcolor=\"#cccccc\">\n"
+  u_fprintf(gOut, "<br /><table summary=\"Search Menu\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" ><tr><td bgcolor=\"#000000\">\n"
+            "<table summary=\"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><td bgcolor=\"#cccccc\">\n"
             "\n");
 
-  u_fprintf(gOut, "<b>Find</b><br>\n"
+  u_fprintf(gOut, "<b>Find</b><br />\n"
          "\n"
          "</td></tr><tr><td bgcolor=\"#eeeeee\">\n"
-         "<table summary=\"\" cellspacing=8><tr><td align=left>Block:</td><td align=right>\n"
-         "<FORM ACTION=\"%s\" method=GET>\n", getenv("SCRIPT_NAME"));
+         "<form action=\"%s\" method=\"get\"><table width=\"453\" border=\"0\" summary=\"\" cellspacing=\"8\">\n<tr>\n"
+         "<td align=\"left\"><label for=\"block\">Block:</label></td>\n", getenv("SCRIPT_NAME"));
 
-  u_fprintf(gOut, "<select name=scr>");
+  u_fprintf(gOut, "<td align=\"right\"><select id=\"block\" name=\"scr\">\n");
   for(i=0;i<(UBLOCK_COUNT-1);i++)
-    {
-      u_fprintf(gOut, "  <option ");
+  {
+      u_fprintf(gOut, "<option ");
       if(getUBlockCodeSorted(i) == gSearchBlock)
-        u_fprintf(gOut, " SELECTED ");
+        u_fprintf(gOut, " selected=\"selected\" ");
       u_fprintf(gOut, " value=\"%d\">%s", getUBlockCodeSorted(i), getUBlockCodeSortedName(i));
-    }
-  u_fprintf(gOut, "</SELECT>\n");
-  u_fprintf(gOut, "<input TYPE=hidden name=b value=%04X>\n", startFrom);
-  u_fprintf(gOut, "<input TYPE=SUBMIT value=\"Find%s\">",
-         (startFrom != 0)?" Next":"");
-  u_fprintf(gOut, "</FORM></td>");
-
-  u_fprintf(gOut, "</tr><tr><td align=left>General Category: </td><td align=right>");
-  u_fprintf(gOut, "<FORM ACTION=\"%s\" method=GET><select name=typ>\n", getenv("SCRIPT_NAME"));
-  for(i=0;i<U_CHAR_CATEGORY_COUNT;i++) {
-    u_fprintf(gOut, "  <option ");
-    if(getUCharCategorySorted(i) == gSearchType)
-      u_fprintf(gOut, " SELECTED ");
-    u_fprintf(gOut, " value=\"%d\">%s", getUCharCategorySorted(i), getUCharCategorySortedName(i));
-    u_fprintf(gOut, "\n");
+      u_fprintf(gOut, "</option>\n");
   }
-  u_fprintf(gOut, "</SELECT>\n");
-  u_fprintf(gOut, "<input TYPE=hidden name=b value=%04X>\n", startFrom);
-  u_fprintf(gOut, "<input TYPE=SUBMIT value=\"Find%s\">", 
+  u_fprintf(gOut, "</select>\n");
+  u_fprintf(gOut, "<input type=\"hidden\" name=\"b\" value=\"%04X\" />\n", startFrom);
+  u_fprintf(gOut, "<input type=\"submit\" value=\"Find%s\" />\n",
+         (startFrom != 0)?" Next":"");
+  u_fprintf(gOut, "</td>\n</tr></table></form>\n");
+
+  u_fprintf(gOut, "<form action=\"%s\" method=\"get\">\n<table width=\"453\" border=\"0\" summary=\"\" cellspacing=\"8\">\n<tr>\n<td align=\"left\"><label for=\"generalcategory\">General Category: </label></td>\n<td align=\"right\">", getenv("SCRIPT_NAME"));
+  u_fprintf(gOut, "<select id=\"generalcategory\" name=\"typ\">\n");
+  for(i=0;i<U_CHAR_CATEGORY_COUNT;i++) {
+    u_fprintf(gOut, "<option ");
+    if(getUCharCategorySorted(i) == gSearchType)
+      u_fprintf(gOut, " selected=\"selected\" ");
+    u_fprintf(gOut, " value=\"%d\">%s", getUCharCategorySorted(i), getUCharCategorySortedName(i));
+    u_fprintf(gOut, "</option>\n");
+  }
+  u_fprintf(gOut, "</select>\n");
+  u_fprintf(gOut, "<input type=\"hidden\" name=\"b\" value=\"%04X\" />\n", startFrom);
+  u_fprintf(gOut, "<input type=\"submit\" value=\"Find%s\" />", 
          (startFrom != 0)?" Next":"");
   u_fprintf(gOut, "");
 
-  u_fprintf(gOut, "</FORM></td></tr>");
-  u_fprintf(gOut, "<tr><td align=left>Name</td><td align=right><FORM method=GET ACTION=\"%s\"><input size=40 name=s value=\"%s\"> &nbsp; <input type=checkbox name=sx>Exact?<input TYPE=SUBMIT value=\"Find\">",
-         getenv("SCRIPT_NAME"), gSearchName);
-  u_fprintf(gOut, "</FORM></td>\n");
+  u_fprintf(gOut, "\n</td>\n</tr>\n</table></form>\n");
+  u_fprintf(gOut, "<form action=\"%s\" method=\"get\">\n<table width=\"453\" border=\"0\" summary=\"\" cellspacing=\"8\">\n<tr>\n<td align=\"left\"><label for=\"name\">Name:</label></td>\n<td align=\"right\"><input id=\"name\" type=\"text\" size=\"40\" name=\"s\" value=\"%s\" />\n\n<input id=\"exact\" type=\"checkbox\" name=\"sx\" />\n<label for=\"exact\">Exact?&nbsp;</label><input type=\"submit\" value=\"Find\" />\n",
+            getenv("SCRIPT_NAME"), gSearchName);
+  u_fprintf(gOut, "</td></tr></table>\n");
 
 #ifdef RADICAL_LIST
   u_fprintf(gOut, "<td><a href=\"?radlst=1\">Radicals</a></td>");
 #endif
   
-  u_fprintf(gOut, "</tr><tr><td>\n"
+  u_fprintf(gOut, "</form>\n<table border=\"0\" summary=\"\" cellspacing=\"8\">\n<tr>\n<td>\n"
          "\n");
-  u_fprintf(gOut, "<b>Encoding: %s.</b><BR>\n", gOurEncoding);
+  u_fprintf(gOut, "<br />\n");
   u_fprintf(gOut, "\n"
          "</td></tr></table>\n"
          "</td></tr></table>\n");
@@ -1404,20 +1403,20 @@ void showSearchMenu(UChar32 startFrom)
 void printModeCHAR(UChar32 ch) 
 {
   int i;
-  u_fprintf(gOut, "<table summary=\"Canonical Equivalents\" border=5 cellpadding=3 cellspacing=6><tr><td>&nbsp;<font size=+5>");
+  u_fprintf(gOut, "<table summary=\"Canonical Equivalents\" border=\"5\" cellpadding=\"3\" cellspacing=\"6\"><tr><td style=\"font-size: 300%%;\">&nbsp;");
   printOneUChar32(ch);
-  u_fprintf(gOut, "</font>&nbsp;</td><td>");
+  u_fprintf(gOut, "&nbsp;</td><td>");
   
   printCanonEquivs(ch);
   
-  u_fprintf(gOut, "</td></tr></table><br><br>\n");
+  u_fprintf(gOut, "</td></tr></table><br /><br />\n");
   
-  u_fprintf(gOut, "<table summary=\"Character Basic Row\" border=2>");
+  u_fprintf(gOut, "<table summary=\"Character Basic Row\" border=\"2\">");
   printRowHeader(TRUE);
   printRow(ch, TRUE, "", "k1");
-  u_fprintf(gOut, "</table>\n<br><br>\n");
+  u_fprintf(gOut, "</table>\n<br /><br />\n");
   
-  u_fprintf(gOut, "<table summary=\"Detailed Character Properties\" border=2>\n");
+  u_fprintf(gOut, "<table summary=\"Detailed Character Properties\" border=\"2\">\n");
   u_fprintf(gOut, "<tr><td><b>PN</b></td><td><b>Type</b></td><td><b>Name</b></td><td><b>PVN</b></td><td><b>Value</b></td></tr>\n");
   
   {
@@ -1496,7 +1495,7 @@ void printModeCHAR(UChar32 ch)
   
   u_fprintf(gOut, "</table>\n");
   
-  u_fprintf(gOut, "<br> The PN column and the PVN column refer to the internal property number and property value number. Except in the case of the Canonical_Combining_Class, these numbers have no relevance outside of ICU. ");
+  u_fprintf(gOut, "<br /> The PN column and the PVN column refer to the internal property number and property value number. Except in the case of the Canonical_Combining_Class, these numbers have no relevance outside of ICU. ");
   
 }
 
@@ -1530,7 +1529,7 @@ void printModeSET(const char *qs, ESearchMode mode)
     }
 
 #if defined (UB_DEBUG)
-    u_fprintf(gOut, "Usf: |%S|<br>\n", usf);
+    u_fprintf(gOut, "Usf: |%S|<br />\n", usf);
 #endif
     aSet = uset_openPattern(usf, -1, &status);
 
@@ -1573,7 +1572,7 @@ void printModeSET(const char *qs, ESearchMode mode)
       }
       itemN++;
     } else { /* MODE=ESET... */
-      u_fprintf(gOut, "<table summary=\"Search Results\" border=1>");
+      u_fprintf(gOut, "<table summary=\"Search Results\" border=\"1\">");
       if(mode == ESETCHUNK) {
         u_fprintf(gOut, "<tr>");
       }
@@ -1643,29 +1642,29 @@ void printModeSET(const char *qs, ESearchMode mode)
       u_fprintf(gOut, "</table>");
     } /* mode != ESETCHAR */
 #if defined (UB_DEBUG)
-    u_fprintf(gOut, "on item %d, char %d (of %d)<br/>\n", 
+    u_fprintf(gOut, "on item %d, char %d (of %d)<br />\n", 
               itemN, charN, (end-start));
 #endif
     
     if((end-start) && (cur<=end)) {
       itemN--; /* reread 'current' item (because we already incremented above) */
 #if defined (UB_DEBUG)
-      u_fprintf(gOut, "need to resume on %d:%d<br>\n", itemN, charN);
+      u_fprintf(gOut, "need to resume on %d:%d<br />\n", itemN, charN);
 #endif
     } else if(itemN<iCount) {
       charN = 0; /* reset to beginning */
 #if defined (UB_DEBUG)
-      u_fprintf(gOut, "need to resume on %d:<br>\n", itemN);
+      u_fprintf(gOut, "need to resume on %d:<br />\n", itemN);
     } else {
-      u_fprintf(gOut, "finished.<br>\n");
+      u_fprintf(gOut, "finished.<br />\n");
 #endif
     }
 
     if(itemN < iCount) { /* continuation? */
-      u_fprintf(gOut, "<form method=\"GET\" action=\"%s\">", getenv("SCRIPT_NAME"));
-      u_fprintf(gOut, "<input type=hidden name=itemN value=\"%d\"><input type=hidden name=charN value=\"%d\">\n", itemN, charN);
-      u_fprintf(gOut, "<input type=hidden name=us value=\"%S\">\n", usf);
-      u_fprintf(gOut, "<input type=submit name=goset%c value=Next>",
+      u_fprintf(gOut, "<form method=\"get\" action=\"%s\">", getenv("SCRIPT_NAME"));
+      u_fprintf(gOut, "<input type=\"hidden\" name=\"itemN\" value=\"%d\"><input type=\"hidden\" name=\"charN\" value=\"%d\" />\n", itemN, charN);
+      u_fprintf(gOut, "<input type=\"hidden\" name=\"us\" value=\"%S\" />\n", usf);
+      u_fprintf(gOut, "<input type=\"submit\" name=\"goset%c\" value=\"Next\" />",
                 (mode==ESET)?'k':'n');
       u_fprintf(gOut, "</form>\n");
     }
@@ -1675,7 +1674,7 @@ void printModeSET(const char *qs, ESearchMode mode)
 #if !defined(UB_DEBUG)
     if(U_FAILURE(status)) {
 #endif
-      u_fprintf(gOut, "<hr width=\"22%%\">\nstatus is %s<p>\n", u_errorName(status));
+      u_fprintf(gOut, "<hr width=\"22%%\" />\nstatus is %s<p>\n", u_errorName(status));
 #if !defined(UB_DEBUG)
     }
 #endif
