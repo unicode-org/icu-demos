@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\icu\include,..\..\..\icu\source\tools\toolutil"
+				AdditionalIncludeDirectories="..\..\icu\include;..\..\icu\source\tools\toolutil"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;APPUTIL_LIB_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
