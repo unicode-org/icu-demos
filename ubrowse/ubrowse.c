@@ -716,18 +716,18 @@ main(int argc,
       return 0;
   }
 
-  u_fprintf(gOut, htmlHeader);
+  u_fprintf(gOut, "%s", htmlHeader);
   if (!printHTMLFragment(gOut, NULL, DEMO_COMMON_DIR "ubrowse-header.html")) {
-      u_fprintf(gOut, defaultHeader);
+      u_fprintf(gOut, "%s", defaultHeader);
   }
-  u_fprintf(gOut, endHeaderBeginBody);
+  u_fprintf(gOut, "%s", endHeaderBeginBody);
   if (printHTMLFragment(gOut, NULL, DEMO_COMMON_MASTHEAD)) {
-      u_fprintf(gOut, DEMO_BEGIN_LEFT_NAV);
+      u_fprintf(gOut, "%s", DEMO_BEGIN_LEFT_NAV);
       printHTMLFragment(gOut, NULL, DEMO_COMMON_LEFTNAV);
-      u_fprintf(gOut, DEMO_END_LEFT_NAV);
-      u_fprintf(gOut, DEMO_BEGIN_CONTENT);
+      u_fprintf(gOut, "%s", DEMO_END_LEFT_NAV);
+      u_fprintf(gOut, "%s", DEMO_BEGIN_CONTENT);
   }
-  u_fprintf(gOut, breadCrumbMainHeader);
+  u_fprintf(gOut, "%s", breadCrumbMainHeader);
 
   if(lxu_validate_property_sanity()) {
     u_fprintf(gOut, "<H1>Err, uchar.h changed without update to lx_utils.c</H1>\n");
@@ -887,7 +887,7 @@ main(int argc,
 
   u_fprintf(gOut, "<td >");
 
-  u_fprintf(gOut, "<label for=\"go\">Go: </label><input id=\"go\" type=\"text\" size=\"7\" name=\"go\" value=\"%04X\" />\n", block);
+  u_fprintf(gOut, "<label for=\"go\">Go: </label><input id=\"go\" type=\"text\" size=\"6\" name=\"go\" value=\"%04X\" />\n", block);
 
   /* show which item we're on */
   printIconMenu("ch", "ch", ECHAR, mode);
@@ -930,7 +930,7 @@ main(int argc,
     unescapeAndDecodeQueryField_enc(usf, 1023,
                                     q, "UTF-8");
   }
-  u_fprintf(gOut, "<label for=\"set\">Set:</label><input id=\"set\" type=\"text\" name=\"us\" size=\"60\" value=\"%S\" />", usf);
+  u_fprintf(gOut, "<label for=\"set\">Set:</label><input id=\"set\" type=\"text\" name=\"us\" size=\"50\" value=\"%S\" />", usf);
 
   printIconMenu("column", "gosetk", ESET, mode);
   printIconMenu("block", "gosetn", ESETCHUNK, mode);
@@ -1040,8 +1040,9 @@ main(int argc,
       if(showBlock == FALSE) /* Explain what the block is ONCE: here */
       {  
         theChar = block;
-        u_fprintf(gOut, "<td>"); 
-        u_fprintf(gOut, "<b>Block:</b>  ");
+        u_fprintf(gOut, "</td></tr></table></form>");  /* closer */
+        u_fprintf(gOut, "<br />"); 
+        u_fprintf(gOut, "<p><b>Block:</b>  ");
         searchedFor = (ublock_getCode(theChar) == gSearchBlock);
         
         
@@ -1051,13 +1052,13 @@ main(int argc,
         u_fprintf(gOut, "%s", getUBlockCodeName(ublock_getCode(theChar)));
         if(searchedFor)
           u_fprintf(gOut, "</b>");
+        u_fprintf(gOut, "</p>");
 
         /*  "| Next " on block list . removed. 
          * u_fprintf(gOut, " | <a href=\"?scr=%d&b=%04X\">", (ublock_getCode(theChar)+1)%U_CHAR_SCRIPT_COUNT, theChar);
          * u_fprintf(gOut, "next</a>");
          */
             
-        u_fprintf(gOut, "</td></tr></table></form>");  /* closer */
       }
       else
       {
@@ -1268,9 +1269,9 @@ main(int argc,
 
   u_fprintf(gOut, "<br />Powered by <a href=\"" ICU_URL "\">ICU %s</a>\n", U_ICU_VERSION);
   
-  u_fprintf(gOut, DEMO_END_CONTENT);
+  u_fprintf(gOut, "%s", DEMO_END_CONTENT);
   printHTMLFragment(gOut, NULL, DEMO_COMMON_FOOTER);
-  u_fprintf(gOut, htmlFooter);
+  u_fprintf(gOut, "%s", htmlFooter);
 
   u_fclose(gOut);
 
