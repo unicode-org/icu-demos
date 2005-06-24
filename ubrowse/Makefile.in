@@ -22,8 +22,8 @@ CLEANFILES = *~ $(PKG)_* README_$(PKG).txt $(PKG).*
 ## Target information
 TARGET = ubrowse
 
-LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_ICUIO)
-CPPFLAGS +=
+LDFLAGS += -L../apputil -lapputil -L../locexp/util -liculxutil $(LDFLAGS_ICUIO)
+CPPFLAGS += -I$(top_srcdir)/apputil
 ITMP=icontmp
 ICONS=icons
 
