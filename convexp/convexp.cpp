@@ -425,7 +425,9 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
             const char *locale = uloc_getAvailable(locIndex);
             if (locale) {
                 myStatus = U_ZERO_ERROR;
-                ulocdata_getExemplarSet(locSet, locale, 0, &myStatus);
+                ULocaleData *localeDataObj = ulocdata_open(locale, &myStatus);
+                ulocdata_getExemplarSet(localeDataObj, locSet, 0, ULOCDATA_ES_STANDARD, &myStatus);
+                ulocdata_close(localeDataObj);
                 if (myStatus != U_USING_FALLBACK_WARNING) {
                     // Flatten glyphs like "ch" of a non-falling back set.
                     USet *flatLocSet = createFlattenSet(locSet, status);
@@ -770,17 +772,17 @@ main(int argc, const char *argv[]) {
 //    if((cgi="conv=ISO_2022%2Clocale%3Dja%2Cversion0")!=NULL) {
 //    if((cgi="s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-1388&b=0e")!=NULL) {
-//    if((cgi="conv=ISO_2022,locale=ja,version=0&b=&ShowLanguages&s=IBM&s=windows&s=&s=ALL")!=NULL) {
+//    if((cgi="conv=ISO_2022,locale=ja,version=0&b=&ShowLocales&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-943_P130-2000&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-949")!=NULL) {
 //    if((cgi="conv=windows-1256&b=")!=NULL) {
-//    if((cgi="conv=ibm-950&ShowLanguages")!=NULL) {
-//    if((cgi="conv=ASCII&ShowLanguages")!=NULL) {
-//    if((cgi="conv=iso-8859-9&ShowLanguages")!=NULL) {
+//    if((cgi="conv=ibm-950&ShowLocales")!=NULL) {
+//    if((cgi="conv=ASCII&ShowLocales")!=NULL) {
+//    if((cgi="conv=iso-8859-9&ShowLocales")!=NULL) {
 //    if((cgi="conv=ibm-949_P11A-2000")!=NULL) {
 //    if((cgi="conv=UTF-8&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //    if((cgi="conv=ibm-930_P120-1999&s=IBM&s=windows&s=&s=ALL")!=NULL) {
-//    if((cgi="conv=UTF-8&ShowLanguages&s=IBM&s=windows&s=&s=ALL")!=NULL) {
+//    if((cgi="conv=UTF-8&ShowLocales&s=IBM&s=windows&s=&s=ALL")!=NULL) {
 //        puts(cgi);
         parseAllOptions(cgi, &errorCode);
     }
