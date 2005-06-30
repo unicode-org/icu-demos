@@ -77,6 +77,10 @@ static const char *helpText=
 
 static const char *inputError="<p>Error parsing the input string: %s</p>\n";
 
+static const char *inputStringTooLong="<p>Input string too long.</p>";
+
+static const char *stringTooLong="(string too long)";
+
 static const char *emptyString="(empty)";
 
 static const char *startString="%04x";
@@ -165,7 +169,9 @@ printTableText(const UChar *s, int32_t length) {
 
     errorCode=U_ZERO_ERROR;
     u_strToUTF8(buffer, sizeof(buffer), &utf8Length, s, length, &errorCode);
-    if(U_FAILURE(errorCode) || errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+    if(errorCode==U_BUFFER_OVERFLOW_ERROR || errorCode==U_STRING_NOT_TERMINATED_WARNING) {
+        printf("<td>%s</td>", stringTooLong);
+    } else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td>", u_errorName(errorCode));
     } else {
         printf("<td>%s</td>", buffer);
@@ -195,7 +201,9 @@ printNormalized(const UChar *s, int32_t length,
                                  mode, options,
                                  output, LENGTHOF(output),
                                  &errorCode);
-    if(U_FAILURE(errorCode)) {
+    if(errorCode==U_BUFFER_OVERFLOW_ERROR) {
+        printf("<td>%s</td><td>&nbsp;</td>", stringTooLong);
+    } else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
         printTableString(output, outputLength);
@@ -333,7 +341,7 @@ main(int argc, const char *argv[]) {
             u_strFromUTF8(buffer16, LENGTHOF(buffer16), &inputLength,
                           buffer, inputLength,
                           &errorCode);
-            UnicodeString us(FALSE, (const UChar *)buffer16, inputLength); // readonly alias
+            UnicodeString us(FALSE, (const UChar *)buffer16, U_SUCCESS(errorCode) ? inputLength : 0); // readonly alias
             inputLength=us.unescape().extract(input, LENGTHOF(input), errorCode);
             u_strToUTF8(input8, sizeof(input8), NULL,
                         input, inputLength,
@@ -363,7 +371,10 @@ main(int argc, const char *argv[]) {
         }
     }
 
-    if(U_FAILURE(errorCode)) {
+    if(errorCode==U_BUFFER_OVERFLOW_ERROR) {
+        puts(inputStringTooLong);
+        inputLength=0;
+    } else if(U_FAILURE(errorCode)) {
         printf(inputError, u_errorName(errorCode));
         inputLength=0;
     }
