@@ -123,7 +123,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
         {
             if(bigString)
             {
-                u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\" alt=\"-\" /> %S</a><p>\r\n",
+                u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "opened.gif\" alt=\"-\" /> %S</a>\r\n",
                     locale,
                     key,
                     FSWF("bigStringHide", "Hide"));
@@ -337,10 +337,9 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
   
     for(i=0;i<len;i++)
     {
-        u_fprintf(lx->OUT, "   <tr><td>%s</td><td>%s</td>\r\n", 
+        u_fprintf(lx->OUT, "   <tr><td>%s</td><td>%s</td></tr>\r\n", 
                   uscript_getShortName(list[i]), uscript_getName(list[i]));
     }
-    u_fprintf(lx->OUT, "</tr>");
     u_fprintf(lx->OUT, "</table>\r\n");
 
     showKeyAndEndItem(lx, "LocaleScript", locale);
@@ -1324,7 +1323,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
     if(U_FAILURE(status)) {
       explainStatus(lx, status, keyStem);
     } else { 
-      u_fprintf(lx->OUT, "<table w_idth=\"100%%\"><tr><th>#</th>");
+      u_fprintf(lx->OUT, "<table width=\"100%%\"><tr><th>#</th>");
       maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
         if(U_FAILURE(stuff[i].status)) {
@@ -1787,9 +1786,11 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
               
           case URES_STRING:  /* old format ICU data */
             s = ures_getString(taggedItem, &len, &status);
-              
+
             if(s) {
-              u_fprintf(lx->OUT, "<td>%S</td>", s);
+              u_fprintf(lx->OUT, "<td>");
+              writeEscapedHTMLUChars(lx, s);
+              u_fprintf(lx->OUT, "</td>");
             } else {
               u_fprintf(lx->OUT, "<td bgcolor=" kStatusBG " valign=\"top\">");
               explainStatus(lx, status, key);
@@ -1801,9 +1802,12 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
             {
               UResourceBundle *subItem = NULL;
               while((s = ures_getNextString(taggedItem, &len, NULL, &status)) && U_SUCCESS(status)) {
-                u_fprintf(lx->OUT, "<td>%S</td>", s);
+                u_fprintf(lx->OUT, "<td>");
+                writeEscapedHTMLUChars(lx, s);
+                u_fprintf(lx->OUT, "</td>");
+                //u_fprintf(lx->OUT, "<td>%S</td>", s);
               }
-                
+
               if(U_FAILURE(status) && (status != U_INDEX_OUTOFBOUNDS_ERROR)) {
                 u_fprintf(lx->OUT, "<td bgcolor=" kStatusBG " valign=\"top\">");
                 explainStatus(lx, status, key);
@@ -1818,14 +1822,11 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           } /* switch */
         }
           
-        status = U_ZERO_ERROR;
-
         /* Currency additions */
         {
           UChar ucn[8];
           u_charsToUChars(tag, ucn,4);
-          u_fprintf(lx->OUT, "<th>%d", ucurr_getDefaultFractionDigits(ucn, &status));
- 	u_fprintf(lx->OUT, "<br/>code: %S, status: %s</th>", ucn, u_errorName(status));
+          u_fprintf(lx->OUT, "<th>%d</th>", ucurr_getDefaultFractionDigits(ucn, &status));
         }
 
         if(isDefault) {

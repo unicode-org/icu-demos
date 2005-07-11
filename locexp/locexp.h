@@ -167,7 +167,7 @@ typedef struct
 
 /** Tuning and appearance **/
 #define kStatusBG "\"#EEEEEE\" " 
-#define kXKeyBGColor "\"#AAEEAA\" "
+#define kXKeyBGColor "\"#c8d7e3\" "
 #define kShowStringCutoffSize 200   /* size in chars before a string is 'too big'. */
 #define kShowUnicodeSetCutoffSize 80   /* size in chars before a string is 'too big'. */
 #define kShow2dArrayRowCutoff 5     /* size in rows before an array is too big */
@@ -295,6 +295,7 @@ extern char *createEscapedSortList(const UChar *source);
 
 /* Write escaped strings (e.g. escape these characters & < > */
 extern void writeEscapedHTMLChars(LXContext *lx, const char *s);
+extern void writeEscapedHTMLUChars(LXContext *lx, const UChar *s);
 
 /* is this a locale we should advertise as supported? */
 extern UBool isSupportedLocale(const char *locale, UBool includeChildren); /* for LX interface */

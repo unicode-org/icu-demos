@@ -91,13 +91,13 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     UErrorCode status = U_ZERO_ERROR;
     UBool  hadUnsupportedLocales = FALSE;
     static UBool initStr = TRUE;
-    U_STRING_DECL(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#FFDDDD\"><b>", 38);
+    U_STRING_DECL(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#c8d7e3\"><b>", 38);
     U_STRING_DECL(END_HIT_CELL, "</b></td>\r\n", 12);
     U_STRING_DECL(BEGIN_CELL, "<td valign=\"top\">", 17);
     U_STRING_DECL(END_CELL, "</td>\r\n", 8);
     U_STRING_DECL(COMMA_SPACE, ",&nbsp; ", 9);
     if (initStr) {
-        U_STRING_INIT(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#FFDDDD\"><b>", 38);
+        U_STRING_INIT(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#c8d7e3\"><b>", 38);
         U_STRING_INIT(END_HIT_CELL, "</b></td>\r\n", 12);
         U_STRING_INIT(BEGIN_CELL, "<td valign=\"top\">", 17);
         U_STRING_INIT(END_CELL, "</td>\r\n", 8);
@@ -299,7 +299,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
       u_fprintf(lx->OUT, "<a href=\"%s\">", getLXBaseURL(lx, kNO_URL | kNO_LOC)); /* Reset */
     }
     
-    u_fprintf_u(lx->OUT, FSWF("title", "ICU LocaleExplorer"));
+    u_fprintf_u(lx->OUT, FSWF("title", "IBM: ICU Demonstration - Locale Explorer"));
       
     if(styled && !lx->section[0]) {
       u_fprintf(lx->OUT, "</a>");
@@ -307,6 +307,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
     
     return;
   }
+
   /* reverse order recursively */
   printPath(lx, leaf->parent,current,styled);
   u_fprintf(lx->OUT, " &gt; ");

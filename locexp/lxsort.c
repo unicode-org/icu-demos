@@ -370,34 +370,36 @@ void showSortStyle(LXContext *lx)
 
   u_fprintf(lx->OUT, "%s",  "\r\n<style type=\"text/css\">\r\n"
             "/*<![CDATA[*/"
-/*
-            ".box0 { border: 1px inset gray; margin: 1px }\r\n"
-            ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
-*/
+
+//            ".box0 { border: 1px inset gray; margin: 1px }\r\n"
+//            ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
+
             ".wide        { width: 100% }\r\n"
             ".high        { height: 100% }\r\n"
             ".fill        { width: 100%; height: 100% }\r\n"
-            ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
-            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n");
+
+//            ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
+//            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n"
+            );
     u_fprintf(lx->OUT, "%s",    
             "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
             "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
             "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
-            "               color: black; vertical-align: top; border: 1px solid black; \r\n"
-            "               padding: 5px }\r\n");
+            "               color: #000; vertical-align: top; border: 1px solid black; \r\n"
+            "               padding: 5px }\r\n"
+            );
     u_fprintf(lx->OUT, "%s",
             ".noborder    { border: 1px none white }\r\n"
             ".widenoborder { width: 100%; border: 1px none white }\r\n"
-            ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
-            ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"
+//            ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
+//            ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"
             ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
-            "tt.count { font-size: 80%; color: #0000FF }\r\n"
+//            "tt.count { font-size: 80%; color: #0000FF }\r\n"
             "tt.key { font-size: 70%; color: #666666 }\r\n"
             "/*]]>*/\r\n"
             "</style>\r\n");
-  
 }
-  
+
 /**
  * Demonstrate sorting.  Call usort as a library to do the actual sorting.
  * URL description:
@@ -500,11 +502,11 @@ void showSort(LXContext *lx, const char *locale)
             getLXBaseURL(lx, kNO_URL));
   u_fprintf(lx->OUT, "<table id=\"main\" class=\"wide\" border=\"1\">\r\n");
   /* the source box  =======================================================================================*/
-  u_fprintf(lx->OUT, " <tr> <td %s ><b>%S</b>\r\n", /* top is only 1 row for now */
+  u_fprintf(lx->OUT, " <tr> <td %s ><label for=\"source\"><b>%S</b></label>\r\n", /* top is only 1 row for now */
             isG7?" rowspan=\"2\" ": /* width=\"22%\" */ " rowspan=\"1\" ",
             FSWF("usortSource", "Source"));
 
-  u_fprintf(lx->OUT, "<p><textarea %s rows=\"20\" name=\"str\">", 
+  u_fprintf(lx->OUT, "<p><textarea id=\"source\" %s rows=\"20\" name=\"str\">", 
             (isG7?"":" class=\"wide\" cols=\"20\" "));
   
   writeEscaped(lx, strChars); 
@@ -523,7 +525,7 @@ void showSort(LXContext *lx, const char *locale)
             isG7?"":"class=\"wide\" ",
             FSWF("EXPLORE_CollationElements_Sort", "Sort"));
 
-  u_fprintf(lx->OUT, "<input type=\"checkbox\" %s Sub name=\"showCollKey\" />%S<br />\r\n",
+  u_fprintf(lx->OUT, "<input id=\"showcollkey\" type=\"checkbox\" %s name=\"showCollKey\" /><label for=\"showcollkey\">%S</label><br />\r\n",
             (hasQueryField(lx,"showCollKey")?"checked=\"checked\"":""),
             FSWF("EXPLORE_CollationElements_ShowCollKey", "Show Collation Key"));
 
@@ -536,7 +538,7 @@ void showSort(LXContext *lx, const char *locale)
       UErrorCode customError = U_ZERO_ERROR;
 
       u_fprintf(lx->OUT, "<br /><hr width=\"20%%\" />\r\n");
-      u_fprintf(lx->OUT, "<b>%S</b><br />\r\n", FSWF("EXPLORE_CollationElements_options", "Options"));
+      u_fprintf(lx->OUT, "<label for=\"options\"><b>%S</b></label><br />\r\n", FSWF("EXPLORE_CollationElements_options", "Options"));
       
       
       if ( ruleChars[0] ) { /* custom rules */
@@ -610,7 +612,7 @@ void showSort(LXContext *lx, const char *locale)
       }
 
       
-      u_fprintf(lx->OUT, "<select class=\"wide\" name=\"strength\">\r\n");
+      u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"strength\">\r\n");
 
       for(value = UCOL_PRIMARY; value < UCOL_STRENGTH_LIMIT; value++)
       {
@@ -642,7 +644,7 @@ void showSort(LXContext *lx, const char *locale)
               value = UCOL_OFF;
             }
           }
-          u_fprintf(lx->OUT, "<select class=\"wide\" name=\"cas1\">\r\n");
+          u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"cas1\">\r\n");
 
           for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
           {
@@ -676,7 +678,7 @@ void showSort(LXContext *lx, const char *locale)
               value = UCOL_NON_IGNORABLE;
             }
           }
-          u_fprintf(lx->OUT, "<select class=\"wide\" name=\"shft\">\r\n");
+          u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"shft\">\r\n");
 
           for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
           {
@@ -706,7 +708,7 @@ void showSort(LXContext *lx, const char *locale)
         value = UCOL_OFF;
       }
 
-      u_fprintf(lx->OUT, "<input type=\"hidden\" name=\"lxCustSortOpts\" value=\"x\" /> <input type=\"checkbox\" %s name=\"fr\" /> %S <br />\r\n",
+      u_fprintf(lx->OUT, "<input type=\"hidden\" name=\"lxCustSortOpts\" value=\"x\" /> <input id=\"fr\" type=\"checkbox\" %s name=\"fr\" /><label for=\"fr\"> %S </label><br />\r\n",
                 (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -723,7 +725,7 @@ void showSort(LXContext *lx, const char *locale)
       {
         value = UCOL_OFF;
       }
-      u_fprintf(lx->OUT, "<input type=\"checkbox\" %s name=\"case\" /> %S <br />\r\n",
+      u_fprintf(lx->OUT, "<input id=\"case\" type=\"checkbox\" %s name=\"case\" /><label for=\"case\"> %S </label><br />\r\n",
                 (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -743,7 +745,7 @@ void showSort(LXContext *lx, const char *locale)
       {
         value = UCOL_OFF;
       }
-      u_fprintf(lx->OUT, "<input type=\"checkbox\" %s name=\"dcmp\" /> %S <br />\r\n",
+      u_fprintf(lx->OUT, "<input id=\"dcmp\" type=\"checkbox\" %s name=\"dcmp\" /><label for=\"dcmp\"> %S </label><br />\r\n",
                 (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -762,7 +764,7 @@ void showSort(LXContext *lx, const char *locale)
       {
         value = UCOL_OFF;
       }
-      u_fprintf(lx->OUT, "<input type=\"checkbox\" %s name=\"hira\" /> %S <br />\r\n",
+      u_fprintf(lx->OUT, "<input id=\"hira\" type=\"checkbox\" %s name=\"hira\" /><label for=\"hira\"> %S </label><br />\r\n",
                 (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -780,7 +782,7 @@ void showSort(LXContext *lx, const char *locale)
       {
         value = UCOL_OFF;
       }
-      u_fprintf(lx->OUT, "<input type=\"checkbox\" %s name=\"nume\" /> %S <br />\r\n",
+      u_fprintf(lx->OUT, "<input id=\"nume\" type=\"checkbox\" %s name=\"nume\" /><label for=\"nume\"> %S </label><br />\r\n",
                 (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
       status = U_ZERO_ERROR;
       ucol_setAttribute(customCollator, attribute, value, &status);
@@ -788,10 +790,10 @@ void showSort(LXContext *lx, const char *locale)
 
       /* reset ----------------------------------------- */
 
-    u_fprintf(lx->OUT, "<input type=\"submit\" name=\"lxSortReset\" class=\"wide\" value=\"%S\" />",
+    u_fprintf(lx->OUT, "<input id=\"lxsortreset\" type=\"submit\" name=\"lxSortReset\" class=\"wide\" value=\"%S\" />",
               FSWF("EXPLORE_CollationElements_Defaults", "Reset to Defaults"));
 
-    u_fprintf(lx->OUT, "</td>");
+    //u_fprintf(lx->OUT, "</td>");
 
     /* end customizables ---------------------------------------------------------- */
     /* ======================================================================================= */
@@ -947,7 +949,7 @@ void showSort(LXContext *lx, const char *locale)
     /* -===================================================================== custom rules ... */
   if(!isG7) {
     u_fprintf(lx->OUT, "<tr><td colspan=\"2\">\r\n");
-    u_fprintf(lx->OUT, "%S\r\n", FSWF("usortCustomRules","Custom Rules"));
+    u_fprintf(lx->OUT, "<label for=\"usortrules\"> %S</label>\r\n", FSWF("usortCustomRules","Custom Rules"));
     {
       UChar dispName[1024];
       UErrorCode stat = U_ZERO_ERROR;
@@ -961,7 +963,7 @@ void showSort(LXContext *lx, const char *locale)
         );
     }
     u_fprintf(lx->OUT, "<br />\r\n");
-    u_fprintf(lx->OUT, "<textarea class=\"wide\" name=\"usortRules\" rows=\"5\" cols=\"50\">");
+    u_fprintf(lx->OUT, "<textarea id=\"usortrules\" class=\"wide\" name=\"usortRules\" rows=\"5\" cols=\"50\">");
     
     if(hasQueryField(lx, "usortRulesLocale") && !lxSortReset) {
       UErrorCode err = U_ZERO_ERROR;
@@ -996,9 +998,9 @@ void showSort(LXContext *lx, const char *locale)
 
   u_fprintf(lx->OUT, "</form>\r\n");
 
-  u_fprintf(lx->OUT, "<p><br/></p>\r\n");
+  u_fprintf(lx->OUT, "<p><br /></p>\r\n");
   u_fprintf(lx->OUT, "%S\r\n",  FSWF(/*NOEXTRACT*/"sortHelp",""));
-  u_fprintf(lx->OUT, "<p><br/>\r\n");
+  u_fprintf(lx->OUT, "<p><br />\r\n");
   u_fprintf(lx->OUT, "%S <a href=\"http://icu.sourceforge.net/userguide/Collate_Intro.html\">%S</a><br/></p>\r\n",
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
             FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));

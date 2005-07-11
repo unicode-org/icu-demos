@@ -187,7 +187,7 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
 {
   /* if(type==thisType) */  /* LEFT tab A */
   {
-    u_fprintf(lx->OUT, "<td bgcolor=\"#00cc99\" width=\"20%%\" height=9><img align=left width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aleft.gif\">");
+    u_fprintf(lx->OUT, "<td bgcolor=\"#00cc99\" width=\"20%%\" height=9><img align=\"left\" width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aleft.gif\">");
     u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar=%c&NP_DBL=%s\">%S</a>", 
               lx->curLocaleName,
               thisType, num, name);

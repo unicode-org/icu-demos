@@ -42,12 +42,14 @@ void displayLocaleExplorer(LXContext *lx)
     uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
     u_fprintf(lx->OUT,"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"%s\"  lang=\"%s\">", langName, langName);
 
-    u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer %s \r\n  " ICU_URL "  \r\n\r\n-->\r\n",
-        U_COPYRIGHT_STRING);
+    u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer %s \r\n     " ICU_URL "\r\n  -->\r\n\r\n", U_COPYRIGHT_STRING);
 
-    u_fprintf(lx->OUT, "<head>\r\n<title>");
+    u_fprintf(lx->OUT, "<head>\r\n");
+    printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
+    u_fprintf(lx->OUT, "\r\n<title>");
     lx->backslashCtx.html = FALSE;
-    printPath(lx, lx->curLocale, lx->curLocale, FALSE);
+
+    printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, FALSE);
 
     /* TODO: check 'section' here */
     if(strstr(lx->queryString, "EXPLORE"))
@@ -90,21 +92,17 @@ void displayLocaleExplorer(LXContext *lx)
     if(hasQueryField(lx,"PANICDEFAULT") ||
         (lx->pathInfo && strstr(lx->pathInfo,"transliterated")))
     {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow,noindex\" />\r\n");
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow\" />\r\n");
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow,noindex\" />\r\n");
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     } else if(lx->convRequested && lx->convRequested[0] && !strstr(lx->convRequested, "utf-8")) {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow,noindex\" />\r\n");
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     } else if(strstr(lx->queryString, "_=")) {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"nofollow\" />\r\n");
-    }
-    if(lx->convRequested && lx->convRequested[0]) {
-        u_fprintf(lx->OUT, "<meta http-equiv=\"content-type\" content=\"text/html; charset=%s\" />\r\n", lx->convRequested);
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     }
 
-    printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
     showSortStyle(lx);
     u_fprintf(lx->OUT, "%s", "</head>\r\n<body>\r\n");
     if (printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
@@ -117,7 +115,7 @@ void displayLocaleExplorer(LXContext *lx)
     printHelpImg(lx, "display", 
                 FSWF("display_ALT", "Display Problems?"),
                 FSWF("display_GIF", "displayproblems.gif"),
-                FSWF("display_OPTIONS", ""));
+                FSWF("display_OPTIONS", "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"));
 
     u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
 
@@ -158,7 +156,7 @@ void displayLocaleExplorer(LXContext *lx)
         }
 
         if(lx->noBug) {
-            u_fprintf(lx->OUT, "<br /><font color=red><b>%S</b></FONT></blockquote>",
+            u_fprintf(lx->OUT, "<br /><p style=\"color: red;\"><b>%S</b></p></blockquote>",
                 FSWF("warningNoBug", "Please do not file bugs against this locale."));
         }
 

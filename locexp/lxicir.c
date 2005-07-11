@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 2004, International Business Machines
+*   Copyright (C) 2004-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
@@ -442,7 +442,7 @@ static void showICIRShortLongCalType( LXContext *lx, UResourceBundle *rb,
           maxCount = stuff[i].count;
         }
 		
-		u_fprintf(lx->OUT, "<table border=1 w_idth=\"100%%\">");
+		u_fprintf(lx->OUT, "<table border=1 width=\"100%%\">");
 
         for(j=0;j<stuff[i].count;j++) {
             const UChar *s;
