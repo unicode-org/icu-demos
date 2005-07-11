@@ -176,7 +176,7 @@ void displayLocaleExplorer(LXContext *lx)
             }
         }
         else {
-            u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=\"left\" valign=\"top\">", FSWF("title", "ICU LocaleExplorer"));
+            u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=\"left\" valign=\"top\">", FSWF("title", "IBM: ICU Demonstration - Locale Explorer"));
 
             if(lx->curLocaleName[0]) { /* don't show a completely empty locale control */
                 u_fprintf(lx->OUT, "<big>");

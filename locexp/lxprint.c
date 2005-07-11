@@ -362,7 +362,7 @@ void printStatusTable(LXContext *lx)
     
     if(!isSupportedLocale(lx->dispLocale, TRUE)) {  /* consider it 'supported' if it's been translated. */
         u_fprintf(lx->OUT, "<tr><td colspan=\"3\" style=\"color: #FF0000;\">");
-        u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <style=\"text-decoration: underline;\">%s</style>, is unsupported."), lx->dispLocale);
+        u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <strong>%s</strong>, is unsupported."), lx->dispLocale);
       u_fprintf(lx->OUT, "</td></tr>");
     }
 
