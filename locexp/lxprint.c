@@ -514,12 +514,14 @@ void writeEscaped(LXContext *lx, const UChar *s)
 {
     lx->backslashCtx.html = FALSE;
 
-    if(u_strchr(s, 0x00A0))
+    if(1||u_strchr(s, 0x00A0))
     {
         while(*s)
         {
             if(*s == 0x00A0)
                 u_fprintf(lx->OUT, " ");
+            else if(*s == '"')
+		u_fprintf(lx->OUT, "&quot;");
             else
                 u_fprintf(lx->OUT, "%C", *s);
 
