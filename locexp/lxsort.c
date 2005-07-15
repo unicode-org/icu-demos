@@ -371,15 +371,15 @@ void showSortStyle(LXContext *lx)
   u_fprintf(lx->OUT, "%s",  "\r\n<style type=\"text/css\">\r\n"
             "/*<![CDATA[*/"
 
-//            ".box0 { border: 1px inset gray; margin: 1px }\r\n"
-//            ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n"
+	    /* ".box0 { border: 1px inset gray; margin: 1px }\r\n"
+	       ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n" */
 
             ".wide        { width: 100% }\r\n"
             ".high        { height: 100% }\r\n"
             ".fill        { width: 100%; height: 100% }\r\n"
 
-//            ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
-//            ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n"
+	    /* ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
+	       ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n" */
             );
     u_fprintf(lx->OUT, "%s",    
             "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
@@ -391,10 +391,10 @@ void showSortStyle(LXContext *lx)
     u_fprintf(lx->OUT, "%s",
             ".noborder    { border: 1px none white }\r\n"
             ".widenoborder { width: 100%; border: 1px none white }\r\n"
-//            ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
-//            ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"
+	      /* ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
+		 ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"*/
             ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
-//            "tt.count { font-size: 80%; color: #0000FF }\r\n"
+	      /* "tt.count { font-size: 80%; color: #0000FF }\r\n" */
             "tt.key { font-size: 70%; color: #666666 }\r\n"
             "/*]]>*/\r\n"
             "</style>\r\n");
@@ -793,7 +793,7 @@ void showSort(LXContext *lx, const char *locale)
     u_fprintf(lx->OUT, "<input id=\"lxsortreset\" type=\"submit\" name=\"lxSortReset\" class=\"wide\" value=\"%S\" />",
               FSWF("EXPLORE_CollationElements_Defaults", "Reset to Defaults"));
 
-    //u_fprintf(lx->OUT, "</td>");
+    /* u_fprintf(lx->OUT, "</td>"); */
 
     /* end customizables ---------------------------------------------------------- */
     /* ======================================================================================= */
