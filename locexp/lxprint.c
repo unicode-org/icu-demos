@@ -530,7 +530,7 @@ void writeEscaped(LXContext *lx, const UChar *s)
     }
     else
        writeEscapedHTMLUChars(lx, s);
-//        u_fprintf(lx->OUT, "%S", s); 
+    /*       u_fprintf(lx->OUT, "%S", s); */
 
     /* should 'get/restore' here. */
     lx->backslashCtx.html = TRUE;
