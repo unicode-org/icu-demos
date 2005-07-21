@@ -54,10 +54,13 @@ static const char htmlHeader[]=
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
     "<head>\n"
-#if 0
-    This causes the following error...
-    <meta http-equiv="Content-Type" content="text/html; "[Valid CharSet]"> must be the first element after the <head> tag. Please see the help file. [3.3.0.HTML_Authoring.MetatagsContentType] 
+    "\n";
 
+static const char defaultHeader[]=
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n";
+
+static const char endHeaderBeginBody[]=
     // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
@@ -72,15 +75,6 @@ static const char htmlHeader[]=
     "table.data-table-2 div.glyph {font-size: 160%; font-family: serif;}\n"
     "/*]]>*/\n"
     "</style>\n"
-    "\n"
-#endif
-    ;
-
-static const char defaultHeader[]=
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
-    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n";
-
-static const char endHeaderBeginBody[]=
     "</head>\n"
     "<body>\n";
 
