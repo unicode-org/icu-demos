@@ -1805,7 +1805,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
                 u_fprintf(lx->OUT, "<td>");
                 writeEscapedHTMLUChars(lx, s);
                 u_fprintf(lx->OUT, "</td>");
-                //u_fprintf(lx->OUT, "<td>%S</td>", s);
+                /* u_fprintf(lx->OUT, "<td>%S</td>", s);*/
               }
 
               if(U_FAILURE(status) && (status != U_INDEX_OUTOFBOUNDS_ERROR)) {
