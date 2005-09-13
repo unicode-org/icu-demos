@@ -255,7 +255,7 @@ root {
    stringClickToShow  {  "(Click here to show.)"  }
    sublocales  {  "Sublocales:"  }
    taggedarrayTag  {  "Tag"  }
-   title  {  "IBM: ICU Demonstration - Locale Explorer"  }
+   title  {  "Locale Explorer"  }
    translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
    transliterate_help  {  "Transliteration Help"  }
    ubrowse  {  "Browse Unicode in this codepage"  }

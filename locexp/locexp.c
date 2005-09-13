@@ -48,7 +48,7 @@ void displayLocaleExplorer(LXContext *lx)
     printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
     u_fprintf(lx->OUT, "\r\n<title>");
     lx->backslashCtx.html = FALSE;
-
+    u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "IBM Globalization > ICU > "));
     printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, FALSE);
 
     /* TODO: check 'section' here */
@@ -176,7 +176,7 @@ void displayLocaleExplorer(LXContext *lx)
             }
         }
         else {
-            u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=\"left\" valign=\"top\">", FSWF("title", "IBM: ICU Demonstration - Locale Explorer"));
+            u_fprintf(lx->OUT, "<table summary=\"%S\" width=\"100%%\">\r\n<tr><td align=\"left\" valign=\"top\">", FSWF("title", "Locale Explorer"));
 
             if(lx->curLocaleName[0]) { /* don't show a completely empty locale control */
                 u_fprintf(lx->OUT, "<big>");
