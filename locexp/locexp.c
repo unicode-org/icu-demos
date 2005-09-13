@@ -48,7 +48,7 @@ void displayLocaleExplorer(LXContext *lx)
     printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
     u_fprintf(lx->OUT, "\r\n<title>");
     lx->backslashCtx.html = FALSE;
-    u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "IBM Globalization > ICU > "));
+    u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "IBM: ICU Demonstration - "));
     printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, FALSE);
 
     /* TODO: check 'section' here */
