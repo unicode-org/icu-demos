@@ -286,7 +286,7 @@ root {
 
  // Imported from: root.txt.inc 
 
-// [root.txt.inc] Copyright (c) 2000-2005 IBM, Inc. and Others, all rights reserved
+// [root.txt.inc] Copyright (c) 2000 IBM, Inc. and Others, all rights reserved
    c.gif:import { "root/c.gif" }
    opened.gif:import { "root/opened.gif" }
    closed.gif:import { "root/closed.gif" }

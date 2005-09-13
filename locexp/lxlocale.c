@@ -295,14 +295,21 @@ void printSubLocales(LXContext *lx, const char *suffix)
 void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current, UBool styled)
 {
   if(!leaf) { /* top level */
+    if(styled) {
+      u_fprintf(lx->OUT, "%s<span class=\"bctl\">", DEMO_BREAD_CRUMB_BAR);
+    }
     if(styled && !lx->section[0]) {
       u_fprintf(lx->OUT, "<a href=\"%s\">", getLXBaseURL(lx, kNO_URL | kNO_LOC)); /* Reset */
     }
     
-    u_fprintf_u(lx->OUT, FSWF("title", "IBM: ICU Demonstration - Locale Explorer"));
+    u_fprintf_u(lx->OUT, FSWF("title", "Locale Explorer"));
       
     if(styled && !lx->section[0]) {
       u_fprintf(lx->OUT, "</a>");
+    }
+
+    if(styled) {
+      u_fprintf(lx->OUT, "</span>");
     }
     
     return;
@@ -318,7 +325,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
     if(leaf == current) {
       u_fprintf(lx->OUT, "<b>");
     }
-    u_fprintf(lx->OUT, "<a href=\"%s&amp;_=%s\">", getLXBaseURL(lx, kNO_URL|kNO_LOC), leaf->str);
+    u_fprintf(lx->OUT, "<a class=\"bctl\" href=\"%s&amp;_=%s\">", getLXBaseURL(lx, kNO_URL|kNO_LOC), leaf->str);
   }
   u_fprintf_u(lx->OUT, leaf->ustr);
   if(styled) {

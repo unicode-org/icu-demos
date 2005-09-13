@@ -164,7 +164,7 @@ void displayLocaleExplorer(LXContext *lx)
             const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
 
             u_fprintf(lx->OUT, "<big>");
-            printPath(lx, lx->curLocale, lx->curLocale, TRUE);
+            printPath(lx, lx->curLocale, lx->curLocale, TRUE); /* print the breadcrumb */
 
             if(queryField(lx, "EXPLORE_CollationElements")) {
                 u_fprintf(lx->OUT, " &gt; %S", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
@@ -199,7 +199,7 @@ void displayLocaleExplorer(LXContext *lx)
         if( !lx->curLocaleName[0]
             || hasQueryField(lx, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
         {
-            u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><p>");
+            u_fprintf(lx->OUT, "%s<br/><div style=\"margin-left: 2.5em\"><p>", DEMO_BREAD_CRUMB_BAR);
             u_fprintf_u(lx->OUT, 
                 FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."),
                 (double)(lx->locales->nSubLocs),

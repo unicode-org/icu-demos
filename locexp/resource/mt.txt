@@ -1,10 +1,10 @@
-﻿// -*- Coding: UTF_8 -*-
+// -*- Coding: UTF_8 -*-
 //***********************************************************
-//*   Copyright (C) 1999,2000 International Business Machines
+//*   Copyright (C) 1999-2005 International Business Machines
 //*   Corporation and others.  All Rights Reserved.
 //************************************************************/
-// Maltese translation. By Steven R. Loomis <srl@monkey.sbay.org>
-// Also by Mirka Mifsud Bonicci <mirka@pr2000.com>
+// Maltese translation. By Steven R. Loomis <srl@icu-project.org>
+// Also by Mirka Mifsud Bonnici
 //
 
 mt { 
@@ -79,6 +79,7 @@ chooseLocale { "Il-lingwa u pajjiż tiegħi :" }
 cumulative_notshown { "data kumulattiva li intertet mhix murija" }
 display_ALT { "Problemi biex tara l-karattri?" }
 encoding_translit_setting { "Transliterazzjoni:" }
+transliterate_help  {  "Għajnuna tat-Transliterazzjoni"  }
 help { "Għajnuna" }
 helpPrefix  {  "default_"  } // needed to get Maltese in the list of locales
 inherited  {  "(jintirtu)"  }
@@ -96,7 +97,7 @@ rules { "Regolament" }
 statusTableHeader  {  "Għażla: "  }
 statusTableHeaderChange { "(Ikklikkja biex turi)" }
 stringClickToShow { "(Ikklikja hawn biex taraha.)" }
-title  {  "MERĦBA!! Esploratur tal-Lokali tal-ICU"  }
+title  {  "Esploratur tal-Lokali tal-ICU"  }
 usortIdentical  {  "Identiku"  }
 usortPrimary  {  "Primarju"  }
 usortSecondary  {  "Sekondarju"  }
@@ -104,6 +105,8 @@ usortSort  {  "Sort"  }
 usortSource { "Minn" }
 usortTertiary  {  "Terzziarju"  } // ?
 zoneStrings { "Time Zones" }
+XMLcomp { "Ikkompara" }
+explore_search { "Fittex" }
 
 EXPLORE_CollationElements_sampleString { 
 
