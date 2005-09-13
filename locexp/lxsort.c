@@ -298,8 +298,10 @@ static void appendSomeOfArrayTo(LXContext *lx, UResourceBundle *aBundle, UChar *
   const UChar *str;
   int32_t len2;
   const char *key2;
+  char *keytmp = strdup(key);
   
-  sub = ures_findSubResource(aBundle, uprv_strdup(key), sub, &status);
+  sub = ures_findSubResource(aBundle, keytmp, sub, &status);
+  free(keytmp);
   if(U_FAILURE(status)) {
     return;
   }
