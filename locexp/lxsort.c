@@ -5,11 +5,15 @@
 
 #include "locexp.h"
 #include "unicode/udata.h"
+#include "uresimp.h"
 
 #define G7COUNT 8  /* all 8 of the g7 locales. showSort() */
 static const char   G7s[G7COUNT][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr_FR", "it_IT", "ja_JP", "sv_SE" };
 
 #define isNL(x) ((x)==0x000D || (x)==0x000A || (x)==0x2029 || (x)==0x2028)
+
+/* internal value for default */
+#define LX_UCOL_DEFAULT ((UColAttributeValue)-1)
 
 void stripComments(UChar *ch) 
 {
@@ -179,12 +183,14 @@ const UChar *showSort_attributeName(UColAttribute attrib)
   }
 }
 
+static const UChar nulls[] = { 0x0000 };
+
 const UChar *showSort_attributeVal(UColAttributeValue val)
 {
-  static const UChar nulls[] = { 0x0000 };
 
   switch(val)
   {
+  case LX_UCOL_DEFAULT:  return FSWF("LX_UCOL_DEFAULT", "Don't change");
   /* Duplicate:  UCOL_CE_STRENGTH_LIMIT */
   case UCOL_LOWER_FIRST : return FSWF("UCOL_LOWER_FIRST","Force Lowercase first");
   case UCOL_OFF : return FSWF("UCOL_OFF","Off");
@@ -202,6 +208,30 @@ const UChar *showSort_attributeVal(UColAttributeValue val)
   case UCOL_UPPER_FIRST : return FSWF("UCOL_UPPER_FIRST","Force Uppercase first");
   default: return nulls;
   }  
+}
+
+const UChar *showSort_attributeValDefault(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttributeValue defVal) {
+  if(val != LX_UCOL_DEFAULT) {
+    return showSort_attributeVal(val);
+  } else {
+    const UChar *defMsg0;
+    const UChar *defStr;
+    const UChar *defMsg1;
+    int32_t needed;
+    defMsg0 = FSWF("LX_UCOL_DEFAULTMSG0", "Per Rules (default: ");
+    defStr = showSort_attributeVal(defVal);
+    defMsg1 = FSWF("LX_UCOL_DEFAULTMSG1", ")");
+    
+    needed = u_strlen(defMsg0)+u_strlen(defStr)+u_strlen(defMsg1);
+    if((needed+1)>bufSize) {
+        return showSort_attributeVal(val);
+    } else {
+        u_strcpy(buf, defMsg0);
+        u_strcat(buf, defStr);
+        u_strcat(buf, defMsg1);
+        return buf;
+    }
+  }
 }
 
 
@@ -269,7 +299,7 @@ static void appendSomeOfArrayTo(LXContext *lx, UResourceBundle *aBundle, UChar *
   int32_t len2;
   const char *key2;
   
-  sub = ures_getByKey(aBundle, key, sub, &status);
+  sub = ures_findSubResource(aBundle, uprv_strdup(key), sub, &status);
   if(U_FAILURE(status)) {
     return;
   }
@@ -293,26 +323,28 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
 
   if(!text || !*text) {
     /* attempt load from RB */
-    const UChar *sampleString, *sampleString2 = NULL;
+    const UChar *sampleString = NULL;
     UResourceBundle *sampleRB;
     UErrorCode sampleStatus = U_ZERO_ERROR;
     int32_t len;
     
-    /* samplestring will vary with label locale! */
-    sampleString =  FSWF(/*NOEXTRACT*/ "EXPLORE_CollationElements_sampleString","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
-    
     sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
-    if(U_SUCCESS(sampleStatus))  {
-      sampleString2 = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
+    if(!U_FAILURE(sampleStatus))  {
+      fprintf(stderr, "was able to open [%s], err %s\n", locale, u_errorName(sampleStatus));
+      sampleString = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
+      fprintf(stderr, "getss [%s]\n", u_errorName(sampleStatus));
       ures_close(sampleRB);
+      if(U_SUCCESS(sampleStatus)) {
+        text = createEscapedSortList(sampleString); /* use locale-dependent fallback */
+      }
     }
-    
-    if(U_FAILURE(sampleStatus) || !sampleString2)  {
+    if(U_FAILURE(sampleStatus) || !sampleString) {
       UChar  *someText;
       int32_t someTextLen;
       UResourceBundle *aBundle = NULL;
 
-      someTextLen = u_strlen(sampleString) + 1024;
+      sampleString =  FSWF(/*NOEXTRACT*/ "EXPLORE_CollationElements_sampleString_default","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
+      someTextLen = u_strlen(sampleString) + 1024 + 768;
       someText = malloc(someTextLen * sizeof(someText[0]));
       sampleStatus = U_ZERO_ERROR;
       aBundle = ures_open(NULL, locale, &sampleStatus);
@@ -320,8 +352,8 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
       someText[0] =0 ;
 
       if(U_SUCCESS(sampleStatus)) {
-        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "DayNames", 7);
-        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "MonthNames", 12);
+        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "calendar/gregorian/dayNames/format/wide", 3);
+        appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "calendar/gregorian/monthNames/format/wide", 3);
         appendSomeOfArrayTo(lx, aBundle, someText, someTextLen, "Languages", 3);
       }
 
@@ -336,11 +368,8 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
       /* sampleString2 = sampleString;  *//* fallback */
       
       /* get some more interesting text.   */
-      
-    } else {
-      text = createEscapedSortList(sampleString2);
     }
-  }
+  } /* end if no user-specified text */
 
   if(text && *text)
   {
@@ -421,7 +450,7 @@ void showSort(LXContext *lx, const char *locale)
   UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
   UChar  fixedRuleChars[SORTSIZE]; /* Custom rule UChars without comments */
   UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
-
+  UChar attribBuf[1024]; /* 1 kibibyte */
   /* The 'g7' locales to demonstrate. Note that there eight.  */
   UErrorCode status = U_ZERO_ERROR;  
 
@@ -429,7 +458,7 @@ void showSort(LXContext *lx, const char *locale)
   UColAttributeValue  customStrength = UCOL_DEFAULT;
   USort              *customSort     = NULL;
   UCollator          *customCollator = NULL;
-  UColAttributeValue  value;
+  UColAttributeValue  value, defaultvalue;
   UColAttribute       attribute;
   
   UBool isG7 = FALSE;
@@ -540,7 +569,6 @@ void showSort(LXContext *lx, const char *locale)
       u_fprintf(lx->OUT, "<br /><hr width=\"20%%\" />\r\n");
       u_fprintf(lx->OUT, "<label for=\"options\"><b>%S</b></label><br />\r\n", FSWF("EXPLORE_CollationElements_options", "Options"));
       
-      
       if ( ruleChars[0] ) { /* custom rules */
         UCollator *coll;
         UParseError parseErr;
@@ -594,6 +622,7 @@ void showSort(LXContext *lx, const char *locale)
       /* -------------------------- UCOL_STRENGTH ----------------------------------- */
       status = U_ZERO_ERROR;
       attribute = UCOL_STRENGTH;
+      u_fprintf(lx->OUT, "%S<br/>\n", showSort_attributeName(attribute));
       customStrength = ucol_getAttribute(customCollator, attribute, &status);
       if(!lxSortReset && (ss = queryField(lx,"strength"))) {
         nn = atoi(ss);
@@ -628,22 +657,19 @@ void showSort(LXContext *lx, const char *locale)
 
       /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
       {
-          UColAttributeValue caseVals[] = { UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST };
+          UColAttributeValue caseVals[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST };
           int i;
           attribute = UCOL_CASE_FIRST;
+          u_fprintf(lx->OUT, "%S<br/>\n", showSort_attributeName(attribute));
           status = U_ZERO_ERROR;
-          value = ucol_getAttribute(customCollator, attribute, &status);
+          defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if(!lxSortReset && (ss=queryField(lx, "cas1")))
-          {
+          if(!lxSortReset && (ss=queryField(lx, "cas1"))) {
             value = atoi(ss);
+          } else {
+             value = LX_UCOL_DEFAULT;
           }
-          else
-          {
-            if(!lxSortReset) {
-              value = UCOL_OFF;
-            }
-          }
+          
           u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"cas1\">\r\n");
 
           for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
@@ -651,22 +677,26 @@ void showSort(LXContext *lx, const char *locale)
               u_fprintf(lx->OUT, "<option %s value=\"%d\">%S</option>\r\n",
                         (caseVals[i]==value)?"selected=\"selected\"":"",
                         caseVals[i],
-                        (i==0)?FSWF("UCOL_noforcecase","Don't force case"):showSort_attributeVal(caseVals[i]));
+                        (caseVals[i]==UCOL_OFF)?FSWF("UCOL_noforcecase","Don't force case")
+                            :showSort_attributeValDefault(attribBuf, 1024, caseVals[i], defaultvalue));
           }
           u_fprintf(lx->OUT, "</select><br />\r\n");
 
           status = U_ZERO_ERROR;
-          ucol_setAttribute(customCollator, attribute, value, &status);
-          if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          if(LX_UCOL_DEFAULT != value) {
+              ucol_setAttribute(customCollator, attribute, value, &status);
+              if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          }
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
       }
       /* ----------------- ALT HANDLING ------------ */
       {
-          UColAttributeValue caseVals[] = { UCOL_SHIFTED, UCOL_NON_IGNORABLE};
+          UColAttributeValue caseVals[] = { LX_UCOL_DEFAULT, UCOL_SHIFTED, UCOL_NON_IGNORABLE};
           int i;
           attribute = UCOL_ALTERNATE_HANDLING;
+          u_fprintf(lx->OUT, "%S<br/>\n", showSort_attributeName(attribute));
           status = U_ZERO_ERROR;
-          value = ucol_getAttribute(customCollator, attribute, &status);
+          defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
           if(!lxSortReset && (ss=queryField(lx, "shft")))
           {
@@ -674,9 +704,7 @@ void showSort(LXContext *lx, const char *locale)
           }
           else
           {
-            if(!lxSortReset) {
-              value = UCOL_NON_IGNORABLE;
-            }
+            value = LX_UCOL_DEFAULT;
           }
           u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"shft\">\r\n");
 
@@ -685,13 +713,15 @@ void showSort(LXContext *lx, const char *locale)
               u_fprintf(lx->OUT, "<option %s value=\"%d\">%S</option>\r\n",
                         (caseVals[i]==value)?"selected=\"selected\"":"",
                         caseVals[i],
-                        showSort_attributeVal(caseVals[i]));
+                        showSort_attributeValDefault(attribBuf, 1024, caseVals[i], defaultvalue));
           }
           u_fprintf(lx->OUT, "</select><br />\r\n");
 
           status = U_ZERO_ERROR;
-          ucol_setAttribute(customCollator, attribute, value, &status);
-          if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          if(LX_UCOL_DEFAULT != value) {
+            ucol_setAttribute(customCollator, attribute, value, &status);
+            if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+          }
           status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
       }
       /* ------------------------------- UCOL_FRENCH_COLLATION ------------------------------------- */
@@ -791,7 +821,7 @@ void showSort(LXContext *lx, const char *locale)
       /* reset ----------------------------------------- */
 
     u_fprintf(lx->OUT, "<input id=\"lxsortreset\" type=\"submit\" name=\"lxSortReset\" class=\"wide\" value=\"%S\" />",
-              FSWF("EXPLORE_CollationElements_Defaults", "Reset to Defaults"));
+              FSWF("EXPLORE_CollationElements_Defaults", "Reset Rules and Options"));
 
     /* u_fprintf(lx->OUT, "</td>"); */
 

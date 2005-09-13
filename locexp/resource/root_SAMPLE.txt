@@ -1,6 +1,6 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
-// Copyright (c) 2005 IBM
 // root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c ../lxicir.c
+// Copyright (C) 2000-2005, International Business Machines
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -29,7 +29,7 @@ root {
    DayAbbreviations  {  "Short Names"  }
    DayNames  {  "Long Names"  }
    DayNarrow  {  "Narrow Names"  }
-   EXPLORE_CollationElements_Defaults  {  "Reset to Defaults"  }
+   EXPLORE_CollationElements_Defaults  {  "Reset Rules and Options"  }
    EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
    EXPLORE_CollationElements_ShowCollKey  {  "Show Collation Key"  }
    EXPLORE_CollationElements_Sort  {  "Sort"  }
@@ -45,6 +45,9 @@ root {
    EXPLORE_search_notfound  {  "Sorry, nothing was found."  }
    EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
    EXPLORE_search_searching  {  "Searching for <B>%S</B>..."  }
+   LX_UCOL_DEFAULT  {  "Don't change"  }
+   LX_UCOL_DEFAULTMSG0  {  "Per Rules (default: "  }
+   LX_UCOL_DEFAULTMSG1  {  ")"  }
    LocaleCodes  {  "Locale Codes"  }
    LocaleCodes_3  {  "3"  }
    LocaleCodes_Country  {  "Region"  }
@@ -283,7 +286,7 @@ root {
 
  // Imported from: root.txt.inc 
 
-// [root.txt.inc] Copyright (c) 2000 IBM, Inc. and Others, all rights reserved
+// [root.txt.inc] Copyright (c) 2000-2005 IBM, Inc. and Others, all rights reserved
    c.gif:import { "root/c.gif" }
    opened.gif:import { "root/opened.gif" }
    closed.gif:import { "root/closed.gif" }
