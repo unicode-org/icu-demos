@@ -9,6 +9,7 @@
 LDLIBRARYPATH_ENVVAR = LD_LIBRARY_PATH
 # end
 
+BUILTRES=.builtres
 
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
@@ -28,7 +29,7 @@ PKGMODE=static
 OUT= out
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ *.res  escapeABundle
+CLEANFILES = *~ *.res  escapeABundle $(BUILTRES)
 
 # DEPS = $(OBJECTS:.o=.d)
 
@@ -37,7 +38,7 @@ GENSRC = root.txt res_index.txt
 
 # resource files
 # AUTOGEN - source whose encoding is detected
-AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt  zh.txt
+AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt  zh.txt da.txt
 
 # ones which have a BOM can just go here
 SRC    = th.txt sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
@@ -78,7 +79,9 @@ check:  check-local
 all-local: build-dirs res-local root_SAMPLE.txt
 
 res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
+	@-$(RMV) $(BUILTRES)
 	$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
+	touch $(BUILTRES)
 
 Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
 	sh ./detectEncodings.sh  $(PKG) $(AUTOGENSRC)

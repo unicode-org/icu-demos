@@ -9,11 +9,12 @@
 
 #define G7COUNT 8  /* all 8 of the g7 locales. showSort() */
 static const char   G7s[G7COUNT][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr_FR", "it_IT", "ja_JP", "sv_SE" };
+#define LX_UCOL_SAMPLE_STRS "bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote|" "black-bird|blackbird|black-birds|blackbirds"
 
 #define isNL(x) ((x)==0x000D || (x)==0x000A || (x)==0x2029 || (x)==0x2028)
 
-/* internal value for default */
-#define LX_UCOL_DEFAULT ((UColAttributeValue)-1)
+#define LX_UCOL_LAST ((UColAttributeValue)-1)      /** internal value for default */
+#define LX_UCOL_DEFAULT ((UColAttributeValue)-2)   /** internal value for the end of a list */
 
 void stripComments(UChar *ch) 
 {
@@ -210,25 +211,63 @@ const UChar *showSort_attributeVal(UColAttributeValue val)
   }  
 }
 
-const UChar *showSort_attributeValDefault(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttributeValue defVal) {
-  if(val != LX_UCOL_DEFAULT) {
+const UChar *showSort_attributeAndValue(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttribute attribute) {
+ const UChar *name;
+ const UChar *value;
+ int32_t needed;
+ 
+ name = showSort_attributeName(attribute);
+ value = showSort_attributeVal(val);
+ 
+ if(u_snprintf(buf, bufSize, "%S: %S", name, value) ==bufSize) {
     return showSort_attributeVal(val);
+ } else {
+    /*buf[bufSize-1]=0;*/
+    return buf;
+ }
+}
+
+const UChar *showSort_attributeValX(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttribute attribute) {
+ /* special cases */
+ if(val == UCOL_OFF) {
+   switch(attribute) {
+    case UCOL_CASE_FIRST:
+        return FSWF("UCOL_noforcecase","Don't force case");
+     /* default: fall through.. */
+        default:
+            return showSort_attributeAndValue(buf, bufSize, val, attribute);
+   }
+ } else if(val == UCOL_ON) {
+    return showSort_attributeAndValue(buf, bufSize, val, attribute);
+ }
+ return showSort_attributeVal(val);
+}
+
+const UChar *showSort_attributeValDefault(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttributeValue defVal, UColAttribute attribute) {
+  if(val != LX_UCOL_DEFAULT) {
+    return showSort_attributeValX(buf, bufSize, val, attribute);
   } else {
     const UChar *defMsg0;
     const UChar *defStr;
     const UChar *defMsg1;
+    UChar *subBuf;
     int32_t needed;
-    defMsg0 = FSWF("LX_UCOL_DEFAULTMSG0", "Per Rules (default: ");
-    defStr = showSort_attributeVal(defVal);
+
+    subBuf = malloc((bufSize+1)*sizeof(subBuf[0]));
+    defMsg0 = FSWF("LX_UCOL_DEFAULTMSG0", "Default (");
+    defStr = showSort_attributeValX(subBuf, bufSize, defVal, attribute);
     defMsg1 = FSWF("LX_UCOL_DEFAULTMSG1", ")");
+
     
     needed = u_strlen(defMsg0)+u_strlen(defStr)+u_strlen(defMsg1);
     if((needed+1)>bufSize) {
-        return showSort_attributeVal(val);
+        free(subBuf);
+        return showSort_attributeValX(buf, bufSize, val, attribute);
     } else {
         u_strcpy(buf, defMsg0);
         u_strcat(buf, defStr);
         u_strcat(buf, defMsg1);
+        free(subBuf);
         return buf;
     }
   }
@@ -330,22 +369,24 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
     UErrorCode sampleStatus = U_ZERO_ERROR;
     int32_t len;
     
+    /* try to get localized sample */
     sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
     if(!U_FAILURE(sampleStatus))  {
-      fprintf(stderr, "was able to open [%s], err %s\n", locale, u_errorName(sampleStatus));
       sampleString = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
-      fprintf(stderr, "getss [%s]\n", u_errorName(sampleStatus));
       ures_close(sampleRB);
-      if(U_SUCCESS(sampleStatus)) {
-        text = createEscapedSortList(sampleString); /* use locale-dependent fallback */
-      }
     }
+    
+    /* if no localized sample, use the bad bat */
     if(U_FAILURE(sampleStatus) || !sampleString) {
+      sampleString =  FSWF(/*NOEXTRACT*/ "EXPLORE_CollationElements_sampleString_default",LX_UCOL_SAMPLE_STRS);
+    }
+    
+    /* append some interesting stuff, always */
+    {
       UChar  *someText;
       int32_t someTextLen;
       UResourceBundle *aBundle = NULL;
 
-      sampleString =  FSWF(/*NOEXTRACT*/ "EXPLORE_CollationElements_sampleString_default","bad|Bad|Bat|bat|b\\u00E4d|B\\u00E4d|b\\u00E4t|B\\u00E4t|c\\u00f4t\\u00e9|cot\\u00e9|c\\u00f4te|cote");
       someTextLen = u_strlen(sampleString) + 1024 + 768;
       someText = malloc(someTextLen * sizeof(someText[0]));
       sampleStatus = U_ZERO_ERROR;
@@ -406,6 +447,8 @@ void showSortStyle(LXContext *lx)
 	       ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n" */
 
             ".wide        { width: 100% }\r\n"
+            "select.wide  { font-size: smaller; left-padding: 1em; }\r\n"
+            ".optionname  { margin: 3px }\r\n"
             ".high        { height: 100% }\r\n"
             ".fill        { width: 100%; height: 100% }\r\n"
 
@@ -431,6 +474,44 @@ void showSortStyle(LXContext *lx)
             "</style>\r\n");
 }
 
+static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator *customCollator, const char *field, const UColAttributeValue values[], UBool lxSortReset)
+{
+   UChar attribBuf[1024]; /* 1 kibibyte */
+   const char *ss;
+   UErrorCode status = U_ZERO_ERROR;
+   UColAttributeValue  value, defaultvalue;
+
+    int i;
+/*    u_fprintf(lx->OUT, "<span class=\"optionname\"><b>%S</b></span><br/>\n", showSort_attributeName(attribute)); */
+    status = U_ZERO_ERROR;
+    defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
+    status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+    if(!lxSortReset && (ss=queryField(lx, field))) {
+        value = atoi(ss);
+    } else {
+        value = LX_UCOL_DEFAULT;
+    }
+
+    u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"%s\">\r\n", field);
+
+    for(i = 0; values[i]!=LX_UCOL_LAST; i++)
+    {
+      u_fprintf(lx->OUT, "<option %s value=\"%d\">%S</option>\r\n",
+                (values[i]==value)?"selected=\"selected\"":"",
+                values[i],
+                showSort_attributeValDefault(attribBuf, 1024, values[i], defaultvalue, attribute));
+    }
+    u_fprintf(lx->OUT, "</select><br />\r\n");
+
+    status = U_ZERO_ERROR;
+    if(LX_UCOL_DEFAULT != value) {
+      ucol_setAttribute(customCollator, attribute, value, &status);
+      if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
+    }
+    status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+}
+
+
 /**
  * Demonstrate sorting.  Call usort as a library to do the actual sorting.
  * URL description:
@@ -452,7 +533,6 @@ void showSort(LXContext *lx, const char *locale)
   UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
   UChar  fixedRuleChars[SORTSIZE]; /* Custom rule UChars without comments */
   UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
-  UChar attribBuf[1024]; /* 1 kibibyte */
   /* The 'g7' locales to demonstrate. Note that there eight.  */
   UErrorCode status = U_ZERO_ERROR;  
 
@@ -461,8 +541,9 @@ void showSort(LXContext *lx, const char *locale)
   USort              *customSort     = NULL;
   UCollator          *customCollator = NULL;
   UColAttributeValue  value, defaultvalue;
-  UColAttribute       attribute;
-  
+  UColAttribute attribute;
+  UChar attribBuf[1024]; /* 1 kibibyte */
+
   UBool isG7 = FALSE;
 
   UBool lxSortReset = FALSE;
@@ -569,7 +650,7 @@ void showSort(LXContext *lx, const char *locale)
       UErrorCode customError = U_ZERO_ERROR;
 
       u_fprintf(lx->OUT, "<br /><hr width=\"20%%\" />\r\n");
-      u_fprintf(lx->OUT, "<label for=\"options\"><b>%S</b></label><br />\r\n", FSWF("EXPLORE_CollationElements_options", "Options"));
+      u_fprintf(lx->OUT, "<label for=\"options\"><b><font size='+1'>%S</font></b></label><br />\r\n", FSWF("EXPLORE_CollationElements_options", "Options"));
       
       if ( ruleChars[0] ) { /* custom rules */
         UCollator *coll;
@@ -622,10 +703,13 @@ void showSort(LXContext *lx, const char *locale)
       /* begin customizables */
       
       /* -------------------------- UCOL_STRENGTH ----------------------------------- */
-      status = U_ZERO_ERROR;
-      attribute = UCOL_STRENGTH;
-      u_fprintf(lx->OUT, "%S<br/>\n", showSort_attributeName(attribute));
-      customStrength = ucol_getAttribute(customCollator, attribute, &status);
+#if 0
+      {
+        const UColAttributeValue strengthVals[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST, LX_UCOL_LAST };
+        showSort_doCustom(lx, UCOL_STRENGTH, customCollator, "strength", strengthVals);
+              customStrength = ucol_getAttribute(customCollator, attribute, &status);
+              
+              
       if(!lxSortReset && (ss = queryField(lx,"strength"))) {
         nn = atoi(ss);
         if( (nn || (*ss=='0'))  && /* choice is a number and.. */
@@ -656,174 +740,62 @@ void showSort(LXContext *lx, const char *locale)
         }
       }
       u_fprintf(lx->OUT, "</select><br />\r\n");
-
+    }
+#endif
       /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
       {
-          UColAttributeValue caseVals[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST };
-          int i;
-          attribute = UCOL_CASE_FIRST;
-          u_fprintf(lx->OUT, "%S<br/>\n", showSort_attributeName(attribute));
-          status = U_ZERO_ERROR;
-          defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
-          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if(!lxSortReset && (ss=queryField(lx, "cas1"))) {
-            value = atoi(ss);
-          } else {
-             value = LX_UCOL_DEFAULT;
-          }
-          
-          u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"cas1\">\r\n");
-
-          for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
-          {
-              u_fprintf(lx->OUT, "<option %s value=\"%d\">%S</option>\r\n",
-                        (caseVals[i]==value)?"selected=\"selected\"":"",
-                        caseVals[i],
-                        (caseVals[i]==UCOL_OFF)?FSWF("UCOL_noforcecase","Don't force case")
-                            :showSort_attributeValDefault(attribBuf, 1024, caseVals[i], defaultvalue));
-          }
-          u_fprintf(lx->OUT, "</select><br />\r\n");
-
-          status = U_ZERO_ERROR;
-          if(LX_UCOL_DEFAULT != value) {
-              ucol_setAttribute(customCollator, attribute, value, &status);
-              if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
-          }
-          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST, LX_UCOL_LAST };
+          showSort_doCustom(lx, UCOL_CASE_FIRST, customCollator, "cas1", ourOptions, lxSortReset);
       }
       /* ----------------- ALT HANDLING ------------ */
       {
-          UColAttributeValue caseVals[] = { LX_UCOL_DEFAULT, UCOL_SHIFTED, UCOL_NON_IGNORABLE};
-          int i;
-          attribute = UCOL_ALTERNATE_HANDLING;
-          u_fprintf(lx->OUT, "%S<br/>\n", showSort_attributeName(attribute));
-          status = U_ZERO_ERROR;
-          defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
-          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-          if(!lxSortReset && (ss=queryField(lx, "shft")))
-          {
-            value = atoi(ss);
-          }
-          else
-          {
-            value = LX_UCOL_DEFAULT;
-          }
-          u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"shft\">\r\n");
-
-          for(i = 0; i < sizeof(caseVals)/sizeof(caseVals[0])  ; i++)
-          {
-              u_fprintf(lx->OUT, "<option %s value=\"%d\">%S</option>\r\n",
-                        (caseVals[i]==value)?"selected=\"selected\"":"",
-                        caseVals[i],
-                        showSort_attributeValDefault(attribBuf, 1024, caseVals[i], defaultvalue));
-          }
-          u_fprintf(lx->OUT, "</select><br />\r\n");
-
-          status = U_ZERO_ERROR;
-          if(LX_UCOL_DEFAULT != value) {
-            ucol_setAttribute(customCollator, attribute, value, &status);
-            if(status != U_ZERO_ERROR) { u_fprintf(lx->OUT, "<b>(%s)</b>\r\n", u_errorName(status));}
-          }
-          status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_SHIFTED, UCOL_NON_IGNORABLE, LX_UCOL_LAST};
+          showSort_doCustom(lx, UCOL_ALTERNATE_HANDLING, customCollator, "shft", ourOptions, lxSortReset);
       }
       /* ------------------------------- UCOL_FRENCH_COLLATION ------------------------------------- */
-      attribute = UCOL_FRENCH_COLLATION;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx,"fr") && !lxSortReset)
       {
-        value = UCOL_ON;
-      } 
-      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
-      {
-        value = UCOL_OFF;
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_ON, LX_UCOL_LAST};
+          showSort_doCustom(lx, UCOL_FRENCH_COLLATION, customCollator, "fr", ourOptions, lxSortReset);
       }
-
-      u_fprintf(lx->OUT, "<input type=\"hidden\" name=\"lxCustSortOpts\" value=\"x\" /> <input id=\"fr\" type=\"checkbox\" %s name=\"fr\" /><label for=\"fr\"> %S </label><br />\r\n",
-                (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      
       /* ------------------------------- UCOL_CASE_LEVEL ------------------------------------- */
-      attribute = UCOL_CASE_LEVEL;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx,"case") && !lxSortReset) {
-        value = UCOL_ON;
-      }  else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
-        value = UCOL_OFF;
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_ON, LX_UCOL_LAST};
+          showSort_doCustom(lx, UCOL_CASE_LEVEL, customCollator, "case", ourOptions, lxSortReset);
       }
-      u_fprintf(lx->OUT, "<input id=\"case\" type=\"checkbox\" %s name=\"case\" /><label for=\"case\"> %S </label><br />\r\n",
-                (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-
-
       /* ------------------------------- UCOL_DECOMPOSITION_MODE ------------------------------------- */
-      attribute = UCOL_DECOMPOSITION_MODE;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx, "dcmp") && !lxSortReset)  {
-        value = UCOL_ON;
-      } 
-      /* for now - default fr coll to OFF! fix: find out if the user has clicked through once or no */
-      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
-        value = UCOL_OFF;
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_ON, LX_UCOL_LAST};
+          showSort_doCustom(lx, UCOL_DECOMPOSITION_MODE, customCollator, "dcmp", ourOptions, lxSortReset);
       }
-      u_fprintf(lx->OUT, "<input id=\"dcmp\" type=\"checkbox\" %s name=\"dcmp\" /><label for=\"dcmp\"> %S </label><br />\r\n",
-                (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      
-
       /* ------------------------------- UCOL_HIRAGANA_QUATERNARY_MODE ------------------------------------- */
-      attribute = UCOL_HIRAGANA_QUATERNARY_MODE;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx, "hira") && !lxSortReset) {
-        value = UCOL_ON;
-      } 
-      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
-        value = UCOL_OFF;
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_ON, LX_UCOL_LAST};
+          showSort_doCustom(lx, UCOL_HIRAGANA_QUATERNARY_MODE, customCollator, "hira", ourOptions, lxSortReset);
       }
-      u_fprintf(lx->OUT, "<input id=\"hira\" type=\"checkbox\" %s name=\"hira\" /><label for=\"hira\"> %S </label><br />\r\n",
-                (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-
       /* ------------------------------- UCOL_NUMERIC_COLLATION -------------------------------- */
-      attribute = UCOL_NUMERIC_COLLATION;
-      status = U_ZERO_ERROR;
-      value = ucol_getAttribute(customCollator, attribute, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
-      if(hasQueryField(lx, "nume") && !lxSortReset) {
-        value = UCOL_ON;
-      } 
-      else if(lxCustSortOpts && !lxSortReset) /* if we came from the form.. */
       {
-        value = UCOL_OFF;
+          UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_ON, LX_UCOL_LAST};
+          showSort_doCustom(lx, UCOL_NUMERIC_COLLATION, customCollator, "nume", ourOptions, lxSortReset);
       }
-      u_fprintf(lx->OUT, "<input id=\"nume\" type=\"checkbox\" %s name=\"nume\" /><label for=\"nume\"> %S </label><br />\r\n",
-                (value==UCOL_ON)?"checked=\"checked\"":"",  showSort_attributeName(attribute));
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, value, &status);
-      status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
 
       /* reset ----------------------------------------- */
 
+      u_fprintf(lx->OUT, "<br /><hr width=\"20%%\" />\r\n");
+
     u_fprintf(lx->OUT, "<input id=\"lxsortreset\" type=\"submit\" name=\"lxSortReset\" class=\"wide\" value=\"%S\" />",
               FSWF("EXPLORE_CollationElements_Defaults", "Reset Rules and Options"));
+    {
+      UChar dispName[1024];
+      UErrorCode stat = U_ZERO_ERROR;
+      dispName[0] = 0;
+      uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
+      
+      u_fprintf(lx->OUT, "<input type=\"submit\" class=\"wide\" name=\"usortRulesLocale\" value=\"%S %S%S\" />",
+                FSWF("usortLocaleRules1", "Fetch rules for"),
+                FSWF("locale","locale"),
+                FSWF("usortLocaleRules2","") /* for translation */
+        );
+    }
 
     /* u_fprintf(lx->OUT, "</td>"); */
 
@@ -982,16 +954,13 @@ void showSort(LXContext *lx, const char *locale)
   if(!isG7) {
     u_fprintf(lx->OUT, "<tr><td colspan=\"2\">\r\n");
     u_fprintf(lx->OUT, "<label for=\"usortrules\"> %S</label>\r\n", FSWF("usortCustomRules","Custom Rules"));
-    {
-      UChar dispName[1024];
-      UErrorCode stat = U_ZERO_ERROR;
-      dispName[0] = 0;
-      uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
-      
-      u_fprintf(lx->OUT, "<input type=\"submit\" class=\"wide\" name=\"usortRulesLocale\" value=\"%S %S %S\" />",
-                FSWF("usortLocaleRules1", "Load rules for"),
-                dispName,
-                FSWF("usortLocaleRules2","") /* for translation */
+    if(!hasQueryField(lx, "usortRulesLocale") || lxSortReset) {
+        u_fprintf(lx->OUT, "<i>(%S '%S %S%S' %S)</i>\r\n",
+            FSWF("usortCustomRules_note0","Click"),
+                FSWF("usortLocaleRules1", "Fetch rules for"),
+                FSWF("locale","locale"),
+                FSWF("usortLocaleRules2",""), /* for translation */
+            FSWF("usortCustomRules_note1","above, to edit rules")
         );
     }
     u_fprintf(lx->OUT, "<br />\r\n");

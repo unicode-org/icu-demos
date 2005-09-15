@@ -46,7 +46,7 @@ root {
    EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
    EXPLORE_search_searching  {  "Searching for <B>%S</B>..."  }
    LX_UCOL_DEFAULT  {  "Don't change"  }
-   LX_UCOL_DEFAULTMSG0  {  "Per Rules (default: "  }
+   LX_UCOL_DEFAULTMSG0  {  "Default ("  }
    LX_UCOL_DEFAULTMSG1  {  ")"  }
    LocaleCodes  {  "Locale Codes"  }
    LocaleCodes_3  {  "3"  }
@@ -181,6 +181,7 @@ root {
    help  {  "Help"  }
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22"  }
+   ibmg11n  {  "IBM: ICU Demonstration - "  }
    icirView  {  "Switch to Survey View"  }
    icir_Basics  {  "Basics"  }
    icir_Misc  {  "Misc"  }
@@ -221,6 +222,7 @@ root {
    localPatternChars7  {  "Second"  }
    localPatternChars8  {  "Millisecond"  }
    localPatternChars9  {  "Day Of Week"  }
+   locale  {  "locale"  }
    localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
    localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
    localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular region."  }
@@ -261,7 +263,9 @@ root {
    ubrowse  {  "Browse Unicode in this codepage"  }
    usortCollated  {  "Collated"  }
    usortCustomRules  {  "Custom Rules"  }
-   usortLocaleRules1  {  "Load rules for"  }
+   usortCustomRules_note0  {  "Click"  }
+   usortCustomRules_note1  {  "above, to edit rules"  }
+   usortLocaleRules1  {  "Fetch rules for"  }
    usortLocaleRules2  {  ""  }
    usortOriginal  {  "Original"  }
    usortSource  {  "Source"  }
