@@ -101,6 +101,8 @@ void showSearchMenu(UChar32 startFrom);
 void printCharName(UChar32 ch);
 void printModeCHAR(UChar32 ch);
 void printModeSET(const char *qs, ESearchMode mode);
+void printElsewhereBox(UChar32 block, ESearchMode mode);
+
 /**
  * Print a row (like in "Column" view)
  * @param theChar Char to show
@@ -140,7 +142,13 @@ static const char defaultHeader[]=
 
 static const char endHeaderBeginBody[] =
     "</head>\n"
-    "<body>\n";
+    "<body>\n"
+    
+    "<style type=text/css>\n" 
+                    "<!-- \n" 
+    ".elsewhere { margin-top: 1em; margin-right: 3em; border: 1px solid gray; background-color:#FFFEFC; " 
+         " padding: 1em 1em 1em 1em; font-size: smaller; } \n" 
+    "--></style>";
 
 static const char breadCrumbMainHeader[]=
     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
@@ -978,6 +986,10 @@ main(int argc,
     {
     u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
+      if(block <= 0xFFFF)
+        {
+            printElsewhereBox(block,mode);
+        }
 
       /* Unicode table  at block 'block' */
 
@@ -1020,10 +1032,6 @@ main(int argc,
         u_fprintf(gOut, "<tr><td colspan=\"18\" align=\"center\"><i>Click on a column number to zoom in.</i></td></tr>\n");
         u_fprintf(gOut, "</table>");
       u_fprintf(gOut, "<hr />\n");
-      if(block <= 0xFFFF)
-        {
-          u_fprintf(gOut, "<a href=\"http://www.unicode.org/charts/PDF/U%04X.pdf\">PDF of block U%04X from .unicode.org</a>\n", block, block);
-        }
       showSearchMenu( block + 0x0100);
     }
   else if(mode == ECOLUMN ) /****************************** COLUMN **************************/
@@ -1103,9 +1111,14 @@ main(int argc,
     {
       u_fprintf(gOut, "</tr></table></form>"); /* closer of menu */
 
+      if(block <= 0xFFFF) {
+        printElsewhereBox(block, mode);
+      }
+
       printModeCHAR(block);
 
       u_fprintf(gOut, "<br /><hr />\n");
+
       showSearchMenu( block + 1);
     }
 #ifdef RADICAL_LIST 
@@ -1678,4 +1691,24 @@ void printModeSET(const char *qs, ESearchMode mode)
 #if !defined(UB_DEBUG)
     }
 #endif
+}
+
+void printElsewhereBox(UChar32 block, ESearchMode mode)
+{
+  char dunum[10];
+  sprintf(dunum, "%d", block+102); /* 102?? */
+  
+  u_fprintf(gOut, "<div class='elsewhere' style='float: right;'>");
+  u_fprintf(gOut, "<b>see also:</b><br/>");
+  switch(mode) { 
+    case ECHAR:
+        u_fprintf(gOut, "<a href='http://www.fileformat.info/info/unicode/char/%04X/'>fileformat.info</a> <br/> \n", block);
+        u_fprintf(gOut, "<a href='http://decodeunicode.org/w3.php?nodeId=%s&page=1&lang=2&zoom=&prop='>decodeunicode.org</a> \n", dunum);
+        break;
+    case EBLOCK:
+        u_fprintf(gOut, "<a href=\"http://www.unicode.org/charts/PDF/U%04X.pdf\">PDF@unicode.org</a>\n", block, block);
+        u_fprintf(gOut, "<a href='http://decodeunicode.org/w3.php?viewMode=block&ucHex=%04x'>decodeunicode.org</a> \n", block);
+        break;
+  }
+  u_fprintf(gOut, "</div>");
 }
