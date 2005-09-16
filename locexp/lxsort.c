@@ -828,10 +828,10 @@ void showSort(LXContext *lx, const char *locale)
           int32_t i, count=0;
 
           if(n == 0) { 
-            u_fprintf(lx->OUT, "<td " /* WIDTH=\"22%%\" */ " rowspan=\"2\"><p><b>%S</b></p>\r\n",
+            u_fprintf(lx->OUT, "</td><td " /* WIDTH=\"22%%\" */ " rowspan=\"2\"><p><b>%S</b></p>\r\n",
                       FSWF("usortOriginal", "Original"));
           } else {
-            u_fprintf(lx->OUT, "<td " /* WIDTH=\"22%%\" */ " rowspan=\"2\"><p><b>%S</b></p>\r\n",
+            u_fprintf(lx->OUT, "</td><td " /* WIDTH=\"22%%\" */ " rowspan=\"2\"><p><b>%S</b></p>\r\n",
                       FSWF("usortCollated", "Collated"));
           }
 
