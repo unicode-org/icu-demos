@@ -1,6 +1,6 @@
 // -*- Coding: iso-8859-1 -*-
 // some spanish words
-// Copyright (c) 2000 IBM, Inc. and Others
+// Copyright (c) 2000-2005 IBM, Inc. and Others
 
 es
 {
@@ -158,7 +158,7 @@ es
 //    helpgif_opt { "BORDER=0" }
     inherited { "(heredado)" }
     inherited_from { "(heredado de %S)" }
-    introSpiel { "<p>Este programa de la demostración ilustra los International Components for Unicode para los datos de la localización. Los datos cubren %V diversas idiomas, divididas más lejos en %V regiones y variantes. Para cada lengua, los datos tales como días de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de fuente abierta.</p>" }
+    introSpiel { "Este programa de la demostración ilustra los International Components for Unicode para los datos de la localización. Los datos cubren %V diversas idiomas, divididas más lejos en %V regiones y variantes. Para cada lengua, los datos tales como días de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de fuente abierta." }
     localPatternChars0 { "Era" }
     localPatternChars1 { "Año" }
     localPatternChars10 { "Día Del Año" }
