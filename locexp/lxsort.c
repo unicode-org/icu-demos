@@ -492,7 +492,7 @@ static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator 
         value = LX_UCOL_DEFAULT;
     }
 
-    u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"%s\">\r\n", field);
+    u_fprintf(lx->OUT, "<select id=\"options_%s\" class=\"wide\" name=\"%s\">\r\n", field, field);
 
     for(i = 0; values[i]!=LX_UCOL_LAST; i++)
     {
