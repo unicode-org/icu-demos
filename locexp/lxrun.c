@@ -648,10 +648,10 @@ void setLocaleAndEncoding(LXContext *lx)
   }
   
   lx->convRequested=queryField(lx,"enc");
-
-  if(!lx->convRequested) {
-    lx->convRequested="";
-    }
+  if((!lx->convRequested)||(!lx->convRequested[0])) {
+	lx->convRequested="utf-8";
+  /* was: "" */
+  }
   
   lx->dispLocale = lx->dispLocaleBlob.name;
   loadLocaleFromFields(lx, &(lx->dispLocaleBlob), "d");
