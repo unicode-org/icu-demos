@@ -5,7 +5,6 @@
 #include "locexp.h"
 #include <unicode/putil.h>
 #include <unicode/udata.h>
-
 /************************ fcns *************************/
 /** Called functions from the main() module **/
 LXContext *theContext;
