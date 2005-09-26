@@ -142,7 +142,7 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
   {
     int32_t ii;
     if(aSort  && hasQueryField(lx,"showCollKey") && lineBelow  ) {
-      u_fprintf(lx->OUT, "<br/><tt class=\"key\">");
+      u_fprintf(lx->OUT, "<br /><tt class=\"key\">");
 
       for(ii=0;ii<aSort->lines[num].keySize;ii++) {
         u_fprintf(lx->OUT, "%02x ", aSort->lines[num].key[ii]);
@@ -482,7 +482,7 @@ static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator 
    UColAttributeValue  value, defaultvalue;
 
     int i;
-/*    u_fprintf(lx->OUT, "<span class=\"optionname\"><b>%S</b></span><br/>\n", showSort_attributeName(attribute)); */
+/*    u_fprintf(lx->OUT, "<span class=\"optionname\"><b>%S</b></span><br />\n", showSort_attributeName(attribute)); */
     status = U_ZERO_ERROR;
     defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
     status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
@@ -492,7 +492,7 @@ static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator 
         value = LX_UCOL_DEFAULT;
     }
 
-    u_fprintf(lx->OUT, "<select id=\"options_%s\" class=\"wide\" name=\"%s\">\r\n", field, field);
+    u_fprintf(lx->OUT, "<label><select id=\"options_%s\" class=\"wide\" name=\"%s\">\r\n", field, field);
 
     for(i = 0; values[i]!=LX_UCOL_LAST; i++)
     {
@@ -501,7 +501,7 @@ static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator 
                 values[i],
                 showSort_attributeValDefault(attribBuf, 1024, values[i], defaultvalue, attribute));
     }
-    u_fprintf(lx->OUT, "</select><br />\r\n");
+    u_fprintf(lx->OUT, "</select></label><br />\r\n");
 
     status = U_ZERO_ERROR;
     if(LX_UCOL_DEFAULT != value) {
@@ -1002,7 +1002,7 @@ void showSort(LXContext *lx, const char *locale)
   u_fprintf(lx->OUT, "<p><br /></p>\r\n");
   u_fprintf(lx->OUT, "%S\r\n",  FSWF(/*NOEXTRACT*/"sortHelp",""));
   u_fprintf(lx->OUT, "<p><br />\r\n");
-  u_fprintf(lx->OUT, "%S <a href=\"http://icu.sourceforge.net/userguide/Collate_Intro.html\">%S</a><br/></p>\r\n",
+  u_fprintf(lx->OUT, "%S <a href=\"http://icu.sourceforge.net/userguide/Collate_Intro.html\">%S</a><br /></p>\r\n",
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
             FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));
 

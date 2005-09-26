@@ -646,6 +646,8 @@ void setLocaleAndEncoding(LXContext *lx)
     strncpy(lx->section, q, sizeof(lx->section)/sizeof(lx->section[0]));
     lx->section[(sizeof(lx->section)/sizeof(lx->section[0]))-1]=0;
   }
+  
+  lx->convRequested=queryField(lx,"enc");
 
   if(!lx->convRequested) {
     lx->convRequested="";
