@@ -1009,5 +1009,3 @@ void showSort(LXContext *lx, const char *locale)
   /* showExploreCloseButton(lx, locale, "CollationElements"); */
   
 }
-
-
