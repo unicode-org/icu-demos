@@ -1,7 +1,7 @@
 /*
 ******************************************************************************
 *
-*   Copyright (C) 1999-2001, International Business Machines
+*   Copyright (C) 1999-2005, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 ******************************************************************************
@@ -234,18 +234,18 @@ public:
                  UErrorCode &rErrorCode);
 
     /**
-     * ICU "poor man's RTTI", returns a UClassID for the actual class.
-     *
-     * @obsolete ICU 2.4. Use the parallel ubidi_ C API instead since this API will be removed in that release.
-     */
-    virtual inline UClassID getDynamicClassID() const { return getStaticClassID(); }
-
-    /**
      * ICU "poor man's RTTI", returns a UClassID for this class.
      *
      * @obsolete ICU 2.4. Use the parallel ubidi_ C API instead since this API will be removed in that release.
      */
     static inline UClassID getStaticClassID() { return (UClassID)&fgClassID; }
+
+    /**
+     * ICU "poor man's RTTI", returns a UClassID for the actual class.
+     *
+     * @obsolete ICU 2.4. Use the parallel ubidi_ C API instead since this API will be removed in that release.
+     */
+    virtual inline UClassID getDynamicClassID() const { return getStaticClassID(); }
 
 protected:
     UBiDi *pBiDi;
