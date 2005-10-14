@@ -25,13 +25,13 @@
 #define DEMO_COMMON_LEFTNAV DEMO_COMMON_DIR "common-leftnav.html"
 #define DEMO_COMMON_FOOTER DEMO_COMMON_DIR "common-footer.html"
 
-#define DEMO_BEGIN_LEFT_NAV "<table width=\"100%\" border=\"0\" "\
+#define DEMO_BEGIN_LEFT_NAV "<table width=\"100%\" border=\"0\""\
 "cellspacing=\"0\" cellpadding=\"0\" id=\"v14-body-table\">\n"\
 "<tr valign=\"top\">\n"\
 "<td width=\"150\" id=\"navigation\">\n"
 
 #define DEMO_END_LEFT_NAV "</td>\n"
-#define DEMO_BEGIN_CONTENT "<td style=\"padding-left: 5px;\"><a name=\"main\"></a>\n"
+#define DEMO_BEGIN_CONTENT "<td style=\"padding-left: 5px; padding-right: 5px;\"><a name=\"main\"></a>\n"
 #define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
 
 #define ICU_URL "http://www.ibm.com/software/globalization/icu/"
