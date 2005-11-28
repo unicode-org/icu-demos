@@ -758,7 +758,7 @@ main(int argc, const char *argv[]) {
     }
     puts(breadCrumbMainHeader);
     
-    gStandardsSelected = uhash_open(convexp_hashPointer, convexp_comparePointer, &errorCode);
+    gStandardsSelected = uhash_open(convexp_hashPointer, convexp_comparePointer, NULL, &errorCode);
     gMaxStandards = ucnv_countStandards();
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
