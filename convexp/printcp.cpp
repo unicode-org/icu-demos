@@ -179,6 +179,23 @@ static UBool isShortestUTF8(char *source, int32_t size) {
     return TRUE;
 }
 
+/* The CESU-8 converter will try to convert non-shortest form, but it will return a
+   U_TRUNCATED_CHAR_FOUND error when you try to flush the character. The non-shortest
+   form of CESU-8 is illegal in Unicode, but the callback isn't called in that case
+   because the character isn't complete yet. CESU-8 also requires UTF-16 surrogate
+   pairs to be encoded as 6 bytes, and not 4 in UTF-8. This function tries to prevent
+   showing non-shortest form in the layout.
+   Please see http://www.unicode.org/unicode/reports/tr26/ for details. */
+static UBool isShortestCESU8(char *source, int32_t size) {
+    if (source[0] == (char)0xc0 || source[0] == (char)0xc1 || source[0] > (char)0xef
+        || (size >= 2
+            && (source[0] == (char)0xE0 && source[1] < (char)0xA0)))
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
 static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UErrorCode *status) {
     int32_t utf8Size;
     static char utf8[128];
@@ -299,7 +316,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
 //    case UCNV_BOCU1:
 //    case UCNV_UTF16:
 //    case UCNV_UTF32:
-//    case UCNV_CESU8:
+    case UCNV_CESU8:
 //    case UCNV_IMAP_MAILBOX:
         break;  // This is an easy encoding to display.
     default:
@@ -353,6 +370,9 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian || convType == UCNV_UTF16_LittleEndian) {
         cnvMaxCharSize+=2;   /* two bytes for UTF-16 supplementary chars */
     }
+    if (convType == UCNV_CESU8) {
+        cnvMaxCharSize+=3;   /* three bytes for CESU-8 supplementary chars */
+    }
     if (maxCharSize >= cnvMaxCharSize) {
         puts("<p>WARNING: startBytes > maximum number of characters. startBytes is truncated.</p>");
         maxCharSize = cnvMaxCharSize - 1;
@@ -390,7 +410,9 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, TRUE, &localStatus);
             targetSize = (target - targetBuffer);
 
-            if (convType == UCNV_UTF8 && localStatus == U_TRUNCATED_CHAR_FOUND && !isShortestUTF8(sourceBuffer, source - sourceBuffer))
+            if (((convType == UCNV_UTF8 && !isShortestUTF8(sourceBuffer, source - sourceBuffer))
+                || (convType == UCNV_CESU8 && !isShortestCESU8(sourceBuffer, source - sourceBuffer)))
+                && localStatus == U_TRUNCATED_CHAR_FOUND)
             {
                 localStatus = U_ILLEGAL_CHAR_FOUND;
             }
