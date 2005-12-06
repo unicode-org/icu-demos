@@ -391,7 +391,7 @@ static USet *createFlattenSet(USet *origSet, UErrorCode *status) {
     return newSet;
 }
 
-static void printLanguages(UConverter *cnv, UErrorCode *status) {
+static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
     UChar patBuffer[128];
     char patBufferUTF8[1024]; /* 4 times as large as patBuffer */
     int32_t patLen;
@@ -411,9 +411,7 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
     }
     else {
         myStatus = U_ZERO_ERROR;
-        USet *cnvSet = uset_open(0, 0);
-        USet *locSet = uset_open(0, 0);
-        ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
+        USet *locSet = uset_open(1, 0);
 
         for (locIndex = 0; locIndex < locCount; locIndex++) {
             const char *locale = uloc_getAvailable(locIndex);
@@ -453,7 +451,6 @@ static void printLanguages(UConverter *cnv, UErrorCode *status) {
             puts("<tr><td>Not Available</td></tr>\n");
         }
 
-        uset_close(cnvSet);
         *status = U_ZERO_ERROR;
     }
     printf(endTable);
@@ -473,6 +470,10 @@ static void printConverterInfo(UErrorCode *status) {
     UErrorCode myStatus = U_ZERO_ERROR;
 
     printCPTable(cnv, gStartBytes, status);
+
+    USet *nfcSet = uset_openPattern(UNICODE_STRING_SIMPLE("[:NFC_Quick_Check=yes:]").getTerminatedBuffer(), -1, status);
+    USet *cnvSet = uset_open(1, 0);
+    ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
 
     puts("<br />\n");
     if (U_FAILURE(*status)) {
@@ -522,7 +523,7 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th>Is ASCII [\\u0020-\\u007E] irregular?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\u0020-\\u007E] ambiguous?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
 
     ambiguousAlias = containsAmbiguousAliases();
     printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
@@ -532,30 +533,38 @@ static void printConverterInfo(UErrorCode *status) {
         puts("</td></tr>");
     }
 
+    printf("<tr><th>Always generates Unicode NFC?</th><td>%s</td></tr>\n", (uset_containsAll(nfcSet, cnvSet) ? "TRUE": "UNKNOWN"));
     puts(endTable);
 
-    printLanguages(cnv, status);
+    printLanguages(cnv, cnvSet, status);
 
     puts("<br /><h2><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
-    if (gShowUnicodeSet) {
-        myStatus = U_ZERO_ERROR;
-        USet *cnvSet = uset_open(0, 0);
-        ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
-        patLen = uset_toPattern(cnvSet, NULL, 0, TRUE, &myStatus) + 1;
-        patBuffer = (UChar*)malloc(patLen * sizeof(UChar));
-        patBufferUTF8 = (char*)malloc(patLen * sizeof(char) * U8_MAX_LENGTH);
+    char setStrBuf[64];
+    UChar setUStrBuf[sizeof(setStrBuf)];
+    myStatus = U_ZERO_ERROR;
+    patLen = uset_toPattern(cnvSet, NULL, 0, TRUE, &myStatus) + 1;
+    if (gShowUnicodeSet || patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
+        if (patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
+            patBuffer = setUStrBuf;
+            patBufferUTF8 = setStrBuf;
+        }
+        else {
+            patBuffer = (UChar*)malloc((patLen + 1) * sizeof(UChar));
+            patBufferUTF8 = (char*)malloc((patLen + 1) * sizeof(char));
+        }
         if (U_SUCCESS(*status) && patBuffer && patBufferUTF8) {
             myStatus = U_ZERO_ERROR;
             patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
-            u_strToUTF8(patBufferUTF8, patLen * U8_MAX_LENGTH, NULL, patBuffer, patLen, &myStatus);
-            printf("<p class=\"value\">%s</p>\n", patBufferUTF8);
+            u_strToUTF8(patBufferUTF8, patLen, NULL, patBuffer, patLen, &myStatus);
+            printf("<div class=\"value\" width=\"10em\">%s</div>\n", patBufferUTF8);
         }
         else {
             puts("<p>Not Available</p>");
         }
-        uset_close(cnvSet);
-        free(patBuffer);
-        free(patBufferUTF8);
+        if (patBuffer != setUStrBuf) {
+            free(patBuffer);
+            free(patBufferUTF8);
+        }
         *status = U_ZERO_ERROR;
     }
     else {
@@ -573,6 +582,8 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     ucnv_close(cnv);
+    uset_close(cnvSet);
+    uset_close(nfcSet);
 }
 
 static void printStandardHeaders(UErrorCode *status) {
