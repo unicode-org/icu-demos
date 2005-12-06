@@ -188,8 +188,9 @@ static UBool isShortestUTF8(char *source, int32_t size) {
    Please see http://www.unicode.org/unicode/reports/tr26/ for details. */
 static UBool isShortestCESU8(char *source, int32_t size) {
     if (source[0] == (char)0xc0 || source[0] == (char)0xc1 || source[0] > (char)0xef
-        || (size >= 2
-            && (source[0] == (char)0xE0 && source[1] < (char)0xA0)))
+        || (size >= 2 && (source[0] == (char)0xE0 && source[1] < (char)0xA0))
+        || (size >= 3 && (source[3] == (char)0xc0 || source[3] == (char)0xc1 || source[3] > (char)0xef))
+        || (size >= 4 && (source[3] == (char)0xE0 && source[4] < (char)0xA0)))
     {
         return FALSE;
     }
