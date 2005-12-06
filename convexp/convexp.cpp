@@ -472,6 +472,7 @@ static void printConverterInfo(UErrorCode *status) {
     printCPTable(cnv, gStartBytes, status);
 
     USet *nfcSet = uset_openPattern(UNICODE_STRING_SIMPLE("[:NFC_Quick_Check=yes:]").getTerminatedBuffer(), -1, status);
+    USet *bidiSet = uset_openPattern(UNICODE_STRING_SIMPLE("[[:Bidi_Class=AL:][:Bidi_Class=R:][:Bidi_Class=RLE:][:Bidi_Class=RLO:]]").getTerminatedBuffer(), -1, status);
     USet *cnvSet = uset_open(1, 0);
     ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
 
@@ -534,6 +535,7 @@ static void printConverterInfo(UErrorCode *status) {
     }
 
     printf("<tr><th>Always generates Unicode NFC?</th><td>%s</td></tr>\n", (uset_containsAll(nfcSet, cnvSet) ? "TRUE": "UNKNOWN"));
+    printf("<tr><th>Contains BiDi characters?</th><td>%s</td></tr>\n", (uset_containsSome(bidiSet, cnvSet) ? "TRUE": "FALSE"));
     puts(endTable);
 
     printLanguages(cnv, cnvSet, status);
@@ -584,6 +586,7 @@ static void printConverterInfo(UErrorCode *status) {
     ucnv_close(cnv);
     uset_close(cnvSet);
     uset_close(nfcSet);
+    uset_close(bidiSet);
 }
 
 static void printStandardHeaders(UErrorCode *status) {
