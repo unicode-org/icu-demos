@@ -471,7 +471,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     printCPTable(cnv, gStartBytes, status);
 
-    USet *nfcSet = uset_openPattern(UNICODE_STRING_SIMPLE("[:NFC_Quick_Check=yes:]").getTerminatedBuffer(), -1, status);
+    USet *nfcSet = uset_openPattern(UNICODE_STRING_SIMPLE("[[:NFC_Quick_Check=yes:]&[:ccc=0:]]").getTerminatedBuffer(), -1, status);
     USet *bidiSet = uset_openPattern(UNICODE_STRING_SIMPLE("[[:Bidi_Class=AL:][:Bidi_Class=R:][:Bidi_Class=RLE:][:Bidi_Class=RLO:]]").getTerminatedBuffer(), -1, status);
     USet *cnvSet = uset_open(1, 0);
     ucnv_getUnicodeSet(cnv, cnvSet, UCNV_ROUNDTRIP_SET, status);
