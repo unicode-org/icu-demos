@@ -242,7 +242,7 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
 
     showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
 
-    u_fprintf(lx->OUT, "<table summary=\"%S\">\r\n<tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<table class='data-table-1' summary=\"%S\">\r\n<tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleCodes", "Locale Codes"),
               FSWF("LocaleCodes_Language", "Language"),
               FSWF("LocaleCodes_Country", "Region"),
@@ -940,7 +940,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 #endif
     u_fprintf(lx->OUT, "</td>"); /* Now, we're done with the ShowKey.. cell */
 
-    u_fprintf(lx->OUT, "</tr><tr><td colspan=\"2\"><table width=\"100%%\">\r\n");
+    u_fprintf(lx->OUT, "</tr><tr><td colspan=\"2\"><table class='data-table-2' width=\"100%%\">\r\n");
 
     for(i=0;desc[i];i++)
     {
@@ -1270,9 +1270,9 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
      for legacy translations */
   showKeyAndStartItem(lx, aKeyStem, NULL, locale, FALSE, U_ZERO_ERROR); /* No status possible  because we have two items */
 
-   u_fprintf(lx->OUT, "<h4>%S</h4>\n", FSWF("Calendar_type_format", "Formatting"));
+   u_fprintf(lx->OUT, "<h4 class='subtitle'>%S</h4>\n", FSWF("Calendar_type_format", "Formatting"));
    showShortLongCalType(lx, rb, locale, keyStem, "format");
-   u_fprintf(lx->OUT, "<h4>%S</h4>\n", FSWF("Calendar_type_stand-alone", "Stand-alone"));
+   u_fprintf(lx->OUT, "<h4 class='subtitle'>%S</h4>\n", FSWF("Calendar_type_stand-alone", "Stand-alone"));
    showShortLongCalType(lx, rb, locale, keyStem, "stand-alone");
 
   showKeyAndEndItem(lx, keyStem, locale);
@@ -1323,7 +1323,7 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
     if(U_FAILURE(status)) {
       explainStatus(lx, status, keyStem);
     } else { 
-      u_fprintf(lx->OUT, "<table width=\"100%%\"><tr><th>#</th>");
+      u_fprintf(lx->OUT, "<table class='data-table-2' width=\"100%%\"><tr><th>#</th>");
       maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
         if(U_FAILURE(stuff[i].status)) {
@@ -1579,7 +1579,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
             if(lx->dispRB) {
                 defaultTagged =  ures_getByKey(lx->dispRB, key, NULL, &status);
             }
-            u_fprintf(lx->OUT,"<table >\r\n");
+            u_fprintf(lx->OUT,"<table class='data-table-2'>\r\n");
             
             /* print the top row */
             u_fprintf(lx->OUT,"<tr><td><b>%S</b></td>",
@@ -1607,7 +1607,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
                 u_fprintf(lx->OUT,"<tr>");
 
                 if(U_SUCCESS(status)) {
-                    u_fprintf(lx->OUT, "<td><tt>%s</tt></td>", tag);
+                    u_fprintf(lx->OUT, "<th><tt>%s</tt></th>", tag);
 
 
                     if(compareToDisplay) {
@@ -1745,7 +1745,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
       if(lx->dispRB) {
         defaultTagged =  ures_getByKey(lx->dispRB, key, NULL, &status);
       }
-      u_fprintf(lx->OUT,"<table>\r\n");
+      u_fprintf(lx->OUT,"<table class='data-table-2'>\r\n");
         
       /* print the top row */
       u_fprintf(lx->OUT,"<tr><th>%S</th><th>%S</th><th>%S</th><th>%S</th></tr>\r\n",
@@ -2164,12 +2164,12 @@ u_fprintf(lx->OUT, "</td></tr></table>");
     
     show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");  /* not calendrical */
   }
-  showLPC(lx, myRB, locale);
+  showLPC(lx, myRB, locale, TRUE);
   showDateTimeElements(lx, myRB, locale); /* not calendrical? */
 }
 
 /* locale pattern chars */
-void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale)
+void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale, UBool hidable)
 {
     const UChar *charDescs[25];
     
@@ -2199,5 +2199,5 @@ void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale)
     charDescs[23] = FSWF(/**/"localPatternChars23", "timezone rfc");
     charDescs[24] = 0;
     
-    showStringWithDescription(lx, myRB, locale, charDescs, "localPatternChars", TRUE); /* calendrical? */
+    showStringWithDescription(lx, myRB, locale, charDescs,"localPatternChars", hidable); /* calendrical? */
 }

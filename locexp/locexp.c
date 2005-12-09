@@ -28,6 +28,18 @@
 #include "demo_settings.h"
 #include "demoutil.h"
 
+void displayFatal(LXContext *lx) {
+    fprintf(stdout,"content-type: text/html\r\n\r\n");
+    fprintf(stdout,"<p style='border: 2px solid red'>Wasn't able to load a converter or some other fatal error (%s)</p>\r\n", u_getDataDirectory());
+    fprintf(stdout,"<tt>ICU_DATA='%s'</tt><br/>\n", getenv("ICU_DATA"));
+    fprintf(stdout,"<tt>convRequested='%s'</tt><br/>\n", lx->convRequested);
+    fprintf(stdout,"<tt>convName='%s'</tt><br/>\n", lx->convName);
+    fprintf(stdout,"<hr/>\n");
+    fprintf(stdout,"<a href='http://ibm.com/software/globalization/icu/chartsdemostools.jsp'>ICU home page</a>\n");
+    fflush(stdout);
+    return;
+}
+
 void displayLocaleExplorer(LXContext *lx)
 {
     const char *localeParam;

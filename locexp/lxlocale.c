@@ -104,14 +104,14 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
         U_STRING_INIT(COMMA_SPACE, ", &nbsp;", 9);
         initStr = FALSE;
     }
+/* v14-gray-table-border */
+    u_fprintf(lx->OUT, "<table class='data-table-1' cellpadding=\"2\" cellspacing=\"2\">\r\n");
 
-    u_fprintf(lx->OUT, "<table border=\"2\" cellpadding=\"2\" cellspacing=\"2\">\r\n");
-
-    u_fprintf(lx->OUT, "<tr><th align=\"left\">%S</th>\r\n<th align=\"left\">%S</th></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><th class='mbg' align=\"left\">%S</th>\r\n<th class='mbg' align=\"left\">%S</th></tr>\r\n",
               FSWF("localeList_Locale", "Languages"),
               FSWF("localeList_Sublocale", "Regions"));
 
-    u_fprintf(lx->OUT, "<tr><td colspan=\"2\"><a href=\"?_=%s\">%S</a></td></tr>\r\n",
+    u_fprintf(lx->OUT, "<tr><td class='v14-header-4-small' colspan=\"2\"><a class='bs' href=\"?_=%s\">%S</a></td></tr>\r\n",
               lx->locales->str, lx->locales->ustr); /* default */ 
 
     mySort(lx->locales, &status, TRUE); /* need the whole thing sorted */
@@ -130,7 +130,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
         if(hit) {
           u_fprintf_u(lx->OUT, BEGIN_HIT_CELL);
         } else {
-          u_fprintf_u(lx->OUT, BEGIN_CELL);
+          u_fprintf(lx->OUT, "<td class='v14-header-4-small' valign=\"top\">");
         }
 
         printLocaleLink(lx, toOpen, lx->locales->subLocs[n], current, restored, &hadUnsupportedLocales);
@@ -138,7 +138,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
         if(hit) {
           u_fprintf_u(lx->OUT, END_HIT_CELL);
         } else {      
-          u_fprintf_u(lx->OUT, END_CELL);
+          u_fprintf_u(lx->OUT, END_CELL);  
         }
       
         if(lx->locales->subLocs[n]->nSubLocs)
@@ -343,13 +343,13 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
 {
     UBool supported;
     static UBool initStr = TRUE;
-    U_STRING_DECL(BEGIN_LINK, "<a href=\"", 10);
+    U_STRING_DECL(BEGIN_LINK, "<a class='bs' href=\"", 21);
     U_STRING_DECL(MIDDLE_LINK, "\">", 3);
     U_STRING_DECL(END_LINK, "</a>", 5);
     U_STRING_DECL(BEGIN_UNSUP, "<i><font color=\"#9999FF\">", 25);
     U_STRING_DECL(END_UNSUP, "</font></i>", 12);
     if (initStr) {
-        U_STRING_INIT(BEGIN_LINK, "<a href=\"", 10);
+        U_STRING_INIT(BEGIN_LINK, "<a class='bs' href=\"", 21);
         U_STRING_INIT(MIDDLE_LINK, "\">", 3);
         U_STRING_INIT(END_LINK, "</a>", 5);
         U_STRING_INIT(BEGIN_UNSUP, "<i><font color=\"#9999FF\">", 25);

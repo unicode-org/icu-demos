@@ -10,10 +10,11 @@
 /******************************************************************************
  *  Explorer for dates
  */
+#define PATTERN_LEN 1024
     
 void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const char *locale)
 {
-    UChar pattern[1024];
+    UChar pattern[PATTERN_LEN];
     UChar tempChars[1024];
     UChar defChars[1024];
     UChar valueString[1024];
@@ -42,8 +43,16 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     /* fetch the current pattern */
     exploreFetchNextPattern(lx,pattern, queryField(lx,"str"));
 
-    df = udat_open(0,0,locale, NULL, -1, NULL, 0, &status);
-    udat_applyPattern(df, FALSE, pattern, -1);
+    df = udat_open(UDAT_LONG,UDAT_LONG,locale, NULL, -1, NULL, 0, &status);
+    if(pattern[0]) {
+        udat_applyPattern(df, FALSE, pattern, -1);
+    } else {
+        udat_toPattern(    df,
+                        FALSE,
+                        pattern,
+                        PATTERN_LEN,
+                        &status);
+    }
 
     status = U_ZERO_ERROR;
   
@@ -207,8 +216,10 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     {
       char f[300];
       sprintf(f, "%f", now);
-      u_fprintf(lx->OUT, "<a href=\"%s&amp;NP_DBL=%s\">Calendar Demo...</a><br />\r\n",
+      u_fprintf(lx->OUT, "<a href=\"%s&amp;x=cal&amp;NP_DBL=%s\">Calendar Demo...", 
                 getLXBaseURL(lx,kNO_URL|kNO_SECT), f);
+        showExploreButtonPicture( lx );
+      u_fprintf(lx->OUT, "</a><br />\r\n");
     }
       
     showExploreCloseButton(lx, locale, "DateTimePatterns");
@@ -222,5 +233,9 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     /* ========= Show LPC's for reference ================= */
 
     /* ..... */
-    showLPC(lx, myRB, locale);
+    { 
+        UResourceBundle *rootRB;
+        rootRB = ures_open(NULL, "root", &status);
+        showLPC(lx, rootRB, "root", FALSE);
+    }
 }

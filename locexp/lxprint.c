@@ -69,6 +69,22 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
 
 /* Convenience function.  print <a href="..."> for a link to the correct Help page.  if str=null it defaults to Help*/
 
+void printHelpTagW(LXContext *lx, const char *helpTag, const UChar *str)
+{
+    if(str == NULL)
+    {
+        /* str = FSWF("help", "Help"); */
+      
+        printHelpImg(lx, helpTag, FSWF("help", "Help"), 
+                     FSWF("helpgif", "help.gif"),
+                     FSWF("helpgif_opt", "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22")); /* 0, 40, 40 ? */
+
+    } else {
+        u_fprintf(lx->OUT, "<a class='mainlink' target=\"icu_lx_help\" href=\"" LDATA_PATH "help.html#%s\">%S</a>",
+                  helpTag,str);
+    }
+}
+
 void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
 {
     if(str == NULL)
@@ -128,7 +144,11 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
               section, getLXBaseURL(lx, kNO_URL | kNO_SECT), section,section);
     writeEscaped(lx, sampleString);
     u_fprintf(lx->OUT, "\" />\r\n");
-  
+
+    showExploreButtonPicture( lx );
+}
+
+void showExploreButtonPicture( LXContext *lx ) {
     u_fprintf(lx->OUT, "<input type=\"image\" alt=\"demo\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" value=\"%S\" /></form>",
               FSWF("exploreTitle", "Explore"));
 }
@@ -165,12 +185,12 @@ void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyNa
 {
     u_fprintf(lx->OUT, "<table summary=\"%S\" border=\"0\" cellspacing=\"0\" width=\"100%%\">\r\n", keyName);
     u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"2\"><img src=\"" LDATA_PATH "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n");
-    u_fprintf(lx->OUT, "<tr><td colspan=\"1\" width=\"0\" valign=\"top\" bgcolor=" kXKeyBGColor ">");
+    u_fprintf(lx->OUT, "<tr><td class='tdblue' colspan=\"1\" width=\"0\" valign=\"top\" bgcolor=" kXKeyBGColor ">");
 
     if(keyName == NULL)
 	keyName = FSWF( key, key );
-    u_fprintf(lx->OUT, "<span class=\"subTitle\">");
-    printHelpTag(lx, key, keyName);
+    u_fprintf(lx->OUT, "<span class=\"mainlink\">"); /* was subTitle */
+    printHelpTagW(lx, key, keyName);
     u_fprintf(lx->OUT, "</span>\n");
 
 

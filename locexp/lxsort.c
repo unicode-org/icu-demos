@@ -361,7 +361,6 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
   /* pull out the text to be sorted. ===========================================================
    */
   text = queryField(lx,"str");
-
   if(!text || !*text) {
     /* attempt load from RB */
     const UChar *sampleString = NULL;
@@ -416,8 +415,14 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
 
   if(text && *text)
   {
+    const char *aConv = lx->convRequested;
+    if(!aConv||!*aConv) {
+        aConv = "utf-8";
+    }
+    strChars[0]=0;
+    u_fprintf(lx->OUT, "<!-- [enc: %s] -->", aConv);
     unescapeAndDecodeQueryField_enc(strChars, SORTSIZE,
-                                    text, lx->convRequested );
+                                    text, aConv );
     
     length = strlen(text);
     
@@ -443,8 +448,8 @@ void showSortStyle(LXContext *lx)
   u_fprintf(lx->OUT, "%s",  "\r\n<style type=\"text/css\">\r\n"
             "/*<![CDATA[*/"
 
-	    /* ".box0 { border: 1px inset gray; margin: 1px }\r\n"
-	       ".box1 { border: 1px inset gray; margin: 1px; background-color: #CCEECC }\r\n" */
+	       ".box0 { border: 1px solid gray ; margin: 0 }\r\n"
+	       ".box1 { border: 1px solid gray; margin: 0; background-color: #DDEEDD }\r\n" 
 
             ".wide        { width: 100% }\r\n"
             "select.wide  { font-size: smaller; left-padding: 1em; }\r\n"
@@ -582,7 +587,8 @@ void showSort(LXContext *lx, const char *locale)
 
 
   /* look for custom rules =========================================================================== */
-
+    /* ? erases txt here */
+/*    u_fprintf(lx->OUT, "T: (%S), I: (%s)<br />", strChars, inputChars); */
   text = NULL;
   ruleChars[0] = 0;
 
@@ -703,45 +709,10 @@ void showSort(LXContext *lx, const char *locale)
       /* begin customizables */
       
       /* -------------------------- UCOL_STRENGTH ----------------------------------- */
-#if 0
       {
-        const UColAttributeValue strengthVals[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST, LX_UCOL_LAST };
-        showSort_doCustom(lx, UCOL_STRENGTH, customCollator, "strength", strengthVals);
-              customStrength = ucol_getAttribute(customCollator, attribute, &status);
-              
-              
-      if(!lxSortReset && (ss = queryField(lx,"strength"))) {
-        nn = atoi(ss);
-        if( (nn || (*ss=='0'))  && /* choice is a number and.. */
-            (showSort_attributeVal(nn)[0]) ) /* it has a name (is a valid item) */
-        {
-          customStrength = nn; 
-        }
+        const UColAttributeValue strengthVals[] = { LX_UCOL_DEFAULT, UCOL_PRIMARY, UCOL_SECONDARY, UCOL_TERTIARY, UCOL_QUATERNARY, UCOL_IDENTICAL, LX_UCOL_LAST };
+        showSort_doCustom(lx, UCOL_STRENGTH, customCollator, "strength", strengthVals, lxSortReset);
       }
-      status = U_ZERO_ERROR;
-      ucol_setAttribute(customCollator, attribute, customStrength, &status);
-      if(U_FAILURE(status))
-      {
-        explainStatus(lx, status, NULL);
-        status = U_ZERO_ERROR;
-      }
-
-      
-      u_fprintf(lx->OUT, "<select id=\"options\" class=\"wide\" name=\"strength\">\r\n");
-
-      for(value = UCOL_PRIMARY; value < UCOL_STRENGTH_LIMIT; value++)
-      {
-        if(showSort_attributeVal(value)[0] != 0x0000)  /* If it's a named attribute, try it */
-        {  
-          u_fprintf(lx->OUT, "<option %s value=\"%d\">%S</option>\r\n",
-                    (customStrength==value)?"selected=\"selected\"":"",
-                    value,
-                    showSort_attributeVal(value));
-        }
-      }
-      u_fprintf(lx->OUT, "</select><br />\r\n");
-    }
-#endif
       /* ------------------------------- UCOL_CASE_FIRST ------------------------------------- */
       {
           UColAttributeValue ourOptions[] = { LX_UCOL_DEFAULT, UCOL_OFF, UCOL_LOWER_FIRST, UCOL_UPPER_FIRST, LX_UCOL_LAST };
@@ -812,11 +783,14 @@ void showSort(LXContext *lx, const char *locale)
   if(inputChars[0] != 0)
   {
     int n;
-    
     UChar in[SORTSIZE];
+    const char *aConv = lx->convRequested;
+    if(!aConv || !*aConv) {
+        aConv = "utf-8";
+    }
     
     /* have some text to sort */
-    unescapeAndDecodeQueryField_enc(in, SORTSIZE, inputChars, lx->convRequested);
+    unescapeAndDecodeQueryField_enc(in, SORTSIZE, inputChars, aConv); /* TODO: Didn't we just convert this? */
     u_replaceChar(in, 0x000D, 0x000A); /* CRLF */
     
     if(!isG7) {
@@ -838,7 +812,7 @@ void showSort(LXContext *lx, const char *locale)
           aSort = customSort;
           if(n>0 && !lxCustSortOpts) {
             /* don't setstrength on 1st item (default) if custom options have been set */
-            ucol_setStrength(usort_getCollator(aSort), UCOL_DEFAULT);
+            /*ucol_setStrength(usort_getCollator(aSort), UCOL_DEFAULT);*/
           }
           
           /* add lines from buffer */

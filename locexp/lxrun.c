@@ -59,7 +59,7 @@ void closeLX(LXContext *theContext)
 }
 
 /* Initialize the environment */
-void setupLocaleExplorer(LXContext *lx)
+int setupLocaleExplorer(LXContext *lx)
 {
     UErrorCode status = U_ZERO_ERROR;
     char *tmp = NULL;
@@ -97,11 +97,12 @@ void setupLocaleExplorer(LXContext *lx)
 
     if(u_fgetConverter(lx->OUT) == NULL)
     {
-        fprintf(stdout,"content-type: text/plain\r\n");
-        fprintf(stdout,"\r\nFatal: can't open ICU Data (%s)\r\n", u_getDataDirectory());
-        fprintf(stdout,"ICU_DATA=%s\n", getenv("ICU_DATA"));
-        exit(0);
+        appendHeader(lx, "Content-Type", "text/html;charset=%s", "iso-8859-1");
+        displayFatal(lx);
 
+        return 1;
+
+        /*NOTREACHED*/
         lx->couldNotOpenEncoding = lx->convRequested; /* uhoh */
     }
     else
@@ -275,7 +276,7 @@ void setupLocaleExplorer(LXContext *lx)
     {
         lx->timeZone = NULL;
     }
-
+    return 0;
 }
 
 /* defining _GNU_SOURCE will result in a little more efficiency - 
@@ -293,6 +294,7 @@ void runLocaleExplorer(LXContext *lx)
 
   FILE *tmpf;
   FILE *realout;
+  int failure  =0;
 #if defined(LX_TMPFILE)
   long int len;
 /* #elif ..etc.. */
@@ -326,11 +328,11 @@ void runLocaleExplorer(LXContext *lx)
   if(lx->fileObj) { /* file output */
     writeFileObject(lx, lx->fileObj);
   } else {
-    setupLocaleExplorer(lx); /* and output initial headers */
+    failure = setupLocaleExplorer(lx); /* and output initial headers */
   }
 
     
-  if(!lx->fileObj) {
+  if(!lx->fileObj && !failure) {
     displayLocaleExplorer(lx);
   }
   
@@ -661,7 +663,6 @@ void setLocaleAndEncoding(LXContext *lx)
     int32_t newLocaleLen = -1;
     UEnumeration *available = NULL;
     UAcceptResult outResult;
-
     
     available = ures_openAvailableLocales(FSWF_bundlePath(), &acceptStatus);
     newLocaleLen = uloc_acceptLanguageFromHTTP(newLocale, 200, &outResult, lx->acceptLanguage, available, &acceptStatus);
@@ -671,14 +672,23 @@ void setLocaleAndEncoding(LXContext *lx)
     }
     uenum_close(available);
   }
+
   /* english fallback */
   if(!lx->dispLocale[0]) {
     setBlobFromLocale(lx, &lx->dispLocaleBlob, "en", &status);
     strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
   }
-    
-  
-  if(!lx->convSet) {
+
+  /* Get encoding from URL */
+  lx->convRequested=queryField(lx,"enc");
+
+  if(!lx->convRequested) {  /* if the field wasn't there */
+    lx->convRequested="";
+  } else if(*lx->convRequested) {
+    lx->convSet = 1;
+  }
+
+  if(!lx->convSet) {  /* user hasn't requested an encoding - pick one. */
     const char *accept;
     const char *agent;
     
@@ -693,20 +703,19 @@ void setLocaleAndEncoding(LXContext *lx)
     }
   }
   
-  
-  if(lx->convRequested) {
+  /* convUsed is the 'actual' encoding, as opposed to the displayed */
+  if(lx->convRequested && *lx->convRequested) {
     lx->convUsed = lx->convRequested;
   }
   
   /* Map transliterated/fonted : */
-  if(0==strcmp(lx->convRequested, "fonted"))
-    {
-      lx->convUsed = "usascii";
-    }
-  if(0==strcmp(lx->convUsed, "transliterated"))
-    {
-      lx->convUsed = "utf-8";
-    }
+  if(!lx->convUsed || !*(lx->convUsed)) {
+      lx->convUsed = "utf-8"; /* so be it. */
+  } if(0==strcmp(lx->convUsed, "fonted")) {
+      lx->convUsed = "usascii"; /* wire  encoding: ascii */
+  } else if(0==strcmp(lx->convUsed, "transliterated")) {
+      lx->convUsed = "utf-8"; /* wire encoding: utf-8 */
+  }
 
   if(lx->pathInfo && strstr(lx->pathInfo, "/_/")) {
     const char *n = strstr(lx->pathInfo, "/_/");
@@ -718,6 +727,7 @@ void setLocaleAndEncoding(LXContext *lx)
     lx->fileObj = n + 3;
     lx->convRequested  = "_";
   }
+
   if(hasQueryField(lx, "PANICDEFAULT")) {
       setBlobFromLocale(lx, &lx->dispLocaleBlob, "en", &status);
       strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */

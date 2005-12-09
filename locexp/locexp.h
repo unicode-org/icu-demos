@@ -167,7 +167,7 @@ typedef struct
 
 /** Tuning and appearance **/
 #define kStatusBG "\"#EEEEEE\" " 
-#define kXKeyBGColor "\"#c8d7e3\" "
+#define kXKeyBGColor "\"#c8d7e3\" class='tdblue' "
 #define kShowStringCutoffSize 200   /* size in chars before a string is 'too big'. */
 #define kShowUnicodeSetCutoffSize 80   /* size in chars before a string is 'too big'. */
 #define kShow2dArrayRowCutoff 5     /* size in rows before an array is too big */
@@ -191,7 +191,7 @@ extern const char *lx_version();
  */
 extern void writeFileObject( LXContext *lx, const char *path );
 extern void runLocaleExplorer(LXContext *myContext);
-extern void setupLocaleExplorer(LXContext *lx);
+extern int setupLocaleExplorer(LXContext *lx);
 extern void displayLocaleExplorer(LXContext *lx);
 extern void initContext( LXContext *lx );
 
@@ -249,7 +249,7 @@ extern void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *loca
 extern void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem, const char *type);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem);   /* Cal meaning, the defaultCalendar part of the context is taken into account */
 extern void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *locale);
-extern void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale);
+extern void showLPC(LXContext *lx, UResourceBundle *myRB, const char *locale, UBool hidable);
 extern void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale);
 
 extern void showDefaultCalendar(LXContext *lx, UResourceBundle *rb, const char *locale);

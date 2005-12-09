@@ -272,7 +272,15 @@ extern void showExploreCalendar( LXContext *lx)
   
     sprintf(num, "%f", now);
 
-    u_fprintf(lx->OUT, "[%D %T]<p>", now, now );
+    {
+      const char *f = num;
+      u_fprintf(lx->OUT, "<a href=\"%s&amp;x=dat&amp;NP_DBL=%s\">Date Format Demo...", 
+                getLXBaseURL(lx,kNO_URL|kNO_SECT), f);
+        showExploreButtonPicture( lx );
+      u_fprintf(lx->OUT, "</a><br />\r\n");
+    }
+    
+/*    u_fprintf(lx->OUT, "[%D %T]<p>", now, now ); */
 
     cal = ucal_open(lx->timeZone, -1, lx->curLocaleName, UCAL_TRADITIONAL, &status);
     ucal_setMillis(cal, now, &status);
