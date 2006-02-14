@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005, International Business Machines
+ * Copyright (C) 2005-2006, International Business Machines
  *   Corporation and others.  All Rights Reserved.
  *
  * Original Author: George Rhoten
@@ -14,6 +14,7 @@ namespace ICU_Wrapper
 	/// </summary>
 	public class UVersion
 	{
-		public const string U_ICU_VERSION_SHORT = "34";
+		public const string U_ICU_VERSION_SHORT = "35";
+		public const string U_ICU_VERSION_SUFFIX = "";
 	}
 }
