@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #ifndef LOCEXP_
@@ -199,6 +199,7 @@ extern void initLX();
 extern void openLX();
 extern void closeLX(LXContext *lx);
 extern void explainStatus( LXContext *lx, UErrorCode status, const char *tag );
+extern void displayFatal(LXContext *lx);
 
 typedef enum { kNormal, kCal } ECal;
 
@@ -260,6 +261,7 @@ extern void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *rb, con
 extern void showExploreNumberPatterns  ( LXContext *lx, const char *locale);
 
 extern const char *keyToSection( const char *key);
+extern void showExploreButtonPicture( LXContext *lx );
 extern void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *section);
 extern void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign);
 extern void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key);

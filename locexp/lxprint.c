@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -128,6 +128,11 @@ const char *keyToSection(const char *key) {
   }
 }
 
+void showExploreButtonPicture( LXContext *lx ) {
+    u_fprintf(lx->OUT, "<input type=\"image\" alt=\"demo\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" value=\"%S\" /></form>",
+              FSWF("exploreTitle", "Explore"));
+}
+
 void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, const UChar *sampleString, const char *key)
 {
     UChar nullString[] = { 0x0000 };
@@ -146,11 +151,6 @@ void showExploreButton( LXContext *lx, UResourceBundle *rb, const char *locale, 
     u_fprintf(lx->OUT, "\" />\r\n");
 
     showExploreButtonPicture( lx );
-}
-
-void showExploreButtonPicture( LXContext *lx ) {
-    u_fprintf(lx->OUT, "<input type=\"image\" alt=\"demo\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" value=\"%S\" /></form>",
-              FSWF("exploreTitle", "Explore"));
 }
 
 void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *locale, const char *key, UBool rightAlign)

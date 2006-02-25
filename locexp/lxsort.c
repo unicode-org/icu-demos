@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -212,19 +212,18 @@ const UChar *showSort_attributeVal(UColAttributeValue val)
 }
 
 const UChar *showSort_attributeAndValue(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttribute attribute) {
- const UChar *name;
- const UChar *value;
- int32_t needed;
- 
- name = showSort_attributeName(attribute);
- value = showSort_attributeVal(val);
- 
- if(u_snprintf(buf, bufSize, "%S: %S", name, value) ==bufSize) {
-    return showSort_attributeVal(val);
- } else {
-    /*buf[bufSize-1]=0;*/
-    return buf;
- }
+    const UChar *name;
+    const UChar *value;
+
+    name = showSort_attributeName(attribute);
+    value = showSort_attributeVal(val);
+
+    if(u_snprintf(buf, bufSize, "%S: %S", name, value) ==bufSize) {
+        return showSort_attributeVal(val);
+    } else {
+        /*buf[bufSize-1]=0;*/
+        return buf;
+    }
 }
 
 const UChar *showSort_attributeValX(UChar *buf, int32_t bufSize, UColAttributeValue val, UColAttribute attribute) {
@@ -545,9 +544,6 @@ void showSort(LXContext *lx, const char *locale)
   UColAttributeValue  customStrength = UCOL_DEFAULT;
   USort              *customSort     = NULL;
   UCollator          *customCollator = NULL;
-  UColAttributeValue  value, defaultvalue;
-  UColAttribute attribute;
-  UChar attribBuf[1024]; /* 1 kibibyte */
 
   UBool isG7 = FALSE;
 
@@ -651,8 +647,6 @@ void showSort(LXContext *lx, const char *locale)
   
   /* Here, 'configuration information' at the top of the page. ==================== */
   if(!isG7) { /* was kSimpleMode */
-      const char *ss;
-      int nn;
       UErrorCode customError = U_ZERO_ERROR;
 
       u_fprintf(lx->OUT, "<br /><hr width=\"20%%\" />\r\n");
