@@ -122,6 +122,7 @@ locexp/resource/zh_SG/dp.gif -text
 locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
 nbrowser/normalization-header.html svneol=native#text/html
+redemo/redemo.html svneol=native#text/html
 scompare/scompare-content-templ.html svneol=native#text/html
 scompare/scompare-page-templ.html svneol=native#text/html
 scompare/scompare.html svneol=native#text/html

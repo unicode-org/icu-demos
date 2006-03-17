@@ -1,0 +1,72 @@
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2006, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Makefile.in for ICU - redemo (regular expressions demo)
+## Andy Heninger
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ..
+subdir =redemo
+
+# srcdir must be set before this is included
+include $(top_builddir)/icuapps.mk
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~
+
+## Target information
+TARGET = redemo
+
+CPPFLAGS += -I$(ICU_SOURCE)/common 
+ICULIBS :=   $(ICULIBS)
+
+OBJECTS = redemo.o
+
+## List of standard targets
+all: all-local
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+all-local: $(TARGET)
+
+install-local: all-local install-target
+
+
+install-target: all-local
+#	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
+#	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+#	$(INSTALL) redemo.html $(BINDIR)/data
+
+dist-local:
+
+clean-local:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET)
+
+distclean-local: clean-local
+	rm -f Makefile $(DEPS)
+
+check-local:
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just
+#         '$(LIBS) -licuuc -lusort' ...
+
+-include local.mk
+
+$(TARGET) : $(OBJECTS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
+
+

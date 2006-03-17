@@ -1,0 +1,497 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>ICU Regular Expression Demonstration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<!-- 
+   Copyright (C) 2006, International Business Machines Corporation and
+   others. All Rights Reserved.
+-->
+
+<script type="text/javascript" language="javascript">
+<!-- 
+//
+//  name of the redemo cgi-bin executable.
+//  This may need to be modified, depending on your web server configuration.
+//
+var cgiAppName = "cgi-bin/redemo";
+
+
+//
+//  Global variables containing the current
+//    regular expession and the current user text.
+//
+var expression = "\\p{Letter}+";  // The regular expression pattern to use.
+
+var text       = "";    // The text string to which the regular expression will
+                        //   be applied.
+
+var matches = null;     // Array, each element points to a span element that
+                        //  displays the text corresponding to the match.
+                        //  Match regions are highlighted by changing the class
+                        //  attribute of the span elements.
+
+var nextMatch;          // Index of next match to display in the above array.
+                        //   -1 if showing all matches.
+
+var TextArea = null;    // The <textarea> node for editing the text.
+                        // moved into and out of the display as needed.
+
+var displayText = null; // The "displayedText" element.  Either gets the
+                        //   highlighted text display or TextArea edit box, depending
+                        //   on the current mode.
+
+var debugMode = false;  // enable various debugging alert messages.
+
+var texts = [ 
+
+    " ",                // item 0 in the menu is an empy place holder
+
+    "$29.99?!! That's way too much!!", 
+    "niñas y niños",    // decomposed
+    "niñas y niños",    // composed
+    
+    "Básicamente, las computadoras sólo trabajan con números. Almacenan letras y otros caracteres mediante la asignación de un número a cada uno. Antes de que se inventara Unicode, existían cientos de sistemas de codificación distintos para asignar estos números."
+    + " באופן בסיסי, מחשבים עוסקים רק במספרים. הם מאחסנים אותיות ותווים אחרים על-ידי הקצאת מספר לכל אחד מהם. בטרם הומצא היוניקוד, היו מאות מערכות קידוד שונות להקצאת המספרים"
+    + "コンピューターは、本質的には数字しか扱うことができません。コンピューターは、文字や記号などのそれぞれに番号を割り振ることによって扱えるようにします。ユニコード"
+    + "По своей природе компьютеры могут работать лишь с числами. И для того, чтобы они могли хранить в памяти буквы или другие символы, каждому такому символу должно быть поставлено в соответствие число. "
+    + "这些编码系统也会互相冲突。也就是说，两种编码可能使用相同的数字代表两个不同的字符，或使用不同的数字代表相同的字符。任何一台特定的计算机(特别是服务器)都需要支持许多不同的编码，但是，不论什"
+    ];
+
+
+
+//
+//   init    called on page load.
+//
+function init() {
+   // remove the <textarea> text input box from the display,
+   // keep it around for use when the "edit" button is pushed.
+   TextArea = document.getElementById("editText");
+   TextArea.parentNode.removeChild(TextArea);  // Undisplay it.
+ 
+   // Set the initial text to work with to be the first from the
+   //   preset texts defined above.
+   text = texts[1];
+   displayText = document.getElementById("displayedText");
+   setText(displayText, text);
+   acceptNewExpr();
+   
+    // Clear out any current selection in the texts menu
+    var selectEl = document.getElementById("sample-texts");
+    selectEl.selectedIndex = 0;
+
+}
+   
+
+//
+//  editText      Called in response to the "edit text" button.
+//
+function editText() {
+    if (TextArea.parentNode == null) {
+        // We are not currently in edit mode.  Enter it.
+        TextArea.value = text;
+        while (displayText.firstChild != null) {
+        displayText.removeChild(displayText.firstChild);
+        }
+        displayText.appendChild(TextArea);
+    } else {
+        displayText.removeChild(TextArea);
+        text = TextArea.value;
+        sendToServer();  // will update display.
+    }
+    
+    // Clear out any current selection in the texts menu
+    var selectEl = document.getElementById("sample-texts");
+    selectEl.selectedIndex = 0;
+        
+}
+
+//
+//  acceptMenuText   Called in response to a choice made from the menu of texts.
+//
+function acceptMenuText() {
+   var selectEl = document.getElementById("sample-texts");
+   var idx = selectEl.selectedIndex;
+   if (idx < 0) {
+      return;   // no items selected from menu.
+   }
+   text = texts[idx]
+   sendToServer();
+}
+
+
+//
+//  setText   helper function to replace the text content of a node.
+//            Assumes that the text is contained in a single text node
+//            somewhere underneath the specified element.
+//
+function setText (elem, val) {
+   if (elem == null) {
+      return;
+   }
+   var parent;
+   while ((elem != null) && (elem.nodeType != 3)) {  // TEXT_NODE
+      parent = elem;
+      elem = elem.firstChild;
+   }
+   if (elem == null) {
+      var textNode = document.createTextNode(val);
+      parent.appendChild(textNode);
+   } else {
+      elem.nodeValue = val;
+   }
+}
+
+
+function setTextById(id, val) {
+   var element = document.getElementById(id);
+   setText(element, val);
+}
+
+
+//
+//   called in response to the "toggle debug" button.
+//
+function toggleDebug() {
+   debugMode = !debugMode;
+}
+
+
+
+//
+//  acceptNewExpr   called in response to the "Accept" button
+//                  after user has edited the regular expression
+//
+function acceptNewExpr() {
+   var inputEl = document.getElementById("theExpression");
+   expression = inputEl.value;
+   clearExprMenu();
+   sendToServer();
+}
+
+//
+//  Blank out the selection displayed in the expression menu.
+//    Do this when an expression has been edited, because it looks confusing to have a different
+//    expression sitting in the menu.
+//
+function clearExprMenu() {
+    var selectEl = document.getElementById("sample-expressions");
+    selectEl.selectedIndex = 0;
+}
+
+
+//
+//  acceptMenuExpr   Called when user has chosen a new regular expression from the
+//                           menu of sample expressions.
+//
+function acceptMenuExpr() {
+   var selectEl = document.getElementById("sample-expressions");
+   var idx = selectEl.selectedIndex;
+   if (idx < 0) {
+      return;   // no items selected from menu.
+   }
+   expression = selectEl.options[idx].text;
+   inputEl = document.getElementById("theExpression");
+   inputEl.value = expression;
+   sendToServer();
+}
+
+
+//
+//  Fresh results have been received from the server.
+//     Save them, and update the displayed page accordingly.
+//
+function processServerResponse(response) {
+   var rLines = response.split("\n");
+   if (rLines[0].indexOf('U_ZERO_ERROR') >= 0) {
+      setTextById("error-line", String.fromCharCode(160));  // 160 == nbsp
+   } else {
+      setTextById("error-line", rLines[0]);
+   }
+   
+   //
+   //  Clear out the old match results, both the display and the matches[] array.
+   //
+   var displayedText = document.getElementById("displayedText");
+   while (displayedText.firstChild != null) {
+      displayedText.removeChild(displayedText.firstChild);
+   }
+   matches = new Array();
+   nextMatch = 0;
+   var span;
+   
+   var n;       // line number in server response data.
+
+   var ti = 0;  // text index - the index of the first char in the text string
+                //              that has not yet been output.
+   var str;
+   
+   //
+   // Build up & display the new match results
+   for (n=2; rLines[n]!="" && n<rLines.length; n++) {
+       fields = rLines[n].split(" ");  // match #, group #, start, end
+       if (fields[1] != "0") {
+           // The line describes a capture group match
+        //   TODO:  display these in a different color?
+        //   for now, ignore them.
+           continue;
+       }
+       
+       if (Number(fields[2])<ti) {
+           if (debugMode) {
+              alert("inconsistent match results.\n" +
+        "fields[2] = " + fields[2] + "\n" +
+                "ti = " + ti);
+                }
+        break;
+       }
+       
+       // Put in a span with the text from the end of the last match
+       //  to the start of this match.  Add it even if is has length == 0.
+       //
+       //  Note:  if string begins with a combining character, prepend a space
+       //    so that the char will display.  The browsers wont display combining sequences
+       //   that cross over span boundaries.
+       span = document.createElement("span");
+       str = text.substring(ti, fields[2]);
+       if (str.charCodeAt(0)>=0x300 && str.charCodeAt(0)<0x36f) {
+           // poor-man's test for combining marks.
+        str = " " + str;;
+       }      
+       setText(span, str);
+       displayedText.appendChild(span);
+       
+       // Do another span with the match region itself.
+       //  Also do it even if the length of the match is zero.
+       span = document.createElement("span");
+       str = text.substring(fields[2], fields[3]);
+       if (str.charCodeAt(0)>=0x300 && str.charCodeAt(0)<0x36f) {
+           // poor-man's test for combining marks.
+        str = " " + str;
+       }      
+       setText(span, str);
+       displayedText.appendChild(span);
+       matches.push(span);
+       
+       ti = fields[3];
+   }
+   
+   // If the last match doesn't extend to the end of the text,
+   //   display one last span containing the remaining text
+   if (ti < text.length) {
+      span = document.createElement("span");
+      str = text.substring(ti, text.length);
+      if (str.charCodeAt(0)>=0x300 && str.charCodeAt(0)<0x36f) {
+         // poor-man's test for combining marks.
+         str = " " + str;
+       }      
+      setText(span, str);
+      displayedText.appendChild(span);
+   }
+   
+   // Highlight the first match
+   showNextMatch();
+}
+
+function showAllMatches() {
+   var i;
+   for (i=0; i<matches.length; i++) {
+      matches[i].className = "selected";
+   }
+   nextMatch = -1;   // Reserved value, indicating all matches are selected.
+}
+
+function hideAllMatches() {
+   var i;
+   for (i=0; i<matches.length; i++) {
+      matches[i].className = null;
+   }
+}
+
+function showNextMatch() {
+   if (nextMatch>=0 && nextMatch<matches.length) {
+      if (nextMatch>0) {
+          matches[nextMatch-1].className = null;
+      }
+      matches[nextMatch].className = "selected";
+      nextMatch++;
+   }
+}
+
+function showFirstMatch() {
+   nextMatch = 0;
+   hideAllMatches();
+   showNextMatch();
+}
+
+function showPreviousMatch() {
+   if (nextMatch>=2) {
+      matches[nextMatch-1].className = null;
+      nextMatch-=2;
+      showNextMatch();
+   }
+}
+
+
+var http_request = false;
+
+function makeServerRequest(url, data) {
+   http_request = false;
+   if (window.XMLHttpRequest) { // Mozilla, Safari,...
+      http_request = new XMLHttpRequest();
+   } else if (window.ActiveXObject) { // IE
+      try {
+         http_request = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch (e) {
+         try {
+            http_request = new ActiveXObject("Microsoft.XMLHTTP");
+         } catch (e) {}
+      }
+   }
+   if (!http_request) {
+      alert("XMLHttpRequest creation failed.");
+      return false;
+   }
+   
+   http_request.onreadystatechange = receiveResponse;
+   http_request.open('POST', url, true);
+   http_request.setRequestHeader("Content-type", "text/plain; charset=UTF-8");
+   http_request.setRequestHeader("Content-length", data.length);
+   http_request.setRequestHeader("Connection", "close");
+   if (debugMode) {
+      alert("data to server: \n" + data);
+   }
+   http_request.send(data);
+   }
+
+function receiveResponse() {
+  var result;
+  if (http_request.readyState == 4) {
+      if (http_request.status == 200) {
+         result = http_request.responseText;
+        if (debugMode) {
+        alert("Received: \n" + result);
+        }
+        processServerResponse(result);
+      } else {
+         alert("There was a problem receiving the server response.");
+      }
+   }
+}
+   
+function sendToServer() {
+   var caseInsensitive = document.getElementById("case-insensitive").checked;
+   var dotAny          = document.getElementById("dot-matches-all").checked;
+   var multiLine       = document.getElementById("multi-line").checked;
+   var unicodeWord     = document.getElementById("unicode-words").checked;
+   
+   var stringToServer  = caseInsensitive? "1": "0";
+   stringToServer      += dotAny? "1": "0";
+   stringToServer      += multiLine? "1": "0";
+   stringToServer      += unicodeWord? "1": "0";
+   stringToServer      += "\n" + expression + "\n";
+   stringToServer      += text;
+   
+   makeServerRequest(cgiAppName, stringToServer);
+}
+
+-->
+</script>
+
+<style type="text/css">
+#theExpression {background-color: lightgrey; font-size: larger }
+#displayedText {font-size: larger;
+                padding-left: 20px}
+.selected      {background-color: lightblue;}
+
+.match         {background-color: lightblue;}
+
+</style>
+</head>
+
+
+<body onload="init();">
+<h1>ICU Regular Expression Demo</h1>
+<table>
+<tr>
+  <td>
+     <span id="topRow">
+      <button onclick="acceptNewExpr();">submit expression below</button>
+      <select id="sample-expressions" onchange="acceptMenuExpr();">
+          <option> </option>
+           <option>[a-z]</option>
+        <option>[\p{Letter}]</option>
+        <option>[^\p{Letter}]</option>
+        <option>[\p{Letter}\p{Number}]</option>
+        <option>[\p{Letter}-\p{Latin}]</option>
+        <option>\p{script=hebrew}+</option>
+        <option>\p{script=Cyrillic}+</option>
+        <option>\p{script=hiragana}+</option>
+        <option>\p{script=katakana}+</option>
+        <option>\p{script=han}+</option>
+        <option>\p{script=hebrew}</option>
+        <option>\p{block=hebrew}</option>
+        <option>(\p{sc=han}|\p{sc=common})*(\p{sc=Hira}|\p{sc=kana})+</option>
+        <option>\p{block=basic-latin}+</option>
+      </select>
+
+      <button onclick="toggleDebug();">toggle debugging</button>
+     </span>
+   </td>
+</tr>
+<tr>
+   <td> <input id="theExpression" type="text" size="65" value="\p{Letter}+"
+                        onchange="acceptNewExpr();"/></td>
+</tr>
+<tr>
+   <!-- any compilation errors from the regexp will be inserted 
+        on this line   -->
+   <td id="error-line"> &nbsp; </td>
+</tr>
+<tr>
+   <td onchange="acceptNewExpr();">
+        <input type="checkbox" id="case-insensitive"/>case insensitive
+        <input type="checkbox" id="dot-matches-all"/>dot matches all
+        <input type="checkbox" id="multi-line"/>multi-line
+        <input type="checkbox" id="unicode-words"/>Unicode words
+   </td>
+</tr>
+<tr>
+   <td>
+      <button onclick="showFirstMatch();">find first</button>
+      <button onclick="showNextMatch();">find next</button>
+      <button onclick="showPreviousMatch();">back</button>
+      <button onclick="showAllMatches();">find all</button>
+   </td>
+</tr>
+
+<tr>
+   <td height="10px"> </td>
+</tr>
+
+<tr>
+   <td> <button onclick="editText()">edit text</button> or choose from 
+       <select id="sample-texts" onchange="acceptMenuText();">
+           <option> </option>
+           <option>words</option>
+           <option>decomposed</option>
+           <option>composed</option>
+           <option>multilingual</option>
+        </select>
+   </td>   
+</tr>
+<tr>
+    <td id="displayedText"></td>
+</tr>
+<tr>
+    <td>
+       <textarea id="editText" cols="80" rows="30"></textarea>
+     </td>
+</tr>
+      
+</table>
+
+
+</body>
+</html>
