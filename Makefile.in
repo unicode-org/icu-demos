@@ -1,6 +1,6 @@
 #******************************************************************************
 #
-#   Copyright (C) 1999, International Business Machines
+#   Copyright (C) 1999-2006, International Business Machines
 #   Corporation and others.  All Rights Reserved.
 #
 #******************************************************************************
@@ -17,7 +17,7 @@ include $(top_builddir)/icuapps.mk
 
 ## Locale Explorer depends on usort [runtime].
 # Don't change this ordering!
-SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare
+SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare redemo
 # calexpo
 
 

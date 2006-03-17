@@ -1,7 +1,8 @@
 dnl -*-m4-*-
 dnl configure.in for ICU Apps
 dnl Steven R. Loomis
-dnl copyright (c) 1999-2002 IBM, Inc.
+dnl Copyright (C) 1999-2006, International Business Machines Corporation and
+dnl   others. All Rights Reserved.
 
 dnl Process this file with autoconf to produce a configure script
 
@@ -42,6 +43,7 @@ nbrowser/Makefile \
 idnbrowser/Makefile \
 convexp/Makefile \
 scompare/Makefile \
+redemo/Makefile \
 xlitomatic/Makefile \
 dumpdat/Makefile \
 rtfcvrt/Makefile \

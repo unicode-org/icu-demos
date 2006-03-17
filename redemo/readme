@@ -1,0 +1,26 @@
+Readme for the ICU Regular Expressions Demo.
+
+The regular expressions demo is a web based application that demonstrates the operation of regular expressions using the ICU library.
+
+Installation of the demo requires
+-  A system with a web server that can serve the redemo.html page
+-  An installed ICU4C build that is accessible to cgi-bin programs executed by the web server.
+-  Building the redemo.cpp application, and installing it as a cgi-bin app
+   for the web server.
+-  (possibly) editing the redemo.html file to reflect the actual installed name
+   and path of the redemo application in the web server's cgi-bin directory.
+
+Instructions (Linux)
+
+1.  Build and install ICU, if you haven't already.
+2.  Get the sources for the ICU icuapps project
+3.  Build redemo.cpp
+      cd icuapps
+      ./configure
+      cd redemo
+      make
+
+4.  install the built redemo application and the redemo.html page
+    to the appropriate places for on your web server.
+
+      cp redemo.html /srv/www/htdocs/
