@@ -24,3 +24,6 @@ Instructions (Linux)
     to the appropriate places for on your web server.
 
       cp redemo.html /srv/www/htdocs/
+      cp redemo /srv/www/cgi-bin/
+
+5.  Run the demo by loading http://wherever/redemo.html in a web browser
