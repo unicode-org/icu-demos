@@ -24,7 +24,7 @@
 //           is returned to the client browser side via stdout.
 //
 //         Data Input Format
-//           first line 
+//           first line
 //               first char    0 or 1    the case insensitive flag
 //               2nd   char    0 or 1    the dotAny flag
 //               3rd   char    0 or 1    the multi-line flag
@@ -40,15 +40,20 @@
 //              status from compiling the pattern.  "U_ZERO_ERROR" is all went well.
 //           second line
 //              n      number of capture groups in the pattern
-//           fourth - nth lines each have four numbers, separated by a single space. 
+//           fourth - nth lines each have four numbers, separated by a single space.
 //              match#  group#  start-index end-index
 //              match#  group#  start-index end-index
 //              match#  group#  start-index end-index
 //              ...
 //              blank line signifies end of match info.
 //
-//          There is NO HTML code in the output of this program. 
+//          There is NO HTML code in the output of this program.
 //          All display formatting is handled on the browser side via Javascript.
+//
+//    Command Line Optino
+//        -t   Test Mode.  Run with faked, but valid, input data.
+//             Intended for hand-checking that the program will run ok from a command line.
+//
 
 
 #include <stdio.h>
@@ -72,14 +77,25 @@ int main(int argc, char* argv[])
 
     //
     //  Read the raw data coming from the client web page.
-    // 
+    //
     size_t   BUFSIZE = 10000;
     char  *rawBuf    = (char *)malloc(BUFSIZE);
-    size_t len       = fread(rawBuf, 1, BUFSIZE-1, stdin);
-    rawBuf[len] = 0;
+    size_t len;
+    if (argc == 1 ) {
+        len       = fread(rawBuf, 1, BUFSIZE-1, stdin);
+        rawBuf[len] = 0;
+    } else {
+        // test mode.  Supply some fake data.
+        strcpy(rawBuf, "0000\n"     // the match flags
+                       ".\n"        // the patternx\n"
+                       "x\n"        // the string to be matched.
+                       );
+        len = strlen(rawBuf);
+    }
+
 
     //
-    //  Parse it apart.  NOTE:  NOT in POST format.  see comments above..
+    //  Parse it apart.  NOTE:  NOT in POST format.  see comments above.
     //
 
     // flag settings
@@ -96,7 +112,7 @@ int main(int argc, char* argv[])
     if (rawBuf[3] == '1') {
         flags |= UREGEX_UWORD;
     }
-    
+
     // the regular expression.
     char *rawExpr = strchr(rawBuf, '\n');
     if (rawExpr == NULL) {
@@ -122,7 +138,7 @@ int main(int argc, char* argv[])
     UErrorCode          status = U_ZERO_ERROR;
 
     UChar *u16expr = (UChar *)malloc(2 * rawExprLen + 2);
-    u16expr        = u_strFromUTF8(u16expr, (int32_t)rawExprLen+1, NULL, rawExpr, -1, &status);        
+    u16expr        = u_strFromUTF8(u16expr, (int32_t)rawExprLen+1, NULL, rawExpr, -1, &status);
     UParseError      pe;
 
     //
@@ -138,7 +154,7 @@ int main(int argc, char* argv[])
     // First line returned to client side is the status from the compile, as text
     //    "U_ZERO_ERROR" if all went well.
     //
-	printf("%s\n", u_errorName(status));
+    printf("%s\n", u_errorName(status));
     if (U_FAILURE(status)) {
         return 0;
     }
@@ -151,7 +167,7 @@ int main(int argc, char* argv[])
     //
     UChar   *u16text = (UChar *)malloc(2 * rawTextLen + 2);
     int32_t  u16Len = 0;
-    u16text         = u_strFromUTF8(u16text, (int32_t)rawTextLen+1, &u16Len, rawText, -1, &status); 
+    u16text         = u_strFromUTF8(u16text, (int32_t)rawTextLen+1, &u16Len, rawText, -1, &status);
 
     //
     //  Find and output all of the matches
@@ -161,7 +177,7 @@ int main(int argc, char* argv[])
     while (uregex_findNext(ure, &status)) {
         int32_t group;
         for (group=0; group<=numCaptureGroups; group++) {
-            printf("%d %d %d %d \n", matchNumber, group, 
+            printf("%d %d %d %d \n", matchNumber, group,
                 uregex_start(ure, group, &status), uregex_end(ure, group, &status));
         }
         if (U_FAILURE(status)) {
