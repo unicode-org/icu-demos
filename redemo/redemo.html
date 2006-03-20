@@ -15,7 +15,7 @@
 //  name of the redemo cgi-bin executable.
 //  This may need to be modified, depending on your web server configuration.
 //
-var cgiAppName = "cgi-bin/redemo";
+var cgiAppName = "cgi-bin/redemo.exe";
 
 
 //
@@ -37,6 +37,8 @@ var nextMatch;          // Index of next match to display in the above array.
 
 var edTextArea = null;    // The <textarea> node for editing the text.
                         // moved into and out of the display as needed.
+                        
+var editMode    = false;
 
 var displayText = null; // The "displayedText" element.  Either gets the
                         //   highlighted text display or TextArea edit box, depending
@@ -88,16 +90,19 @@ function init() {
 //  editText      Called in response to the "edit text" button.
 //
 function editText() {
-    if (edTextArea.parentNode == null) {
+    // if (edTextArea.parentNode == null) {  // IE doesn't like this.  Why?
+    if (editMode == false) {
         // We are not currently in edit mode.  Enter it.
         edTextArea.value = text;
         while (displayText.firstChild != null) {
             displayText.removeChild(displayText.firstChild);
         }
         displayText.appendChild(edTextArea);
+        editMode = true;
     } else {
         displayText.removeChild(edTextArea);
         text = edTextArea.value;
+        editMode = false;
         sendToServer();  // will update display.
     }
     

@@ -86,11 +86,12 @@ void handleTimeoutSignal(int sig) {
     exit(-1);
 }
 
+#endif
+
 void failBadInputData() {
     printf("Error: Server received bad data.");
     exit(0);
 }
-#endif
 
 
 int main(int argc, char* argv[])
