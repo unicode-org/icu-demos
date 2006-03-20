@@ -64,14 +64,45 @@
 #include <unicode/ustring.h>
 #include <unicode/uregex.h>
 
+//
+//  Limit maximum CPU time for the process.
+//    Not available on Windows.
+//    Prevents run-away server processes with the public demo
+//      (A perverse regular expression pattern can take a _very_ long time to complete)
+//
+#define USE_SETRLIMIT 1
+#if defined(U_WINDOWS)
+#undef USE_SETRLIMIT
+#endif
+
+#ifdef USE_SETRLIMIT
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
+#include <signal.h>
+
+void handleTimeoutSignal(int sig) {
+    printf("Server CPU Time Limit Exceeded");
+    exit(-1);
+}
+
 void failBadInputData() {
     printf("Error: Server received bad data.");
     exit(0);
 }
+#endif
 
 
 int main(int argc, char* argv[])
 {
+
+#ifdef USE_SETRLIMIT
+    struct rlimit  ourCPULimit;
+    ourCPULimit.rlim_cur = 1;
+    ourCPULimit.rlim_max =RLIM_INFINITY;
+    setrlimit(RLIMIT_CPU, &ourCPULimit);
+    signal(SIGXCPU, handleTimeoutSignal);
+#endif
 
     printf("Content-type: text/html charset=UTF-8\n\n");
 

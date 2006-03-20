@@ -35,7 +35,7 @@ var matches = null;     // Array, each element points to a span element that
 var nextMatch;          // Index of next match to display in the above array.
                         //   -1 if showing all matches.
 
-var TextArea = null;    // The <textarea> node for editing the text.
+var edTextArea = null;    // The <textarea> node for editing the text.
                         // moved into and out of the display as needed.
 
 var displayText = null; // The "displayedText" element.  Either gets the
@@ -67,8 +67,8 @@ var texts = [
 function init() {
    // remove the <textarea> text input box from the display,
    // keep it around for use when the "edit" button is pushed.
-   TextArea = document.getElementById("editText");
-   TextArea.parentNode.removeChild(TextArea);  // Undisplay it.
+   edTextArea = document.getElementById("editText");
+   edTextArea.parentNode.removeChild(edTextArea);  // Undisplay it.
  
    // Set the initial text to work with to be the first from the
    //   preset texts defined above.
@@ -88,16 +88,16 @@ function init() {
 //  editText      Called in response to the "edit text" button.
 //
 function editText() {
-    if (TextArea.parentNode == null) {
+    if (edTextArea.parentNode == null) {
         // We are not currently in edit mode.  Enter it.
-        TextArea.value = text;
+        edTextArea.value = text;
         while (displayText.firstChild != null) {
-        displayText.removeChild(displayText.firstChild);
+            displayText.removeChild(displayText.firstChild);
         }
-        displayText.appendChild(TextArea);
+        displayText.appendChild(edTextArea);
     } else {
-        displayText.removeChild(TextArea);
-        text = TextArea.value;
+        displayText.removeChild(edTextArea);
+        text = edTextArea.value;
         sendToServer();  // will update display.
     }
     
@@ -209,6 +209,11 @@ function processServerResponse(response) {
    } else {
       setTextById("error-line", rLines[0]);
    }
+
+   if (rLines[rLines.length-1] == "Server CPU Time Limit Exceeded") {
+      setTextById("error-line", "Server CPU Time Limit Exceeded");
+      return;
+   }
    
    //
    //  Clear out the old match results, both the display and the matches[] array.
@@ -233,15 +238,15 @@ function processServerResponse(response) {
        fields = rLines[n].split(" ");  // match #, group #, start, end
        if (fields[1] != "0") {
            // The line describes a capture group match
-        //   TODO:  display these in a different color?
-        //   for now, ignore them.
+           //   TODO:  display these in a different color?
+           //   for now, ignore them.
            continue;
        }
        
        if (Number(fields[2])<ti) {
            if (debugMode) {
               alert("inconsistent match results.\n" +
-        "fields[2] = " + fields[2] + "\n" +
+                "fields[2] = " + fields[2] + "\n" +
                 "ti = " + ti);
                 }
         break;
@@ -381,11 +386,16 @@ function receiveResponse() {
 }
    
 function sendToServer() {
+   // Remove any displayed error from the previous operation.
+   setTextById("error-line", String.fromCharCode(160));  // 160 == nbsp
+
+   // fetch the current  match flags.
    var caseInsensitive = document.getElementById("case-insensitive").checked;
    var dotAny          = document.getElementById("dot-matches-all").checked;
    var multiLine       = document.getElementById("multi-line").checked;
    var unicodeWord     = document.getElementById("unicode-words").checked;
    
+   // build up the actual string to deliver to the C program
    var stringToServer  = caseInsensitive? "1": "0";
    stringToServer      += dotAny? "1": "0";
    stringToServer      += multiLine? "1": "0";
@@ -406,6 +416,7 @@ function sendToServer() {
 .selected      {background-color: lightblue;}
 
 .match         {background-color: lightblue;}
+.errors        {color: red; font-weight:bold;}
 
 </style>
 </head>
@@ -447,7 +458,7 @@ function sendToServer() {
 <tr>
    <!-- any compilation errors from the regexp will be inserted 
         on this line   -->
-   <td id="error-line"> &nbsp; </td>
+   <td id="error-line" class="errors"> &nbsp; </td>
 </tr>
 <tr>
    <td onchange="acceptNewExpr();">
