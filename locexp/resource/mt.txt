@@ -1,11 +1,10 @@
 // -*- Coding: UTF_8 -*-
 //***********************************************************
-//*   Copyright (C) 1999-2005 International Business Machines
+//*   Copyright (C) 1999-2006 International Business Machines
 //*   Corporation and others.  All Rights Reserved.
 //************************************************************/
 // Maltese translation. By Steven R. Loomis <srl@icu-project.org>
-// Also by Mirka Mifsud Bonnici
-//
+// Also by Mirka Mifsud
 
 mt { 
   //   USING_DEFAULT_ERROR  {  "(nuqqas)"  }
@@ -13,6 +12,7 @@ mt {
   //   chooseLocale1 { "' huwa." }
   //   chooseLocale2 { "Jew, agħzel hawn taht.. " } 
 
+   introSpiel  {  "Din is-sitt juri d-data ta’ l-<i>International Components for Unicode</i>.  Għandi %V lingwi, u %V postijet u variazzjonijiet. <!-- For each language, data such as days of the week, months, and their abbreviations are defined. --> </p><p>ICU huwa proġett <i>open source</i>."  }
 
 //  localPatternChars { "Localized Date Pattern Chars" }
 AmPmMarkers { "AM u PM" }
