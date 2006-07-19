@@ -44,6 +44,7 @@ idnbrowser/Makefile \
 convexp/Makefile \
 scompare/Makefile \
 redemo/Makefile \
+rbbiperf/Makefile \
 xlitomatic/Makefile \
 dumpdat/Makefile \
 rtfcvrt/Makefile \

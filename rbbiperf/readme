@@ -1,0 +1,36 @@
+Readme for rbbiperf, an ICU Break Itereation Performance Check Application.
+
+Copyright (C) 2006, International Business Machines  Corporation and others.
+All Rights Reserved.
+
+rbbiperf is a simple, stand-alone program for checking
+the performance of ICU Rule Based Break Iterators.  It also serves as a
+sample for the use of the break iterator API functions.
+
+This application is only available for POSIX / UNIX like systems.
+No Windows port is available.  (It uses POSIX timer functions)
+
+Build Instructions (Linux)
+
+1.  Build and install ICU, if you haven't already.
+2.  Get the sources for the ICU icuapps project
+3.  Build rbbiperf
+      cd icuapps
+      ./configure
+      cd rbbiperf
+      make
+
+
+4.  Run the program
+
+     make check
+        or
+     ./rbbiperf  [ char | word | line | sent ]
+     
+     The number of boundaries of the specified type found per second
+     in the data from the test data file "unicode-data.txt" will be displayed.
+     
+     The default boundary type to be tested is Line.
+    
+     Modify the source code to test different functions or options.
+
