@@ -1,4 +1,4 @@
-# Copyright (c) 2000 IBM, Inc. and others
+# Copyright (c) 2000-2006 IBM, Inc. and others
 
 # Usage:
 #  - configure and build ICU [see the docs] .. use "--prefix=" something
@@ -6,23 +6,25 @@
 # 
 #  - do 'make install' of icu 
 #
-#  - if "icu-config" isn't in the PATH, add it to the path.
+#  - do 'configure' of icuapps (../configure)
 #
 #  - We expect the ICU build to be relative to this directory (ICUAPPS),
 #     if NOT, change the ICU_COMMON_HEADERS variable to point to the location
-#     of  icu/source/common/uhash.h
+#     of  icu/source/common/uhash.h ( you can also put it in a Makefile.local file)
 #  
 #  - do 'make' in this directory
 #
 #  - do make install.    This CGI needs to have the 'data' directory in the
 #  same directory as the translit CGI binary.
 
-ICU_CONFIG=/data/icu/bin/icu-config
+include ../icuapps.mk
+#ICU_CONFIG=/data/icu/bin/icu-config
 ICU_INC=$(shell $(ICU_CONFIG) --incfile)
 BINDIR=$(shell $(ICU_CONFIG) --bindir)
 
 # Must find uhash.h and hash.h
 ICU_COMMON_HEADERS=../../icu/source/common
+-include Makefile.local
 ###########################################
 
 

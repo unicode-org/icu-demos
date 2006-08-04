@@ -58,7 +58,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#if NEED_MALLOC_H
 #include <malloc.h>
+#endif
 #include <string.h>
 #include <unicode/utypes.h>
 #include <unicode/ustring.h>
