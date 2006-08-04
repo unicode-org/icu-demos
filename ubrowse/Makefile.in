@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2005, International Business Machines
+## *   Copyright (C) 1999-2006, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -17,7 +17,7 @@ subdir = ubrowse
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ $(PKG)_* README_$(PKG).txt $(PKG).*
+CLEANFILES = *~ * README_$(PKG).txt $(PKG).*
 
 ## Target information
 TARGET = ubrowse
@@ -91,10 +91,10 @@ tidy: $(TARGET)
 $(TARGET) : $(OBJECTS)
 	$(LINK.c) -o $@ $^ $(ICULIBS)
 
-$(PKG)_icons.res: $(PKG)_icons.txt
-	$(INVOKE) $(GENRB) -d. --package-name $(PKG) $<
+icons.res: icons.txt
+	$(INVOKE) $(GENRB) -d. $<
 
-$(PKG)_icons.txt: $(ICONS)/*.gif
+icons.txt: $(ICONS)/*.gif
 	echo creating $@
 	@echo "icons { " > $@
 	@for file in `cd $(ICONS) ; ls *.gif`; do \
@@ -103,8 +103,8 @@ $(PKG)_icons.txt: $(ICONS)/*.gif
 	@echo "}" >> $@
 
 $(PKG).lst: Makefile.in	
-	echo "ubrowseres_icons.res" > $@
+	echo "icons.res" > $@
 
-$(PKG)_dat.o: $(PKG).lst $(PKG)_icons.res
+$(PKG)_dat.o: $(PKG).lst icons.res
 	-rm -f $@
 	-$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(PKG).lst

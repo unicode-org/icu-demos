@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (c) 2006 IBM and Others, All Rights Reserved
+
 
 echo Rebuilding Makefile.res
 
@@ -15,9 +17,9 @@ for FILE in $*; do
 #         echo "# $FILE : $CODING"
          RES=`echo $FILE | sed -e 's/\.txt/.res/'`
          (
-            echo "${PKG}_${RES} : $FILE Makefile.res"
+            echo "${RES} : $FILE Makefile.res"
             echo '	@echo Rebuilding $@ - '$CODING
-            echo '	@$(INVOKE) $(GENRB) --package-name '$PKG' -d . -e '$CODING' $<'
+            echo '	@$(INVOKE) $(GENRB) -d . -e '$CODING' $<'
             echo
          ) >> Makefile.res
     fi

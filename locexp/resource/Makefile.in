@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2005, International Business Machines
+## *   Copyright (C) 1999-2006, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -28,6 +28,8 @@ PKG=locexp
 PKGMODE=static
 OUT= out
 
+XPATH=PATH="../tools:$(bindir):$(sbindir):$(PATH)"
+
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~ *.res  escapeABundle $(BUILTRES)
 
@@ -45,14 +47,14 @@ SRC    = th.txt sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)
 RES_SHORT = $(ALLSRC:.txt=.res)
-RES=$(RES_SHORT:%=$(PKG)_%)
+RES=$(RES_SHORT)
 
 # C Source files to extract FSWF strings from.  Remove items from here during development to not require a recompile.  
 FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c  ../srchexp.c ../wfobject.c  ../lxsort.c ../lxcgi.c ../lxicir.c
 
-$(PKG)_%.res : %.txt
+%.res : %.txt
 	@echo Rebuilding $@
-	@$(INVOKE) $(GENRB) -d. --package-name $(PKG) $<
+	@$(INVOKE) $(GENRB) -d. $<
 
 #%.d : %.txt
 #	@echo Dep for $@
@@ -80,7 +82,7 @@ all-local: build-dirs res-local root_SAMPLE.txt
 
 res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
 	@-$(RMV) $(BUILTRES)
-	$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
+	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
 	touch $(BUILTRES)
 
 Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
@@ -102,11 +104,11 @@ build-dirs:
 $(OUT)/locexp.lst: build-dirs Makefile
 	@-$(RMV) $@
 	@for file in $(RES); do \
-	  echo `pwd`/$$file >> $@; \
+	  echo $$file >> $@; \
 	done;
 
 install-res: all-local
-	$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst -I $(libdir)
+	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst -I $(libdir)
 
 dist-local:
 
