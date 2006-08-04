@@ -1,6 +1,6 @@
 /*
 **********************************************************************
-*   Copyright (C) 1998-2001, International Business Machines
+*   Copyright (C) 1998-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 **********************************************************************
 */
@@ -109,7 +109,7 @@ UBool UnicodeConverter::operator==(const UnicodeConverter& that) const
       (myUnicodeConverter->toUnicodeStatus == that.myUnicodeConverter->toUnicodeStatus) &&
       (myUnicodeConverter->subChar1 == that.myUnicodeConverter->subChar1) &&
       (myUnicodeConverter->subCharLen == that.myUnicodeConverter->subCharLen) &&
-      (uprv_memcmp(myUnicodeConverter->subChar, that.myUnicodeConverter->subChar, myUnicodeConverter->subCharLen) == 0) &&
+      //(uprv_memcmp(myUnicodeConverter->subChar, that.myUnicodeConverter->subChar, myUnicodeConverter->subCharLen) == 0) &&
       (myUnicodeConverter->UCharErrorBufferLength == that.myUnicodeConverter->UCharErrorBufferLength) &&
       (myUnicodeConverter->charErrorBufferLength == that.myUnicodeConverter->charErrorBufferLength) &&
       (uprv_memcmp(myUnicodeConverter->UCharErrorBuffer, that.myUnicodeConverter->UCharErrorBuffer, myUnicodeConverter->UCharErrorBufferLength) == 0) &&
