@@ -1,6 +1,6 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
 // root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c ../lxicir.c
-// Copyright (C) 2000-2005, International Business Machines
+// Copyright (C) 2000-2006, International Business Machines
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 
@@ -181,7 +181,7 @@ root {
    help  {  "Help"  }
    helpgif  {  "help.gif"  }
    helpgif_opt  {  "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22"  }
-   ibmg11n  {  "IBM: ICU Demonstration - "  }
+   ibmg11n  {  "ICU Demonstration - "  }
    icirView  {  "Switch to Survey View"  }
    icir_Basics  {  "Basics"  }
    icir_Misc  {  "Misc"  }

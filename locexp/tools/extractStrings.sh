@@ -1,7 +1,7 @@
 #!/bin/sh
 ## *****************************************************************************
 ## *
-## *   Copyright (C) 1999-2005, International Business Machines
+## *   Copyright (C) 1999-2006, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *****************************************************************************
@@ -34,7 +34,7 @@
 ## Note: FSWF means Fetch String with Fallback.   see locexp.c
 export INVOKE_UCONV
 echo "// root file. Generated from $*"
-echo "// Copyright (C) 2000-2005, International Business Machines"
+echo "// Copyright (C) 2000-2006, International Business Machines"
 echo "// It's probably not a good idea to change this file."
 echo "// Better to change locexp.c or the ROOT.* source files and rebuild."
 echo
