@@ -190,7 +190,7 @@ int main(int argc, const char **argv) {
     {
         Locale theLocale(ourLocale);
         UnicodeString theDemos;
-        const char *demoList[] = { "convexp", "idnbrowser", "locexp", "nbrowser", "scompare", "ubrowse", NULL };
+        const char *demoList[] = { "convexp", "idnbrowser", "translit", "locexp", "nbrowser", "scompare", "ubrowse", NULL };
 
         USort *list = usort_open(ourLocale, UCOL_DEFAULT, TRUE, &status);
 
