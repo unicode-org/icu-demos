@@ -17,7 +17,7 @@ subdir = ubrowse
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ * README_$(PKG).txt $(PKG).*
+CLEANFILES = *~ README_$(PKG).txt $(PKG).*
 
 ## Target information
 TARGET = ubrowse
