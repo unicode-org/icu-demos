@@ -1,0 +1,44 @@
+// Copyright (C) 2006, IBM and others. All Rights Reserved.
+
+root { 
+  str-title { "List of Demos" }
+  str-help { "Here are %%howmany%% demos that show different capabilities of the ICU library." }
+  str-demo { "Demo Name" }
+  str-desc { "Program Description" }
+
+  convexp {
+	name { "Converter Explorer" }
+	desc { "This demo illustrates the International Components for Unicode charset conversion data. Information about the converter properties, the aliases, and codepage layout can be found in this demo. All data from this demo comes directly from ICU4C." }
+  }
+
+  ubrowse {
+	name { "Unicode Character Browser" }
+	desc { "This demo is an interactive database of the <a href='http://www.unicode.org/'>Unicode</a> character set. It uses the ICU character properties to search by character type, or display the type of a given character." }
+  }
+
+  locexp {
+	name { "Locale Explorer" }
+	desc { "This demo illustrates the International Components for Unicode localization data." }
+  }
+
+  nbrowser {
+	name { "Normalization Browser" }
+	desc { "This simple demo performs quick checks and normalization on an input string." }
+  }
+
+  translit {
+	name { "Transform Demo" }
+	desc { "This demo shows ICU transforms in action. Users can see the effect of various built-in and user written system transforms on text they type in. Rules for transforms may be viewed, edited, and saved for later use." }
+  }
+
+  idnbrowser {
+	name { "IDNA Demo" }
+	desc { "This simple demo performs IDNA transformations as described in RFC 3490." }
+  }
+
+  scompare {
+	name { "String Compare Demo" }
+	desc { "This simple demo performs string comparisons, with results being equal, equal ignoring case, or equal ignoring canonical (normalization) differences." }
+  }
+
+}

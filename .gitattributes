@@ -91,6 +91,8 @@ apputil/data/common-footer.html svneol=native#text/html
 apputil/data/common-leftnav.html svneol=native#text/html
 apputil/data/common-masthead.html svneol=native#text/html
 convexp/convexp-header.html svneol=native#text/html
+icudemos/icudemos-content-templ.html svneol=native#text/html
+icudemos/icudemos-page-templ.html svneol=native#text/html
 idnbrowser/idna-header.html svneol=native#text/html
 locexp/resource/da.txt -text svneol=unset#application/octet-stream
 locexp/resource/fr/displayproblems.gif -text
