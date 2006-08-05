@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -35,7 +35,7 @@ void displayFatal(LXContext *lx) {
     fprintf(stdout,"<tt>convRequested='%s'</tt><br/>\n", lx->convRequested);
     fprintf(stdout,"<tt>convName='%s'</tt><br/>\n", lx->convName);
     fprintf(stdout,"<hr/>\n");
-    fprintf(stdout,"<a href='http://ibm.com/software/globalization/icu/chartsdemostools.jsp'>ICU home page</a>\n");
+    fprintf(stdout,"<a href='http://icu.sf.net'>ICU home page</a>\n");
     fflush(stdout);
     return;
 }
@@ -211,7 +211,8 @@ void displayLocaleExplorer(LXContext *lx)
         if( !lx->curLocaleName[0]
             || hasQueryField(lx, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
         {
-            u_fprintf(lx->OUT, "%s<br/><div style=\"margin-left: 2.5em\"><p>", DEMO_BREAD_CRUMB_BAR);
+            u_fprintf(lx->OUT, DEMO_BREAD_CRUMB_BAR_REL, "../../"); /*  because we are in ./locexp/mt/  */
+            u_fprintf(lx->OUT, "<br/><div style=\"margin-left: 2.5em\"><p>" );
             u_fprintf_u(lx->OUT, 
                 FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."),
                 (double)(lx->locales->nSubLocs),

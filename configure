@@ -1437,7 +1437,7 @@ if test "$srcdir" = "."; then
 fi
 
 
-                                                                                                                                                                                                                                                          ac_config_files="$ac_config_files icuapps.mk Makefile apputil/Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile nbrowser/Makefile idnbrowser/Makefile convexp/Makefile scompare/Makefile redemo/Makefile rbbiperf/Makefile xlitomatic/Makefile dumpdat/Makefile rtfcvrt/Makefile XMLConverter/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile"
+                                                                                                                                                                                                                                                          ac_config_files="$ac_config_files icuapps.mk Makefile apputil/Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile icudemos/Makefile ubrowse/Makefile nbrowser/Makefile idnbrowser/Makefile convexp/Makefile scompare/Makefile redemo/Makefile rbbiperf/Makefile xlitomatic/Makefile dumpdat/Makefile rtfcvrt/Makefile XMLConverter/Makefile obsolete/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -2000,6 +2000,7 @@ do
   "locexp/util/Makefile" ) CONFIG_FILES="$CONFIG_FILES locexp/util/Makefile" ;;
   "locexp/resource/Makefile" ) CONFIG_FILES="$CONFIG_FILES locexp/resource/Makefile" ;;
   "ubrowse/Makefile" ) CONFIG_FILES="$CONFIG_FILES ubrowse/Makefile" ;;
+  "icudemos/Makefile" ) CONFIG_FILES="$CONFIG_FILES icudemos/Makefile" ;;
   "nbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES nbrowser/Makefile" ;;
   "idnbrowser/Makefile" ) CONFIG_FILES="$CONFIG_FILES idnbrowser/Makefile" ;;
   "convexp/Makefile" ) CONFIG_FILES="$CONFIG_FILES convexp/Makefile" ;;

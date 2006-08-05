@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-* Copyright (C) 1996-2005, International Business Machines Corporation and    *
+* Copyright (C) 1996-2006, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 *******************************************************************************
 * HTML Design by Josh Mast <josh@hivehaus.org>                                *
@@ -138,7 +138,7 @@ static const char htmlHeader[]=
 
 static const char defaultHeader[]=
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-    "<title>IBM: ICU Demonstration - Unicode Browser</title>\n";
+    "<title>ICU Demonstration - Unicode Browser</title>\n";
 
 static const char endHeaderBeginBody[] =
     "</head>\n"
@@ -151,10 +151,8 @@ static const char endHeaderBeginBody[] =
     "--></style>";
 
 static const char breadCrumbMainHeader[]=
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<h1>Unicode Browser</h1>\n";
 
 static const char *htmlFooter=

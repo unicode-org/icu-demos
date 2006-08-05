@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2005-2005, International Business Machines
+*   Copyright (C) 2005-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -31,15 +31,18 @@
 "<td width=\"150\" id=\"navigation\">\n"
 
 #define DEMO_END_LEFT_NAV "</td>\n"
-#define DEMO_BEGIN_CONTENT "<td style=\"padding-left: 5px; padding-right: 5px;\"><a name=\"main\"></a>\n"
+#define DEMO_BEGIN_CONTENT "<td valign=\"top\" style=\"padding-left: 5px; padding-right: 5px;\"><a name=\"main\"></a>\n"
 #define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
 
 #define ICU_URL "http://www.ibm.com/software/globalization/icu/"
 
-#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+    "<a class=\"bctl\" href=\"./icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    
+
+/** same as above, but with a %s prefix for the icudemos link to allow a different base URL **/
+#define DEMO_BREAD_CRUMB_BAR_REL     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+    "<a class=\"bctl\" href=\"%sicudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
 
 #endif
 

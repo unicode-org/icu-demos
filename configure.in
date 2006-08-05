@@ -50,6 +50,7 @@ dumpdat/Makefile \
 rtfcvrt/Makefile \
 XMLConverter/Makefile \
 obsolete/Makefile \
+icudemos/Makefile \
 test/Makefile \
 test/testdata/Makefile \
 test/obstest/Makefile])

@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2005, International Business Machines
+*   Copyright (C) 2003-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -58,7 +58,7 @@ static const char htmlHeader[]=
 
 static const char defaultHeader[]=
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
-    "<title>IBM: ICU Demonstration - " PROGRAM_NAME "</title>\n";
+    "<title>ICU Demonstration - " PROGRAM_NAME "</title>\n";
 
 static const char endHeaderBeginBody[]=
     // TODO: This is a custom style that should be changed in the future.
@@ -80,10 +80,8 @@ static const char endHeaderBeginBody[]=
 
 static const char breadCrumbMainHeader[]=
     "<div style=\"font-size: 6px\">"NBSP"</div>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
+    "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
     "<strong class=\"bctl\">" PROGRAM_NAME "</strong>\n";

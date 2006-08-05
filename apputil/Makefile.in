@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2005, International Business Machines
+## *   Copyright (C) 1999-2006, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -28,7 +28,7 @@ CXXFLAGS += $(SHAREDLIBCXXFLAGS)
 CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
 CFLAGS += $(SHAREDLIBCFLAGS)
 
-OBJECTS = demoutil.o
+OBJECTS = demoutil.o tmplutil.o
 
 DATA_DIR=$(BINDIR)/data
 

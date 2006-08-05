@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2005, International Business Machines
+*   Copyright (C) 2003-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -66,10 +66,8 @@ static const char endHeaderBeginBody[] =
     "<body>\n";
 
 static const char breadCrumbMainHeader[]=
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/\">Software</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/index.jsp\">Globalization</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/chartsdemostools.jsp\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<h1>IDNA Demo</h1>\n";
 
 static const char *htmlFooter=
@@ -102,8 +100,8 @@ static const char *helpText=
     " You can also copy some interesting Unicode text samples from the following pages:\n"
     " <ul>\n"
     " 	<li><a href=\"http://www.unicode.org/standard/WhatIsUnicode.html\">What is Unicode? </a> </li>\n"
-    "	<li><a href=\"/software/globalization/icu/demo/unicode\">Unicode Browser </a></li>\n"
-    "<li><a href=\"/software/globalization/icu/demo/locales\">Locale Explorer </a></li>\n"
+    "	<li><a href=\"ubrowse\">Unicode Browser </a></li>\n"
+    "<li><a href=\"locexp\">Locale Explorer </a></li>\n"
     " </ul>\n" 
     "<hr />";
 
