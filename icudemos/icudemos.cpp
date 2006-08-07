@@ -89,25 +89,20 @@ void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle 
 U_CFUNC char icudemos_dat[];
 
 char locBuf[200];
-const char *ourLocale = "zh_TW";
+const char *ourLocale = "en_US_POSIX"; // C
 
 
-int main(int argc, const char **argv) {
-    UErrorCode      status = U_ZERO_ERROR;
-    const char     *request_method;
-    const char     *script_name;
-    const char     *query_string = getenv("QUERY_STRING");
-    UnicodeString   outputText;
-    char *allocatedContent = 0;
-    
+
+void getDefaultLocale(UErrorCode &status) {
     // set up our locale
     const char *acceptLanguage = getenv("HTTP_ACCEPT_LANGUAGE");
     const char *requestedLocale = NULL; 
-
-    udata_setAppData( "icudemos", (const void*) icudemos_dat, &status);
-
-    u_init(&status);
+    const char     *query_string = getenv("QUERY_STRING");
     
+    if(U_FAILURE(status)) {
+        return;
+    }
+
     if(query_string && *query_string) {
         char tmp[200];
         strncpy(tmp, query_string, 200);
@@ -145,7 +140,13 @@ int main(int argc, const char **argv) {
         uenum_close(available);
     }
     
+}
 
+void icuDemos(UnicodeString &outputText, UErrorCode &status) {
+
+    if(U_FAILURE(status)) {     
+        return;
+    }
     //
     // Read the two html template files into the UnicodeString
     //   in which we build up the html for the generated page.
@@ -168,7 +169,7 @@ int main(int argc, const char **argv) {
         char tmp[400];
         sprintf(tmp, "Error in setup: %s.\n", u_errorName(status));
         insertTemplateString(outputText, tmp, "%%str-help%%");
-        goto done;
+        return;
     }
 
     insertTemplateString(outputText, ourLocale, "%%locale%%");
@@ -181,7 +182,7 @@ int main(int argc, const char **argv) {
         char tmp[400];
         sprintf(tmp, "Error in fetch: %s.\n", u_errorName(status));
         insertTemplateString(outputText, tmp, "%%str-help%%");
-        goto done;
+        return;
     }
     insertTemplateResource(outputText, *aRb, "%%str-help%%", status);
     insertTemplateResource(outputText, *aRb, "%%str-demo%%", status);
@@ -226,87 +227,31 @@ int main(int argc, const char **argv) {
         }
         insertTemplateString(outputText, theDemos, "%%demos%%");
     }
+}
 
-#if 0
-    puts(htmlHeader);
-    if (!printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "convexp-header.html")) {
-        puts(defaultHeader);
-    }
-    puts(endHeaderBeginBody);
-    if (printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD)) {
-        puts(DEMO_BEGIN_LEFT_NAV);
-        printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
-        puts(DEMO_END_LEFT_NAV);
-        puts(DEMO_BEGIN_CONTENT);
-    }
-    puts(breadCrumbMainHeader);
+int main(int argc, const char **argv) {
+    UErrorCode      status = U_ZERO_ERROR;
+    const char     *request_method;
+    const char     *script_name;
+    UnicodeString   outputText;
+    char *allocatedContent = 0;
     
-#endif    
- 
 
-#if 0
-    // The IBM page template does not include the css necessary for tables.
-    //   Insert the necessary css include now.
-    int32_t where = outputText.indexOf(
-        "<link rel=\"stylesheet\" type=\"text/css\" media=\"print\" href=\"//www.ibm.com/common");
-    if (where>0) {
-        outputText.insert(where,
-            "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen,print\" "
-            "href=\"//www.ibm.com/common/v14/table.css\" />\n");
-    } else {
-        outputText.append("<!-- Error in icudemos.cpp while inserting table.css -->\n");
-    }
-#endif
+    udata_setAppData( "icudemos", (const void*) icudemos_dat, &status);
 
-#if 0
-    UnicodeString originalScriptName("/software/globalization/icu/demo/compare");
-    script_name=getenv("SCRIPT_NAME"); 
-    where = outputText.indexOf(originalScriptName);
-    if (where>0) {
-        outputText.findAndReplace(originalScriptName, UnicodeString(script_name));
-    } else {
-        outputText.append("<!-- Error in icudemos.cpp while inserting $SCRIPT_NAME -->\n");
-    }
-#endif
+    u_init(&status);
 
-#if 0
-    //
-    //  Fetch the POST data sent from the user's browser.
-    //  If there is none, this program was probably invoked directly, rather than
-    //    by a form submit.  In this case, provide some default data to preload the
-    //    displayed results.
-    //
-    //   Note:  the easiest way to change the default data is to run the demo,
-    //          enter the desired new defaults into the form, submit, then
-    //          in the browser, display the source of the resulting page.
-    //          In an html <!-- comment --> at the bottom will be the post data
-    //          for that submit, which can be pasted in as the new initialization string
-    //          for the postData variable, below.
-    //
-    request_method = getenv("REQUEST_METHOD");
-    const char *sPostDataLen = getenv("CONTENT_LENGTH");
-    const char *postData = "s1a=%CE%B1%CE%BB%CF%86%CE%B1&s1b=%CE%B1%CE%BB%CF%86%CE%B1";
-    size_t postDataLen = strlen(postData);  // Default values
-    if (request_method!=NULL && (strcmp(request_method, "POST")==0) && sPostDataLen!=NULL) {
-        // Real user data from form submit.  Read it in.
-        size_t t = atoi(sPostDataLen);
-        if (t<=0 || t>=10000) {
-            outputText.append("<!-- POST data length was bad -->\n");
-        } else {
-            postDataLen = t;
-            allocatedContent = new char[postDataLen+20];
-            fread(allocatedContent, 1, postDataLen, stdin);
-            allocatedContent[postDataLen] = 0;
-            postData = allocatedContent;   
-        }
+    if(U_FAILURE(status)) {
+        char tmp[400];
+        sprintf(tmp, "Error in u_init: %s.\n", u_errorName(status));
+        outputText = UnicodeString(tmp);
     }
-#endif 
-done:
-    //
-    //  Here is the actual string compare, including stuffing the results
-    //    into the various %%fields%% in the html template.
-    //
-//    doCompare(postData, outputText);
+    
+    getDefaultLocale(status);
+
+    // insert the text to be output
+    icuDemos(outputText, status);
+
     
     //
     //  Write the completed html page to stdout.
