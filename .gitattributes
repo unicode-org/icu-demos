@@ -90,6 +90,7 @@ XMLConverter/samples/x.xml -text svneol=unset#text/xml
 apputil/data/common-footer.html svneol=native#text/html
 apputil/data/common-leftnav.html svneol=native#text/html
 apputil/data/common-masthead.html svneol=native#text/html
+apputil/data/icu.css svneol=native#text/css
 convexp/convexp-header.html svneol=native#text/html
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html

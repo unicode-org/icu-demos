@@ -48,7 +48,7 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(libdir) $(BINDIR) $(DATA_DIR)
 	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
-	cp -R data/*.html $(DATA_DIR)
+	cp -R data/*.html data/icu.css $(DATA_DIR)
 
 dist-local:
 

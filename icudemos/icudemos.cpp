@@ -78,7 +78,7 @@ void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle 
     }
     
     theDemos = theDemos + 
-        "<tr><td><a href='"+demo+"'>"+name+"</a></td><td>"+desc+"</td>\n";
+        "<tr><td><a href='"+demo+"'>"+name+"</a></td><td>"+desc+"</td></tr>\n";
         
     if(U_FAILURE(status) && status != U_MISSING_RESOURCE_ERROR) {
         inStatus = status;
@@ -229,13 +229,29 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
     }
 }
 
+// output the icu.css
+int docss() {
+    printf("Content-type: text/css\n\n");
+    fflush(stdout);
+    fflush(stderr);
+    system("/bin/cat ./data/icu.css"); // TODO: replace with fcn
+    
+    return 0;
+}
+
 int main(int argc, const char **argv) {
     UErrorCode      status = U_ZERO_ERROR;
     const char     *request_method;
     const char     *script_name;
     UnicodeString   outputText;
     char *allocatedContent = 0;
+    char *pi = 0;
     
+    pi = getenv("PATH_INFO");
+    
+    if(pi&&!strcmp(pi,"/icu.css")) {
+        return docss();
+    }
 
     udata_setAppData( "icudemos", (const void*) icudemos_dat, &status);
 
