@@ -59,7 +59,10 @@ U_CFUNC char locexp_dat[];
 # include <io.h>
 #endif
 
-#define LDATA_PATH "./_/" 
+#define LOCEXP_NAME "locexp"
+
+#define LDATA_PATH LOCEXP_NAME "/_/" 
+#define LDATA_PATH_LOC LOCEXP_NAME "/%s/_/" 
 
 #define LBUFBIG 1024
 #define LBUFSML 128
@@ -327,6 +330,7 @@ void initCGIVariables(LXContext* lx);
 void initPOSTFromFILE(LXContext* lx, FILE *f);
 void closeCGIVariables(LXContext* lx);
 void closePOSTFromFILE(LXContext* lx);
+const char *cgi_url(LXContext *lx);
 
 typedef enum { kALL_PARTS   = 0,
                kNO_LOC = 1,      /* omit _  */

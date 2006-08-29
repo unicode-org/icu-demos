@@ -1,3 +1,4 @@
+Copyright (c) 1998-2006 IBM and Others.
 I C U  -  A P P S
 -----------------
 
@@ -68,7 +69,7 @@ THE APPS
    it is still not supported it is more convenient there.
 
 - usort    From : Steven R. Loomis
-                  <srl@monkey.sbay.org>
+                  <srl [at] icu-project.org>
 
            Uses : Conversion, Collation
 
@@ -81,7 +82,7 @@ THE APPS
       from the console or the file, similar to UNIX 'sort'. 
 
 - locexp   From : Steven R. Loomis
-                  <srl@monkey.sbay.org>
+                  <srl [at] icu-project.org>
 
            Uses : Conversion, Collation, Chartypes, Formatting,
                   Resource Bundles,  ...
@@ -91,7 +92,7 @@ THE APPS
        look for the Locale Explorer.
 
 - ubrowse   From : Steven R. Loomis
-                  <srl@monkey.sbay.org>
+                  <srl [at] icu-project.org>
 
            Uses : Conversion, Chartypes..
                   Depends on locexp/util.
@@ -100,7 +101,7 @@ THE APPS
 
 
 - dumpdat     From : Steven R. Loomis
-                  <srl@monkey.sbay.org>
+                  <srl [at] icu-project.org>
 
            Uses : UData
 
@@ -111,7 +112,7 @@ THE APPS
 - udata    *** OBSOLETE - now part of udata [part of the ICU]
 
 - xlitomatic From: Steven R. Loomis
-                   <srl@monkey.sbay.org>
+                   <srl [at] icu-project.org>
         
            Uses: transliteration
                  Depends on: locexp/util, etc.
@@ -119,7 +120,7 @@ THE APPS
      * Transliterates HTML files using any transliterator. C++.
  
 - calexpo   From: Steven R. Loomis        [NOT CHECKED IN]
-                  <srl@monkey.sbay.org>
+                  <srl [at] icu-project.org>
 
            Uses: Date/Time formatting, Calendar
 

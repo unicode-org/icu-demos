@@ -1,5 +1,5 @@
  /**********************************************************************
-*   Copyright (C) 1999, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -220,6 +220,9 @@ void doDecodeQueryField(const char *in, char *out, uint32_t length)
 {
   unsigned int i;
   char *anchor;
+  
+  const char *oi = in;
+  const char *oo=out;
 
   anchor = out;
   if(length == -1)
@@ -264,6 +267,7 @@ void doDecodeQueryField(const char *in, char *out, uint32_t length)
     }
   /* & */
   *(out++) = 0;
+
 }
 
 /**
@@ -838,6 +842,9 @@ UChar* u_uastrcpy_enc(UChar *ucs1,
     UErrorCode err = U_ZERO_ERROR;
     int32_t len2;
 
+  if(!enc || !*enc) {
+    enc = "utf-8";
+  }
   UConverter *cnv = ucnv_open(enc, &err);
   if(cnv != NULL) {
     len2 = ucnv_toUChars(cnv,
@@ -911,9 +918,10 @@ int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *
   }
   /* make fieldLimit point to the end of the field data */
   fieldLimit = strchr(src,'&');
-  if(!fieldLimit)
-    fieldLimit = src + strlen(src);
-
+  if(!fieldLimit) {
+    fieldLimit = src + strlen(src);  /* entire field */
+  }
+  
   /* sanity [safety from buffer overruns]  */
   if( (fieldLimit-src) > dstLen)
     fieldLimit = src + dstLen;
@@ -924,16 +932,15 @@ int32_t unescapeAndDecodeQueryField_enc(UChar *dst, int32_t dstLen, const char *
   doDecodeQueryField(src,tmpc,fieldLimit-src);
 
   /* Now, convert it into Unicode, still escaped.. */
-  if(enc == NULL)
+  if(enc == NULL) {
       u_uastrcpy(temp, tmpc);
-  else
-    u_uastrcpy_enc(temp, tmpc, enc, (fieldLimit-src)+1); /* convert the null */
-  
+  } else {
+      u_uastrcpy_enc(temp, tmpc, enc, (fieldLimit-src)+1); /* convert the null */
+  } 
   /* Now, de escape it.. */
   len = u_strlen(temp);
   len = copyWithUnescaping( dst, temp, len);
   dst[len] = 0; /* copy with unescaping DOES NOT terminate the str */
-  
   free (temp);
   free(tmpc);
   return len;

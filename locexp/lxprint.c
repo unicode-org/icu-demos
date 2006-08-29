@@ -30,12 +30,12 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
     case U_USING_FALLBACK_WARNING:
         if(lx->parLocale && lx->parLocale->str)
         {
-            u_fprintf(lx->OUT, "<a href=\"?_=%s#%s\">", lx->parLocale->str, tag);
+            u_fprintf(lx->OUT, "<a href=\"%s?_=%s#%s\">",cgi_url(lx), lx->parLocale->str, tag);
             u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->parLocale->ustr); 
         }
         else
         {
-            u_fprintf(lx->OUT, "<a href=\"?_=root#%s\">", tag);
+            u_fprintf(lx->OUT, "<a href=\"%s?_=root#%s\">", cgi_url(lx), tag);
             u_fprintf_u(lx->OUT, FSWF("inherited", "(inherited)"));
         }
 
@@ -43,7 +43,7 @@ void explainStatus( LXContext *lx, UErrorCode status, const char *tag )
         break;
 
     case U_USING_DEFAULT_WARNING:
-        u_fprintf(lx->OUT, "<a href=\"?_=root#%s\">", tag);
+        u_fprintf(lx->OUT, "<a href=\"%s?_=root#%s\">", cgi_url(lx), tag);
         if(lx->locales) {
             u_fprintf_u(lx->OUT, FSWF("inherited_from", "(inherited from %S)"), lx->locales->ustr); 
         } else {
@@ -80,7 +80,8 @@ void printHelpTagW(LXContext *lx, const char *helpTag, const UChar *str)
                      FSWF("helpgif_opt", "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22")); /* 0, 40, 40 ? */
 
     } else {
-        u_fprintf(lx->OUT, "<a class='mainlink' target=\"icu_lx_help\" href=\"" LDATA_PATH "help.html#%s\">%S</a>",
+        u_fprintf(lx->OUT, "<a class='mainlink' target=\"icu_lx_help\" href=\"" LDATA_PATH_LOC "help.html#%s\">%S</a>",
+                    lx->dispLocale,
                   helpTag,str);
     }
 }
@@ -96,16 +97,18 @@ void printHelpTag(LXContext *lx, const char *helpTag, const UChar *str)
                      FSWF("helpgif_opt", "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22"));
 
     } else {
-        u_fprintf(lx->OUT, "<a target=\"icu_lx_help\" href=\"" LDATA_PATH "help.html#%s\">%S</a>",
+        u_fprintf(lx->OUT, "<a target=\"icu_lx_help\" href=\"" LDATA_PATH_LOC "help.html#%s\">%S</a>",
+                    lx->dispLocale,
                   helpTag,str);
     }
 }
 
 void printHelpImg(LXContext *lx, const char *helpTag, const UChar *alt, const UChar *src, const UChar *options)
 {
-    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH "%S\" align=\"right\" alt=\"%S\" /></a>",
-              helpTag, 
-              options, src, alt);
+    u_fprintf(lx->OUT, "<a href=\"" LDATA_PATH_LOC "help.html#%s\" target=\"icu_lx_help\"><img %S src=\"" LDATA_PATH_LOC "%S\" align=\"right\" alt=\"%S\" /></a>",
+                lx->dispLocale,
+                helpTag, 
+              options,lx->dispLocale, src, alt);
 }
 
 void showExploreCloseButton(LXContext *lx, const char *locale, const char *frag)
@@ -129,7 +132,8 @@ const char *keyToSection(const char *key) {
 }
 
 void showExploreButtonPicture( LXContext *lx ) {
-    u_fprintf(lx->OUT, "<input type=\"image\" alt=\"demo\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" value=\"%S\" /></form>",
+    u_fprintf(lx->OUT, "<input type=\"image\" alt=\"demo\" src=\"" LDATA_PATH_LOC "explore.gif\" align=\"right\" value=\"%S\" /></form>",
+                lx->dispLocale,
               FSWF("exploreTitle", "Explore"));
 }
 
@@ -159,7 +163,8 @@ void showExploreButtonSort( LXContext *lx, UResourceBundle *rb, const char *loca
     section = keyToSection(key);
 
     u_fprintf(lx->OUT, "<a target=\"_new\" href=\"%s&amp;x=%s\">", getLXBaseURL(lx, kNO_URL|kNO_SECT), section);
-  u_fprintf(lx->OUT, "<img width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH "explore.gif\" %s alt=\"%S\" />",
+  u_fprintf(lx->OUT, "<img width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH_LOC "explore.gif\" %s alt=\"%S\" />",
+            lx->dispLocale,
               rightAlign?"align=\"right\" ":"",
             FSWF("exploreTitle", "Explore") );
   u_fprintf(lx->OUT, "</a>\r\n");
@@ -184,7 +189,7 @@ void showExploreLink( LXContext *lx, UResourceBundle *rb, const char *locale, co
 void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyName, const char *locale, UBool cumulative, UErrorCode showStatus)
 {
     u_fprintf(lx->OUT, "<table summary=\"%S\" border=\"0\" cellspacing=\"0\" width=\"100%%\">\r\n", keyName);
-    u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"2\"><img src=\"" LDATA_PATH "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"2\"><img src=\"" LDATA_PATH_LOC "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n", lx->dispLocale);
     u_fprintf(lx->OUT, "<tr><td class='tdblue' colspan=\"1\" width=\"0\" valign=\"top\" bgcolor=" kXKeyBGColor ">");
 
     if(keyName == NULL)
@@ -258,7 +263,7 @@ void printStatusTable(LXContext *lx)
     UChar *dateStr;
     
     u_fprintf(lx->OUT, "<br /><table border=\"0\" cellspacing=\"0\" width=\"100%%\">");
-    u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"3\"><img src=\"" LDATA_PATH "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"3\"><img src=\"" LDATA_PATH_LOC "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n", lx->dispLocale);
     u_fprintf(lx->OUT, "<tr>\r\n   <td colspan=\"3\" width=\"0\" valign=\"top\" bgcolor=" kXKeyBGColor "><a name=\"%s\"><b>", "YourSettings");
     
     /* PrintHelpTag */
@@ -317,7 +322,7 @@ void printStatusTable(LXContext *lx)
 #if 0
     if(lx->inDemo == FALSE)
     {
-        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH "incorrect.gif\" alt=\"Click here if text displays incorrectly\" /></a>", lx->scriptName);
+        u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH_LOC "incorrect.gif\" alt=\"Click here if text displays incorrectly\" /></a>", lx->scriptName, lx->dispLocale);
     }
 #endif
 
@@ -387,7 +392,7 @@ void printStatusTable(LXContext *lx)
     }
 
 
-    u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"3\"><img src=\"" LDATA_PATH "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n");
+    u_fprintf(lx->OUT, "<tr><td height=\"2\" bgcolor=\"#cccccc\" colspan=\"3\"><img src=\"" LDATA_PATH_LOC "c.gif\" width=\"0\" height=\"0\" alt=\"divider\" /></td></tr>\r\n", lx->dispLocale);
     
     u_fprintf(lx->OUT, "</table><br />\r\n");
     u_fprintf(lx->OUT, "<div style=\"text-align: center;\">\r\n");

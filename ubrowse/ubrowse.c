@@ -17,6 +17,7 @@
 *   12/02/1999  srl         Integrated design changes from Josh Mast
 *   05/12/2001  srl         Revamping design from the beautiful St. Paul's Bay, Malta
 *   06/16/2001  srl         More design updates.. added incremental search by name.
+*    8/02/2006  srl         Happy 7th Birthday,  UnicodeBrowser.
 *******************************************************************************
 */
 

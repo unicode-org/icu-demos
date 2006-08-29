@@ -41,9 +41,9 @@ install-local: all-local install-target
 
 
 install-target: all-local
-#	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
-#	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
 #	$(INSTALL) redemo.html $(BINDIR)/data
+#	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
 
 dist-local:
 
@@ -59,6 +59,8 @@ check-local:
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just

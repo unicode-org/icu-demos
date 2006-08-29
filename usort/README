@@ -1,4 +1,6 @@
-1999-oct-11  srl@monkey.sbay.org
+Copyright (c) 1999-2006
+
+1999-oct-11  srl [at] icu-project.org
 
  This sample library (and client) demonstrate locale sensitive
 sorting using the ICU.

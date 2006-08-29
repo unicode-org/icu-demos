@@ -1,11 +1,11 @@
 /******************************************************************************
 *
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
  *
- * <srl@monkey.sbay.org>
+ * <srl [at] icu-project.org>
  *
  * Implementation for the USort library
  */

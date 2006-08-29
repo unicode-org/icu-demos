@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -189,7 +189,8 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
     if(!restored)
 	restored = "";
 
-    u_fprintf(lx->OUT,"<a href=\"?%s\"><h2>%S%s%S</h2></a>\r\n",
+    u_fprintf(lx->OUT,"<a href=\"%s?%s\"><h2>%S%s%S</h2></a>\r\n",
+              cgi_url(lx),
               restored,
               FSWF("encodingOK0", "Click here if the encoding '"),
               lx->convRequested,
@@ -244,7 +245,11 @@ void chooseConverterFrom(LXContext *lx, const char *restored, USort *list)
       
         u_fprintf(lx->OUT, "<a href=\"");
 
-
+        u_fprintf(lx->OUT, "<h1>BROKEN</h1>");
+        return;
+        
+/* cut here */
+    
         u_fprintf(lx->OUT, "%s/%s/",
                   lx->scriptName,
                   lx->dispLocale);

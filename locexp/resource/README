@@ -1,5 +1,9 @@
-## Copyright (c) 1999, International Business Machines Corporation and
+## Copyright (c) 1999-2006, International Business Machines Corporation and
 ## others. All Rights Reserved.
+
+[ Note, 2006 Aug 22 - a lot of this is out of date. just fyi. ]
+
+---
 
  So you want to translate locale explorer? Cool :)
 
@@ -9,7 +13,7 @@ italian) and rename 'default' to 'it' inside.
 
  At this point, it's probably best if you could use any editor to
 write the text, but then email it to me [with the encoding you used to
-save a PLAIN text file]:  srl@monkey.sbay.org
+save a PLAIN text file]:  srl [ at ] icu-project.org
 
  Or write me and ask me how it's done.
 

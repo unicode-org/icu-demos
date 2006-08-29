@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -483,7 +483,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
 #if defined (LX_UBROWSE_PATH)
     u_fprintf(lx->OUT, "<form method=GET action=\"%s\">\n", LX_UBROWSE_PATH);
     u_fprintf(lx->OUT, "<input type=\"hidden\" name=GO /><input type=\"hidden\" name=us value=\"%S\" /><input type=\"hidden\" name=gosetn value=\"\" />\n", s);
-    u_fprintf(lx->OUT, "<input type=IMAGE width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH "explore.gif\"  align=right   ");
+    u_fprintf(lx->OUT, "<input type=IMAGE width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH_LOC "explore.gif\"  align=right   ", lx->dispLocale);
     u_fprintf(lx->OUT, " value=\"%S\"></form>",
               FSWF("exploreTitle", "Explore"));
     u_fprintf(lx->OUT, "</form>");
@@ -932,7 +932,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                   homeStr
             );
 
-        u_fprintf(lx->OUT, "<input type=IMAGE width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH "explore.gif\" align=\"right\" ");
+        u_fprintf(lx->OUT, "<input type=IMAGE width=\"48\" height=\"20\" border=\"0\" src=\"" LDATA_PATH_LOC "explore.gif\" align=\"right\" ", lx->dispLocale);
         u_fprintf(lx->OUT, " value=\"%S\"></form>",
                   FSWF("exploreTitle", "Explore"));
         u_fprintf(lx->OUT, "</form>");
@@ -1426,7 +1426,6 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
     if(bigString && !userRequested) /* it's hidden. */
     {
-        /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
         u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" alt=\"+\" />%S</a><br />\r\n<br />\r\n", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
     }
     else

@@ -1,8 +1,7 @@
 // -*- Coding: latin-1 ; -*-
-// Copyright (c) 1999, International Business Machines Corporation and
+// Copyright (c) 1999-2006, International Business Machines Corporation and
 // others. All Rights Reserved.
 // tamil LX
-// <srl@monkey.sbay.org>
 
 ta
 {

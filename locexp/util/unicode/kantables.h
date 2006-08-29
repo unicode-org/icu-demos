@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 2000, International Business Machines
+*   Copyright (C) 2000-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -14,7 +14,7 @@
   IF you have any questions or comments, etc, please post them to the
    ICU mailing lists/boards.
 
-  Steven R. Loomis (i18n code sculptor) <srl@monkey.sbay.org>
+  Steven R. Loomis (i18n code sculptor) <srl [at] icu-project.org>
 */
 
 char kanTable[][4] = 

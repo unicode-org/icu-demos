@@ -1,12 +1,12 @@
 /**********************************************************************
-*   Copyright (C) 1998-1999, International Business Machines
+*   Copyright (C) 1998-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 /*
   'fonted' callback. Uses (special) fonts to render different scripts
   in HTML..
 
-  Steven R. Loomis <srl@monkey.sbay.org>
+  Steven R. Loomis <srl [at] icu-project.org>
 
 */
 #include <stdio.h>

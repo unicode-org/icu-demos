@@ -194,7 +194,6 @@ root {
    icir_v  {  "Verified"  }
    icir_w  {  "Incorrect"  }
    idat  {  "Date and Time"  }
-   ieWarning  {  "IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."  }
    iloc  {  "Display Names"  }
    inherited  {  "(inherited)"  }
    inherited_from  {  "(inherited from %S)"  }

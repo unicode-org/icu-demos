@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 /*
@@ -8,7 +8,7 @@
   'TRANSLIT' callback. Uses (special) fonts to render different scripts
   in HTML..
 
-  Steven R. Loomis <srl@monkey.sbay.org>
+  Steven R. Loomis <srl [at] icu-project.org>
 
   **NONE OF THIS CODE IS MULTITHREAD SAFE [yet] **
   **NONE OF THIS CODE IS MULTITHREAD SAFE [yet] **

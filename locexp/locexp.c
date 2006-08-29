@@ -20,6 +20,8 @@
 *  30/10/2001    srl        Adding LocaleScript. updating RBNF.
 *   2/20/2003    srl        Adding Robot Exclusion META tags, finally 
 *                             renaming 'tmp' to something meaningful.
+*   7/14/2006    srl        Happy 7th birthday, Locale Explorer!
+*   8/22/2006    srl        Taking the locale out of the URL. 
 ****************************************************************************
 */
 
@@ -93,16 +95,17 @@ void displayLocaleExplorer(LXContext *lx)
         {
             host = "";
         }
-        sprintf(lx->myBaseURL, "http://%s%s/", host, lx->scriptName);
-        u_fprintf(lx->OUT, "<base href=\"%s%s/\" />\r\n",  lx->myBaseURL,
-                (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); /* Ensure that all relative paths have the cgi name followed by a slash.  */
+        /* TODO: : scheme, port, ..  */
+        sprintf(lx->myBaseURL, "http://%s%s", host, lx->scriptName);
+/*        u_fprintf(lx->OUT, "<base href=\"%s%s/\" />\r\n",  lx->myBaseURL,
+                (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); */
+                    /* Ensure that all relative paths have the cgi name followed by a slash.  Nope.. not anymore.   */
+                    
     }
 
-
-    /* TODO: check section */
     /* Robot Exclusion */
     if(hasQueryField(lx,"PANICDEFAULT") ||
-        (lx->pathInfo && strstr(lx->pathInfo,"transliterated")))
+        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) /* TODO: urlfix */
     {
         u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
@@ -130,19 +133,6 @@ void displayLocaleExplorer(LXContext *lx)
                 FSWF("display_OPTIONS", "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"));
 
     u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
-
-#if 0
-    {
-        const char *agent;
-        const char *server;
-        agent = getenv("HTTP_USER_AGENT");
-        server = getenv("SERVER_SOFTWARE");
-        if(agent && strstr(agent,"MSIE") && (!server || strncmp(server,"Null",4))) {
-            u_fprintf(lx->OUT, "<i>%S</i><br />\r\n",
-                FSWF("ieWarning","IE appears to have a bug causing page load errors; if this happens please Refresh (F9)."));
-        }
-    }
-#endif
 
     if(!strncmp(lx->section, "ch", 2)) {
         showChangePage(lx);
@@ -172,7 +162,7 @@ void displayLocaleExplorer(LXContext *lx)
                 FSWF("warningNoBug", "Please do not file bugs against this locale."));
         }
 
-        if(strstr(lx->queryString,"EXPLORE")) {
+        if(strstr(lx->queryString,"EXPLORE")) { /* TODO: get rid of this... */
             const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
 
             u_fprintf(lx->OUT, "<big>");
@@ -211,7 +201,7 @@ void displayLocaleExplorer(LXContext *lx)
         if( !lx->curLocaleName[0]
             || hasQueryField(lx, "PANICDEFAULT")) /* They're coming in cold. Give them the spiel.. */
         {
-            u_fprintf(lx->OUT, DEMO_BREAD_CRUMB_BAR_REL, "../../"); /*  because we are in ./locexp/mt/  */
+            u_fprintf(lx->OUT, DEMO_BREAD_CRUMB_BAR); /*  because we are in the dir with icudemos  */
             u_fprintf(lx->OUT, "<br/><div style=\"margin-left: 2.5em\"><p>" );
             u_fprintf_u(lx->OUT, 
                 FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."),
@@ -283,7 +273,8 @@ void displayLocaleExplorer(LXContext *lx)
                 u_fprintf(lx->OUT, "Time there =%S\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&subStatus));
             }
 
-            u_fprintf(lx->OUT, "%S: <form><input name=\"SETTZ\" value=\"%S\" /><input type=submit /></form>\r\n", 
+            u_fprintf(lx->OUT, "%S: <form action='%s'><input name=\"SETTZ\" value=\"%S\" /><input type=submit /></form>\r\n", 
+                cgi_url(lx),
                 FSWF("zone_set", "Set timezone to:"),
                 lx->newZone);
             u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%S</i></div>\r\n", 
@@ -325,7 +316,7 @@ void displayLocaleExplorer(LXContext *lx)
 
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), oldCallback, &status2);
 
-        u_fprintf(lx->OUT, "<br /><a href=\"?converter=");
+        u_fprintf(lx->OUT, "<br /><a href=\"%s?converter=", cgi_url(lx));
         writeEscaped(lx, COLLECT_getChars());
 
         if(strncmp(lx->queryString, "converter",9)) /* TODO: FIXME */
@@ -436,7 +427,7 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patte
   }
   
   /*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
-  unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, lx->convRequested);
+  unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, "utf-8"); /* no option. */
   u_replaceChar(dstPattern, 0x0020, 0x00A0);
 }
 
@@ -448,7 +439,7 @@ const char *getLXBaseURL(LXContext* lx, uint32_t o) {
     } else {
         lx->myURL[0] = 0;
     }
-    strcat(lx->myURL, "?");
+    sprintf(lx->myURL, "%s?", cgi_url(lx));
     if(!(o&kNO_LOC) && lx->curLocaleBlob.base[0]) {
         strcat(lx->myURL, "_=");
         strcat(lx->myURL, lx->curLocaleBlob.base);

@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 2000-2005, International Business Machines
+*   Copyright (C) 2000-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -72,7 +72,7 @@ void printCalendar( LXContext *lx, UCalendar *cal )
         UChar bBuf[500];
         len = udat_getSymbols(dfmt, UDAT_WEEKDAYS, 1+ ((i+fdow)%dayCount), bBuf, 499,&status);
         if(len > 0) {
-          u_fprintf(lx->OUT, "<td><a href=\"#\" title=\"%S\">%S</a></td>", bBuf, aBuf, i,(i+fdow)%dayCount);
+          u_fprintf(lx->OUT, "<td><a href=\"%s#\" title=\"%S\">%S</a></td>", cgi_url(lx),bBuf, aBuf, i,(i+fdow)%dayCount);
         } else {
           u_fprintf(lx->OUT, "<td>%S</td>", aBuf, i,(i+fdow)%dayCount);
         }
@@ -187,11 +187,12 @@ void printCalMenuSection( LXContext *lx, const char *num, char type,
 {
   /* if(type==thisType) */  /* LEFT tab A */
   {
-    u_fprintf(lx->OUT, "<td bgcolor=\"#00cc99\" width=\"20%%\" height=9><img align=\"left\" width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aleft.gif\">");
-    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar=%c&NP_DBL=%s\">%S</a>", 
+    u_fprintf(lx->OUT, "<td bgcolor=\"#00cc99\" width=\"20%%\" height=9><img align=\"left\" width=\"15\" height=\"30\" src=\"" LDATA_PATH_LOC "tab_aleft.gif\">", lx->dispLocale);
+    u_fprintf(lx->OUT, "<a href=\"%s?_=%s&amp;x=cal&amp;EXPLORE_Calendar=%c&NP_DBL=%s\">%S</a>", 
+                cgi_url(lx),
               lx->curLocaleName,
               thisType, num, name);
-    u_fprintf(lx->OUT, "<img align=\"right\" width=\"15\" height=\"30\" src=\"" LDATA_PATH "tab_aright.gif\" /></td>");
+    u_fprintf(lx->OUT, "<img align=\"right\" width=\"15\" height=\"30\" src=\"" LDATA_PATH_LOC "tab_aright.gif\" /></td>", lx->dispLocale);
     
   }
 }
@@ -221,7 +222,7 @@ void printCalMenuBar( LXContext *lx, const char *num, char type )
     printCalMenuSection(lx, num, type,
                         'c', FSWF("calexp_calTab", "Calendar"));
     u_fprintf(lx->OUT, "<td height=\"2\" colspan=\"3\" width=\"100%%\"><!-- D -->&nbsp;</td></tr>");
-    u_fprintf(lx->OUT, "<tr><td colspan=\"10\" height=\"3\" background=\"" LDATA_PATH "tab_bot.gif\"></td><font size=4>&nbsp;</font></tr></table>\r\n");
+    u_fprintf(lx->OUT, "<tr><td colspan=\"10\" height=\"3\" background=\"" LDATA_PATH_LOC "tab_bot.gif\"></td><font size=4>&nbsp;</font></tr></table>\r\n", lx->dispLocale);
 }
 
 
@@ -343,7 +344,8 @@ extern void showExploreCalendar( LXContext *lx)
                     char num[100];
 
                     sprintf(num, "%f", ucal_getMillis(cal2, &status));
-                    u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;x=cal&amp;EXPLORE_Calendar&NP_DBL=%s\">",
+                    u_fprintf(lx->OUT, "<a href=\"%s?_=%s&amp;x=cal&amp;EXPLORE_Calendar&NP_DBL=%s\">",
+                                cgi_url(lx),
                               lx->curLocaleName,
                               num);
                     u_fprintf(lx->OUT, "%s", nam[j]);
