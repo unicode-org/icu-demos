@@ -87,10 +87,13 @@ XMLConverter/samples/test.xml -text svneol=unset#text/xml
 XMLConverter/samples/testit.xml -text svneol=unset#text/xml
 XMLConverter/samples/utf8-sm_jis.xml -text svneol=unset#text/xml
 XMLConverter/samples/x.xml -text svneol=unset#text/xml
+apputil/data/1x1.gif -text
 apputil/data/common-footer.html svneol=native#text/html
 apputil/data/common-leftnav.html svneol=native#text/html
 apputil/data/common-masthead.html svneol=native#text/html
 apputil/data/icu.css svneol=native#text/css
+apputil/data/lines-gradient.gif -text
+apputil/data/lines.gif -text
 convexp/convexp-header.html svneol=native#text/html
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
