@@ -842,10 +842,12 @@ UChar* u_uastrcpy_enc(UChar *ucs1,
     UErrorCode err = U_ZERO_ERROR;
     int32_t len2;
 
+    UConverter *cnv = NULL;
+ 
   if(!enc || !*enc) {
     enc = "utf-8";
   }
-  UConverter *cnv = ucnv_open(enc, &err);
+ cnv = ucnv_open(enc, &err);
   if(cnv != NULL) {
     len2 = ucnv_toUChars(cnv,
                     ucs1,
