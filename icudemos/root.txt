@@ -3,8 +3,8 @@
 root { 
   str-title { "List of Demos" }
   str-help { "Here are %%howmany%% demos that show different capabilities of the ICU library." }
-  str-demo { "Demo Name" }
-  str-desc { "Program Description" }
+  str-demo { "Name" }
+  str-desc { "Description" }
 
   convexp {
 	name { "Converter Explorer" }
@@ -14,6 +14,11 @@ root {
   ubrowse {
 	name { "Unicode Character Browser" }
 	desc { "An interactive database of the <a href='http://www.unicode.org/'>Unicode</a> character set. It uses the ICU character properties to search by character type, or display the type of a given character." }
+  }
+
+  redemo {
+	name { "Regular Expressions" }
+	desc { "Demonstrates the ICU Unicode-compliant Regular Expression component." }
   }
 
   locexp {
@@ -27,17 +32,17 @@ root {
   }
 
   translit {
-	name { "Transform Demo" }
+	name { "Transforms" }
 	desc { "Shows ICU transforms in action. Users can see the effect of various built-in and user written system transforms on text they type in. Rules for transforms may be viewed, edited, and saved for later use." }
   }
 
   idnbrowser {
-	name { "IDNA Demo" }
+	name { "IDNA" }
 	desc { "Performs IDNA transformations as described in RFC 3490." }
   }
 
   scompare {
-	name { "String Compare Demo" }
+	name { "String Compare" }
 	desc { "Performs string comparisons, with results being equal, equal ignoring case, or equal ignoring canonical (normalization) differences." }
   }
 

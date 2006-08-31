@@ -101,8 +101,8 @@ int main(int argc, char* argv[])
 
 #ifdef USE_SETRLIMIT
     struct rlimit  ourCPULimit;
-    ourCPULimit.rlim_cur = 1;
-    ourCPULimit.rlim_max =RLIM_INFINITY;
+    ourCPULimit.rlim_cur = 1; // signal at 1
+    ourCPULimit.rlim_max = 2; // kill at 2
     setrlimit(RLIMIT_CPU, &ourCPULimit);
     signal(SIGXCPU, handleTimeoutSignal);
 #endif

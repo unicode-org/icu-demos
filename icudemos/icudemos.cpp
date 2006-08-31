@@ -61,6 +61,7 @@ void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle 
     }
     
     const char *demo = (const char*)(list->lines[n].userData);
+    const char *demoUrl = demo;
 
     // rest is the same.
     UErrorCode status = U_ZERO_ERROR;
@@ -77,8 +78,12 @@ void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle 
         desc = UnicodeString("Error: ", "")+u_errorName(status);
     }
     
+    if(!strcmp(demoUrl,"redemo")) { // this one is just a HTML page - so map it.
+        demoUrl = "icudemos/redemo.html";
+    }
+    
     theDemos = theDemos + 
-        "<tr><td><a href='"+demo+"'>"+name+"</a></td><td>"+desc+"</td></tr>\n";
+        "<tr><td colspan=3><b><a href='"+demoUrl+"'>"+name+"</a></b></td></tr><td></td><td style='border-bottom: 1px solid gray' colspan=2>"+desc+"</td></tr>\n";
         
     if(U_FAILURE(status) && status != U_MISSING_RESOURCE_ERROR) {
         inStatus = status;
@@ -191,7 +196,7 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
     {
         Locale theLocale(ourLocale);
         UnicodeString theDemos;
-        const char *demoList[] = { "convexp", "idnbrowser", "translit", "locexp", "nbrowser", "scompare", "ubrowse", NULL };
+        const char *demoList[] = { "convexp", "idnbrowser", "translit", "locexp", "nbrowser", "scompare", "ubrowse", "redemo", NULL };
 
         USort *list = usort_open(ourLocale, UCOL_DEFAULT, TRUE, &status);
 
@@ -260,6 +265,7 @@ int doOut(const char *fn, const char *type) {
 #define CSS_FILE "/icu.css"
 #define CSS_TYPE "text/css"
 #define GIF_TYPE "image/gif"
+#define HTML_TYPE "text/html"
 
 const char *  files[] =
 
@@ -268,6 +274,7 @@ const char *  files[] =
     "/1x1.gif", GIF_TYPE ,
     "/lines.gif", GIF_TYPE ,
     "/lines-gradient.gif", GIF_TYPE ,
+    "/redemo.html", HTML_TYPE ,
     NULL, NULL };
 
 int main(int argc, const char **argv) {

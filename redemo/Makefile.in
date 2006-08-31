@@ -42,8 +42,8 @@ install-local: all-local install-target
 
 install-target: all-local
 	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
-#	$(INSTALL) redemo.html $(BINDIR)/data
-#	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
+	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
+	$(INSTALL) redemo.html $(BINDIR)/data
 
 dist-local:
 

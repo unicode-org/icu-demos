@@ -15,7 +15,7 @@
 //  name of the redemo cgi-bin executable.
 //  This may need to be modified, depending on your web server configuration.
 //
-var cgiAppName = "cgi-bin/redemo.exe";
+var cgiAppName = "../redemo";
 
 
 //
@@ -414,6 +414,8 @@ function sendToServer() {
 -->
 </script>
 
+<link rel="stylesheet" href="./icu.css" type="text/css" />
+
 <style type="text/css">
 #theExpression {background-color: lightgrey; font-size: larger }
 #displayedText {font-size: larger;
@@ -423,12 +425,29 @@ function sendToServer() {
 .match         {background-color: lightblue;}
 .errors        {color: red; font-weight:bold;}
 
+div.header     { margin: 1em;
+				 border-bottom: 1px solid gray;
+  				}
+
+div.bodystuff  {
+					margin: 1em;
+				}
+
 </style>
 </head>
 
 
 <body onload="init();">
+<!-- bread crumb -->
+<div class='header'>
+<a class="bctl" href="http://www.ibm.com/software/globalization/icu">ICU</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
+<a class="bctl" href="../icudemos">Demo</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
+
 <h1>ICU Regular Expression Demo</h1>
+</div>
+
+<div class='bodystuff'>
+
 <table>
 <tr>
   <td>
@@ -508,6 +527,7 @@ function sendToServer() {
       
 </table>
 
+</div>
 
 </body>
 </html>
