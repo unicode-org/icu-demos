@@ -33,6 +33,18 @@ void initLX()
     char newPath[500];
     UErrorCode myError = U_ZERO_ERROR;
 
+#if defined(U_HAVE_CECAL)
+    {
+        UErrorCode ceError = U_ZERO_ERROR;
+        ucal_registerCECal(&ceError);
+        if(U_FAILURE(ceError)) {
+            fprintf(stderr, " Fail to init CECal: %s\n", u_errorName(ceError));
+        } else {
+            fprintf(stderr, " CECalendar OK \n");
+        }
+    }
+#endif
+
 #ifdef LX_STATIC
     /* try static data first .. then fall back to individual files */
     udata_setAppData( "locexp", (const void*) locexp_dat, &myError);
@@ -46,6 +58,11 @@ void initLX()
     strcpy(newPath, u_getDataDirectory());
     strcat(newPath, "locexp");
     FSWF_setBundlePath(newPath);
+    
+    
+    /* Coptic/Ethiopic Calendars. If available. */
+
+
 }
 
 void closeLX(LXContext *theContext)
