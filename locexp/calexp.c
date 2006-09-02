@@ -283,15 +283,30 @@ extern void showExploreCalendar( LXContext *lx)
     
 /*    u_fprintf(lx->OUT, "[%D %T]<p>", now, now ); */
 
-    cal = ucal_open(lx->timeZone, -1, lx->curLocaleName, UCAL_TRADITIONAL, &status);
-    ucal_setMillis(cal, now, &status);
-
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT, "%S ", FSWF("calexp_errGet", "Can't get initial date: "));
+        u_fprintf(lx->OUT, "%S -prep- ", FSWF("calexp_errGet", "Can't get initial date: "));
         explainStatus(lx, status, "");
         return;
     }
+
+    cal = ucal_open(lx->timeZone, -1, lx->curLocaleName, UCAL_TRADITIONAL, &status);
+    if(U_FAILURE(status))
+    {
+        u_fprintf(lx->OUT, "%S -calopen- ", FSWF("calexp_errGet", "Can't get initial date: "));
+        explainStatus(lx, status, "");
+        return;
+    }
+
+    ucal_setMillis(cal, now, &status);
+    if(U_FAILURE(status))
+    {
+        u_fprintf(lx->OUT, "%S -set- ", FSWF("calexp_errGet", "Can't get initial date: "));
+        explainStatus(lx, status, "");
+        return;
+    }
+
+
 
     status = U_ZERO_ERROR;
 
