@@ -760,10 +760,14 @@ main(int argc,
 
   if(qs)
     { 
-      if(strstr(qs,"&gosetn")) {
-        mode = ESETCHUNK;
-      } else if(strstr(qs,"&gosetk")) {
+      const char *set; 
+
+      if(strstr(qs,"gosetk=")) {
         mode = ESET;
+      } else if(strstr(qs,"gosetn") ||
+               ( (set=strstr(qs,"us=")) &&
+                       ( (set[3]!='&') && (set[3]!=0) )) ) {
+        mode = ESETCHUNK;
       } else if (sscanf(qs,"go=%x", &block)== 1)
         {
           if(strstr(qs,"ch.x="))
@@ -782,7 +786,7 @@ main(int argc,
           }
           else
           {
-            mode = ETOP;
+            mode = ECHAR;
             /* Title comes lower */
           }
         }
@@ -931,8 +935,8 @@ main(int argc,
 
   {
     const char *q;
-    q = strstr(qs,"&us=");
-    if(!q) { q = ""; } else { q += 4; }
+    q = strstr(qs,"us=");
+    if(!q) { q = ""; } else { q += 3; }
     usf[0]=0;
     unescapeAndDecodeQueryField_enc(usf, 1023,
                                     q, "UTF-8");
