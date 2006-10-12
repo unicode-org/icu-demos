@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-*   Copyright (C) 1999-2000, International Business Machines
+*   Copyright (C) 1999-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -43,7 +43,7 @@ void usage(const char *pname, const char *msg)
   fprintf(stderr, "\n\t-t               \n\t\tTrim the trailing spaces from the strings\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "Locale sensitive sort, (c) 1999-2003 IBM, Inc. Uses ICU.\n");
-  fprintf(stderr, "http://oss.software.ibm.com/icu/\n");
+  fprintf(stderr, "http://www.icu-project.org/\n");
   exit(-1);
 }
 

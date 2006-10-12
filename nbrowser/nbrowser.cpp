@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2005, International Business Machines
+*   Copyright (C) 2003-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -110,7 +110,7 @@ static const char *endForm=
     " <input id=\"Unicode3.2\" type=\"radio\" name=\"uv\" value=\"1\" %s />"
     " <label for=\"Unicode3.2\">Unicode 3.2</label>"
     "<br />\n"
-    "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
+    "<input type=\"submit\" value=\"Show Results\" />\n"
     " (<a href=\"#help\">Help</a>)"
     "</p>\n"
     "</form>\n";

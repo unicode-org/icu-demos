@@ -1,3 +1,10 @@
+/******************************************************************************
+*
+*   Copyright (C) 2005-2006, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+*
+*******************************************************************************
+*/
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,8 +80,8 @@ static const char *htmlHeader=
     " 1px solid  blue; border-right: 1px solid blue}.word {background-color:#DDFFFF}.num"
     " {background-color:#FFDDFF} body  {font-size: 12pt}\n"
     "</style>\n"
-    "<a href=\"http://oss.software.ibm.com/icu/\">ICU</a> &gt;\n"
-    "<a href=\"http://oss.software.ibm.com/icu/demo/\">Demo</a> &gt;<br><hr>\n"
+    "<a href=\"http://www.icu-project.org/\">ICU</a> &gt;\n"
+    "<a href=\"http://demo.icu-project.org/icu-bin/icudemos\">Demo</a> &gt;<br><hr>\n"
     "<h1>ufortune</h1>\n";
 
 static const char *htmlFooter=

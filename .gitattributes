@@ -94,6 +94,7 @@ apputil/data/common-masthead.html svneol=native#text/html
 apputil/data/icu.css svneol=native#text/css
 apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
+apputil/data/main.css svneol=native#text/css
 convexp/convexp-header.html svneol=native#text/html
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html

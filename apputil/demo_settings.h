@@ -35,9 +35,9 @@
 #define DEMO_BEGIN_CONTENT "<td colspan=2 valign=\"top\" style=\"padding-left: 5px; padding-right: 5px;\"><a name=\"main\"></a>\n"
 #define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
 
-#define ICU_URL "http://www.ibm.com/software/globalization/icu/"
+#define ICU_URL "http://www.icu-project.org/"
 
-#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
     "<a class=\"bctl\" href=\"./icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     
 #endif

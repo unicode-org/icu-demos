@@ -1,4 +1,4 @@
-## Copyright (c) 1999-2004, International Business Machines Corporation and
+## Copyright (c) 1999-2006, International Business Machines Corporation and
 ## others. All Rights Reserved.
 
 LOCALE EXPLORER  :  by Steven R. Loomis, IBM
@@ -61,7 +61,7 @@ TODO 8/15/2003
 This is the source for the locale explorer CGI which is on IBM's
 external website at:
 
-    http://oss.software.ibm.com/developerworks/opensource/icu/localeexplorer
+    http://demo.icu-project.org/icu-bin/locexp
 
  The purpose of this CGI is to (1) make available the locale data for
 viewing, and (2) show off the ICU.  Hopefully, it will also be an
@@ -198,7 +198,7 @@ string, move to 'demo' section on main page.
 
 
 X - done
- mark.davis@us.ibm.com typed the following on Feb 22, 2000 :
+ Mark Davis typed the following on Feb 22, 2000 :
  > The text at the top of the help file should be more general. How about:
  > 
  > This file contains the help text for Locale Explorer, organized by topic.
@@ -206,8 +206,7 @@ X - done
  > unicode news group (link to
  > news://news.software.ibm.com/ibm.software.unicode). Please post any
  > comments or suggestions for improvement of this help file on the ICU bug
- > list (link to
- > http://oss.software.ibm.com/developerworks/opensource/icu/bugs).
+ > list (link to the bug database).
 
 -----------
   -- lots of updates

@@ -66,7 +66,7 @@ static const char endHeaderBeginBody[] =
     "<body>\n";
 
 static const char breadCrumbMainHeader[]=
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<h1>IDNA Demo</h1>\n";
 
@@ -121,7 +121,7 @@ static const char *startForm=
     "<input id=\"domainname\" type=\"text\" name=\"t\" maxlength=\"500\" size=\"80\" value=\"%s\" /> \n";
 
 static const char *endForm=
-            "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/submit.gif\" alt=\"Submit\" value=\"Submit\" />\n"
+            "<input type=\"submit\" value=\"Display Results\" />\n"
             "</form>\n";
 
 static const char *startTable=
@@ -142,7 +142,7 @@ static const char *modeNames[]={ "(null)", "(None)", "ToASCII(input)", "ToUnicod
 
 static const char *versions=
     "<p>Unicode version used by IDNA %s &mdash; Powered by "
-    "<a href=\"//www.ibm.com/software/globalization/icu/\">ICU</a> %s</p>\n";
+    "<a href=\"//www.icu-project.org/\">ICU</a> %s</p>\n";
 
 static const char *samples[] = { "www.&#x65E5;&#x672C;&#x5E73;.jp","www.&#x30CF;&#x30F3;&#x30C9;&#x30DC;&#x30FC;&#x30EB;&#x30B5;&#x30E0;&#x30BA;.com","www.f&#x00E4;rgbolaget.nu","www.b&#x00FC;cher.de","www.br&#x00E6;ndendek&#x00E6;rlighed.com","www.r&#x00E4;ksm&#x00F6;rg&#x00E5;s.se",  "www.&#xC608;&#xBE44;&#xAD50;&#xC0AC;.com", "&#x7406;&#x5BB9;&#x30CA;&#x30AB;&#x30E0;&#x30E9;.com", "&#x3042;&#x30FC;&#x308B;&#x3044;&#x3093;.com", "www.f&#xE4;rjestadsbk.net", "www.m&#xE4;kitorppa.com", NULL };
 
@@ -787,7 +787,7 @@ main(int argc, const char *argv[]) {
     for(int j=0;samples[j];j++) {
       printf("<option value=\"%s\">%s</option>", samples[j], samples[j]);
     }
-    puts("</select>\n<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/go.gif\" alt=\"Go\" value=\"Load\" /></td></tr></table></form>\n");
+    puts("</select>\n<input type=\"submit\" value=\"Load\" /></td></tr></table></form>\n");
 
     puts(helpText);
 

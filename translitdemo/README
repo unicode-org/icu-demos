@@ -1,3 +1,5 @@
+## Copyright (c) 2001-2006, International Business Machines Corporation and
+## others. All Rights Reserved.
 Transliterator Demo README
 
 ----------------------------------------------------------------------
@@ -19,9 +21,9 @@ OSS setup
 ---------
 
 On OSS we are going to map the URL
-  http://oss.software.ibm.com/developerworks/opensource/icu/translitdemo
+  //www.icu-project.org/
 to
-  /www/software10/cgi-bin/icu/translitdemo
+  (some directory?)
 
 This is a shell script that sets LD_LIBARARY_PATH and ICU_DATA
 appropriately and invokes the actual binary.

@@ -80,7 +80,7 @@ static const char endHeaderBeginBody[]=
 
 static const char breadCrumbMainHeader[]=
     "<div style=\"font-size: 6px\">"NBSP"</div>\n"
-    "<a class=\"bctl\" href=\"//www.ibm.com/software/globalization/icu/index.jsp\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
@@ -117,7 +117,7 @@ static const char startForm[]=
     "\n";
 
 static const char endForm[]=
-    "<input type=\"image\" src=\"//www.ibm.com/i/v14/buttons/us/en/go.gif\" alt=\"Go\" value=\"Go\" />\n"
+    "<input type=\"submit\" value=\"Show Aliases\" />\n"
     "</p>"
     "</form>\n"
     "</td>\n"
@@ -126,8 +126,8 @@ static const char endForm[]=
     "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"175\" class=\"v14-gray-table-border\">\n"
     "<tr><th colspan=\"3\" class=\"v14-header-1-small\">Related Topics</th></tr>\n"
     "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\"><img src=\"//www.ibm.com/i/v14/icons/fw.gif\" height=\"16\" width=\"16\" border=\"0\" alt=\"\" /></td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\">"NBSP"</td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\">"NBSP"</td><td align=\"left\"><a class=\"smallplainlink\" href=\"http://icu.sourceforge.net/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
     "<tr><td><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
     "</table>\n"
 
@@ -141,7 +141,7 @@ static const char endTable[]="</table>";
 
 static const char versions[]=
     "<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0; width: 99%\">Powered by "
-    "<a href=\"//www.ibm.com/software/globalization/icu\">ICU</a> %s</p><br />\n";
+    "<a href=\"//www.icu-project.org/\">ICU</a> %s</p><br />\n";
 
 static void printOptions(UErrorCode *status) {
     int32_t i;
@@ -764,9 +764,9 @@ main(int argc, const char *argv[]) {
     }
     puts(endHeaderBeginBody);
     if (printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD)) {
-        puts(DEMO_BEGIN_LEFT_NAV);
+/*        puts(DEMO_BEGIN_LEFT_NAV);
         printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
-        puts(DEMO_END_LEFT_NAV);
+        puts(DEMO_END_LEFT_NAV);*/
         puts(DEMO_BEGIN_CONTENT);
     }
     puts(breadCrumbMainHeader);
