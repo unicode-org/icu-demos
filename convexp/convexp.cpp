@@ -764,9 +764,9 @@ main(int argc, const char *argv[]) {
     }
     puts(endHeaderBeginBody);
     if (printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD)) {
-/*        puts(DEMO_BEGIN_LEFT_NAV);
+        puts(DEMO_BEGIN_LEFT_NAV);
         printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
-        puts(DEMO_END_LEFT_NAV);*/
+        puts(DEMO_END_LEFT_NAV);
         puts(DEMO_BEGIN_CONTENT);
     }
     puts(breadCrumbMainHeader);
