@@ -263,6 +263,7 @@ int doOut(const char *fn, const char *type) {
 }
 
 #define CSS_FILE "/icu.css"
+#define CSS_DEMO_FILE "/main.css"
 #define CSS_TYPE "text/css"
 #define GIF_TYPE "image/gif"
 #define HTML_TYPE "text/html"
@@ -271,11 +272,13 @@ const char *  files[] =
 
 { 
     CSS_FILE, CSS_TYPE ,
+    CSS_DEMO_FILE, CSS_TYPE ,
     "/1x1.gif", GIF_TYPE ,
     "/lines.gif", GIF_TYPE ,
     "/lines-gradient.gif", GIF_TYPE ,
     "/redemo.html", HTML_TYPE ,
-    NULL, NULL };
+    NULL, NULL
+};
 
 int main(int argc, const char **argv) {
     UErrorCode      status = U_ZERO_ERROR;
