@@ -279,8 +279,6 @@ const char *  files[] =
 
 int main(int argc, const char **argv) {
     UErrorCode      status = U_ZERO_ERROR;
-    const char     *request_method;
-    const char     *script_name;
     UnicodeString   outputText;
     char *allocatedContent = 0;
     char *pi = 0;
