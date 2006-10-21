@@ -130,7 +130,7 @@ int main(int argc, const char **argv) {
  
     UnicodeString originalScriptName("/software/globalization/icu/demo/compare");
     script_name=getenv("SCRIPT_NAME"); 
-    where = outputText.indexOf(originalScriptName);
+    int32_t where = outputText.indexOf(originalScriptName);
     if (where>0) {
         outputText.findAndReplace(originalScriptName, UnicodeString(script_name));
     } else {
