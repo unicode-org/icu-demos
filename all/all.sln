@@ -50,6 +50,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbrowser", "..\nbrowser\nbr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\scompare.vcproj", "{F4E8422B-9C62-4771-B37E-1F9309291C70}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "translitdemo", "..\translitdemo\translitdemo.vcproj", "{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}"

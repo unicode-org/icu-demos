@@ -76,7 +76,7 @@ UnicodeString  getParam(const char *pdata, const char *name) {
 //      Store a string value into a %%field%% in the generated html.
 //      Html escape any '&' or '<' chars in the value.
 //
-void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &content) {
+U_CAPI void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &content) {
     UnicodeString vCopy(val);           
     vCopy.findAndReplace("&", "&amp;"); 
     vCopy.findAndReplace("<", "&lt;");
@@ -89,7 +89,7 @@ void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &
 //  StringToHex    Create a Hex representation of a UnicodeString.
 //                  Example:  "ABC" goes to "\u0041 \u0042 \u0043"
 //
-void toHex(UnicodeString &dest, const UnicodeString &src) {
+U_CAPI void toHex(UnicodeString &dest, const UnicodeString &src) {
     int i;
     int hexLen = 0;
 
@@ -112,7 +112,7 @@ void toHex(UnicodeString &dest, const UnicodeString &src) {
 //                       files into a UnicodeString in which we are building up
 //                       the html for the page.
 //
-void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
+U_CAPI void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
                         char *templateFileName,     //  File name of template.
                         char *insertPointMarker)    //  A string dest that marks the
                                                     //    desired insertion point
@@ -152,7 +152,7 @@ void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
 }
 
 // insert a string
-void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
+U_CAPI void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
                         const UnicodeString& str,     //  string to replace.
                         const char *insertPointMarker)    //  A string dest that marks the
                                                     //    desired insertion point
@@ -168,16 +168,7 @@ void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
     }
 }
 
-// insert a string
-void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
-                        const char *str,     //  string to replace.
-                        const char *insertPointMarker)    //  A string dest that marks the
-                                                    //    desired insertion point
-{
-    insertTemplateString(dest,UnicodeString(str), insertPointMarker);
-}
-
-void insertTemplateResource(UnicodeString &dest, ResourceBundle& res, const char *str, UErrorCode &status) {
+U_CAPI void insertTemplateResource(UnicodeString &dest, ResourceBundle& res, const char *str, UErrorCode &status) {
     char key2[512];
     const char *p, *q;
     int32_t len;
@@ -200,7 +191,7 @@ void insertTemplateResource(UnicodeString &dest, ResourceBundle& res, const char
 }
 
 
-void writeUnicodeStringCGI(const UnicodeString& outputText) {
+U_CAPI void writeUnicodeStringCGI(const UnicodeString& outputText) {
     UFILE *u_stdout = u_finit(stdout, "", "utf-8");
     u_fprintf(u_stdout, "Content-Type: text/html; charset=utf-8\n\n");
     const UChar *htmlBuf = outputText.getBuffer();
@@ -214,7 +205,7 @@ void writeUnicodeStringCGI(const UnicodeString& outputText) {
 /**
  * substitute the DEMO_* macros into the string
  */
-void insertDemoStrings(UnicodeString& outputText, UErrorCode& status) {
+U_CAPI void insertDemoStrings(UnicodeString& outputText, UErrorCode& status) {
     insertTemplateFile(outputText, DEMO_COMMON_MASTHEAD, "%%DEMO_COMMON_MASTHEAD%%");
     insertTemplateString(outputText, DEMO_BEGIN_LEFT_NAV, "%%DEMO_BEGIN_LEFT_NAV%%");
     insertTemplateFile(outputText, DEMO_COMMON_LEFTNAV, "%%DEMO_COMMON_LEFTNAV%%");

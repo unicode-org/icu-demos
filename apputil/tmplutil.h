@@ -41,14 +41,14 @@
 UnicodeString  getParam(const char *pdata, const char *name);
 
 
-void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &content);
+U_CAPI void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &content);
 
 
 //
 //  StringToHex    Create a Hex representation of a UnicodeString.
 //                  Example:  "ABC" goes to "\u0041 \u0042 \u0043"
 //
-void toHex(UnicodeString &dest, const UnicodeString &src);
+U_CAPI void toHex(UnicodeString &dest, const UnicodeString &src);
 
 
 //
@@ -56,32 +56,28 @@ void toHex(UnicodeString &dest, const UnicodeString &src);
 //                       files into a UnicodeString in which we are building up
 //                       the html for the page.
 //
-void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
+U_CAPI void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
                         char *templateFileName,     //  File name of template.
                         char *insertPointMarker);    //  A string dest that marks the
                                                     //    desired insertion point
 
 
 // insert a string
-void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
+U_CAPI void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
                         const UnicodeString& str,     //  string to replace.
                         const char *insertPointMarker);    //  A string dest that marks the
                                                     //    desired insertion point
 
-void insertTemplateString(UnicodeString &dest,        // Target UnicodeString
-                        const char *str,     //  string to replace.
-                        const char *insertPointMarker);    //  A string dest that marks the
-
-void insertTemplateResource(UnicodeString &dest, ResourceBundle& res, const char *str, UErrorCode &status);
+U_CAPI void insertTemplateResource(UnicodeString &dest, ResourceBundle& res, const char *str, UErrorCode &status);
 
 
-void writeUnicodeStringCGI(const UnicodeString& outputputString);
+U_CAPI void writeUnicodeStringCGI(const UnicodeString& outputputString);
 
 
 /**
  * substitute the DEMO_* macros into the string
  */
-void insertDemoStrings(UnicodeString& outputText, UErrorCode& status);
+U_CAPI void insertDemoStrings(UnicodeString& outputText, UErrorCode& status);
 
 
 #endif
