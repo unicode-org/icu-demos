@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2005, International Business Machines
+*   Copyright (C) 2003-2006, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -224,8 +224,9 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     escapedChar = getEscapeChar(uniVal);  // Maybe this needs to go into the loop above
     if (!escapedChar) {
         u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
-        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">" GLYPH_BEGIN "%s" GLYPH_END,
-            uniName, utf8);
+        // The U_GC_M_MASK is needed to show combining marks in Firefox.
+        printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">" GLYPH_BEGIN "%s%s" GLYPH_END,
+            uniName, ((U_GET_GC_MASK(uniVal) & U_GC_M_MASK) ? NBSP : ""), utf8);
     }
     else {
         printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">%s", uniName, escapedChar);
