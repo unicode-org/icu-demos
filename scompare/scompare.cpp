@@ -128,19 +128,6 @@ int main(int argc, const char **argv) {
     insertTemplateString(outputText, "Unicode String Comparison", "%%title%%");
 
  
-    // The IBM page template does not include the css necessary for tables.
-    //   Insert the necessary css include now.
-    int32_t where = outputText.indexOf(
-        "<link rel=\"stylesheet\" ");
-    if (where>0) {
-        outputText.insert(where,
-            "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen,print\" "
-            "href=\"//www.ibm.com/common/v14/table.css\" />\n");
-    } else {
-        outputText.append("<!-- Error in scompare.cpp while inserting table.css -->\n");
-    }
-
-
     UnicodeString originalScriptName("/software/globalization/icu/demo/compare");
     script_name=getenv("SCRIPT_NAME"); 
     where = outputText.indexOf(originalScriptName);
