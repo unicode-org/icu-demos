@@ -65,6 +65,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redemo", "..\redemo\redemo.
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icudemos", "..\icudemos\icudemos.vcproj", "{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -127,6 +132,10 @@ Global
 		{18012D2A-8F83-4CB6-B2D1-6CAA46A6FB41}.Debug.Build.0 = Debug|Win32
 		{18012D2A-8F83-4CB6-B2D1-6CAA46A6FB41}.Release.ActiveCfg = Release|Win32
 		{18012D2A-8F83-4CB6-B2D1-6CAA46A6FB41}.Release.Build.0 = Release|Win32
+		{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}.Debug.ActiveCfg = Debug|Win32
+		{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}.Debug.Build.0 = Debug|Win32
+		{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}.Release.ActiveCfg = Release|Win32
+		{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
