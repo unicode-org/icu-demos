@@ -485,8 +485,8 @@ static void printConverterInfo(UErrorCode *status) {
     puts("<caption><em>Information About This Converter</em></caption>\n");
     convType = ucnv_getType(cnv);
     printf("<tr><th>Type of converter</th><td>%s</td></tr>\n", getConverterType(convType));
-    printf("<tr><th>Minimum number of bytes</th><td>%d</td></tr>\n", ucnv_getMinCharSize(cnv));
-    printf("<tr><th>Maximum number of bytes</th><td>%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
+    printf("<tr><th>Minimum number of bytes per UChar</th><td>%d</td></tr>\n", ucnv_getMinCharSize(cnv));
+    printf("<tr><th>Maximum number of bytes per UChar</th><td>%d</td></tr>\n", ucnv_getMaxCharSize(cnv));
 
     printf("<tr><th>Substitution character</th><td>");
     buffer[0] = 0;
