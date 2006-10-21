@@ -203,7 +203,8 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
     static char uniName[1024];
     int32_t uniNameLen = 0;
     int32_t idx = 0;
-    UChar32 uniVal;
+    UChar32 uniVal = 0;
+    UChar32 firstChar = INT32_MAX;
     const char *escapedChar = NULL;
 
     // Make it easy to hover the mouse cursor over a cell to see the actual names of the characters.
@@ -215,18 +216,21 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
             uniName[uniNameLen++] = ' ';
         }
         U16_NEXT(targetBuffer, idx, targetSize, uniVal);
+        if (firstChar == INT32_MAX) {
+            firstChar = uniVal;
+        }
         uniNameLen += u_charName(uniVal, U_EXTENDED_CHAR_NAME,
                                  uniName + uniNameLen,
                                  sizeof(uniName) + uniNameLen, status);
     }
 
     // Print a visual representation of the character
-    escapedChar = getEscapeChar(uniVal);  // Maybe this needs to go into the loop above
+    escapedChar = getEscapeChar(firstChar);  // Maybe this needs to go into the loop above
     if (!escapedChar) {
         u_strToUTF8(utf8, sizeof(utf8)/sizeof(utf8[0]), &utf8Size, targetBuffer, targetSize, status);
         // The U_GC_M_MASK is needed to show combining marks in Firefox.
         printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">" GLYPH_BEGIN "%s%s" GLYPH_END,
-            uniName, ((U_GET_GC_MASK(uniVal) & U_GC_M_MASK) ? NBSP : ""), utf8);
+            uniName, ((U_GET_GC_MASK(firstChar) & U_GC_M_MASK) ? NBSP : ""), utf8);
     }
     else {
         printf("<td align=\"center\" title=\"%s\"" CELL_WIDTH ">%s", uniName, escapedChar);
