@@ -1,7 +1,7 @@
 // Copyright (C) 2006, IBM and others. All Rights Reserved.
 
 root { 
-  str-title { "List of Demos" }
+  str-title { "List of ICU Demonstrations" }
   str-help { "Here are %%howmany%% demos that show different capabilities of the ICU library." }
   str-demo { "Name" }
   str-desc { "Description" }
