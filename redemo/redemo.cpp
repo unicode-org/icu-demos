@@ -62,9 +62,10 @@
 #include <malloc.h>
 #endif
 #include <string.h>
-#include <unicode/utypes.h>
 #include <unicode/ustring.h>
 #include <unicode/uregex.h>
+#include "demo_settings.h"
+#include "tmplutil.h"
 
 //
 //  Limit maximum CPU time for the process.
@@ -95,6 +96,29 @@ void failBadInputData() {
     exit(0);
 }
 
+void printMainPage() {
+    UnicodeString   outputText;
+    UErrorCode      status = U_ZERO_ERROR;
+
+    insertTemplateFile(outputText, DEMO_COMMON_DIR "redemo.html", NULL);
+    insertDemoStrings(outputText, status);
+
+    // Extract the UTF-8 text and print it out.
+
+    // Overestimate the size of the UTF-8 buffer.
+    int32_t outputInitialLen = outputText.length()*sizeof(UChar);
+    char *outputChars = (char *)malloc(outputInitialLen);
+    int32_t len = outputText.extract(0, outputText.length(), outputChars, outputInitialLen, "UTF-8");
+    if (len >= outputInitialLen) {
+        // This normally shouldn't happen because most of the text is ASCII
+        free(outputChars);
+        outputChars = (char *)malloc(len+1);
+        len = outputText.extract(0, outputText.length(), outputChars, len, "UTF-8");
+    }
+    outputChars[len] = 0;
+    puts(outputChars);
+    free(outputChars);
+}
 
 int main(int argc, char* argv[])
 {
@@ -107,7 +131,7 @@ int main(int argc, char* argv[])
     signal(SIGXCPU, handleTimeoutSignal);
 #endif
 
-    printf("Content-type: text/html charset=UTF-8\n\n");
+    printf("Content-Type: text/html; charset=UTF-8\n\n");
 
     //
     //  Read the raw data coming from the client web page.
@@ -127,6 +151,10 @@ int main(int argc, char* argv[])
         len = strlen(rawBuf);
     }
 
+    if (len == 0) {
+        printMainPage();
+        return 0;
+    }
 
     //
     //  Parse it apart.  NOTE:  NOT in POST format.  see comments above.

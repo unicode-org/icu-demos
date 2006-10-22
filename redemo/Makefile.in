@@ -22,8 +22,9 @@ CLEANFILES = *~
 ## Target information
 TARGET = redemo
 
-CPPFLAGS += -I$(ICU_SOURCE)/common 
-ICULIBS :=   $(ICULIBS)
+CPPFLAGS += -I$(ICU_SOURCE)/common
+CPPFLAGS += -I$(top_srcdir)/apputil
+ICULIBS := -L../apputil -lapputil $(LDFLAGS_ICUIO) $(ICULIBS)
 
 OBJECTS = redemo.o
 

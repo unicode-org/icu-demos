@@ -15,7 +15,7 @@
 //  name of the redemo cgi-bin executable.
 //  This may need to be modified, depending on your web server configuration.
 //
-var cgiAppName = "../redemo";
+var cgiAppName = "./redemo";
 
 
 //
@@ -414,7 +414,8 @@ function sendToServer() {
 -->
 </script>
 
-<link rel="stylesheet" href="./icu.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="./icudemos/icu.css" />
+<link rel="stylesheet" type="text/css" href="./icudemos/main.css" />
 
 <style type="text/css">
 #theExpression {background-color: lightgrey; font-size: larger }
@@ -438,10 +439,17 @@ div.bodystuff  {
 
 
 <body onload="init();">
+
+%%DEMO_COMMON_MASTHEAD%%
+%%DEMO_BEGIN_LEFT_NAV%%
+%%DEMO_COMMON_LEFTNAV%%
+%%DEMO_END_LEFT_NAV%%
+%%DEMO_BEGIN_CONTENT%%
+
 <!-- bread crumb -->
 <div class='header'>
 <a class="bctl" href="http://www.icu-project.org/">ICU</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
-<a class="bctl" href="../icudemos">Demo</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
+<a class="bctl" href="./icudemos">Demo</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
 
 <h1>ICU Regular Expression Demo</h1>
 </div>
@@ -528,6 +536,8 @@ div.bodystuff  {
 </table>
 
 </div>
+
+%%DEMO_END_CONTENT%%
 
 </body>
 </html>
