@@ -39,8 +39,7 @@
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin
-"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin"
 				Outputs="..\..\icu\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -104,7 +103,9 @@
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin"
+				Outputs="..\..\icu\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="icuuc.lib icuin.lib"
