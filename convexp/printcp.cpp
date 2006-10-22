@@ -49,7 +49,7 @@ static const char *getEscapeChar(UChar32 uniVal) {
     case '<':   return GLYPH_BEGIN "&lt;" GLYPH_END;
     case '>':   return GLYPH_BEGIN "&gt;" GLYPH_END;
     case '&':   return GLYPH_BEGIN "&amp;" GLYPH_END;
-    case ' ':   return GLYPH_BEGIN "<br />" GLYPH_END;// not quite correct, but it looks better
+    case ' ':   return GLYPH_BEGIN " <br />" GLYPH_END;// not quite correct, but it looks better
     case 0x00:  return ISO_BEGIN "NUL" ISO_END;
     case 0x01:  return ISO_BEGIN "SOH" ISO_END;
     case 0x02:  return ISO_BEGIN "STX" ISO_END;
@@ -115,10 +115,10 @@ static const char *getEscapeChar(UChar32 uniVal) {
     case 0x9D:  return ISO_BEGIN "OSC" ISO_END;
     case 0x9E:  return ISO_BEGIN "PM" ISO_END;
     case 0x9F:  return ISO_BEGIN "APC" ISO_END;
-    case 0xAD:  return ISO_BEGIN "\xC2\xAD" ISO_END;
+    case 0xAD:  return ISO_BEGIN "\xC2\xAD<br />" ISO_END;// not quite correct, but it looks better
     }
     if (u_iscntrl(uniVal)) {
-        return ISO_BEGIN NBSP ISO_END;
+        return ISO_BEGIN "<br />" ISO_END;// not quite correct, but it looks better
     }
 
     return NULL;
