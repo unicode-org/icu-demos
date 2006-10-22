@@ -78,10 +78,6 @@ void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle 
         desc = UnicodeString("Error: ", "")+u_errorName(status);
     }
     
-    if(!strcmp(demoUrl,"redemo")) { // this one is just a HTML page - so map it.
-        demoUrl = "icudemos/redemo.html";
-    }
-    
     theDemos = theDemos + 
         "<tr><td colspan=3><b><a href='"+demoUrl+"'>"+name+"</a></b></td></tr><td></td><td style='border-bottom: 1px solid gray' colspan=2>"+desc+"</td></tr>\n";
         
@@ -276,7 +272,6 @@ const char *  files[] =
     "/1x1.gif", GIF_TYPE ,
     "/lines.gif", GIF_TYPE ,
     "/lines-gradient.gif", GIF_TYPE ,
-    "/redemo.html", HTML_TYPE ,
     NULL, NULL
 };
 
