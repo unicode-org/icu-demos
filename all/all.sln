@@ -55,6 +55,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\sco
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "translitdemo", "..\translitdemo\translitdemo.vcproj", "{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "apputil", "..\apputil\apputil.vcproj", "{FA1A8048-E5D1-4245-93BB-49B570441153}"
@@ -63,6 +64,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "apputil", "..\apputil\apput
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redemo", "..\redemo\redemo.vcproj", "{18012D2A-8F83-4CB6-B2D1-6CAA46A6FB41}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icudemos", "..\icudemos\icudemos.vcproj", "{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}"

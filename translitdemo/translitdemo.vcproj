@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\icu\include;..\..\icu\source\common"
+				AdditionalIncludeDirectories="..\..\icu\include;..\..\icu\source\common;..\apputil"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -39,7 +39,9 @@
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Performing Custom Build Step"/>
+				Description="Performing Custom Build Step"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin"
+				Outputs="..\..\icu\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="icuuc.lib icuin.lib"
@@ -87,7 +89,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\icu\include;..\..\icu\source\common"
+				AdditionalIncludeDirectories="..\..\icu\include;..\..\icu\source\common;..\apputil"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -104,7 +106,9 @@
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Performing Custom Build Step"/>
+				Description="Performing Custom Build Step"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin"
+				Outputs="..\..\icu\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="icuucd.lib icuind.lib"
