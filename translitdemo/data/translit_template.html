@@ -1,20 +1,28 @@
 <html>
 
 <head>
-<title>Transform Demo</title>
+<!-- Copyright (C) 2006, IBM and others. All Rights Reserved. -->
+<title>ICU String Transformation Demonstration</title>
+<link rel="stylesheet" type="text/css" href="./icudemos/icu.css" />
+<link rel="stylesheet" type="text/css" href="./icudemos/main.css" />
+
 <style type="text/css">
 .wide    { width: 100% }
 textarea { font-family: Arial Unicode MS; font-size: 100% }
 select   { font-family: Arial Unicode MS; font-size: 80% }
 .label   { text-align: center; background-color: #99CCFF; font-weight: bold; letter-spacing: 1px; font-size: 60% }
 .label2  { text-align: center; background-color: #99CCFF; font-weight: bold; letter-spacing: 2px; font-size: 70% }
-.label3  { text-align: center; font-weight: bold; font-size: 200% }
 .status  { width: 100%; border-width: 0px; font-weight: bold; color: red }
 </style>
 </head>
 
 <body>
-<font face="tahoma,arial,helvetica,sanserif">
+
+$DEMO_COMMON_MASTHEAD
+$DEMO_BEGIN_LEFT_NAV
+$DEMO_COMMON_LEFTNAV
+$DEMO_END_LEFT_NAV
+$DEMO_BEGIN_CONTENT
 
 <script>
 
@@ -53,40 +61,37 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
 </script>
   <input type="hidden" name="TEMPLATE_FILE" value="data/translit_template.html">
 
-  <table width="100%">
-    <tr>
-      <td width="20%">
-      <a href="http://www.unicode.org/unicode/standard/WhatIsUnicode.html" target="_blank">Samples</a>
-      <a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Samples2</a>
-</td>
-      <td width="60%" class="label3">ICU Transform Demo</td>
-      <td width="20%" align="right">
-      <a href=http://icu.sourceforge.net/docs/demo/translit_help.html target="_blank">Help</a>
-      </td>
-    </tr>
-    <tr><td height=10px></td></tr>
-  </table>
+<div class='header'>
+<a class="bctl" href="http://www.icu-project.org/">ICU</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
+<a class="bctl" href="./icudemos">Demo</a><span class="bct">&nbsp;&nbsp;&gt;&nbsp;</span>
+
+
+</div>
+<h1 align="center">ICU Transform Demonstration</h1>
 
   <table width="100%">
     <tr>
       <td width="34%" rowspan="4" align="center">
       <table>
-        <tr><td>
-          <input type="button" value="Transform" name="SUBMIT"
-           onclick="handleTransformButton()" class="wide">
+        <tr><td align="center">
+          <a href=http://icu.sourceforge.net/docs/demo/translit_help.html target="_blank">ICU Transform Help Documentation</a>
+        </td></tr>
+        <tr><td align="center">
+          <br>Insert sample: <select name="SELECT_SAMPLE" size="1"
+          onchange="handleInsertSamples(getSelectedOption(document.FORM.SELECT_SAMPLE))" ID="Select1">
+        <option selected value="">(Select from list)</option> 
+<script>emitSamplesGUI();</script>
+      </select>
+        </td></tr>
+        <tr><td align="center">
+          <br><input type="button" value=" Transform " name="SUBMIT"
+           onclick="handleTransformButton()">
         </td></tr>
         <tr><td>
 <!--
           <input type="button" value="Edit Rules" name="NEW"
            onclick="handleEditRules();" class="wide">
 -->
-        </td></tr>
-        <tr><td align="center">
-          Insert sample: <select name="SELECT_SAMPLE" size="1"
-          onchange="handleInsertSamples(getSelectedOption(document.FORM.SELECT_SAMPLE))">
-	    <option selected value="">(Select from list)</option> 
-<script>emitSamplesGUI();</script>
- 	  </select>
         </td></tr>
       </table></td>
 
@@ -158,7 +163,6 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
     -->
   </table>
 </form>
-</font>
 
 <script>
 // Handler for a change to a transliterator SOURCE box.
@@ -302,5 +306,12 @@ function op(callback, context, opcode, arg1, arg2, arg3) {
 
 </script>
 
+<p>Other sources of sample text:</p>
+<ul>
+    <li><a href="http://www.unicode.org/unicode/standard/WhatIsUnicode.html" target="_blank">What Is Unicode?</a></li>
+    <li><a href="http://www.unhchr.ch/udhr/navigate/alpha.htm" target="_blank">Universal Declaration of Human Rights</a></li>
+</ul>
+$DEMO_END_CONTENT
+$DEMO_COMMON_FOOTER
 </body>
 </html>

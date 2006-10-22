@@ -45,6 +45,9 @@ OBJECTS += util.o
 OBJECTS +=  TextCache.o
 
 CPPFLAGS += -I$(ICU_COMMON_HEADERS) 
+CPPFLAGS += -I$(top_srcdir)/apputil
+
+ICULIBS := -L../apputil -lapputil $(LDFLAGS_ICUIO) $(ICULIBS)
 
 CLEANFILES=*~ $(TARGET).out
 

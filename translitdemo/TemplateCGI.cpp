@@ -1,8 +1,18 @@
+/*
+*******************************************************************************
+*
+*   Copyright (C) 2003-2006, International Business Machines
+*   Corporation and others.  All Rights Reserved.
+*
+*******************************************************************************
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "TemplateCGI.h"
 #include "util.h"
+#include "demo_settings.h"
+#include "demoutil.h"
 #include <ctype.h>
 
 #ifdef _WIN32
@@ -89,24 +99,24 @@ void TemplateCGI::run(FILE* out) {
     const char *fileName = getTemplateFile();
     for(int i=0;fileName[i];i++)
     {
-      if(!isprint(fileName[i])) /* reject nonprinting chars */
-      {
-        die("Bad template name.");
-      }
+        if(!isprint(fileName[i])) /* reject nonprinting chars */
+        {
+            die("Bad template name.");
+        }
     }
     if(fileName[0]=='/')
     {
-	die("Bad template name.");
+        die("Bad template name.");
     }
     if(strstr(fileName,"..")) /* reject dot-dots */
     {
-      die("Bad template name.");
+        die("Bad template name.");
     }
 
     FILE *templateFile = fopen(getTemplateFile(), "r");
 
     if (templateFile == NULL) {
-      char buf[256], cwd[256] = "";
+        char buf[256], cwd[256] = "";
 #ifdef DEBUG
         getcwd(cwd, sizeof(cwd));  /* finding CWD could help compromise us */
 #endif
@@ -132,15 +142,39 @@ void TemplateCGI::run(FILE* out) {
 }
 
 void TemplateCGI::handleEmitHeader(FILE* out) {
-	fprintf(out, "Content-type: text/html\n\n");
+    fprintf(out, "Content-Type: text/html; charset=UTF-8\n\n");
 }
 
 /**
  * TemplateCGI framework method default implementation.
  */
 void TemplateCGI::handleTemplateVariable(FILE* out, const char* var,
-                                         UBool inQuote) {
-    util_fprintf(out, getParamValue(var, ""), inQuote);
+                                         UBool inQuote)
+{
+    if (strcmp(var, "DEMO_COMMON_MASTHEAD") == 0) {
+        printHTMLFragment(NULL, NULL, DEMO_COMMON_MASTHEAD);
+    }
+    if (strcmp(var, "DEMO_BEGIN_LEFT_NAV") == 0) {
+        fputs(DEMO_BEGIN_LEFT_NAV, out);
+    }
+    if (strcmp(var, "DEMO_COMMON_LEFTNAV") == 0) {
+        printHTMLFragment(NULL, NULL, DEMO_COMMON_LEFTNAV);
+    }
+    if (strcmp(var, "DEMO_END_LEFT_NAV") == 0) {
+        fputs(DEMO_END_LEFT_NAV, out);
+    }
+    if (strcmp(var, "DEMO_BEGIN_CONTENT") == 0) {
+        fputs(DEMO_BEGIN_CONTENT, out);
+    }
+    if (strcmp(var, "DEMO_END_CONTENT") == 0) {
+        fputs(DEMO_END_CONTENT, out);
+    }
+    if (strcmp(var, "DEMO_COMMON_FOOTER") == 0) {
+        printHTMLFragment(NULL, NULL, DEMO_COMMON_FOOTER);
+    }
+    else {
+        util_fprintf(out, getParamValue(var, ""), inQuote);
+    }
 }
 
 size_t TemplateCGI::getWord(FILE* in, char* buf, size_t buflen) {
