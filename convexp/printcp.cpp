@@ -334,7 +334,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     }
     puts("<br /><br />\n"
         "<table width=\"100%\" border=\"1\" cellspacing=\"0\" class=\"data-table-2\" summary=\"A 16 by 16 table with headers on each side of the table representing the nibble of a byte.\">\n"
-        "<caption><em><a name=\"layout\">Codepage Layout</a></em></caption>");
+        "<caption><em><a name=\"layout\"></a>Codepage Layout</em></caption>");
     printf("<tr><td colspan=\"18\">");
 
     switch (convType) {
