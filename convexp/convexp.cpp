@@ -402,7 +402,7 @@ static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
         return;
     }
     puts("<br /><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\">\n");
-    puts("<caption><em><a name=\""SHOW_LOCALES"\">List of Languages Representable By This Codepage</a></em></caption>\n");
+    puts("<caption><em><a name=\""SHOW_LOCALES"\"></a>List of Languages Representable By This Codepage</em></caption>\n");
     if (!gShowLanguages) {
         printf("<tr><td><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></td></tr>\n",
             gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
@@ -539,7 +539,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     printLanguages(cnv, cnvSet, status);
 
-    puts("<br /><h2><a name=\""SHOW_UNICODESET"\">Set of Unicode Characters Representable By This Codepage</a></h2>");
+    puts("<br /><h2><a name=\""SHOW_UNICODESET"\"></a>Set of Unicode Characters Representable By This Codepage</h2>");
     char setStrBuf[64];
     UChar setUStrBuf[sizeof(setStrBuf)];
     myStatus = U_ZERO_ERROR;
@@ -721,7 +721,7 @@ static void printAliasTable() {
             }
             status = U_ZERO_ERROR;
             printAliases(canonicalName, &status);
-            puts("</tr>\n");
+            puts("</tr>");
             if (*gCurrConverter) {
                 // We were only looking for one converter. There is no need to look further.
                 break;
