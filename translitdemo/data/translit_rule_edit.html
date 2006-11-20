@@ -1,9 +1,11 @@
 <html>
+<!-- Copyright (C) 2006 IBM and others, all rights reserved -->
 
 <head>
 <title>Transform Rule Editor</title>
 <style type="text/css">
 .wide    { width: 100% }
+.widefooter    { width: 100%;  border: none; background-color: #ddd; color: blue; }
 textarea { font-family: Arial Unicode MS; font-size: 100% }
 </style>
 </head>
@@ -64,6 +66,8 @@ function generateSelectIDOptions() {
 }
 
 function handleSave() {
+  // reset the status in footer..
+  document.FORM.FOOTER.value = "";
   var id = getSelectedOption(document.FORM.SELECT_ID);
   if (id == SEPARATOR1 || id == SEPARATOR2 ||
       !id || id == NEW_ID) {
@@ -73,6 +77,7 @@ function handleSave() {
     alert(id + " is a system transform.  Please choose a different ID.");
     return handleSaveAs();
   }
+  document.FORM.FOOTER.value = "Saving ...";
   op("callbackSave", id,
      "COMPILE", id, document.FORM.RULE_SOURCE.value);
 }
@@ -87,6 +92,8 @@ function isValidID(id) {
 }
 
 function handleSaveAs() {
+  // reset the status in footer..
+  document.FORM.FOOTER.value = "";
   // Loop until user enters a valid ID or cancels
   for (;;) {
     var id = prompt("Save this rule set as:", "");
@@ -109,6 +116,7 @@ function handleSaveAs() {
     }
     break; // Got a valid ID.
   }
+  document.FORM.FOOTER.value = "Saving ...";
   op("callbackSaveAs", id,
      "COMPILE", id, document.FORM.RULE_SOURCE.value);
 }
@@ -198,7 +206,7 @@ document.writeln('<form method="POST" action="' + SELF + '" name="FORM">');
       <td><textarea name="RULE_SOURCE" rows="16" cols="20" class="wide">$RULE_SOURCE</textarea></td>
     </tr>
     <tr>
-      <td><b><textarea rows="2" name="FOOTER" class="wide"></textarea></b></td>
+      <td><b><textarea rows="2" name="FOOTER" READONLY class="widefooter"></textarea></b></td>
     </tr>
   </table>
 <input type="hidden" name="TEMPLATE_FILE" value="data/translit_rule_edit.html">

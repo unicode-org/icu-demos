@@ -24,8 +24,8 @@ BINDIR=$(shell $(ICU_CONFIG) --bindir)
 
 # Must find uhash.h and hash.h
 ICU_COMMON_HEADERS=../../icu/source/common
--include Makefile.local
 ###########################################
+-include Makefile.local
 
 
 include $(ICU_INC)

@@ -1,3 +1,4 @@
+/* Copyright (C) 2006 IBM and Others */
 
 #ifndef TEXTCACHE_H
 #define TEXTCACHE_H
@@ -23,6 +24,14 @@ class TextCache {
     UBool get(const UnicodeString& key, UnicodeString& value);
 
     UBool put(const UnicodeString& key, const UnicodeString& value);
+
+	/**
+	 * - Write the item to a UTF-8 file located in '<path>/flat'
+	 * - Add the item to SVN if it didn't exist
+	 * - Commit
+	 * @return false if error.  Returns true and silently fails if /flat does not exist.
+	 */
+    UBool reposWrite(const UnicodeString& key, const UnicodeString& value, const char *author);
 
     void remove(const UnicodeString& key);
 

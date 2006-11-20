@@ -1,11 +1,13 @@
-// Copyright (c) 2000-2001 IBM, Inc. and others.
+// Copyright (c) 2000-2006 IBM, Inc. and others.
 #include "TextCache.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <string.h>
+#include <ctype.h>
 #include "util.h"
+#include "stdlib.h"
 
 #ifdef _WIN32
   #include <direct.h>
@@ -127,6 +129,58 @@ void TextCache::visitKeys(KeyVisitor visit, void* context) const {
         UnicodeString* key = (UnicodeString*) elem->key.pointer;
         visit(i++, *key, context);
     }
+}
+
+#define FNAMESIZ 50
+UBool TextCache::reposWrite(const UnicodeString& key, const UnicodeString& value, const char *author) {
+	char path[200];
+	sprintf(path,"%s/flat/",root);
+	if(access(path, W_OK|X_OK)) {
+		perror("access flat");
+		fprintf(stderr, "# translit: could not access [%s] for access.\n", path);
+		return TRUE; // No repos for you
+	}
+	
+	// Calculate a short name for the thing.
+	char * buf = util_createChars(key);
+	char *p;
+	char fname[FNAMESIZ+1];
+	for(p=buf;*p;p++) {
+		if((((unsigned char)*p)>0x7f)||(!::isalnum(*p))) {
+			*p = '_';
+		}
+	}
+	int nameLen = strlen(buf);
+	if(nameLen >= (FNAMESIZ - 5)) { // name + .txt + null
+		nameLen = FNAMESIZ - 5;
+	}
+	strncpy(fname,buf,nameLen);
+	strcpy(fname+nameLen,".txt");
+	strcat(path, fname);
+	
+	/*
+	if(access(path, W_OK)) {
+		perror("access path write");
+		fprintf(stderr, "# translit: could not access [%s] for write.\n", path);
+		return FALSE; // could not write
+	}
+	*/
+
+    FILE* file = fopen(path, "wb");
+    if (file == NULL) return FALSE;
+	// BOM?
+	char *chars = util_createChars(value);
+    fwrite(chars, 1, strlen(chars), file);
+    fclose(file);
+
+	delete [] buf;
+	delete [] chars;
+	// COMMIT!
+#if defined(HAVE_TRANSLIT_COMMIT)
+    return translit_commit(path, author);
+#else
+	return TRUE;
+#endif
 }
 
 UBool TextCache::put(const UnicodeString& key, const UnicodeString& value) {

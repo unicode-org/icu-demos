@@ -1,5 +1,5 @@
 
-// Copyright (c) 2000-2004 IBM, Inc. and others.
+// Copyright (c) 2000-2006 IBM, Inc. and others.
 /**
  * The CGI interacts with the template file by filling in variables of
  * the form $FOO and reading text from fields.  Here is a complete
@@ -239,6 +239,11 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             loadUserTransliterators();
             UErrorCode status = U_ZERO_ERROR;
             UParseError err;
+			
+			// reset these strings so we dont' get garbage later.
+			err.preContext[0]=0;
+			err.postContext[0]=0;
+			
             Transliterator *t = Transliterator::createInstance(id, dir, err, status);
             if (t != 0 && U_SUCCESS(status)) {
                 char* s = cleanupNewlines(arg1);
@@ -257,7 +262,9 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                 text += u_errorName(status);
                 if (err.preContext[0]) {
                     text += " at ";
-                    text += err.preContext;
+					if(err.preContext[0]) {
+						text += err.preContext;
+					}
                     if (err.postContext[0]) {
                         text += " | ";
                         text += err.postContext;
@@ -279,7 +286,9 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
             if (buildUserRules(id, rules, errMsg)) {
                 // We have a validated rule set; save it
                 UBool ok = ruleCache.put(id, rules);
-                fprintf(out, ok ? "" : "Error: Unable to write to cache directory");
+                fprintf(out, ok ? "" : "Error: Unable to write to cache directory ");
+				ok = ruleCache.reposWrite(id, rules, getenv("REMOTE_ADDR"));
+                fprintf(out, ok ? "" : "Error: Unable to commit to cache repository ");
             } else {
                 util_fprintf(out, errMsg, inQuote);
             }
