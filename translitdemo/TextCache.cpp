@@ -146,7 +146,7 @@ UBool TextCache::reposWrite(const UnicodeString& key, const UnicodeString& value
 	char *p;
 	char fname[FNAMESIZ+1];
 	for(p=buf;*p;p++) {
-		if((((unsigned char)*p)>0x7f)||(!::isalnum(*p))) {
+		if((((unsigned char)*p)>0x7f)||(!isalnum(*p))) {
 			*p = '_';
 		}
 	}
