@@ -1,9 +1,0 @@
-# Copyright (c) 2005 IBM and others.  All Rights Reserved
-Makefile
-*.d
-*.o
-locexp
-Makefile.local
-Release
-Debug
-locexp
