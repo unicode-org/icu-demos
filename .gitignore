@@ -99,10 +99,6 @@ ubrowse/Debug
 ubrowse/Makefile
 ubrowse/Release
 ubrowse/ubrowseres
-uconv/*.d
-uconv/Makefile
-uconv/uconv
-uconv/uconvmsg
 usort/Makefile
 usort/client/*.d
 usort/client/*.o
