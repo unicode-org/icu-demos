@@ -38,7 +38,7 @@
 //       If the parameter does not exist in the POST data, return
 //          a BOGUS string.
 //
-UnicodeString  getParam(const char *pdata, const char *name);
+U_CAPI UnicodeString  *getParam(const char *pdata, const char *name, UnicodeString *returnStr);
 
 
 U_CAPI void storeField(const char *fieldName, const UnicodeString &val, UnicodeString &content);

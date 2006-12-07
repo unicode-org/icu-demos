@@ -69,6 +69,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redemo", "..\redemo\redemo.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icudemos", "..\icudemos\icudemos.vcproj", "{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}"
 	ProjectSection(ProjectDependencies) = postProject
+		{3E336F38-A961-466D-ADCF-77A8822FDCEE} = {3E336F38-A961-466D-ADCF-77A8822FDCEE}
 		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
 	EndProjectSection
 EndProject

@@ -40,7 +40,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Performing Custom Build Step"
-				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin
+"
 				Outputs="..\..\icu\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -57,8 +58,7 @@
 				TypeLibraryName=".\Release/translitdemo.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="XCOPY /D /Y /F Release\translitdemo.exe \www\cgi-bin"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -107,7 +107,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Performing Custom Build Step"
-				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\icu\bin
+"
 				Outputs="..\..\icu\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"

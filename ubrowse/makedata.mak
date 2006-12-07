@@ -70,7 +70,7 @@ CLEAN :
 
 $(PKG)/icons.res : $(ICONS)/*.gif
 	@echo creating $*.txt
-	@echo icons { > $*.txt
+	@echo icons:table(nofallback) { > $*.txt
 	@for %i in ($(**B: =.gif ).gif) do @echo %i:import { "$(ICONS)/%i" } >> $*.txt
 	@echo } >> $*.txt
 	"$(ICUTOOLS)\genrb" -d$(@D) $*.txt

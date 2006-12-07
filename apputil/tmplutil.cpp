@@ -23,8 +23,10 @@
 //       If the parameter does not exist in the POST data, return
 //          a BOGUS string.
 //
-UnicodeString  getParam(const char *pdata, const char *name) {
-    UnicodeString returnStr;
+UnicodeString *getParam(const char *pdata, const char *name, UnicodeString *returnStr) {
+    if (returnStr == NULL) {
+        return NULL;
+    }
 
     char *namebuf=new char[strlen(name)+10];
     strcpy(namebuf, name);
@@ -32,7 +34,7 @@ UnicodeString  getParam(const char *pdata, const char *name) {
     char *start = strstr(pdata, namebuf);
     delete[] namebuf;
     if (start==0) {
-        returnStr.setToBogus();
+        returnStr->setToBogus();
         return returnStr;
     }
     start+=strlen(name)+1;
@@ -64,7 +66,7 @@ UnicodeString  getParam(const char *pdata, const char *name) {
 
     // POST style encoding is now decoded, we have a char * utf-8 string.
     //  Slam it into the UnicodeString.
-    returnStr = UnicodeString(cdata, dsti, "utf-8");
+    *returnStr = UnicodeString(cdata, dsti, "utf-8");
     delete[] cdata;
 
     return returnStr;

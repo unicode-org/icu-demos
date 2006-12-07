@@ -46,8 +46,12 @@ void doCompare(const char *postData, UnicodeString &content) {
 
     // Fetch the two strings to be compared from the post data.
     //
-    UnicodeString s1 = getParam(postData, "s1a");
-    UnicodeString s2 = getParam(postData, "s1b");
+    UnicodeString s1;
+    UnicodeString s2;
+
+    getParam(postData, "s1a", &s1);
+    getParam(postData, "s1b", &s2);
+
     if (s1.isBogus() || s2.isBogus()) {
         content.append("<!-- ERROR could not find string(s) in POST data -->\n");
         return;

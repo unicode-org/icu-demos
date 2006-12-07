@@ -135,11 +135,13 @@ void TextCache::visitKeys(KeyVisitor visit, void* context) const {
 UBool TextCache::reposWrite(const UnicodeString& key, const UnicodeString& value, const char *author) {
 	char path[200];
 	sprintf(path,"%s/flat/",root);
+#ifndef U_WINDOWS
 	if(access(path, W_OK|X_OK)) {
 		perror("access flat");
 		fprintf(stderr, "# translit: could not access [%s] for access.\n", path);
 		return TRUE; // No repos for you
 	}
+#endif
 	
 	// Calculate a short name for the thing.
 	char * buf = util_createChars(key);
