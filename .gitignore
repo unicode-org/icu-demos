@@ -5,6 +5,8 @@ XMLConverter/Debug
 XMLConverter/Makefile
 XMLConverter/Release
 XMLConverter/XMLConverter
+all/all.ncb
+all/all.suo
 all/debug
 all/release
 apputil/*.d
