@@ -86,7 +86,6 @@
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\icu\lib"
-				GenerateDebugInformation="TRUE"
 				ImportLibrary="$(ConfigurationName)\icudemos_exp.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -111,12 +110,6 @@
 		</Configuration>
 	</Configurations>
 	<References>
-		<AssemblyReference
-			RelativePath="mscorlib.dll"/>
-		<AssemblyReference
-			RelativePath="System.dll"/>
-		<AssemblyReference
-			RelativePath="System.Data.dll"/>
 	</References>
 	<Files>
 		<Filter
