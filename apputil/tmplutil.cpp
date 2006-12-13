@@ -31,21 +31,21 @@ UnicodeString *getParam(const char *pdata, const char *name, UnicodeString *retu
     char *namebuf=new char[strlen(name)+10];
     strcpy(namebuf, name);
     strcat(namebuf, "=");
-    char *start = strstr(pdata, namebuf);
+    const char *start = strstr(pdata, namebuf);
     delete[] namebuf;
     if (start==0) {
         returnStr->setToBogus();
         return returnStr;
     }
     start+=strlen(name)+1;
-    char *end=strchr(start, '&');
+    const char *end=strchr(start, '&');
     if (end==0) {
         end = start + strlen(start);
     }
     int len = (int)(end-start);
     char *cdata=new char[len+10];
 
-    char *src = start;
+    const char *src = start;
     int dsti = 0;
     while(src < end) {
         unsigned char c = *src++;

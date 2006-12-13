@@ -551,7 +551,7 @@ static void _mungeID(char* buf, const char* id) {
         strcat(buf, id+6);
         return;
     }
-    char* dash = strchr(id, '-');
+    const char* dash = strchr(id, '-');
     if (dash != 0) {
         // Handle <x>-Latin
         if (strcmp(dash+1, "Latin") == 0) {
