@@ -2,7 +2,7 @@
 ## others. All Rights Reserved.
 
 LOCALE EXPLORER  :  by Steven R. Loomis, IBM
-----------------------------
+-----------------------------------
 2004-May-27  locALE management
   * merge script with language.  "en, ja, zh, zh-Hant, ..."
   * merge region with variant.  "AM, AM-REVISED, US, ..."
