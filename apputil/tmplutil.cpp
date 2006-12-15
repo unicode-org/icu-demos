@@ -115,8 +115,8 @@ U_CAPI void toHex(UnicodeString &dest, const UnicodeString &src) {
 //                       the html for the page.
 //
 U_CAPI void insertTemplateFile(UnicodeString &dest,        // Target UnicodeString
-                        char *templateFileName,     //  File name of template.
-                        char *insertPointMarker)    //  A string dest that marks the
+                        const char *templateFileName,     //  File name of template.
+                        const char *insertPointMarker)    //  A string dest that marks the
                                                     //    desired insertion point
 {
     UFILE          *templFile;
