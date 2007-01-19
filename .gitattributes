@@ -96,6 +96,15 @@ apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
 apputil/data/main.css svneol=native#text/css
 convexp/convexp-header.html svneol=native#text/html
+datacustom/gendatadep/datacustom-header.html -text
+datacustom/gendatadep/gendatadep.cpp -text
+datacustom/gendatadep/gendatadep.vcproj -text
+datacustom/gendatadep/listmod.cpp -text
+datacustom/gendatadep/listmod.h -text
+datacustom/gendatadep/makedata.mak -text
+datacustom/gendatadep/resources/datadep.mk -text
+datacustom/gendatadep/resources/pkgdatain.txt -text
+datacustom/gendatadep/resources/root.txt -text
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
 icudemos/makedata.mak -text

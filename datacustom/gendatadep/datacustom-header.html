@@ -1,0 +1,562 @@
+<!-- Copyright (C) 2006-2007, IBM and others. All Rights Reserved. -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Description" content="Here is a tool to create a custom ICU data library."/>
+<meta name="Abstract" content="Here is a tool to create a custom ICU data library."/>
+<meta name="Keywords" content="ICU, data library customizer, customiser"/>
+<meta name="Robots" content="index,nofollow"/>
+<title>ICU Tool - Data Library Customizer</title>
+<link rel="stylesheet" type="text/css" href="./icudemos/icu.css" />
+<link rel="stylesheet" type="text/css" href="./icudemos/main.css" />
+<link rel="SHORTCUT ICON" href="//www.icu-project.org/favicon.ico"/>
+<style type="text/css">
+/*<![CDATA[*/
+span.hide {
+    display: none;
+}
+table.linkGroup tr.hide {
+    display: none;
+}
+table.linkGroup caption {
+    color: #888888;
+}
+div.itemGroup {
+    margin-left: 2em;
+    display: none;
+}
+th.clickable {
+	cursor: pointer;
+}
+tr.unselected {
+	background-color: #EEEEEE;
+	color: #646464;
+}
+table.linkGroup th,
+table.linkGroup td{
+    border-top:#ccc solid 1px;
+    border-left:#ccc solid 1px;
+    padding-left:5px;
+    padding-right:4px;
+}
+table.linkGroup {
+    border-right:#ccc solid 1px;
+    border-bottom:#ccc solid 1px;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+td.s { /* size column */
+    text-align: right;
+    vertical-align: bottom;
+}
+td.nw { /* nowrap a column */
+    white-space: nowrap;
+}
+span.expander {
+    border-width: 1px;
+    border-style: solid;
+    background-color: #EEEEEE;
+    color: #111111;
+    text-decoration: none;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    padding-top: 0em;
+    padding-bottom: 0em;
+    line-height: 2em;
+    vertical-align: top;
+    font-size: 75%;
+    font-weight: bold;
+    cursor: pointer;
+}
+button {
+    margin: 0.2em;
+}
+/*]]>*/
+</style>
+<script type="text/javascript">
+//<![CDATA[
+function initPage() {
+	var forms = document.forms;
+	for (var i = 0; i < forms.length; i++) {
+		forms[i].reset();
+	}
+	initializeItems();
+}
+
+/*
+Calling this function toggles the display a set of subitems.
+@param divId The identifier of a division.
+*/
+function ShowHide(divId) {
+	var groupElem = document.getElementById(divId + '.group');
+	var selectorElem = document.getElementById(divId);
+	if (groupElem.style.display == 'block') {
+		groupElem.style.display = 'none';
+		selectorElem.innerHTML = '+';
+	}
+	else {
+		groupElem.style.display = 'block';
+		selectorElem.innerHTML = '\u2212';
+	}
+	selectorElem.blur();
+}
+
+/* 
+This function will update the size of a group and the total size when items in a group are selected.
+@param selectedItem The item that was selected.
+@param modifyDisplaySize Are the displayed size fields updated? Needed due to the performance of getElementById in IE 7.
+@param modifyRowClass Allow modification of the display class of the currently selected row. This has no effect on the dependencies.
+*/
+function modifySize(selectedItem, modifyDisplaySize, modifyRowClass) {
+	var checked = selectedItem.checked;
+	var currItemInfo = gItems[selectedItem.id];
+	var size = currItemInfo.size;
+
+	if (checked) {
+		// When an item is selected, make sure that the group checkbox is selected.
+		currItemInfo.group.checked = true;
+	}
+	else {
+		size = -size;
+	}
+	// If the row isn't hidden, show it as unselected
+	if (!defined(modifyRowClass) || modifyRowClass) {
+		var selectedRow = getParentByTagName(selectedItem, 'tr');
+		if (isSelectable(selectedRow)) {
+			selectedRow.className = (checked ? '' : 'unselected');
+		}
+	}
+	totalSize += size;
+	/* Update various sizes */
+	gSize[currItemInfo.group.id] += size;
+	if (!defined(modifyDisplaySize) || modifyDisplaySize) {
+		document.getElementById('totalSize.kilobytes').firstChild.nodeValue = Math.round(totalSize / 1024);
+		document.getElementById(currItemInfo.group.id + '.kilobytes').firstChild.nodeValue = Math.round(gSize[currItemInfo.group.id] / 1024);
+	}
+
+	// Check to see if we are selecting the child dependencies or unselecting the parent's dependencies?
+	var dependencyArray = (checked ? currItemInfo.dependsOn : currItemInfo.neededBy);
+	if (!defined(dependencyArray)) {
+		return;
+	}
+
+	// Now that the sizes are up to date, update the dependencies too.
+	var input;
+	var idx = dependencyArray.length;
+	while (idx-- > 0) {
+		input = dependencyArray[idx];
+		if (input.checked != checked) {
+			input.checked = checked;
+			// Recursion. Don't pass in group, since the dependency may be different in a different group
+			modifySize(input, modifyDisplaySize);
+		}
+		// else presume that the dependencies were already (or will be) handled to prevent infinite recursion.
+	}
+}
+
+var gLastGroupUsed = null;
+
+/* This is really a data structure */
+function ItemInfo(group, size, dependsOn, neededBy) {
+	if (gLastGroupUsed == null || gLastGroupUsed.id != group) {
+		gLastGroupUsed = document.getElementById(group);
+	}
+	this.group = gLastGroupUsed; // Cached reference to the group check box
+	this.size = size; // Size of this item.
+	this.dependsOn = dependsOn; // Array of cached check box items this item depends on
+	/* This resolution is done at page load time because IE 7 is so slow calling document.getElementById */
+	if (dependsOn != null) {
+		var idx = dependsOn.length;
+		while (idx-- > 0) {
+			this.dependsOn[idx] = document.getElementById(dependsOn[idx]);
+		}
+	}
+	this.neededBy = neededBy; // This inverse of dependsOn. These are the cached check box items that depend on this item.
+	/* This resolution is done at page load time because IE 7 is so slow calling document.getElementById */
+	if (neededBy != null) {
+		var idx = neededBy.length;
+		while (idx-- > 0) {
+			this.neededBy[idx] = document.getElementById(neededBy[idx]);
+		}
+	}
+}
+
+/* This function will select/unselect all items in a group. */
+function selectGroup(selectedItem, groupName) {
+	var selectedItemValue = selectedItem.checked;
+	var inputGroup = document.getElementById(groupName + '.link.group').getElementsByTagName('input');
+	var idx = inputGroup.length;
+	while (idx-- > 0) {
+		var inputItem = inputGroup[idx];
+		if (inputItem.checked != selectedItemValue) {
+			// Can't use the click() event because IE 7 is so slow.
+			// We use defaultChecked to set to the original value, which may be true or false.
+			var newCheckValue = (selectedItemValue ? inputItem.defaultChecked : false);
+			if (inputItem.checked != newCheckValue) {
+				inputItem.checked = newCheckValue;
+				modifySize(inputItem, false);
+			}
+		}
+		// else inputItem is already set to the correct value.
+	}
+	/* Update various sizes. modifySize() should have changed the values to their final values. */
+	document.getElementById('totalSize.kilobytes').firstChild.nodeValue = Math.round(totalSize / 1024);
+	document.getElementById(groupName + '.kilobytes').firstChild.nodeValue = Math.round(gSize[groupName] / 1024);
+}
+
+// @param packageInput The HTML object that was selected.
+function selectPackageType(packageInput) {
+	if (packageInput.checked) {
+		if (packageInput.id == 'ICU4C') {
+			modifySize(document.getElementById('ICU4C'), true, false);
+			modifySize(document.getElementById('ICU4J'), true, false);
+		}
+		else if (packageInput.id == 'ICU4J') {
+			modifySize(document.getElementById('ICU4C'), true, false);
+			modifySize(document.getElementById('ICU4J'), true, false);
+		}
+		else {
+			alert(packageInput.id + ' is an unknown package type');
+		}
+	}
+	// else someone miscalled this function
+}
+
+function isSelectable(row) {
+	return row.className != 'hide';
+}
+
+function filterRows() {
+	var filterTextValue = document.getElementById('filterText').value;
+	try {
+		var textToFind = new RegExp(filterTextValue, "i");
+		var headerRegex = new RegExp('<\\s?th\\s+.*>', "i");
+		var htmlRegex = new RegExp('<\\/?[^>]+>', "gi");
+		var rows = document.getElementById('packageRequest').getElementsByTagName("tr");
+		var foundCount = 0;
+		var hiddenCount = 0;
+		for (var i = 0; i < rows.length; i++) {
+			var row = rows[i];
+			var htmlStr = row.innerHTML;
+			// Ignore the headers
+			if (!htmlStr.match(headerRegex)) {
+				// Remove HTML and try to match it
+				if (htmlStr.replace(htmlRegex, ' ').match(textToFind)) {
+					if (isSelectable(rows[i])) {
+						row.style.display = '';
+						foundCount++;
+					}
+					else {
+						hiddenCount++;
+					}
+				}
+				else {
+					row.style.display = 'none';
+				}
+			}
+		}
+		var filterResultText = document.getElementById('filterResultText').firstChild;
+		if (foundCount == 1) {
+			filterResultText.nodeValue = '1 result was found';
+		}
+		else {
+			filterResultText.nodeValue = foundCount + ' results were found';
+		}
+		/*if (hiddenCount == 1) {
+			filterResultText.nodeValue += ' (1 result is hidden from view)';
+		}
+		else if (hiddenCount > 0) {
+			filterResultText.nodeValue += ' (' + hiddenCount + ' results are hidden from view)';
+		}*/
+		//parent.scrollTo(0, document.body.scrollHeight);
+	}
+	catch (e) {
+		alert('"' + filterTextValue + '" is not a valid regular expression to use for searching');
+	}
+	return false;
+}
+
+function selectFiltered(select) {
+	var filterTextValue = document.getElementById('filterText').value;
+	var rows = document.getElementById('packageRequest').getElementsByTagName("tr");
+	var foundCount = 0;
+	for (var i = 0; i < rows.length; i++) {
+		var row = rows[i];
+		if (row.style.display == '' && isSelectable(row)) {
+			var child = row.firstChild;
+			if (child.nodeName == 'TD') {
+				child = child.firstChild;
+				if (child.nodeName == 'INPUT' && child.checked != select) {
+					foundCount++;
+					child.checked = select;
+					modifySize(child);
+				}
+			}
+		}
+	}
+	var filterResultText = document.getElementById('filterResultText').firstChild;
+	var selectedStr = (select ? 'selected' : 'unselected');
+	filterResultText.nodeValue = ((foundCount == 1) ?
+		'1 result was ' + selectedStr :
+		foundCount + ' results were ' + selectedStr);
+	return false;
+}
+
+function clickGroups(symbol) {
+	var spans = document.getElementsByTagName("span");
+	//alert(spans.length);
+	for (var i = 0; i < spans.length; i++) {
+		var span = spans[i];
+		if (span.id.match(/\.link/) && span.innerHTML == symbol) {
+			ShowHide(span.id);
+		}
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Begin table sorting code
+// ---------------------------------------------------------------------------
+
+// Determine if a reference is defined
+function defined(o) {
+	return (o != null && typeof(o)!="undefined");
+};
+
+// Get a parent node with a given element name
+function getParentByTagName(node,tagName) {
+	if(node!=null) {
+		tagName = tagName.toUpperCase();
+		while (node=node.parentNode) {
+			if (node.nodeName && tagName==node.nodeName) {
+				return node;
+			}
+		}
+	}
+	return null;
+};
+
+// ==============================================
+// Functions for sorting Tables
+// ==============================================
+var Sort = {};
+
+// Compare two alphanumeric objects. It works like C's strcmp.
+Sort.AlphaNumeric = function(a,b) {
+	return ((a<b)?-1:((a!=b)?1:0));
+};
+
+Sort.Default = Sort.AlphaNumeric;
+
+Sort.NumericConversion = function(val) {
+	if (typeof(val)=="string") {
+		val = parseFloat(val.replace(/,/g,''));
+		if (val==null || isNaN(val)) {
+			val=0;
+		}
+	}
+	else if (typeof(val)!="number") {
+		val = 0;
+	}
+	return val;
+};
+
+Sort.Numeric = function(a,b) {
+	return Sort.NumericConversion(a)-Sort.NumericConversion(b);
+};
+
+Sort.IgnoreCaseConversion = function(val) {
+	return (((val==null)?"":""+val)).toLowerCase();
+};
+
+Sort.IgnoreCase = function(a,b) {
+	return Sort.AlphaNumeric(Sort.IgnoreCaseConversion(a),Sort.IgnoreCaseConversion(b));
+};
+
+Sort.NoConversion = function(val) {
+	return val;
+};
+
+// ==============================================
+// Functions for interacting with Tables
+// ==============================================
+var Table = {};
+
+/*
+Get the cellIndex value for a cell. This function is needed
+because of a Safari bug that causes cellIndex to exist but always be 0.
+This function will rewrite itself the first time it is called, when the
+functionality isn't needed.
+@param td The requested cell to get the index
+*/
+Table.getCellIndex = function(td) {
+	var tr = td.parentNode;
+	var cells = tr.cells;
+	if (defined(cells) && cells.length > 0) {
+		var cell = cells[cells.length-1];
+		if (defined(cell.cellIndex) && cell.cellIndex > 0) {
+			this.getCellIndex = function(td) {
+				return td.cellIndex;
+			};
+			return td.cellIndex;
+		}
+		// else this function may be called again when the cellIndex is > 0.
+		for (var i=0; i<cells.length; i++) {
+			if (tr.cells[i]==td) {
+				return i;
+			}
+		}
+	}
+	// else this function was called with a cell not in a row (bad function call)
+	// or the table is only one column wide.
+	return 0;
+};
+
+// ---------------------------------------------------------------------------
+/*
+Get the text value of a cell and its child nodes.
+If there are non-text elements, text will be try to be derived from those nodes.
+@param td The requested cell to get the value
+*/
+Table.getCellValue = function(td) {
+	if (td==null || !td.childNodes) {
+		return "";
+	}
+	var ret = "";
+	var childNodes = td.childNodes;
+	var childNodesLength = childNodes.length;
+	for (var idx = 0; idx < childNodesLength; idx++) {
+		var node = childNodes[idx];
+		if (node.nodeType==3) {
+			ret += node.nodeValue;
+		}
+		else if (node.nodeType==1) {
+			var nodeName = node.nodeName;
+			if (nodeName=="INPUT" && defined(node.value)) {
+				ret += node.value;
+			}
+			else if (nodeName=="SELECT" && node.selectedIndex>=0 && node.options) {
+				// Use the visible text
+				ret += node.options[node.selectedIndex].text;
+			}
+			else if (nodeName=="IMG" && node.name) {
+				// Use the NAME attribute
+				ret += node.name;
+			}
+			else {
+				ret += this.getCellValue(node); // recursion
+			}
+		}
+	}
+	return ret;
+};
+
+
+// Variable that stores information about the previously sorted tables.
+Table.lastSortedColumn = {};
+// Variable that stores an enumerated table identifier number information for
+// sorted tables that do not have an id.
+Table.defaultSortNum = 0;
+
+// ---------------------------------------------------------------------------
+/*
+Add this function to the onclick event of the header cell that you want to sort.
+Usage of this function requires tbody and thead to be used in the table being sorted.
+The tbody elements are sorted independent of each other.
+@param headerCell Usually just pass in the this pointer of the cell being clicked on.
+@param args A set of optional arguments to pass in for the sorting.
+	This may include the following
+	descending=[true,false] - The initial order of the sort.
+	sortType=[Sort.Numeric,Sort.IgnoreCase,...] - The type of sorting to perform.
+*/
+Table.sort = function(headerCell,args) {
+  var table, colIndex, sortType, descending;
+  if (!defined(args)) {
+    args = {};
+  }
+
+  if (headerCell==null || !defined(headerCell)) {
+    return;
+  }
+  // Get the actual column index (without any browser incompatibilities)
+  colIndex = this.getCellIndex(headerCell);
+
+  // Get the the table of the header cell.
+  table = getParentByTagName(headerCell,"TABLE");
+
+  // Determine how to sort the column
+  sortType = ((!defined(args['sortType'])) || (typeof(args['sortType'])!="function")) ? Sort.Default : args['sortType'];
+
+  // If the table doesn't have an ID, assign an id.
+  if (table.id == '') {
+    table.id = 'DefaultSortID' + this.defaultSortNum++;
+  }
+  // Determine the order of the sort operation
+  if (defined(this.lastSortedColumn[table.id])) {
+    var lastCell = this.lastSortedColumn[table.id]['header'];
+    lastCell.lastChild.nodeValue = lastCell.lastChild.nodeValue.replace(new RegExp(' [\u2191\u2193]$', ""), '');
+    if (this.getCellIndex(lastCell)==colIndex) {
+      descending = !(this.lastSortedColumn[table.id]['descending']);
+    } else if (defined(args['descending']) && typeof(args['descending'])=="boolean") {
+      descending = args['descending'];
+    } else {
+      descending = false;
+    }
+  }
+  headerCell.lastChild.nodeValue += (descending ? ' \u2191' : ' \u2193');
+
+  // If standard sorting functions are used, convert each cell value in advance using a conversion
+  // function, then sort by alphanumeric so sorting is much faster
+  var sortConversion = Sort.NoConversion;
+  if (sortType==Sort.IgnoreCase) {
+    sortConversion = Sort.IgnoreCaseConversion;
+    sortType=Sort.AlphaNumeric;
+  } else if (sortType==Sort.Numeric) {
+    sortConversion = Sort.NumericConversion;
+    sortType=Sort.AlphaNumeric;
+  }
+  // else use the argument value, which may be Sort.Default
+
+  // Save information about the column to sort so that clicking
+  // the header cell again will reverse the sort order
+  this.lastSortedColumn[table.id] = {'header':headerCell, 'descending':descending};
+
+  // Independently sort each tbody 
+  var bodies = table.getElementsByTagName("TBODY");
+  if (bodies==null || bodies.length==0) {
+    return;
+  }
+  for (var i=0; i < bodies.length; i++) {
+    var currTableBody = bodies[i];
+    var currRows = currTableBody.rows;
+    var tempRows = [];
+
+    // Construct a separate intermediate array that will store the converted
+    // values and references to the actual rows.
+    var currRow;
+    var currRowIndex;
+    for (currRowIndex = 0; currRow = currRows[currRowIndex]; currRowIndex++) {
+      tempRows[currRowIndex] = [sortConversion(this.getCellValue(currRow.cells[colIndex])), currRow];
+    }
+
+    // Sort the intermediate array
+    var sortOrderFunc;
+    if (descending) {
+      sortOrderFunc = function(a,b) {return sortType(b[0],a[0]);};
+    } else {
+      sortOrderFunc = function(a,b) {return sortType(a[0],b[0]);};
+    };
+    tempRows.sort(sortOrderFunc);
+
+    // Move the rows to the new sorted order.
+    // Appending an existing DOM object moves the row to the new location.
+    currRowIndex=0;
+    while (currRow=tempRows[currRowIndex++]) {
+      currTableBody.appendChild(currRow[1]);
+    }
+  }
+};
+
+// ------------------------------------------------------------------
+// End table sorting code
+// ------------------------------------------------------------------
+
+//]]>
+</script>
