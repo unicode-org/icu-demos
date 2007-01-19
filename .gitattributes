@@ -96,7 +96,7 @@ apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
 apputil/data/main.css svneol=native#text/css
 convexp/convexp-header.html svneol=native#text/html
-datacustom/gendatadep/datacustom-header.html -text
+datacustom/gendatadep/datacustom-header.html -text svneol=unset#text/html
 datacustom/gendatadep/gendatadep.cpp -text
 datacustom/gendatadep/gendatadep.vcproj -text
 datacustom/gendatadep/listmod.cpp -text
