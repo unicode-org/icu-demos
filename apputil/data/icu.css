@@ -116,7 +116,7 @@ a.sidebar2:hover {
 /* This is the faded header at the top */
 td.fadedtop {
 	background-color: #006699;
-	background-image: url(http://icu.sourceforge.net/images/gr100.gif);
+	background-image: url(./lines-gradient.gif);
 }
 
 /* Related site on the left */
