@@ -41,7 +41,7 @@ RB_FILES = $(RESSRC:.txt=.res)
 RB_FILES_WITH_DIR = $(RESSRC_WITH_DIR:.txt=.res)
 
 # This target should build all the data files
-ALL : GODATA  $(RB_FILES) "$(DLL_OUTPUT)\$(PKG).lib" GOBACK 
+ALL : GODATA "$(DLL_OUTPUT)\$(PKG).lib" GOBACK 
 	@echo All targets are up to date
 
 #invoke pkgdata
