@@ -142,7 +142,6 @@ nbrowser/normalization-header.html svneol=native#text/html
 redemo/redemo.html svneol=native#text/html
 scompare/scompare-content-templ.html svneol=native#text/html
 scompare/scompare-page-templ.html svneol=native#text/html
-scompare/scompare.html svneol=native#text/html
 test/testdata/uni-text.bin -text
 translitdemo/data/translit_main.html svneol=native#text/html
 translitdemo/data/translit_nub.html svneol=native#text/html
