@@ -69,16 +69,30 @@ span.expander {
 button {
     margin: 0.2em;
 }
+legend {
+    font-weight: bold;
+}
+fieldset {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ccc;
+    padding: 0.75em;
+}
+
 /*]]>*/
 </style>
 <script type="text/javascript">
 //<![CDATA[
 function initPage() {
+	resetForms();
+	initializeItems();
+}
+
+function resetForms() {
 	var forms = document.forms;
 	for (var i = 0; i < forms.length; i++) {
 		forms[i].reset();
 	}
-	initializeItems();
 }
 
 /*
@@ -152,6 +166,7 @@ function modifySize(selectedItem, modifyDisplaySize, modifyRowClass) {
 	}
 }
 
+// cache for ItemInfo constructor
 var gLastGroupUsed = null;
 
 /* This is really a data structure */
@@ -284,10 +299,13 @@ function selectFiltered(select) {
 			var child = row.firstChild;
 			if (child.nodeName == 'TD') {
 				child = child.firstChild;
-				if (child.nodeName == 'INPUT' && child.checked != select) {
-					foundCount++;
-					child.checked = select;
-					modifySize(child);
+				if (child.nodeName == 'LABEL') {
+					child = child.firstChild;
+					if (child.nodeName == 'INPUT' && child.checked != select) {
+						foundCount++;
+						child.checked = select;
+						modifySize(child);
+					}
 				}
 			}
 		}
@@ -310,6 +328,70 @@ function clickGroups(symbol) {
 		}
 	}
 }
+
+// ---------------------------------------------------------------------------
+// Begin XML submission communication
+// ---------------------------------------------------------------------------
+
+function statusUpdate() {
+	if(this.readyState == 3) { // Receiving
+		document.getElementById('progressOutput').firstChild.nodeValue = "3";
+	}
+	else if(this.readyState == 4) { // Loaded
+		if (this.status == 200) {
+			document.getElementById('progressOutput').firstChild.nodeValue = this.responseText;
+		}
+		else {
+			document.getElementById('progressOutput').firstChild.nodeValue = "Error " + this.status;
+		}
+	}
+	alert("this.readyState=" + this.readyState);
+}
+
+
+function generatePackageRequest() {
+	var xmlDoc = "";
+	var items = document.getElementsByTagName("input");
+	xmlDoc += "<package>\n";
+	xmlDoc += "<type version=\"" + document.getElementById("version").getAttribute("value") + "\">"
+		+ document.getElementById("packagetype").getAttribute("value") + "</type>\n";
+	xmlDoc += "<items>\n";
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if (item.getAttribute("name") == "item" && item.checked) {
+			var row = getParentByTagName(item, "TR");
+			xmlDoc += "<item" + (isSelectable(row) ? "" : " hidden=\"1\"") + ">" + item.getAttribute("value") + "</item>\n";
+		}
+	}
+	xmlDoc += "</items>\n";
+	xmlDoc += "</package>\n";
+	return xmlDoc;
+}
+
+function submitPackageRequest() {
+	var xmlReq = new XMLHttpRequest();
+	xmlReq.open("POST", "datacustom");
+	xmlReq.setRequestHeader('content-type', 'text/xml; charset=UTF-8');
+	xmlReq.onreadystatechange = function() {
+		if(xmlReq.readyState == 4) { // Loaded
+			var progressNode = document.getElementById('progressOutput').firstChild;
+			if (xmlReq.status == 200) {
+				progressNode.nodeValue = xmlReq.responseText;
+			}
+			else {
+				progressNode.nodeValue = "Error " + xmlReq.status + ": " + xmlReq.statusText;
+			}
+		}
+	};
+	var xmlDoc = generatePackageRequest();
+	//document.getElementById('progressOutput').firstChild.nodeValue = xmlDoc;
+	xmlReq.send(xmlDoc);
+	return false; // Don't do a traditional submit
+}
+
+// ------------------------------------------------------------------
+// End XML submission communication
+// ------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Begin table sorting code

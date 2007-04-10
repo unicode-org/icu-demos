@@ -398,6 +398,9 @@ generateHTML(Package *pkg, UErrorCode &status) {
             if (hidden) {
                 dataList += UnicodeString("<span class=\"hide\">");
             }
+            else {
+                dataList += UnicodeString("<label>");
+            }
             dataList += UnicodeString("<input type=\"checkbox\" name=\"item\" id=\"") + inputID
                 + UnicodeString("\" value=\"") + UnicodeString(currItem->name)
                 + UnicodeString("\" onclick=\"modifySize(this)\"") + checkedItem
@@ -406,9 +409,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
                 dataList += UnicodeString("</span>") + UnicodeString(currItem->name);
             }
             else {
-                dataList += UnicodeString("<label for=\"") + inputID
-                    + UnicodeString("\">") + UnicodeString(currItem->name)
-                    + UnicodeString("</label>");
+                dataList += UnicodeString(currItem->name) + UnicodeString("</label>");
             }
             dataList += UnicodeString("</td><td>") + getTranslation(currItem->name)
                 + UnicodeString("</td><td class=\"s\">") + UnicodeString(itemKilobyteSizeStr)
@@ -448,7 +449,9 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString(DEMO_BREAD_CRUMB_BAR);
     html += UnicodeString("<h1>ICU Data Library Customizer</h1>\n");
     html += UnicodeString("<noscript><p style=\"color: red;\">WARNING! Javascript must be enabled to allow this tool to work properly.</p></noscript>\n");
-    html += UnicodeString("<form method=\"post\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
+    //html += UnicodeString("<form method=\"post\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
+    // onsubmit="return false;" prevents a traditional form submission.
+    html += UnicodeString("<form onsubmit=\"submitPackageRequest();return false;\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
 
     html += dataList;
 
@@ -456,10 +459,12 @@ generateHTML(Package *pkg, UErrorCode &status) {
     // onfocus is needed on these radio buttons due to Opera
     // onclick is needed when reloading and focus moves elsewhere on the page.
     html += UnicodeString("<div>\n");
-    html += UnicodeString("<input type=\"radio\" name=\"packagetype\" value=\"ICU4C\" id=\"ICU4C\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" checked=\"checked\" /><label for=\"ICU4C\">ICU4C "U_ICU_VERSION"</label><br />\n");
-    html += UnicodeString("<input type=\"radio\" name=\"packagetype\" value=\"ICU4J\" id=\"ICU4J\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" /><label for=\"ICU4J\">ICU4J</label><br />\n");
-    html += UnicodeString("<input type=\"hidden\" name=\"version\" value=\""U_ICU_VERSION_SHORT"\" />\n");
-    html += UnicodeString("<input type=\"submit\" value=\"Get Data Library\" /><br />\n");
+    html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4C\" id=\"ICU4C\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" checked=\"checked\" />ICU4C "U_ICU_VERSION"</label><br />\n");
+    html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4J\" id=\"ICU4J\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" />ICU4J</label><br />\n");
+    html += UnicodeString("<input type=\"hidden\" name=\"version\" id=\"version\" value=\""U_ICU_VERSION_SHORT"\" />\n");
+    html += UnicodeString("<div id=\"progressOutput\" style=\"white-space: pre\">&nbsp;</div>\n");
+    //html += UnicodeString("<input type=\"submit\" value=\"Get Data Library\" /><br />\n");
+    html += UnicodeString("<button type=\"button\" onclick=\"submitPackageRequest()\">Get Data Library</button><br />\n");
     html += UnicodeString("</div>\n");
     html += UnicodeString("<p>The estimated uncompressed size of this data library is <span id=\"totalSize.kilobytes\">") + UnicodeString(kilobytesStr)
         + UnicodeString("</span> KB</p>\n");
@@ -467,25 +472,19 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString("<span onclick=\"ShowHide('advanced')\" id=\"advanced\" class=\"expander\">+</span>\n");
     html += UnicodeString("Advanced Options\n");
     html += UnicodeString("<div id=\"advanced.group\" class=\"itemGroup\">\n");
-    html += UnicodeString("<table style=\"border-width: 1px; border-style: solid; padding: 1em;\"><tr><td>\n");
+    html += UnicodeString("<table><tr><td>\n");
     html += UnicodeString("<form onsubmit=\"filterRows();return false;\" action=\"\">\n"); // return false prevents a submission
-    html += UnicodeString("<table cellspacing=\"0\" class=\"linkGroup\">\n");
-    html += UnicodeString("<tr><th>Item Filtering</th></tr>\n");
-    html += UnicodeString("<tr><td>\n");
+    html += UnicodeString("<fieldset><legend>Item Filtering</legend>\n");
     html += UnicodeString("<span id=\"filterResultText\">&nbsp;</span><br />\n");
     html += UnicodeString("<input type=\"text\" size=\"16\" id=\"filterText\" /> <button type=\"button\" onclick=\"filterRows();\">Filter Items</button><br />\n");
     html += UnicodeString("<button type=\"button\" onclick=\"selectFiltered(true)\">Select All</button>\n");
     html += UnicodeString("<button type=\"button\" onclick=\"selectFiltered(false)\">Deselect All</button><br />\n");
-    html += UnicodeString("</td></tr>\n");
-    html += UnicodeString("</table>\n");
-    html += UnicodeString("<table cellspacing=\"0\" class=\"linkGroup\">\n");
-    html += UnicodeString("<tr><th>Groups</th></tr>\n");
-    html += UnicodeString("<tr><td>\n");
+    html += UnicodeString("</fieldset>\n");
+    html += UnicodeString("</form>\n");
+    html += UnicodeString("<fieldset><legend>Groups</legend>\n");
     html += UnicodeString("<button type=\"button\" onclick=\"clickGroups('+')\">Expand All</button>\n");
     html += UnicodeString("<button type=\"button\" onclick=\"clickGroups('\\u2212')\">Contract All</button><br />\n");
-    html += UnicodeString("</td></tr>\n");
-    html += UnicodeString("</table>\n");
-    html += UnicodeString("</form>\n");
+    html += UnicodeString("</fieldset>\n");
     html += UnicodeString("</td></tr></table>\n");
     html += UnicodeString("</div><br /><br /><br />\n");
     insertTemplateFile(html, gHtmlFooter, NULL);

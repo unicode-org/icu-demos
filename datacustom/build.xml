@@ -1,0 +1,178 @@
+<!--
+/*
+*******************************************************************************
+* Copyright (C) 2007-2007, International Business Machines Corporation and    *
+* others. All Rights Reserved.                                                *
+*******************************************************************************
+*/
+-->
+<project name="DataCustom" default="web" basedir=".">
+    <target name="init">
+        <tstamp/>
+        <property name="src.dir" value="source"/>
+        <property name="build.dir" value="classes"/>
+        <property name="jar.file" value="datacustom.jar"/>
+        <!-- Load environment variables -->
+        <property environment="env"/>
+        
+        <path id="build.classpath">
+            <pathelement path="${build.dir}"/>
+        </path>
+
+        <mkdir dir="${build.dir}"/>
+        
+        <path id="project.class.path">
+            <pathelement path="${java.class.path}/"/>
+            <pathelement path="${build.dir}"/>
+        </path>
+        <echo message="java home: ${java.home}"/>
+        <echo message="java version: ${java.version}"/>
+        <echo message="ant java version: ${ant.java.version}"/>
+        <echo message="${ant.version}"/>
+    </target>
+
+    <!-- build everything but dist-related stuff -->
+    <target name="all" depends="web" description="build all primary targets"/>
+    <target name="tool" depends="init" description="build tool classes">
+        <javac includes="com/ibm/icu/datacustom/**/*.java"
+            excludes="**/CVS/**/*"
+            srcdir="${src.dir}"
+            destdir="${build.dir}"
+            classpathref="project.class.path"
+            source="1.5"
+            debug="on" deprecation="off"
+            encoding="ASCII"/>
+    </target>
+    <target name="test" depends="init,tool" description="build tests">
+        <javac includes="com/ibm/icu/datacustom/test/**/*.java"
+            excludes="**/CVS/**/*"
+            srcdir="${src.dir}"
+            destdir="${build.dir}"
+            classpathref="project.class.path"
+            source="1.4"
+            debug="on" deprecation="off"
+            encoding="ASCII"/>
+    </target>
+    <target name="clean" depends="init" description="remove all build targets">
+        <delete dir="${build.dir}"/>
+        <delete file="${jar.file}"/>
+    </target>
+    
+    <target name="jar" depends="all" description="build full 'datacustom.jar' jar file">
+        <jar jarfile="${jar.file}"
+            compress="true"
+            includes="com/ibm/icu/datacustom/**/*"
+            basedir="${build.dir}"/>
+    </target>
+    
+  <!-- SurveyTool (web) stuff follows ................. -->
+    
+    <!-- our very own init. -->
+    <target name="webInit" depends="init">
+        <!-- <tstamp/>  init already does this? -->
+        
+        <!-- Load environment variables -->
+        <property environment="env"/>
+        
+        <!-- TODO: document.. -->
+        <!-- for now: depends on tomcat (catalina) for servlet API. -->
+        <property name="tomcat.home"        value="${env.CATALINA_HOME}"/>
+        <condition property="is.tomcat.home.set" >
+                <isset property="env.CATALINA_HOME" />
+        </condition > 
+        <fail unless="is.tomcat.home.set" message="Please set the CATALINA_HOME environment variable to point at your Tomcat installation."/>   
+        
+        <property name="icu.home"           value="${env.ICU4J_HOME}"/>
+        
+        <property name="servlet.jar"        value="${tomcat.home}/lib/servlet-api.jar"/>
+
+        <property name="wardata" value="data"/>
+        <!-- Configure the custom Ant tasks for the Manager application -->
+        <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
+        <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"/>
+        <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"/>
+        <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"/>
+        <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"/>
+        <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"/>
+        <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>
+        <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>
+
+        <!-- Configure the context path for this application -->
+        <!-- property name="path"     value="/cldr-apps"/ -->
+
+        <!-- Configure properties to access the Manager application -->
+        <property name="url"      value="http://localhost:8080/manager"/>  <!-- TODO: support multiple, overrides -->
+        <property name="username" value="admin"/> <!-- TODO: support overrides -->
+        <!-- call ant with:  -Dpassword=adminpass to use the updating stuff --> 
+        
+        <property name="warfile" location="datacustom.war"/>
+
+        <!-- fileset id="otherjars" dir="${wardata}/jars">
+            <include name="**/*.jar"/>
+        </fileset -->
+
+        <path id="weblib.classpath">
+            <!-- fileset refid="otherjars"/ -->
+            <path refid="project.class.path"/>
+            <pathelement path="${servlet.jar}"/>
+        </path>
+
+        <echo message="weblib.classpath is set to = ${servlet.jar}"/>
+        
+    </target>    
+    
+    <!-- build all web related things -->
+    <target name="web" depends="webInit" description="build web classes">
+        <javac includes="com/ibm/icu/datacustom/*.java"
+            excludes="**/.svn/**/*"
+            srcdir="${src.dir}"
+            destdir="${build.dir}"
+            classpathref="weblib.classpath"
+            source="1.5"
+            debug="on" deprecation="off"
+            encoding="ASCII"/>
+    </target>
+ 
+    <!-- build as a WAR file -->
+    <target name="war" depends="web" description="Build war">        
+        <war destfile="${warfile}" webxml="${wardata}/datacustom.xml">
+            <classes dir="${build.dir}"/>
+
+            <!-- all other files in /root --> 
+            <zipfileset dir="${wardata}/root" excludes="**/CVS/**/*"/>
+            
+            <!-- include any other jars in /jars  -->
+            <!-- lib dir="${wardata}/jars" includes="*.jar" / --> 
+        </war>
+    </target>
+
+    <!-- deploy to the server -->
+    <target name="deploy" depends="webInit,war">
+      <!-- call ant with: -Dpassword=adminpass -dpath=/path to deploy -->
+      <deploy url="${url}" username="${username}" password="${password}"
+            path="${path}" war="${warfile}"/>
+    </target>
+
+    <!-- reload on the server - doesn't require building -->
+    <target name="reload" description="Reload SurveyTool application"
+          depends="webInit">
+        <reload  url="${url}" username="${username}" password="${password}"
+            path="${path}"/>
+    </target>
+
+    <!-- un-deploy from the server -->
+    <target name="undeploy" description="Remove SurveyTool application" depends="webInit">
+        <undeploy url="${url}" username="${username}" password="${password}"
+            path="${path}"/>
+    </target>
+  
+    <!-- redeploy to the server.  Builds first so we catch trouble early.
+        Note, this will fail if you haven't deployed the first time. -->
+    <target name="redeploy" description="Redeploy SurveyTool application" 
+        depends="webInit,war,undeploy,deploy">
+    </target>
+  <!-- for testing and development -->
+  <target name="icu4c" depends="init">
+    <ant dir="${env.ICU4C_DIR}/source/data" antfile="build.xml" target="all" />
+  </target>   
+</project>

@@ -96,6 +96,8 @@ apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
 apputil/data/main.css svneol=native#text/css
 convexp/convexp-header.html svneol=native#text/html
+datacustom/build.xml -text
+datacustom/data/datacustom.xml -text
 datacustom/gendatadep/datacustom-header.html -text svneol=unset#text/html
 datacustom/gendatadep/gendatadep.cpp -text
 datacustom/gendatadep/gendatadep.vcproj -text
@@ -105,6 +107,7 @@ datacustom/gendatadep/makedata.mak -text
 datacustom/gendatadep/resources/datadep.mk -text
 datacustom/gendatadep/resources/pkgdatain.txt -text
 datacustom/gendatadep/resources/root.txt -text
+datacustom/source/com/ibm/icu/datacustom/DataCustomizer.java -text
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
 icudemos/makedata.mak -text

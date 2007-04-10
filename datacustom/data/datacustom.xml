@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE web-app PUBLIC
+	"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	"http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+    <display-name>ICU Data Customizer</display-name>
+    <description>Applications used by the ICU project ( http://www.icu-project.org/ )</description>
+    <servlet>
+        <servlet-name>DataCustomizer</servlet-name>
+        <servlet-class>com.ibm.icu.datacustom.DataCustomizer</servlet-class>
+<!--
+        <init-param>
+            <param-name>ICU_DATA.home</param-name>
+            <param-value>data</param-value>
+            <description>This is the location of ICU's data files.</description>
+        </init-param> 
+  -->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DataCustomizer</servlet-name>
+        <url-pattern>/datacustom/*</url-pattern>
+    </servlet-mapping>
+</web-app>
+
