@@ -98,6 +98,7 @@ apputil/data/main.css svneol=native#text/css
 convexp/convexp-header.html svneol=native#text/html
 datacustom/build.xml -text
 datacustom/data/datacustom.xml -text
+datacustom/data/root/datapackage.xsd -text
 datacustom/gendatadep/datacustom-header.html -text svneol=unset#text/html
 datacustom/gendatadep/gendatadep.cpp -text
 datacustom/gendatadep/gendatadep.vcproj -text
