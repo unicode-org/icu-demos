@@ -20,10 +20,11 @@ import javax.servlet.http.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.*;
 
 /**
  * The main servlet class of the Data Custimization tool
@@ -32,19 +33,21 @@ public class DataCustomizer extends HttpServlet {
 
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
-    //private DocumentBuilderFactory docBuilder = DocumentBuilderFactory.newInstance();
+    public static final String NEWLINE = System.getProperty("line.separator");
 
     /** status * */
-    public static String icuDataHome = null;
+    public static String toolHome;
+    public static String toolHomeSrcDirStr;
+    public static String toolHomeRequestDirStr;
 
-    ServletConfig config = null;
-    DocumentBuilder xmlDocBuilder = null;
+    ServletConfig config;
+    DocumentBuilderFactory docBuilderFactory;
 
     public final void init(final ServletConfig config) throws ServletException {
         super.init(config);
 
-        icuDataHome = config.getInitParameter("ICU_DATA.home");
         this.config = config;
+
         doStartup();
     }
 
@@ -58,45 +61,103 @@ public class DataCustomizer extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException
     {
+        String sessionID = request.getSession().getId();
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Max-Age", 0);
 
-        // rest of these are XML
-        response.setContentType("text/xml; charset=utf-8");
-
         // Parse the request.
-//        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-//        StreamSource ss = new StreamSource("mySchema.xsd");
-//        Schema schema = factory.newSchema(ss);
-//        SAXParserFactory sf = SAXParserFactory.newInstance();
-//        sf.setNamespaceAware(true); 
-//        sf.setValidating(true);            
-//        SAXParser sp = sf.newSAXParser();
-//        sp.setProperty(SCHEMA_LANGUAGE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
-//        sp.setProperty(SCHEMA_SOURCE, schema);
-//        sp.parse(request.getInputStream(), dh);
-        
         PrintWriter writer = response.getWriter();
+        // You can't use getInputStream and getReader
+        //dumpRequest(request, writer);
         if (request.getContentType().startsWith("text/xml; ")) {
+            String filesToPackage = "";
+            String icuDataVersion;
             try {
-                Document xmlDoc = xmlDocBuilder.parse(request.getInputStream());
+                Document xmlDoc = getDocumentBuilder().parse(request.getInputStream());
                 NodeList pkgItems = xmlDoc.getElementsByTagName("item");
                 int itemsLen = pkgItems.getLength();
                 for (int itemIdx = 0; itemIdx < itemsLen; itemIdx++) {
                     String pkgItemName = pkgItems.item(itemIdx).getFirstChild().getNodeValue();
                     writer.println(pkgItemName + ",");
+                    filesToPackage += pkgItemName + NEWLINE;
                 }
+                icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
+            }
+            catch (ParserConfigurationException e) {
+                logger.warning(e.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                return;
             }
             catch (SAXException e) {
                 logger.warning(e.getMessage());
-                // TODO: Handle Error
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+                return;
+            }
+            File sessionDir = new File(toolHomeRequestDirStr + sessionID + File.separator);
+            if (sessionDir.exists()) {
+                String msg = sessionDir.getAbsolutePath() + " already exists.";
+                logger.warning(msg);
+                // TODO: What happens when a user submits a request twice and we haven't cleaned up?
+                //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                //return;
+            }
+            if (!sessionDir.mkdir()) {
+                String msg = sessionDir.getAbsolutePath() + " could not be created.";
+                logger.warning(msg);
+                // TODO: What happens when we run out space or it already exists?
+                //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                //return;
+            }
+            // TODO: Clean up after ourselves in case of a problem.
+            //sessionDir.deleteOnExit();
+            String packageList;
+            try {
+                packageList = sessionDir.getAbsolutePath() + File.separator + "package.lst";
+                PrintWriter dataToPackageWriter = new PrintWriter(packageList);
+                dataToPackageWriter.print(filesToPackage);
+                dataToPackageWriter.close();
+            }
+            catch (IOException e) {
+                String msg = "Could not write package list in " + sessionDir.getAbsolutePath();
+                logger.warning(msg);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                return;
+            }
+            String baseDataName = "icudt" + icuDataVersion + "l"; // TODO: Fix this endianness
+            String command = "icupkg -a " + packageList
+                + " -s " + toolHomeSrcDirStr + baseDataName 
+                + " -d " + sessionDir.getAbsolutePath()
+                + " new " + baseDataName + ".dat";
+            Process icupkg = Runtime.getRuntime().exec(command, null, sessionDir);
+            try {
+                icupkg.waitFor();
+            }
+            catch (InterruptedException e) {
+                String msg = "Packaging tool was interrupted.";
+                logger.warning(msg);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                return;
+            }
+            BufferedReader icupkgErrOut = new BufferedReader(new InputStreamReader(icupkg.getErrorStream()));
+            if (icupkg.exitValue() != 0) {
+                //String msg = "\"" + command + "\" failed with the following message:";
+                String msg = "";
+                String outLine = "";
+                while ((outLine = icupkgErrOut.readLine()) != null) {
+                    msg += outLine + ", ";
+                }
+                logger.warning(msg);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                return;
             }
         }
         else {
             dumpRequest(request, writer);
         }
+
+        response.setContentType("text/xml; charset=utf-8");
     }
 
 //  public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -131,6 +192,9 @@ public class DataCustomizer extends HttpServlet {
         writer.println("<h1>Data Request Dump</h1>");
         writer.println("<p>");
         writer.println("The following is diagnostic information of your request.");
+        writer.println("</p>");
+        writer.println("<p>");
+        writer.println("The current home directory is " + System.getProperty("user.name"));
         writer.println("</p>");
         writer.println("</td>");
         writer.println("</tr>");
@@ -170,6 +234,20 @@ public class DataCustomizer extends HttpServlet {
             writer.println("</tr>");
         }
         writer.println("</table>");
+
+        writer.println("<table border=\"1\">");
+        writer.println("<caption>Attribute Information</caption>");
+        Enumeration attribNames = request.getAttributeNames();
+        while (attribNames.hasMoreElements()) {
+            String name = (String) attribNames.nextElement();
+            writer.println("<tr>");
+            writer.println("  <th align=\"right\">" + name + ":</th>");
+            writer.println("  <td>" + request.getAttribute(name) + "</td>");
+            writer.println("</tr>");
+        }
+        writer.println("</table>");
+
+        
         writer.println("<samp><pre>");
         writer.println(convertBufferedReaderToString(request.getReader()));
         writer.println("</pre></samp>");
@@ -190,16 +268,74 @@ public class DataCustomizer extends HttpServlet {
         logger.info("Starting ICU Data Customization tool. Memory in use: "
                 + usedKB() + "KB");
         isSetup = true;
-        try {
-            xmlDocBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            // TODO: Set schema validator
-        }
-        catch (ParserConfigurationException e) {
-            logger.warning(e.getMessage());
+
+        toolHome = config.getInitParameter("DATA_CUSTOM.home");
+        if (toolHome == null) {
+            toolHome = System.getProperty("user.home") + "datacustom" + File.separator;
         }
 
+        logger.info(toolHome + " will be used for reading and writing data.");
+        
+        File toolHomeDir = new File(toolHome);
+        if (!toolHomeDir.exists()) {
+            if (toolHomeDir.mkdirs()) {
+                logger.info(toolHomeDir.getAbsolutePath() + " was created.");
+            }
+            else {
+                logger.warning(toolHomeDir.getAbsolutePath() + " could not be created.");
+            }
+        }
+        if (!toolHomeDir.isDirectory() || !toolHomeDir.canRead()) {
+            logger.warning(toolHomeDir.getAbsolutePath() + " is not a valid data directory.");
+        }
+        else {
+            /* Check and create required subdirectories. */
+            File toolHomeSrcDir = new File(toolHome + "source");
+            toolHomeSrcDirStr = toolHomeSrcDir.getAbsolutePath() + File.separator;
+            if (!toolHomeSrcDir.exists()) {
+                logger.warning(toolHomeSrcDirStr + " does not exist.");
+            }
+            else if (!toolHomeSrcDir.isDirectory() || !toolHomeSrcDir.canRead()) {
+                logger.warning(toolHomeSrcDirStr + " is not a valid directory.");
+            }
+            else if (toolHomeDir.canWrite()) {
+                logger.warning(toolHomeSrcDirStr + " shouldn't be writable for security reasons.");
+            }
+            
+            File toolHomeRequestDir = new File(toolHome + "request");
+            toolHomeRequestDirStr = toolHomeRequestDir.getAbsolutePath() + File.separator;
+            if (!toolHomeRequestDir.exists()) {
+                if (!toolHomeRequestDir.mkdir()) {
+                    logger.warning(toolHomeRequestDirStr + " could not be created.");
+                }
+            }
+            if (!toolHomeRequestDir.isDirectory() || !toolHomeRequestDir.canRead() || !toolHomeRequestDir.canWrite()) {
+                logger.warning(toolHomeRequestDirStr + " is not a valid directory.");
+            }
+        }
+        
+        try {
+            docBuilderFactory = DocumentBuilderFactory.newInstance();
+            /* TODO: Get the real location of the Schema file. */
+            Source schemaFile = new StreamSource(new File("webapps/datacustom/datapackage.xsd"));
+            /** A Schema is thread safe. A Validator is thread unsafe. */
+            Schema dataRequestSchema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(schemaFile);
+            docBuilderFactory.setSchema(dataRequestSchema);
+        }
+        catch (SAXException e) {
+            logger.warning(e.getMessage());
+        }
+        
         logger.info("ICU Data Customization tool ready for requests. Memory in use: "
                         + usedKB() + "KB");
+    }
+    
+    /**
+     * DocumentBuilder and DocumentBuilderFactory are not thread safe.
+     * Synchronized to ensure thread safety.
+     */
+    private synchronized DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+        return docBuilderFactory.newDocumentBuilder();
     }
 
     public void destroy() {

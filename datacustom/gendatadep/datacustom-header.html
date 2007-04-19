@@ -333,28 +333,14 @@ function clickGroups(symbol) {
 // Begin XML submission communication
 // ---------------------------------------------------------------------------
 
-function statusUpdate() {
-	if(this.readyState == 3) { // Receiving
-		document.getElementById('progressOutput').firstChild.nodeValue = "3";
-	}
-	else if(this.readyState == 4) { // Loaded
-		if (this.status == 200) {
-			document.getElementById('progressOutput').firstChild.nodeValue = this.responseText;
-		}
-		else {
-			document.getElementById('progressOutput').firstChild.nodeValue = "Error " + this.status;
-		}
-	}
-	alert("this.readyState=" + this.readyState);
-}
-
-
 function generatePackageRequest() {
 	var xmlDoc = "";
 	var items = document.getElementsByTagName("input");
 	xmlDoc += "<package>\n";
-	xmlDoc += "<type version=\"" + document.getElementById("version").getAttribute("value") + "\">"
-		+ document.getElementById("packagetype").getAttribute("value") + "</type>\n";
+	xmlDoc += "<type>\n";
+	xmlDoc += "<version>" + document.getElementById("version").getAttribute("value") + "</version>\n";
+	xmlDoc += "<target>" + (document.getElementById("ICU4C").checked ? "ICU4C" : "ICU4J") + "</target>\n";
+	xmlDoc += "</type>\n";
 	xmlDoc += "<items>\n";
 	for (var i = 0; i < items.length; i++) {
 		var item = items[i];
@@ -384,7 +370,6 @@ function submitPackageRequest() {
 		}
 	};
 	var xmlDoc = generatePackageRequest();
-	//document.getElementById('progressOutput').firstChild.nodeValue = xmlDoc;
 	xmlReq.send(xmlDoc);
 	return false; // Don't do a traditional submit
 }
