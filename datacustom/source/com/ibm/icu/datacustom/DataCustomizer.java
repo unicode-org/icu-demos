@@ -33,12 +33,16 @@ public class DataCustomizer extends HttpServlet {
 
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
+    
     public static final String NEWLINE = System.getProperty("line.separator");
+    private static final String FILE_GET = "get";
+    private static final String SESSION_ID = "id";
 
     /** status * */
     public static String toolHome;
     public static String toolHomeSrcDirStr;
     public static String toolHomeRequestDirStr;
+    private static boolean DEBUG_FILES = false;
 
     ServletConfig config;
     DocumentBuilderFactory docBuilderFactory;
@@ -62,13 +66,10 @@ public class DataCustomizer extends HttpServlet {
             throws IOException, ServletException
     {
         String sessionID = request.getSession().getId();
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        response.setHeader("Pragma", "no-cache");
-        response.setDateHeader("Max-Age", 0);
+        applyNoCache(response);
 
         // Parse the request.
-        PrintWriter writer = response.getWriter();
+        //PrintWriter writer = response.getWriter();
         // You can't use getInputStream and getReader
         //dumpRequest(request, writer);
         if (request.getContentType().startsWith("text/xml; ")) {
@@ -80,31 +81,29 @@ public class DataCustomizer extends HttpServlet {
                 int itemsLen = pkgItems.getLength();
                 for (int itemIdx = 0; itemIdx < itemsLen; itemIdx++) {
                     String pkgItemName = pkgItems.item(itemIdx).getFirstChild().getNodeValue();
-                    writer.println(pkgItemName + ",");
                     filesToPackage += pkgItemName + NEWLINE;
                 }
                 icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
             }
             catch (ParserConfigurationException e) {
-                logger.warning(e.getMessage());
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 return;
             }
             catch (SAXException e) {
-                logger.warning(e.getMessage());
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+                reportError(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
                 return;
             }
             File sessionDir = new File(toolHomeRequestDirStr + sessionID + File.separator);
+            String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
             if (sessionDir.exists()) {
-                String msg = sessionDir.getAbsolutePath() + " already exists.";
+                String msg = sessionDirStr + " already exists.";
                 logger.warning(msg);
                 // TODO: What happens when a user submits a request twice and we haven't cleaned up?
                 //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
                 //return;
             }
             if (!sessionDir.mkdir()) {
-                String msg = sessionDir.getAbsolutePath() + " could not be created.";
+                String msg = sessionDirStr + " could not be created.";
                 logger.warning(msg);
                 // TODO: What happens when we run out space or it already exists?
                 //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
@@ -114,58 +113,134 @@ public class DataCustomizer extends HttpServlet {
             //sessionDir.deleteOnExit();
             String packageList;
             try {
-                packageList = sessionDir.getAbsolutePath() + File.separator + "package.lst";
+                packageList = sessionDirStr + "package.lst";
+                if ((new File(packageList)).exists()) {
+                    reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
+                    return;
+                }
                 PrintWriter dataToPackageWriter = new PrintWriter(packageList);
                 dataToPackageWriter.print(filesToPackage);
                 dataToPackageWriter.close();
             }
             catch (IOException e) {
-                String msg = "Could not write package list in " + sessionDir.getAbsolutePath();
-                logger.warning(msg);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not write package list in " + sessionDir.getAbsolutePath());
                 return;
             }
             String baseDataName = "icudt" + icuDataVersion + "l"; // TODO: Fix this endianness
-            String command = "icupkg -a " + packageList
-                + " -s " + toolHomeSrcDirStr + baseDataName 
-                + " -d " + sessionDir.getAbsolutePath()
-                + " new " + baseDataName + ".dat";
-            Process icupkg = Runtime.getRuntime().exec(command, null, sessionDir);
-            try {
-                icupkg.waitFor();
-            }
-            catch (InterruptedException e) {
-                String msg = "Packaging tool was interrupted.";
-                logger.warning(msg);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+            String generatedDatFile = sessionDirStr + baseDataName + ".dat";
+            String generatedZipFile = sessionDirStr + baseDataName + ".zip ";
+            if ((new File(generatedZipFile)).exists()) {
+                reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
                 return;
             }
-            BufferedReader icupkgErrOut = new BufferedReader(new InputStreamReader(icupkg.getErrorStream()));
-            if (icupkg.exitValue() != 0) {
-                //String msg = "\"" + command + "\" failed with the following message:";
-                String msg = "";
-                String outLine = "";
-                while ((outLine = icupkgErrOut.readLine()) != null) {
-                    msg += outLine + ", ";
-                }
-                logger.warning(msg);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+            String pkgCommand = "icupkg -a " + packageList
+                + " -s " + toolHomeSrcDirStr + baseDataName
+                + " new " + generatedDatFile;
+            if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
                 return;
+            }
+            /*
+             * -1 Reduces CPU usage, and results in a zip file 3-5% larger than standard compression
+             * -9 Increases CPU usage, and results in a zip file 0-1% smaller than standard compression
+             */
+            String compressCommand = "zip -1q " + generatedZipFile + baseDataName + ".dat";
+            if (!runCommand(response, compressCommand, sessionDir, "Compression tool")) {
+                return;
+            }
+            //writer.print(filesToPackage);
+            /*response.setContentType("application/zip");
+            InputStream inZip = new FileInputStream(generatedZipFile);
+            OutputStream outStream = response.getOutputStream();
+            byte []zipBytes = new byte[inZip.available()];
+            inZip.read(zipBytes);
+            outStream.write(zipBytes);*/
+            
+            // Redirect with the result.
+            response.getWriter().print(request.getRequestURL() + "?" + FILE_GET + "=" + baseDataName + ".zip");
+
+            if (!DEBUG_FILES) {
+                (new File(generatedDatFile)).delete();
+                (new File(packageList)).delete();
             }
         }
         else {
+            PrintWriter writer = response.getWriter();
             dumpRequest(request, writer);
         }
 
-        response.setContentType("text/xml; charset=utf-8");
+        //response.setContentType("text/xml; charset=utf-8");
     }
 
-//  public void doGet(HttpServletRequest request, HttpServletResponse response)
-//          throws IOException, ServletException
-//  {
-//      doPost(request, response);
-//  }
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException
+    {
+        String sessionID = request.getSession(true).getId();
+        applyNoCache(response);
+        if (sessionID == null) {
+            reportError(response, HttpServletResponse.SC_FORBIDDEN, "Session is stale");
+            return;
+        }
+        //PrintWriter writer = response.getWriter();
+        //dumpRequest(request, writer);
+        String fileToSend = request.getParameter(FILE_GET);
+        if (fileToSend == null || fileToSend.indexOf('/') != -1 || fileToSend.indexOf('\\') != -1) {
+            reportError(response, HttpServletResponse.SC_BAD_REQUEST, fileToSend + " is not a valid requested file");
+            return;
+        }
+        
+        File generatedFile = new File(toolHomeRequestDirStr + sessionID + File.separator + fileToSend);
+        if (!generatedFile.exists()) {
+            reportError(response, HttpServletResponse.SC_GONE, fileToSend + " has already been downloaded.");
+            return;
+        }
+        
+        response.setContentType("application/zip");
+        InputStream inZip = new FileInputStream(generatedFile);
+        OutputStream outStream = response.getOutputStream();
+        byte []zipBytes = new byte[inZip.available()];
+        inZip.read(zipBytes);
+        inZip.close();
+        outStream.write(zipBytes);
+        outStream.flush();
+        if (!DEBUG_FILES) {
+            generatedFile.delete();
+            (new File(toolHomeRequestDirStr + sessionID)).delete();
+        }
+
+        //writer.println(fileToSend);
+        //writer.println(generatedFile);
+        //response.setContentType("text/html; charset=utf-8");
+    }
     
+    private void reportError(HttpServletResponse response, int httpStatus, String msg) throws IOException {
+        logger.warning(msg);
+        response.sendError(httpStatus, msg);
+    }
+
+    private boolean runCommand(HttpServletResponse response, String command, File execDir, String genericName)
+        throws IOException
+    {
+        Process icupkg = Runtime.getRuntime().exec(command, null, execDir);
+        try {
+            icupkg.waitFor();
+        }
+        catch (InterruptedException e) {
+            reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, genericName + " was interrupted.");
+            return false;
+        }
+        BufferedReader icupkgErrOut = new BufferedReader(new InputStreamReader(icupkg.getErrorStream()));
+        if (icupkg.exitValue() != 0) {
+            //String msg = "\"" + command + "\" failed with the following message:";
+            String msg = "";
+            String outLine = "";
+            while ((outLine = icupkgErrOut.readLine()) != null) {
+                msg += outLine + "\n";
+            }
+            reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+            return false;
+        }
+        return true;
+    }
     private String convertBufferedReaderToString(BufferedReader reader)
         throws IOException
     {
@@ -328,6 +403,13 @@ public class DataCustomizer extends HttpServlet {
         
         logger.info("ICU Data Customization tool ready for requests. Memory in use: "
                         + usedKB() + "KB");
+    }
+    
+    private void applyNoCache(HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Max-Age", 0);
     }
     
     /**

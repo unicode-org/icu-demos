@@ -462,7 +462,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4C\" id=\"ICU4C\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" checked=\"checked\" />ICU4C "U_ICU_VERSION"</label><br />\n");
     html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4J\" id=\"ICU4J\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" />ICU4J</label><br />\n");
     html += UnicodeString("<input type=\"hidden\" name=\"version\" id=\"version\" value=\""U_ICU_VERSION_SHORT"\" />\n");
-    html += UnicodeString("<div id=\"progressOutput\" style=\"white-space: pre\">&nbsp;</div>\n");
+    html += UnicodeString("<div id=\"progressOutput\" style=\"white-space: pre; font-family: monospace; color: red\">&nbsp;</div>\n");
     //html += UnicodeString("<input type=\"submit\" value=\"Get Data Library\" /><br />\n");
     html += UnicodeString("<button type=\"button\" onclick=\"submitPackageRequest()\">Get Data Library</button><br />\n");
     html += UnicodeString("</div>\n");

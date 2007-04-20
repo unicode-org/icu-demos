@@ -360,12 +360,23 @@ function submitPackageRequest() {
 	xmlReq.setRequestHeader('content-type', 'text/xml; charset=UTF-8');
 	xmlReq.onreadystatechange = function() {
 		if(xmlReq.readyState == 4) { // Loaded
-			var progressNode = document.getElementById('progressOutput').firstChild;
+			var progressNode = document.getElementById('progressOutput');
 			if (xmlReq.status == 200) {
-				progressNode.nodeValue = xmlReq.responseText;
+				progressNode.style.color = "";
+				progressNode.appendChild(document.createTextNode("Your package is now "));
+				var link = document.createElement("a");
+				link.setAttribute("href", xmlReq.responseText);
+				progressNode.appendChild(link);
+				link.appendChild(document.createTextNode("available"));
+				progressNode.appendChild(document.createTextNode("."));
+				//progressNode.firstChild.nodeValue = "Your package is now <a href=\"" + xmlReq.responseText + "\">available</a>.";
 			}
 			else {
-				progressNode.nodeValue = "Error " + xmlReq.status + ": " + xmlReq.statusText;
+				progressNode.style.color = "red";
+				while (defined(progressNode.firstChild)) {
+					progressNode.removeChild(progressNode.firstChild);
+				}
+				progressNode.appendChild(document.createTextNode("Error " + xmlReq.status + ": " + xmlReq.statusText));
 			}
 		}
 	};
