@@ -31,18 +31,23 @@ import javax.xml.validation.*;
  */
 public class DataCustomizer extends HttpServlet {
 
+    // TODO: Add comment to manifest and .dat file about source of customizations.
+    
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
     
     public static final String NEWLINE = System.getProperty("line.separator");
-    private static final String FILE_GET = "get";
-    private static final String SESSION_ID = "id";
+    public static final String ENDIAN_STR = "l"; // TODO: Fix this endianness
 
     /** status * */
     public static String toolHome;
     public static String toolHomeSrcDirStr;
     public static String toolHomeRequestDirStr;
     private static boolean DEBUG_FILES = false;
+    
+    private enum ICUDataFormat {
+        ICU4C, ICU4J
+    }
 
     ServletConfig config;
     DocumentBuilderFactory docBuilderFactory;
@@ -74,16 +79,46 @@ public class DataCustomizer extends HttpServlet {
         //dumpRequest(request, writer);
         if (request.getContentType().startsWith("text/xml; ")) {
             String filesToPackage = "";
+            Vector filesToPackageVect = new Vector();
             String icuDataVersion;
+            ICUDataFormat icuDataType;
+            File sessionDir = new File(toolHomeRequestDirStr + sessionID + File.separator);
+            if (sessionDir.exists()) {
+                String msg = sessionID + " directory already exists.";
+                logger.warning(msg);
+                // TODO: What happens when a user submits a request twice and we haven't cleaned up?
+                //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                //return;
+            }
+            if (!sessionDir.mkdir()) {
+                String msg = sessionID + " directory could not be created.";
+                logger.warning(msg);
+                // TODO: What happens when we run out space or it already exists?
+                //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+                //return;
+            }
             try {
                 Document xmlDoc = getDocumentBuilder().parse(request.getInputStream());
                 NodeList pkgItems = xmlDoc.getElementsByTagName("item");
+                icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
+                icuDataType = xmlDoc.getElementsByTagName("type").item(0).getFirstChild().getNodeValue().equals("ICU4C") ? ICUDataFormat.ICU4C : ICUDataFormat.ICU4J;
+                String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
                 int itemsLen = pkgItems.getLength();
                 for (int itemIdx = 0; itemIdx < itemsLen; itemIdx++) {
                     String pkgItemName = pkgItems.item(itemIdx).getFirstChild().getNodeValue();
-                    filesToPackage += pkgItemName + NEWLINE;
+                    // The schema should have already taken care of the file pattern authentication. 
+                    File fileToRead = new File(toolHomeSrcDirStr + baseDataName + File.separator + pkgItemName);
+                    if (!fileToRead.exists() || !fileToRead.canRead()) {
+                        reportError(response, HttpServletResponse.SC_NOT_FOUND, pkgItemName + " was not found.");
+                        return;
+                    }
+                    if (icuDataType == ICUDataFormat.ICU4C) {
+                        filesToPackage += pkgItemName + NEWLINE;
+                    }
+                    else {
+                        filesToPackageVect.add(pkgItemName);
+                    }
                 }
-                icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
             }
             catch (ParserConfigurationException e) {
                 reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -93,74 +128,14 @@ public class DataCustomizer extends HttpServlet {
                 reportError(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
                 return;
             }
-            File sessionDir = new File(toolHomeRequestDirStr + sessionID + File.separator);
-            String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
-            if (sessionDir.exists()) {
-                String msg = sessionDirStr + " already exists.";
-                logger.warning(msg);
-                // TODO: What happens when a user submits a request twice and we haven't cleaned up?
-                //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
-                //return;
-            }
-            if (!sessionDir.mkdir()) {
-                String msg = sessionDirStr + " could not be created.";
-                logger.warning(msg);
-                // TODO: What happens when we run out space or it already exists?
-                //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
-                //return;
-            }
             // TODO: Clean up after ourselves in case of a problem.
             //sessionDir.deleteOnExit();
-            String packageList;
-            try {
-                packageList = sessionDirStr + "package.lst";
-                if ((new File(packageList)).exists()) {
-                    reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
-                    return;
-                }
-                PrintWriter dataToPackageWriter = new PrintWriter(packageList);
-                dataToPackageWriter.print(filesToPackage);
-                dataToPackageWriter.close();
+            if (icuDataType == ICUDataFormat.ICU4C) {
+                generateICU4CData(request, response, filesToPackage, icuDataVersion, sessionID, sessionDir);
+                // Don't do anything after this. The request may or may not have failed.
             }
-            catch (IOException e) {
-                reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not write package list in " + sessionDir.getAbsolutePath());
-                return;
-            }
-            String baseDataName = "icudt" + icuDataVersion + "l"; // TODO: Fix this endianness
-            String generatedDatFile = sessionDirStr + baseDataName + ".dat";
-            String generatedZipFile = sessionDirStr + baseDataName + ".zip ";
-            if ((new File(generatedZipFile)).exists()) {
-                reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
-                return;
-            }
-            String pkgCommand = "icupkg -a " + packageList
-                + " -s " + toolHomeSrcDirStr + baseDataName
-                + " new " + generatedDatFile;
-            if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
-                return;
-            }
-            /*
-             * -1 Reduces CPU usage, and results in a zip file 3-5% larger than standard compression
-             * -9 Increases CPU usage, and results in a zip file 0-1% smaller than standard compression
-             */
-            String compressCommand = "zip -1q " + generatedZipFile + baseDataName + ".dat";
-            if (!runCommand(response, compressCommand, sessionDir, "Compression tool")) {
-                return;
-            }
-            //writer.print(filesToPackage);
-            /*response.setContentType("application/zip");
-            InputStream inZip = new FileInputStream(generatedZipFile);
-            OutputStream outStream = response.getOutputStream();
-            byte []zipBytes = new byte[inZip.available()];
-            inZip.read(zipBytes);
-            outStream.write(zipBytes);*/
-            
-            // Redirect with the result.
-            response.getWriter().print(request.getRequestURL() + "?" + FILE_GET + "=" + baseDataName + ".zip");
-
-            if (!DEBUG_FILES) {
-                (new File(generatedDatFile)).delete();
-                (new File(packageList)).delete();
+            else {
+                generateICU4JData(request, response, filesToPackageVect, icuDataVersion, sessionID, sessionDir);
             }
         }
         else {
@@ -171,26 +146,126 @@ public class DataCustomizer extends HttpServlet {
         //response.setContentType("text/xml; charset=utf-8");
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException
+    private void generateICU4CData(HttpServletRequest request, HttpServletResponse response, String filesToPackage, String icuDataVersion, String sessionID, File sessionDir)
+        throws IOException
     {
-        String sessionID = request.getSession(true).getId();
-        applyNoCache(response);
-        if (sessionID == null) {
-            reportError(response, HttpServletResponse.SC_FORBIDDEN, "Session is stale");
+        String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
+        String packageList;
+        try {
+            packageList = sessionDirStr + "package.lst";
+            if ((new File(packageList)).exists()) {
+                reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
+                return;
+            }
+            PrintWriter dataToPackageWriter = new PrintWriter(packageList);
+            dataToPackageWriter.print(filesToPackage);
+            dataToPackageWriter.close();
+        }
+        catch (IOException e) {
+            reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not write package list in " + sessionDir.getAbsolutePath());
             return;
         }
-        //PrintWriter writer = response.getWriter();
-        //dumpRequest(request, writer);
-        String fileToSend = request.getParameter(FILE_GET);
-        if (fileToSend == null || fileToSend.indexOf('/') != -1 || fileToSend.indexOf('\\') != -1) {
-            reportError(response, HttpServletResponse.SC_BAD_REQUEST, fileToSend + " is not a valid requested file");
+        String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
+        String generatedDatFile = sessionDirStr + baseDataName + ".dat";
+        String generatedZipFile = sessionDirStr + baseDataName + ".zip";
+        if ((new File(generatedZipFile)).exists()) {
+            reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
+            return;
+        }
+        String pkgCommand = "icupkg -tl -a " + packageList
+            + " -s " + toolHomeSrcDirStr + baseDataName
+            + " new " + generatedDatFile;
+        if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
+            return;
+        }
+        /*
+         * -1 Reduces CPU usage, and results in a zip file 3-5% larger than standard compression
+         * -9 Increases CPU usage, and results in a zip file 0-1% smaller than standard compression
+         */
+        String compressCommand = "zip -1q " + generatedZipFile + " " + baseDataName + ".dat";
+        if (!runCommand(response, compressCommand, sessionDir, "Compression tool")) {
             return;
         }
         
-        File generatedFile = new File(toolHomeRequestDirStr + sessionID + File.separator + fileToSend);
+        if (!DEBUG_FILES) {
+            (new File(generatedDatFile)).delete();
+            (new File(packageList)).delete();
+        }
+
+        // Redirect with the result.
+        response.getWriter().print(request.getRequestURL() + "/" + sessionID + "/" + baseDataName + ".zip");
+    }
+
+    private void generateICU4JData(HttpServletRequest request,
+            HttpServletResponse response,
+            Vector filesToPackage, String icuDataVersion, String sessionID, File sessionDir) throws IOException
+    {
+        String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
+        String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
+        String pacakgePath = "com/ibm/icu/impl/data/icudt" + icuDataVersion + "b";
+        
+        File packageICU4JDir = new File(sessionDirStr + pacakgePath);
+        if (!packageICU4JDir.mkdirs()) {
+            reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not create package directory structure in " + packageICU4JDir);
+            return;
+        }
+
+        // Copy and convert each file from big endian to little endian.
+        for (int idx = 0; idx < filesToPackage.size(); idx++) {
+            String itemToRead = (String)filesToPackage.elementAt(idx);
+            String pkgCommand = "icupkg -tb -s " + toolHomeSrcDirStr + baseDataName
+                + " -d " + sessionDirStr + pacakgePath + " " + itemToRead;
+            if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
+                return;
+            }
+        }
+        String pkgCommand = "jar -cf icudata.jar com";
+        if (!runCommand(response, pkgCommand, sessionDir, "jar tool")) {
+            return;
+        }
+        // TODO: Delete temporary files.
+
+        // Redirect with the result.
+        response.getWriter().print(
+                request.getRequestURL() + "/" + sessionID + "/icudata.jar");
+    }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException
+    {
+        applyNoCache(response);
+
+        //String sessionID = request.getSession(true).getId();
+        /*if (sessionID == null) {
+            reportError(response, HttpServletResponse.SC_FORBIDDEN, "Session is stale");
+            return;
+        }*/
+        
+        //dumpRequest(request, response.getWriter());
+        
+        /* Figure out which file is being requested */
+        String pathInfo = request.getPathInfo();
+        int fileIndex = pathInfo.lastIndexOf('/');
+        if (fileIndex <= 1) {
+            reportError(response, HttpServletResponse.SC_BAD_REQUEST, pathInfo + " is not a valid requested file");
+            return;
+        }
+        int sessionIndex = pathInfo.lastIndexOf('/', fileIndex - 1);
+        if (sessionIndex < 0) {
+            reportError(response, HttpServletResponse.SC_BAD_REQUEST, pathInfo + " is not a valid requested file");
+            return;
+        }
+        /* Really make sure they are not going outside the data sandbox. */
+        String fileToSend = pathInfo.substring(fileIndex + 1);
+        String pathToSend = pathInfo.substring(sessionIndex + 1, fileIndex);
+        if (isPotentiallyPath(fileToSend) || isPotentiallyPath(pathToSend)) {
+            reportError(response, HttpServletResponse.SC_BAD_REQUEST, pathInfo + " is not a valid requested file");
+            return;
+        }
+        
+        File generatedFile = new File(toolHomeRequestDirStr + pathToSend + File.separator + fileToSend);
         if (!generatedFile.exists()) {
-            reportError(response, HttpServletResponse.SC_GONE, fileToSend + " has already been downloaded.");
+            reportError(response, HttpServletResponse.SC_GONE, fileToSend + " has already been downloaded. Please submit a new request.");
             return;
         }
         
@@ -204,12 +279,16 @@ public class DataCustomizer extends HttpServlet {
         outStream.flush();
         if (!DEBUG_FILES) {
             generatedFile.delete();
-            (new File(toolHomeRequestDirStr + sessionID)).delete();
+            (new File(toolHomeRequestDirStr + pathToSend)).delete();
         }
 
         //writer.println(fileToSend);
         //writer.println(generatedFile);
         //response.setContentType("text/html; charset=utf-8");
+    }
+    
+    private static boolean isPotentiallyPath(String str) {
+        return str == null || str.length() == 0 || str.indexOf('/') != -1 || str.indexOf('\\') != -1 || str.indexOf("..") != -1;
     }
     
     private void reportError(HttpServletResponse response, int httpStatus, String msg) throws IOException {
@@ -241,6 +320,7 @@ public class DataCustomizer extends HttpServlet {
         }
         return true;
     }
+    
     private String convertBufferedReaderToString(BufferedReader reader)
         throws IOException
     {
@@ -270,6 +350,9 @@ public class DataCustomizer extends HttpServlet {
         writer.println("</p>");
         writer.println("<p>");
         writer.println("The current home directory is " + System.getProperty("user.name"));
+        writer.println("</p>");
+        writer.println("<p>");
+        writer.println("The current path info is " + request.getPathInfo());
         writer.println("</p>");
         writer.println("</td>");
         writer.println("</tr>");
@@ -346,7 +429,11 @@ public class DataCustomizer extends HttpServlet {
 
         toolHome = config.getInitParameter("DATA_CUSTOM.home");
         if (toolHome == null) {
-            toolHome = System.getProperty("user.home") + "datacustom" + File.separator;
+            toolHome = System.getProperty("user.home");
+            if (toolHome.lastIndexOf(File.separatorChar) != (toolHome.length() - 1)) {
+                toolHome += File.separator;
+            }
+            toolHome += "datacustom" + File.separator;
         }
 
         logger.info(toolHome + " will be used for reading and writing data.");
@@ -389,12 +476,18 @@ public class DataCustomizer extends HttpServlet {
             }
         }
         
+        String rootRealPath = config.getServletContext().getRealPath("/");
         try {
             docBuilderFactory = DocumentBuilderFactory.newInstance();
-            /* TODO: Get the real location of the Schema file. */
-            Source schemaFile = new StreamSource(new File("webapps/datacustom/datapackage.xsd"));
+            //logger.info("rootRealPath=" + rootRealPath);
+            File schemaFile = new File(rootRealPath + "datapackage.xsd");
+            if (!schemaFile.exists()) {
+                logger.warning(schemaFile.getAbsolutePath() + " does not exist.");
+                return;
+            }
+            Source schemaFileStream = new StreamSource(schemaFile);
             /** A Schema is thread safe. A Validator is thread unsafe. */
-            Schema dataRequestSchema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(schemaFile);
+            Schema dataRequestSchema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(schemaFileStream);
             docBuilderFactory.setSchema(dataRequestSchema);
         }
         catch (SAXException e) {
