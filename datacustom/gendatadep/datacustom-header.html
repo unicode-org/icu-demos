@@ -1,5 +1,4 @@
 <!-- Copyright (C) 2006-2007, IBM and others. All Rights Reserved. -->
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="Description" content="Here is a tool to create a custom ICU data library."/>
 <meta name="Abstract" content="Here is a tool to create a custom ICU data library."/>
 <meta name="Keywords" content="ICU, data library customizer, customiser"/>
@@ -354,33 +353,46 @@ function generatePackageRequest() {
 	return xmlDoc;
 }
 
+function replaceChildNodes(parent, child) {
+	while (defined(parent.firstChild)) {
+		parent.removeChild(parent.firstChild);
+	}
+	parent.appendChild(child);
+}
+
+function setProgressStatus(text, color) {
+	var progressNode = document.getElementById('progressOutput');
+	progressNode.style.color = color;
+	replaceChildNodes(progressNode, document.createTextNode(text));
+}
+
 function submitPackageRequest() {
 	var xmlReq = new XMLHttpRequest();
+	setProgressStatus("Generating request...", "black");
 	xmlReq.open("POST", "datacustom");
 	xmlReq.setRequestHeader('content-type', 'text/xml; charset=UTF-8');
 	xmlReq.onreadystatechange = function() {
 		if(xmlReq.readyState == 4) { // Loaded
 			var progressNode = document.getElementById('progressOutput');
+			// Clear progress output node.
 			if (xmlReq.status == 200) {
 				progressNode.style.color = "";
-				progressNode.appendChild(document.createTextNode("Your package is now "));
+				replaceChildNodes(progressNode, document.createTextNode("Your package is now "));
+				//replaceChildNodes(progressNode, document.createTextNode(xmlReq.responseText));
 				var link = document.createElement("a");
 				link.setAttribute("href", xmlReq.responseText);
 				progressNode.appendChild(link);
 				link.appendChild(document.createTextNode("available"));
 				progressNode.appendChild(document.createTextNode("."));
-				//progressNode.firstChild.nodeValue = "Your package is now <a href=\"" + xmlReq.responseText + "\">available</a>.";
 			}
 			else {
 				progressNode.style.color = "red";
-				while (defined(progressNode.firstChild)) {
-					progressNode.removeChild(progressNode.firstChild);
-				}
-				progressNode.appendChild(document.createTextNode("Error " + xmlReq.status + ": " + xmlReq.statusText));
+				replaceChildNodes(progressNode, document.createTextNode("Error " + xmlReq.status + ": " + xmlReq.statusText));
 			}
 		}
 	};
 	var xmlDoc = generatePackageRequest();
+	setProgressStatus("Processing request...", "black");
 	xmlReq.send(xmlDoc);
 	return false; // Don't do a traditional submit
 }

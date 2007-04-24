@@ -5,21 +5,47 @@
       Copyright (C) 2007-2007, International Business Machines Corporation and others.  All Rights Reserved.
     </xsd:documentation>
   </xsd:annotation>
+  <xsd:simpleType name="FilePatternType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z0-9_\-]+(/?[a-zA-Z0-9_\-]+)?(\.[a-zA-Z0-9_\-]+)*" />
+    </xsd:restriction>
+  </xsd:simpleType>
   <xsd:element name="package">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element name="type">
           <xsd:complexType>
             <xsd:sequence>
-              <xsd:element name="version" type="VersionType" />
-              <xsd:element name="target" type="TargetType" />
+              <xsd:element name="version">
+                <xsd:simpleType>
+                  <xsd:restriction base="xsd:NMTOKEN">
+                    <xsd:pattern value="[0-9]+[0-9\.]*" />
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:element>
+              <xsd:element name="target">
+                <xsd:simpleType>
+                  <xsd:restriction base="xsd:NMTOKEN">
+                    <xsd:enumeration value="ICU4C" />
+                    <xsd:enumeration value="ICU4J" />
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:element>
             </xsd:sequence>
           </xsd:complexType>
         </xsd:element>
         <xsd:element name="items">
           <xsd:complexType>
             <xsd:sequence>
-              <xsd:element name="item" type="ItemType" maxOccurs="unbounded" />
+              <xsd:element name="item" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:simpleContent>
+                    <xsd:extension base="FilePatternType">
+                      <xsd:attribute name="hidden" use="optional" type="xsd:boolean" />
+                    </xsd:extension>
+                  </xsd:simpleContent>
+                </xsd:complexType>
+              </xsd:element>
             </xsd:sequence>
           </xsd:complexType>
         </xsd:element>
@@ -31,27 +57,4 @@
       <xsd:field xpath="item" />
     </xsd:unique -->
   </xsd:element>
-  <xsd:simpleType name="FilePatternType">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[a-zA-Z0-9_\-]+(/?[a-zA-Z0-9_\-]+)?(\.[a-zA-Z0-9_\-]+)*" />
-    </xsd:restriction>
-  </xsd:simpleType>
-  <xsd:complexType name="ItemType">
-    <xsd:simpleContent>
-      <xsd:extension base="FilePatternType">
-        <xsd:attribute name="hidden" type="xsd:boolean" />
-      </xsd:extension>
-    </xsd:simpleContent>
-  </xsd:complexType>
-  <xsd:simpleType name="TargetType">
-    <xsd:restriction base="xsd:NMTOKEN">
-      <xsd:enumeration value="ICU4C" />
-      <xsd:enumeration value="ICU4J" />
-    </xsd:restriction>
-  </xsd:simpleType>
-  <xsd:simpleType name="VersionType">
-    <xsd:restriction base="xsd:NMTOKEN">
-      <xsd:pattern value="[0-9]+[0-9\.]*" />
-    </xsd:restriction>
-  </xsd:simpleType>
 </xsd:schema>

@@ -32,6 +32,7 @@ import javax.xml.validation.*;
 public class DataCustomizer extends HttpServlet {
 
     // TODO: Add comment to manifest and .dat file about source of customizations.
+    // TODO: Update res_index.* files.
     
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
@@ -77,7 +78,8 @@ public class DataCustomizer extends HttpServlet {
         //PrintWriter writer = response.getWriter();
         // You can't use getInputStream and getReader
         //dumpRequest(request, writer);
-        if (request.getContentType().startsWith("text/xml; ")) {
+        String contentType = request.getContentType();
+        if (contentType != null && contentType.startsWith("text/xml; ")) {
             String filesToPackage = "";
             Vector filesToPackageVect = new Vector();
             String icuDataVersion;
@@ -101,7 +103,12 @@ public class DataCustomizer extends HttpServlet {
                 Document xmlDoc = getDocumentBuilder().parse(request.getInputStream());
                 NodeList pkgItems = xmlDoc.getElementsByTagName("item");
                 icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
-                icuDataType = xmlDoc.getElementsByTagName("type").item(0).getFirstChild().getNodeValue().equals("ICU4C") ? ICUDataFormat.ICU4C : ICUDataFormat.ICU4J;
+                if (xmlDoc.getElementsByTagName("target").item(0).getFirstChild().getNodeValue().equals("ICU4C")) {
+                    icuDataType = ICUDataFormat.ICU4C;
+                }
+                else {
+                    icuDataType = ICUDataFormat.ICU4J;
+                }
                 String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
                 int itemsLen = pkgItems.getLength();
                 for (int itemIdx = 0; itemIdx < itemsLen; itemIdx++) {
@@ -223,7 +230,10 @@ public class DataCustomizer extends HttpServlet {
         if (!runCommand(response, pkgCommand, sessionDir, "jar tool")) {
             return;
         }
-        // TODO: Delete temporary files.
+        // TODO: Delete temporary directories.
+        for (int idx = 0; idx < filesToPackage.size(); idx++) {
+            (new File(sessionDirStr + pacakgePath  + File.separator + (String)filesToPackage.elementAt(idx))).delete();
+        }
 
         // Redirect with the result.
         response.getWriter().print(
