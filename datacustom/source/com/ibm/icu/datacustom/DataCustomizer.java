@@ -159,6 +159,7 @@ public class DataCustomizer extends HttpServlet {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
         String packageList;
         try {
+            // Hmm. Did the person submit the request twice? There is a conflict. Lock out this request.
             packageList = sessionDirStr + "package.lst";
             if ((new File(packageList)).exists()) {
                 reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
@@ -175,9 +176,12 @@ public class DataCustomizer extends HttpServlet {
         String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
         String generatedDatFile = sessionDirStr + baseDataName + ".dat";
         String generatedZipFile = sessionDirStr + baseDataName + ".zip";
-        if ((new File(generatedZipFile)).exists()) {
-            reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
-            return;
+        File generatedZipFileObj = new File(generatedZipFile);
+        if (generatedZipFileObj.exists()) {
+            // Hmm. Someone submitted the request twice.
+            generatedZipFileObj.delete();
+            //reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
+            //return;
         }
         String pkgCommand = "icupkg -tl -a " + packageList
             + " -s " + toolHomeSrcDirStr + baseDataName
@@ -194,6 +198,7 @@ public class DataCustomizer extends HttpServlet {
             return;
         }
         
+        // Deleting these files allows us to "unlock" the session for another request regardless if the file was downloaded.
         if (!DEBUG_FILES) {
             (new File(generatedDatFile)).delete();
             (new File(packageList)).delete();
@@ -209,9 +214,10 @@ public class DataCustomizer extends HttpServlet {
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
         String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
-        String pacakgePath = "com/ibm/icu/impl/data/icudt" + icuDataVersion + "b";
+        String packagePath = "com/ibm/icu/impl/data/icudt" + icuDataVersion + "b";
         
-        File packageICU4JDir = new File(sessionDirStr + pacakgePath);
+        // Hmm. Did the person submit the request twice? There is a conflict. Lock out this request.
+        File packageICU4JDir = new File(sessionDirStr + packagePath);
         if (!packageICU4JDir.mkdirs()) {
             reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not create package directory structure in " + packageICU4JDir);
             return;
@@ -221,18 +227,39 @@ public class DataCustomizer extends HttpServlet {
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
             String pkgCommand = "icupkg -tb -s " + toolHomeSrcDirStr + baseDataName
-                + " -d " + sessionDirStr + pacakgePath + " " + itemToRead;
+                + " -d " + sessionDirStr + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
                 return;
             }
+        }
+        File generatedJarFile = new File(sessionDirStr + "icudata.jar");
+        if (generatedJarFile.exists()) {
+            // Hmm. Someone submitted the request twice.
+            generatedJarFile.delete();
+            //reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
+            //return;
         }
         String pkgCommand = "jar -cf icudata.jar com";
         if (!runCommand(response, pkgCommand, sessionDir, "jar tool")) {
             return;
         }
-        // TODO: Delete temporary directories.
-        for (int idx = 0; idx < filesToPackage.size(); idx++) {
-            (new File(sessionDirStr + pacakgePath  + File.separator + (String)filesToPackage.elementAt(idx))).delete();
+        // Deleting these files allows us to "unlock" the session for another request regardless if the file was downloaded.
+        if (!DEBUG_FILES) {
+            for (int idx = 0; idx < filesToPackage.size(); idx++) {
+                (new File(sessionDirStr + packagePath  + File.separator + (String)filesToPackage.elementAt(idx))).delete();
+            }
+            File packagePathFile = new File(sessionDirStr + packagePath);
+            File treeDirs[] = packagePathFile.listFiles();
+            if (treeDirs != null) {
+                for (int idx = 0; idx < treeDirs.length; idx++) {
+                    treeDirs[idx].delete();
+                }
+            }
+            // Basically finish doing an "rm -rf com"
+            while (!sessionDir.equals(packagePathFile)) {
+                packagePathFile.delete();
+                packagePathFile = packagePathFile.getParentFile();
+            }
         }
 
         // Redirect with the result.
