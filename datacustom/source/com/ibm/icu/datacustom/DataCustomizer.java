@@ -177,7 +177,9 @@ public class DataCustomizer extends HttpServlet {
             }
             else {
                 generateICU4JData(request, response, filesToPackageVect, indexesToGenerateVect, icuDataVersion, sessionID, sessionDir);
+                // Don't do anything after this. The request may or may not have failed.
             }
+            deleteResIndexFiles(indexesToGenerateVect, sessionDir);
         }
         else {
             PrintWriter writer = response.getWriter();
@@ -191,7 +193,7 @@ public class DataCustomizer extends HttpServlet {
         throws IOException
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
-        String packageList;
+        String packageList = null;
         try {
             // Hmm. Did the person submit the request twice? There is a conflict. Lock out this request.
             packageList = sessionDirStr + "package.lst";
@@ -223,6 +225,9 @@ public class DataCustomizer extends HttpServlet {
         if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
             return;
         }
+        if (!DEBUG_FILES) {
+            (new File(packageList)).delete();
+        }
         packageList = "";
         for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
             String pkgIndexesCommand = "icupkg -tl -a " + (String)generatedIndexesVect.elementAt(idx) + " -s . " + generatedDatFile;
@@ -242,7 +247,6 @@ public class DataCustomizer extends HttpServlet {
         // Deleting these files allows us to "unlock" the session for another request regardless if the file was downloaded.
         if (!DEBUG_FILES) {
             (new File(generatedDatFile)).delete();
-            (new File(packageList)).delete();
         }
 
         // Redirect with the result.
@@ -406,17 +410,46 @@ public class DataCustomizer extends HttpServlet {
         return true;
     }
     
+    private boolean deleteResIndexFiles(Vector listOfIndexes, File targetDirectory)
+    {
+        boolean allDeleted = true;
+        if (!DEBUG_FILES) {
+            for (int idx = 0; idx < listOfIndexes.size(); idx++) {
+                String indexFile = (String) listOfIndexes.elementAt(idx);
+                File treeIndexFile = new File(targetDirectory.getAbsolutePath()
+                        + File.separator + indexFile);
+                if (!treeIndexFile.exists() || !treeIndexFile.delete()) {
+                    allDeleted = false;
+                }
+                String treePrefix = getTreePrefix(indexFile);
+                if (treePrefix.length() > 0) {
+                    // Delete only the temporary subdirectories
+                    File treeIndexDir = new File(targetDirectory.getAbsolutePath()
+                            + File.separator + treePrefix);
+                    if (!treeIndexDir.exists() || !treeIndexDir.delete()) {
+                        allDeleted = false;
+                    }
+                }
+            }
+        }
+        return allDeleted;
+    }
+
+    private static String getTreePrefix(String dataItem) {
+        int endOfTree = dataItem.lastIndexOf("/");
+        if (endOfTree > 0) {
+            return dataItem.substring(0, endOfTree + 1);
+        }
+        return "";
+    }
+
     private boolean regenerateResIndexFiles(HttpServletResponse response, Vector listOfIndexes, Vector listOfFiles, File targetDirectory)
         throws IOException
     {
         for (int idx = 0; idx < listOfIndexes.size(); idx++) {
             String indexFile = (String)listOfIndexes.elementAt(idx);
-            String prefixToMatch = "";
+            String prefixToMatch = getTreePrefix(indexFile);
             Vector listOfLocales = new Vector();
-            int endOfTree = indexFile.lastIndexOf("/");
-            if (endOfTree > 0) {
-                prefixToMatch = indexFile.substring(0, endOfTree + 1);
-            }
             boolean checkPrefix = prefixToMatch.length() != 0;
             for (int resIdx = 0; resIdx < listOfFiles.size(); resIdx++) {
                 String file = (String)listOfFiles.elementAt(resIdx);
@@ -428,14 +461,15 @@ public class DataCustomizer extends HttpServlet {
             if (checkPrefix && !treeIndexDir.exists()) {
                 treeIndexDir.mkdirs();
             }
-            if (regenerateResIndex(response, listOfLocales, treeIndexDir) == null) {
+            if (!regenerateResIndex(response, listOfLocales, treeIndexDir)) {
+                reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, indexFile + " could not be regenerated.");
                 return false;
             }
         }
         return true;
     }
     
-    private File regenerateResIndex(HttpServletResponse response, Vector listOfLocales, File targetDirectory)
+    private boolean regenerateResIndex(HttpServletResponse response, Vector listOfLocales, File targetDirectory)
         throws IOException
     {
         String resIndexFileStr = targetDirectory.getAbsolutePath() + File.separator + "res_index.txt";
@@ -464,12 +498,12 @@ public class DataCustomizer extends HttpServlet {
         // Compile res_index.txt
         String command = "genrb " + resIndexFileStr;
         if (!runCommand(response, command, targetDirectory, "Index regeneration")) {
-            return null;
+            return false;
         }
         if (!DEBUG_FILES) {
             resIndexFile.delete();
         }
-        return null;
+        return true;
     }
     
     private String convertBufferedReaderToString(BufferedReader reader)
@@ -611,9 +645,9 @@ public class DataCustomizer extends HttpServlet {
             else if (!toolHomeSrcDir.isDirectory() || !toolHomeSrcDir.canRead()) {
                 logger.warning(toolHomeSrcDirStr + " is not a valid directory.");
             }
-            else if (toolHomeDir.canWrite()) {
+            /*else if (toolHomeDir.canWrite()) {
                 logger.warning(toolHomeSrcDirStr + " shouldn't be writable for security reasons.");
-            }
+            }*/
             
             File toolHomeRequestDir = new File(toolHome + "request");
             toolHomeRequestDirStr = toolHomeRequestDir.getAbsolutePath() + File.separator;
