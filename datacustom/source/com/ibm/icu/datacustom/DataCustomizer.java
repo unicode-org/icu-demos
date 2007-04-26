@@ -31,8 +31,15 @@ import javax.xml.validation.*;
  */
 public class DataCustomizer extends HttpServlet {
 
-    // TODO: Add comment to manifest and .dat file about source of customizations.
-    // TODO: Update res_index.* files.
+    // TODO: Add comment to manifest and .dat file about source of customizations. Add .res file with meta package information.
+    // TODO: Update res_index.* files. Put into servlet code instead of icupkg tool for now.
+    // TODO: Clean up res_index files after generation.
+    // TODO: Log a summary of results. Store full xml files in a cache directory.
+    // TODO: Cache big-endian results for ICU4J.
+    // TODO: Make the path to the ICU tools a property.
+    // TODO: Look into more efficient buffering of data files sent to user.
+    // TODO: Use exceptions instead of if statements to detect if execution should continue.
+    // TODO: Check for file uniqueness when generating files for res_index or icupkg.
     
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
@@ -82,6 +89,8 @@ public class DataCustomizer extends HttpServlet {
         if (contentType != null && contentType.startsWith("text/xml; ")) {
             String filesToPackage = "";
             Vector filesToPackageVect = new Vector();
+            Vector indexesToGenerateVect = new Vector();
+            Vector localesToIndexVect = new Vector();
             String icuDataVersion;
             ICUDataFormat icuDataType;
             File sessionDir = new File(toolHomeRequestDirStr + sessionID + File.separator);
@@ -112,7 +121,8 @@ public class DataCustomizer extends HttpServlet {
                 String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
                 int itemsLen = pkgItems.getLength();
                 for (int itemIdx = 0; itemIdx < itemsLen; itemIdx++) {
-                    String pkgItemName = pkgItems.item(itemIdx).getFirstChild().getNodeValue();
+                    Node pkgItemNode = pkgItems.item(itemIdx);
+                    String pkgItemName = pkgItemNode.getFirstChild().getNodeValue();
                     // The schema should have already taken care of the file pattern authentication. 
                     File fileToRead = new File(toolHomeSrcDirStr + baseDataName + File.separator + pkgItemName);
                     if (!fileToRead.exists() || !fileToRead.canRead()) {
@@ -124,6 +134,27 @@ public class DataCustomizer extends HttpServlet {
                     }
                     else {
                         filesToPackageVect.add(pkgItemName);
+                    }
+                    if (pkgItemName.endsWith(".res")) {
+                        if (pkgItemName.endsWith("res_index.res")) {
+                            indexesToGenerateVect.add(pkgItemName);
+                        }
+                        else {
+                            String hiddenVal = "0";
+                            NamedNodeMap attNodeMap = pkgItemNode.getAttributes();
+                            if (attNodeMap != null) {
+                                Node hiddenNode = attNodeMap.getNamedItem("hidden");
+                                if (hiddenNode != null) {
+                                    String newHiddenVal = hiddenNode.getNodeValue();
+                                    if (newHiddenVal != null) {
+                                        hiddenVal = newHiddenVal;
+                                    }
+                                }
+                            }
+                            if (hiddenVal.equals("0")) {
+                                localesToIndexVect.add(pkgItemName);
+                            }
+                        }
                     }
                 }
             }
@@ -137,12 +168,15 @@ public class DataCustomizer extends HttpServlet {
             }
             // TODO: Clean up after ourselves in case of a problem.
             //sessionDir.deleteOnExit();
+            if (!regenerateResIndexFiles(response, indexesToGenerateVect, localesToIndexVect, sessionDir)) {
+                return;  /* Something bad happened during the generation. */
+            }
             if (icuDataType == ICUDataFormat.ICU4C) {
-                generateICU4CData(request, response, filesToPackage, icuDataVersion, sessionID, sessionDir);
+                generateICU4CData(request, response, filesToPackage, indexesToGenerateVect, icuDataVersion, sessionID, sessionDir);
                 // Don't do anything after this. The request may or may not have failed.
             }
             else {
-                generateICU4JData(request, response, filesToPackageVect, icuDataVersion, sessionID, sessionDir);
+                generateICU4JData(request, response, filesToPackageVect, indexesToGenerateVect, icuDataVersion, sessionID, sessionDir);
             }
         }
         else {
@@ -153,7 +187,7 @@ public class DataCustomizer extends HttpServlet {
         //response.setContentType("text/xml; charset=utf-8");
     }
 
-    private void generateICU4CData(HttpServletRequest request, HttpServletResponse response, String filesToPackage, String icuDataVersion, String sessionID, File sessionDir)
+    private void generateICU4CData(HttpServletRequest request, HttpServletResponse response, String filesToPackage, Vector generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir)
         throws IOException
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
@@ -189,6 +223,13 @@ public class DataCustomizer extends HttpServlet {
         if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
             return;
         }
+        packageList = "";
+        for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
+            String pkgIndexesCommand = "icupkg -tl -a " + (String)generatedIndexesVect.elementAt(idx) + " -s . " + generatedDatFile;
+            if (!runCommand(response, pkgIndexesCommand, sessionDir, "Packaging indexes tool")) {
+                return;
+            }
+        }
         /*
          * -1 Reduces CPU usage, and results in a zip file 3-5% larger than standard compression
          * -9 Increases CPU usage, and results in a zip file 0-1% smaller than standard compression
@@ -210,7 +251,7 @@ public class DataCustomizer extends HttpServlet {
 
     private void generateICU4JData(HttpServletRequest request,
             HttpServletResponse response,
-            Vector filesToPackage, String icuDataVersion, String sessionID, File sessionDir) throws IOException
+            Vector filesToPackage, Vector generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir) throws IOException
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
         String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
@@ -229,6 +270,13 @@ public class DataCustomizer extends HttpServlet {
             String pkgCommand = "icupkg -tb -s " + toolHomeSrcDirStr + baseDataName
                 + " -d " + sessionDirStr + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
+                return;
+            }
+        }
+        for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
+            String itemToRead = (String)generatedIndexesVect.elementAt(idx);
+            String pkgCommand = "icupkg -tb -s . -d " + sessionDirStr + packagePath + " " + itemToRead;
+            if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool for index regeneration")) {
                 return;
             }
         }
@@ -356,6 +404,72 @@ public class DataCustomizer extends HttpServlet {
             return false;
         }
         return true;
+    }
+    
+    private boolean regenerateResIndexFiles(HttpServletResponse response, Vector listOfIndexes, Vector listOfFiles, File targetDirectory)
+        throws IOException
+    {
+        for (int idx = 0; idx < listOfIndexes.size(); idx++) {
+            String indexFile = (String)listOfIndexes.elementAt(idx);
+            String prefixToMatch = "";
+            Vector listOfLocales = new Vector();
+            int endOfTree = indexFile.lastIndexOf("/");
+            if (endOfTree > 0) {
+                prefixToMatch = indexFile.substring(0, endOfTree + 1);
+            }
+            boolean checkPrefix = prefixToMatch.length() != 0;
+            for (int resIdx = 0; resIdx < listOfFiles.size(); resIdx++) {
+                String file = (String)listOfFiles.elementAt(resIdx);
+                if (checkPrefix && file.startsWith(prefixToMatch) || !checkPrefix && file.indexOf('/') < 0) {
+                    listOfLocales.add(file);
+                }
+            }
+            File treeIndexDir = new File(targetDirectory.getAbsolutePath() + File.separator + prefixToMatch);
+            if (checkPrefix && !treeIndexDir.exists()) {
+                treeIndexDir.mkdirs();
+            }
+            if (regenerateResIndex(response, listOfLocales, treeIndexDir) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private File regenerateResIndex(HttpServletResponse response, Vector listOfLocales, File targetDirectory)
+        throws IOException
+    {
+        String resIndexFileStr = targetDirectory.getAbsolutePath() + File.separator + "res_index.txt";
+        File resIndexFile = new File(resIndexFileStr);
+        PrintWriter dataToPackageWriter = new PrintWriter(resIndexFile);
+
+        // Generate res_index.txt
+        dataToPackageWriter.println("res_index:table(nofallback) {");
+        dataToPackageWriter.println("InstalledLocales {");
+        for (int idx = 0; idx < listOfLocales.size(); idx++) {
+            String locale = (String)listOfLocales.elementAt(idx);
+            int startIdx = locale.lastIndexOf('/');
+            if (startIdx < 0) {
+                startIdx = 0; // Start at the beginning
+            }
+            else {
+                startIdx++; // skip the slash
+            }
+            locale = locale.substring(startIdx, locale.lastIndexOf('.'));
+            dataToPackageWriter.println(locale + "{\"\"}");
+        }
+        dataToPackageWriter.println("}");
+        dataToPackageWriter.println("}");
+        dataToPackageWriter.close();
+        
+        // Compile res_index.txt
+        String command = "genrb " + resIndexFileStr;
+        if (!runCommand(response, command, targetDirectory, "Index regeneration")) {
+            return null;
+        }
+        if (!DEBUG_FILES) {
+            resIndexFile.delete();
+        }
+        return null;
     }
     
     private String convertBufferedReaderToString(BufferedReader reader)

@@ -169,11 +169,12 @@ function modifySize(selectedItem, modifyDisplaySize, modifyRowClass) {
 var gLastGroupUsed = null;
 
 /* This is really a data structure */
-function ItemInfo(group, size, dependsOn, neededBy) {
+function ItemInfo(group, hidden, size, dependsOn, neededBy) {
 	if (gLastGroupUsed == null || gLastGroupUsed.id != group) {
 		gLastGroupUsed = document.getElementById(group);
 	}
 	this.group = gLastGroupUsed; // Cached reference to the group check box
+	this.hidden = hidden;
 	this.size = size; // Size of this item.
 	this.dependsOn = dependsOn; // Array of cached check box items this item depends on
 	/* This resolution is done at page load time because IE 7 is so slow calling document.getElementById */
@@ -344,8 +345,7 @@ function generatePackageRequest() {
 	for (var i = 0; i < items.length; i++) {
 		var item = items[i];
 		if (item.getAttribute("name") == "item" && item.checked) {
-			var row = getParentByTagName(item, "TR");
-			xmlDoc += "<item" + (isSelectable(row) ? "" : " hidden=\"1\"") + ">" + item.getAttribute("value") + "</item>\n";
+			xmlDoc += "<item" + (gItems[item.id].hidden == 1 ? " hidden=\"1\"" : "") + ">" + item.getAttribute("value") + "</item>\n";
 		}
 	}
 	xmlDoc += "</items>\n";

@@ -44,12 +44,14 @@ static UVector *additionalItems;
 
 class ItemGroup {
 public:
+    UBool hiddenByDefault;
+    UErrorCode throwAwayStatus;
     RegexMatcher matcher;
     const char *group;
     const char *description;
     UVector items;
-    UErrorCode throwAwayStatus;
-    ItemGroup(const char *regexPattern, const char *grp, const char *desc, UErrorCode &status) :
+    ItemGroup(UBool hidden, const char *regexPattern, const char *grp, const char *desc, UErrorCode &status) :
+        hiddenByDefault(hidden),
         throwAwayStatus(U_ZERO_ERROR),
         matcher(regexPattern, UREGEX_CASE_INSENSITIVE, status),
         group(grp),
@@ -58,6 +60,7 @@ public:
     {
     }
     ItemGroup(const ItemGroup& other) :
+        hiddenByDefault(other.hiddenByDefault),
         throwAwayStatus(U_ZERO_ERROR),
         matcher(other.matcher.pattern().pattern(), UREGEX_CASE_INSENSITIVE, throwAwayStatus),
         group(other.group),
@@ -271,16 +274,16 @@ generateHTML(Package *pkg, UErrorCode &status) {
     neededBy.setValueDeleter(uhash_deleteUVector);
 
     ItemGroup catagorizedItems[] = {
-        ItemGroup(".+\\.cnv$", "conv", "Charset Mapping Tables", status),
-        ItemGroup("brkitr/.+", "brkiter", "Break Iterator", status),
-        ItemGroup("(coll/.+|ucadata.icu|invuca.icu)", "coll", "Collators", status),
-        ItemGroup("rbnf/.+", "rbnf", "Rule Based Number Format", status),
-        ItemGroup("translit/.+", "translit", "Transliterators", status),
-        ItemGroup("zoneinfo.res", "zoneinfo", "Timezone Data", status),
-        // This next one should be the last one searching for .res files.
-        ItemGroup("(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
-        ItemGroup("(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res)", "misc", "Miscellaneous Data", status),
-        ItemGroup(".+", BASE_DATA, "Base Data", status)
+        ItemGroup(FALSE, ".+\\.cnv$", "conv", "Charset Mapping Tables", status),
+        ItemGroup(FALSE, "brkitr/.+", "brkiter", "Break Iterator", status),
+        ItemGroup(FALSE, "(coll/.+|ucadata.icu|invuca.icu)", "coll", "Collators", status),
+        ItemGroup(FALSE, "rbnf/.+", "rbnf", "Rule Based Number Format", status),
+        ItemGroup(FALSE, "translit/.+", "translit", "Transliterators", status),
+        ItemGroup(TRUE, "zoneinfo.res", "zoneinfo", "Timezone Data", status),
+        // This next one should be the last one searching for .res locale files.
+        ItemGroup(FALSE, "(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
+        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res)", "misc", "Miscellaneous Data", status),
+        ItemGroup(FALSE, ".+", BASE_DATA, "Base Data", status)
     };
 
     if (U_FAILURE(status)) {
@@ -378,20 +381,29 @@ generateHTML(Package *pkg, UErrorCode &status) {
             UnicodeString checkedItem((additionalItems->contains(&itemToFind) ? "" : " checked=\"checked\""));
             UnicodeString rowClass;
             UnicodeString inputID = createValidID(UnicodeString(currItem->name));
+            UBool hideItemForIndexing = currCategory->hiddenByDefault;
 
-            variables += UnicodeString("gItems['") + inputID
-                + UnicodeString("']=new ItemInfo('") + UnicodeString(currCategory->group)
-                + UnicodeString("',") + UnicodeString(itemByteSizeStr)
-                + UnicodeString(",") + generateDependencyList(currItem->name, &dependsOn)
-                + UnicodeString(",") + generateDependencyList(currItem->name, &neededBy)
-                + UnicodeString(");\n");
-
+            if (!inputID.endsWith(UnicodeString("_res"))) {
+                hideItemForIndexing = FALSE;
+            }
             if (hiddenItems->contains(currItem->name)) {
                 rowClass = " class=\"hide\"";
+                hideItemForIndexing = TRUE;
             }
             else if (additionalItems->contains(&itemToFind)) {
                 rowClass = " class=\"unselected\"";
             }
+            if (inputID.endsWith(UnicodeString("root_res"))) {
+                hideItemForIndexing = TRUE;
+            }
+
+            variables += UnicodeString("gItems['") + inputID
+                + UnicodeString("']=new ItemInfo('") + UnicodeString(currCategory->group)
+                + UnicodeString("',") + UnicodeString(hideItemForIndexing ? "1" : "0")
+                + UnicodeString(",") + UnicodeString(itemByteSizeStr)
+                + UnicodeString(",") + generateDependencyList(currItem->name, &dependsOn)
+                + UnicodeString(",") + generateDependencyList(currItem->name, &neededBy)
+                + UnicodeString(");\n");
 
             dataList += UnicodeString("<tr") + rowClass
                 + UnicodeString("><td class=\"nw\">");
