@@ -435,8 +435,8 @@ generateHTML(Package *pkg, UErrorCode &status) {
     sprintf(bytesStr, "%i", totalBytes);
     variableSizes += UnicodeString("var totalSize = ") + UnicodeString(bytesStr)
         + UnicodeString(";\n");
-    variables += UnicodeString("gItems['ICU4C']=new ItemInfo('"BASE_DATA"',0,[],[]);\n");
-    variables += UnicodeString("gItems['ICU4J']=new ItemInfo('"BASE_DATA"',0,"ICU4J_DEPENDENCIES","ICU4J_DEPENDENCIES");\n");
+    variables += UnicodeString("gItems['ICU4C']=new ItemInfo('"BASE_DATA"',1,0,[],[]);\n");
+    variables += UnicodeString("gItems['ICU4J']=new ItemInfo('"BASE_DATA"',1,0,"ICU4J_DEPENDENCIES","ICU4J_DEPENDENCIES");\n");
     variables += UnicodeString("}\n");
 
 
