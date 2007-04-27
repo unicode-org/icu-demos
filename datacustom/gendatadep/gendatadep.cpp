@@ -161,55 +161,86 @@ UnicodeString getTranslation(const char *key) {
 
 /* Consider xxx.res to be the longest locale */
 #define MAX_RES_WITH_LANG_LEN 7
-/* TODO Get this information from the Package API, instead of artifically creating it. */
-void enumerateDependencies(const char *itemName, Hashtable *dependsOn, Hashtable *neededBy, UErrorCode &status) {
+class DependencyInfo {
+public:
+    Hashtable dependsOn;
+    Hashtable neededBy;
+    DependencyInfo(UErrorCode &status)
+        : dependsOn(status),
+        neededBy(status)
+    {
+        dependsOn.setKeyCompartor(uhash_compareUnicodeString);
+        dependsOn.setValueDeleter(uhash_deleteUVector);
+        neededBy.setKeyCompartor(uhash_compareUnicodeString);
+        neededBy.setValueDeleter(uhash_deleteUVector);
+    }
+    void addDependencyRoundtrip(const char *itemName, const UnicodeString &targetName, UErrorCode &status) {
+        UnicodeString itemNameUStr(itemName);
+        const UHashElement *elem = dependsOn.find(itemNameUStr);
+        UVector *dependsOnVector;
+        UnicodeString *targetNameStrPtr = new UnicodeString(targetName); // freed by dependsOnVector
+        if (elem == NULL) {
+            dependsOnVector = new UVector(uhash_deleteUnicodeString, uhash_compareUnicodeString, status);
+            dependsOn.put(itemNameUStr, dependsOnVector, status);
+        }
+        else {
+            dependsOnVector = (UVector*)elem->value.pointer;
+        }
+        if (!dependsOnVector->contains(targetNameStrPtr)) {
+            dependsOnVector->addElement(targetNameStrPtr, status);
+        }
+        UVector *neededByVector;
+        elem = neededBy.find(*targetNameStrPtr);
+        if (elem == NULL) {
+            neededByVector = new UVector(NULL, uhash_compareUnicodeString, status);
+            neededBy.put(*targetNameStrPtr, neededByVector, status);
+        }
+        else {
+            neededByVector = (UVector*)elem->value.pointer;
+        }
+        if (!neededByVector->contains(&itemNameUStr)) {
+            neededByVector->addElement(new UnicodeString(itemNameUStr), status);
+        }
+    }
+};
+
+static void checkDependency(void *context, const char *itemName, const char *targetName) {
+    DependencyInfo *myThis = (DependencyInfo*)context;
+    UErrorCode status = U_ZERO_ERROR;
+    myThis->addDependencyRoundtrip(itemName, targetName, status);
+    //fprintf(stderr, "Item %s depends on missing item %s\n", itemName, targetName);
+}
+
+/*
+Normally checkDependency should get everything.
+This function allows the items not in the package by default to get decent dependencies too.
+*/
+void enumerateDefaultDependencies(const char *itemName, DependencyInfo *depInfo, UErrorCode &status) {
     const char *extension = strstr(itemName, ".res");
     if (extension && strcmp(extension, ".res") == 0) {
         UnicodeString itemNameUStr(itemName);
         char *itemNameCopy = strdup(itemName);
-        const UHashElement *elem = dependsOn->find(itemNameUStr);
-        UnicodeString *parentLocale = NULL; // freed by dependsOnVector
+        const UHashElement *elem = depInfo->dependsOn.find(itemNameUStr);
+        UnicodeString parentLocale = NULL; // freed by dependsOnVector
         char *separator = strrchr(itemNameCopy, '_');
         if (separator && strstr(itemNameCopy, "res_index.res") == NULL) {
             strcpy(separator, ".res");
-            parentLocale = new UnicodeString(itemNameCopy);
+            parentLocale = UnicodeString(itemNameCopy);
         }
         else {
             char *treeSeparator = strrchr(itemNameCopy, U_TREE_ENTRY_SEP_CHAR);
             // Check if the string is less than or equal to than xxx.res
             if (treeSeparator && strlen(treeSeparator + 1) <= MAX_RES_WITH_LANG_LEN) {
                 treeSeparator[0] = 0;
-                parentLocale = new UnicodeString(UnicodeString(itemNameCopy) + UnicodeString(U_TREE_ENTRY_SEP_STRING "root.res"));
+                parentLocale = UnicodeString(UnicodeString(itemNameCopy) + UnicodeString(U_TREE_ENTRY_SEP_STRING "root.res"));
                 treeSeparator[0] = U_TREE_ENTRY_SEP_CHAR;
             }
             else if (strlen(itemNameCopy) <= MAX_RES_WITH_LANG_LEN) {
-                parentLocale = new UnicodeString("root.res");
+                parentLocale = UnicodeString("root.res");
             }
         }
         if (parentLocale != NULL) {
-            UVector *dependsOnVector;
-            if (elem == NULL) {
-                dependsOnVector = new UVector(uhash_deleteUnicodeString, uhash_compareUnicodeString, status);
-                dependsOn->put(itemNameUStr, dependsOnVector, status);
-            }
-            else {
-                dependsOnVector = (UVector*)elem->value.pointer;
-            }
-            if (!dependsOnVector->contains(parentLocale)) {
-                dependsOnVector->addElement(parentLocale, status);
-            }
-            UVector *neededByVector;
-            elem = neededBy->find(*parentLocale);
-            if (elem == NULL) {
-                neededByVector = new UVector(NULL, uhash_compareUnicodeString, status);
-                neededBy->put(*parentLocale, neededByVector, status);
-            }
-            else {
-                neededByVector = (UVector*)elem->value.pointer;
-            }
-            if (!neededByVector->contains(&itemNameUStr)) {
-                neededByVector->addElement(new UnicodeString(itemNameUStr), status);
-            }
+            depInfo->addDependencyRoundtrip(itemName, parentLocale, status);
         }
     }
 }
@@ -266,12 +297,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
     char kilobytesStr[64];
     char bytesStr[64];
     int32_t totalBytes = 0;
-    Hashtable dependsOn(status);
-    Hashtable neededBy(status);
-    dependsOn.setKeyCompartor(uhash_compareUnicodeString);
-    dependsOn.setValueDeleter(uhash_deleteUVector);
-    neededBy.setKeyCompartor(uhash_compareUnicodeString);
-    neededBy.setValueDeleter(uhash_deleteUVector);
+    DependencyInfo depInfo(status);
 
     ItemGroup catagorizedItems[] = {
         ItemGroup(FALSE, ".+\\.cnv$", "conv", "Charset Mapping Tables", status),
@@ -291,10 +317,12 @@ generateHTML(Package *pkg, UErrorCode &status) {
         exit(-1);
     }
 
+    pkg->enumDependencies(&depInfo, checkDependency);
+
     // Categorize the items in the normal package
     for(i=0; i<pkg->getItemCount(); ++i) {
         const Item *currItem = pkg->getItem(i);
-        enumerateDependencies(currItem->name, &dependsOn, &neededBy, status);
+        enumerateDefaultDependencies(currItem->name, &depInfo, status);
         for(catagoryIdx = 0; catagoryIdx < LENGTHOF(catagorizedItems); ++catagoryIdx) {
             UnicodeString str(currItem->name);
             catagorizedItems[catagoryIdx].matcher.reset(str);
@@ -401,8 +429,8 @@ generateHTML(Package *pkg, UErrorCode &status) {
                 + UnicodeString("']=new ItemInfo('") + UnicodeString(currCategory->group)
                 + UnicodeString("',") + UnicodeString(hideItemForIndexing ? "1" : "0")
                 + UnicodeString(",") + UnicodeString(itemByteSizeStr)
-                + UnicodeString(",") + generateDependencyList(currItem->name, &dependsOn)
-                + UnicodeString(",") + generateDependencyList(currItem->name, &neededBy)
+                + UnicodeString(",") + generateDependencyList(currItem->name, &depInfo.dependsOn)
+                + UnicodeString(",") + generateDependencyList(currItem->name, &depInfo.neededBy)
                 + UnicodeString(");\n");
 
             dataList += UnicodeString("<tr") + rowClass
