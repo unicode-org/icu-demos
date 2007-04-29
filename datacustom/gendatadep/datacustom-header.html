@@ -98,18 +98,14 @@ function versionOfMSIE()
 }
 
 function initPage() {
-	resetForms();
+	var forms = document.forms;
+	for (var i = 0; i < forms.length; i++) {
+		forms[i].reset();
+	}
 	initializeItems();
 	var ieVer = versionOfMSIE();
 	if (defined(ieVer) && ieVer < 7) {
 		alert("WARNING: Internet Explorer " + ieVer + " is too old. Some features on this page will not work.\nYou should upgrade to at least Internet Explorer 7, Firefox, Opera or Safari.");
-	}
-}
-
-function resetForms() {
-	var forms = document.forms;
-	for (var i = 0; i < forms.length; i++) {
-		forms[i].reset();
 	}
 }
 
