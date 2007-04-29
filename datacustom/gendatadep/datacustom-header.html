@@ -82,9 +82,28 @@ fieldset {
 </style>
 <script type="text/javascript">
 //<![CDATA[
+// Determine if a reference is defined
+function defined(o) {
+	return (o != null && typeof(o)!="undefined");
+}
+
+function versionOfMSIE()
+{
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+    if (msie > 0) {
+        return parseInt(ua.substring(msie+5, ua.indexOf(".", msie)));
+    }
+    return null;
+}
+
 function initPage() {
 	resetForms();
 	initializeItems();
+	var ieVer = versionOfMSIE();
+	if (defined(ieVer) && ieVer < 7) {
+		alert("WARNING: Internet Explorer " + ieVer + " is too old. Some features on this page will not work.\nYou should upgrade to at least Internet Explorer 7, Firefox, Opera or Safari.");
+	}
 }
 
 function resetForms() {
@@ -98,7 +117,7 @@ function resetForms() {
 Calling this function toggles the display a set of subitems.
 @param divId The identifier of a division.
 */
-function ShowHide(divId) {
+function showHide(divId) {
 	var groupElem = document.getElementById(divId + '.group');
 	var selectorElem = document.getElementById(divId);
 	if (groupElem.style.display == 'block') {
@@ -177,9 +196,10 @@ function ItemInfo(group, hidden, size, dependsOn, neededBy) {
 	this.hidden = hidden;
 	this.size = size; // Size of this item.
 	this.dependsOn = dependsOn; // Array of cached check box items this item depends on
+	var idx = 0;
 	/* This resolution is done at page load time because IE 7 is so slow calling document.getElementById */
 	if (dependsOn != null) {
-		var idx = dependsOn.length;
+		idx = dependsOn.length;
 		while (idx-- > 0) {
 			this.dependsOn[idx] = document.getElementById(dependsOn[idx]);
 		}
@@ -187,7 +207,7 @@ function ItemInfo(group, hidden, size, dependsOn, neededBy) {
 	this.neededBy = neededBy; // This inverse of dependsOn. These are the cached check box items that depend on this item.
 	/* This resolution is done at page load time because IE 7 is so slow calling document.getElementById */
 	if (neededBy != null) {
-		var idx = neededBy.length;
+		idx = neededBy.length;
 		while (idx-- > 0) {
 			this.neededBy[idx] = document.getElementById(neededBy[idx]);
 		}
@@ -290,7 +310,6 @@ function filterRows() {
 }
 
 function selectFiltered(select) {
-	var filterTextValue = document.getElementById('filterText').value;
 	var rows = document.getElementById('packageRequest').getElementsByTagName("tr");
 	var foundCount = 0;
 	for (var i = 0; i < rows.length; i++) {
@@ -324,7 +343,7 @@ function clickGroups(symbol) {
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
 		if (span.id.match(/\.link/) && span.innerHTML == symbol) {
-			ShowHide(span.id);
+			showHide(span.id);
 		}
 	}
 }
@@ -405,23 +424,18 @@ function submitPackageRequest() {
 // Begin table sorting code
 // ---------------------------------------------------------------------------
 
-// Determine if a reference is defined
-function defined(o) {
-	return (o != null && typeof(o)!="undefined");
-};
-
 // Get a parent node with a given element name
 function getParentByTagName(node,tagName) {
 	if(node!=null) {
 		tagName = tagName.toUpperCase();
-		while (node=node.parentNode) {
+		while ((node=node.parentNode)) {
 			if (node.nodeName && tagName==node.nodeName) {
 				return node;
 			}
 		}
 	}
 	return null;
-};
+}
 
 // ==============================================
 // Functions for sorting Tables
@@ -572,7 +586,10 @@ Table.sort = function(headerCell,args) {
   table = getParentByTagName(headerCell,"TABLE");
 
   // Determine how to sort the column
-  sortType = ((!defined(args['sortType'])) || (typeof(args['sortType'])!="function")) ? Sort.Default : args['sortType'];
+  sortType = args['sortType'];
+  if ((!defined(sortType)) || (typeof(sortType)!="function")) {
+    sortType = Sort.Default;
+  }
 
   // If the table doesn't have an ID, assign an id.
   if (table.id == '') {
@@ -584,10 +601,12 @@ Table.sort = function(headerCell,args) {
     lastCell.lastChild.nodeValue = lastCell.lastChild.nodeValue.replace(new RegExp(' [\u2191\u2193]$', ""), '');
     if (this.getCellIndex(lastCell)==colIndex) {
       descending = !(this.lastSortedColumn[table.id]['descending']);
-    } else if (defined(args['descending']) && typeof(args['descending'])=="boolean") {
+    }
+    else {
       descending = args['descending'];
-    } else {
-      descending = false;
+      if (!defined(descending) || typeof(descending)!="boolean") {
+        descending = false;
+      }
     }
   }
   headerCell.lastChild.nodeValue += (descending ? ' \u2191' : ' \u2193');
@@ -613,6 +632,14 @@ Table.sort = function(headerCell,args) {
   if (bodies==null || bodies.length==0) {
     return;
   }
+  var sortOrderFunc;
+  if (descending) {
+    sortOrderFunc = function(a,b) {return sortType(b[0],a[0]);};
+  } else {
+    sortOrderFunc = function(a,b) {return sortType(a[0],b[0]);};
+  }
+  var currRow;
+  var currRowIndex;
   for (var i=0; i < bodies.length; i++) {
     var currTableBody = bodies[i];
     var currRows = currTableBody.rows;
@@ -620,25 +647,18 @@ Table.sort = function(headerCell,args) {
 
     // Construct a separate intermediate array that will store the converted
     // values and references to the actual rows.
-    var currRow;
-    var currRowIndex;
-    for (currRowIndex = 0; currRow = currRows[currRowIndex]; currRowIndex++) {
+    currRowIndex = 0;
+    while ((currRow = currRows[currRowIndex++])) {
       tempRows[currRowIndex] = [sortConversion(this.getCellValue(currRow.cells[colIndex])), currRow];
     }
 
     // Sort the intermediate array
-    var sortOrderFunc;
-    if (descending) {
-      sortOrderFunc = function(a,b) {return sortType(b[0],a[0]);};
-    } else {
-      sortOrderFunc = function(a,b) {return sortType(a[0],b[0]);};
-    };
     tempRows.sort(sortOrderFunc);
 
     // Move the rows to the new sorted order.
     // Appending an existing DOM object moves the row to the new location.
     currRowIndex=0;
-    while (currRow=tempRows[currRowIndex++]) {
+    while ((currRow = tempRows[currRowIndex++])) {
       currTableBody.appendChild(currRow[1]);
     }
   }
