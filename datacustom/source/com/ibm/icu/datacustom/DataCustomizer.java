@@ -18,7 +18,7 @@ import javax.servlet.http.*;
 
 // DOM imports
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import org.xml.sax.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
@@ -32,20 +32,18 @@ import javax.xml.validation.*;
 public class DataCustomizer extends HttpServlet {
 
     // TODO: Add comment to manifest and .dat file about source of customizations. Add .res file with meta package information.
-    // TODO: Update res_index.* files. Put into servlet code instead of icupkg tool for now.
-    // TODO: Clean up res_index files after generation.
     // TODO: Log a summary of results. Store full xml files in a cache directory.
     // TODO: Cache big-endian results for ICU4J.
     // TODO: Make the path to the ICU tools a property.
-    // TODO: Look into more efficient buffering of data files sent to user.
     // TODO: Use exceptions instead of if statements to detect if execution should continue.
-    // TODO: Check for file uniqueness when generating files for res_index or icupkg.
+    // TODO: Don't include an empty res_index
     
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
     
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final String ENDIAN_STR = "l"; // TODO: Fix this endianness
+    private static final int DEFAULT_FILE_BUFFER_SIZE = 1048576; // 2^20
 
     /** status * */
     public static String toolHome;
@@ -109,7 +107,10 @@ public class DataCustomizer extends HttpServlet {
                 //return;
             }
             try {
+                System.out.println("Before parse");
                 Document xmlDoc = getDocumentBuilder().parse(request.getInputStream());
+                //xmlDoc.setStrictErrorChecking(true);
+                System.out.println("After parse");
                 NodeList pkgItems = xmlDoc.getElementsByTagName("item");
                 icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
                 if (xmlDoc.getElementsByTagName("target").item(0).getFirstChild().getNodeValue().equals("ICU4C")) {
@@ -122,7 +123,12 @@ public class DataCustomizer extends HttpServlet {
                 int itemsLen = pkgItems.getLength();
                 for (int itemIdx = 0; itemIdx < itemsLen; itemIdx++) {
                     Node pkgItemNode = pkgItems.item(itemIdx);
-                    String pkgItemName = pkgItemNode.getFirstChild().getNodeValue();
+                    /*
+                     * The name attribute key must be present and unique according the schema.
+                     * So we can safely assume that a non-null NamedNodeMap will be returned.
+                     */
+                    NamedNodeMap itemAttNodeMap = pkgItemNode.getAttributes();
+                    String pkgItemName = itemAttNodeMap.getNamedItem("name").getNodeValue();
                     // The schema should have already taken care of the file pattern authentication. 
                     File fileToRead = new File(toolHomeSrcDirStr + baseDataName + File.separator + pkgItemName);
                     if (!fileToRead.exists() || !fileToRead.canRead()) {
@@ -141,14 +147,11 @@ public class DataCustomizer extends HttpServlet {
                         }
                         else {
                             String hiddenVal = "0";
-                            NamedNodeMap attNodeMap = pkgItemNode.getAttributes();
-                            if (attNodeMap != null) {
-                                Node hiddenNode = attNodeMap.getNamedItem("hidden");
-                                if (hiddenNode != null) {
-                                    String newHiddenVal = hiddenNode.getNodeValue();
-                                    if (newHiddenVal != null) {
-                                        hiddenVal = newHiddenVal;
-                                    }
+                            Node hiddenNode = itemAttNodeMap.getNamedItem("hidden");
+                            if (hiddenNode != null) {
+                                String newHiddenVal = hiddenNode.getNodeValue();
+                                if (newHiddenVal != null) {
+                                    hiddenVal = newHiddenVal;
                                 }
                             }
                             if (hiddenVal.equals("0")) {
@@ -359,13 +362,18 @@ public class DataCustomizer extends HttpServlet {
         }
         
         response.setContentType("application/zip");
+        response.setContentLength((int)generatedFile.length());
+        
+        // Read the file in, and write it to the client using DEFAULT_FILE_BUFFER_SIZE chunks.
+        // It's buffered this way to save space in the JVM for each request.
         InputStream inZip = new FileInputStream(generatedFile);
         OutputStream outStream = response.getOutputStream();
-        byte []zipBytes = new byte[inZip.available()];
-        inZip.read(zipBytes);
-        inZip.close();
-        outStream.write(zipBytes);
+        byte []zipBytes = new byte[DEFAULT_FILE_BUFFER_SIZE];
+        while (inZip.available() > 0) {
+            outStream.write(zipBytes, 0, inZip.read(zipBytes));
+        }
         outStream.flush();
+        inZip.close();
         if (!DEBUG_FILES) {
             generatedFile.delete();
             (new File(toolHomeRequestDirStr + pathToSend)).delete();
@@ -461,10 +469,20 @@ public class DataCustomizer extends HttpServlet {
             if (checkPrefix && !treeIndexDir.exists()) {
                 treeIndexDir.mkdirs();
             }
-            if (!regenerateResIndex(response, listOfLocales, treeIndexDir)) {
-                reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, indexFile + " could not be regenerated.");
-                return false;
-            }
+            // TODO: Remove res_index.res when it's empty? 
+            // Are we really indexing anything?
+            //if (listOfLocales.size() > 0) {
+                if (!regenerateResIndex(response, listOfLocales, treeIndexDir)) {
+                    reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, indexFile + " could not be regenerated.");
+                    return false;
+                }
+            /*}
+            else {
+                (new File(treeIndexDir.getAbsolutePath() + File.separator + "res_index.res")).delete();
+                // Remove from the res_index list
+                listOfIndexes.remove(indexFile);
+                idx--; 
+            }*/
         }
         return true;
     }
@@ -691,11 +709,30 @@ public class DataCustomizer extends HttpServlet {
     }
     
     /**
+     * By default, we want the parse to fail on all funny requests.
+     */
+    private static final ErrorHandler DEFAULT_SAX_ERROR_HANDLER = new ErrorHandler() {
+        public void warning(SAXParseException e) throws SAXException {
+            throw e;
+        }
+
+        public void error(SAXParseException e) throws SAXException {
+            throw e;
+        }
+
+        public void fatalError(SAXParseException e) throws SAXException {
+            throw e;
+        }
+    };
+
+    /**
      * DocumentBuilder and DocumentBuilderFactory are not thread safe.
      * Synchronized to ensure thread safety.
      */
     private synchronized DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
-        return docBuilderFactory.newDocumentBuilder();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        docBuilder.setErrorHandler(DEFAULT_SAX_ERROR_HANDLER);
+        return docBuilder;
     }
 
     public void destroy() {

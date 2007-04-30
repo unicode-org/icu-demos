@@ -1,15 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       Copyright (C) 2007-2007, International Business Machines Corporation and others.  All Rights Reserved.
     </xsd:documentation>
   </xsd:annotation>
-  <xsd:simpleType name="FilePatternType">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[a-zA-Z0-9_\-]+(/?[a-zA-Z0-9_\-]+)?(\.[a-zA-Z0-9_\-]+)*" />
-    </xsd:restriction>
-  </xsd:simpleType>
   <xsd:element name="package">
     <xsd:complexType>
       <xsd:sequence>
@@ -39,11 +34,14 @@
             <xsd:sequence>
               <xsd:element name="item" maxOccurs="unbounded">
                 <xsd:complexType>
-                  <xsd:simpleContent>
-                    <xsd:extension base="FilePatternType">
-                      <xsd:attribute name="hidden" use="optional" type="xsd:boolean" />
-                    </xsd:extension>
-                  </xsd:simpleContent>
+                  <xsd:attribute name="hidden" use="optional" type="xsd:boolean" />
+                  <xsd:attribute name="name">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:pattern value="[a-zA-Z0-9_\-]+(/?[a-zA-Z0-9_\-]+)?(\.[a-zA-Z0-9_\-]+)*" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:attribute>
                 </xsd:complexType>
               </xsd:element>
             </xsd:sequence>
@@ -51,10 +49,9 @@
         </xsd:element>
       </xsd:sequence>
     </xsd:complexType>
-    <!-- This doesn't seem to work. -->
-    <!-- xsd:unique name="ItemKey">
-      <xsd:selector xpath="./items" />
-      <xsd:field xpath="item" />
-    </xsd:unique -->
+    <xsd:key name="ItemKey">
+      <xsd:selector xpath=".//item" />
+      <xsd:field xpath="@name" />
+    </xsd:key>
   </xsd:element>
 </xsd:schema>

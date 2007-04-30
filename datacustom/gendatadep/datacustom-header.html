@@ -113,7 +113,7 @@ function initPage() {
 Calling this function toggles the display a set of subitems.
 @param divId The identifier of a division.
 */
-function showHide(divId) {
+function toggleView(divId) {
 	var groupElem = document.getElementById(divId + '.group');
 	var selectorElem = document.getElementById(divId);
 	if (groupElem.style.display == 'block') {
@@ -339,7 +339,7 @@ function clickGroups(symbol) {
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
 		if (span.id.match(/\.link/) && span.innerHTML == symbol) {
-			showHide(span.id);
+			toggleView(span.id);
 		}
 	}
 }
@@ -360,7 +360,7 @@ function generatePackageRequest() {
 	for (var i = 0; i < items.length; i++) {
 		var item = items[i];
 		if (item.getAttribute("name") == "item" && item.checked) {
-			xmlDoc += "<item" + (gItems[item.id].hidden == 1 ? " hidden=\"1\"" : "") + ">" + item.getAttribute("value") + "</item>\n";
+			xmlDoc += "<item" + (gItems[item.id].hidden == 1 ? " hidden=\"1\"" : "") + " name=\"" + item.getAttribute("value") + "\"/>\n";
 		}
 	}
 	xmlDoc += "</items>\n";

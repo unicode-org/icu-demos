@@ -359,7 +359,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
         totalBytes += bytes;
         sprintf(kilobytesStr, "%g", kilobytes);
         sprintf(bytesStr, "%i", bytes);
-        dataList += UnicodeString("<div><span onclick=\"showHide('") + UnicodeString(currCategory->group)
+        dataList += UnicodeString("<div><span onclick=\"toggleView('") + UnicodeString(currCategory->group)
             + UnicodeString(".link')\" id=\"") + UnicodeString(currCategory->group)
             + UnicodeString(".link\" class=\"expander\">+</span>\n");
         if (hidden) {
@@ -510,7 +510,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString("<p>The estimated uncompressed size of this data library is <span id=\"totalSize.kilobytes\">") + UnicodeString(kilobytesStr)
         + UnicodeString("</span> KB</p>\n");
     html += UnicodeString("</form>\n");
-    html += UnicodeString("<span onclick=\"showHide('advanced')\" id=\"advanced\" class=\"expander\">+</span>\n");
+    html += UnicodeString("<span onclick=\"toggleView('advanced')\" id=\"advanced\" class=\"expander\">+</span>\n");
     html += UnicodeString("Advanced Options\n");
     html += UnicodeString("<div id=\"advanced.group\" class=\"itemGroup\">\n");
     html += UnicodeString("<table><tr><td>\n");
