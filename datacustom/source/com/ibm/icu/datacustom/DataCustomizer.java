@@ -32,7 +32,6 @@ import javax.xml.validation.*;
 public class DataCustomizer extends HttpServlet {
 
     // TODO: Add comment to manifest and .dat file about source of customizations. Add .res file with meta package information.
-    // TODO: Log a summary of results. Store full xml files in a cache directory.
     // TODO: Cache big-endian results for ICU4J.
     // TODO: Make the path to the ICU tools a property.
     // TODO: Use exceptions instead of if statements to detect if execution should continue.
@@ -40,6 +39,8 @@ public class DataCustomizer extends HttpServlet {
     
     // Logging
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
+    public static Logger requestLogger;
+    private static FileHandler requestFileHandler;
     
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final String ENDIAN_STR = "l"; // TODO: Fix this endianness
@@ -99,6 +100,7 @@ public class DataCustomizer extends HttpServlet {
                 //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
                 //return;
             }
+            requestLogger.info("Starting request for " + sessionID);
             if (!sessionDir.mkdir()) {
                 String msg = sessionID + " directory could not be created.";
                 logger.warning(msg);
@@ -107,13 +109,11 @@ public class DataCustomizer extends HttpServlet {
                 //return;
             }
             try {
-                System.out.println("Before parse");
                 Document xmlDoc = getDocumentBuilder().parse(request.getInputStream());
-                //xmlDoc.setStrictErrorChecking(true);
-                System.out.println("After parse");
                 NodeList pkgItems = xmlDoc.getElementsByTagName("item");
                 icuDataVersion = xmlDoc.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
-                if (xmlDoc.getElementsByTagName("target").item(0).getFirstChild().getNodeValue().equals("ICU4C")) {
+                String targetTypeStr = xmlDoc.getElementsByTagName("target").item(0).getFirstChild().getNodeValue();
+                if (targetTypeStr.equals("ICU4C")) {
                     icuDataType = ICUDataFormat.ICU4C;
                 }
                 else {
@@ -135,10 +135,8 @@ public class DataCustomizer extends HttpServlet {
                         reportError(response, HttpServletResponse.SC_NOT_FOUND, pkgItemName + " was not found.");
                         return;
                     }
-                    if (icuDataType == ICUDataFormat.ICU4C) {
-                        filesToPackage += pkgItemName + NEWLINE;
-                    }
-                    else {
+                    filesToPackage += pkgItemName + NEWLINE;
+                    if (icuDataType == ICUDataFormat.ICU4J) {
                         filesToPackageVect.add(pkgItemName);
                     }
                     if (pkgItemName.endsWith(".res")) {
@@ -160,6 +158,8 @@ public class DataCustomizer extends HttpServlet {
                         }
                     }
                 }
+                requestLogger.info("Requested " + itemsLen + " items in " + targetTypeStr + " format for session " + sessionID + "." + NEWLINE
+                        + filesToPackage);
             }
             catch (ParserConfigurationException e) {
                 reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -183,6 +183,7 @@ public class DataCustomizer extends HttpServlet {
                 // Don't do anything after this. The request may or may not have failed.
             }
             deleteResIndexFiles(indexesToGenerateVect, sessionDir);
+            requestLogger.info("Finished request for " + sessionID);
         }
         else {
             PrintWriter writer = response.getWriter();
@@ -362,7 +363,9 @@ public class DataCustomizer extends HttpServlet {
         }
         
         response.setContentType("application/zip");
-        response.setContentLength((int)generatedFile.length());
+        int generatedFileSize = (int)generatedFile.length();
+        response.setContentLength(generatedFileSize);
+        requestLogger.info(generatedFile + " is " + generatedFileSize + " bytes big.");
         
         // Read the file in, and write it to the client using DEFAULT_FILE_BUFFER_SIZE chunks.
         // It's buffered this way to save space in the JVM for each request.
@@ -378,6 +381,7 @@ public class DataCustomizer extends HttpServlet {
             generatedFile.delete();
             (new File(toolHomeRequestDirStr + pathToSend)).delete();
         }
+        requestLogger.info("Finished sending " + generatedFile);
 
         //writer.println(fileToSend);
         //writer.println(generatedFile);
@@ -652,6 +656,7 @@ public class DataCustomizer extends HttpServlet {
         }
         if (!toolHomeDir.isDirectory() || !toolHomeDir.canRead()) {
             logger.warning(toolHomeDir.getAbsolutePath() + " is not a valid data directory.");
+            return;
         }
         else {
             /* Check and create required subdirectories. */
@@ -697,6 +702,30 @@ public class DataCustomizer extends HttpServlet {
             logger.warning(e.getMessage());
         }
         
+        try {
+            requestLogger = Logger.getLogger("com.ibm.icu.DataCustomizerRequest");
+            requestLogger.setUseParentHandlers(false); // Disable console output
+    
+            File logDir = new File(toolHome + "log");
+            String logDirStr = logDir.getAbsolutePath() + File.separator;
+            if (!logDir.exists()) {
+                if (!logDir.mkdir()) {
+                    logger.warning(logDirStr + " could not be created.");
+                }
+            }
+            if (!logDir.isDirectory() || !logDir.canRead() || !logDir.canWrite()) {
+                logger.warning(logDirStr + " is not a valid directory.");
+            }
+            requestFileHandler = new FileHandler(logDirStr + "requests-%u-%g.log", true);
+            requestFileHandler.setFormatter(new SimpleFormatter());
+            requestLogger.addHandler(requestFileHandler);
+    
+            requestLogger.setLevel(Level.ALL);
+        }
+        catch (IOException e) {
+            logger.warning(e.getMessage());
+        }
+        
         logger.info("ICU Data Customization tool ready for requests. Memory in use: "
                         + usedKB() + "KB");
     }
@@ -738,6 +767,9 @@ public class DataCustomizer extends HttpServlet {
     public void destroy() {
         logger.warning("ICU Data Customization tool shutting down.");
         super.destroy();
+        requestLogger = null;
+        requestFileHandler.close();
+        logger.warning("ICU Data Customization tool shut down.");
     }
 
     // ====== Utility Functions
