@@ -4,27 +4,24 @@
  * others. All Rights Reserved.                                               *
  ******************************************************************************
  */
+
 package com.ibm.icu.datacustom;
 
 import java.io.*;
 import java.util.*;
-
-// logging
 import java.util.logging.*;
 
-// servlet imports
 import javax.servlet.*;
 import javax.servlet.http.*;
-
-// DOM imports
-import org.w3c.dom.*;
-import org.xml.sax.*;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.*;
+
+// DOM imports
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 /**
  * The main servlet class of the Data Custimization tool
@@ -37,8 +34,10 @@ public class DataCustomizer extends HttpServlet {
     // TODO: Use exceptions instead of if statements to detect if execution should continue.
     // TODO: Don't include an empty res_index
     
-    // Logging
+    // Standard logging for information and errors
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
+
+    // Summary log of each request. For example, what was requested, size and time of request.
     public static Logger requestLogger;
     private static FileHandler requestFileHandler;
     
@@ -46,7 +45,7 @@ public class DataCustomizer extends HttpServlet {
     public static final String ENDIAN_STR = "l"; // TODO: Fix this endianness
     private static final int DEFAULT_FILE_BUFFER_SIZE = 1048576; // 2^20
 
-    /** status * */
+    /** Location for all file manipulation, reading, logging and so forth. */
     public static String toolHome;
     public static String toolHomeSrcDirStr;
     public static String toolHomeRequestDirStr;
@@ -68,7 +67,6 @@ public class DataCustomizer extends HttpServlet {
     }
 
     public DataCustomizer() {
-        //docBuilder.setSchema();
     }
 
     /**
@@ -86,6 +84,7 @@ public class DataCustomizer extends HttpServlet {
         //dumpRequest(request, writer);
         String contentType = request.getContentType();
         if (contentType != null && contentType.startsWith("text/xml; ")) {
+            requestLogger.info("Starting request for " + sessionID);
             String filesToPackage = "";
             Vector filesToPackageVect = new Vector();
             Vector indexesToGenerateVect = new Vector();
@@ -100,7 +99,6 @@ public class DataCustomizer extends HttpServlet {
                 //response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
                 //return;
             }
-            requestLogger.info("Starting request for " + sessionID);
             if (!sessionDir.mkdir()) {
                 String msg = sessionID + " directory could not be created.";
                 logger.warning(msg);

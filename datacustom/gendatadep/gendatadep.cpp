@@ -136,8 +136,8 @@ UnicodeString getTranslation(const char *key) {
         UnicodeString keyUniStr(key);
         if (keyUniStr.endsWith(".res")) {
             char localeStr[ULOC_FULLNAME_CAPACITY];
-            int32_t startOfLocale = keyUniStr.indexOf('/') + 1; // if -1 is returned, then 0 is used.
-            int32_t endOfLocale = keyUniStr.lastIndexOf('.');
+            int32_t startOfLocale = keyUniStr.indexOf((UChar)'/') + 1; // if -1 is returned, then 0 is used.
+            int32_t endOfLocale = keyUniStr.lastIndexOf((UChar)'.');
             strncpy(localeStr, key + startOfLocale, endOfLocale - startOfLocale);
             localeStr[endOfLocale - startOfLocale] = 0;
             Locale(localeStr).getDisplayName(uniStr);
@@ -221,7 +221,7 @@ void enumerateDefaultDependencies(const char *itemName, DependencyInfo *depInfo,
         UnicodeString itemNameUStr(itemName);
         char *itemNameCopy = strdup(itemName);
         const UHashElement *elem = depInfo->dependsOn.find(itemNameUStr);
-        UnicodeString parentLocale = NULL; // freed by dependsOnVector
+        UnicodeString parentLocale; // freed by dependsOnVector
         char *separator = strrchr(itemNameCopy, '_');
         if (separator && strstr(itemNameCopy, "res_index.res") == NULL) {
             strcpy(separator, ".res");
@@ -239,7 +239,7 @@ void enumerateDefaultDependencies(const char *itemName, DependencyInfo *depInfo,
                 parentLocale = UnicodeString("root.res");
             }
         }
-        if (parentLocale != NULL) {
+        if (parentLocale.length() > 0) {
             depInfo->addDependencyRoundtrip(itemName, parentLocale, status);
         }
     }
@@ -247,13 +247,13 @@ void enumerateDefaultDependencies(const char *itemName, DependencyInfo *depInfo,
 
 UnicodeString createValidID(UnicodeString str) {
     int32_t idx;
-    while ((idx = str.indexOf('/')) != -1) {
+    while ((idx = str.indexOf((UChar)'/')) != -1) {
         str.replace(idx, 1, (UChar)'_');
     }
-    while ((idx = str.indexOf('.')) != -1) {
+    while ((idx = str.indexOf((UChar)'.')) != -1) {
         str.replace(idx, 1, (UChar)'_');
     }
-    while ((idx = str.indexOf('-')) != -1) {
+    while ((idx = str.indexOf((UChar)'-')) != -1) {
         str.replace(idx, 1, (UChar)'_');
     }
     return str;

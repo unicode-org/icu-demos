@@ -44,17 +44,18 @@ idnbrowser/Makefile \
 convexp/Makefile \
 scompare/Makefile \
 redemo/Makefile \
-rbbiperf/Makefile \
+datacustom/Makefile \
+datacustom/gendatadep/Makefile \
+icudemos/Makefile \
 xlitomatic/Makefile \
+rbbiperf/Makefile \
 dumpdat/Makefile \
 rtfcvrt/Makefile \
 XMLConverter/Makefile \
 obsolete/Makefile \
-icudemos/Makefile \
 test/Makefile \
 test/testdata/Makefile \
 test/obstest/Makefile])
 
 dnl
-
 

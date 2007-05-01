@@ -1,0 +1,112 @@
+## ******************************************************************************
+## *
+## *   Copyright (C) 2007-2007, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Makefile.in for ICU - datacustom
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ..
+subdir = datacustom
+
+# srcdir must be set before this is included
+include $(top_builddir)/icuapps.mk
+
+# Required to determine which files must be hidden.
+include $(ICU_SOURCE)/data/coll/colfiles.mk
+include $(ICU_SOURCE)/data/locales/resfiles.mk
+include $(ICU_SOURCE)/data/brkitr/brkfiles.mk
+include $(ICU_SOURCE)/data/translit/trnsfiles.mk
+
+BASE_PACKAGE=$(ICU_BUILD)/data/out/icudt37l.dat
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~
+
+## Target information
+TARGET = datacustom.war
+
+OBJECTS = data/root/index.html
+LIST_MODIFIER_FILE=list-modifier.txt
+GENDATADEP_DIR = gendatadep
+GENDATADEP = $(GENDATADEP_DIR)/gendatadep
+
+## List of phony targets
+.PHONY : all all-local install install-local clean clean-local \
+all-recursive \
+distclean resclean distclean-local dist dist-local check check-local resfiles package-resfiles install-resfiles
+
+## List of standard targets
+all: all-local
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+all-local: all-recursive $(TARGET)
+
+install-local: all-local install-target
+
+install-target: all-local
+	
+
+dist-local:
+
+clean-local:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS) $(TARGET)
+
+distclean-local: clean-local
+	rm -f Makefile $(DEPS)
+
+check-local:
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# Run against HTMLTidy
+#tidy: $(TARGET)
+#	$(NBROWSEROPTS) $(INVOKE) ./$(TARGET) | tail +3 > convexp.html
+#	tidy -utf8 -q convexp.html 2>&1 | sed -e "s%^convexp.html%"`pwd`"/convexp.html%g"
+
+SUBDIRS= gendatadep
+
+all-recursive install-recursive clean-recursive distclean-recursive dist-recursive check-recursive:
+	@dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-local"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $$local_target); \
+	done;
+
+RES_INDEX_FILES:=$(shell $(INVOKE) icupkg -l $(BASE_PACKAGE) | grep res_index.res | tr -d \\r | tr [:cntrl:] ' ')
+HIDDEN_FILES=
+HIDDEN_FILES+=$(COLLATION_ALIAS_SOURCE:%.txt=1,0,coll/%.res,,)
+HIDDEN_FILES+=$(GENRB_ALIAS_SOURCE:%.txt=1,0,%.res,,)
+HIDDEN_FILES+=$(RES_INDEX_FILES:%=1,0,%,,)
+
+$(LIST_MODIFIER_FILE): $(GENDATADEP) Makefile
+	rm -f $@
+	@echo Generating $@
+	@for file in $(HIDDEN_FILES); do \
+	  echo "$$file" >> $@; \
+	done;
+
+$(OBJECTS): $(GENDATADEP) $(LIST_MODIFIER_FILE)
+	$(INVOKE) $(GENDATADEP) -p $(BASE_PACKAGE) -c datacustom -H data/datacustom-header.html -m "$(top_srcdir)/apputil/data/common-masthead.html" -n "$(top_srcdir)/apputil/data/common-leftnav.html" -f "$(top_srcdir)/apputil/data/common-footer.html" -l $(LIST_MODIFIER_FILE) > "$@" || rm -f $@
+
+$(TARGET): $(OBJECTS)
+	ant
+
+
