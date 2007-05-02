@@ -33,7 +33,6 @@
 
 U_CFUNC char datadep_dat[];
 
-static const char *gPackage;
 static const char *gCgiName;
 static const char *gHtmlHeader;
 static const char *gHtmlMasthead;
@@ -305,10 +304,10 @@ generateHTML(Package *pkg, UErrorCode &status) {
         ItemGroup(FALSE, "(coll/.+|ucadata.icu|invuca.icu)", "coll", "Collators", status),
         ItemGroup(FALSE, "rbnf/.+", "rbnf", "Rule Based Number Format", status),
         ItemGroup(FALSE, "translit/.+", "translit", "Transliterators", status),
-        ItemGroup(TRUE, "zoneinfo.res", "zoneinfo", "Timezone Data", status),
+        //ItemGroup(TRUE, "zoneinfo.res", "zoneinfo", "Timezone Data", status), // Doesn't need to be a lone item?
         // This next one should be the last one searching for .res locale files.
         ItemGroup(FALSE, "(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
-        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res)", "misc", "Miscellaneous Data", status),
+        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res|zoneinfo.res)", "misc", "Miscellaneous Data", status),
         ItemGroup(FALSE, ".+", BASE_DATA, "Base Data", status)
     };
 
@@ -496,11 +495,11 @@ generateHTML(Package *pkg, UErrorCode &status) {
 
     html += dataList;
 
-    html += UnicodeString("<p>Target Data Library Format</p>\n");
+    html += UnicodeString("<p>The generated data library can be used with the ") + UnicodeString(U_ICU_VERSION, 3) + UnicodeString(" series of ICU. Please specify which edition of ICU will use this data.</p>\n");
     // onfocus is needed on these radio buttons due to Opera
     // onclick is needed when reloading and focus moves elsewhere on the page.
     html += UnicodeString("<div>\n");
-    html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4C\" id=\"ICU4C\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" checked=\"checked\" />ICU4C "U_ICU_VERSION"</label><br />\n");
+    html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4C\" id=\"ICU4C\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" checked=\"checked\" />ICU4C</label><br />\n");
     html += UnicodeString("<label><input type=\"radio\" name=\"packagetype\" value=\"ICU4J\" id=\"ICU4J\" onclick=\"selectPackageType(this)\" onfocus=\"selectPackageType(this)\" />ICU4J</label><br />\n");
     html += UnicodeString("<input type=\"hidden\" name=\"version\" id=\"version\" value=\""U_ICU_VERSION_SHORT"\" />\n");
     html += UnicodeString("<div id=\"progressOutput\" style=\"white-space: pre; padding: 1em; font-family: monospace; color: red\">&nbsp;</div>\n");
@@ -560,6 +559,7 @@ static UOption options[]={
     UOPTION_HELP_H,
     UOPTION_HELP_QUESTION_MARK,
     UOPTION_DEF("package", 'p', UOPT_REQUIRES_ARG),
+    UOPTION_DEF("supplemental-package", 's', UOPT_REQUIRES_ARG),
     UOPTION_DEF("list-modifier", 'l', UOPT_REQUIRES_ARG),
     UOPTION_DEF("cgi-name", 'c', UOPT_REQUIRES_ARG),
     UOPTION_DEF("html-header", 'H', UOPT_REQUIRES_ARG),
@@ -572,6 +572,7 @@ enum {
     OPT_HELP_H,
     OPT_HELP_QUESTION_MARK,
     OPT_PACKAGE,
+    OPT_SUPPLEMENTAL_PACKAGE,
     OPT_LIST_MODIFIER,
     OPT_CGI_NAME,
     OPT_HTML_HEADER,
@@ -583,8 +584,8 @@ enum {
 
 extern int
 main(int argc, char *argv[]) {
-    const char *pname, *inFilename;
-    Package *pkg;
+    const char *pname, *primaryPkgFilename, *supplementalPkgFilename;
+    Package primaryPkg, supplementalPkg;
     UErrorCode status = U_ZERO_ERROR;
 
     /* get the program basename */
@@ -596,6 +597,7 @@ main(int argc, char *argv[]) {
         return U_ZERO_ERROR;
     }
     if(!options[OPT_PACKAGE].doesOccur
+        || !options[OPT_SUPPLEMENTAL_PACKAGE].doesOccur
         || !options[OPT_CGI_NAME].doesOccur
         || !options[OPT_HTML_HEADER].doesOccur
         || !options[OPT_HTML_MASTHEAD].doesOccur
@@ -606,7 +608,8 @@ main(int argc, char *argv[]) {
         printUsage(pname);
         return U_ILLEGAL_ARGUMENT_ERROR;
     }
-    gPackage=options[OPT_PACKAGE].value;
+    primaryPkgFilename=options[OPT_PACKAGE].value;
+    supplementalPkgFilename=options[OPT_SUPPLEMENTAL_PACKAGE].value;
     gCgiName=options[OPT_CGI_NAME].value;
     gHtmlHeader=options[OPT_HTML_HEADER].value;
     gHtmlMasthead=options[OPT_HTML_MASTHEAD].value;
@@ -624,8 +627,7 @@ main(int argc, char *argv[]) {
 
     hiddenItems = new UVector(NULL, uhash_compareChars, status);
     additionalItems = new UVector(freeBlock, compareItems, status);
-    pkg = new Package;
-    if(pkg==NULL || hiddenItems==NULL) {
+    if(hiddenItems==NULL) {
         fprintf(stderr, "icupkg: not enough memory\n");
         return U_MEMORY_ALLOCATION_ERROR;
     }
@@ -634,14 +636,17 @@ main(int argc, char *argv[]) {
         ListModifier::parseModificationList(options[OPT_LIST_MODIFIER].value, hiddenItems, additionalItems);
     }
 
-    inFilename=gPackage;
-    pkg->readPackage(inFilename);
-    UnicodeString html(generateHTML(pkg, status));
+    // Read both packages the base and supplemental packages.
+    primaryPkg.readPackage(primaryPkgFilename);
+    supplementalPkg.readPackage(supplementalPkgFilename);
+    // Figure out what is checked in the HTML by default.
+    ListModifier::generateSupplementalItems(primaryPkg, supplementalPkg, additionalItems);
 
+    // Generate the html
+    UnicodeString html(generateHTML(&primaryPkg, status));
     printHTML(html);
 
     delete hiddenItems;
-    delete pkg;
 
     return 0;
 }

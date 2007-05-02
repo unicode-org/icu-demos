@@ -13,10 +13,12 @@
 #define LISTMOD_H
 
 #include "uvector.h"
+#include "package.h"
 
 class ListModifier {
 public:
     static void parseModificationList(const char *filename, UVector *hiddenItems, UVector *items);
+    static void generateSupplementalItems(const Package &primary, const Package &supplemental, UVector *items);
 };
 
 #endif

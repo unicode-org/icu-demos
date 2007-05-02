@@ -84,3 +84,17 @@ void ListModifier::parseModificationList(const char *filename, UVector *hiddenIt
     }
     fclose(file);
 }
+
+void ListModifier::generateSupplementalItems(const Package &primary, const Package &supplemental, UVector *items) {
+    int32_t i;
+    int32_t suppItemCount = supplemental.getItemCount();
+    UErrorCode status;
+    for(i=0; i < suppItemCount; ++i) {
+        const Item *currItem = supplemental.getItem(i);
+        status = U_ZERO_ERROR;
+        // If the item wasn't in the main package, add it to the items list.
+        if (primary.findItem(currItem->name) < 0) {
+            items->addElement((void *)currItem, status);
+        }
+    }
+}
