@@ -37,12 +37,12 @@ root {
 	ibm-9449_P100-2002.cnv {"Baltic (windows-1257)"}
 	ibm-5354_P100-1998.cnv {"Vietnamese (windows-1258)"}
 	ibm-1383_P110-1999.cnv {"Simplified Chinese (GB2312)"}
-	ibm-1386_P100-2002.cnv {"Simplified Chinese (GBK)"}
+	ibm-1386_P100-2001.cnv {"Simplified Chinese (GBK)"}
 	gb18030.cnv {"Simplified Chinese (GB18030)"}
 	ibm-1373_P100-2002.cnv {"Traditional Chinese (Big5)"}
-	ibm-943_P15A-2003.cnv {"Japanese (Shift-JIS with \x5C <-> backslash mapping)"}
-	ibm-33722_P12A-1999.cnv {"Japanese (EUC-JP)"}
-	ibm-970_P110-1995.cnv {"Korean (EUC-KR)"}
+	ibm-943_P15A-2003.cnv {"Japanese (Shift-JIS with byte 0x5C <-> backslash mapping)"}
+	ibm-33722_P12A_P12A-2004_U2.cnv {"Japanese (EUC-JP)"}
+	ibm-970_P110_P110-2006_U2.cnv {"Korean (EUC-KR)"}
 	ibm-949_P11A-1999.cnv {"Korean (KSC_5601)"}
 	ibm-1363_P11B-1998.cnv {"Korean (KSC_5601)"}
 	ibm-367_P100-1995.cnv {"US-ASCII with character fallbacks"}
@@ -96,15 +96,16 @@ root {
 	ibm-5351_P100-1998.cnv {"Hebrew (windows-1255 variant)"}
 	ibm-5353_P100-1998.cnv {"Baltic (windows-1257 variant)"}
 	ibm-942_P12A-1999.cnv {"Japanese (Shift-JIS78)"}
-	ibm-943_P130-1999.cnv {"Japanese (Shift-JIS with \x5C <-> Yen mapping)"}
+	ibm-943_P130-1999.cnv {"Japanese (Shift-JIS with byte 0x5C <-> Yen mapping)"}
 	ibm-949_P110-1999.cnv {"Korean (KSC_5601)"}
 	ibm-950_P110-1999.cnv {"Traditional Chinese (Big5 without Euro update)"}
-	ibm-954_P101-2000.cnv {"Japanese (EUC-JP)"}
+	ibm-954_P101-2007.cnv {"Japanese (EUC-JP)"}
 	ibm-964_P110-1999.cnv {"Traditional Chinese (EUC-TW)"}
 	ibm-971_P100-1995.cnv {"Korean (DBCS)"}
 	ibm-1363_P110-1997.cnv {"Korean (KSC_5601)"}
-	ibm-1375_P100-2003.cnv {"Traditional Chinese (Big5-HKSCS with mappings for Unicode 3.0)"}
-	ibm-9005_X100-2005.cnv {"Greek (ISO-8859-7:2003 with Euro update)"}
+	ibm-1375_P100-2006.cnv {"Traditional Chinese (Big5-HKSCS with mappings for Unicode 3.0 and Microsoft extensions)"}
+	ibm-5471_P100-2007.cnv {"Traditional Chinese (Big5-HKSCS with mappings for Unicode 3.1)"}
+	ibm-9005_X110-2007.cnv {"Greek (ISO-8859-7:2003 with Euro update)"}
 	ibm-9448_X100-2005.cnv {"Arabic (windows-1256)"}
 	ibm-33722_P120-1999.cnv {"Japanese (EUC-JP)"}
 	iso-8859_10-1998.cnv {"Latin 6 (ISO-8859-10)"}
@@ -115,7 +116,7 @@ root {
 	macos-7_3-10.2.cnv {"Cyrillic (Macintosh)"}
 	macos-29-10.2.cnv {"Central Europe (Macintosh)"}
 	macos-35-10.2.cnv {"Turkish (Macintosh)"}
-	macos-2566-10.2.cnv {"Traditional Chinese (Big5-HKSCS with mappings for Unicode 3.1)"}
+	//macos-2566-10.2.cnv {"Traditional Chinese (Big5-HKSCS with mappings for Unicode 3.1)"}
 	windows-874-2000.cnv {"Thai (TIS-620)"}
 	windows-936-2000.cnv {"Simplified Chinese (GBK)"}
 	windows-949-2000.cnv {"Korean (KSC_5601)"}
@@ -137,7 +138,7 @@ root {
 	ibm-1130_P100-1997.cnv {"Vietnamese (EBCDIC)"}
 	ibm-1132_P100-1998.cnv {"Lao (EBCDIC)"}
 	ibm-1137_P100-1999.cnv {"Devanagari (EBCDIC)"}
-	ibm-1364_P110-1997.cnv {"Korean (EBCDIC)"}
+	ibm-1364_P110-2007.cnv {"Korean (EBCDIC)"}
 	ibm-1371_P100-1999.cnv {"Traditional Chinese (EBCDIC)"}
 	ibm-1388_P103-2001.cnv {"Simplified Chinese (EBCDIC)"}
 	ibm-1390_P110-2003.cnv {"Japanese (EBCDIC)"}
@@ -202,4 +203,33 @@ root {
 	brkitr/thaidict.ctd {"Thai word break rules"}
 	zoneinfo.res {"Olson timezone information"}
 	CurrencyData.res {"ISO-4217 currency information"}
+
+	ibm-1351_P110-1997.cnv {"Japanese (DBCS subset of ibm-5039)"}
+	ibm-1362_P110-1999.cnv {"Korean (DBCS subset of ibm-1363)"}
+	ibm-1374_P100-2005.cnv {"Traditional Chinese (DBCS subset of HKSCS)"}
+	ibm-1380_P100-1995.cnv {"Simplified Chinese (DBCS subset of ibm-1381)"}
+	ibm-1382_P100-1995.cnv {"Simplified Chinese (DBCS subset of ibm-1383)"}
+	ibm-1385_P100-2005.cnv {"Simplified Chinese (DBCS subset of ibm-1386)"}
+	ibm-20780_P100-1999.cnv {"Japanese (DBCS subset of ibm-5486, ibm-5495)"}
+	ibm-21427_P100-1999.cnv {"Traditional Chinese (DBCS subset of ibm-1370)"}
+	ibm-300_P120-2006.cnv {"Japanese (DBCS subset of ibm-930 and ibm-939)"}
+	ibm-301_P110-1997.cnv {"Japanese (DBCS subset of ibm-943)"}
+	ibm-4930_P110-1999.cnv {"Korean (DBCS subset of ibm-1364)"}
+	ibm-5048_P100-1995.cnv {"Japanese (DBCS subset of ibm-1350, JIS X208-1990)"}
+	ibm-5049_P100-1995.cnv {"Japanese (DBCS subset of ibm-1350, JIS X212)"}
+	ibm-5067_P100-1995.cnv {"Korean (DBCS subset of ibm-21450)"}
+	ibm-5470_P100-2005.cnv {"Traditional Chinese (DBCS subset of HKSCS)"}
+	ibm-834_P100-1995.cnv {"Korean (DBCS subset of ibm-933)"}
+	ibm-835_P100-1995.cnv {"Traditional Chinese (DBCS subset of ibm-5033)"}
+	ibm-837_P100-1995.cnv {"Simplified Chinese (DBCS subset of ibm-5031)"}
+	ibm-9027_P100-1999.cnv {"Traditional Chinese (DBCS subset of ibm-1371)"}
+	ibm-9145_P110-1997.cnv {"Japanese (DBCS subset of ibm-5050)"}
+	ibm-927_P100-1995.cnv {"Traditional Chinese (DBCS subset of ibm-938)"}
+	ibm-928_P100-1995.cnv {"Simplified Chinese (DBCS subset of ibm-936)"}
+	ibm-947_P100-1995.cnv {"Traditional Chinese (DBCS subset of ibm-950)"}
+	ibm-951_P100-1995.cnv {"Korean (DBCS subset of ibm-949)"}
+	ibm-952_P110-1997.cnv {"Japanese (DBCS subset of ibm-954, JIS X208-1990)"}
+	ibm-955_P110-1997.cnv {"Japanese (DBCS subset of ibm-957)"}
+	ibm-9577_P100-2001.cnv {"Simplified Chinese (DBCS subset of ibm-5488)"}
+	ibm-963_P100-1995.cnv {"Traditional Chinese (DBCS subset of ibm-965)"}
 }
