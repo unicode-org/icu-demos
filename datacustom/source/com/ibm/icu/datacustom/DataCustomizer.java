@@ -43,7 +43,7 @@ public class DataCustomizer extends HttpServlet {
     
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final String ENDIAN_STR = "l"; // TODO: Fix this endianness
-    private static final int DEFAULT_FILE_BUFFER_SIZE = 1048576; // 2^20
+    private static final int DEFAULT_FILE_BUFFER_SIZE = 1048576; // 2^20 or 1MB
 
     /** Location for all file manipulation, reading, logging and so forth. */
     public static String toolHome;
@@ -360,7 +360,7 @@ public class DataCustomizer extends HttpServlet {
             return;
         }
         
-        response.setContentType("application/zip");
+        response.setContentType("application/java-archive");
         int generatedFileSize = (int)generatedFile.length();
         response.setContentLength(generatedFileSize);
         requestLogger.info(generatedFile + " is " + generatedFileSize + " bytes big.");
@@ -621,9 +621,9 @@ public class DataCustomizer extends HttpServlet {
     /**
      * Main setup
      */
-    static boolean isSetup = false;
+    private static boolean isSetup = false;
 
-    public synchronized void doStartup() throws ServletException {
+    private synchronized void doStartup() throws ServletException {
         if (isSetup == true) {
             return;
         }

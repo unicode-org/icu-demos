@@ -38,7 +38,7 @@
 #define ICU_URL "http://www.icu-project.org/"
 
 #define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
-    "<a class=\"bctl\" href=\"./icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"http://demo.icu-project.org/icu-bin/icudemos\">Demonstrations</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     
 #endif
 
