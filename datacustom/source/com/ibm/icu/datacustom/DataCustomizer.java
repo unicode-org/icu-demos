@@ -360,7 +360,12 @@ public class DataCustomizer extends HttpServlet {
             return;
         }
         
-        response.setContentType("application/java-archive");
+        if (fileToSend.endsWith(".jar")) {
+            response.setContentType("application/java-archive");
+        }
+        else if (fileToSend.endsWith(".zip")) {
+            response.setContentType("application/zip");
+        }
         int generatedFileSize = (int)generatedFile.length();
         response.setContentLength(generatedFileSize);
         requestLogger.info(generatedFile + " is " + generatedFileSize + " bytes big.");
