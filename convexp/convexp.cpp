@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2006, International Business Machines
+*   Copyright (C) 2003-2007, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -64,7 +64,8 @@ static const char endHeaderBeginBody[]=
     // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
-    "p.value {font-family: monospace;}\n"
+    "div.unicodeset {font-family: monospace; white-space: wrap;}\n"
+    "span.autobr:after {font-family: monospace; content: \"\\00200B\"; white-space: wrap;}\n"
     "table.data-table-2 td,\n"
     "table.data-table-2 th{ padding-left:3px; padding-right:3px; padding-top:3px; }\n"
     "table.data-table-2 caption {border-bottom:#fff solid 0px;}\n"
@@ -72,7 +73,7 @@ static const char endHeaderBeginBody[]=
     "table.data-table-2 td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
     "table.data-table-2 td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
     "table.data-table-2 div.iso {margin-top: 0.2em; margin-bottom: 0.2em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
-    "table.data-table-2 div.glyph {font-size: 160%; font-family: serif;}\n"
+    "table.data-table-2 div.glyph {font-size: 160%; font-family: initial;}\n" // don't use serif or the backslash will look funny on Windows Vista.
     "/*]]>*/\n"
     "</style>\n"
     "</head>\n"
@@ -389,6 +390,62 @@ static USet *createFlattenSet(USet *origSet, UErrorCode *status) {
     return newSet;
 }
 
+static void printUnicodeSet(USet *cnvSet, UErrorCode *status, UBool alwaysShowSet) {
+    int32_t patLen;
+    UChar *patBuffer;
+    char *patBufferUTF8;
+    char setStrBuf[64];
+    UChar setUStrBuf[sizeof(setStrBuf)];
+    UErrorCode myStatus = U_ZERO_ERROR;
+    patLen = uset_toPattern(cnvSet, NULL, 0, TRUE, &myStatus) + 1;
+    if (alwaysShowSet || patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
+        if (patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
+            patBuffer = setUStrBuf;
+            patBufferUTF8 = setStrBuf;
+        }
+        else {
+            patBuffer = (UChar*)malloc((patLen + 1) * sizeof(UChar));
+            patBufferUTF8 = (char*)malloc((patLen + 1) * sizeof(char));
+        }
+        if (U_SUCCESS(*status) && patBuffer && patBufferUTF8) {
+            myStatus = U_ZERO_ERROR;
+            patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
+            u_strToUTF8(patBufferUTF8, patLen, NULL, patBuffer, patLen, &myStatus);
+
+            /*
+            This is a hack solely for Firefox because it doesn't do proper line breaking.
+            So we suggest locations to break with the autobr span.
+            This implicitly inserts whitespace without inserting real whitespace
+            for copy and paste operations.
+            */
+            printf("<div class=\"unicodeset\">");
+            char *currStr = patBufferUTF8;
+            char *lastStr = patBufferUTF8;
+            if (patLen >= (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
+                while ((currStr = strchr(currStr, '\\')) != NULL) {
+                    printf("<span class=\"autobr\">%.*s</span>", currStr-lastStr, lastStr);
+                    lastStr = currStr;
+                    currStr++;
+                }
+            }
+            /* else don't insert breaks for the small list. */
+            printf("%s</div>\n", lastStr);
+        }
+        else {
+            puts("<p>Not Available</p>");
+        }
+        if (patBuffer != setUStrBuf) {
+            free(patBuffer);
+            free(patBufferUTF8);
+        }
+        *status = U_ZERO_ERROR;
+    }
+    else {
+        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
+            gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
+    }
+}
+
 static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
     UChar patBuffer[128];
     char patBufferUTF8[1024]; /* 4 times as large as patBuffer */
@@ -438,6 +495,12 @@ static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
                         }
                     }
                     /*else {
+                        uset_removeAll(flatLocSet, cnvSet);
+                        printf("<tr><td>%s</td><td>", locale);
+                        printUnicodeSet(flatLocSet, status, TRUE);
+                        printf("</td></tr>\n");
+                    }*/
+                    /*else {
                         printf("<tr><td>%s</td><td>"NBSP" -- Skipped --</td></tr>\n",
                             locale);
                     }*/
@@ -446,7 +509,7 @@ static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
             }
         }
         if (!localeFound) {
-            puts("<tr><td>Not Available</td></tr>\n");
+            puts("<tr><td>Not Available</td><td></td></tr>\n");
         }
 
         *status = U_ZERO_ERROR;
@@ -456,13 +519,10 @@ static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
 
 static void printConverterInfo(UErrorCode *status) {
     char buffer[64];    // It would be insane if it were lager than 64 bytes
-    UChar *patBuffer;
-    char *patBufferUTF8;
     UBool starterBufferBool[256];
     UBool ambiguousAlias = FALSE;
     char starterBuffer[sizeof(starterBufferBool)+1];    // Add one for the NULL
     int8_t len;
-    int32_t patLen;
     UConverter *cnv = ucnv_open(gCurrConverter, status);
     UConverterType convType;
     UErrorCode myStatus = U_ZERO_ERROR;
@@ -540,38 +600,7 @@ static void printConverterInfo(UErrorCode *status) {
     printLanguages(cnv, cnvSet, status);
 
     puts("<br /><h2><a name=\""SHOW_UNICODESET"\"></a>Set of Unicode Characters Representable By This Codepage</h2>");
-    char setStrBuf[64];
-    UChar setUStrBuf[sizeof(setStrBuf)];
-    myStatus = U_ZERO_ERROR;
-    patLen = uset_toPattern(cnvSet, NULL, 0, TRUE, &myStatus) + 1;
-    if (gShowUnicodeSet || patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
-        if (patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
-            patBuffer = setUStrBuf;
-            patBufferUTF8 = setStrBuf;
-        }
-        else {
-            patBuffer = (UChar*)malloc((patLen + 1) * sizeof(UChar));
-            patBufferUTF8 = (char*)malloc((patLen + 1) * sizeof(char));
-        }
-        if (U_SUCCESS(*status) && patBuffer && patBufferUTF8) {
-            myStatus = U_ZERO_ERROR;
-            patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
-            u_strToUTF8(patBufferUTF8, patLen, NULL, patBuffer, patLen, &myStatus);
-            printf("<div class=\"value\" width=\"10em\">%s</div>\n", patBufferUTF8);
-        }
-        else {
-            puts("<p>Not Available</p>");
-        }
-        if (patBuffer != setUStrBuf) {
-            free(patBuffer);
-            free(patBufferUTF8);
-        }
-        *status = U_ZERO_ERROR;
-    }
-    else {
-        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
-            gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
-    }
+    printUnicodeSet(cnvSet, status, gShowUnicodeSet);
 
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
         || convType == UCNV_UTF16_LittleEndian || convType == UCNV_UTF32

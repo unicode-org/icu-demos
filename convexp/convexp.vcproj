@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="convexp"
 	ProjectGUID="{148CF56D-7211-41FB-9F0C-BE29C4185347}"
+	RootNamespace="convexp"
 	>
 	<Platforms>
 		<Platform
@@ -58,7 +59,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -76,6 +77,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="icuucd.lib icuind.lib"
 				OutputFile=".\Debug/convexp.exe"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\icu\lib"
 				GenerateDebugInformation="true"
