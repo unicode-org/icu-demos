@@ -64,14 +64,15 @@ static const char endHeaderBeginBody[]=
     // TODO: This is a custom style that should be changed in the future.
     "<style type=\"text/css\">\n"
     "/*<![CDATA[*/\n"
-    "div.unicodeset {font-family: monospace; white-space: wrap;}\n"
-    "span.autobr:after {font-family: monospace; content: \"\\00200B\"; white-space: wrap;}\n"
+    "div.unicodeset {font-family: monospace; }\n"
+    "span.autobr:after {font-family: monospace; content: \"\\00200B\"; }\n"
+    "table.data-table-2 { border-right: #000 solid 1px; border-bottom: #000 solid 1px; border-left: 0px; border-top: 0px; }\n"
     "table.data-table-2 td,\n"
-    "table.data-table-2 th{ padding-left:3px; padding-right:3px; padding-top:3px; }\n"
+    "table.data-table-2 th{ padding-left:3px; padding-right:3px; padding-top:3px; border-left: #000 solid 1px; border-top: #000 solid 1px; border-right: 0px; border-bottom: 0px; }\n"
     "table.data-table-2 caption {border-bottom:#fff solid 0px;}\n"
     "table.data-table-2 td.alias {white-space: nowrap;}\n"
-    "table.data-table-2 td.reserved {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
-    "table.data-table-2 td.continue {padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 125%; font-family: monospace;}\n"
+    "table.data-table-2 td.reserved {min-width: 5.25%; padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 115%; font-family: monospace;}\n"
+    "table.data-table-2 td.continue {min-width: 5.25%; padding-top: 0.85em; padding-bottom: 0.85em; white-space: nowrap; background-color: #EEEEEE; text-align: center; font-size: 115%; font-family: monospace;}\n"
     "table.data-table-2 div.iso {margin-top: 0.2em; margin-bottom: 0.2em; border: solid; border-width: 1px; font-size: 100%; font-family: monospace;}\n"
     "table.data-table-2 div.glyph {font-size: 160%; font-family: initial;}\n" // don't use serif or the backslash will look funny on Windows Vista.
     "/*]]>*/\n"
@@ -724,7 +725,7 @@ static void printAliasTable() {
     UErrorCode status = U_ZERO_ERROR;
     UEnumeration *convEnum;
 
-    puts("<br /><table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" class=\"data-table-2\">\n");
+    puts("<br /><table cellspacing=\"0\" class=\"data-table-2\">\n");
     puts("<caption><em>List of Converter Aliases</em></caption>");
     printStandardHeaders(&status);
 
