@@ -95,7 +95,6 @@ apputil/data/icu.css svneol=native#text/css
 apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
 apputil/data/main.css svneol=native#text/css
-convexp/convexp-header.html svneol=native#text/html
 datacustom/Makefile.in -text
 datacustom/build.xml -text
 datacustom/data/datacustom-header.html -text
@@ -114,7 +113,6 @@ datacustom/source/com/ibm/icu/datacustom/DataCustomizer.java -text
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
 icudemos/makedata.mak -text
-idnbrowser/idna-header.html svneol=native#text/html
 locexp/resource/da.txt -text svneol=unset#application/octet-stream
 locexp/resource/fr/displayproblems.gif -text
 locexp/resource/fr/explore.gif -text
@@ -144,16 +142,7 @@ locexp/resource/zh_SG/displayproblems.gif -text
 locexp/resource/zh_SG/dp.gif -text
 locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
-nbrowser/normalization-header.html svneol=native#text/html
-redemo/redemo.html svneol=native#text/html
-scompare/scompare-content-templ.html svneol=native#text/html
-scompare/scompare-page-templ.html svneol=native#text/html
 test/testdata/uni-text.bin -text
-translitdemo/data/translit_main.html svneol=native#text/html
-translitdemo/data/translit_nub.html svneol=native#text/html
-translitdemo/data/translit_rule_edit.html svneol=native#text/html
-translitdemo/data/translit_rule_main.html svneol=native#text/html
-translitdemo/data/translit_template.html svneol=native#text/html
 ubrowse/icons/all-x.gif -text
 ubrowse/icons/all.gif -text
 ubrowse/icons/block-x.gif -text
@@ -162,5 +151,4 @@ ubrowse/icons/ch-x.gif -text
 ubrowse/icons/ch.gif -text
 ubrowse/icons/column-x.gif -text
 ubrowse/icons/column.gif -text
-ubrowse/ubrowse-header.html svneol=native#text/html
 ufortune/res/ComboList.ico -text
