@@ -1,5 +1,9 @@
-// ComboListDlg.h : header file
-//
+/*
+ ******************************************************************************
+ * Copyright (C) 2004-2007, International Business Machines Corporation and   *
+ * others. All Rights Reserved.                                               *
+ ******************************************************************************
+ */
 
 #if !defined(AFX_COMBOLISTDLG_H__FCBC7735_458C_11D2_8236_00A02401A257__INCLUDED_)
 #define AFX_COMBOLISTDLG_H__FCBC7735_458C_11D2_8236_00A02401A257__INCLUDED_

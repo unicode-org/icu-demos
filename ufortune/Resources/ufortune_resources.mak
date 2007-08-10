@@ -1,4 +1,4 @@
-# Copyright (c) 2001 IBM, Inc. and others
+# Copyright (c) 2001-2007 IBM, Inc. and others
 #
 #  fortune_resources.mak
 #
@@ -14,14 +14,14 @@
 #    When adding a resource source (.txt) file for a new locale, the corresponding
 #    .res file must be added to this list, AND to the file res-file-list.txt
 #
-TXTFILES= ufortune_te.txt ufortune_de.txt ufortune_es.txt
+TXTFILES= te.txt de.txt es.txt
 
 #
 #  List of resource files to be built.
 #    When adding a resource source (.txt) file for a new locale, the corresponding
 #    .res file must be added to this list, AND to the file res-file-list.txt
 #
-RESFILES= ufortune_root.res ufortune_te.res ufortune_de.res ufortune_es.res 
+RESFILES= root.res te.res de.res es.res 
 
 #
 #  ICUDIR   the location of ICU, used to locate the tools for
@@ -51,7 +51,6 @@ DEBUGDIR=./debug
 #    clear out the built-in ones (for .c and the like), and add
 #    the definition for .txt to .res.
 #
-.SUFFIXES :
 .SUFFIXES : .xlf .txt
 
 
@@ -59,7 +58,7 @@ DEBUGDIR=./debug
 #  Inference rule, for compiling a .xlf file into a .txt file.
 #
 .xlf.txt:
-	$(JAVA) -cp $(CLASSPATH) $(XLIFFCONV) -d . -t $* $*.xlf
+	$(JAVA) -cp $(CLASSPATH) $(XLIFFCONV) -d . -t $* ufortune_$*.xlf
 
 
 #
@@ -67,7 +66,7 @@ DEBUGDIR=./debug
 #  -t fools make into thinking there are files such as es.res, etc
 #
 .txt.res:
-	$(ICUDIR)\bin\genrb  --package-name ufortuneRes -d . $*.txt
+	$(ICUDIR)\bin\genrb  -d . $*.txt
 
 
 #
@@ -77,7 +76,7 @@ all: ufortune_resources.dll
 
 ROOT:
 	@echo Creating root.txt
-	$(JAVA) -cp $(CLASSPATH) $(XLIFFCONV) -d . -c ufortune_root -r ufortune_root.xlf
+	$(JAVA) -cp $(CLASSPATH) $(XLIFFCONV) -d . -c root -r root.xlf
 
 ufortune_resources.dll: ROOT $(TXTFILES) $(RESFILES)
 	$(ICUDIR)\bin\pkgdata --name ufortuneRes -v --mode dll -d . res-list.txt

@@ -1,5 +1,9 @@
-// ComboList.cpp : Defines the class behaviors for the application.
-//
+/*
+ ******************************************************************************
+ * Copyright (C) 2004-2007, International Business Machines Corporation and   *
+ * others. All Rights Reserved.                                               *
+ ******************************************************************************
+ */
 
 #include "stdafx.h"
 #include "ufortune.h"

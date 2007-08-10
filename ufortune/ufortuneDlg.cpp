@@ -1,5 +1,9 @@
-// ComboListDlg.cpp : implementation file
-//
+/*
+ ******************************************************************************
+ * Copyright (C) 2004-2007, International Business Machines Corporation and   *
+ * others. All Rights Reserved.                                               *
+ ******************************************************************************
+ */
 
 #include "stdafx.h"
 #include "ufortune.h"
@@ -8,6 +12,7 @@
 #include <time.h>
 #include "unicode/udata.h"     /* ICU API for data handling.                 */
 #include "unicode/ures.h"      /* ICU API for resource loading               */
+#include "unicode/putil.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

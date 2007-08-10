@@ -1,5 +1,9 @@
-// ComboList.h : main header file for the COMBOLIST application
-//
+/*
+ ******************************************************************************
+ * Copyright (C) 2004-2007, International Business Machines Corporation and   *
+ * others. All Rights Reserved.                                               *
+ ******************************************************************************
+ */
 
 #if !defined(AFX_COMBOLIST_H__FCBC7733_458C_11D2_8236_00A02401A257__INCLUDED_)
 #define AFX_COMBOLIST_H__FCBC7733_458C_11D2_8236_00A02401A257__INCLUDED_

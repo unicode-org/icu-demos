@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE xliff SYSTEM "./xliff.dtd" >
-<!--DOCTYPE xliff SYSTEM "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd"--> 
-<xliff version = "1.0">
-    <file xml:space = "preserve" target-language="de" source-language = "en" datatype = "text" original = "root.txt" tool = "genrb" date = "2004-01-15T05:00:44Z">
-        <header></header>
-        <body>
-            <group restype = "table" xml:space = "preserve" id = "root" >
-                <group restype = "array" xml:space = "preserve" id = "root_fortunes" resname="fortunes">
-                    <note> Array of strings that contain fortune messages to be printed.</note>
-                    <trans-unit xml:space = "preserve" id = "root_fortunes_0" translate="yes">
-                        <source xml:lang = "en">A child of five could understand this! Fetch me a child of five.</source>
-                        <target xml:lang="de">Ein Fünfjähriger könnte das verstehen! Bring mir einen Fünfjährigen!</target>
-                    </trans-unit>
-                    <trans-unit xml:space = "preserve" id = "root_fortunes_1" translate="yes">
-                        <source xml:lang = "en">A closed mouth gathers no foot.</source>
-                        <target xml:lang="de">Reden ist Silber, Schweigen ist Gold.</target>
-                    </trans-unit>
-                </group>
-                <trans-unit xml:space = "preserve" id = "root_optionMessage" resname = "optionMessage" translate="yes">
-                    <source xml:lang = "en">unrecognized command line option:</source>
-                    <target xml:lang="de">Unbekannter Einstellwert: </target>
-                    <note> Error message that is printed when unrecognized options are passed to the application</note>
+<xliff version = "1.1" xmlns='urn:oasis:names:tc:xliff:document:1.1' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='urn:oasis:names:tc:xliff:document:1.1 http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd'>
+  <file xml:space = "preserve" source-language = "en" target-language ="de" datatype = "x-icu-resource-bundle" original = "ufortune_de.txt" date = "2007-08-07T23:40:53Z">
+    <header>
+        <tool tool-id = "genrb-3.3-icu-3.8" tool-name = "genrb"/>
+    </header>
+    <body>
+        <group id = "de" restype = "x-icu-table">
+            <group id = "fortunes" resname = "fortunes" restype = "x-icu-array">
+                <trans-unit id = "fortunes_0">
+                    <source>A child of five could understand this! Fetch me a child of five.</source>
+                    <target>Ein Fünfjähriger könnte das verstehen! Bring mir einen Fünfjährigen!</target>
                 </trans-unit>
-                <trans-unit xml:space = "preserve" id = "root_usage" resname = "usage" translate="yes">
-                    <source xml:lang = "en">usage: ufortune [options] 
+                <trans-unit id = "fortunes_1">
+                    <source>A closed mouth gathers no foot.</source>
+                    <target>Reden ist Silber, Schweigen ist Gold.</target>
+                </trans-unit>
+            </group>
+            <trans-unit id = "optionMessage" resname = "optionMessage">
+                <source>unrecognized command line option:</source>
+                <target>Unbekannter Einstellwert: </target>
+                <note>Error message that is printed when unrecognized options are passed to the application</note>
+            </trans-unit>
+            <trans-unit id = "usage" resname = "usage">
+                <source>usage: ufortune [options] 
 -v   Print out verbose output.
 -l   The language for printing out the fortune. 
 </source>
-                    <target xml:lang="de">Aufruf: ufortune [Einstellwerte]
+                <target>Aufruf: ufortune [Einstellwerte]
 -v Ausführliche Ausgabe.
 -l  Gewünschte Ausgabesprache.
 </target>
-                    <note> Help message for the application. Do not localize &quot;ufortune&quot;, &quot;-v&quot; and &quot;-l&quot;.</note>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
+                <note>Help message for the application. Do not localize &quot;ufortune&quot;, &quot;-v&quot; and &quot;-l&quot;.</note>
+            </trans-unit>
+        </group>
+    </body>
+</file>
 </xliff>
