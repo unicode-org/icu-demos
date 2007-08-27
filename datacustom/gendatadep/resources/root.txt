@@ -214,11 +214,20 @@ root {
     ibm-1014_P100-1995.cnv {"Spanish (7-bit iso-ir-85)"}
     ibm-1015_P100-1995.cnv {"Portuguese (7-bit iso-ir-84)"}
     ibm-1016_P100-1995.cnv {"Norwegian (7-bit iso-ir-60)"}
+    ibm-1046_X110-1999.cnv {"Arabic (ibm-1046)"}
+    ibm-1127_P100-2004.cnv {"Arabic with French"}
+    ibm-1161_P100-1999.cnv {"Thai (Euro update of ibm-1129)"}
+    ibm-1163_P100-1999.cnv {"Vietnamese (Euro update of ibm-1129)"}
+    ibm-1165_P101-2000.cnv {"Vietnamese (EBCDIC)"}
+    ibm-1166_P100-2002.cnv {"Cyrillic for Kazakhstan (EBCDIC)"}
+    ibm-1167_P100-2002.cnv {"Cyrillic (KOI8-RU)"}
+    ibm-1174_X100-2007.cnv {"Cyrillic for Kazakhstan"}
     ibm-1277_P100-1995.cnv {"Adobe (Postscript) Latin-1"}
     ibm-1350_P110-1997.cnv {"Japanese (EUC-JP variant)"}
     ibm-1351_P110-1997.cnv {"Japanese (DBCS subset of ibm-5039)"}
     ibm-1362_P110-1999.cnv {"Korean (DBCS subset of ibm-1363)"}
     ibm-13125_P100-1997.cnv {"Simplified Chinese (DBCS subset of ibm-1388, ibm-4933)"}
+    ibm-13140_P101-2000.cnv {"Latin 2 (PC-DOS update of ibm-852)"}
     ibm-13218_P100-1996.cnv {"Japanese (EBCDIC update of ibm-930)"}
     ibm-13676_P102-2001.cnv {"Simplified Chinese (EBCDIC)"}
     //ibm-1374_P100-2005.cnv {"Traditional Chinese (DBCS subset of HKSCS)"}
@@ -271,7 +280,7 @@ root {
     ibm-9056_P100-1995.cnv {"Arabic"}
     ibm-9061_P100-1999.cnv {"Greek (Euro update of ibm-869)"}
     ibm-9145_P110-1997.cnv {"Japanese (DBCS subset of ibm-5050)"}
-    ibm-9238_X110-1999.cnv {"Arabic"}
+    ibm-9238_X110-1999.cnv {"Arabic (Update of ibm-1046)"}
     ibm-924_P100-1998.cnv {"Latin 9 (EBCDIC with Euro)"}
     ibm-926_P100-2000.cnv {"Korean (DBCS subset of ibm-944)"}
     ibm-927_P100-1995.cnv {"Traditional Chinese (DBCS subset of ibm-938)"}
