@@ -41,6 +41,9 @@
 //#   include "windows.h"
 //#endif
 
+/* The following must be able to handle the largest idna/normalization expansion, like the result from \uFDFA */
+#define LONGEST_NORMALIZATION_EXPANSION 18
+
 #define LENGTHOF(array) (sizeof(array)/sizeof((array)[0]))
 
 static const char htmlHeader[]=
@@ -407,7 +410,7 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
 static void
 printToUnicode (const UChar *s, int32_t length) {
     UChar *output = NULL;
-    int32_t tempOutLen = length * 9;
+    int32_t tempOutLen = length * LONGEST_NORMALIZATION_EXPANSION;
     UChar *tempOut = (UChar*) malloc(U_SIZEOF_UCHAR * tempOutLen) ;
     int32_t outputLength;
     UErrorCode errorCode;
@@ -424,7 +427,7 @@ printToUnicode (const UChar *s, int32_t length) {
     errorCode=U_ZERO_ERROR;
     tempOutLen =  uidna_IDNToASCII(s,length,tempOut, tempOutLen, UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
 
-    length = tempOutLen * 9;
+    length = tempOutLen * LONGEST_NORMALIZATION_EXPANSION;
     output = (UChar*) malloc(U_SIZEOF_UCHAR * length);
 
     outputLength= uidna_IDNToUnicode(tempOut, tempOutLen, output, length,UIDNA_ALLOW_UNASSIGNED, &parseError, &errorCode);
@@ -447,7 +450,7 @@ printToUnicode (const UChar *s, int32_t length) {
 
 static void
 printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &printSTD3Error, UErrorCode& errorCode) {
-    int32_t capacity = length * 9;
+    int32_t capacity = length * LONGEST_NORMALIZATION_EXPANSION;
     UChar *output = (UChar*)  malloc(U_SIZEOF_UCHAR * capacity);
     UChar *tempOut = (UChar*) malloc(U_SIZEOF_UCHAR * capacity);
     int32_t outputLength;
@@ -496,7 +499,7 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
 
 static void
 printToASCII (const UChar *s, int32_t length) {
-    int32_t capacity  = length * 9;
+    int32_t capacity  = length * LONGEST_NORMALIZATION_EXPANSION;
     UChar *output = (UChar*) malloc(U_SIZEOF_UCHAR * capacity);
     UChar *tempOut = (UChar*) malloc(U_SIZEOF_UCHAR * capacity);
     int32_t outputLength,tempOutLen;
@@ -708,7 +711,7 @@ main(int argc, const char *argv[]) {
             }
             input = (UChar*) us.getBuffer();
             inputLength = us.length();
-            input8  = (char*) malloc( inputLength * 9); 
+            input8  = (char*) malloc( inputLength * (U8_MAX_LENGTH+1)); 
             int32_t reqLength =0;
             u_strToUTF8(input8,inputLength*8 , &reqLength,
                 input, inputLength,
