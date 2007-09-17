@@ -25,7 +25,7 @@ SO_TARGET_VERSION = $(LIB_VERSION)
 SO_TARGET_VERSION_MAJOR = $(LIB_VERSION_MAJOR)
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~
+CLEANFILES = *~ $(FINAL_SO_TARGET) $(SO_TARGET) $(MIDDLE_SO_TARGET)
 ICUPREFIX = icu
 LIBICU = lib$(ICUPREFIX)
 ## Target information

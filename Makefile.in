@@ -75,7 +75,7 @@ check-local:
 #	cd $(srcdir) && $(AUTOCONF)
 
 distclean-local:
-	rm -f Makefile config.cache config.log config.status
+	rm -f Makefile config.cache config.log config.status icuapps.mk
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \

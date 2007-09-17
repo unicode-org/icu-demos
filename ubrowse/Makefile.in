@@ -17,7 +17,7 @@ subdir = ubrowse
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ README_$(PKG).txt $(PKG).*
+CLEANFILES = *~ README_$(PKG).txt $(PKG).*   icons.txt *.res
 
 ## Target information
 TARGET = ubrowse
@@ -63,6 +63,8 @@ install-target: all-local
 dist-local:
 
 clean-local:
+	@echo Calling pkgdata to cleanup. Ignore any errors.
+	@-$(INVOKE) $(PKGDATA) -k -p $(PKG)  -m $(PKGMODE) -c -d $(OUT) -T $(OUT) $(PKG).lst 2>/dev/null
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 	rm -f $(OBJECTS) $(TARGET) $(ITMP)
 

@@ -18,7 +18,7 @@ subdir = icudemos
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~
+CLEANFILES = *~ *.res  $(PKG).lst README_$(PKG).txt $(PKG).dat
 
 ## Target information
 TARGET = $(subdir)
@@ -60,6 +60,7 @@ install-target: all-local
 dist-local:
 
 clean-local:
+	@-$(INVOKE) PATH=$$PATH:$(BINDIR) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -k -c -d $(OUT) -T $(OUT) $(PKG).lst >/dev/null 2>/dev/null
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 	rm -f $(OBJECTS) $(TARGET)
 
