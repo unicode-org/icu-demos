@@ -2161,9 +2161,10 @@ u_fprintf(lx->OUT, "</td></tr></table>");
 #endif
     zsDesc[7] = 0;
     
-    show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");  /* not calendrical */
+  /*  show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");   */
+        /* not calendrical */
   }
-  showLPC(lx, myRB, locale, TRUE);
+  /* showLPC(lx, myRB, locale, TRUE); */
   showDateTimeElements(lx, myRB, locale); /* not calendrical? */
 }
 

@@ -266,6 +266,7 @@ int setupLocaleExplorer(LXContext *lx)
         }
     }
 
+#if 0
 /*  u_uastrcpy(lx->newZone, "Europe/Malta"); */
     u_uastrcpy(lx->newZone, "PST"); /* for now */
 
@@ -293,6 +294,9 @@ int setupLocaleExplorer(LXContext *lx)
     {
         lx->timeZone = NULL;
     }
+#else
+   lx->timeZone = NULL;
+#endif
     return 0;
 }
 
