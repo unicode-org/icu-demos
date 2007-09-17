@@ -23,7 +23,7 @@ include $(top_builddir)/icuapps.mk
 
 -include $(shell $(ICU_CONFIG) --incfile) 
 
-CPPFLAGS += -I$(top_srcdir)/../icu/source/common  -I$(top_builddir)/../icu/source/common  -I$(srcdir)
+CPPFLAGS += -I$(ICU_SOURCE)/common -I$(srcdir)
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~

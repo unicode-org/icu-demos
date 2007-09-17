@@ -8,14 +8,13 @@
 #
 #  - do 'configure' of icuapps (../configure)
 #
-#  - We expect the ICU build to be relative to this directory (ICUAPPS),
-#     if NOT, change the ICU_COMMON_HEADERS variable to point to the location
-#     of  icu/source/common/uhash.h ( you can also put it in a Makefile.local file)
-#  
 #  - do 'make' in this directory
 #
 #  - do make install.    This CGI needs to have the 'data' directory in the
 #  same directory as the translit CGI binary.
+
+# make paths in icuapps.mk work
+top_srcdir=..
 
 include ../icuapps.mk
 #ICU_CONFIG=/data/icu/bin/icu-config
@@ -23,7 +22,7 @@ ICU_INC=$(shell $(ICU_CONFIG) --incfile)
 BINDIR=$(shell $(ICU_CONFIG) --bindir)
 
 # Must find uhash.h and hash.h
-ICU_COMMON_HEADERS=../../icu/source/common
+ICU_COMMON_HEADERS=$(ICU_SOURCE)/common
 ###########################################
 -include Makefile.local
 
@@ -85,11 +84,11 @@ $(ICU_INC):
 
 $(ICU_COMMON_HEADERS)/hash.h:
 	@echo "Need to find hash.h, was not found in $(ICU_COMMON_HEADERS)"
-	@echo "Please change ICU_COMMON_HEADERS in this makefile."
+	@echo "Please set 'ICU_SOURCE=/some/where/icu/source/'  in ../icuapps-mk.local"
 	@false
 
 $(ICU_COMMON_HEADERS)/uhash.h:
 	@echo "Need to find uhash.h, was not found in $(ICU_COMMON_HEADERS)"
-	@echo "Please change ICU_COMMON_HEADERS in this makefile."
+	@echo "Please set 'ICU_SOURCE=/some/where/icu/source/'  in ../icuapps-mk.local"
 	@false
 

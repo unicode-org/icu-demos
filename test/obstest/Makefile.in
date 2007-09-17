@@ -30,7 +30,7 @@ ICULIBS    += $(LDFLAGS_OBSOLETE)
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
 CPPFLAGS  := -I../../obsolete $(CPPFLAGS)
-CPPFLAGS += -I$(top_srcdir)/../icu/source/common -I$(top_srcdir)/../icu/source/tools/toolutil
+CPPFLAGS += -I$(ICU_SOURCE)/common -I$(ICU_SOURCE)/tools/toolutil
 
 OBJECTS = biditst.o cppcnvt.o intltest.o itconv.o itmajor.o itutil.o ucdtest.o 
 

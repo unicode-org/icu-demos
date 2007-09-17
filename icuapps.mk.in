@@ -12,6 +12,9 @@ base_top_srcdir=@top_srcdir@
 # For future removal of the Makefile.in's in favor of just Makefiles.
 #srcdir=$(base_srcdir)/$(subdir)
 
+# Note: These values can be overridden locally with an icuapps-mk.local file
+# at the top icuapps level.
+
 ICU_CONFIG=@ICU_CONFIG@
 ####################################################################
 # Load ICU information. You can copy this to other makefiles #######
@@ -60,5 +63,6 @@ RMV=rm -rf
 # SHLIB.c=      $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -shared
 # SHLIB.cc=     $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -shared
 
-
+# optional override file
+-include $(top_srcdir)/icuapps-mk.local
 

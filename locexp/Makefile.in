@@ -21,14 +21,14 @@ include $(top_builddir)/icuapps.mk
 -include $(shell $(ICU_CONFIG) --incfile) 
 
 CPPFLAGS+=-I../apputil
-CPPFLAGS+=-I../../icu/source/common
+CPPFLAGS+=-I$(ICU_SORUCE)/common
 
 
 # See the end of this makefile for documentation on the 
 # following line.
 LXOPTIONS = -DLX_USE_FONTED
 
-ICUDIR=../../icu/source/common
+ICUDIR=$(ICU_SOURCE)/common
 CPPFLAGS+=-I$(ICUDIR)
 AHEADER=$(ICUDIR)/uresimp.h
 

@@ -26,7 +26,7 @@ include $(shell $(ICU_CONFIG) --incfile)
 CXXFLAGS += $(SHAREDLIBCXXFLAGS)
 CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
 CFLAGS += $(SHAREDLIBCFLAGS)
-CPPFLAGS +=-I../../../icu/source/tools/toolutil/
+CPPFLAGS +=-I$(ICU_SOURCE)/tools/toolutil/ 
 
 
 ## Extra files to remove for 'make clean'

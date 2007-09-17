@@ -43,7 +43,7 @@ GENSRC = root.txt res_index.txt
 AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt  zh.txt da.txt
 
 # ones which have a BOM can just go here
-SRC    = th.txt sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
+SRC    = res.txt th.txt sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
 
 ALLSRC = $(SRC) $(GENSRC)
 RES_SHORT = $(ALLSRC:.txt=.res)

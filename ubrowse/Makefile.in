@@ -94,6 +94,9 @@ $(TARGET) : $(OBJECTS)
 icons.res: icons.txt
 	$(INVOKE) $(GENRB) -d. $<
 
+root.res: root.txt
+	$(INVOKE) $(GENRB) -d. $<
+
 icons.txt: $(ICONS)/*.gif
 	echo creating $@
 	@echo "icons { " > $@
@@ -104,7 +107,8 @@ icons.txt: $(ICONS)/*.gif
 
 $(PKG).lst: Makefile.in	
 	echo "icons.res" > $@
+	echo "root.res" >> $@
 
-$(PKG)_dat.o: $(PKG).lst icons.res
+$(PKG)_dat.o: $(PKG).lst icons.res root.res
 	-rm -f $@
 	-$(INVOKE) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(PKG).lst
