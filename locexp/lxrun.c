@@ -79,7 +79,8 @@ void closeLX(LXContext *theContext)
 int setupLocaleExplorer(LXContext *lx)
 {
     UErrorCode status = U_ZERO_ERROR;
-    char *tmp = NULL;
+    const char *tmp = NULL;
+
 
     /* init ...... */
     /*
@@ -183,19 +184,13 @@ int setupLocaleExplorer(LXContext *lx)
     } /* end: if have a converter */
 
     /* setup the time zone.. */
-    if (tmp && !strncmp(tmp,"SETTZ=",6))
+    if (tmp = queryField(lx, "SETTZ"))
     {
-        const char *start = (tmp+6);
+        const char *start = tmp;
         const char *end;
 
         lx->newZone[0] = 0;
 
-        end = strchr(tmp, '&');
-
-        if(!end)
-        {
-            end = (start+strlen(start));
-        }
         unescapeAndDecodeQueryField(lx->newZone,256,start);
 
         if(u_strlen(lx->newZone))
@@ -207,7 +202,7 @@ int setupLocaleExplorer(LXContext *lx)
     }
 
 
-    if(lx->newZone[0] == 0x0000) /* if still no zone.. */
+    if(!tmp && lx->newZone[0] == 0x0000) /* if still no zone.. */
     {
         const char *cook;
         cook = getenv("HTTP_COOKIE");
@@ -266,37 +261,26 @@ int setupLocaleExplorer(LXContext *lx)
         }
     }
 
-#if 0
-/*  u_uastrcpy(lx->newZone, "Europe/Malta"); */
-    u_uastrcpy(lx->newZone, "PST"); /* for now */
+//  u_uastrcpy(lx->newZone, "Europe/Malta"); 
+//    u_uastrcpy(lx->newZone, "Etc/GMT+7"); /* for now */
 
 
     if(lx->newZone[0] != 0x0000)
     {
-        UTimeZone *tz;
+        UErrorCode status = U_ZERO_ERROR;
 
         lx->timeZone = lx->newZone;
-
-#if 0
-        /* TODO: 2.8:  C tz interface doesn't seem to be working. Investigate */
-        tz = utz_open(lx->newZone); /* returns NULL for nonexistent TZ!! */
-#else
-        tz = NULL;
-#endif
-
-        if(tz)
-        {
-            utz_setDefault(tz);
-            utz_close(tz);
+        
+        ucal_setDefaultTimeZone(lx->newZone, &status);
+        
+        if(U_FAILURE(status)) {
+            fprintf(stderr, "can't set zone: [%s]\n", u_errorName(status));
         }
     }
     else
     {
         lx->timeZone = NULL;
     }
-#else
-   lx->timeZone = NULL;
-#endif
     return 0;
 }
 

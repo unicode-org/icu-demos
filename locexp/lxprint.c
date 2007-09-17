@@ -319,6 +319,16 @@ void printStatusTable(LXContext *lx)
 #endif
     u_fprintf(lx->OUT, "<br />\r\n");
 
+    {
+        UTimeZone *def;
+        char buf[245];
+        def = utz_openDefault();
+        utz_getID(def, buf,245);        
+        u_fprintf(lx->OUT, "%S: %s<br>\r\n",
+                  FSWF("poweredby_tz", "Timezone ID"), buf);
+        utz_close(def);
+    }
+
 #if 0
     if(lx->inDemo == FALSE)
     {

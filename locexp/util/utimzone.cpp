@@ -31,6 +31,18 @@ U_CAPI UTimeZone *utz_open(const UChar* id)
   return (UTimeZone*)z;
 }
 
+U_CAPI UTimeZone *utz_openDefault() {
+    TimeZone *z = TimeZone::createDefault();
+}
+
+U_CAPI int utz_getID(const UTimeZone *zone, char *idbuf, int idlen) {
+    UnicodeString id;
+    ((TimeZone*)zone)->getID(id);
+    idbuf[0]=0;
+    return id.extract(0,id.length(),idbuf);
+}
+
+
 U_CAPI void utz_close(UTimeZone* zone)
 {
   delete ((TimeZone*)zone);

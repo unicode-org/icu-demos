@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999, International Business Machines
+*   Copyright (C) 1999-2007, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "unicode/utypes.h"
@@ -19,7 +19,9 @@ typedef void *UTimeZone;
  */
 U_CAPI UTimeZone *utz_open(const UChar *id);
 
+U_CAPI UTimeZone *utz_openDefault();
 
+U_CAPI int getID(const UTimeZone *zone, char *idbuf, int idlen);
 
 U_CAPI void utz_close(UTimeZone* zone);
 

@@ -245,6 +245,7 @@ root {
    otherLanguageSameCountryLocales  {  "<b>%S</b> under other languages"  }
    poweredby  {  "Powered by"  }
    poweredby_filebug  {  "File a bug"  }
+   poweredby_tz  {  "Timezone ID"  }
    rules  {  "Rules"  }
    set  {  "Set"  }
    showAll  {  "Show All"  }
