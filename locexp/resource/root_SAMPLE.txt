@@ -140,6 +140,7 @@ root {
    charNum  {  "#"  }
    chooseEncoding  {  "Choose Your Encoding"  }
    chooseLocale  {  "Choose Your Locale."  }
+   chooseZone  {  "Choose Your Timezone."  }
    convERR  {  "AN error occured trying to sort the converters.\n"  }
    converter_matchesTo  {  "Looking for matches to these chars: "  }
    converter_searching  {  "Searching for converters which match .."  }

@@ -1256,3 +1256,61 @@ UBlockCode    getUBlockCodeSorted(int32_t n)
 }
 
 
+static UResourceBundle *supplemental = NULL;
+static UResourceBundle *containment = NULL;
+static UResourceBundle *item = NULL;
+
+/* from dtfmtsym.cpp */
+#define kSUPPLEMENTAL "supplementalData"
+
+
+/** Containment **/
+U_CAPI const char * const * territoriesContainedIn(const char *territory, UErrorCode *status)
+{
+    int len = 0;
+    int i;
+    char  **ret = NULL;
+    
+    if(U_FAILURE(*status)) return NULL;
+    
+    if(supplemental==NULL || containment == NULL) {
+        supplemental = ures_openDirect(NULL, kSUPPLEMENTAL, status);
+//        fprintf(stderr, "supp open -> %s\n", u_errorName(*status));
+        containment = ures_getByKey(supplemental, "territoryContainment", containment, status);
+//        fprintf(stderr, "tc open -> %s\n", u_errorName(*status));
+    }
+    item = ures_getByKey(containment, territory, item, status);        
+//    fprintf(stderr, "gbk -> %s\n", u_errorName(*status));
+    if(U_FAILURE(*status)) {
+        return NULL;
+    }
+    
+    len = ures_getSize(item);
+    if(len==0) {
+        return NULL;
+    }
+    ret = (char**)malloc(sizeof(char*)*len+1);
+    if(!ret) {
+        return NULL;
+    }
+    for(i=0;i<len;i++) {
+        int32_t slen;
+        const UChar* str;
+        const char *key;
+        
+        str = ures_getNextString(item, &slen, &key, status);
+        if(!str || U_FAILURE(*status)) {
+            return NULL;
+        }
+        ret[i]=malloc(sizeof(char)*u_strlen(str)*2);
+        u_austrcpy(ret[i],str);
+    }
+    ret[i]=0;
+    return (const char * const *)ret;
+}
+
+void terrCleanup() {
+    ures_close(containment);
+    ures_close(supplemental);
+    ures_close(item);
+}

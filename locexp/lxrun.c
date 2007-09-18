@@ -712,6 +712,7 @@ void setLocaleAndEncoding(LXContext *lx)
   if(lx->convRequested && *lx->convRequested) {
     lx->convUsed = lx->convRequested;
   }
+  lx->altPath=lx->pathInfo&&*lx->pathInfo;
   
   /* Map transliterated/fonted : */
   if(!lx->convUsed || !*(lx->convUsed)) {

@@ -285,5 +285,21 @@ U_CAPI int32_t ucanit_next(UCanonicalIterator *iter, UChar *buffer, int32_t len,
 
 U_CAPI void ucanit_close(UCanonicalIterator *iter);
 
+/** terr containment **/
+
+/* For now, this just allocates heap space for the tables it returns. we are primarily running in single thread-single process mode. */
+
+
+#define U_WORLD  "001" /** 'top' of the containment tree **/
+
+/**
+ * Creates a heap allocated list of territories contained in a certain territory according to CLDR containment data.
+ * Not thread safe.
+ * @param territory a territory (such as 001 or MT)
+ * @param status error code
+ * @return array of pointers to null terminated strings. Last element will be NULL. Or, will return NULL if error condition.  Caller owns returned storage.
+ */
+U_CAPI const char * const * territoriesContainedIn(const char *territory, UErrorCode *status);
+
 #endif
 

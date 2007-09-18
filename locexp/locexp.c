@@ -59,7 +59,9 @@ void displayLocaleExplorer(LXContext *lx)
     u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer %s \r\n     " ICU_URL "\r\n  -->\r\n\r\n", U_COPYRIGHT_STRING);
 
     u_fprintf(lx->OUT, "<head>\r\n");
-    printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
+    if(!lx->altPath) {
+        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
+    }
     u_fprintf(lx->OUT, "\r\n<title>");
     lx->backslashCtx.html = FALSE;
     u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "ICU Demonstration - "));
@@ -120,7 +122,7 @@ void displayLocaleExplorer(LXContext *lx)
 
     showSortStyle(lx);
     u_fprintf(lx->OUT, "%s", "</head>\r\n<body>\r\n");
-    if (printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
+    if(!lx->altPath && printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
         u_fprintf(lx->OUT, "%s", DEMO_BEGIN_LEFT_NAV);
         printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_LEFTNAV);
         u_fprintf(lx->OUT, "%s", DEMO_END_LEFT_NAV);
@@ -330,7 +332,9 @@ void displayLocaleExplorer(LXContext *lx)
 #endif
 
     u_fprintf(lx->OUT, "</td></tr></table>\r\n");
-    printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_FOOTER);
+    if(!lx->altPath) {
+        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_FOOTER);
+    }
 
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */

@@ -70,10 +70,10 @@ U_CFUNC char locexp_dat[];
 typedef struct {
   char             name[LBUFBIG];
   char             base[LBUFBIG];
-  char             l[LBUFSML];
-  char             s[LBUFSML];
-  char             r[LBUFSML];
-  char             v[LBUFSML];
+  char             l[LBUFSML]; /* lang */
+  char             s[LBUFSML]; /* script */
+  char             r[LBUFSML]; /* region/territory/country */
+  char             v[LBUFSML]; /* variant */
   char             calendar[LBUFSML];
   char             collation[LBUFSML];
   char             currency[LBUFSML];
@@ -111,6 +111,7 @@ typedef struct
 
   /* ============= OTHER STATE */
   UBool  inDemo;       /* are we in a 'demo' (EXPLORER) page? If so, don't show encoding and other options */
+  UBool       altPath;  /* alternate pathinfo - suppress templates. */
   const char *fileObj;    /* if set - then we're writing out a data object */
   UBool  setCookies;
   char section[10];

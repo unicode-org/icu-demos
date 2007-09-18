@@ -5,6 +5,10 @@
 #include "unicode/utimzone.h"
 #include "unicode/timezone.h"
 #include "unicode/simpletz.h"
+#include "unicode/strenum.h"
+#include "unicode/unistr.h"
+
+#include <stdlib.h>
 
 TimeZone *gmtZone  = NULL; // for comparison
 
@@ -70,4 +74,36 @@ U_CAPI const UChar* utz_hackyGetDisplayName(const UTimeZone *zone)
 U_CAPI void utz_setDefault(const UTimeZone *zone)
 {
     TimeZone::setDefault(*((TimeZone*)zone));
+}
+
+U_CAPI UStringEnumeration * utz_createEnumerationForTerritory(const char *territory) {
+    return (UStringEnumeration*)TimeZone::createEnumeration(territory);
+}
+
+U_CAPI const char *ustre_next(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status) {
+    return ((StringEnumeration*)e)->next(resultLength, *status);
+}
+
+U_CAPI const UChar *ustre_unext(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status) {
+    return ((StringEnumeration*)e)->unext(resultLength, *status);
+}
+
+U_CAPI const char *ustre_nextz(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status) {
+    const UnicodeString *us =  ((StringEnumeration*)e)->snext(*status);
+    if(us == NULL) {
+        return NULL;
+    }
+    char *f = (char*)malloc(212);
+    *resultLength = us->length();
+    f[0]=0;
+    us->extract(0,*resultLength,f);
+    return f;
+}
+ 
+
+U_CAPI void ustre_close(UStringEnumeration *e) {
+    delete ((StringEnumeration*)e);
+}
+U_CAPI int32_t ustre_count(UStringEnumeration *e, UErrorCode *status) {
+    return ((StringEnumeration*)e)->count(*status);
 }

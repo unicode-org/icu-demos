@@ -8,6 +8,7 @@
 #define _UTIMZONE
 
 typedef void *UTimeZone;
+typedef void *UStringEnumeration;
 
 /**
  * create a tz.  Thanks to the broken TimeZone::createTimeZone() api,
@@ -27,11 +28,21 @@ U_CAPI void utz_close(UTimeZone* zone);
 
 U_CAPI int32_t utz_getRawOffset(const UTimeZone *zone);
 
-
 U_CAPI const UChar *utz_hackyGetDisplayName(const UTimeZone *zone);
 
 
-
 U_CAPI void utz_setDefault(const UTimeZone *zone);
+
+U_CAPI UStringEnumeration * utz_createEnumerationForTerritory(const char *territory);
+
+U_CAPI const char *ustre_next(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status);
+
+U_CAPI const char *ustre_nextz(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status);
+
+U_CAPI const UChar *ustre_unext(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status);
+
+U_CAPI void ustre_close(UStringEnumeration *e);
+
+U_CAPI int32_t ustre_count(UStringEnumeration *e, UErrorCode *status);
 
 #endif

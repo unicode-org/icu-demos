@@ -308,15 +308,9 @@ void printStatusTable(LXContext *lx)
               FSWF("poweredby", "Powered by"),
               FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION) );
 
-#ifdef LX_SET_TZ
-    u_fprintf(lx->OUT, "<a href=\"?SETTZ=\">");
-#endif
     dateStr = date( NULL,UDAT_FULL, lx->dispLocale,&status);
     u_fprintf(lx->OUT, "%S", dateStr);
     free(dateStr);
-#ifdef LX_SET_TZ
-    u_fprintf(lx->OUT, "</a>");
-#endif
     u_fprintf(lx->OUT, "<br />\r\n");
 
     {
@@ -324,9 +318,11 @@ void printStatusTable(LXContext *lx)
         char buf[245];
         def = utz_openDefault();
         utz_getID(def, buf,245);        
-        u_fprintf(lx->OUT, "%S: %s<br>\r\n",
+        u_fprintf(lx->OUT, "%S: %s \r\n",
                   FSWF("poweredby_tz", "Timezone ID"), buf);
         utz_close(def);
+        u_fprintf(lx->OUT, "<a href='?x=chz'>(%S)</a>", 
+                  FSWF("EXPLORE_change", "Change"));
     }
 
 #if 0
@@ -356,7 +352,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "<tr><td><b>%S</b></td>\r\n",
               FSWF("encoding_translit_setting", "Transliteration:"));
 
-#if 0  /* Set to 1 if transliteration isn't working. */
+#if 1  /* Set to 1 if transliteration isn't working. */
     u_fprintf(lx->OUT, "<td><i>%S</i></td>",
               FSWF("off", "off"));
 #else
@@ -617,6 +613,7 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
 #define kCalendarPart 'K'
 #define kCollationPart 'S'
 #define kCurrencyPart 'Y'
+#define kTimezonePart 'z'
 
 
 /* void showKeywordMenuList(LXContext *lx, UEnumeration *e, UErrorCode *status) { */
@@ -630,66 +627,6 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
 /*   uenum_close(e); */
 /* } */
 
-#if 0
-void exPrintChangeLocale(LXContext *lx)
-{
-  int32_t n;
-  UChar dispname[1024];
-  UErrorCode status = U_ZERO_ERROR;
-
-  uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispname, 1023, &status);
-  u_fprintf(lx->OUT, "Now: [%s]<br />\n", lx->curLocaleName);
-  u_fprintf(lx->OUT, "= %S<br />\n", dispname);
-  u_fprintf(lx->OUT, "<form method=GET action=\"?_=%s\">\n", lx->curLocaleName);
-
-  u_fprintf(lx->OUT, "<select name=l>\n");
-  u_fprintf(lx->OUT, " <option value=\"\"></option>\n");
-  for(n=0;n<lx->locales->nSubLocs;n++) {
-    u_fprintf(lx->OUT, "<option %s value=\"%s\">%S</option>\n",
-              !strcmp(lx->locales->subLocs[n]->str,lx->curLocaleL)?"selected":"",
-              lx->locales->subLocs[n]->str,
-              lx->locales->subLocs[n]->ustr);
-  }
-  u_fprintf(lx->OUT, "</select>\n");
-
-  u_fprintf(lx->OUT, "<select name=s>\n");
-  u_fprintf(lx->OUT, " <option value=\"\"></option>\n");
-  for(n=0;n<USCRIPT_CODE_LIMIT;n++) {
-    u_fprintf(lx->OUT, " <option %s value=\"%s\">%s</option>\n",
-              !strcmp(uscript_getShortName((UScriptCode)n),lx->curLocaleS)?"selected":"",
-              uscript_getShortName((UScriptCode)n),
-              uscript_getName((UScriptCode)n)); /* change to localized */
-  }
-  u_fprintf(lx->OUT, "</select>\n");
-
-  u_fprintf(lx->OUT, "<select name=r>\n");
-  u_fprintf(lx->OUT, " <option value=\"\"></option>\n");
-  for(n=0;n<lx->regions->nSubLocs;n++) {
-    char rgn[128];
-    
-    uloc_getCountry(lx->regions->subLocs[n]->str, rgn, 128, &status);
-
-    u_fprintf(lx->OUT, " <option %s value=\"%s\">%S</option>\n",
-              !strcmp(rgn,lx->curLocaleR)?"selected=\"selected\"":"",
-              rgn,
-              lx->regions->subLocs[n]->ustr);
-  }
-  u_fprintf(lx->OUT, "</select>\n");
-
-  u_fprintf(lx->OUT, "<select name=v>\n");
-  u_fprintf(lx->OUT, "</select>\n");
-
-  showKeywordMenuList(lx, ucol_getKeywords(&status), &status);
-  if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
-  showKeywordMenu(lx, "calendar", &status);
-  if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
-  showKeywordMenu(lx, "currency", &status);
-  if(U_FAILURE(status)) { explainStatus(lx, status, NULL); status=U_ZERO_ERROR; }
-  
-  u_fprintf(lx->OUT, "<input type=submit />\n");
-  u_fprintf(lx->OUT, "</form>\n");
-}
-#endif
 
 #define LX_FSECTION_START  "<small><span style=\"color: #999999;\">"
 #define LX_FSECTION_END    "</span></small>"
@@ -948,6 +885,87 @@ void showKeywordMenu(LXContext *lx, const char *e, const char *kwVal, int32_t *n
   uenum_close(en);
 }
 
+
+static void showChangeTimezone(LXContext *lx) {
+    UTimeZone *def;
+    char buf[245];
+    char lbuf[200];
+    UChar ubuf[200];
+    const char *terr = NULL;
+    const char **sterrs = NULL;
+    const char *wterr = U_WORLD;
+    UErrorCode status = U_ZERO_ERROR;
+    int t;
+    int32_t rlen;
+    int depth = 0;
+    UStringEnumeration *e;
+    
+    strcpy(lbuf, "und_");
+    
+    def = utz_openDefault();
+    utz_getID(def, buf,245);
+    
+    u_fprintf(lx->OUT, "Current %S: %s<br>\r\n",
+              FSWF("poweredby_tz", "Timezone ID"), buf);
+    utz_close(def);
+    
+    u_fprintf(lx->OUT, "<hr>\r\n");
+    
+    terr = queryField(lx, "tzt");
+    if(!terr || !*terr) {
+        terr = U_WORLD;
+    }
+        
+    strcpy(lbuf+4,terr);
+    uloc_getDisplayCountry(lbuf, lx->dispLocale, ubuf, 1024, &status);
+ //   fprintf(stderr, " status: %s @ %s\n", u_errorName(status), lbuf);
+    u_fprintf(lx->OUT, " <p>Instructions:  Find your location and your time zone. To go back, use the Back button on your browser.</p>\n");
+    u_fprintf(lx->OUT, " <h4>%S</h4>\n", ubuf);
+
+    sterrs=territoriesContainedIn(terr ,&status);
+    if(!sterrs || U_FAILURE(status)) {
+//        u_fprintf(lx->OUT, "terr containment[%s] failed: %s<br>\n", terr, u_errorName(status));
+    } else {
+        for(t=0;sterrs[t];t++) {
+            strcpy(lbuf+4,sterrs[t]);
+            uloc_getDisplayCountry(lbuf, lx->dispLocale, ubuf, 1024, &status);
+            //fprintf(stderr, " status: %s @ %s\n", u_errorName(status), lbuf);
+            u_fprintf(lx->OUT, "&nbsp;<a href='?x=chz&amp;tzt=%s'>%S</a><br>\n", sterrs[t], ubuf);
+        }
+    }
+    
+    /* Now, tzs by territory */
+    status = U_ZERO_ERROR;
+    e = utz_createEnumerationForTerritory(terr);
+    if(U_SUCCESS(status)&&e) {
+        const char *z = NULL;
+        int32_t count;
+    
+        count = ustre_count(e, &status);
+//        u_fprintf(lx->OUT, "&nbsp; &nbsp;  #%d count - %s<br>\n", count, u_errorName(status));
+        for(t=0;t<count;t++) {
+            z = ustre_nextz(e, &rlen, &status);
+//            u_fprintf(lx->OUT, "&nbsp; &nbsp;  ff#%d count - %s<br>\n", count, u_errorName(status));
+            if( U_SUCCESS(status) && z ) {
+                //char f[200];
+    //            strncpy(f,z,rlen);
+    //            f[rlen]=0;
+                u_fprintf(lx->OUT, "&nbsp; &nbsp; <a href='?" /* x=chz&amp;tzt=%s&amp; */ "SETTZ=%s'>%s</a><br>", z, z);
+//                fprintf(stderr, " z = %p\n", z);
+//                u_fprintf(lx->OUT, "&nbsp; &nbsp;  #%d  - %s<br>\n", rlen, u_errorName(status));
+            }
+        }
+    }
+    
+    
+//
+//    startCell(lx);
+//    showKeywordMenu(lx, "timezone", lx->newZone, &n, myURL, prefix, part, &status);
+//    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, lx->newZone);
+//    endCell(lx);
+
+}
+
 void showChangePage(LXContext *lx)
 {
   const char *changeWhat;
@@ -978,6 +996,9 @@ void showChangePage(LXContext *lx)
     strcpy(prefix,"d_");
     b = &lx->dispLocaleBlob;
     u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("changeLocale", "Change the Locale used for Labels"));
+  } else if (*changeWhat == 'z') {
+    u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseZone", "Choose Your Timezone."));
+    u_fprintf(lx->OUT, "(<a href='?'>Cancel</a>)<br>");
   } else {
     u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
     strcpy(prefix, "_");
@@ -1064,8 +1085,13 @@ void showChangePage(LXContext *lx)
     printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->currency);
     endCell(lx);
     break;
+    
+  case kTimezonePart:
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF/* ERR: find the real str */ ("localeList_Timezone", "Timezone"));
+    showChangeTimezone(lx);
+    break;
 
   default:
-    u_fprintf(lx->OUT, "Err - unknkown type code '%c'\n", part);
+    u_fprintf(lx->OUT, "Err - unknown type code '%c'\n", part);
   }
 }
