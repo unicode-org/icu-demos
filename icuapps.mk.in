@@ -39,9 +39,10 @@ LDFLAGS_TOOLUTIL =$(shell @ICU_CONFIG@ --ldflags-toolutil)
 ICU_SOURCE=$(top_srcdir)/../icu/source
 ICU_BUILD=$(top_srcdir)/../icu/source
 ####################################################################
-MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
+#MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 
-INSTALL = @INSTALL@
+INSTALL=$(shell @ICU_CONFIG@ --install)
+MKINSTALLDIRS=$(shell @ICU_CONFIG@ --mkinstalldirs)
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
