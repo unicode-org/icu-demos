@@ -37,6 +37,7 @@ U_CAPI UTimeZone *utz_open(const UChar* id)
 
 U_CAPI UTimeZone *utz_openDefault() {
     TimeZone *z = TimeZone::createDefault();
+    return z;
 }
 
 U_CAPI int utz_getID(const UTimeZone *zone, char *idbuf, int idlen) {

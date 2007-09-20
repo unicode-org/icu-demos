@@ -59,6 +59,7 @@ install-target: all-local
 	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
 	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
 	$(INSTALL) ubrowse-header.html $(BINDIR)/data
+	$(INVOKE) $(PKGDATA) -I $(BINDIR)/../lib -p $(PKG)  -m $(PKGMODE) -c -d $(OUT) -T $(OUT) $(PKG).lst 
 
 dist-local:
 

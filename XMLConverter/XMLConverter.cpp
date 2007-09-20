@@ -611,7 +611,7 @@ long convertFirstLine( FILE* inF, char* inEncName,
             dQuote = FALSE;
         }
 
-        char* newString     = strstr( (const char*) pFLB, "encoding");
+        char* newString     = strstr( pFLB, "encoding");
         char* stringWithEnc = 0;
 
         if (!newString)
@@ -622,7 +622,7 @@ long convertFirstLine( FILE* inF, char* inEncName,
             strcpy(stringWithEnc, newString);
         }
 
-        newString = strstr( (const char*) pFLB, "standalone");
+        newString = (char*)strstr( (const char*) pFLB, "standalone");
         char* stringWithStd = 0;
         if (!newString) 
             stdString = FALSE;

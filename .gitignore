@@ -142,6 +142,7 @@ test/obstest/obstest
 test/testdata/Makefile
 translitdemo/debug
 translitdemo/release
+translitdemo/translit
 translitdemo/translitdemo
 ubrowse/*.o
 ubrowse/*.res

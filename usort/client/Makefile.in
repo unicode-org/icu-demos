@@ -65,7 +65,8 @@ clean-local:
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
 
-check-local:
+check-local: $(TARGET)
+	$(INVOKE) ./$(TARGET) < Makefile > Makefile-Sorted~
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -76,7 +77,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licu-uc -lusort' ...
 
 $(TARGET) : $(OBJECTS)
-	$(LINK.c) -o $@ $^ $(ICULIBS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
+
 
 
 

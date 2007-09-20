@@ -7,8 +7,8 @@
 #ifndef _UTIMZONE
 #define _UTIMZONE
 
-typedef void *UTimeZone;
-typedef void *UStringEnumeration;
+typedef void UTimeZone;
+typedef void UStringEnumeration;
 
 /**
  * create a tz.  Thanks to the broken TimeZone::createTimeZone() api,

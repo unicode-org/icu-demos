@@ -46,7 +46,7 @@ OBJECTS +=  TextCache.o
 CPPFLAGS += -I$(ICU_COMMON_HEADERS) 
 CPPFLAGS += -I../apputil
 
-ICULIBS := -L../apputil -lapputil $(LDFLAGS_ICUIO) $(ICULIBS)
+ICULIBS := -L../apputil $(ICULIBS) -lapputil $(ICULIBS_ICUIO)
 
 CLEANFILES=*~ $(TARGET).out
 
