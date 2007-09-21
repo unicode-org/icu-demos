@@ -252,6 +252,7 @@ root {
    showAll  {  "Show All"  }
    showSort_Context  {  "Error shown by this mark:"  }
    showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
+   showSort_shortString  {  "Using Short String"  }
    sourceFile  {  "View Locale Source"  }
    statusTableHeader  {  "Your settings:"  }
    statusTableHeaderChange  {  "(click to change)"  }
@@ -269,6 +270,8 @@ root {
    usortLocaleRules1  {  "Fetch rules for"  }
    usortLocaleRules2  {  ""  }
    usortOriginal  {  "Original"  }
+   usortSearch  {  "Search for: (or leave blank for no search)"  }
+   usortSearchResults  {  "Search Results"  }
    usortSource  {  "Source"  }
    usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
    usort_attrib  {  "Attributes"  }

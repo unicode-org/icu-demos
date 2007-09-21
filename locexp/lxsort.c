@@ -1,10 +1,11 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2007, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
 #include "locexp.h"
 #include "unicode/udata.h"
+#include "unicode/usearch.h"
 #include "uresimp.h"
 
 #define G7COUNT 8  /* all 8 of the g7 locales. showSort() */
@@ -441,6 +442,61 @@ const char *sortLoadText(LXContext *lx, char *inputChars, const char *locale, UC
   return text;
 }
 
+const char *sortLoadSearch(LXContext *lx, char *inputChars, const char *locale, UChar *strChars)
+{
+  const char *text;
+  int32_t length;
+  
+
+  /* pull out the text to be sorted. ===========================================================
+   */
+  text = queryField(lx,"sch");
+  if(!text || !*text) {
+    /* attempt load from RB */
+    const UChar *sampleString = NULL;
+    UResourceBundle *sampleRB;
+    UErrorCode sampleStatus = U_ZERO_ERROR;
+    int32_t len;
+    
+    /* try to get localized sample */
+    sampleRB = ures_open(FSWF_bundlePath(), locale, &sampleStatus);
+    if(!U_FAILURE(sampleStatus))  {
+      sampleString = ures_getStringByKey(sampleRB, "EXPLORE_CollationElements_sampleString", &len, &sampleStatus);
+      ures_close(sampleRB);
+    }
+    text="";
+  } /* end if no user-specified text */
+
+  if(text && *text)
+  {
+    const char *aConv = lx->convRequested;
+    if(!aConv||!*aConv) {
+        aConv = "utf-8";
+    }
+    strChars[0]=0;
+    u_fprintf(lx->OUT, "<!-- [enc: %s] -->", aConv);
+    unescapeAndDecodeQueryField_enc(strChars, SORTSIZE,
+                                    text, aConv );
+    
+    length = strlen(text);
+    
+    if(length > (SORTSIZE-1))
+      length = SORTSIZE-1; /* safety ! */
+    
+    strncpy(inputChars, text, length); /* make a copy for future use */
+    inputChars[length] = 0;
+  }
+  else
+  {
+    inputChars[0] = 0;  /* no text to process */
+    strChars[0] =0;
+	text=0;
+  }
+
+  return text;
+}
+
+
 void showSortStyle(LXContext *lx)
 {
 
@@ -531,9 +587,12 @@ static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator 
 void showSort(LXContext *lx, const char *locale)
 {
   char   inputChars[SORTSIZE];
+  char   schInputChars[SORTSIZE];
   char   ruleUrlChars[SORTSIZE] = "";
   const char *text;
+  const char *schText;
   UChar  strChars[SORTSIZE];
+  UChar  schChars[SORTSIZE];
   UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
   UChar  fixedRuleChars[SORTSIZE]; /* Custom rule UChars without comments */
   UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
@@ -572,6 +631,7 @@ void showSort(LXContext *lx, const char *locale)
 #endif
 
   strChars[0] = 0;
+  schChars[0] = 0;
 
   if(strstr(locale,"g7") != NULL)
   {
@@ -580,6 +640,7 @@ void showSort(LXContext *lx, const char *locale)
 
   /* load text to be sorted */
   text = sortLoadText(lx, inputChars, locale, strChars);
+  schText = sortLoadSearch(lx, schInputChars, locale, schChars);
 
 
   /* look for custom rules =========================================================================== */
@@ -629,6 +690,26 @@ void showSort(LXContext *lx, const char *locale)
   
   u_fprintf(lx->OUT, "</textarea>\r\n");
 
+
+  /* the search box  =======================================================================================*/
+  if(!isG7) {
+      const char *overlap;
+      UBool doOverlap = FALSE;
+      overlap = queryField(lx, "usearch_overlap");
+      doOverlap = overlap && *overlap;
+      
+      u_fprintf(lx->OUT, "<label for=\"search\"><b>%S</b></label>\r\n", /* top is only 1 row for now */
+                FSWF("usortSearch", "Search for: (or leave blank for no search)"));
+      u_fprintf(lx->OUT, "<label><input type=checkbox %s name='usearch_overlap'>Overlap?</label>\n", 
+        doOverlap?"checked":"");
+      u_fprintf(lx->OUT, "<p><textarea id=\"search\" %s rows=\"4\" name=\"sch\">", 
+                (0?"":" class=\"wide\" cols=\"20\" "));
+      
+      writeEscaped(lx, schChars); 
+      
+      u_fprintf(lx->OUT, "</textarea>\r\n");
+
+  }
 
   if(!isG7) {
     u_fprintf(lx->OUT, "</p>\n</td>\r\n");
@@ -687,6 +768,20 @@ void showSort(LXContext *lx, const char *locale)
       } 
 
       if(customSort == NULL) {
+        const char *shortstr = queryField(lx, "col_ss");
+        if(shortstr && *shortstr) {
+           UCollator *coll;
+           coll = ucol_openFromShortString(shortstr,
+                                            FALSE,
+                                            NULL,
+                                            &customError );
+            u_fprintf(lx->OUT, "%S <tt style='border: solid black; margin: 2px; padding: 2px;'>%s</tt>", 
+                  FSWF("showSort_shortString", "Using Short String"), shortstr);
+           customSort = usort_openWithCollator(coll, TRUE, &customError);
+        }
+      }
+            
+      if(customSort == NULL) {
         customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
       }
 
@@ -695,6 +790,8 @@ void showSort(LXContext *lx, const char *locale)
         u_fprintf(lx->OUT, "<b>%S %s :</b>", 
                   FSWF("showSort_cantOpenCustomConverter", "Could not open a custom usort/collator for the following locale and reason"), locale);
         explainStatus(lx, customError, NULL); 
+        customError=U_ZERO_ERROR;
+        customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
       } 
 
       customCollator = usort_getCollator(customSort);
@@ -787,7 +884,121 @@ void showSort(LXContext *lx, const char *locale)
     unescapeAndDecodeQueryField_enc(in, SORTSIZE, inputChars, aConv); /* TODO: Didn't we just convert this? */
     u_replaceChar(in, 0x000D, 0x000A); /* CRLF */
     
-    if(!isG7) {
+    if(schInputChars[0]!=0) {
+        /* string search! */
+        UStringSearch *usearch = NULL;
+        int32_t *pos = NULL;
+        int32_t posLen = 0;
+        int32_t i  = 0;
+        int32_t j = 0;
+        const char *overlap = NULL;
+        UCollator *coll;
+        int32_t match;
+        UErrorCode searchErr = U_ZERO_ERROR;
+        
+        coll = usort_getCollator(customSort);
+        
+//        {
+//            UErrorCode icuStatus = U_ZERO_ERROR;
+//           coll = ucol_open("en_US", &icuStatus );
+//           ucol_setAttribute(coll, UCOL_STRENGTH, UCOL_PRIMARY, &icuStatus);
+//        }
+        
+        usearch = usearch_openFromCollator( schChars,
+                                   u_strlen(schChars),
+                                   strChars,
+                                   u_strlen(strChars),
+                                   coll,
+                                   NULL,
+                                   &searchErr );
+        overlap = queryField(lx, "usearch_overlap");
+        if(0 && overlap && *overlap) {
+           usearch_setAttribute( usearch,
+                                 USEARCH_OVERLAP,
+                                 USEARCH_ON,
+                                 &searchErr );
+        }
+        pos = calloc(sizeof(pos[0]),u_strlen(strChars));
+        if(U_SUCCESS(searchErr)) {
+            for(match=usearch_first(usearch, &searchErr);
+                U_SUCCESS(searchErr) && match != USEARCH_DONE;
+                match = usearch_next(usearch, &searchErr)) {
+                pos[posLen++] = match;
+            }
+        }
+        usearch_close(usearch);
+        if(U_FAILURE(searchErr)) {
+            u_fprintf(lx->OUT, "</td><td> <b>Search error:  %s</b></td>", 
+                u_errorName(searchErr));
+        } else {
+            u_fprintf(lx->OUT, "</td><td WIDTH=\"22%%\" colspan=\"2\" rowspan=\"2\"><p><b>%S</b> &mdash; %d</p>\r\n",
+                      FSWF("usortSearchResults", "Search Results"), posLen);
+            if(1 || (posLen>0)) {
+                i=0;
+                for(j=0;j<u_strlen(strChars);j++) {
+                    if(i<posLen&&j==pos[i]) {
+                        u_fprintf(lx->OUT, "<span style='color: red;'>|</span>");
+                        i++;
+                    }
+                    u_fprintf(lx->OUT, "%C", strChars[j]);
+                }
+                u_fprintf(lx->OUT, "<hr>\n");
+                i=0;
+                for(j=0;j<u_strlen(strChars);j++) {
+                    if(0==(j%8)) {
+                        u_fprintf(lx->OUT, "<br>\n");
+                    }
+                    if(i<posLen&&j==pos[i]) {
+                        u_fprintf(lx->OUT, "<span style='color: red;'>|</span>");
+                        i++;
+                    }
+                    u_fprintf(lx->OUT, "\\u%04X", (uint32_t)strChars[j]);
+                }
+                if(hasQueryField(lx,"showCollKey"))
+                {
+                    int32_t ce = UCOL_NULLORDER;
+                    UCollationElements *uci =  ucol_openElements(coll,
+                                          strChars,
+                                                u_strlen(strChars),
+                                                &searchErr);
+                    u_fprintf(lx->OUT,"<hr>\n");
+                    while((ce = ucol_next(uci, &searchErr)) != UCOL_NULLORDER) {
+                        u_fprintf(lx->OUT, "%08X ", ce);
+                    }
+                    ucol_closeElements(uci);
+                    u_fprintf(lx->OUT, "\n");
+                }
+                u_fprintf(lx->OUT, "<hr>\n");
+                for(i=0;i<posLen;i++) {
+                    u_fprintf(lx->OUT, "&lt;%d,..&gt;", pos[i]);
+                }
+                u_fprintf(lx->OUT, "<hr><h3>searching for:</h3><div style='border: 1px dashed green;'>\n");
+                for(i=0;i<u_strlen(schChars);i++) {
+                    if(0==(i%8)) {
+                        u_fprintf(lx->OUT, "<br>\n");
+                    }
+                    u_fprintf(lx->OUT, "\\u%04X", (uint32_t)schChars[i]);
+                }
+                if(hasQueryField(lx,"showCollKey"))
+                {
+                    int32_t ce = UCOL_NULLORDER;
+                    UCollationElements *uci =  ucol_openElements(coll,
+                                          schChars,
+                                                u_strlen(schChars),
+                                                &searchErr);
+                    u_fprintf(lx->OUT,"<hr>\n");
+                    while((ce = ucol_next(uci, &searchErr)) != UCOL_NULLORDER) {
+                        u_fprintf(lx->OUT, "%08X ", ce);
+                    }
+                    ucol_closeElements(uci);
+                    u_fprintf(lx->OUT, "\n");
+                }
+                u_fprintf(lx->OUT, "</div>\n");
+            }
+        } 
+        u_fprintf(lx->OUT, "</td>");
+        /* end search demo */
+    } else if(!isG7) {
         /* Loop through each sort method */
         for(n=0;n<2;n++)
         {
@@ -970,7 +1181,7 @@ void showSort(LXContext *lx, const char *locale)
   u_fprintf(lx->OUT, "<p><br /></p>\r\n");
   u_fprintf(lx->OUT, "%S\r\n",  FSWF(/*NOEXTRACT*/"sortHelp",""));
   u_fprintf(lx->OUT, "<p><br />\r\n");
-  u_fprintf(lx->OUT, "%S <a href=\"http://icu.sourceforge.net/userguide/Collate_Intro.html\">%S</a><br /></p>\r\n",
+  u_fprintf(lx->OUT, "%S <a href=\"http://icu-project.org/userguide/Collate_Intro.html\">%S</a><br /></p>\r\n",
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
             FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));
 

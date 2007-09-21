@@ -97,6 +97,7 @@ locexp/tools/findSame
 locexp/util/*.d
 locexp/util/Debug
 locexp/util/Makefile
+locexp/util/Makefile.local
 locexp/util/Release
 locexp/util/lib*lxutil*
 nbrowser/*.d
