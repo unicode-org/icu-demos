@@ -52,11 +52,11 @@ DEFAULT.head copied from lrb bundle src
     Help</h1>
     This file contains the help text for Locale Explorer, organized by topic.
     If your question is not covered here, you can post your question on the
-    <a href="http://icu.sourceforge.net/contacts.html">icu-support
+    <a href="http://www.icu-project.org/contacts.html">icu-support
     mailing list -
-    <tt>http://icu.sourceforge.net/contacts.html</tt></a>). Please
+    <tt>http://www.icu-project.org/contacts.html</tt></a>). Please
     post any comments or suggestions for improvement of this help file on the
-    <a href="http://www.jtcsv.com/cgibin/icu-bugs/">ICU bug database</a>. 
+    <a href="http://bugs.icu-project.org/trac/">ICU bug database</a>. 
     <hr>
 
     <h2><a name="display">Display Problems</a></h2>
@@ -106,8 +106,6 @@ DEFAULT.head copied from lrb bundle src
           clicking on the name of the current encoding in the 'Your Settings'
           box, at the bottom of each Locale Explorer page.</p>
         </blockquote>
-
-        <p></p>
       </li>
 
       <li>
@@ -124,7 +122,6 @@ DEFAULT.head copied from lrb bundle src
           locale bundle files, and is a standard feature of Java as well.)
         </blockquote>
 
-        <p></p>
       </li>
 
       <li>
@@ -140,7 +137,6 @@ DEFAULT.head copied from lrb bundle src
           situations.
         </blockquote>
 
-        <p></p>
       </li>
 
       <li>
@@ -152,7 +148,6 @@ DEFAULT.head copied from lrb bundle src
           Windows, use 'man mkfontdir' and 'man xset' for more information.
         </blockquote>
 
-        <p></p>
       </li>
 
       <li>
@@ -505,9 +500,17 @@ DEFAULT.head copied from lrb bundle src
       of the week, etc..</li>
 
       <li><tt>w</tt> Week of Year - use 1 or 2.
-          <ul>
-        <font size=-1>"Values calculated for the WEEK_OF_YEAR field range from 1 to 53. Week 1 for a year is the first week that contains at least getMinimalDaysInFirstWeek() days from that year. It depends on the values of getMinimalDaysInFirstWeek(), getFirstDayOfWeek(), and the day of the week of January 1. Weeks between week 1 of one year and week 1 of the following year are numbered sequentially from 2 to 52 or 53 (if needed).
-For example, January 1, 1998 was a Thursday. If getFirstDayOfWeek() is MONDAY and getMinimalDaysInFirstWeek() is 4 (these are the values reflecting ISO 8601 and many national standards), then week 1 of 1998 starts on December 29, 1997, and ends on January 4, 1998. However, if getFirstDayOfWeek() is SUNDAY, then week 1 of 1998 starts on January 4, 1998, and ends on January 10, 1998. The first three days of 1998 are then part of week 53 of 1997." (from <a href="http://icu.sourceforge.net/userguide/dateCalendar.html#cal">ICU User's Guide</a>)</font></ul></li>
+          <div style="margin-left: 4em">
+        <font size=-1>"Values calculated for the WEEK_OF_YEAR field range from 1 to 53.
+         Week 1 for a year is the first week that contains at least getMinimalDaysInFirstWeek()
+          days from that year. It depends on the values of getMinimalDaysInFirstWeek(), getFirstDayOfWeek(),
+           and the day of the week of January 1. Weeks between week 1 of one year and week 1 of the following
+            year are numbered sequentially from 2 to 52 or 53 (if needed).
+          For example, January 1, 1998 was a Thursday. If getFirstDayOfWeek() is MONDAY and getMinimalDaysInFirstWeek()
+           is 4 (these are the values reflecting ISO 8601 and many national standards), then week 1 of 1998 starts on
+            December 29, 1997, and ends on January 4, 1998. However, if getFirstDayOfWeek() is SUNDAY, then week 1
+             of 1998 starts on January 4, 1998, and ends on January 10, 1998. The first three days of 1998 are then
+              part of week 53 of 1997." (from <a href="http://www.icu-project.org/userguide/dateCalendar.html#cal">ICU User's Guide</a>)</font></div></li>
 
       <li><tt>W</tt> Week of month - use 1</li>
 
@@ -629,7 +632,7 @@ For example, January 1, 1998 was a Thursday. If getFirstDayOfWeek() is MONDAY an
 
         <ul>
           <li>Collation (link <a href=
-          "http://icu.sourceforge.net/userguide/Collate_Intro.html">http://icu.sourceforge.net/userguide/Collate_Intro.html</a>)</li>
+          "http://www.icu-project.org/userguide/Collate_Intro.html">http://www.icu-project.org/userguide/Collate_Intro.html</a>)</li>
         </ul>
       </li>
 
@@ -638,7 +641,7 @@ For example, January 1, 1998 was a Thursday. If getFirstDayOfWeek() is MONDAY an
 
         <ul>
           <li>Collator (link <a href=
-          "http://icu.sourceforge.net/apiref/icu4c/ucol_8h.html#_details">http://icu.sourceforge.net/apiref/icu4c/ucol_8h.html#_details</a>)</li>
+          "http://www.icu-project.org/apiref/icu4c/ucol_8h.html#_details">http://www.icu-project.org/apiref/icu4c/ucol_8h.html#_details</a>)</li>
         </ul>
       </li>
     </ul>

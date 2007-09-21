@@ -433,7 +433,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT," &nbsp;\r\n");
     
     if(!lx->noBug) {
-      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://bugs.icu-project.org/cgibin/icu-bugs\">%S</a>",
+      u_fprintf(lx->OUT, "<a target=\"_new\" href=\"http://bugs.icu-project.org/trac/\">%S</a>",
                 FSWF("poweredby_filebug", "File a bug"));
     } else {
       u_fprintf(lx->OUT, "<p style=\"color: red;\"><b>%S</b></p>",
