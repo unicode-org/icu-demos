@@ -221,7 +221,7 @@ static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UE
         }
         uniNameLen += u_charName(uniVal, U_EXTENDED_CHAR_NAME,
                                  uniName + uniNameLen,
-                                 sizeof(uniName) + uniNameLen, status);
+                                 sizeof(uniName) - uniNameLen, status);
     }
 
     // Print a visual representation of the character
