@@ -144,7 +144,6 @@ root {
     ibm-874_P100-1995.cnv { "Thai (TIS-620)" }
     ibm-875_P100-1995.cnv { "Greek (EBCDIC)" }
     ibm-878_P100-1996.cnv { "Russian (KOI8-R)" }
-    ibm-897_P100-1995.cnv { "Partial table for ISO-2022" }
     ibm-9005_X110-2007.cnv { "Greek (ISO-8859-7:2003 with Euro update)" }
     ibm-901_P100-1999.cnv { "Baltic (ISO-8859-13 with Euro update)" }
     ibm-902_P100-1999.cnv { "Estonian (update of ibm-922)" }
@@ -214,7 +213,21 @@ root {
     ibm-1014_P100-1995.cnv {"Spanish (7-bit iso-ir-85)"}
     ibm-1015_P100-1995.cnv {"Portuguese (7-bit iso-ir-84)"}
     ibm-1016_P100-1995.cnv {"Norwegian (7-bit iso-ir-60)"}
+    ibm-1017_P100-1995.cnv {"ibm-1017"}
+    ibm-1018_P100-1995.cnv {"ibm-1018"}
+    ibm-1019_P100-1995.cnv {"ibm-1019"}
+    ibm-1020_P100-2003.cnv {"ibm-1020"}
+    ibm-1021_P100-2003.cnv {"ibm-1021"}
+    ibm-1023_P100-2003.cnv {"ibm-1023"}
     ibm-1046_X110-1999.cnv {"Arabic (ibm-1046)"}
+    ibm-1100_P100-2003.cnv {"ibm-1100"}
+    ibm-1101_P100-2003.cnv {"ibm-1101"}
+    ibm-1102_P100-2003.cnv {"ibm-1102"}
+    ibm-1103_P100-2003.cnv {"ibm-1103"}
+    ibm-1104_P100-2003.cnv {"ibm-1104"}
+    ibm-1105_P100-2003.cnv {"ibm-1105"}
+    ibm-1106_P100-2003.cnv {"ibm-1106"}
+    ibm-1107_P100-2003.cnv {"ibm-1107"}
     ibm-1127_P100-2004.cnv {"Arabic with French"}
     ibm-1161_P100-1999.cnv {"Thai (Euro update of ibm-1129)"}
     ibm-1163_P100-1999.cnv {"Vietnamese (Euro update of ibm-1129)"}
@@ -274,6 +287,7 @@ root {
     ibm-872_P100-1999.cnv { "Cyrillic (Euro update of ibm-855)" }
     ibm-880_P100-1995.cnv {"Cyrillic (EBCDIC)"}
     ibm-896_P100-1995.cnv {"Japanese with only Katakana"}
+    ibm-897_P100-1995.cnv { "Japanese (JIS X 0201)" }
     ibm-9027_P100-1999.cnv {"Traditional Chinese (DBCS subset of ibm-1371)"}
     ibm-9048_P100-1998.cnv {"Hebrew (Euro and Sequel update of ibm-856)"}
     ibm-905_P100-1995.cnv {"Turkish (EBCDIC)"}
