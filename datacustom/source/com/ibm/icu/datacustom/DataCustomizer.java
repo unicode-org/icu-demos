@@ -8,6 +8,7 @@
 package com.ibm.icu.datacustom;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.util.*;
 import java.util.logging.*;
 
@@ -24,17 +25,23 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
- * The main servlet class of the Data Custimization tool
+ * The main servlet class of the Data Customization tool
  */
 public class DataCustomizer extends HttpServlet {
 
     // TODO: Add comment to manifest and .dat file about source of customizations. Add .res file with meta package information.
+    // TODO: Delete unused packages after a timeout.
     // TODO: Cache big-endian results for ICU4J.
     // TODO: Make the path to the ICU tools a property.
     // TODO: Use exceptions instead of if statements to detect if execution should continue.
     // TODO: Don't include an empty res_index
     
-    // Standard logging for information and errors
+	/**
+	 * For serialization, which is unused.
+	 */
+	private static final long serialVersionUID = 1430423129503208114L;
+
+	// Standard logging for information and errors
     public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
 
     // Summary log of each request. For example, what was requested, size and time of request.
@@ -42,7 +49,7 @@ public class DataCustomizer extends HttpServlet {
     private static FileHandler requestFileHandler;
     
     public static final String NEWLINE = System.getProperty("line.separator");
-    public static final String ENDIAN_STR = "l"; // TODO: Fix this endianness
+    public static final String ENDIAN_STR = "l"; // We expect the little endian format to be the default.
     private static final int DEFAULT_FILE_BUFFER_SIZE = 1048576; // 2^20 or 1MB
 
     /** Location for all file manipulation, reading, logging and so forth. */
@@ -86,9 +93,9 @@ public class DataCustomizer extends HttpServlet {
         if (contentType != null && contentType.startsWith("text/xml; ")) {
             requestLogger.info("Starting request for " + sessionID);
             String filesToPackage = "";
-            Vector filesToPackageVect = new Vector();
-            Vector indexesToGenerateVect = new Vector();
-            Vector localesToIndexVect = new Vector();
+            Vector<String> filesToPackageVect = new Vector<String>();
+            Vector<String> indexesToGenerateVect = new Vector<String>();
+            Vector<String> localesToIndexVect = new Vector<String>();
             String icuDataVersion;
             ICUDataFormat icuDataType;
             File sessionDir = new File(toolHomeRequestDirStr + sessionID + File.separator);
@@ -260,28 +267,44 @@ public class DataCustomizer extends HttpServlet {
             Vector filesToPackage, Vector generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir) throws IOException
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
-        String baseDataName = "icudt" + icuDataVersion + ENDIAN_STR;
-        String packagePath = "com/ibm/icu/impl/data/icudt" + icuDataVersion + "b";
+        String packagePath = sessionDirStr + "com/ibm/icu/impl/data/icudt" + icuDataVersion + "b/";
         
         // Hmm. Did the person submit the request twice? There is a conflict. Lock out this request.
-        File packageICU4JDir = new File(sessionDirStr + packagePath);
+        File packageICU4JDir = new File(packagePath);
         if (!packageICU4JDir.mkdirs()) {
             reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not create package directory structure in " + packageICU4JDir);
             return;
         }
 
         // Copy and convert each file from big endian to little endian.
+        String srcDir = toolHomeSrcDirStr + "icudt" + icuDataVersion + ENDIAN_STR + "/";
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
-            String pkgCommand = "icupkg -tb -s " + toolHomeSrcDirStr + baseDataName
-                + " -d " + sessionDirStr + packagePath + " " + itemToRead;
-            if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
+            int treeIndex = itemToRead.lastIndexOf('/');
+            if (treeIndex >= 0) {
+                String treeDir = packagePath + itemToRead.substring(0, treeIndex);
+                File treeDirFile = new File(treeDir);
+                if (!treeDirFile.exists() && !treeDirFile.mkdirs()) {
+                    reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Can not create directory " + treeDir);
+                    return;
+                }
+            }
+            try {
+                copyFile(srcDir + itemToRead, packagePath + itemToRead);
+            }
+            catch (IOException e) {
+                reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 return;
             }
+/*            String pkgCommand = "icupkg -tb -s " + toolHomeSrcDirStr + baseDataName
+                + destDirArg + itemToRead;
+            if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
+                return;
+            }*/
         }
         for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
             String itemToRead = (String)generatedIndexesVect.elementAt(idx);
-            String pkgCommand = "icupkg -tb -s . -d " + sessionDirStr + packagePath + " " + itemToRead;
+            String pkgCommand = "icupkg -tb -s . -d " + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool for index regeneration")) {
                 return;
             }
@@ -300,9 +323,9 @@ public class DataCustomizer extends HttpServlet {
         // Deleting these files allows us to "unlock" the session for another request regardless if the file was downloaded.
         if (!DEBUG_FILES) {
             for (int idx = 0; idx < filesToPackage.size(); idx++) {
-                (new File(sessionDirStr + packagePath  + File.separator + (String)filesToPackage.elementAt(idx))).delete();
+                (new File(packagePath + File.separator + (String)filesToPackage.elementAt(idx))).delete();
             }
-            File packagePathFile = new File(sessionDirStr + packagePath);
+            File packagePathFile = new File(packagePath);
             File treeDirs[] = packagePathFile.listFiles();
             if (treeDirs != null) {
                 for (int idx = 0; idx < treeDirs.length; idx++) {
@@ -403,7 +426,14 @@ public class DataCustomizer extends HttpServlet {
     private boolean runCommand(HttpServletResponse response, String command, File execDir, String genericName)
         throws IOException
     {
-        Process icupkg = Runtime.getRuntime().exec(command, null, execDir);
+    	Process icupkg;
+    	try {
+    		icupkg = Runtime.getRuntime().exec(command, null, execDir);
+    	}
+        catch (IOException e) {
+            reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, genericName + " could not be run." /* + e.getMessage()*/);
+            return false;
+        }
         try {
             icupkg.waitFor();
         }
@@ -464,7 +494,7 @@ public class DataCustomizer extends HttpServlet {
         for (int idx = 0; idx < listOfIndexes.size(); idx++) {
             String indexFile = (String)listOfIndexes.elementAt(idx);
             String prefixToMatch = getTreePrefix(indexFile);
-            Vector listOfLocales = new Vector();
+            Vector<String> listOfLocales = new Vector<String>();
             boolean checkPrefix = prefixToMatch.length() != 0;
             for (int resIdx = 0; resIdx < listOfFiles.size(); resIdx++) {
                 String file = (String)listOfFiles.elementAt(resIdx);
@@ -623,6 +653,20 @@ public class DataCustomizer extends HttpServlet {
         writer.println("</html>");
     }
 
+    private static void copyFile(String source, String destination) throws IOException
+    {
+        FileChannel srcChannel = new FileInputStream(source).getChannel();
+        FileChannel dstChannel = new FileOutputStream(destination).getChannel();
+    
+        // Copy file contents from source to destination
+        long srcSize = srcChannel.size();
+        if (dstChannel.transferFrom(srcChannel, 0, srcSize) < srcSize) {
+            throw new IOException(source + " could not be completely copied to " + destination);
+        }
+        // Close the channels
+        srcChannel.close();
+        dstChannel.close();
+    }
     /**
      * Main setup
      */
