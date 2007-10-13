@@ -42,7 +42,7 @@ distclean resclean distclean-local dist dist-local check check-local resfiles pa
 ## List of standard targets
 all: all-local
 install: install-local
-clean: clean-local
+clean: clean-local clean-data
 distclean : distclean-local
 dist: dist-local
 check: check-local
@@ -88,5 +88,80 @@ $(RESDIR)/$(RESDIR).lst: Makefile $(srcdir)/$(RESDIR)/datadep.mk
 
 package-resfiles: $(RESDIR)/$(RESDIR).lst $(RESFILES)
 	$(INVOKE) $(PKGDATA_INVOKE_OPTS) $(BINDIR)/pkgdata -p $(MSGNAME) $(PKGDATA_OPTS) -m $(PKGMODE) -s $(RESDIR) -d $(LIBOUT) -T $(RESDIR) $(RESDIR)/$(RESDIR).lst
+
+# Data building rules
+
+ICU_DATA_DIR = ../../../icu/source/data
+ADDITIONAL_CNV_MK = $(ICU_DATA_DIR)/mappings/ucmlocal.mk
+ORIGINAL_DAT := original/$(shell @ICU_CONFIG@ --icudata).dat
+SUPERSET_DAT := $(shell @ICU_CONFIG@ --icudata).dat
+SOURCE_DAT := $(ICU_DATA_DIR)/out/$(shell @ICU_CONFIG@ --icudata).dat
+APPUTIL_DATA = ../../apputil/data
+BUILD_DIRS=original
+MAIN_PAGE=../data/root/index.html
+MODIFIER_LIST=modifier-list.txt
+
+
+-include ucmlocal.mk
+include $(ICU_DATA_DIR)/coll/colfiles.mk
+include $(ICU_DATA_DIR)/locales/resfiles.mk
+
+CONTRIB_UCM_DIR = ../../../data/charset/contrib/data/ucm
+CHARSET_REPOSITORY_UCM_DIR = ../../../data/charset/data/ucm
+UCM_SOURCE_FILES = $(CHARSET_REPOSITORY_UCM:%=$(CHARSET_REPOSITORY_UCM_DIR)/%) $(CONTRIB_UCM:%=$(CONTRIB_UCM_DIR)/%)
+UCM_TARGET_FILES = $(CHARSET_REPOSITORY_UCM:%=$(ICU_DATA_DIR)/mappings/%) $(CONTRIB_UCM:%=$(ICU_DATA_DIR)/mappings/%)
+
+clean-data:
+	rm -f $(ADDITIONAL_CNV_MK) $(UCM_TARGET_FILES) $(ORIGINAL_DAT) $(SUPERSET_DAT)
+
+$(MODIFIER_LIST): $(ICU_DATA_DIR)/coll/colfiles.mk $(ICU_DATA_DIR)/locales/resfiles.mk
+	rm -rf $(MODIFIER_LIST)
+	@echo Generating $(MODIFIER_LIST)
+	@list='res_index.res brkitr/res_index.res coll/res_index.res $(COLLATION_ALIAS_SOURCE:%.txt=coll/%.res) rbnf/res_index.res $(GENRB_ALIAS_SOURCE:%.txt=%.res)'; \
+	for item in $$list; do \
+	    echo 1,0,$$item,, >> $(MODIFIER_LIST); \
+	done
+	
+
+$(ADDITIONAL_CNV_MK): ucmlocal.mk
+	cp $? $@
+
+$(ICU_DATA_DIR)/mappings/%.ucm: $(CHARSET_REPOSITORY_UCM_DIR)/%.ucm
+	cp $? $@
+
+$(ICU_DATA_DIR)/mappings/%.ucm: $(CONTRIB_UCM_DIR)/%.ucm
+	cp $? $@
+
+original-dir:
+	@list='$(BUILD_DIRS)'; \
+	for dir in $$list; do \
+	  if ! test -d $$dir; then \
+	    echo $(MKINSTALLDIRS) $(BUILD_DIRS); \
+	    $(MKINSTALLDIRS) $(BUILD_DIRS); \
+	  fi; \
+	done
+
+
+$(ORIGINAL_DAT): | original-dir
+	@echo Making the primary data archive
+	rm -f $(SOURCE_DAT)
+	rm -rf $(ICU_DATA_DIR)/out/tmp
+	cd $(ICU_DATA_DIR) && $(MAKE) PKGDATA_MODE=common UCM_SOURCE_LOCAL=
+	cp $(SOURCE_DAT) $@
+
+$(SUPERSET_DAT): $(ADDITIONAL_CNV_MK) $(UCM_TARGET_FILES)
+	@echo Making the superset data archive
+	rm -f $(SOURCE_DAT)
+	rm -rf $(ICU_DATA_DIR)/out/tmp
+	cd $(ICU_DATA_DIR) && $(MAKE) PKGDATA_MODE=common INCLUDE_UNI_CORE_DATA=1
+	cp $(SOURCE_DAT) $@
+
+$(MAIN_PAGE): $(ORIGINAL_DAT) $(SUPERSET_DAT) $(MODIFIER_LIST)
+	./$(TARGET) -p $(ORIGINAL_DAT) -s $(SUPERSET_DAT) -c datacustom -H ../data/datacustom-header.html -m $(APPUTIL_DATA)/common-masthead.html -n $(APPUTIL_DATA)/common-leftnav.html -f $(APPUTIL_DATA)/common-footer.html -l $(MODIFIER_LIST) > $@
+	@echo
+	@echo You need to extract $(SUPERSET_DAT) on the server with icupkg
+	@echo
+
+main-page: $(MAIN_PAGE)
 
 

@@ -109,6 +109,7 @@ datacustom/gendatadep/makedata.mak -text
 datacustom/gendatadep/resources/datadep.mk -text
 datacustom/gendatadep/resources/pkgdatain.txt -text
 datacustom/gendatadep/resources/root.txt -text
+datacustom/gendatadep/ucmlocal.mk -text
 datacustom/source/com/ibm/icu/datacustom/DataCustomizer.java -text
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
