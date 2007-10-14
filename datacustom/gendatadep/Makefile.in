@@ -156,10 +156,11 @@ $(SUPERSET_DAT): $(ADDITIONAL_CNV_MK) $(UCM_TARGET_FILES)
 	cd $(ICU_DATA_DIR) && $(MAKE) PKGDATA_MODE=common INCLUDE_UNI_CORE_DATA=1
 	cp $(SOURCE_DAT) $@
 
-$(MAIN_PAGE): $(ORIGINAL_DAT) $(SUPERSET_DAT) $(MODIFIER_LIST)
+$(MAIN_PAGE): Makefile $(ORIGINAL_DAT) $(SUPERSET_DAT) $(MODIFIER_LIST) $(TARGET)
 	./$(TARGET) -p $(ORIGINAL_DAT) -s $(SUPERSET_DAT) -c datacustom -H ../data/datacustom-header.html -m $(APPUTIL_DATA)/common-masthead.html -n $(APPUTIL_DATA)/common-leftnav.html -f $(APPUTIL_DATA)/common-footer.html -l $(MODIFIER_LIST) > $@
 	@echo
-	@echo You need to extract $(SUPERSET_DAT) on the server with icupkg
+	@echo You need to extract $(SUPERSET_DAT) on the server with icupkg.
+	@echo The war file is now read to be built and deployed.
 	@echo
 
 main-page: $(MAIN_PAGE)

@@ -489,13 +489,14 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString(DEMO_BREAD_CRUMB_BAR);
     html += UnicodeString("<h1>ICU Data Library Customizer</h1>\n");
     html += UnicodeString("<noscript><p style=\"color: red;\">WARNING! Javascript must be enabled to allow this tool to work properly.</p></noscript>\n");
+    html += UnicodeString("<p>This tool will generate a data library that can only be used with the ") + UnicodeString(U_ICU_VERSION, (sizeof(U_ICU_VERSION)-1)) + UnicodeString(" series of ICU. The <a href=\"http://www.icu-project.org/docs/demo/datacustom_help.html\">help page</a> provides information on how to use this tool.</p>\n");
     //html += UnicodeString("<form method=\"post\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
     // onsubmit="return false;" prevents a traditional form submission.
     html += UnicodeString("<form onsubmit=\"submitPackageRequest();return false;\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
 
     html += dataList;
 
-    html += UnicodeString("<p>The generated data library can be used with the ") + UnicodeString(U_ICU_VERSION, 3) + UnicodeString(" series of ICU. Please specify which edition of ICU will use this data.</p>\n");
+    html += UnicodeString("<p>Please specify which edition of ICU will use this data.</p>\n");
     // onfocus is needed on these radio buttons due to Opera
     // onclick is needed when reloading and focus moves elsewhere on the page.
     html += UnicodeString("<div>\n");
