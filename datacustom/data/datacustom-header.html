@@ -393,12 +393,20 @@ function submitPackageRequest() {
 			if (xmlReq.status == 200) {
 				progressNode.style.color = "";
 				replaceChildNodes(progressNode, document.createTextNode("Your package is now "));
-				//replaceChildNodes(progressNode, document.createTextNode(xmlReq.responseText));
+				// This link allows the file to be manually downloaded when the browser security is too high.
 				var link = document.createElement("a");
 				link.setAttribute("href", xmlReq.responseText);
 				progressNode.appendChild(link);
 				link.appendChild(document.createTextNode("available"));
 				progressNode.appendChild(document.createTextNode("."));
+				// This iframe allows the file to be automatically downloaded
+				var downloadFrame = document.createElement("iframe");
+				downloadFrame.setAttribute("src", xmlReq.responseText);
+				downloadFrame.setAttribute("width", 0);
+				downloadFrame.setAttribute("height", 0);
+				downloadFrame.setAttribute("frameborder", 0);
+				downloadFrame.setAttribute("scrolling", "no");
+				progressNode.appendChild(downloadFrame);
 			}
 			else {
 				progressNode.style.color = "red";
