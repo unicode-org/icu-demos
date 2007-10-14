@@ -289,18 +289,18 @@ public class DataCustomizer extends HttpServlet {
                     return;
                 }
             }
-            try {
+            /*try {
                 copyFile(srcDir + itemToRead, packagePath + itemToRead);
             }
             catch (IOException e) {
                 reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 return;
-            }
-/*            String pkgCommand = "icupkg -tb -s " + toolHomeSrcDirStr + baseDataName
-                + destDirArg + itemToRead;
+            }*/
+            String pkgCommand = "icupkg -tb -s " + srcDir
+            	+ " -d " + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
                 return;
-            }*/
+            }
         }
         for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
             String itemToRead = (String)generatedIndexesVect.elementAt(idx);
@@ -426,23 +426,23 @@ public class DataCustomizer extends HttpServlet {
     private boolean runCommand(HttpServletResponse response, String command, File execDir, String genericName)
         throws IOException
     {
-    	Process icupkg;
+    	Process commandProcess;
     	try {
-    		icupkg = Runtime.getRuntime().exec(command, null, execDir);
+    		commandProcess = Runtime.getRuntime().exec(command, null, execDir);
     	}
         catch (IOException e) {
             reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, genericName + " could not be run." /* + e.getMessage()*/);
             return false;
         }
         try {
-            icupkg.waitFor();
+            commandProcess.waitFor();
         }
         catch (InterruptedException e) {
             reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, genericName + " was interrupted.");
             return false;
         }
-        BufferedReader icupkgErrOut = new BufferedReader(new InputStreamReader(icupkg.getErrorStream()));
-        if (icupkg.exitValue() != 0) {
+        BufferedReader icupkgErrOut = new BufferedReader(new InputStreamReader(commandProcess.getErrorStream()));
+        if (commandProcess.exitValue() != 0) {
             //String msg = "\"" + command + "\" failed with the following message:";
             String msg = "";
             String outLine = "";
