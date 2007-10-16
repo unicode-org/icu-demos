@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2004, International Business Machines
+*   Copyright (C) 2003-2007, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -33,6 +33,7 @@ U_CFUNC const char *gScriptName;
 U_CFUNC UBool gShowStartBytes;
 U_CFUNC UBool gShowUnicodeSet;
 U_CFUNC UBool gShowLanguages;
+U_CFUNC UBool gShowUnavailable;
 
 #define OPTION_SEPARATOR    '&'
 #define VALUE_SEPARATOR     '='
@@ -41,6 +42,7 @@ U_CFUNC UBool gShowLanguages;
 #define PROGRAM_NAME        "Converter Explorer"
 #define SHOW_LOCALES        "ShowLocales"
 #define SHOW_UNICODESET     "ShowSet"
+#define SHOW_UNAVAILABLE    "ShowUnavailable"
 
 U_CFUNC const char ALL[];
 

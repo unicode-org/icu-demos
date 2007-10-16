@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2004, International Business Machines
+*   Copyright (C) 2003-2007, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -31,6 +31,7 @@ UHashtable *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
 UBool gShowUnicodeSet = FALSE;
 UBool gShowLanguages = FALSE;
+UBool gShowUnavailable = FALSE;
 
 const char ALL[]="ALL";
 
@@ -214,6 +215,10 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
         else if (strncmp(src, SHOW_UNICODESET, strlen(SHOW_UNICODESET)) == 0) {
             /* Show the Unicode Set */
             gShowUnicodeSet = TRUE;
+        }
+        else if (strncmp(src, SHOW_UNAVAILABLE, strlen(SHOW_UNAVAILABLE)) == 0) {
+            /* Show unavailable converters */
+            gShowUnavailable = TRUE;
         }
         else if (strncmp(src, SHOW_LOCALES, strlen(SHOW_LOCALES)) == 0) {
             /* Show the list of languages */

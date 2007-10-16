@@ -184,6 +184,8 @@ static void printOptions(UErrorCode *status) {
     }
     printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\" id=\"AllAliases\"%s /> <label for=\"AllAliases\"><em>All Aliases</em></label><br />\n",
         checked);
+    printf("<input type=\"checkbox\" name=\"" SHOW_UNAVAILABLE "\" value=\"\" id=\""SHOW_UNAVAILABLE"\"%s /> <label for=\""SHOW_UNAVAILABLE"\"><em>Show Unavailable Converters</em></label><br />\n",
+        ( gShowUnavailable ? " checked=\"checked\"" : ""));
     puts("<br />");
 }
 
@@ -738,7 +740,6 @@ static void printAliasTable() {
         int32_t len = 0;
         int32_t allNamesCount = uenum_count(convEnum, &status);
         while ((canonicalName = uenum_next(convEnum, NULL, &status))) {
-//        if ((canonicalName = uenum_next(convEnum, NULL, &status))) {
             if (*gCurrConverter && strcmp(canonicalName, gCurrConverter) != 0) {
                 continue;
             }
@@ -746,6 +747,14 @@ static void printAliasTable() {
                 printf("<tr>\n<th style=\"white-space: nowrap\">%s</th>\n", canonicalName);
             }
             else {
+                if (!gShowUnavailable) {
+                    // When listing all the converters, skip the unavailable.
+                    UErrorCode openStatus = U_ZERO_ERROR;
+                    ucnv_close(ucnv_open(canonicalName, &openStatus));
+                    if (U_FAILURE(openStatus)) {
+                        continue;
+                    }
+                }
                 printf("<tr>\n<th style=\"white-space: nowrap\"><a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
                     gScriptName, canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
