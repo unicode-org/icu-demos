@@ -8,7 +8,7 @@
 package com.ibm.icu.datacustom;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
+//import java.nio.channels.FileChannel;
 import java.util.*;
 import java.util.logging.*;
 
@@ -198,7 +198,7 @@ public class DataCustomizer extends HttpServlet {
         //response.setContentType("text/xml; charset=utf-8");
     }
 
-    private void generateICU4CData(HttpServletRequest request, HttpServletResponse response, String filesToPackage, Vector generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir)
+    private void generateICU4CData(HttpServletRequest request, HttpServletResponse response, String filesToPackage, Vector<String> generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir)
         throws IOException
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
@@ -264,7 +264,7 @@ public class DataCustomizer extends HttpServlet {
 
     private void generateICU4JData(HttpServletRequest request,
             HttpServletResponse response,
-            Vector filesToPackage, Vector generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir) throws IOException
+            Vector<String> filesToPackage, Vector<String> generatedIndexesVect, String icuDataVersion, String sessionID, File sessionDir) throws IOException
     {
         String sessionDirStr = sessionDir.getAbsolutePath() + File.separator;
         String packagePath = sessionDirStr + "com/ibm/icu/impl/data/icudt" + icuDataVersion + "b/";
@@ -455,7 +455,7 @@ public class DataCustomizer extends HttpServlet {
         return true;
     }
     
-    private boolean deleteResIndexFiles(Vector listOfIndexes, File targetDirectory)
+    private boolean deleteResIndexFiles(Vector<String> listOfIndexes, File targetDirectory)
     {
         boolean allDeleted = true;
         if (!DEBUG_FILES) {
@@ -488,7 +488,7 @@ public class DataCustomizer extends HttpServlet {
         return "";
     }
 
-    private boolean regenerateResIndexFiles(HttpServletResponse response, Vector listOfIndexes, Vector listOfFiles, File targetDirectory)
+    private boolean regenerateResIndexFiles(HttpServletResponse response, Vector<String> listOfIndexes, Vector<String> listOfFiles, File targetDirectory)
         throws IOException
     {
         for (int idx = 0; idx < listOfIndexes.size(); idx++) {
@@ -524,7 +524,7 @@ public class DataCustomizer extends HttpServlet {
         return true;
     }
     
-    private boolean regenerateResIndex(HttpServletResponse response, Vector listOfLocales, File targetDirectory)
+    private boolean regenerateResIndex(HttpServletResponse response, Vector<String> listOfLocales, File targetDirectory)
         throws IOException
     {
         String resIndexFileStr = targetDirectory.getAbsolutePath() + File.separator + "res_index.txt";
@@ -653,7 +653,7 @@ public class DataCustomizer extends HttpServlet {
         writer.println("</html>");
     }
 
-    private static void copyFile(String source, String destination) throws IOException
+    /*private static void copyFile(String source, String destination) throws IOException
     {
         FileChannel srcChannel = new FileInputStream(source).getChannel();
         FileChannel dstChannel = new FileOutputStream(destination).getChannel();
@@ -666,7 +666,7 @@ public class DataCustomizer extends HttpServlet {
         // Close the channels
         srcChannel.close();
         dstChannel.close();
-    }
+    }*/
     /**
      * Main setup
      */
