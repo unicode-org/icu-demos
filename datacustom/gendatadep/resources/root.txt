@@ -199,6 +199,7 @@ root {
     windows-949-2000.cnv { "Korean (KSC_5601)" }
     windows-950-2000.cnv { "Traditional Chinese (Big5)" }
     zoneinfo.res { "Olson timezone information" }
+    metazoneInfo.res { "CLDR timezone information" }
 
     //.cnv {""}
     // The additional stuff that is not in a standard ICU4C build.

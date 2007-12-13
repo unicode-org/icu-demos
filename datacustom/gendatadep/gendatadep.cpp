@@ -307,7 +307,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
         //ItemGroup(TRUE, "zoneinfo.res", "zoneinfo", "Timezone Data", status), // Doesn't need to be a lone item?
         // This next one should be the last one searching for .res locale files.
         ItemGroup(FALSE, "(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
-        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res|zoneinfo.res)", "misc", "Miscellaneous Data", status),
+        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res|zoneinfo.res|metazoneInfo.res)", "misc", "Miscellaneous Data", status),
         ItemGroup(FALSE, ".+", BASE_DATA, "Base Data", status)
     };
 
@@ -489,7 +489,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString(DEMO_BREAD_CRUMB_BAR);
     html += UnicodeString("<h1>ICU Data Library Customizer</h1>\n");
     html += UnicodeString("<noscript><p style=\"color: red;\">WARNING! Javascript must be enabled to allow this tool to work properly.</p></noscript>\n");
-    html += UnicodeString("<p>This tool will generate a data library that can only be used with the ") + UnicodeString(U_ICU_VERSION, (sizeof(U_ICU_VERSION)-1)) + UnicodeString(" series of ICU. The <a href=\"http://www.icu-project.org/docs/demo/datacustom_help.html\">help page</a> provides information on how to use this tool.</p>\n");
+    html += UnicodeString("<p>This tool will generate a data library that can only be used with the ") + UnicodeString(U_ICU_VERSION_MAJOR_NUM + 0x30) + UnicodeString(".") + UnicodeString(U_ICU_VERSION_MINOR_NUM + 0x30) + UnicodeString(" series of ICU. The <a href=\"http://www.icu-project.org/docs/demo/datacustom_help.html\">help page</a> provides information on how to use this tool.</p>\n");
     //html += UnicodeString("<form method=\"post\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
     // onsubmit="return false;" prevents a traditional form submission.
     html += UnicodeString("<form onsubmit=\"submitPackageRequest();return false;\" id=\"packageRequest\" action=\"") + UnicodeString(gCgiName) + UnicodeString("\">\n");
