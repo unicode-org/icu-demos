@@ -64,7 +64,7 @@ void doCompare(const char *postData, UnicodeString &content) {
     storeField("%%s1b%%", s2, content);
 
     // Unescape the two input strings and put those too into the output html.
-    s2 = s2.unescape();
+    s1 = s1.unescape();
     s2 = s2.unescape();
     storeField("%%str1%%", s1, content);
     storeField("%%str2%%", s2, content);
