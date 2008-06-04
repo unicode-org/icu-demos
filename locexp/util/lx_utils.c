@@ -836,6 +836,9 @@ finish:
     return s;
 }
 
+/* todo: don't even use a converter... */
+static UConverter *utf8conv = NULL;
+
 UChar* u_uastrcpy_enc(UChar *ucs1,
                       const char *s2, const char *enc, int32_t len )
 {
@@ -844,10 +847,14 @@ UChar* u_uastrcpy_enc(UChar *ucs1,
 
     UConverter *cnv = NULL;
  
-  if(!enc || !*enc) {
+  if(!enc || !*enc || !strcmp(enc,"utf-8") || !strcmp(enc,"UTF-8")) {
     enc = "utf-8";
+    if(utf8conv == NULL) {
+        utf8conv = ucnv_open(enc,&err);
+    }
+    cnv = utf8conv;
   }
- cnv = ucnv_open(enc, &err);
+  cnv = ucnv_open(enc, &err);
   if(cnv != NULL) {
     len2 = ucnv_toUChars(cnv,
                     ucs1,
@@ -863,7 +870,9 @@ UChar* u_uastrcpy_enc(UChar *ucs1,
   } else {
     *ucs1 = 0;
   }
-  ucnv_close(cnv);
+  if(cnv != utf8conv) {
+    ucnv_close(cnv);
+  }
   return ucs1;
 }
 

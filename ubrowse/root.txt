@@ -1,4 +1,0 @@
-root {
-  is_dummy_file {}
-}
-

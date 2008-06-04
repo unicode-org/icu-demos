@@ -82,6 +82,9 @@ typedef struct {
 typedef struct 
 {
   /* ============= HTTP input - to be set up by context initializer */
+#if 0
+   CGIContext *cgi;
+#else
   const char *scriptName;      /* Cached results of getenv("SCRIPT_NAME") */
   const char *queryString;     /* QUERY_STRING */
   const char *cookies;         /* HTTP_COOKIE */
@@ -93,13 +96,13 @@ typedef struct
   uint16_t    port;            /* SERVER_PORT */
   const char *hostName;        /* HTTP_HOST */
   const char *postData;
-  
+  char    *headers;     /* append headers here (use appendHeader function, below) */
+  int32_t  headerLen;  /* length of header *buffer*  */
+#endif
   /* ============= IO */
   FILE  *fOUT;       /* low level file output */
   UFILE *OUT;        /* out stream */
   
-  char    *headers;     /* append headers here (use appendHeader function, below) */
-  int32_t  headerLen;  /* length of header *buffer*  */
 
   /* ============= ENCODING */
   const char *couldNotOpenEncoding;      /* contains error string if nonnull */

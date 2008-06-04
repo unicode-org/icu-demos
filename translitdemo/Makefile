@@ -70,8 +70,8 @@ install: all
 	-mkdir $(bindir)
 	cp $(TARGET) $(bindir)
 	-mkdir $(TRANSLITD)
-	cp -R data/js $(TRANSLITD)/
-	cp -R data/*.html $(TRANSLITD)
+	cp  data/js/*.js $(TRANSLITD)/
+	cp  data/*.html $(TRANSLITD)
 	-mkdir $(TRANSLITD)/cache
 	-chmod a+rw $(TRANSLITD)/cache
 	-find $(TRANSLITD) -type d -print | xargs chmod a+x

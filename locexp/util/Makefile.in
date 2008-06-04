@@ -44,10 +44,11 @@ DYNAMICCXXFLAGS = $(SHAREDLIBCXXFLAGS)
 OBJECTS =  lx_utils.o ures_additions.o kangxi.o  lx_cpputils.o
 OBJECTS += decompcb.o
 OBJECTS += translitcb.o
+OBJECTS += cgiutil.o
 
 #OBJECTS +=  collectcb.o translitcb.o  kannada.o
 
-HEADERS = unicode/decompcb.h unicode/lx_utils.h unicode/ures_additions.h unicode/kangxi.h unicode/collectcb.h unicode/translitcb.h 
+HEADERS = unicode/decompcb.h unicode/lx_utils.h unicode/ures_additions.h unicode/kangxi.h unicode/collectcb.h unicode/translitcb.h  unicode/cgiutil.h
 
 ## fontedcd  support
 #OBJECTS += fontedcb.o devanagari.o
