@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta name="COPYRIGHT" content="Copyright 2006-2007, International Business Machines Corporation and others. All Rights Reserved.">
+<meta name="COPYRIGHT" content="Copyright 2006-2008, International Business Machines Corporation and others. All Rights Reserved.">
 <title>Transform Rule Editor</title>
 <style type="text/css">
 .wide    { width: 100% }
@@ -129,6 +129,10 @@ function callbackSaveAs(id, result) {
 function handleDelete() {
   var id = getSelectedOption(document.FORM.SELECT_ID);
   if (id == SEPARATOR1 || id == SEPARATOR2 || id == NEW_ID || !id) return;
+  if (arrayContainsString(AVAILABLE_IDS, id, 1)) {
+    alert(id + "is a system transform and can not be deleted."); 
+    return; 
+  }
   if (confirm("Delete " + id + "?")) {
     op("callbackDelete", id, "DELETEUSERID", id);
   }
@@ -161,6 +165,12 @@ function handleSelectID() {
 function callbackSelectID(id, rules) {
   document.FORM.RULE_SOURCE.value = rules;
   document.FORM.FOOTER.value = id + " rules loaded.";
+
+  if (arrayContainsString(AVAILABLE_IDS, id, 1)) {
+    document.FORM.RULE_SOURCE.readOnly = true;
+  } else {
+    document.FORM.RULE_SOURCE.readOnly = false;
+  }
 }
 </script>
 
