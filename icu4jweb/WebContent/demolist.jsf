@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+  <!--  content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" -->
+
+<div style="border: 1px solid gray; padding: 3px; float: right">
+<%
+String demolist_base=request.getContextPath();
+String demolist_jsps[] = { 
+        "bidi", 
+        "formatTest", 
+        //"files_all", 
+        "icueos",
+        "numero",
+        "tuthu", 
+        "testLocale", 
+        //"uri",
+        "escaper" };
+%>
+
+<b>ICU4J<br/><a href="<%= demolist_base %>">Demos</a></b>:<br>
+   <% for (String demolist_jsp : demolist_jsps) { 
+        boolean bold = request.getServletPath().startsWith("/"+demolist_jsp);
+
+    %>
+      <%= bold?"<b>":"" %>
+      <a href="<%= demolist_base+"/"+demolist_jsp %>.jsp"><%= demolist_jsp %></a><br/>
+      <%= bold?"</b>":"" %>
+   <% } %>
+</div>
