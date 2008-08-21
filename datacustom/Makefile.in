@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 2007-2007, International Business Machines
+## *   Copyright (C) 2007-2008, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -21,7 +21,6 @@ include $(ICU_SOURCE)/data/locales/resfiles.mk
 include $(ICU_SOURCE)/data/brkitr/brkfiles.mk
 include $(ICU_SOURCE)/data/translit/trnsfiles.mk
 
-BASE_PACKAGE=$(ICU_BUILD)/data/out/icudt37l.dat
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
@@ -90,21 +89,9 @@ all-recursive install-recursive clean-recursive distclean-recursive dist-recursi
 	  (cd $$subdir && $(MAKE) $$local_target); \
 	done;
 
-RES_INDEX_FILES:=$(shell $(INVOKE) icupkg -l $(BASE_PACKAGE) | grep res_index.res | tr -d \\r | tr [:cntrl:] ' ')
-HIDDEN_FILES=
-HIDDEN_FILES+=$(COLLATION_ALIAS_SOURCE:%.txt=1,0,coll/%.res,,)
-HIDDEN_FILES+=$(GENRB_ALIAS_SOURCE:%.txt=1,0,%.res,,)
-HIDDEN_FILES+=$(RES_INDEX_FILES:%=1,0,%,,)
 
-$(LIST_MODIFIER_FILE): $(GENDATADEP) Makefile
-	rm -f $@
-	@echo Generating $@
-	@for file in $(HIDDEN_FILES); do \
-	  echo "$$file" >> $@; \
-	done;
-
-$(OBJECTS): $(GENDATADEP) $(LIST_MODIFIER_FILE)
-	$(INVOKE) $(GENDATADEP) -p $(BASE_PACKAGE) -c datacustom -H data/datacustom-header.html -m "$(top_srcdir)/apputil/data/common-masthead.html" -n "$(top_srcdir)/apputil/data/common-leftnav.html" -f "$(top_srcdir)/apputil/data/common-footer.html" -l $(LIST_MODIFIER_FILE) > "$@" || rm -f $@
+$(OBJECTS):
+	cd gendatadep && $(MAKE) main-page
 
 $(TARGET): $(OBJECTS)
 	ant
