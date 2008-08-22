@@ -12,6 +12,7 @@
 <%@ include file="demolist.jsf"  %>
 
 
+<%@ page import="com.ibm.icu.dev.demo.icu4jweb.*" %>
 
 <%@ page import="java.io.*" %>
 <%@ page import="java.util.*" %>
@@ -23,69 +24,13 @@
 
 <%!
 
+   public static boolean showEOS = false;
+
 	public static String FILE = "xml/icuinfo.xml";
 	public static String kURL = "http://icu-project.org/"+FILE;
 	public static String SRL_PATH = "/xsrl/IP/htdocs/"+FILE;
 
-    /**
-     * Decide if the node is text, and so must be handled specially 
-     * @param n
-     * @return
-     */
-    private static boolean isTextNode(Node n) {
-      if (n == null)
-        return false;
-      short nodeType = n.getNodeType();
-      return nodeType == Node.CDATA_SECTION_NODE || nodeType == Node.TEXT_NODE;
-    }   
-    public static Node getAttributeNode(Node sNode, String attribName){
-        NamedNodeMap attrs = sNode.getAttributes();
-        if(attrs!=null){
-           return attrs.getNamedItem(attribName);
-        }
-        return null;
-    }
-    /**
-     * Utility method to fetch the attribute value from the given 
-     * element node
-     * @param sNode
-     * @param attribName
-     * @return
-     */
-    public static String getAttributeValue(Node sNode, String attribName){
-        String value=null;
-        NamedNodeMap attrs = sNode.getAttributes();
-        if(attrs!=null){
-            Node attr = attrs.getNamedItem(attribName);
-            if(attr!=null){
-                value = attr.getNodeValue();
-            }
-        }
-        return value;
-    }
 
-    /**
-     * Utility method to fetch the value of the element node
-     * @param node
-     * @return
-     */
-    public static String getNodeValue(Node node){
-        for(Node child=node.getFirstChild(); child!=null; child=child.getNextSibling() ){
-            if(child.getNodeType()==Node.TEXT_NODE){
-                return child.getNodeValue();
-            }
-        }
-        return null;
-    }
-
-    public static Node findChild(Node node, String chName){
-        for(Node child=node.getFirstChild(); child!=null; child=child.getNextSibling() ){
-            if(child.getNodeType()==Node.ELEMENT_NODE && child.getNodeName().equals(chName)){
-                return child;
-            }
-        }
-        return null;
-    }
 
 
 %>
@@ -153,6 +98,8 @@ if(sdoc == null) {
 	if(sdoc==null && doc!=null) { sdoc = doc; swhen = now; swhere = "Cache of " + source; } // should be idempotent
 }
  
+IcuInfo info = new IcuInfo(doc);
+
 Element el = doc.getDocumentElement();
 
 NodeList prods = doc.getElementsByTagName("icuProduct");
@@ -171,29 +118,29 @@ String uwhat=request.getParameter("uwhat");
 
 <h2><a href="<%= base %>">ICU Version and Platform Info</a></h2>
 
+
+
 <% if(uproj == null ) {   // *** choose product %>
    <h3>Choose a project:</h3>
      <%
-		for(int i=0;i<prods.getLength();i++) {
-			Node prod = prods.item(i);
-			String type = getAttributeValue(prod, "type");
-	  %>
-	        <a href="<%= base %>?uproj=<%= type %>"><%= type %></a><br>
-	  <%
-			}
-	  %>
+        for(String s : info.productList()) {
+      %>
+            <a href="<%= base %>?uproj=<%= s %>"><%= s %></a><br/>
+      <%
+            }
+      %>
 <% } else if (uvers == null) { %>
    <h3><%= uproj %></h3>
    <h4>choose a version:</h4>
-
+<% IcuInfo.IcuProduct product = info.product(uproj);  %>
 
 <%
 	for(int i=0;i<prods.getLength();i++) {
 		Node prod = prods.item(i);
-		String type = getAttributeValue(prod, "type");
+		String type = XMLUtil.getAttributeValue(prod, "type");
 		if(!type.equals(uproj)) continue; 
-		NodeList names = findChild(prod, "names").getChildNodes();
-		NodeList rels = findChild(prod, "releases").getChildNodes();
+		NodeList names = XMLUtil.findChild(prod, "names").getChildNodes();
+		NodeList rels = XMLUtil.findChild(prod, "releases").getChildNodes();
 %>
 		<h2><%= type %></h2>
 		
@@ -202,7 +149,7 @@ String uwhat=request.getParameter("uwhat");
 				Node n = names.item(k);
 				if(n.getNodeType()!=Node.ELEMENT_NODE) continue ;
 		%>
-				<%= getAttributeValue(n, "type")+ ": "+getNodeValue(n)+"\n" %><br>
+				<%= XMLUtil.getAttributeValue(n, "type")+ ": "+XMLUtil.getNodeValue(n)+"\n" %><br/>
 		<%
 			}
 			//  now, releases.
@@ -213,7 +160,7 @@ String uwhat=request.getParameter("uwhat");
 				<tr>
 					<th>version</th>
 					<th>GA</th>
-					<th>EOS</th>
+	<% if(showEOS) { %>				<th>EOS</th> <% } %>
 				</tr>
 			</thead>
 			<tbody>
@@ -221,17 +168,17 @@ String uwhat=request.getParameter("uwhat");
 			for(int k=0;k<rels.getLength();k++) {
 				Node n = rels.item(k);
 				if(n.getNodeType()!=Node.ELEMENT_NODE) continue ;
-				String version = getAttributeValue(n, "version");
-				NodeList dates = findChild(n, "dates").getChildNodes();
+				String version = XMLUtil.getAttributeValue(n, "version");
+				NodeList dates = XMLUtil.findChild(n, "dates").getChildNodes();
 				Date ga = null;
 				Date eos = null;
 				for(int q=0;q<dates.getLength();q++) {
 					Node nn = dates.item(q);
 					if(nn.getNodeType()!=Node.ELEMENT_NODE) continue ;
-					String dtype = getAttributeValue(nn, "type");
-					String ddate = getAttributeValue(nn, "date");
+					String dtype = XMLUtil.getAttributeValue(nn, "type");
+					String ddate = XMLUtil.getAttributeValue(nn, "date");
 					if(!"ga".equals(dtype)) {
-						out.println("unknown type " + dtype+" on " + nn.getNodeName()+ "<br>");
+						out.println("unknown type " + dtype+" on " + nn.getNodeName()+ "<br/>");
 						continue;
 					}
 					// calculate 6 year out
@@ -248,16 +195,16 @@ String uwhat=request.getParameter("uwhat");
 				%>
 					<tr>
 						<th><a href="<%= base + "?uproj=" + uproj + "&uvers="+version %>"><%= version %></a></th>
-						<td><%= sdf.format(ga) %></th>
-						<td><%= sdf.format(eos) + pastdue %></th>
+						<td><%= sdf.format(ga) %></td>
+<% if(showEOS) { %>						<td><%= sdf.format(eos) + pastdue %></td>  <% } %>
 					</tr>
 				<%
 				} else {
 				%>
 					<tr>
 						<th><%= version %></th>
-						<td></th>
-						<td></th>
+						<td></td>
+<% if(showEOS) { %>                     <td></td>  <% } %>
 					</tr>
 				<%
 				}
@@ -277,10 +224,10 @@ String uwhat=request.getParameter("uwhat");
 <%
 	for(int i=0;i<prods.getLength();i++) {
 		Node prod = prods.item(i);
-		String type = getAttributeValue(prod, "type");
+		String type = XMLUtil.getAttributeValue(prod, "type");
 		if(!type.equals(uproj)) continue; 
-		NodeList names = findChild(prod, "names").getChildNodes();
-		NodeList rels = findChild(prod, "releases").getChildNodes();
+		NodeList names = XMLUtil.findChild(prod, "names").getChildNodes();
+		NodeList rels = XMLUtil.findChild(prod, "releases").getChildNodes();
 %>
 		<h2><a href="<%= base + "?uproj=" + type %>"><%= type %></a></h2>
 		
@@ -289,7 +236,7 @@ String uwhat=request.getParameter("uwhat");
 				Node n = names.item(k);
 				if(n.getNodeType()!=Node.ELEMENT_NODE) continue ;
 		%>
-				<%= getAttributeValue(n, "type")+ ": "+getNodeValue(n)+"\n" %><br>
+				<%= XMLUtil.getAttributeValue(n, "type")+ ": "+XMLUtil.getNodeValue(n)+"\n" %><br/>
 		<%
 			}
 			//  now, releases.
@@ -299,22 +246,22 @@ String uwhat=request.getParameter("uwhat");
 			for(int k=0;k<rels.getLength();k++) {
 				Node n = rels.item(k);
 				if(n.getNodeType()!=Node.ELEMENT_NODE) continue ;
-				String version = getAttributeValue(n, "version");
+				String version = XMLUtil.getAttributeValue(n, "version");
 				if(!version.equals(uvers)) continue;
 		%>
 				<h4><%= uvers %></h4>
 
 		<%
-				NodeList dates = findChild(n, "dates").getChildNodes();
+				NodeList dates = XMLUtil.findChild(n, "dates").getChildNodes();
 				for(int q=0;q<dates.getLength();q++) {
 					Date ga = null;
 					Date eos = null;
 					Node nn = dates.item(q);
 					if(nn.getNodeType()!=Node.ELEMENT_NODE) continue ;
-					String dtype = getAttributeValue(nn, "type");
-					String ddate = getAttributeValue(nn, "date");
+					String dtype = XMLUtil.getAttributeValue(nn, "type");
+					String ddate = XMLUtil.getAttributeValue(nn, "date");
 					if(!"ga".equals(dtype)) {
-						out.println("unknown type " + dtype+" on " + nn.getNodeName()+ "<br>");
+						out.println("unknown type " + dtype+" on " + nn.getNodeName()+ "<br/>");
 						continue;
 					}
 					// calculate 6 year out
@@ -328,12 +275,16 @@ String uwhat=request.getParameter("uwhat");
 					String pastdue =  "";
 					if( now.after(eos)) pastdue = " <font color='#FF0000' size='-1'>(past"+/*sdf.format(now)+" "+*/")</font>";
 				%>
-					<%= dtype %>: <%= sdf.format(ga) %>, eos: <%= sdf.format(eos) + pastdue %>
+					<%= dtype %>: <%= sdf.format(ga) %>, 
+
+                        <% if(showEOS) { %> eos: <%= sdf.format(eos) + pastdue %> <% } %>
 				<%
 				} }
 				%>		
 				
 				<h4>Platforms Supported:</h4>
+
+                    <i>under construction</i>
 		<%
 			} // vers loop
 		%>
@@ -342,17 +293,15 @@ String uwhat=request.getParameter("uwhat");
 
 <%  }  // end (uvers == null) %>
 
-<hr>
+<hr />
 
-Source: <%= source %>, Dated: <%= when!=null?when.toString():"(null date)"  %>
-<br>
+	Source:
+	<%= source %>, Dated: <%= when!=null?when.toString():"(null date)"  %>
+<br/>
 Generated: <%= sdf.format(now) %>
-<br>
+<br/>
 
 
-<!-- SC=<%= sc %> <br>
- SC(foo): <%= sc.getAttribute("foo") %><br>
-<% sc.setAttribute("foo","bar"); %> -->
 
 <%
 // SAVE
@@ -364,3 +313,7 @@ if(swhere != null)
 	sc.setAttribute("swhere", swhere);
 
 %>
+
+</body>
+</html>
+

@@ -40,6 +40,7 @@ genjp/genjp.ncb
 genjp/genjp.opt
 genjp/genjp.plg
 genjp/genjp.positions
+icu4jweb/build
 /icuapps-mk.local
 /icuapps.mk
 icudemos/*.dat

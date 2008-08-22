@@ -18,7 +18,7 @@ String demolist_jsps[] = {
         "escaper" };
 %>
 
-<b>ICU4J<br/><a href="<%= demolist_base %>">Demos</a></b>:<br>
+<b>ICU4J<br/><a href="<%= demolist_base %>">Demos</a></b>:<br/>
    <% for (String demolist_jsp : demolist_jsps) { 
         boolean bold = request.getServletPath().startsWith("/"+demolist_jsp);
 

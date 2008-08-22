@@ -1,3 +1,5 @@
+// Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved.
+
 package Test;
 
 import java.util.List;

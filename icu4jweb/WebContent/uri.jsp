@@ -30,12 +30,12 @@ request.setCharacterEncoding("utf-8");
     String stuff = request.getParameter("text")!=null?request.getParameter("text"):"";
     String stuff2 = request.getParameter("text2")!=null?request.getParameter("text2"):"";
     
-//    URI b = new URI(stuff);
-public URI(String scheme,
-           String authority,
-           String path,
-           String query,
-           String fragment)
+    URI b = new URI(stuff);
+//public URI(String scheme,
+//           String authority,
+//           String path,
+//           String query,
+//           String fragment)
 
 %>
     <h4>URI: <%= b.toString() %></h4>
