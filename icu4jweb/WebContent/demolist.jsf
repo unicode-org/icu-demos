@@ -10,7 +10,7 @@ String demolist_jsps[] = {
         "bidi", 
         "formatTest", 
         //"files_all", 
-        "icueos",
+        "icuinfo",
         "numero",
         "tuthu", 
         "testLocale", 

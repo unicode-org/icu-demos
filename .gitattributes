@@ -119,7 +119,7 @@ icu4jweb/WebContent/escaper.jsp -text
 icu4jweb/WebContent/files.jsp -text
 icu4jweb/WebContent/files_all.jsp -text
 icu4jweb/WebContent/formatTest.jsp -text
-icu4jweb/WebContent/icueos.jsp -text
+icu4jweb/WebContent/icuinfo.jsp -text
 icu4jweb/WebContent/index.jsp -text
 icu4jweb/WebContent/numero.jsp -text
 icu4jweb/WebContent/testLocale.jsp -text
