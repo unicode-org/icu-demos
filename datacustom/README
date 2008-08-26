@@ -1,0 +1,87 @@
+## Copyright (c) 1999-2008, International Business Machines Corporation and
+## others. All Rights Reserved
+
+This package contains the tool to generate the data library.
+
+DIRECTORY STRUCTURE
+--------------------
+Keep ICU and ICUAPPS in the same directory 
+	
+	cd ....somewhere/datacustom/work/icu
+	ICU will be installed in ......somewhere/datacustom
+	cd ....somewhere/datacustom/work/icuapps
+	
+	
+BUILDING
+--------
+
+Read the README file of ICUAPPS to build and install ICU and ICUAPPS
+ 
+ Example:
+
+  ICU:
+     cd ....somewhere/datacustom/work/icu
+     ./configure --prefix=......somewhere/datacustom
+     make install
+  
+  ICUAPPS:
+     cd ....somewhere/datacustom/work/icuapps        (THIS directory)
+     ./configure --prefix=....somewhere/datacustom/
+     make install                    (optional)
+
+
+DATA
+----
+
+Checkout the .ucm file from 
+
+	http://source.icu-project.org/repos/icu/data/trunk/charset/data/ucm/
+	http://source.icu-project.org/repos/icu/data/trunk/charset/contrib/data/ucm/
+
+Merge these files into the data/mappings directory of
+ICU(...somewhere/datacustom/work/icu/source/data/mappings).
+
+DO NOT REPLACE THE EXISTING FILES UNDER DATA/MAPPING DIRECTORY WHILE MERGING. JUST ADD
+THE MISSING FILES
+
+
+ENVIRONMENT VARIABLE
+--------------------
+
+Make sure that your PATH,LD_LIBRARY_PATH, CATALINA_HOME and CLASSPATH are all set correctly while 
+building data on the local machine.
+
+
+RUNNING DATA CUSTOMIZER
+-----------------------
+
+Before running this tool make sure that you have setup your environment as described 
+above.
+
+	cd ........somewhere/datacustom/work/icuapps/datacustom
+	make  
+	ant war
+	
+This will generate the .dat file under icuapps/datacustom/gendatadep and the 
+datacustom.war file under icuapps/datacustom. The name of the .dat file will depend
+on the version of ICU. For example if the version is 4.0 the name of the file will be
+icudt40l.dat,for 3.8 it will be icudt38l.dat, etc. 
+
+
+UPDATING SERVER DATA
+--------------------
+
+The ICU tool needs to be built on the server too inorder to get the new icupkg and genrb tools. On the
+server keep and build the ICU source code under ~/icu-src and installed it in ~/icu.
+
+Extract all the data file from icudt40l.dat on the local machine, zip all these files and move it on to
+the server. Unzip these data files under ~/datacustom/source/icudt40l on the server. 
+
+Install datacustom.war on the server. You may need to restart the tomcat to see the changes.
+ 
+ 
+
+	
+
+	
+

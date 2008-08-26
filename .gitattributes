@@ -96,6 +96,7 @@ apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
 apputil/data/main.css svneol=native#text/css
 datacustom/Makefile.in -text
+datacustom/README -text
 datacustom/build.xml -text
 datacustom/data/datacustom-header.html -text
 datacustom/data/datacustom.xml -text
