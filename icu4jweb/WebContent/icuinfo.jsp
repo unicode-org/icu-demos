@@ -6,9 +6,11 @@
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>ICU Release info</title>
- <STYLE type="text/css">
+ <style type="text/css">
     .hilite {  background: yellow; }
  </style>
+ <link rel="stylesheet" href="http://icu-project.org/xml/icumeta.css" />
+ <link rel="stylesheet" href="http://icu-project.org/icu.css" />
 </head>
 <body>
 
@@ -31,6 +33,8 @@
 
 <%!
 
+
+
    public static boolean showEOS = false;
 
 	public static String FILE = "xml/icuinfo.xml";
@@ -43,7 +47,8 @@
 %>
 
 <%
-	 Document sdoc = null; // cached
+
+     Document sdoc = null; // cached
 	 Date swhen = null;
 	 String swhere = "nothing";
 
@@ -137,7 +142,7 @@ String uwhat=request.getParameter("uwhat");
            out.write("<h3>Searching "+product.fullName()+" ("+product.name()+")"+"...</h3>\n");
            
            for(IcuInfo.Release release : product ) {
-               Set<IcuInfo.Platform> matching = release.supportsPlatform(uattr,uval,IcuInfo.Frequency.OFTEN);
+               Set<IcuInfo.Platform> matching = release.supportsPlatform(uattr,uval,IcuInfo.Status.WORKS);
                if(!matching.isEmpty()) {
                    out.write("<h2><a href=\""+ base + "?uproj=" + product.name() + "&uvers="+release.name() + "\">"+product.name() + " " + release.name() +"</a></h2>\n");
                    out.write("<blockquote>");
@@ -155,7 +160,7 @@ String uwhat=request.getParameter("uwhat");
 <tr>
     <td><%= (plat.os + " " + plat.os_version + " ("+plat.arch+", "+
                 plat.bits+"-bit) </td>" + "<td>" +  plat.tool + " " + plat.tool_version).replaceAll(uval,"<span class='hilite'>"+uval+"</span>")  %></td>
-    <td><%= UCharacter.toTitleCase(plat.tested().toString(), null)  %></td>
+    <td><%= UCharacter.toTitleCase(plat.status().toString(), null)  %></td>
 </tr>
 			<% } %>
 </tbody>
@@ -246,21 +251,35 @@ String uwhat=request.getParameter("uwhat");
         <br><br><b>Platform info:</b><br/>
 
 
-         <table border=1>
+         <table class="rtable" border=1>
             <thead>
                 <tr>
                     <th>Operating System</th>
                     <th>Toolset</th>
-                    <th>Testing frequency</th>
+                    <th>Status</th>
+                    <th>Download</th>
                 </tr>
             </thead>
             <tbody>
-        <% for(IcuInfo.Platform plat : release.platformsBySupport()) { %>
+        <% 
+            BinaryFinder bf = new BinaryFinder(info,product,release);
+
+            for(IcuInfo.Platform plat : release.platformsBySupport()) { %>
             <tr>
                 <td><%= plat.os + " " + plat.os_version + " ("+plat.arch+", "+
                             plat.bits+"-bit)" %></td>
                 <td><%= plat.tool + " " + plat.tool_version  %></td>
-                <td><%= UCharacter.toTitleCase(plat.tested().toString(), null)  %></td>
+                <td class="<%= plat.status().toString() %>"><%= UCharacter.toTitleCase(plat.status().toString(), null)  %></td>
+                <td>
+                    <%
+                       Set<BinaryFinder.Binary> bins = bf.binariesForPlatform(plat); 
+                       if(bins != null && !bins.isEmpty()) {
+	                       for(BinaryFinder.Binary b : bins) {
+	                           out.write("<a href=\""+b.url()+"\">"+b.name()+"</a> "+b.size());
+	                       }
+                       }
+                    %>
+                </td>
             </tr>
         <% } %>
          </tbody>
