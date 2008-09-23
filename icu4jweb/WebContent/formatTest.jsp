@@ -1,15 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<%@ page language="java" contentType="text/html; charset=utf-8"
-    pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import="java.util.*,java.text.*,com.ibm.icu.util.*"%>
-<html>
+<%@ page language="java"
+ import="java.util.*,java.text.*,com.ibm.icu.util.*"
+ contentType="text/html; charset=utf-8"
+ pageEncoding="utf-8"%>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-  <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <meta content="George Rhoten" name="AUTHOR" />
+  <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <title>Format Tester</title>
   <link href="/favicon.ico" rel="SHORTCUT ICON" />
+  <link href="/icu.css" rel="stylesheet" type="text/css" />
 <%!
 static final String STR = "str";
 static final String NUM = "num";
@@ -67,13 +68,37 @@ static final String[] escapeStrings(String[] args) {
     return args;
 }
 
+/**
+ * If we get something like 3.8.1.0_11, it becomes just "3.8.1".
+ * If we get something like 4.0.0.0, it becomes just "4.0".
+ */
+static final String trimVersion(String ver) {
+    int endIdx = ver.lastIndexOf('_') - 1;
+    if (endIdx < 0) {
+        endIdx = ver.length() - 1;
+    }
+    for (; endIdx >= 0; endIdx--) {
+        char currChar = ver.charAt(endIdx);
+        if (currChar != '0' && currChar != '.') {
+            endIdx++;
+            break;
+        }
+    }
+    if (endIdx == 1) {
+        int minorEndIdx = ver.indexOf('.', endIdx + 1);
+        if (minorEndIdx > endIdx) {
+            endIdx = minorEndIdx;
+        }
+    }
+    return ver.substring(0, endIdx);
+}
 
 %><%
 
 
 String selectedLocale = request.getParameter("locale");
 if (selectedLocale == null) {
-    selectedLocale = ULocale.getDefault().toString();
+    selectedLocale = request.getLocale().toString();
 }
 String msgType = request.getParameter("msgType");
 if (msgType== null) {
@@ -112,7 +137,7 @@ function addArgument() {
     var divNode = document.createElement('div');
     cellNode.appendChild(divNode);
     var rowLabel = (msgTypeNode.selectedIndex == 1) ? argNum+1 : argNum;
-    divNode.innerHTML = '<span id="arg' + argNum + '">' + rowLabel + '</span> <select id="argType' + argNum + '" name="argType" onchange="addExample(this,\'argVal' + argNum + '\');">'
+    divNode.innerHTML = '<label id="arg' + argNum + '" for="argVal' + argNum + '">' + rowLabel + '<\/label> <select id="argType' + argNum + '" name="argType" onchange="addExample(this,\'argVal' + argNum + '\');">'
         + '<option value="<%= STR %>">String<\/option>'
         + '<option value="<%= NUM %>">Number (<%= NUM_FMT %>)<\/option>'
         + '<option value="<%= DATE %>">Date (<%= DATE_FMT %>)<\/option>'
@@ -145,8 +170,8 @@ function setArgumentBase(selectNode) {
 </script>
 </head>
 <body style="margin: 0.5em">
-<%@ include file="demolist.jsf"  %>
-<!--  jsp:include page="/ssi/header.html"  -->
+<!-- %@ include file="demolist.jsf"  % -->
+<!--  jsp:include page="/ssi/header.fragment"  -->
 
 <h2>Format Tester</h2>
 
@@ -157,18 +182,18 @@ function setArgumentBase(selectNode) {
 
 <tr><th><label for="msgType">Message Type</label></th>
     <td><select id="msgType" name="msgType" onchange="setArgumentBase(this);">
-        <option value="icu4j"<%= (msgType.equals("icu4j")?" selected=\"selected\"":"") %>>ICU4J MessageFormat</option>
         <option value="java"<%= (msgType.equals("java")?" selected=\"selected\"":"") %>>Java MessageFormat</option>
         <option value="printf"<%= (msgType.equals("printf")?" selected=\"selected\"":"") %>>Java Formatter (printf)</option>
-        
+        <option value="icu4j"<%= (msgType.equals("icu4j")?" selected=\"selected\"":"") %>>ICU4J MessageFormat</option>
         </select></td></tr>
 
 <tr><th><label for="locale">Locale</label></th>
     <td><select id="locale" name="locale"><%
 ULocale[] locales = com.ibm.icu.text.NumberFormat.getAvailableULocales();
 for (int locIdx = 0; locIdx < locales.length; locIdx++) {
-    String currLocStr = locales[locIdx].toString();
-    out.println("<option"+(selectedLocale.equals(currLocStr)?" selected=\"selected\"":"")+" value=\""+currLocStr+"\">" +currLocStr+" ["+locales[locIdx].getDisplayName()+"]</option>");
+	ULocale currULoc = locales[locIdx];
+    String currLocStr = currULoc.toString();
+    out.println("<option"+(selectedLocale.equals(currLocStr)?" selected=\"selected\"":"")+" value=\""+currLocStr+"\">" +currLocStr+" ["+currULoc.getDisplayName()+"]</option>");
 }
 %></select></td></tr>
 
@@ -177,7 +202,7 @@ for (int locIdx = 0; locIdx < locales.length; locIdx++) {
     <td id="argumentsCell"><%
 int argsLength = (args.length < argTypes.length ? args.length : argTypes.length);
 for (int argIdx = 0; argIdx < argsLength; argIdx++) {
-    out.println("<div style=\"margin-top: 5px\"><span id=\"arg" + argIdx + "\">" + (msgType.equals("printf")?argIdx+1:argIdx) + "</span> <select id=\"argType" + argIdx + "\" name=\"argType\" onchange=\"addExample(this,'argVal" + argIdx + "');\">");
+    out.println("<div style=\"margin-top: 5px\"><label id=\"arg" + argIdx + "\" for=\"argVal" + argIdx + "\">" + (msgType.equals("printf")?argIdx+1:argIdx) + "</label> <select id=\"argType" + argIdx + "\" name=\"argType\" onchange=\"addExample(this,'argVal" + argIdx + "');\">");
     out.println(" <option value=\""+STR+"\""+(argTypes[argIdx].equals(STR)?" selected=\"selected\"":"")+">String</option>");
     out.println(" <option value=\""+NUM+"\""+(argTypes[argIdx].equals(NUM)?" selected=\"selected\"":"")+">Number ("+NUM_FMT+")</option>");
     out.println(" <option value=\""+DATE+"\""+(argTypes[argIdx].equals(DATE)?" selected=\"selected\"":"")+">Date ("+DATE_FMT+")</option>");
@@ -213,6 +238,9 @@ catch (Exception e) {
 }
 %></pre>
 
-<!--  jsp:include page="/ssi/footer.html" -->
+<p style="margin-top: 5em; font-size: small; text-align: center;">Powered by
+<a href="http://www.icu-project.org/">ICU</a> <%= trimVersion(com.ibm.icu.util.VersionInfo.ICU_VERSION.toString()) %> and
+<%= System.getProperty("java.vendor") %> <a href="http://java.sun.com/">Java</a> <%= trimVersion(System.getProperty("java.version")) %></p>
+<!--  jsp:include page="/ssi/footer.fragment" -->
 </body>
 </html>

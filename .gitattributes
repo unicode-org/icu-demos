@@ -122,7 +122,10 @@ icu4jweb/WebContent/files_all.jsp -text
 icu4jweb/WebContent/formatTest.jsp -text
 icu4jweb/WebContent/icuinfo.jsp -text
 icu4jweb/WebContent/index.jsp -text
+icu4jweb/WebContent/interval.jsp -text
 icu4jweb/WebContent/numero.jsp -text
+icu4jweb/WebContent/patina.jpg -text svneol=unset#image/jpeg
+icu4jweb/WebContent/patina.jsp -text
 icu4jweb/WebContent/testLocale.jsp -text
 icu4jweb/WebContent/tuthu.jsp -text
 icu4jweb/WebContent/uri.jsp -text
