@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 
 
 // SAX2 imports
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -37,14 +39,18 @@ import org.xml.sax.InputSource;
 /**
  * Use this class to cache DTDs, speeding up tools.
  */
-public class CachingEntityResolver implements EntityResolver {
+public class CachingEntityResolver implements EntityResolver, LSResourceResolver {
     static final String ICU_DTD_CACHE = "ICU_DTD_CACHE";
     static final String ICU_DTD_OVERRIDE = "ICU_DTD_OVERRIDE";
     private static String gCacheDir = null;
     private static String gOverrideDir = System.getProperty(ICU_DTD_OVERRIDE);
     private static boolean gCheckedEnv = false;
-    private static boolean gDebug = false;
+    private static boolean gDebug = true;
     
+    public CachingEntityResolver() {
+        System.out.println("out");
+        System.err.println("err");
+    }
     // TODO: synch?
     
     /**
@@ -112,7 +118,8 @@ public class CachingEntityResolver implements EntityResolver {
         return gCacheDir;
     }
     public InputSource resolveEntity (String publicId, String systemId) {
-        boolean aDebug = gDebug;
+        boolean aDebug = gDebug || true;
+        System.err.println("FOO BAR BAZ");
         if((System.getProperty("ICU_DTD_CACHE_DEBUG")!=null) || "y".equals(System.getProperty("ICU_DTD_CACHE_ADEBUG"))) {
             aDebug = true;
         }
@@ -203,5 +210,11 @@ public class CachingEntityResolver implements EntityResolver {
             return new InputSource(t.getPath());
         }
         return null; // unhelpful
+    }
+
+    public LSInput resolveResource(String type, String namespaceURI, String publicId,
+            String systemId, String baseURI) {
+        System.err.println("resolveResource("+type+", "+namespaceURI+","+publicId+","+systemId+","+baseURI+")");
+        return null;
     }
 }
