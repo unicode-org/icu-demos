@@ -48,8 +48,6 @@ public class CachingEntityResolver implements EntityResolver, LSResourceResolver
     private static boolean gDebug = true;
     
     public CachingEntityResolver() {
-        System.out.println("out");
-        System.err.println("err");
     }
     // TODO: synch?
     
@@ -118,8 +116,7 @@ public class CachingEntityResolver implements EntityResolver, LSResourceResolver
         return gCacheDir;
     }
     public InputSource resolveEntity (String publicId, String systemId) {
-        boolean aDebug = gDebug || true;
-        System.err.println("FOO BAR BAZ");
+        boolean aDebug = gDebug;
         if((System.getProperty("ICU_DTD_CACHE_DEBUG")!=null) || "y".equals(System.getProperty("ICU_DTD_CACHE_ADEBUG"))) {
             aDebug = true;
         }
