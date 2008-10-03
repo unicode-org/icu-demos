@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2007, International Business Machines
+*   Copyright (C) 1999-2008, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -898,11 +898,13 @@ void showSort(LXContext *lx, const char *locale)
         
         coll = usort_getCollator(customSort);
         
+#if 0
 //        {
 //            UErrorCode icuStatus = U_ZERO_ERROR;
 //           coll = ucol_open("en_US", &icuStatus );
 //           ucol_setAttribute(coll, UCOL_STRENGTH, UCOL_PRIMARY, &icuStatus);
 //        }
+#endif
         
         usearch = usearch_openFromCollator( schChars,
                                    u_strlen(schChars),

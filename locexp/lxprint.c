@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2008, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -918,18 +918,18 @@ static void showChangeTimezone(LXContext *lx) {
         
     strcpy(lbuf+4,terr);
     uloc_getDisplayCountry(lbuf, lx->dispLocale, ubuf, 1024, &status);
- //   fprintf(stderr, " status: %s @ %s\n", u_errorName(status), lbuf);
+ /*   fprintf(stderr, " status: %s @ %s\n", u_errorName(status), lbuf); */
     u_fprintf(lx->OUT, " <p>Instructions:  Find your location and your time zone. To go back, use the Back button on your browser.</p>\n");
     u_fprintf(lx->OUT, " <h4>%S</h4>\n", ubuf);
 
     sterrs=territoriesContainedIn(terr ,&status);
     if(!sterrs || U_FAILURE(status)) {
-//        u_fprintf(lx->OUT, "terr containment[%s] failed: %s<br>\n", terr, u_errorName(status));
+/*        u_fprintf(lx->OUT, "terr containment[%s] failed: %s<br>\n", terr, u_errorName(status)); */
     } else {
         for(t=0;sterrs[t];t++) {
             strcpy(lbuf+4,sterrs[t]);
             uloc_getDisplayCountry(lbuf, lx->dispLocale, ubuf, 1024, &status);
-            //fprintf(stderr, " status: %s @ %s\n", u_errorName(status), lbuf);
+            /*fprintf(stderr, " status: %s @ %s\n", u_errorName(status), lbuf);*/
             u_fprintf(lx->OUT, "&nbsp;<a href='?x=chz&amp;tzt=%s'>%S</a><br>\n", sterrs[t], ubuf);
         }
     }
@@ -942,27 +942,33 @@ static void showChangeTimezone(LXContext *lx) {
         int32_t count;
     
         count = ustre_count(e, &status);
-//        u_fprintf(lx->OUT, "&nbsp; &nbsp;  #%d count - %s<br>\n", count, u_errorName(status));
+/*        u_fprintf(lx->OUT, "&nbsp; &nbsp;  #%d count - %s<br>\n", count, u_errorName(status)); */
         for(t=0;t<count;t++) {
             z = ustre_nextz(e, &rlen, &status);
-//            u_fprintf(lx->OUT, "&nbsp; &nbsp;  ff#%d count - %s<br>\n", count, u_errorName(status));
+/*            u_fprintf(lx->OUT, "&nbsp; &nbsp;  ff#%d count - %s<br>\n", count, u_errorName(status)); */
             if( U_SUCCESS(status) && z ) {
+#if 0
                 //char f[200];
     //            strncpy(f,z,rlen);
     //            f[rlen]=0;
+#endif
                 u_fprintf(lx->OUT, "&nbsp; &nbsp; <a href='?" /* x=chz&amp;tzt=%s&amp; */ "SETTZ=%s'>%s</a><br>", z, z);
+#if 0
 //                fprintf(stderr, " z = %p\n", z);
 //                u_fprintf(lx->OUT, "&nbsp; &nbsp;  #%d  - %s<br>\n", rlen, u_errorName(status));
+#endif
             }
         }
     }
     
     
+#if 0
 //
 //    startCell(lx);
 //    showKeywordMenu(lx, "timezone", lx->newZone, &n, myURL, prefix, part, &status);
 //    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, lx->newZone);
 //    endCell(lx);
+#endif
 
 }
 
