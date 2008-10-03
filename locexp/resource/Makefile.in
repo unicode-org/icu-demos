@@ -146,4 +146,4 @@ root_SAMPLE.txt: root.txt
 	cat < root.txt >> root_SAMPLE.txt
 
 
--include *.d
+#-include *.d

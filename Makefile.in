@@ -34,11 +34,11 @@ check check-recursive check-local
 
 ## List of standard targets
 all: all-recursive all-local
-install: install-recursive install-local
+install: all install-recursive install-local
 clean: clean-recursive clean-local
 distclean : distclean-recursive distclean-local
 odist: dist-recursive dist-local
-check: check-recursive check-local
+check: all check-recursive check-local
 
 ## Recursive targets
 all-recursive install-recursive clean-recursive distclean-recursive dist-recursive check-recursive:
