@@ -1,6 +1,6 @@
 /*
 **********************************************************************
-* Copyright (C) 1998-2000, International Business Machines Corporation 
+* Copyright (C) 1998-2008, International Business Machines Corporation 
 * and others.  All Rights Reserved.
 **********************************************************************
 *
@@ -428,7 +428,7 @@ void convertFile(char* encName, char* iFN, char* oFN, UConverter* outConvrtr)
     delete inEncodName;
     fclose(inFile);
     fclose(outFile);
-};
+}
 
 
 

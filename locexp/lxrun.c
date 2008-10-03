@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2008, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
@@ -261,8 +261,8 @@ int setupLocaleExplorer(LXContext *lx)
         }
     }
 
-//  u_uastrcpy(lx->newZone, "Europe/Malta"); 
-//    u_uastrcpy(lx->newZone, "Etc/GMT+7"); /* for now */
+/*   u_uastrcpy(lx->newZone, "Europe/Malta"); */
+/*   u_uastrcpy(lx->newZone, "Etc/GMT+7"); /* for now */
 
 
     if(lx->newZone[0] != 0x0000)

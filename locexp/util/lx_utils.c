@@ -1,5 +1,5 @@
  /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2008, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -1284,12 +1284,12 @@ U_CAPI const char * const * territoriesContainedIn(const char *territory, UError
     
     if(supplemental==NULL || containment == NULL) {
         supplemental = ures_openDirect(NULL, kSUPPLEMENTAL, status);
-//        fprintf(stderr, "supp open -> %s\n", u_errorName(*status));
+/*        fprintf(stderr, "supp open -> %s\n", u_errorName(*status)); */
         containment = ures_getByKey(supplemental, "territoryContainment", containment, status);
-//        fprintf(stderr, "tc open -> %s\n", u_errorName(*status));
+/*        fprintf(stderr, "tc open -> %s\n", u_errorName(*status)); */
     }
     item = ures_getByKey(containment, territory, item, status);        
-//    fprintf(stderr, "gbk -> %s\n", u_errorName(*status));
+/*    fprintf(stderr, "gbk -> %s\n", u_errorName(*status)); */
     if(U_FAILURE(*status)) {
         return NULL;
     }

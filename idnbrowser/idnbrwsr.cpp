@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2006, International Business Machines
+*   Copyright (C) 2003-2008, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -626,7 +626,7 @@ parseString(const char *s, int32_t srcLen,
 enum QueryOptionsEnum {
     INPUT,
     INPUT_TYPE,
-    OPERATION,
+    OPERATION
 };
 
 QueryOption options[] = {
