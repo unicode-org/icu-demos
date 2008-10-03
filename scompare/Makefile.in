@@ -24,6 +24,7 @@ TARGET = scompare
 
 #LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
 #LDFLAGS += $(LDFLAGS_TOOLUTIL)
+LDFLAGS += -L../apputil
 CPPFLAGS += -I$(ICU_SOURCE)/common
 CPPFLAGS += -I$(top_srcdir)/apputil
 # Want to make sure the usort.h dependency is not on the installed version .. 
