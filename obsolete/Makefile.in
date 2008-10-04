@@ -15,13 +15,13 @@ top_srcdir=@top_srcdir@
 top_builddir = ..
 subdir = obsolete
 
-CXXFLAGS += $(SHAREDLIBCXXFLAGS)
-CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
-CFLAGS += $(SHAREDLIBCFLAGS)
-
 include $(top_builddir)/icuapps.mk
 
 -include $(shell $(ICU_CONFIG) --incfile) 
+
+CXXFLAGS += $(SHAREDLIBCXXFLAGS)
+CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
+CFLAGS += $(SHAREDLIBCFLAGS)
 
 CPPFLAGS += -I$(ICU_SOURCE)/common -I$(srcdir)
 
