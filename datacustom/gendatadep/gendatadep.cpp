@@ -130,7 +130,7 @@ UnicodeString getTranslation(const char *key) {
     string = ures_getStringByKey(res, key, NULL, &status);
 
     ures_close(res);
-    
+
     if (string == NULL) {
         UnicodeString keyUniStr(key);
         if (keyUniStr.endsWith(".res")) {
@@ -307,7 +307,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
         //ItemGroup(TRUE, "zoneinfo.res", "zoneinfo", "Timezone Data", status), // Doesn't need to be a lone item?
         // This next one should be the last one searching for .res locale files.
         ItemGroup(FALSE, "(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
-        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|supplementalData.res|CurrencyData.res|zoneinfo.res|metazoneInfo.res)", "misc", "Miscellaneous Data", status),
+        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|.+\\.res)", "misc", "Miscellaneous Data", status),
         ItemGroup(FALSE, ".+", BASE_DATA, "Base Data", status)
     };
 
@@ -510,6 +510,7 @@ generateHTML(Package *pkg, UErrorCode &status) {
     html += UnicodeString("<p>The estimated uncompressed size of this data library is <span id=\"totalSize.kilobytes\">") + UnicodeString(kilobytesStr)
         + UnicodeString("</span> KB</p>\n");
     html += UnicodeString("</form>\n");
+    html += UnicodeString("<p>The <a href=\"ICUData38.html \">ICU 3.8 Data</a> generate a data library that can be used with the 3.8 series of ICU. </p>");
     html += UnicodeString("<span onclick=\"toggleView('advanced')\" id=\"advanced\" class=\"expander\">+</span>\n");
     html += UnicodeString("Advanced Options\n");
     html += UnicodeString("<div id=\"advanced.group\" class=\"itemGroup\">\n");
