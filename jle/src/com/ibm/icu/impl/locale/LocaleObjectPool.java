@@ -5,12 +5,12 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LocaleDataPool<K,V> {
+public class LocaleObjectPool<K,V> {
 
     private ConcurrentHashMap<K,Value<V>> _map = new ConcurrentHashMap<K,Value<V>>();
     private ReferenceQueue<V> _rq = new ReferenceQueue<V>();
 
-    public LocaleDataPool() {
+    public LocaleObjectPool() {
     }
 
     public V get(Object key) {

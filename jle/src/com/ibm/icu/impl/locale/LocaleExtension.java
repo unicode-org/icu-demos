@@ -9,8 +9,8 @@ public class LocaleExtension {
     private String _extension;
     private transient Map<String,String> _keywords;
 
-    private static final LocaleDataPool<String,LocaleExtension> EXTENSIONPOOL =
-        new LocaleDataPool<String,LocaleExtension>();
+    private static final LocaleObjectPool<String,LocaleExtension> EXTENSIONPOOL =
+        new LocaleObjectPool<String,LocaleExtension>();
 
     public static final LocaleExtension EMPTY_EXTENSION = new LocaleExtension("");
 

@@ -14,8 +14,8 @@ public class BaseLocale {
 
     private static final char SEPCHAR = '_';
 
-    private static LocaleDataPool<BaseLocaleKey,BaseLocale> BASELOCALEPOOL
-        = new LocaleDataPool<BaseLocaleKey,BaseLocale>();
+    private static LocaleObjectPool<BaseLocaleKey,BaseLocale> BASELOCALEPOOL
+        = new LocaleObjectPool<BaseLocaleKey,BaseLocale>();
 
     private static final BaseLocale ROOT;
 
