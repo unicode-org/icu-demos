@@ -1,3 +1,9 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2009, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.dev.tools.languagetag;
 
 import java.io.BufferedReader;
@@ -30,7 +36,7 @@ public class LanguageTagRegistry {
         LanguageTagRegistry reg = null;
         try {
             Reader reader = new InputStreamReader(is, "ISO-8859-1");
-            reg = LanguageTagRegistry.getInstance(reader);
+            reg = getInstance(reader);
             reader.close();
         } catch (IOException e) {
             throw new RuntimeException("IO error while parsing language-subtag-registry.txt");

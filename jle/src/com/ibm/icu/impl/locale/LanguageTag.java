@@ -1,3 +1,9 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2009, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.impl.locale;
 
 import java.util.Collections;
@@ -5,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LanguageTag {
+public final class LanguageTag {
 
     private String _languageTag;        // entire language tag
     private String _grandfathered;      // grandfathered tag
@@ -297,7 +303,7 @@ public class LanguageTag {
         return _grandfathered;
     }
 
-    private static boolean isLanguageSubtag(String s) {
+    public static boolean isLanguageSubtag(String s) {
         // language      = 2*3ALPHA            ; shortest ISO 639 code
         //                 ["-" extlang]       ; sometimes followed by
         //                                     ;   extended language subtags
@@ -306,25 +312,25 @@ public class LanguageTag {
         return (s.length() >= 2) && (s.length() <= 8) && AsciiUtil.isAlphaString(s);
     }
 
-    private static boolean isExtlangSubtag(String s) {
+    public static boolean isExtlangSubtag(String s) {
         // extlang       = 3ALPHA              ; selected ISO 639 codes
         //                 *2("-" 3ALPHA)      ; permanently reserved
         return (s.length() == 3) && AsciiUtil.isAlphaString(s);
     }
 
-    private static boolean isScriptSubtag(String s) {
+    public static boolean isScriptSubtag(String s) {
         // script        = 4ALPHA              ; ISO 15924 code
         return (s.length() == 4) && AsciiUtil.isAlphaString(s);
     }
 
-    private static boolean isRegionSubtag(String s) {
+    public static boolean isRegionSubtag(String s) {
         // region        = 2ALPHA              ; ISO 3166-1 code
         //               / 3DIGIT              ; UN M.49 code
         return ((s.length() == 2) && AsciiUtil.isAlphaString(s))
                 || ((s.length() == 3) && AsciiUtil.isNumericString(s));
     }
 
-    private static boolean isVariantSubtag(String s) {
+    public static boolean isVariantSubtag(String s) {
         // variant       = 5*8alphanum         ; registered variants
         //               / (DIGIT 3alphanum)
         int len = s.length();
@@ -340,19 +346,19 @@ public class LanguageTag {
         return false;
     }
 
-    private static boolean isExtensionSingleton(String s) {
+    public static boolean isExtensionSingleton(String s) {
         // extension     = singleton 1*("-" (2*8alphanum))
         return (s.length() == 1)
                 && AsciiUtil.isAlphaString(s)
                 && !AsciiUtil.caseIgnoreMatch(PRIVATEUSE, s);
     }
 
-    private static boolean isExtensionSubtag(String s) {
+    public static boolean isExtensionSubtag(String s) {
         // extension     = singleton 1*("-" (2*8alphanum))
         return (s.length() >= 2) && (s.length() <= 8) && AsciiUtil.isAlphaNumericString(s);
     }
 
-    private static boolean isPrivateuseValueSubtag(String s) {
+    public static boolean isPrivateuseValueSubtag(String s) {
         // privateuse    = "x" 1*("-" (1*8alphanum))
         return (s.length() >= 1) && (s.length() <= 8) && AsciiUtil.isAlphaNumericString(s);
     }

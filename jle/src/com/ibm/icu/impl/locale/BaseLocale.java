@@ -1,7 +1,18 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2009, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
+
 package com.ibm.icu.impl.locale;
 
+import java.io.Serializable;
 
-public class BaseLocale {
+
+public final class BaseLocale implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String _language = "";
     private String _script = "";
@@ -21,7 +32,7 @@ public class BaseLocale {
 
     static {
         ROOT = new BaseLocale("", "", "", "");
-        BASELOCALEPOOL.putPermanent(ROOT.createKey(), ROOT);
+        BASELOCALEPOOL.registerPermanent(ROOT.createKey(), ROOT);
     }
 
     private BaseLocale(String language, String script, String region, String variant) {
@@ -39,13 +50,33 @@ public class BaseLocale {
         }
     }
 
-    public static BaseLocale getInstance(String language, String script, String region, String variant) {
+    public static BaseLocale get(String language, String script, String region, String variant) {
         BaseLocaleKey key = new BaseLocaleKey(language, script, region, variant);
         BaseLocale singleton = BASELOCALEPOOL.get(key);
         if (singleton == null) {
             // Create a canonical BaseLocale instance
             singleton = new BaseLocale(language, script, region, variant).canonicalize();
-            BASELOCALEPOOL.put(singleton.createKey(), singleton);
+            singleton = BASELOCALEPOOL.register(singleton.createKey(), singleton);
+        }
+        return singleton;
+    }
+
+    /*
+     * getPermanent get a singleton instance from BaseLocale pool.  If an instance is not found
+     * in the pool, create a new canonical BaseLocale and put it in the pool.  If an instance
+     * is found and it is not marked as permanent (i.e. such instances could be GCed), the
+     * instance is promoted to the permanent status (therefore, it resides in the pool forever).
+     */
+    public static BaseLocale getPermanent(String language, String script, String region, String variant) {
+        BaseLocaleKey key = new BaseLocaleKey(language, script, region, variant);
+        BaseLocale singleton = BASELOCALEPOOL.getPermanent(key);
+        if (singleton == null) {
+            singleton = BASELOCALEPOOL.get(key);
+            if (singleton == null) {
+                // Create a canonical BaseLocale instance
+                singleton = new BaseLocale(language, script, region, variant).canonicalize();
+            }
+            singleton = BASELOCALEPOOL.registerPermanent(singleton.createKey(), singleton);
         }
         return singleton;
     }
@@ -61,11 +92,7 @@ public class BaseLocale {
         return _id.hashCode();
     }
 
-    public String getID() {
-        return _id;
-    }
-
-    public String getJava6ID() {
+    public String getJava6String() {
         return _java6id;
     }
 
@@ -90,8 +117,7 @@ public class BaseLocale {
     }
 
     public String toString() {
-        return "language=" + _language + ";script=" + _script
-                + ";region=" + _region + ";variant=" + _variant;
+        return _id;
     }
 
     private BaseLocale canonicalize() {
@@ -165,11 +191,18 @@ public class BaseLocale {
 
         // Resolve parent
         if (variantLen > 0) {
-            _parent = getInstance(_language, _script, _region, "");
+            // variant field in Java Locale may contain multiple
+            // subtags
+            int lastSep = _variant.lastIndexOf(SEPCHAR);
+            if (lastSep == -1) {
+                _parent = get(_language, _script, _region, "");
+            } else {
+                _parent = get(_language, _script, _region, _variant.substring(0, lastSep));
+            }
         } else if (regionLen > 0) {
-            _parent = getInstance(_language, _script, "", "");
+            _parent = get(_language, _script, "", "");
         } else if (scriptLen > 0) {
-            _parent = getInstance(_language, "", "", "");
+            _parent = get(_language, "", "", "");
         } else if (languageLen > 0) {
             _parent = ROOT;
         } else {
@@ -184,7 +217,7 @@ public class BaseLocale {
         return new BaseLocaleKey(_language, _script, _region, _variant);
     }
 
-    private static class BaseLocaleKey {
+    private static class BaseLocaleKey implements Comparable<BaseLocaleKey> {
         private String _lang;
         private String _scrt;
         private String _regn;
@@ -205,6 +238,20 @@ public class BaseLocale {
                     && AsciiUtil.caseIgnoreMatch(((BaseLocaleKey)obj)._scrt, this._scrt)
                     && AsciiUtil.caseIgnoreMatch(((BaseLocaleKey)obj)._regn, this._regn)
                     && ((BaseLocaleKey)obj)._vart.equals(_vart); // variant is case sensitive in JDK!
+        }
+
+        public int compareTo(BaseLocaleKey other) {
+            int res = AsciiUtil.caseIgnoreCompare(this._lang, other._lang);
+            if (res == 0) {
+                res = AsciiUtil.caseIgnoreCompare(this._scrt, other._scrt);
+                if (res == 0) {
+                    res = AsciiUtil.caseIgnoreCompare(this._regn, other._regn);
+                    if (res == 0) {
+                        res = AsciiUtil.caseIgnoreCompare(this._vart, other._vart);
+                    }
+                }
+            }
+            return res;
         }
 
         public int hashCode() {

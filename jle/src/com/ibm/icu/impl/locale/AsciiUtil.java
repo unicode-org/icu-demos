@@ -1,3 +1,9 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2009, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.impl.locale;
 
 public class AsciiUtil {
@@ -20,6 +26,14 @@ public class AsciiUtil {
         }
         return (i == len);
     }
+
+    public static int caseIgnoreCompare(String s1, String s2) {
+        if (s1 == s2) {
+            return 0;
+        }
+        return AsciiUtil.toLowerString(s1).compareTo(AsciiUtil.toLowerString(s2));
+    }
+
 
     public static char toUpper(char c) {
         if (c >= 'a' && c <= 'z') {

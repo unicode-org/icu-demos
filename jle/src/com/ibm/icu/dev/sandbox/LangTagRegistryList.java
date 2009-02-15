@@ -1,3 +1,9 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2009, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.dev.sandbox;
 
 import java.util.ListIterator;
@@ -5,7 +11,7 @@ import java.util.ListIterator;
 import com.ibm.icu.dev.tools.languagetag.LanguageTagRegistry;
 import com.ibm.icu.dev.tools.languagetag.LanguageTagRegistry.Record;
 
-public class LTRegistrySample {
+public class LangTagRegistryList {
     public static void main(String[] args) {
         allGrandfathered();
         //allVariants();
