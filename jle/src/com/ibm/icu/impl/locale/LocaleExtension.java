@@ -57,7 +57,7 @@ public final class LocaleExtension {
      * keywords in a Map structure, so we do not need to parse plain
      * extension string again.
      */
-    static LocaleExtension get(TreeMap<String,String> extensions, String privuse) throws InvalidLocaleException {
+    static LocaleExtension get(TreeMap<String,String> extensions, String privuse) {
         boolean hasExtensions = (extensions != null && extensions.size() > 0);
         boolean hasPrivuse = (privuse != null && privuse.length() > 0);
 
@@ -311,14 +311,14 @@ public final class LocaleExtension {
       return buf.toString();
     }
 
-    static TreeMap<String,String> parseKeywordSubtags(String text, String delim) throws InvalidLocaleException {
+    static TreeMap<String,String> parseKeywordSubtags(String text, String delim) {
         if (text == null || text.length() == 0) {
             return null;
         }
         String[] subtags = AsciiUtil.toLowerString(text).split(delim);
         if ((subtags.length % 2) != 0) {
             // number of keyword subtags must be even
-            throw new InvalidLocaleException("Invalid locale keyword subtags: " + text);
+            return null;
         }
 
         TreeMap<String,String> keywords = new TreeMap<String,String>();
@@ -328,8 +328,7 @@ public final class LocaleExtension {
             String type = subtags[idx++];
 
             if ((keywords.put(key.intern(), type.intern())) != null) {
-                throw new InvalidLocaleException("Locale keyword subtags '" + text
-                        + "' contains duplicated key: " + key);
+                return null;
             }
         }
         return keywords;

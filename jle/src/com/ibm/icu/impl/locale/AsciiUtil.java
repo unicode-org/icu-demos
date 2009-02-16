@@ -6,7 +6,7 @@
  */
 package com.ibm.icu.impl.locale;
 
-public class AsciiUtil {
+public final class AsciiUtil {
     public static boolean caseIgnoreMatch(String s1, String s2) {
         if (s1 == s2) {
             return true;

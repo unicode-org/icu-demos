@@ -1,9 +1,8 @@
 package com.ibm.icu.dev.sandbox;
 
-import com.ibm.icu.impl.locale.BaseLocale;
 import com.ibm.icu.impl.locale.InvalidLocaleException;
-import com.ibm.icu.impl.locale.LocaleBuilder;
-import com.ibm.icu.impl.locale.LocaleExtension;
+import com.ibm.icu.util.Locale;
+import com.ibm.icu.util.Locale.LocaleBuilder;
 
 public class LocaleBuilderTest {
 
@@ -24,17 +23,13 @@ public class LocaleBuilderTest {
             bld2.setRegion("Jp");
             bld2.setLanguage("Ja");
 
-            BaseLocale loc1 = bld1.getBaseLocale();
-            BaseLocale loc2 = bld2.getBaseLocale();
+            Locale loc1 = bld1.get();
+            Locale loc2 = bld2.get();
 
-            LocaleExtension ext1 = bld1.getLocaleExtension();
-            LocaleExtension ext2 = bld2.getLocaleExtension();
-
-            System.out.println("loc1/ext1: " + loc1 + "/" + ext1);
-            System.out.println("loc2/ext2: " + loc2 + "/" + ext2);
+            System.out.println("loc1: " + loc1);
+            System.out.println("loc2: " + loc2);
 
             System.out.println("loc1 == loc2 -> " + (loc1 == loc2));
-            System.out.println("ext1 == ext2 -> " + (ext1 == ext2));
 
         } catch (InvalidLocaleException e) {
             e.printStackTrace();

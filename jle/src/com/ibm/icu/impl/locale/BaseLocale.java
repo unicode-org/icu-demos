@@ -138,7 +138,8 @@ public final class BaseLocale implements Serializable {
 
         if (scriptLen > 0) {
             // script - the first letter to upper case, the rest to lower case
-            StringBuilder buf = new StringBuilder(AsciiUtil.toUpper(_script.charAt(0)));
+            StringBuilder buf = new StringBuilder();
+            buf.append(AsciiUtil.toUpper(_script.charAt(0)));
             for (int i = 1; i < _script.length(); i++) {
                 buf.append(AsciiUtil.toLower(_script.charAt(i)));
             }
