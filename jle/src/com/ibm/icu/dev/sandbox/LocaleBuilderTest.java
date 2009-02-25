@@ -1,8 +1,10 @@
 package com.ibm.icu.dev.sandbox;
 
-import com.ibm.icu.impl.locale.InvalidLocaleException;
-import com.ibm.icu.util.Locale;
-import com.ibm.icu.util.Locale.LocaleBuilder;
+import java.util.Locale;
+import java.util.Locale.LocaleBuilder;
+
+//import com.ibm.icu.util.Locale;
+//import com.ibm.icu.util.Locale.LocaleBuilder;
 
 public class LocaleBuilderTest {
 
@@ -23,15 +25,15 @@ public class LocaleBuilderTest {
             bld2.setRegion("Jp");
             bld2.setLanguage("Ja");
 
-            Locale loc1 = bld1.get();
-            Locale loc2 = bld2.get();
+            Locale loc1 = bld1.create();
+            Locale loc2 = bld2.create();
 
             System.out.println("loc1: " + loc1);
             System.out.println("loc2: " + loc2);
 
             System.out.println("loc1 == loc2 -> " + (loc1 == loc2));
 
-        } catch (InvalidLocaleException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

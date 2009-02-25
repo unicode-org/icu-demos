@@ -6,23 +6,24 @@
  */
 package com.ibm.icu.util;
 
+import java.util.InvalidLocaleIdentifierException;
+
 import com.ibm.icu.impl.locale.BaseLocale;
 import com.ibm.icu.impl.locale.InternalLocaleBuilder;
-import com.ibm.icu.impl.locale.InvalidLocaleException;
 import com.ibm.icu.impl.locale.LanguageTag;
-import com.ibm.icu.impl.locale.LocaleExtension;
+import com.ibm.icu.impl.locale.LocaleExtensions;
 
 public class Locale {
     private BaseLocale _base;
-    private LocaleExtension _ext = LocaleExtension.EMPTY_EXTENSION;
+    private LocaleExtensions _ext = LocaleExtensions.EMPTY_EXTENSIONS;
 
-    private Locale(BaseLocale base, LocaleExtension ext) {
+    private Locale(BaseLocale base, LocaleExtensions ext) {
         _base = base;
         _ext = ext;
     }
 
     public Locale(String language, String region, String variant) {
-        _base = BaseLocale.get(language, "", region, variant);
+        _base = BaseLocale.getInstance(language, "", region, variant);
     }
 
     public boolean equals(Object obj) {
@@ -67,7 +68,7 @@ public class Locale {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return bld.get();
+        return bld.create();
     }
 
     public String toLanguageTag() {
@@ -99,7 +100,7 @@ public class Locale {
          * @return
          * @throws InvalidLocaleException
          */
-        public LocaleBuilder setLocale(Locale loc) throws InvalidLocaleException {
+        public LocaleBuilder setLocale(Locale loc) throws InvalidLocaleIdentifierException {
             //TODO
             return this;
         }
@@ -110,12 +111,12 @@ public class Locale {
          * 
          * @param language the language
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setLanguage(String language) throws InvalidLocaleException {
+        public LocaleBuilder setLanguage(String language) throws InvalidLocaleIdentifierException {
             String newval = _locbld.setLanguage(language);
             if (newval == null) {
-                throw new InvalidLocaleException("Invalid language: " + language);
+                throw new InvalidLocaleIdentifierException("Invalid language: " + language);
             }
             return this;
         }
@@ -126,12 +127,12 @@ public class Locale {
          * 
          * @param script the script
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setScript(String script) throws InvalidLocaleException {
+        public LocaleBuilder setScript(String script) throws InvalidLocaleIdentifierException {
             String newval = _locbld.setScript(script);
             if (newval == null) {
-                throw new InvalidLocaleException("Invalid script: " + script);
+                throw new InvalidLocaleIdentifierException("Invalid script: " + script);
             }
             return this;
         }
@@ -142,12 +143,12 @@ public class Locale {
          * 
          * @param region the region
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setRegion(String region) throws InvalidLocaleException {
+        public LocaleBuilder setRegion(String region) throws InvalidLocaleIdentifierException {
             String newval = _locbld.setRegion(region);
             if (newval == null) {
-                throw new InvalidLocaleException("Invalid region: " + region);
+                throw new InvalidLocaleIdentifierException("Invalid region: " + region);
             }
             return this;
         }
@@ -158,12 +159,12 @@ public class Locale {
          * 
          * @param variant the variant
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setVariant(String variant) throws InvalidLocaleException {
+        public LocaleBuilder setVariant(String variant) throws InvalidLocaleIdentifierException {
             String newval = _locbld.setVariant(variant);
             if (newval == null) {
-                throw new InvalidLocaleException("Invalid variant: " + variant);
+                throw new InvalidLocaleIdentifierException("Invalid variant: " + variant);
             }
             return this;
         }
@@ -175,12 +176,12 @@ public class Locale {
          * @param key the locale keyword key
          * @param type the locake keyword type
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setLocaleKeyword(String key, String type) throws InvalidLocaleException {
+        public LocaleBuilder setLocaleKeyword(String key, String type) throws InvalidLocaleIdentifierException {
             boolean set = _locbld.setLocaleKeyword(key, type);
             if (!set) {
-                throw new InvalidLocaleException("Invalid locale keyword key/type pairs: key=" + key + "/type=" + type);
+                throw new InvalidLocaleIdentifierException("Invalid locale keyword key/type pairs: key=" + key + "/type=" + type);
             }
             return this;
         }
@@ -192,12 +193,12 @@ public class Locale {
          * @param key the extension character key
          * @param value the extension value
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setExtension(char key, String value) throws InvalidLocaleException {
+        public LocaleBuilder setExtension(char key, String value) throws InvalidLocaleIdentifierException {
             boolean set = _locbld.setExtension(key, value);
             if (!set) {
-                throw new InvalidLocaleException("Invalid extension key/value pairs: key=" + key + "/value=" + value);
+                throw new InvalidLocaleIdentifierException("Invalid extension key/value pairs: key=" + key + "/value=" + value);
             }
             return this;
         }
@@ -208,12 +209,12 @@ public class Locale {
          * 
          * @param privuse the private use value
          * @return this builder
-         * @throws InvalidLocaleException
+         * @throws InvalidLocaleIdentifierException
          */
-        public LocaleBuilder setPrivateUse(String privuse) throws InvalidLocaleException {
+        public LocaleBuilder setPrivateUse(String privuse) throws InvalidLocaleIdentifierException {
             String newval = _locbld.setPrivateUse(privuse);
             if (newval == null) {
-                throw new InvalidLocaleException("Invalid private use value: " + privuse);
+                throw new InvalidLocaleIdentifierException("Invalid private use value: " + privuse);
             }
             return this;
         }
@@ -224,9 +225,9 @@ public class Locale {
          * 
          * @return a locale
          */
-        public Locale get() {
+        public Locale create() {
             BaseLocale base = _locbld.getBaseLocale();
-            LocaleExtension extension = _locbld.getLocaleExtension();
+            LocaleExtensions extension = _locbld.getLocaleExtensions();
 
             Locale newloc = new Locale(base, extension);
             return newloc;

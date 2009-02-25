@@ -7,12 +7,9 @@
 
 package com.ibm.icu.impl.locale;
 
-import java.io.Serializable;
 
 
-public final class BaseLocale implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public final class BaseLocale {
 
     private String _language = "";
     private String _script = "";
@@ -25,15 +22,10 @@ public final class BaseLocale implements Serializable {
 
     private static final char SEPCHAR = '_';
 
-    private static LocaleObjectPool<BaseLocaleKey,BaseLocale> BASELOCALEPOOL
-        = new LocaleObjectPool<BaseLocaleKey,BaseLocale>();
+    private static final LocaleObjectCache<BaseLocaleKey,BaseLocale> BASELOCALECACHE
+        = new LocaleObjectCache<BaseLocaleKey,BaseLocale>();
 
-    private static final BaseLocale ROOT;
-
-    static {
-        ROOT = new BaseLocale("", "", "", "");
-        BASELOCALEPOOL.registerPermanent(ROOT.createKey(), ROOT);
-    }
+    public static final BaseLocale ROOT = new BaseLocale("", "", "", "");
 
     private BaseLocale(String language, String script, String region, String variant) {
         if (language != null) {
@@ -50,42 +42,20 @@ public final class BaseLocale implements Serializable {
         }
     }
 
-    public static BaseLocale get(String language, String script, String region, String variant) {
+    public static BaseLocale getInstance(String language, String script, String region, String variant) {
         BaseLocaleKey key = new BaseLocaleKey(language, script, region, variant);
-        BaseLocale singleton = BASELOCALEPOOL.get(key);
-        if (singleton == null) {
+        BaseLocale baseLocale = BASELOCALECACHE.get(key);
+        if (baseLocale == null) {
             // Create a canonical BaseLocale instance
-            singleton = new BaseLocale(language, script, region, variant).canonicalize();
-            singleton = BASELOCALEPOOL.register(singleton.createKey(), singleton);
+            baseLocale = new BaseLocale(language, script, region, variant).canonicalize();
+            BASELOCALECACHE.put(baseLocale.createKey(), baseLocale);
         }
-        return singleton;
-    }
-
-    /*
-     * getPermanent get a singleton instance from BaseLocale pool.  If an instance is not found
-     * in the pool, create a new canonical BaseLocale and put it in the pool.  If an instance
-     * is found and it is not marked as permanent (i.e. such instances could be GCed), the
-     * instance is promoted to the permanent status (therefore, it resides in the pool forever).
-     */
-    public static BaseLocale getPermanent(String language, String script, String region, String variant) {
-        BaseLocaleKey key = new BaseLocaleKey(language, script, region, variant);
-        BaseLocale singleton = BASELOCALEPOOL.getPermanent(key);
-        if (singleton == null) {
-            singleton = BASELOCALEPOOL.get(key);
-            if (singleton == null) {
-                // Create a canonical BaseLocale instance
-                singleton = new BaseLocale(language, script, region, variant).canonicalize();
-            }
-            singleton = BASELOCALEPOOL.registerPermanent(singleton.createKey(), singleton);
-        }
-        return singleton;
+        return baseLocale;
     }
 
     public boolean equals(Object obj) {
-        // Multiple canonicalized BaseLocale instances with the same
-        // fields created via the factory method do not co-exist
-        // at any moment.
-        return (this == obj);
+        return (this == obj) ||
+                ((obj instanceof BaseLocale) && _id == (((BaseLocale)obj)._id));
     }
 
     public int hashCode() {
@@ -114,6 +84,10 @@ public final class BaseLocale implements Serializable {
 
     public BaseLocale getParent() {
         return _parent;
+    }
+
+    public String getID() {
+        return _id;
     }
 
     public String toString() {
@@ -173,19 +147,21 @@ public final class BaseLocale implements Serializable {
         _id = id.toString().intern();
 
         // Compose legacy JDK ID string if required
-        if (scriptLen > 0) {
+        if (languageLen == 0 && regionLen == 0 && variantLen > 0) {
+            _java6id = "";
+        } else if (scriptLen > 0 || (regionLen == 0 && variantLen > 0)) {
             StringBuilder buf = new StringBuilder(_language);
             if (regionLen > 0) {
                 buf.append(SEPCHAR);
                 buf.append(_region);
+            } else if (variantLen > 0) {
+                buf.append(SEPCHAR);
             }
             if (variantLen > 0) {
                 buf.append(SEPCHAR);
                 buf.append(_variant);
             }
             _java6id = buf.toString().intern();
-        } else if (languageLen == 0 && regionLen == 0 && variantLen > 0) {
-            _java6id = "";
         } else {
             _java6id = _id;
         }
@@ -196,14 +172,14 @@ public final class BaseLocale implements Serializable {
             // subtags
             int lastSep = _variant.lastIndexOf(SEPCHAR);
             if (lastSep == -1) {
-                _parent = get(_language, _script, _region, "");
+                _parent = getInstance(_language, _script, _region, "");
             } else {
-                _parent = get(_language, _script, _region, _variant.substring(0, lastSep));
+                _parent = getInstance(_language, _script, _region, _variant.substring(0, lastSep));
             }
         } else if (regionLen > 0) {
-            _parent = get(_language, _script, "", "");
+            _parent = getInstance(_language, _script, "", "");
         } else if (scriptLen > 0) {
-            _parent = get(_language, "", "", "");
+            _parent = getInstance(_language, "", "", "");
         } else if (languageLen > 0) {
             _parent = ROOT;
         } else {
@@ -218,7 +194,7 @@ public final class BaseLocale implements Serializable {
         return new BaseLocaleKey(_language, _script, _region, _variant);
     }
 
-    private static class BaseLocaleKey implements Comparable<BaseLocaleKey> {
+    public static class BaseLocaleKey implements Comparable<BaseLocaleKey> {
         private String _lang;
         private String _scrt;
         private String _regn;

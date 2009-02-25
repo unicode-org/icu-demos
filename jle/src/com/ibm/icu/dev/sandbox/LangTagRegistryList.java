@@ -13,8 +13,8 @@ import com.ibm.icu.dev.tools.languagetag.LanguageTagRegistry.Record;
 
 public class LangTagRegistryList {
     public static void main(String[] args) {
-        allGrandfathered();
-        //allVariants();
+//        allGrandfathered();
+        allVariants();
     }
 
     private static void allGrandfathered() {

@@ -2,10 +2,9 @@ package com.ibm.icu.dev.sandbox;
 
 import java.util.Random;
 
-import com.ibm.icu.util.Locale;
-//import java.util.Locale;
+import java.util.Locale;
 
-public class LocalePerf {
+public class LocalePerf extends Thread {
     static String[] LOCIDS = {
         "",
         "ja_JP",
@@ -163,31 +162,56 @@ public class LocalePerf {
     };
 
     private static final boolean DEBUG = false;
-    private static Timer tm = new Timer();
 
     public static void main(String[] args) {
-//        roundTripTest(5000000);
-        equalityTest1(5000000);
-//        equalityTest2(5000000);
+        int numThread = 5;
+        int numIteration = 5000000;
+
+        LocalePerf[] tests = new LocalePerf[numThread];
+
+        for (int i = 0; i < numThread; i++) {
+            tests[i] = new LocalePerf("Thread" + i, numIteration);
+        }
+        for (int i = 0; i < tests.length; i++) {
+            tests[i].start();
+        }
     }
 
-    static void roundTripTest(int iteration) {
+    public void run() {
+        roundTripTest(_itr);
+        equalityTest1(_itr);
+        equalityTest2(_itr);
+    }
+
+    private String _name;
+    private int _itr;
+    private Timer tm;
+
+    public LocalePerf(String name, int n) {
+        super(name);
+        _name = name;
+        _itr = n;
+        tm = new Timer();
+    }
+
+    void roundTripTest(int iteration) {
         Random rnd = new Random();
-        tm.reset("roundTripTest start - iteration: " + iteration);
+        tm.reset("Start roundTripTest (" + _name + ") : iteration - " + iteration);
         for (int i = 0; i < iteration; i++) {
+            if (i == iteration / 2) System.gc();
             String s = roundTrip(LOCIDS[rnd.nextInt(LOCIDS.length)]);
             if (DEBUG) {
                 System.out.println(s);
             }
         }
-        tm.log("done");
+        tm.log("End roundTripTest (" + _name + ") : elapsed time");
     }
 
-    static void equalityTest1(int iteration) {
+    void equalityTest1(int iteration) {
         Locale[] all = getAll();
         Random rnd = new Random();
 
-        tm.reset("equalityTest1 start - iteration: " + iteration);
+        tm.reset("Start equalityTest1 (" + _name + ") : iteration - " + iteration);
         for (int i = 0; i < iteration; i++) {
             int idx = rnd.nextInt(all.length);
             Locale l = all[idx];
@@ -200,28 +224,25 @@ public class LocalePerf {
                 }
             }
         }
-        tm.log("done");
+        tm.log("End equalityTest1 (" + _name + ") : elapsed time");
     }
 
-    static void equalityTest2(int iteration) {
+    void equalityTest2(int iteration) {
         Locale[] all = getAll();
         Locale[] all2 = getAll();
         Random rnd = new Random();
 
-        tm.reset("equalityTest2 start - iteration: " + iteration);
+        tm.reset("Start equalityTest2 (" + _name + ") : iteration - " + iteration);
         for (int i = 0; i < iteration; i++) {
             int idx = rnd.nextInt(all.length);
             Locale l = all[idx];
             for (int j = 0; j < all.length; j++) {
                 if (l.equals(all2[j])) {
-                    if (DEBUG) {
-                        System.out.println(i==j);
-                    }
                     break;
                 }
             }
         }
-        tm.log("done");
+        tm.log("End equalityTest2 (" + _name + ") : elapsed time");
     }
 
     static String roundTrip(String id) {
@@ -248,6 +269,8 @@ public class LocalePerf {
         }
 
         return new Locale(lang, cnty, vart);
+//        return Locale.forLocale(lang, cnty, vart);
+//        return Locale.forID(id);
     }
 
     static Locale[] getAll() {
@@ -262,13 +285,15 @@ public class LocalePerf {
         long t;
 
         public long reset(String message) {
-            System.out.println(message);
+            if (message != null) {
+                System.out.println(message);
+            }
             t = System.currentTimeMillis();
             return t;
         }
 
         public long reset() {
-            return reset("");
+            return reset(null);
         }
 
         public long log() {
