@@ -8,7 +8,6 @@ package com.ibm.icu.impl.locale;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.InvalidLocaleIdentifierException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -568,9 +567,9 @@ public final class LanguageTag {
         }
         if (len == 4) {
             return AsciiUtil.isNumeric(s.charAt(0))
-                    && AsciiUtil.isAlpha(s.charAt(1))
-                    && AsciiUtil.isAlpha(s.charAt(2))
-                    && AsciiUtil.isAlpha(s.charAt(3));
+                    && AsciiUtil.isAlphaNumeric(s.charAt(1))
+                    && AsciiUtil.isAlphaNumeric(s.charAt(2))
+                    && AsciiUtil.isAlphaNumeric(s.charAt(3));
         }
         return false;
     }

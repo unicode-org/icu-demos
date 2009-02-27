@@ -8,7 +8,7 @@ public class LanguageTagParseTest {
     }
 
     static void test1() {
-        Locale l = Locale.fromLanguageTag("en-us-Posix-JPXTA-x-icu");
+        Locale l = Locale.forLanguageTag("en-us-Posix-JPXTA-x-icu");
         System.out.println(l.toLanguageTag());
     }
 }

@@ -1,4 +1,4 @@
-package java.util;
+package com.ibm.icu.impl.locale;
 
 public class InvalidLocaleIdentifierException extends Exception {
 

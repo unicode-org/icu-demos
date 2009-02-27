@@ -8,6 +8,7 @@ package com.ibm.icu.impl.locale;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public final class InternalLocaleBuilder {
@@ -19,8 +20,8 @@ public final class InternalLocaleBuilder {
 
     private FieldHandler _handler = FieldHandler.DEFAULT;
 
-    private TreeMap<Character, String> _extMap;
-    private TreeMap<String, String> _kwdMap;
+    private HashMap<Character, String> _extMap;
+    private HashMap<String, String> _kwdMap;
     private String _privateuse = "";
 
     private static final char PRIVUSE = 'x';
@@ -29,6 +30,8 @@ public final class InternalLocaleBuilder {
     private static final String LANGTAGSEP = "-";
     private static final String LOCALESEP = "_";
 
+    private static final int DEFAULTMAPCAPACITY = 4;
+
     public InternalLocaleBuilder() {
     }
 
@@ -36,219 +39,231 @@ public final class InternalLocaleBuilder {
         _handler = handler;
     }
 
-    public String setLanguage(String language) {
-        if (language == null || language.length() == 0) {
-            _language = "";
-        } else {
-            String newval = _handler.process(FieldType.LANGUAGE, language);
-            if (newval == null) {
-                return null;
-            }
-            _language = newval;
-        }
-        return _language;
+    public InternalLocaleBuilder setLanguage(String language) {
+        _language = (language == null) ? "" : language;
+        return this;
     }
 
-    public String setScript(String script) {
-        if (script == null || script.length() == 0) {
-            _script = "";
-        } else {
-            String newval = _handler.process(FieldType.SCRIPT, script);
-            if (newval == null) {
-                return null;
-            }
-            _script = newval;
-        }
-        return _script;
+    public InternalLocaleBuilder setScript(String script) {
+        _script = (script == null) ? "" : script;
+        return this;
     }
 
-    public String setRegion(String region) {
-        if (region == null || region.length() == 0) {
-            _region = "";
-        } else {
-            String newval = _handler.process(FieldType.REGION, region);
-            if (newval == null) {
-                return null;
-            }
-            _region = newval;
-        }
-        return _region;
+    public InternalLocaleBuilder setRegion(String region) {
+        _region = (region == null) ? "" : region;
+        return this;
     }
 
-    public String setVariant(String variant) {
-        if (variant == null || variant.length() == 0) {
-            _variant = "";
-        } else {
-            variant = variant.replaceAll(LANGTAGSEP, LOCALESEP);
-            String newval = _handler.process(FieldType.VARIANT, variant);
-            if (newval == null) {
-                return null;
-            }
-            _variant = newval;
-        }
-        return _variant;
+    public InternalLocaleBuilder setVariant(String variant) {
+        _variant = (variant == null) ? "" : variant;
+        return this;
     }
 
-    public boolean setLocaleKeyword(String key, String type) {
+    public InternalLocaleBuilder setLocaleKeyword(String key, String type) {
         if (key == null || key.length() == 0) {
-            // key must not be empty
-            return false;
+            // do nothing
+            return this;
         }
-        if (type == null || type.length() == 0) {
-            if (_kwdMap != null) {
-                _kwdMap.remove(key);
-            }
-        } else {
-            key = _handler.process(FieldType.LOCALEKEY, key);
-            type = _handler.process(FieldType.LOCALETYPE, type);
-            if (key == null || type == null) {
-                return false;
-            }
-            if (_kwdMap == null) {
-                _kwdMap = new TreeMap<String,String>();
-            }
-            _kwdMap.put(key, type);
+        if (_kwdMap == null) {
+            _kwdMap = new HashMap<String, String>(DEFAULTMAPCAPACITY);
         }
-
-        syncLocaleExtension();
-
-        return true;
+        // type could be null/empty, which is used as a mark for deletion
+        // when merging the contents in _kwdMap with the value
+        // set by setExtension('u', "<locale keyword subtags>")
+        _kwdMap.put(key, type);
+        return this;
     }
 
-    public boolean setExtension(char singleton, String value) {
-        if (!AsciiUtil.isAlphaNumeric(singleton)) {
-            return false;
-        }
-
+    public InternalLocaleBuilder setExtension(char singleton, String value) {
         // singleton char to lower case
         singleton = AsciiUtil.toLower(singleton);
 
-        if (singleton == PRIVUSE) {
-            // private use must be set via setPrivateUse
-            return false;
+        if (singleton == LOCALESINGLETON) {
+            if (_kwdMap != null) {
+                // blow out the keywords currently set
+                _kwdMap.clear();
+            }
         }
-
-        // value to lower case
-        value = AsciiUtil.toLowerString(value).replaceAll(LANGTAGSEP, LOCALESEP);
-
         if (value == null || value.length() == 0) {
             if (_extMap != null) {
                 _extMap.remove(Character.toString(singleton));
             }
-            if (singleton == LOCALESINGLETON) {
-                // clear the current keyword entries if the specified
-                // singleton is for Unicode locale keywords
-                if (_kwdMap != null) {
-                    _kwdMap.clear();
-                }
-            }
-            return true;
-        }
-
-        if (singleton == LOCALESINGLETON) {
-            if (value == null || value.length() == 0) {
-                // clear the current keyword entries if the specified
-                // singleton is for Unicode locale keywords
-                if (_kwdMap != null) {
-                    _kwdMap.clear();
-                }
-            } else {
-                String[] kwdtags = value.split(LOCALESEP);
-                if ((kwdtags.length % 2) != 0) {
-                    // number of keyword subtags must be even
-                    return false;
-                }
-
-                // validate all locale key/type pairs first
-                Map<String, String> kwds = new HashMap<String, String>();
-                int idx = 0;
-                while (idx < kwdtags.length) {
-                    String kwkey = _handler.process(FieldType.LOCALEKEY, kwdtags[idx++]);
-                    String kwtype = _handler.process(FieldType.LOCALETYPE, kwdtags[idx++]);
-                    if (kwkey == null || kwtype == null) {
-                        // invalid Unicode locale keyword syntax
-                        return false;
-                    }
-                    if (kwds.put(kwkey, kwtype) != null) {
-                        // duplicated keys
-                        return false;
-                    }
-                }
-
-                // locale keywords are also maintained in _keywords
-                if (_kwdMap == null) {
-                    _kwdMap = new TreeMap<String, String>();
-                } else {
-                    // clear all keywords
-                    _kwdMap.clear();
-                }
-
-                // put the validated key/type pairs into _keywords
-                _kwdMap.putAll(kwds);
-            }
-
-            syncLocaleExtension();
-
         } else {
-            value = _handler.process(FieldType.EXTENSION, value);
-            if (value == null) {
-                return false;
-            }
-            // Add this extension
             if (_extMap == null) {
-                _extMap = new TreeMap<Character, String>();
+                _extMap = new HashMap<Character, String>(DEFAULTMAPCAPACITY);
             }
             _extMap.put(Character.valueOf(singleton), value);
         }
-
-        return true;
+        return this;
     }
 
-    public String setPrivateUse(String privuse) {
-        if (privuse == null || privuse.length() == 0) {
-            _privateuse = "";
-        } else {
-            String newval = _handler.process(FieldType.PRIVATEUSE, privuse.replaceAll(LANGTAGSEP, LOCALESEP));
-            if (newval == null) {
-                return null;
-            }
-            _privateuse = newval;
-        }
-        return _privateuse;
+    public InternalLocaleBuilder setPrivateUse(String privateuse) {
+        _privateuse = (privateuse == null) ? "" : privateuse;
+        return this;
     }
 
-    public InternalLocaleBuilder removeLocaleExtension() {
+    public InternalLocaleBuilder removeLocaleExtensions() {
         _extMap = null;
         _kwdMap = null;
         _privateuse = "";
         return this;
     }
 
-    public BaseLocale getBaseLocale() {
-        return BaseLocale.getInstance(_language, _script, _region, _variant);
-    }
+    public BaseLocale getBaseLocale(boolean bStrict) {
+        String language = _handler.process(FieldType.LANGUAGE, _language);
+        String script = _handler.process(FieldType.SCRIPT, _script);
+        String region = _handler.process(FieldType.REGION, _region);
+        String variant = _handler.process(FieldType.VARIANT, _variant);
 
-    public LocaleExtensions getLocaleExtensions() {
-        TreeMap<Character, String> extMap = (_extMap == null || _extMap.size() == 0) ? null : _extMap;
-        TreeMap<String, String> kwdMap = (_kwdMap == null || _kwdMap.size() == 0) ? null : _kwdMap;
-        return LocaleExtensions.getInstance(extMap, kwdMap, _privateuse);
-    }
-
-    private void syncLocaleExtension() {
-        // this implementation maintain the Unicode locale keywords
-        // and the corresponding extension ("u") in sync.
-        if (_kwdMap == null || _kwdMap.size() == 0) {
-            if (_extMap != null) {
-                _extMap.remove(Character.valueOf(LOCALESINGLETON));
+        if (bStrict) {
+            // when an invalid value was set in any base locale fields,
+            // returns null to signal the error in strict mode.
+            if (language == null || script == null || region == null || variant == null) {
+                return null;
             }
-        } else {
-            StringBuilder buf = new StringBuilder();
-            LocaleExtensions.mapToLocaleExtensionString(_kwdMap, buf);
-            if (_extMap == null) {
-                _extMap = new TreeMap<Character, String>();
-            }
-            _extMap.put(Character.valueOf(LOCALESINGLETON), buf.toString());
         }
+        return BaseLocale.getInstance(language, script, region, variant);
+    }
+
+    public LocaleExtensions getLocaleExtensions(boolean bStrict) {
+        TreeMap<Character, String> extMap = null;
+        TreeMap<String, String> kwdMap = null;
+        String locKwdExt = null;
+
+        // process keywords
+        if (_kwdMap != null && _kwdMap.size() > 0) {
+            Set<Map.Entry<String, String>> kwds = _kwdMap.entrySet();
+            for (Map.Entry<String, String> kwd : kwds) {
+                String type = kwd.getValue();
+                if (type == null || type.length() == 0) {
+                    // marked for deletion
+                    continue;
+                }
+
+                String key = _handler.process(FieldType.LOCALEKEY, kwd.getKey());
+                type = _handler.process(FieldType.LOCALETYPE, type);
+
+                if (key == null || type == null) {
+                    if (bStrict) {
+                        // error return in strict mode
+                        return null;
+                    }
+                    continue;
+                }
+
+                if (kwdMap == null) {
+                    kwdMap = new TreeMap<String, String>();
+                }
+                kwdMap.put(key.intern(), type.intern());
+            }
+        }
+
+        // process extensions
+        if (_extMap != null) {
+            Set<Map.Entry<Character, String>> exts = _extMap.entrySet();
+            for (Map.Entry<Character, String> ext : exts) {
+                Character key = ext.getKey();
+                char singleton = key.charValue();
+
+                if (!AsciiUtil.isAlpha(singleton) || singleton == PRIVUSE) {
+                    if (bStrict) {
+                        // error return when non-alpha extension key is detected
+                        // or 'x' which is reserved for private use
+                        return null;
+                    }
+                    continue;
+                }
+
+                String value = _handler.process(FieldType.EXTENSION, ext.getValue());
+                if (value == null) {
+                    if (bStrict) {
+                        // invalid extension value
+                        return null;
+                    }
+                    continue;
+                }
+
+                if (singleton == LOCALESINGLETON) {
+                    if (locKwdExt != null) {
+                        if (bStrict) {
+                            // duplicated locale keyword extension
+                            return null;
+                        }
+                    } else {
+                        locKwdExt = value;
+                    }
+                    continue;
+                }
+
+                if (extMap == null) {
+                    extMap = new TreeMap<Character, String>();
+                }
+                extMap.put(key, value.intern());
+            }
+        }
+
+        // merging locale keywords set via setExtension
+        if (locKwdExt != null) {
+            String[] kwdtags = locKwdExt.split(LOCALESEP);
+            if ((kwdtags.length % 2) != 0) {
+                // number of keyword subtags must be even number
+                if (bStrict) {
+                    return null;
+                }
+            }
+
+            int idx = 0;
+            while (idx < kwdtags.length - 1 /* -1 for preventing index overrun for odd number case */) {
+                String kwkey = _handler.process(FieldType.LOCALEKEY, kwdtags[idx++]);
+                String kwtype = kwdtags[idx++];
+
+                if (kwkey == null) {
+                    if (bStrict) {
+                        return null;
+                    }
+                    continue;
+                }
+                // check if the key was overridden by setLocaleKeyword after this single keyword
+                // string was set by setExtension
+                if (_kwdMap != null) {
+                    if (_kwdMap.containsKey(kwkey)) {
+                        // new value was set
+                        continue;
+                    }
+                }
+                kwtype = _handler.process(FieldType.LOCALETYPE, kwtype);
+                if (kwtype == null) {
+                    if (bStrict) {
+                        return null;
+                    }
+                }
+                if (kwdMap == null) {
+                    kwdMap = new TreeMap<String, String>();
+                }
+                kwdMap.put(kwkey.intern(), kwtype.intern());
+            }
+        }
+
+        // set canonical locale keyword extension string to the extension map
+        if (kwdMap != null) {
+            StringBuilder buf = new StringBuilder();
+            LocaleExtensions.mapToLocaleExtensionString(kwdMap, buf);
+            if (extMap == null) {
+                extMap = new TreeMap<Character, String>();
+            }
+            extMap.put(Character.valueOf(LOCALESINGLETON), buf.toString().intern());
+        }
+
+        // private use
+        String privateuse = _handler.process(FieldType.PRIVATEUSE, _privateuse);
+        if (privateuse == null) {
+            if (bStrict) {
+                return null;
+            }
+            privateuse = "";
+        }
+
+        return LocaleExtensions.getInstance(extMap, kwdMap, privateuse);
     }
 
     protected enum FieldType {
@@ -270,10 +285,10 @@ public final class InternalLocaleBuilder {
 
         public String process(FieldType type, String value) {
             value = map(type, value);
-            if (!validate(type, value)) {
+            if (value.length() > 0 && !validate(type, value)) {
                 return null;
             }
-            return value.intern();
+            return value;
         }
 
         protected String map(FieldType type, String value) {
@@ -282,19 +297,27 @@ public final class InternalLocaleBuilder {
                 value = LanguageTag.getShortLanguageCode(AsciiUtil.toLowerString(value));
                 break;
             case SCRIPT:
-                //TODO
+                if (value.length() > 0) {
+                    StringBuilder buf = new StringBuilder();
+                    buf.append(AsciiUtil.toUpper(value.charAt(0)));
+                    for (int i = 1; i < value.length(); i++) {
+                        buf.append(AsciiUtil.toLower(value.charAt(i)));
+                    }
+                    value = buf.toString();
+                }
                 break;
             case REGION:
-                value = AsciiUtil.toLowerString(value);
+                value = AsciiUtil.toUpperString(value);
                 break;
             case VARIANT:
-                // Java variant is case sensitive
+                // Java variant is case sensitive - so no case mapping here
+                value = value.replaceAll(LANGTAGSEP, LOCALESEP);
                 break;
             case LOCALEKEY:
             case LOCALETYPE:
             case EXTENSION:
             case PRIVATEUSE:
-                value = AsciiUtil.toLowerString(value);
+                value = AsciiUtil.toLowerString(value).replaceAll(LANGTAGSEP, LOCALESEP);
                 break;
             }
             return value;

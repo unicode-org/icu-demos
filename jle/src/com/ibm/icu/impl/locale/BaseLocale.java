@@ -195,17 +195,26 @@ public final class BaseLocale {
     }
 
     public static class BaseLocaleKey implements Comparable<BaseLocaleKey> {
-        private String _lang;
-        private String _scrt;
-        private String _regn;
-        private String _vart;
+        private String _lang = "";
+        private String _scrt = "";
+        private String _regn = "";
+        private String _vart = "";
+
         private int _hash; // Default to 0
 
         public BaseLocaleKey(String language, String script, String region, String variant) {
-            _lang = language;
-            _scrt = script;
-            _regn = region;
-            _vart = variant;
+            if (language != null) {
+                _lang = language;
+            }
+            if (script != null) {
+                _scrt = script;
+            }
+            if (region != null) {
+                _regn = region;
+            }
+            if (variant != null) {
+                _vart = variant;
+            }
         }
 
         public boolean equals(Object obj) {
