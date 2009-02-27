@@ -14,26 +14,27 @@ public class LocaleBuilderTest {
 
     static void test1() {
         try {
-            LocaleBuilder bld1 = new LocaleBuilder();
-            LocaleBuilder bld2 = new LocaleBuilder();
+            LocaleBuilder bldr = new LocaleBuilder();
 
-            bld1.setLanguage("JA");
-            bld1.setRegion("jp");
-            bld1.setLocaleKeyword("ca", "japanese");
-            bld1.setPrivateUse("Yoshito");
+            bldr.setLanguage("JA");
+            bldr.setRegion("jp");
+            bldr.setLocaleKeyword("ca", "japanese");
+            bldr.setPrivateUse("Yoshito");
 
+            Locale loc1 = bldr.create();
+
+            bldr.clear();
 //            bld2.setLocaleKeyword("CA", "Japanese");
-            bld2.setExtension('u', "co_standard_ca_gregory");
-            bld2.setLocaleKeyword("ca", "japanese");
-            bld2.setLocaleKeyword("co", "");
+            bldr.setExtension('u', "co_standard_ca_gregory");
+            bldr.setLocaleKeyword("ca", "japanese");
+            bldr.setLocaleKeyword("co", "");
 //            bld2.setExtension('a', "123");
-            bld2.setPrivateUse("yoshiTO");
+            bldr.setPrivateUse("yoshiTO");
 
-            bld2.setRegion("Jp");
-            bld2.setLanguage("Ja");
+            bldr.setRegion("Jp");
+            bldr.setLanguage("Ja");
 
-            Locale loc1 = bld1.create();
-            Locale loc2 = bld2.create();
+            Locale loc2 = bldr.create();
 
             System.out.println("loc1: " + loc1);
             System.out.println("loc2: " + loc2);

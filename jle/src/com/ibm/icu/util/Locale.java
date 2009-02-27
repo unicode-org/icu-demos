@@ -8,6 +8,7 @@ package com.ibm.icu.util;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Locale.LocaleBuilder;
 
 import com.ibm.icu.impl.locale.BaseLocale;
 import com.ibm.icu.impl.locale.InternalLocaleBuilder;
@@ -355,6 +356,15 @@ public class Locale {
          */
         public LocaleBuilder setPrivateUse(String privuse) {
             _locbld.setPrivateUse(privuse);
+            return this;
+        }
+
+        /**
+         * <span style="background-color: #00ccff; font-weight: bold">New API</span>
+         * Clear all internal fields in this builder.
+         */
+        public LocaleBuilder clear() {
+            _locbld.clear();
             return this;
         }
 

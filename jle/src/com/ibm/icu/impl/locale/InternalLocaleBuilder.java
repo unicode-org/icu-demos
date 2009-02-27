@@ -102,6 +102,21 @@ public final class InternalLocaleBuilder {
         return this;
     }
 
+    public InternalLocaleBuilder clear() {
+        _language = "";
+        _script = "";
+        _region = "";
+        _variant = "";
+        _privateuse = "";
+        if (_extMap != null) {
+            _extMap.clear();
+        }
+        if (_kwdMap != null) {
+            _kwdMap.clear();
+        }
+        return this;
+    }
+
     public InternalLocaleBuilder removeLocaleExtensions() {
         _extMap = null;
         _kwdMap = null;
