@@ -8,7 +8,6 @@ package com.ibm.icu.util;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Locale.LocaleBuilder;
 
 import com.ibm.icu.impl.locale.BaseLocale;
 import com.ibm.icu.impl.locale.InternalLocaleBuilder;

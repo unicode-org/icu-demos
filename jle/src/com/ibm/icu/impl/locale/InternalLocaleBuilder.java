@@ -199,14 +199,8 @@ public final class InternalLocaleBuilder {
                 }
 
                 if (singleton == LOCALESINGLETON) {
-                    if (locKwdExt != null) {
-                        if (bStrict) {
-                            // duplicated locale keyword extension
-                            return null;
-                        }
-                    } else {
-                        locKwdExt = value;
-                    }
+                    // locale keywords will set by setExtension will be processed later
+                    locKwdExt = value;
                     continue;
                 }
 
@@ -250,6 +244,9 @@ public final class InternalLocaleBuilder {
                 if (kwtype == null) {
                     if (bStrict) {
                         return null;
+                    } else {
+                        // ignore this key/type pair
+                        continue;
                     }
                 }
                 if (kwdMap == null) {
