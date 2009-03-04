@@ -14,13 +14,13 @@ import java.util.TreeSet;
 
 public final class LanguageTag {
 
-    private String _languageTag;        // entire language tag
-    private String _grandfathered;      // grandfathered tag
-    private String _privateuse;         // privateuse, not including leading "x-"
-    private String _language;           // language subtag
+    private String _languageTag = "";   // entire language tag
+    private String _grandfathered = ""; // grandfathered tag
+    private String _privateuse = "";    // privateuse, not including leading "x-"
+    private String _language = "";      // language subtag
     private String[] _extlang;          // array of extlang subtags
-    private String _script;             // script subtag
-    private String _region;             // region subtag
+    private String _script = "";        // script subtag
+    private String _region = "";        // region subtag
     private TreeSet<String> _variants;  // variant subtags in a single string
     private TreeSet<Extension> _extensions; // extension key/value pairs
 
@@ -509,7 +509,7 @@ public final class LanguageTag {
             }
             return buf.toString();
         }
-        return null;
+        return "";
     }
 
     public Set<String> getVarinats() {
@@ -688,7 +688,7 @@ public final class LanguageTag {
                 Iterator<Character> itr = keys.iterator();
                 while (itr.hasNext()) {
                     Character key = itr.next();
-                    String value = ext.getExtensionValue(key).replaceAll("_", SEP);
+                    String value = ext.getExtensionValue(key.charValue()).replaceAll("_", SEP);
                     buf.append(SEP);
                     buf.append(key);
                     buf.append(SEP);

@@ -1,7 +1,7 @@
 package com.ibm.icu.dev.sandbox;
 
 import java.util.Locale;
-import java.util.Locale.LocaleBuilder;
+import java.util.Locale.Builder;
 
 //import com.ibm.icu.util.Locale;
 //import com.ibm.icu.util.Locale.LocaleBuilder;
@@ -14,7 +14,7 @@ public class LocaleBuilderTest {
 
     static void test1() {
         try {
-            LocaleBuilder bldr = new LocaleBuilder();
+            Builder bldr = new Builder();
 
             bldr.setLanguage("JA");
             bldr.setRegion("jp");
@@ -43,8 +43,11 @@ public class LocaleBuilderTest {
             System.out.println(loc1.toLanguageTag());
             System.out.println(loc2.toLanguageTag());
 
-            Locale loc3 = new LocaleBuilder().setLanguage("en").setScript("Latn").setVariant("1994").create();
+            Locale loc3 = new Builder().setLanguage("en").setScript("Latn").setVariant("1994").create();
             System.out.println(Locale.forLanguageTag(loc3.toLanguageTag()));
+
+            Locale loc4 = new Builder().setLanguageTag("JA-JP-U-ca-Japanese").create();
+            System.out.println(loc4.toLanguageTag());
 
         } catch (Exception e) {
             e.printStackTrace();

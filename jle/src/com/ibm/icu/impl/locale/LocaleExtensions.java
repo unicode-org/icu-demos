@@ -6,6 +6,7 @@
  */
 package com.ibm.icu.impl.locale;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -231,7 +232,7 @@ public final class LocaleExtensions {
 
     public Set<Character> getExtensionKeys() {
         if (_extMap != null) {
-            return _extMap.keySet();
+            return Collections.unmodifiableSet(_extMap.keySet());
         }
         return null;
     }
@@ -245,7 +246,7 @@ public final class LocaleExtensions {
 
     public Set<String> getLocaleKeywordKeys() {
         if (_kwdMap != null) {
-            return _kwdMap.keySet();
+            return Collections.unmodifiableSet(_kwdMap.keySet());
         }
         return null;
     }
