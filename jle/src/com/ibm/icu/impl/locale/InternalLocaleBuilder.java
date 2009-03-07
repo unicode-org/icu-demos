@@ -13,6 +13,8 @@ import java.util.TreeMap;
 
 public final class InternalLocaleBuilder {
 
+    public static final char PRIVATEUSEKEY = 'x';
+
     private String _language = "";
     private String _script = "";
     private String _region = "";
@@ -22,9 +24,7 @@ public final class InternalLocaleBuilder {
 
     private HashMap<Character, String> _extMap;
     private HashMap<String, String> _kwdMap;
-    private String _privateuse = "";
 
-    private static final char PRIVUSE = 'x';
     private static final char LOCALESINGLETON = 'u';
 
     private static final String LANGTAGSEP = "-";
@@ -118,10 +118,6 @@ public final class InternalLocaleBuilder {
         // singleton char to lower case
         singleton = AsciiUtil.toLower(singleton);
 
-        if (singleton == PRIVUSE || !AsciiUtil.isAlphaNumeric(singleton)) {
-            throw new InvalidLocaleIdentifierException("Bad extension singleton: " + singleton);
-        }
-
         if (singleton == LOCALESINGLETON) {
             // 'u' extension reserved for locale keywords
             if (_kwdMap != null) {
@@ -129,7 +125,7 @@ public final class InternalLocaleBuilder {
                 _kwdMap.clear();
             }
             // parse locale keyword extension subtags
-            String[] kwdtags = (value.replaceAll(LANGTAGSEP, LOCALESEP)).split(LOCALESEP);
+            String[] kwdtags = (value.replaceAll(LOCALESEP, LANGTAGSEP)).split(LANGTAGSEP);
             if ((kwdtags.length % 2) != 0) {
                 // number of keyword subtags must be even number
                 throw new InvalidLocaleIdentifierException("Ill-formed locale keywords: " + value);
@@ -148,34 +144,23 @@ public final class InternalLocaleBuilder {
                 _kwdMap.put(kwdkey, kwdtype);
             }
         } else {
-            // other extensions
+            // other extensions including privateuse
             if (value.length() == 0) {
                 if (_extMap != null) {
-                    _extMap.remove(Character.toString(singleton));
+                    _extMap.remove(Character.valueOf(singleton));
                 }
             } else {
-                String extval = _handler.process(FieldType.EXTENSION, value);
+                FieldType ftype = (singleton == PRIVATEUSEKEY) ? FieldType.PRIVATEUSE : FieldType.EXTENSION;
+                String extval = _handler.process(ftype, value);
                 if (extval == null) {
                     throw new InvalidLocaleIdentifierException("Ill-formed extension value: " + value);
                 }
                 if (_extMap == null) {
                     _extMap = new HashMap<Character, String>(DEFAULTMAPCAPACITY);
                 }
-                _extMap.put(Character.valueOf(singleton), value);
+                _extMap.put(Character.valueOf(singleton), extval);
             }
         }
-        return this;
-    }
-
-    public InternalLocaleBuilder setPrivateUse(String privateuse) throws InvalidLocaleIdentifierException {
-        String newval = "";
-        if (privateuse.length() > 0) {
-            newval = _handler.process(FieldType.PRIVATEUSE, privateuse);
-            if (newval == null) {
-                throw new InvalidLocaleIdentifierException("Ill-formed private use: " + privateuse);
-            }
-        }
-        _privateuse = newval;
         return this;
     }
 
@@ -184,20 +169,17 @@ public final class InternalLocaleBuilder {
         _script = "";
         _region = "";
         _variant = "";
-        _privateuse = "";
+        removeLocaleExtensions();
+        return this;
+    }
+
+    public InternalLocaleBuilder removeLocaleExtensions() {
         if (_extMap != null) {
             _extMap.clear();
         }
         if (_kwdMap != null) {
             _kwdMap.clear();
         }
-        return this;
-    }
-
-    public InternalLocaleBuilder removeLocaleExtensions() {
-        _extMap = null;
-        _kwdMap = null;
-        _privateuse = "";
         return this;
     }
 
@@ -222,7 +204,7 @@ public final class InternalLocaleBuilder {
             }
         }
 
-        // process extensions
+        // process extensions and privateuse
         if (_extMap != null) {
             Set<Map.Entry<Character, String>> exts = _extMap.entrySet();
             for (Map.Entry<Character, String> ext : exts) {
@@ -238,14 +220,14 @@ public final class InternalLocaleBuilder {
         // set canonical locale keyword extension string to the extension map
         if (kwdMap != null) {
             StringBuilder buf = new StringBuilder();
-            LocaleExtensions.mapToLocaleExtensionString(kwdMap, buf);
+            LocaleExtensions.keywordsToString(kwdMap, buf);
             if (extMap == null) {
                 extMap = new TreeMap<Character, String>();
             }
             extMap.put(Character.valueOf(LOCALESINGLETON), buf.toString().intern());
         }
 
-        return LocaleExtensions.getInstance(extMap, kwdMap, _privateuse);
+        return LocaleExtensions.getInstance(extMap, kwdMap);
     }
 
     protected enum FieldType {
@@ -299,7 +281,7 @@ public final class InternalLocaleBuilder {
             case LOCALETYPE:
             case EXTENSION:
             case PRIVATEUSE:
-                value = AsciiUtil.toLowerString(value).replaceAll(LANGTAGSEP, LOCALESEP);
+                value = AsciiUtil.toLowerString(value).replaceAll(LOCALESEP, LANGTAGSEP);
                 break;
             }
             return value;
@@ -330,13 +312,19 @@ public final class InternalLocaleBuilder {
                 }
                 break;
             case LOCALEKEY:
-                isValid = LanguageTag.isExtensionSubtag(value);
+                isValid = false;
+                if (value.length() == 2) {
+                    isValid = LanguageTag.isExtensionSubtag(value);
+                }
                 break;
             case LOCALETYPE:
-                isValid = LanguageTag.isExtensionSubtag(value);
+                isValid = false;
+                if (3 <= value.length() && value.length() <= 8) {
+                    isValid = LanguageTag.isExtensionSubtag(value);
+                }
                 break;
             case EXTENSION:
-                subtags = value.split(LOCALESEP);
+                subtags = value.split(LANGTAGSEP);
                 for (String subtag : subtags) {
                     isValid = LanguageTag.isExtensionSubtag(subtag);
                     if (!isValid) {
@@ -345,7 +333,7 @@ public final class InternalLocaleBuilder {
                 }
                 break;
             case PRIVATEUSE:
-                subtags = value.split(LOCALESEP);
+                subtags = value.split(LANGTAGSEP);
                 for (String subtag : subtags) {
                     isValid = LanguageTag.isPrivateuseValueSubtag(subtag);
                     if (!isValid) {

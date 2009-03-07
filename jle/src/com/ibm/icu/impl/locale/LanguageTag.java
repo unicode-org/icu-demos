@@ -675,34 +675,11 @@ public final class LanguageTag {
         }
 
         if (ext != null) {
-            // extensions
-
-            // do not need to validate extension subtags,
-            // because an instance of LocaleExtensions only
-            // has syntactically valid extensions.
-
-            // extension singleton keys are already in natural
-            // alphabetical order
-            Set<Character> keys = ext.getExtensionKeys();
-            if (keys != null) {
-                Iterator<Character> itr = keys.iterator();
-                while (itr.hasNext()) {
-                    Character key = itr.next();
-                    String value = ext.getExtensionValue(key.charValue()).replaceAll("_", SEP);
-                    buf.append(SEP);
-                    buf.append(key);
-                    buf.append(SEP);
-                    buf.append(value);
-                }
-            }
-
-            // privateuse
-            String privateuse = ext.getPrivateUse();
-            if (privateuse.length() > 0) {
+            String exttags = ext.getCanonicalString();
+            if (exttags.length() > 0) {
+                // extensions including private use
                 buf.append(SEP);
-                buf.append(PRIVATEUSE);
-                buf.append(SEP);
-                buf.append(privateuse.replaceAll("_", SEP));
+                buf.append(ext.getCanonicalString());
             }
         }
         return buf.toString();
