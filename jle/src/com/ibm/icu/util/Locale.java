@@ -68,7 +68,7 @@ public class Locale {
 
         private LocaleKey(String language, String script, String country, String variant, LocaleExtensions extensions) {
             _baseKey = new BaseLocaleKey(language, script, country, variant);
-            _extKey = extensions.getID();
+            _extKey = extensions.getCanonicalString();
         }
 
         public boolean equals(Object obj) {
@@ -172,15 +172,6 @@ public class Locale {
 
     /**
      * <span style="background-color: #00ccff; font-weight: bold">New API</span>
-     * Returns the private use code for this locale.
-     */
-    public String getPrivateUse() {
-        return _extensions.getPrivateUse();
-    }
-
-
-    /**
-     * <span style="background-color: #00ccff; font-weight: bold">New API</span>
      * Returns the language tag string for this locale.  If this locale
      * has any fields which do not satisfy the language tag's syntax
      * requirement, they will be dropped from the result language tag.
@@ -229,7 +220,6 @@ public class Locale {
                 bldr.setExtension(e.getSingleton(), e.getValue());
             }
         }
-        bldr.setPrivateUse(tag.getPrivateUse());
 
         return bldr.create();
     }
@@ -310,7 +300,6 @@ public class Locale {
                     }
                 }
             }
-            setPrivateUse(loc.getPrivateUse());
             return this;
         }
 
@@ -344,8 +333,6 @@ public class Locale {
                     setExtension(e.getSingleton(), e.getValue());
                 }
             }
-            // private use
-            setPrivateUse(tag.getPrivateUse());
             return this;
         }
 
@@ -485,26 +472,6 @@ public class Locale {
         public Builder setLocaleKeyword(String key, String type) {
             try {
                 _locbld.setLocaleKeyword(key, type);
-            } catch (InvalidLocaleIdentifierException e) {
-                throw new IllegalArgumentException(e);
-            }
-            return this;
-        }
-
-        /**
-         * <span style="background-color: #00ccff; font-weight: bold">New API</span>
-         * Sets the private use code.  If privuse is the empty
-         * string, the private use code is removed.  Well-formed
-         * values are any series of fields of one to eight alphanums,
-         * separated by hyphen or underscore.
-         * @param privuse the private use
-         * @return this builder
-         * @thorws IllegalArgumentException if <code>privuse</code> is not well-formed
-         * @throws NullPointerException if <code>privuse</code> is null
-         */
-        public Builder setPrivateUse(String privuse) {
-            try {
-                _locbld.setPrivateUse(privuse);
             } catch (InvalidLocaleIdentifierException e) {
                 throw new IllegalArgumentException(e);
             }

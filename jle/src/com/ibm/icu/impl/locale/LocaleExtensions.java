@@ -252,4 +252,15 @@ public final class LocaleExtensions {
         }
     }
 
+    public static boolean isValidExtensionKey(char key) {
+        return AsciiUtil.isAlphaNumeric(key);
+    }
+
+    public static boolean isValidLocaleKey(String key) {
+        return (key.length() == 2) && AsciiUtil.isAlphaNumericString(key);
+    }
+
+    public static boolean isValidLocaleType(String type) {
+        return (type.length() >= 3) && (type.length() <= 8) && AsciiUtil.isAlphaNumericString(type);
+    }
 }

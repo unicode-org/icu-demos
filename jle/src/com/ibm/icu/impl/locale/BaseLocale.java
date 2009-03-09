@@ -17,7 +17,7 @@ public final class BaseLocale {
     private String _variant = "";
 
     private transient String _id = "";
-    private transient String _java6id = "";
+    private transient String _java6string = "";
     private transient BaseLocale _parent;
 
     private static final char SEPCHAR = '_';
@@ -63,7 +63,7 @@ public final class BaseLocale {
     }
 
     public String getJava6String() {
-        return _java6id;
+        return _java6string;
     }
 
     public String getLanguage() {
@@ -148,7 +148,7 @@ public final class BaseLocale {
 
         // Compose legacy JDK ID string if required
         if (languageLen == 0 && regionLen == 0 && variantLen > 0) {
-            _java6id = "";
+            _java6string = "";
         } else if (scriptLen > 0 || (regionLen == 0 && variantLen > 0)) {
             StringBuilder buf = new StringBuilder(_language);
             if (regionLen > 0) {
@@ -161,9 +161,9 @@ public final class BaseLocale {
                 buf.append(SEPCHAR);
                 buf.append(_variant);
             }
-            _java6id = buf.toString().intern();
+            _java6string = buf.toString().intern();
         } else {
-            _java6id = _id;
+            _java6string = _id;
         }
 
         // Resolve parent

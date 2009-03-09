@@ -312,16 +312,10 @@ public final class InternalLocaleBuilder {
                 }
                 break;
             case LOCALEKEY:
-                isValid = false;
-                if (value.length() == 2) {
-                    isValid = LanguageTag.isExtensionSubtag(value);
-                }
+                isValid = LocaleExtensions.isValidLocaleKey(value);
                 break;
             case LOCALETYPE:
-                isValid = false;
-                if (3 <= value.length() && value.length() <= 8) {
-                    isValid = LanguageTag.isExtensionSubtag(value);
-                }
+                isValid = LocaleExtensions.isValidLocaleType(value);
                 break;
             case EXTENSION:
                 subtags = value.split(LANGTAGSEP);
