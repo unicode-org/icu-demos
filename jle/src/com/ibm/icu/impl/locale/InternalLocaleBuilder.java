@@ -115,6 +115,10 @@ public final class InternalLocaleBuilder {
     }
 
     public InternalLocaleBuilder setExtension(char singleton, String value) throws InvalidLocaleIdentifierException {
+        if (!LocaleExtensions.isValidExtensionKey(singleton)) {
+            throw new InvalidLocaleIdentifierException("Bad extension key: " + singleton);
+        }
+
         // singleton char to lower case
         singleton = AsciiUtil.toLower(singleton);
 
