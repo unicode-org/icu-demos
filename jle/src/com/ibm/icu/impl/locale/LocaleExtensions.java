@@ -181,16 +181,16 @@ public final class LocaleExtensions {
         return null;
     }
 
-    public Set<String> getLocaleKeywordKeys() {
+    public Set<String> getLDMLKeywordKeys() {
         if (_kwdMap != null) {
             return Collections.unmodifiableSet(_kwdMap.keySet());
         }
         return null;
     }
 
-    public String getLocaleKeywordType(String key) {
+    public String getLDMLKeywordType(String key) {
         if (key == null) {
-            throw new NullPointerException("locale key must not be null");
+            throw new NullPointerException("LDML key must not be null");
         }
         if (_kwdMap != null) {
             return _kwdMap.get(key);
@@ -256,11 +256,11 @@ public final class LocaleExtensions {
         return AsciiUtil.isAlphaNumeric(key);
     }
 
-    public static boolean isValidLocaleKey(String key) {
+    public static boolean isValidLDMLKey(String key) {
         return (key.length() == 2) && AsciiUtil.isAlphaNumericString(key);
     }
 
-    public static boolean isValidLocaleType(String type) {
+    public static boolean isValidLDMLType(String type) {
         return (type.length() >= 3) && (type.length() <= 8) && AsciiUtil.isAlphaNumericString(type);
     }
 }

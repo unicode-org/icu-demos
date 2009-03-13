@@ -27,6 +27,7 @@ public final class LanguageTag {
     private static final int MINLEN = 2; // minimum length of a valid language tag
 
     private static final String SEP = "-";
+    private static final char SEPCHAR = '-';
     private static final String PRIVATEUSE = "x";
 
     public static String UNDETERMINED = "und";
@@ -77,203 +78,6 @@ public final class LanguageTag {
         {"in", "id"},
     };
 
-    private static final HashMap<String,String> THREE_TO_TWO = new HashMap<String, String>();
-
-    static {
-        String[] alpha3to2 = {
-            "aar", "aa",    // Afar
-            "abk", "ab",    // Abkhazian
-            "afr", "af",    // Afrikaans
-            "aka", "ak",    // Akan
-            "amh", "am",    // Amharic
-            "ara", "ar",    // Arabic
-            "arg", "an",    // Aragonese
-            "asm", "as",    // Assamese
-            "ava", "av",    // Avaric
-            "ave", "ae",    // Avestan
-            "aym", "ay",    // Aymara
-            "aze", "az",    // Azerbaijani
-            "bak", "ba",    // Bashkir
-            "bam", "bm",    // Bambara
-            "bel", "be",    // Belarusian
-            "ben", "bn",    // Bengali
-            "bih", "bh",    // Bihari
-            "bis", "bi",    // Bislama
-            "bod", "bo",    // Tibetan
-            "bos", "bs",    // Bosnian
-            "bre", "br",    // Breton
-            "bul", "bg",    // Bulgarian
-            "cat", "ca",    // Catalan; Valencian
-            "ces", "cs",    // Czech
-            "cha", "ch",    // Chamorro
-            "che", "ce",    // Chechen
-            "chu", "cu",    // Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic
-            "chv", "cv",    // Chuvash
-            "cor", "kw",    // Cornish
-            "cos", "co",    // Corsican
-            "cre", "cr",    // Cree
-            "cym", "cy",    // Welsh
-            "dan", "da",    // Danish
-            "deu", "de",    // German
-            "div", "dv",    // Divehi; Dhivehi; Maldivian
-            "dzo", "dz",    // Dzongkha
-            "ell", "el",    // Greek, Modern (1453-)
-            "eng", "en",    // English
-            "epo", "eo",    // Esperanto
-            "est", "et",    // Estonian
-            "eus", "eu",    // Basque
-            "ewe", "ee",    // Ewe
-            "fao", "fo",    // Faroese
-            "fas", "fa",    // Persian
-            "fij", "fj",    // Fijian
-            "fin", "fi",    // Finnish
-            "fra", "fr",    // French
-            "fry", "fy",    // Western Frisian
-            "ful", "ff",    // Fulah
-            "gla", "gd",    // Gaelic; Scottish Gaelic
-            "gle", "ga",    // Irish
-            "glg", "gl",    // Galician
-            "glv", "gv",    // Manx
-            "grn", "gn",    // Guarani
-            "guj", "gu",    // Gujarati
-            "hat", "ht",    // Haitian; Haitian Creole
-            "hau", "ha",    // Hausa
-            "heb", "he",    // Hebrew
-            "her", "hz",    // Herero
-            "hin", "hi",    // Hindi
-            "hmo", "ho",    // Hiri Motu
-            "hrv", "hr",    // Croatian
-            "hun", "hu",    // Hungarian
-            "hye", "hy",    // Armenian
-            "ibo", "ig",    // Igbo
-            "ido", "io",    // Ido
-            "iii", "ii",    // Sichuan Yi; Nuosu
-            "iku", "iu",    // Inuktitut
-            "ile", "ie",    // Interlingue; Occidental
-            "ina", "ia",    // Interlingua (International Auxiliary Language Association)
-            "ind", "id",    // Indonesian
-            "ipk", "ik",    // Inupiaq
-            "isl", "is",    // Icelandic
-            "ita", "it",    // Italian
-            "jav", "jv",    // Javanese
-            "jpn", "ja",    // Japanese
-            "kal", "kl",    // Kalaallisut; Greenlandic
-            "kan", "kn",    // Kannada
-            "kas", "ks",    // Kashmiri
-            "kat", "ka",    // Georgian
-            "kau", "kr",    // Kanuri
-            "kaz", "kk",    // Kazakh
-            "khm", "km",    // Central Khmer
-            "kik", "ki",    // Kikuyu; Gikuyu
-            "kin", "rw",    // Kinyarwanda
-            "kir", "ky",    // Kirghiz; Kyrgyz
-            "kom", "kv",    // Komi
-            "kon", "kg",    // Kongo
-            "kor", "ko",    // Korean
-            "kua", "kj",    // Kuanyama; Kwanyama
-            "kur", "ku",    // Kurdish
-            "lao", "lo",    // Lao
-            "lat", "la",    // Latin
-            "lav", "lv",    // Latvian
-            "lim", "li",    // Limburgan; Limburger; Limburgish
-            "lin", "ln",    // Lingala
-            "lit", "lt",    // Lithuanian
-            "ltz", "lb",    // Luxembourgish; Letzeburgesch
-            "lub", "lu",    // Luba-Katanga
-            "lug", "lg",    // Ganda
-            "mah", "mh",    // Marshallese
-            "mal", "ml",    // Malayalam
-            "mar", "mr",    // Marathi
-            "mkd", "mk",    // Macedonian
-            "mlg", "mg",    // Malagasy
-            "mlt", "mt",    // Maltese
-            "mon", "mn",    // Mongolian
-            "mri", "mi",    // Maori
-            "msa", "ms",    // Malay
-            "mya", "my",    // Burmese
-            "nau", "na",    // Nauru
-            "nav", "nv",    // Navajo; Navaho
-            "nbl", "nr",    // Ndebele, South; South Ndebele
-            "nde", "nd",    // Ndebele, North; North Ndebele
-            "ndo", "ng",    // Ndonga
-            "nep", "ne",    // Nepali
-            "nld", "nl",    // Dutch; Flemish
-            "nno", "nn",    // Norwegian Nynorsk; Nynorsk, Norwegian
-            "nob", "nb",    // Bokm&#x00E5;l, Norwegian; Norwegian Bokm&#x00E5;l
-            "nor", "no",    // Norwegian
-            "nya", "ny",    // Chichewa; Chewa; Nyanja
-            "oci", "oc",    // Occitan (post 1500); Proven&#x00E7;al
-            "oji", "oj",    // Ojibwa
-            "ori", "or",    // Oriya
-            "orm", "om",    // Oromo
-            "oss", "os",    // Ossetian; Ossetic
-            "pan", "pa",    // Panjabi; Punjabi
-            "pli", "pi",    // Pali
-            "pol", "pl",    // Polish
-            "por", "pt",    // Portuguese
-            "pus", "ps",    // Pushto; Pashto
-            "que", "qu",    // Quechua
-            "roh", "rm",    // Romansh
-            "ron", "ro",    // Romanian; Moldavian; Moldovan
-            "run", "rn",    // Rundi
-            "rus", "ru",    // Russian
-            "sag", "sg",    // Sango
-            "san", "sa",    // Sanskrit
-            "sin", "si",    // Sinhala; Sinhalese
-            "slk", "sk",    // Slovak
-            "slv", "sl",    // Slovenian
-            "sme", "se",    // Northern Sami
-            "smo", "sm",    // Samoan
-            "sna", "sn",    // Shona
-            "snd", "sd",    // Sindhi
-            "som", "so",    // Somali
-            "sot", "st",    // Sotho, Southern
-            "spa", "es",    // Spanish; Castilian
-            "sqi", "sq",    // Albanian
-            "srd", "sc",    // Sardinian
-            "srp", "sr",    // Serbian
-            "ssw", "ss",    // Swati
-            "sun", "su",    // Sundanese
-            "swa", "sw",    // Swahili
-            "swe", "sv",    // Swedish
-            "tah", "ty",    // Tahitian
-            "tam", "ta",    // Tamil
-            "tat", "tt",    // Tatar
-            "tel", "te",    // Telugu
-            "tgk", "tg",    // Tajik
-            "tgl", "tl",    // Tagalog
-            "tha", "th",    // Thai
-            "tir", "ti",    // Tigrinya
-            "ton", "to",    // Tonga (Tonga Islands)
-            "tsn", "tn",    // Tswana
-            "tso", "ts",    // Tsonga
-            "tuk", "tk",    // Turkmen
-            "tur", "tr",    // Turkish
-            "twi", "tw",    // Twi
-            "uig", "ug",    // Uighur; Uyghur
-            "ukr", "uk",    // Ukrainian
-            "urd", "ur",    // Urdu
-            "uzb", "uz",    // Uzbek
-            "ven", "ve",    // Venda
-            "vie", "vi",    // Vietnamese
-            "vol", "vo",    // Volap&#x00FC;k
-            "wln", "wa",    // Walloon
-            "wol", "wo",    // Wolof
-            "xho", "xh",    // Xhosa
-            "yid", "yi",    // Yiddish
-            "yor", "yo",    // Yoruba
-            "zha", "za",    // Zhuang; Chuang
-            "zho", "zh",    // Chinese
-            "zul", "zu",    // Zulu
-        };
-        int i = 0;
-        while (i < alpha3to2.length) {
-            THREE_TO_TWO.put(alpha3to2[i], alpha3to2[i+1]);
-            i += 2;
-        }
-    }
-
-
     private LanguageTag(String tag) {
         _languageTag = tag;
     }
@@ -288,22 +92,25 @@ public final class LanguageTag {
     private static final int EXTV = 0x0040;
     private static final int PRIV = 0x0080;
 
-    public static LanguageTag parse(String tag) throws InvalidLocaleIdentifierException {
-        if (tag.length() < MINLEN) {
-            throw new InvalidLocaleIdentifierException("The specified tag '"
-                    + tag + "' is too short");
+    public static LanguageTag parse(String langtag) throws LocaleSyntaxException {
+        if (langtag.length() < MINLEN) {
+            throw new LocaleSyntaxException("The specified tag '"
+                    + langtag + "' is too short");
         }
 
-        if (tag.endsWith(SEP)) {
+        if (langtag.endsWith(SEP)) {
             // This code utilizes String#split, which drops off the last empty segment.
             // We need to check if the tag ends with '-' here.
-            throw new InvalidLocaleIdentifierException("The specified tag '"
-                    + tag + "' ends with " + SEP);
+            int erridx = langtag.length() - 1;
+            while (erridx - 1 >= 0 && langtag.charAt(erridx - 1) != SEPCHAR) {
+                erridx--;
+            }
+            throw new LocaleSyntaxException("The specified tag '"
+                    + langtag + "' ends with " + SEP, erridx);
         }
 
+        String tag = AsciiUtil.toLowerString(langtag);
         LanguageTag t = new LanguageTag(tag);
-
-        tag = AsciiUtil.toLowerString(tag);
 
         // Check if the tag is grandfathered
         if (GRANDFATHERED.containsKey(tag)) {
@@ -329,13 +136,16 @@ public final class LanguageTag {
         String extSingleton = null;
         StringBuilder extBuf = null;
         int next = LANG | PRIV;
+        String errorMsg = null;
+
+        PARSE:
         while (true) {
             if (idx >= subtags.length) {
                 break;
             }
             if ((next & LANG) != 0) {
                 if (isLanguageSubtag(subtags[idx])) {
-                    t._language = getShortLanguageCode(subtags[idx++]);
+                    t._language = subtags[idx++];
                     next = EXTL | SCRT | REGN | VART | EXTS | PRIV;
                     continue;
                 }
@@ -382,9 +192,10 @@ public final class LanguageTag {
                 if (isExtensionSingleton(subtags[idx])) {
                     if (extSingleton != null) {
                         if (extBuf == null) {
-                            throw new InvalidLocaleIdentifierException("The specified tag '"
-                                    + tag + "' contains an incomplete extension: "
-                                    + extSingleton);
+                            errorMsg = "The specified tag '"
+                                        + tag + "' contains an incomplete extension: "
+                                        + extSingleton;
+                            break PARSE;
                         }
                         // Emit the previous extension key/value pair
                         if (t._extensions == null) {
@@ -418,9 +229,10 @@ public final class LanguageTag {
                     idx++;
                     for (boolean bFirst = true ; idx < subtags.length; idx++) {
                         if (!isPrivateuseValueSubtag(subtags[idx])) {
-                            throw new InvalidLocaleIdentifierException("The specified tag '"
-                                    + tag + "' contains an illegal private use subtag: "
-                                    + (subtags[idx].length() == 0 ? "<empty>" : subtags[idx]));
+                            errorMsg = "The specified tag '"
+                                        + langtag + "' contains an illegal private use subtag: "
+                                        + (subtags[idx].length() == 0 ? "<empty>" : subtags[idx]);
+                            break PARSE;
                         }
                         if (bFirst) {
                             bFirst = false;
@@ -432,34 +244,49 @@ public final class LanguageTag {
                     t._privateuse = puBuf.toString();
                     if (t._privateuse.length() == 0) {
                         // Empty privateuse value
-                        throw new InvalidLocaleIdentifierException("The specified tag '"
-                                + tag + "' contains an empty private use subtag");
+                        errorMsg = "The specified tag '"
+                                    + langtag + "' contains an empty private use subtag";
+                        break PARSE;
                     }
                     break;
                 }
             }
             // If we fell through here, it means this subtag is illegal
-            throw new InvalidLocaleIdentifierException("The specified tag '" + tag
-                    + "' contains an illegal subtag: "
-                    + (subtags[idx].length() == 0 ? "<empty>" : subtags[idx]));
+            errorMsg = "The specified tag '" + langtag
+                        + "' contains an illegal subtag: "
+                        + (subtags[idx].length() == 0 ? "<empty>" : subtags[idx]);
+            break PARSE;
         }
 
-        if (extSingleton != null) {
-            if (extBuf == null) {
-                // extension singleton without following extension value
-                throw new InvalidLocaleIdentifierException("The specified tag '"
-                        + tag + "' contains an incomplete extension: "
-                        + extSingleton);
+        if (errorMsg == null) {
+            if (extSingleton != null) {
+                if (extBuf == null) {
+                    // extension singleton without following extension value
+                    errorMsg = "The specified tag '"
+                                + langtag + "' contains an incomplete extension: "
+                                + extSingleton;
+                } else {
+                    // Emit the last extension key/value pair
+                    if (t._extensions == null) {
+                        t._extensions = new TreeSet<Extension>();
+                    }
+                    Extension e = new Extension(extSingleton.charAt(0), extBuf.toString());
+                    t._extensions.add(e);
+                }
             }
-            // Emit the last extension key/value pair
-            if (t._extensions == null) {
-                t._extensions = new TreeSet<Extension>();
+        }
+
+        if (errorMsg != null) {
+            // restore the original string index
+            int errIndex = 0;
+            for (int i = 0; i < idx; i++) {
+                errIndex += (subtags[i].length() + 1);
             }
-            Extension e = new Extension(extSingleton.charAt(0), extBuf.toString());
-            t._extensions.add(e);
+            throw new LocaleSyntaxException(errorMsg, errIndex);
         }
 
         return t;
+    
     }
 
     public String getTag() {
@@ -591,16 +418,6 @@ public final class LanguageTag {
         return (s.length() >= 1) && (s.length() <= 8) && AsciiUtil.isAlphaNumericString(s);
     }
 
-    public static String getShortLanguageCode(String code) {
-        if (code.length() == 3) {
-            String code3 = AsciiUtil.toLowerString(code);
-            String code2 = THREE_TO_TWO.get(code3);
-            if (code2 != null)
-                return code2;
-        }
-        return code;
-    }
-
     /*
      * Language tag extension key/value container
      */
@@ -642,7 +459,7 @@ public final class LanguageTag {
                         break;
                     }
                 }
-                buf.append(getShortLanguageCode(language));
+                buf.append(language);
             } else {
                 buf.append(UNDETERMINED);
             }
