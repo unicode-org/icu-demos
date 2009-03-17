@@ -4,7 +4,7 @@
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
-package com.ibm.icu.locale;
+package com.ibm.icu.impl.locale;
 
 public class LocaleSyntaxException extends Exception {
 

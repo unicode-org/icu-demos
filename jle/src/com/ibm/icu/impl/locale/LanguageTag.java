@@ -203,6 +203,18 @@ public final class LanguageTag {
                         }
                         Extension e = new Extension(extSingleton.charAt(0), extBuf.toString());
                         t._extensions.add(e);
+                    } else {
+                        if (t._extensions != null) {
+                            char extChar = subtags[idx].charAt(0);
+                            for (Extension e : t._extensions) {
+                                if (e.getSingleton() == extChar) {
+                                    errorMsg = "The specified tag '"
+                                                + tag + "' contains duplicated extension: "
+                                                + extChar;
+                                    break PARSE;
+                                }
+                            }
+                        }
                     }
                     extSingleton = subtags[idx++];
                     extBuf = null; // Clear the extension value buffer

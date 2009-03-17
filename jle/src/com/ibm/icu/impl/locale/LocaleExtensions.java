@@ -176,7 +176,7 @@ public final class LocaleExtensions {
 
     public String getExtensionValue(char key) {
         if (_extMap != null) {
-            return _extMap.get(Character.valueOf(key));
+            return _extMap.get(Character.valueOf(AsciiUtil.toLower(key)));
         }
         return null;
     }
@@ -193,7 +193,7 @@ public final class LocaleExtensions {
             throw new NullPointerException("LDML key must not be null");
         }
         if (_kwdMap != null) {
-            return _kwdMap.get(key);
+            return _kwdMap.get(AsciiUtil.toLowerString(key));
         }
         return null;
     }
