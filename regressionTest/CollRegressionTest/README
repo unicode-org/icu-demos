@@ -1,0 +1,38 @@
+Copyright (c) 2009 IBM
+
+CollRegressionTest
+------------------
+
+This program is use to test collation key in ICU between different versions of ICU.
+It was originally written in c and included here is a java port that provides the
+same test.
+
+Given a test data file containing various Unicode codepoints, this program will cycle
+through all the available locales and all the combinations for a collator and report
+the collation key to a text file.
+
+After the test has been ran, you can run the parsing script over the results to determine
+if there are any differences in collation key between different versions of ICU or between
+ICU4C and ICU4J.
+
+Files:
+
+collRegTest.dat-----------------Test data file containing the actual Unicode codepoints
+collRegData.txt-----------------File containing readable value of Unicode codepoints of the test data
+parseCollationResults.pl--------Perl script to parse the results
+c/
+c/collationRegressionTest.cpp---Program to run against ICU4C
+j/
+j/src/CollationRegTest.java-----Program to run against ICU4J
+
+Sample usage:
+After successfully compiling the program in c, run
+./collationRegressionTest -d result_dir -f collRegTest.dat
+
+You should use the same result directory for each version of ICU you are running this test
+against.
+
+After running the test, you can parse the results with the following command
+./parseCollationResults.pl result_dir result_diff.log result_same.log collRegData.txt
+
+
