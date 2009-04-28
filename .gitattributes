@@ -167,12 +167,14 @@ locexp/resource/zh_SG/dp.gif -text
 locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
 regressionTest/CollRegressionTest/README -text
-regressionTest/CollRegressionTest/c/Makefile -text
 regressionTest/CollRegressionTest/c/collationRegressionTest.cpp -text
 regressionTest/CollRegressionTest/collRegData.txt -text
 regressionTest/CollRegressionTest/collRegTest.dat -text
 regressionTest/CollRegressionTest/j/src/CollationRegTest.java -text
 regressionTest/CollRegressionTest/parseCollationResults.pl -text
+regressionTest/StrsrchRegressionTest/README -text
+regressionTest/StrsrchRegressionTest/c/strsrchRegressionTest.cpp -text
+regressionTest/StrsrchRegressionTest/parseStrsrchResults.pl -text
 test/testdata/uni-text.bin -text
 ubrowse/icons/all-x.gif -text
 ubrowse/icons/all.gif -text

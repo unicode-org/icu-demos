@@ -1,0 +1,33 @@
+Copyright (c) 2009 IBM
+
+StrsrchRegressionTest
+---------------------
+
+This program is use to test string search results in ICU between different versions of ICU.
+Currently, there is only a c version of this program.
+
+Given a text file in Unicode codepoints, this program will cycle through all the available
+locales and specific collator settings and report the results into a text file.
+
+The program will search for a pattern, which is the first line of the text file, in the text
+file.
+
+After the test has been ran, you can run the parsing script over the results to determine
+if there are any differences in collation key between different versions of ICU.
+
+
+Note: You can also use this test to test against different string search implementation
+(e.g. linear vs. Boyer-Moore)
+
+Files:
+
+parseStrsrchResults.pl--------Perl script to parse the results.
+c/
+c/strsrchRegressionTest.cpp---Program to run on ICU4C.
+
+Sample usage:
+After successfully compiling the program in c, run
+./strsrchRegressionTest -d result_dir -f text_file
+
+After running the test, you can parse the results with the following command
+./parseStrsrchResults.pl result_dir result_log
