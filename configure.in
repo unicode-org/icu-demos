@@ -53,6 +53,8 @@ dumpdat/Makefile \
 rtfcvrt/Makefile \
 XMLConverter/Makefile \
 obsolete/Makefile \
+regressionTest/CollRegressionTest/c/Makefile \
+regressionTest/StrsrchRegressionTest/c/Makefile \
 test/Makefile \
 test/testdata/Makefile \
 test/obstest/Makefile])
