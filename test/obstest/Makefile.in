@@ -16,6 +16,10 @@ subdir = test/obstest
 
 include $(top_builddir)/icuapps.mk
 
+# for the LDLIBRARYPATH_ENVVAR
+include $(shell @ICU_CONFIG@ --incfile)
+
+
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
 
@@ -66,9 +70,10 @@ clean-local:
 
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
+    
 
-check-local:
-	$(shell @ICU_CONFIG@ --invoke=./$(TARGET))
+check-local: $(TARGET)
+	$(LDLIBRARYPATH_ENVVAR)=../../obsolete:$(libdir):$$$(LDLIBRARYPATH_ENVVAR) ./$(TARGET)
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \

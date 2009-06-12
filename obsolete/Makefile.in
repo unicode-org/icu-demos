@@ -15,13 +15,13 @@ top_srcdir=@top_srcdir@
 top_builddir = ..
 subdir = obsolete
 
-include $(top_builddir)/icuapps.mk
-
--include $(shell $(ICU_CONFIG) --incfile) 
-
 CXXFLAGS += $(SHAREDLIBCXXFLAGS)
 CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
 CFLAGS += $(SHAREDLIBCFLAGS)
+
+include $(top_builddir)/icuapps.mk
+
+-include $(shell $(ICU_CONFIG) --incfile) 
 
 CPPFLAGS += -I$(ICU_SOURCE)/common -I$(srcdir)
 
@@ -49,7 +49,7 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(FINAL_SO_TARGET)
+all-local: $(FINAL_SO_TARGET) $(SO_TARGET)
 
 install-local: all-local install-headers install-library
 
@@ -85,7 +85,7 @@ dist-local:
 
 clean-local:
 	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
-	rm -f $(OBJECTS) $(SO_TARGET)
+	rm -f $(OBJECTS) $(SO_TARGET) $(FINAL_SO_TARGET)
 
 distclean-local: clean-local
 	rm -f Makefile 
@@ -100,6 +100,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licu-uc -lusort' ...
 
+$(SO_TARGET): $(FINAL_SO_TARGET)
+	ln -s $^ $@
 
 $(FINAL_SO_TARGET) : $(OBJECTS)
 	$(SHLIB.cc) -o $@ $^ $(ICULIBS)

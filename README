@@ -1,11 +1,11 @@
-Copyright (c) 1998-2006 IBM and Others.
+Copyright (c) 1998-2009 IBM and Others.
 I C U  -  A P P S
 -----------------
 
  This package contains sample applications built using the ICU. For
 more information on the ICU:
 
- URL:   http://ibm.com/software/globalization/icu/
+ URL:   http://icu-project.org/
 
 
 
@@ -24,12 +24,13 @@ BUILDING
       prefix used to build the ICU, which can be set with the
      '--prefix=' option to it's ./configure.
 
-  2. (Run 'autoconf' if there is no configure script.)
-     Run the ./configure script in the icuapps directory.  You may need
+  2. icu-config should be on your PATH.
+  
+  3. Run the ./configure script in the icuapps directory.  You will need
      to supply the same '--prefix=XXX' argument that was passed to the
      ICU.
 
-  3. Type 'make' in the icuapps, or 'make install' if you wish.
+  4. Type 'make' in the icuapps, or 'make install' if you wish.
 
  Example:
 
@@ -47,11 +48,31 @@ BUILDING
 
 
 *** Win32 Instructions
-  
-  1. Project files to be created. 
-  2. For now, you may create your own project file and include
-     the ICU include and lib directories.
+  1. build ICU in an 'icu' directory
+  2. build icuapps in an 'icuapps' directory at the same level as 'icu'
 
+RUNNING CGIS
+------------
+
+  Windows systems:  
+    Put the CGIs  and ICU DLLs in the CGI-BIN directory.
+  
+  UNIX type systems:
+    You will need to make sure ICU libraries are on the path, if ICU was not built statically.
+    One option is to populate the cgi-bin directory with 'wrapper' scripts.  Create copies or 
+    symlinks of this script with the name of the cgis (locexp, ubrowse, etc).  Change the 'ICU' 
+    variable to point at the base of the installed ICU. (the prefix).
+
+----------------------------
+#!/bin/sh
+# wrapper script.
+
+ME=`basename $0`
+ICU=/installed/icu
+cd ${ICU}/bin
+export DYLD_LIBRARY_PATH=${ICU}/lib:${DYLD_LIBRARY_PATH}
+exec ${ICU}/bin/${ME}
+----------------------------
 
 ==========================================
 ==========================================
