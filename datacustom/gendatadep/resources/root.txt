@@ -1,6 +1,6 @@
 // ***************************************************************************
 // *
-// * Copyright (C) 2006-2008 International Business Machines Corporation
+// * Copyright (C) 2006-2009 International Business Machines Corporation
 // * and others.  All Rights Reserved.
 // *
 // ***************************************************************************
@@ -202,6 +202,19 @@ root {
     metazoneInfo.res { "CLDR timezone information" }
     likelySubtags.res { "CLDR locale identifier mapping information" }
     plurals.res { "CLDR plural grammer rule information" }
+    numberingSystems.res { "CLDR numbering systems information" }
+    rfc3491.spp { "RFC 3491 string prep profile" }
+    rfc3530cs.spp { "RFC 3530 case sensitive string prep profile" }
+    rfc3530csci.spp { "RFC 3530 case insensitive string prep profile" }
+    rfc3530mixp.spp { "RFC 3530 mixed string prep profile" }
+    rfc3722.spp { "RFC 3722 string prep profile" }
+    rfc3920node.spp { "RFC 3920 node identifiers string prep profile" }
+    rfc3920res.spp { "RFC 3920 resource identifiers string prep profile" }
+    rfc4011.spp { "RFC 4011 string prep profile" }
+    rfc4013.spp { "RFC 4013 string prep profile" }
+    rfc4505.spp { "RFC 4505 string prep profile" }
+    rfc4518.spp { "RFC 4518 case sensitive string prep profile" }
+    rfc4518ci.spp { "RFC 4518 case insensitive string prep profile" }
     
     //.cnv {""}
     // The additional stuff that is not in a standard ICU4C build.
