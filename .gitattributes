@@ -177,6 +177,16 @@ regressionTest/StrsrchRegressionTest/README -text
 regressionTest/StrsrchRegressionTest/c/Makefile.in -text
 regressionTest/StrsrchRegressionTest/c/strsrchRegressionTest.cpp -text
 regressionTest/StrsrchRegressionTest/parseStrsrchResults.pl -text
+richedit/classes/src/com/ibm/richtext/awtui/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/demo/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/print/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/styledtext/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/swingui/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/textapps/resources/unicode.arabic.red -text
+richedit/classes/src/com/ibm/richtext/textapps/resources/unicode.hebrew.red -text
+richedit/classes/src/com/ibm/richtext/textformat/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/textlayout/attributes/package.html svneol=native#text/html
+richedit/classes/src/com/ibm/richtext/textpanel/package.html svneol=native#text/html
 test/testdata/uni-text.bin -text
 ubrowse/icons/all-x.gif -text
 ubrowse/icons/all.gif -text
