@@ -1,5 +1,6 @@
 * text=auto !eol
 CSharp/conversion/App.ico -text
+WinTZ/src/com/ibm/icu/dev/tools/wintz/TimeZone.reg -text
 XMLConverter/samples/a-ebc-ascii.xml -text svneol=unset#text/xml
 XMLConverter/samples/a-eucjp-ascii.xml -text svneol=unset#text/xml
 XMLConverter/samples/a-utf8.xml -text svneol=unset#text/xml

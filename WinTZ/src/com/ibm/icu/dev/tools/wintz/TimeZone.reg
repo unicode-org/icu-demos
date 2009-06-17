@@ -1,0 +1,1168 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Afghanistan Standard Time]
+"TZI"=hex:f2,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-460"
+"MUI_Dlt"="@tzres.dll,-461"
+"MUI_Std"="@tzres.dll,-462"
+"Display"="(GMT+04:30) Kabul"
+"Dlt"="Afghanistan Daylight Time"
+"Std"="Afghanistan Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Alaskan Standard Time]
+"TZI"=hex:1c,02,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-220"
+"MUI_Dlt"="@tzres.dll,-221"
+"MUI_Std"="@tzres.dll,-222"
+"Display"="(GMT-09:00) Alaska"
+"Dlt"="Alaskan Daylight Time"
+"Std"="Alaskan Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Alaskan Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+"2006"=hex:1c,02,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:1c,02,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Arab Standard Time]
+"TZI"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-390"
+"MUI_Dlt"="@tzres.dll,-391"
+"MUI_Std"="@tzres.dll,-392"
+"Display"="(GMT+03:00) Kuwait, Riyadh"
+"Dlt"="Arab Daylight Time"
+"Std"="Arab Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Arabian Standard Time]
+"TZI"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-440"
+"MUI_Dlt"="@tzres.dll,-441"
+"MUI_Std"="@tzres.dll,-442"
+"Display"="(GMT+04:00) Abu Dhabi, Muscat"
+"Dlt"="Arabian Daylight Time"
+"Std"="Arabian Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Arabic Standard Time]
+"TZI"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-400"
+"MUI_Dlt"="@tzres.dll,-401"
+"MUI_Std"="@tzres.dll,-402"
+"Display"="(GMT+03:00) Baghdad"
+"Dlt"="Arabic Daylight Time"
+"Std"="Arabic Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Arabic Standard Time\Dynamic DST]
+"2006"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,01,00,04,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,03,00,00,00,00,00,00,00
+"2007"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,01,00,01,00,04,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,03,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d8
+"2008"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Argentina Standard Time]
+"MUI_Display"="@tzres.dll,-840"
+"TZI"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,06,00,02,00,17,00,3b,\
+  00,3b,00,e7,03,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"Std"="Argentina Standard Time"
+"MUI_Std"="@tzres.dll,-842"
+"Dlt"="Argentina Daylight Time"
+"MUI_Dlt"="@tzres.dll,-841"
+"Display"="(GMT-03:00) Buenos Aires"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Argentina Standard Time\Dynamic DST]
+"2006"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"2007"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,01,00,01,00,01,00,00,00,\
+  00,00,00,00,00,00,00,00,0c,00,00,00,05,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d9
+"2008"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,03,00,00,00,\
+  00,00,00,00,00,00,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,06,00,02,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Atlantic Standard Time]
+"TZI"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-80"
+"MUI_Dlt"="@tzres.dll,-81"
+"MUI_Std"="@tzres.dll,-82"
+"Display"="(GMT-04:00) Atlantic Time (Canada)"
+"Dlt"="Atlantic Daylight Time"
+"Std"="Atlantic Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Atlantic Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+"2006"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\AUS Central Standard Time]
+"TZI"=hex:c6,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-650"
+"MUI_Dlt"="@tzres.dll,-651"
+"MUI_Std"="@tzres.dll,-652"
+"Display"="(GMT+09:30) Darwin"
+"Dlt"="AUS Central Daylight Time"
+"Std"="AUS Central Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\AUS Eastern Standard Time]
+"TZI"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,00,\
+  00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-670"
+"MUI_Dlt"="@tzres.dll,-671"
+"MUI_Std"="@tzres.dll,-672"
+"Display"="(GMT+10:00) Canberra, Melbourne, Sydney"
+"Dlt"="AUS Eastern Daylight Time"
+"Std"="AUS Eastern Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\AUS Eastern Standard Time\Dynamic DST]
+"2007"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d8
+"2008"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Azerbaijan Standard Time]
+"TZI"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,05,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,04,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-447"
+"MUI_Dlt"="@tzres.dll,-448"
+"MUI_Std"="@tzres.dll,-449"
+"Display"="(GMT+04:00) Baku"
+"Dlt"="Azerbaijan Daylight Time"
+"Std"="Azerbaijan Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Azores Standard Time]
+"TZI"=hex:3c,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-10"
+"MUI_Dlt"="@tzres.dll,-11"
+"MUI_Std"="@tzres.dll,-12"
+"Display"="(GMT-01:00) Azores"
+"Dlt"="Azores Daylight Time"
+"Std"="Azores Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Canada Central Standard Time]
+"TZI"=hex:68,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-140"
+"MUI_Dlt"="@tzres.dll,-141"
+"MUI_Std"="@tzres.dll,-142"
+"Display"="(GMT-06:00) Saskatchewan"
+"Dlt"="Canada Central Daylight Time"
+"Std"="Canada Central Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Cape Verde Standard Time]
+"TZI"=hex:3c,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-20"
+"MUI_Dlt"="@tzres.dll,-21"
+"MUI_Std"="@tzres.dll,-22"
+"Display"="(GMT-01:00) Cape Verde Is."
+"Dlt"="Cape Verde Daylight Time"
+"Std"="Cape Verde Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Caucasus Standard Time]
+"TZI"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-450"
+"MUI_Dlt"="@tzres.dll,-451"
+"MUI_Std"="@tzres.dll,-452"
+"Display"="(GMT+04:00) Yerevan"
+"Dlt"="Caucasus Daylight Time"
+"Std"="Caucasus Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Cen. Australia Standard Time]
+"TZI"=hex:c6,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,00,\
+  00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-660"
+"MUI_Dlt"="@tzres.dll,-661"
+"MUI_Std"="@tzres.dll,-662"
+"Display"="(GMT+09:30) Adelaide"
+"Dlt"="Cen. Australia Daylight Time"
+"Std"="Cen. Australia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Cen. Australia Standard Time\Dynamic DST]
+"2007"=hex:c6,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d8
+"2008"=hex:c6,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central America Standard Time]
+"TZI"=hex:68,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-150"
+"MUI_Dlt"="@tzres.dll,-151"
+"MUI_Std"="@tzres.dll,-152"
+"Display"="(GMT-06:00) Central America"
+"Dlt"="Central America Daylight Time"
+"Std"="Central America Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Asia Standard Time]
+"TZI"=hex:98,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-510"
+"MUI_Dlt"="@tzres.dll,-511"
+"MUI_Std"="@tzres.dll,-512"
+"Display"="(GMT+06:00) Astana, Dhaka"
+"Dlt"="Central Asia Daylight Time"
+"Std"="Central Asia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Brazilian Standard Time]
+"TZI"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,06,00,02,00,17,00,3b,\
+  00,3b,00,e7,03,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"MUI_Display"="@tzres.dll,-103"
+"MUI_Dlt"="@tzres.dll,-104"
+"MUI_Std"="@tzres.dll,-105"
+"Display"="(GMT-04:00) Manaus"
+"Dlt"="Central Brazilian Daylight Time"
+"Std"="Central Brazilian Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Brazilian Standard Time\Dynamic DST]
+"2006"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,0b,00,00,00,01,00,00,00,00,00,00,00,00,00
+"2007"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,00,00,05,00,00,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,02,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d9
+"2008"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,00,00,03,00,00,00,\
+  00,00,00,00,00,00,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,06,00,02,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Europe Standard Time]
+"TZI"=hex:c4,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-280"
+"MUI_Dlt"="@tzres.dll,-281"
+"MUI_Std"="@tzres.dll,-282"
+"Display"="(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague"
+"Dlt"="Central Europe Daylight Time"
+"Std"="Central Europe Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central European Standard Time]
+"TZI"=hex:c4,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-290"
+"MUI_Dlt"="@tzres.dll,-291"
+"MUI_Std"="@tzres.dll,-292"
+"Display"="(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb"
+"Dlt"="Central European Daylight Time"
+"Std"="Central European Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Pacific Standard Time]
+"TZI"=hex:6c,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-720"
+"MUI_Dlt"="@tzres.dll,-721"
+"MUI_Std"="@tzres.dll,-722"
+"Display"="(GMT+11:00) Magadan, Solomon Is., New Caledonia"
+"Dlt"="Central Pacific Daylight Time"
+"Std"="Central Pacific Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Standard Time]
+"TZI"=hex:68,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-160"
+"MUI_Dlt"="@tzres.dll,-161"
+"MUI_Std"="@tzres.dll,-162"
+"Display"="(GMT-06:00) Central Time (US & Canada)"
+"Dlt"="Central Daylight Time"
+"Std"="Central Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+"2006"=hex:68,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:68,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Central Standard Time (Mexico)]
+"TZI"=hex:68,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-170"
+"MUI_Dlt"="@tzres.dll,-171"
+"MUI_Std"="@tzres.dll,-172"
+"Display"="(GMT-06:00) Guadalajara, Mexico City, Monterrey"
+"Dlt"="Central Daylight Time (Mexico)"
+"Std"="Central Standard Time (Mexico)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\China Standard Time]
+"TZI"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-570"
+"MUI_Dlt"="@tzres.dll,-571"
+"MUI_Std"="@tzres.dll,-572"
+"Display"="(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi"
+"Dlt"="China Daylight Time"
+"Std"="China Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Dateline Standard Time]
+"TZI"=hex:d0,02,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-250"
+"MUI_Dlt"="@tzres.dll,-251"
+"MUI_Std"="@tzres.dll,-252"
+"Display"="(GMT-12:00) International Date Line West"
+"Dlt"="Dateline Daylight Time"
+"Std"="Dateline Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\E. Africa Standard Time]
+"TZI"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-410"
+"MUI_Dlt"="@tzres.dll,-411"
+"MUI_Std"="@tzres.dll,-412"
+"Display"="(GMT+03:00) Nairobi"
+"Dlt"="E. Africa Daylight Time"
+"Std"="E. Africa Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\E. Australia Standard Time]
+"TZI"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-680"
+"MUI_Dlt"="@tzres.dll,-681"
+"MUI_Std"="@tzres.dll,-682"
+"Display"="(GMT+10:00) Brisbane"
+"Dlt"="E. Australia Daylight Time"
+"Std"="E. Australia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\E. Europe Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-330"
+"MUI_Dlt"="@tzres.dll,-331"
+"MUI_Std"="@tzres.dll,-332"
+"Display"="(GMT+02:00) Minsk"
+"Dlt"="E. Europe Daylight Time"
+"Std"="E. Europe Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\E. South America Standard Time]
+"TZI"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,06,00,02,00,17,00,3b,\
+  00,3b,00,e7,03,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"MUI_Display"="@tzres.dll,-40"
+"MUI_Dlt"="@tzres.dll,-41"
+"MUI_Std"="@tzres.dll,-42"
+"Display"="(GMT-03:00) Brasilia"
+"Dlt"="E. South America Daylight Time"
+"Std"="E. South America Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\E. South America Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d9
+"2006"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,0b,00,00,00,01,00,00,00,00,00,00,00,00,00
+"2007"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,00,00,05,00,00,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,02,00,00,00,00,00,00,00,00,00
+"2008"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,00,00,03,00,00,00,\
+  00,00,00,00,00,00,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,02,00,06,00,02,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,0a,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Eastern Standard Time]
+"TZI"=hex:2c,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-110"
+"MUI_Dlt"="@tzres.dll,-111"
+"MUI_Std"="@tzres.dll,-112"
+"Display"="(GMT-05:00) Eastern Time (US & Canada)"
+"Dlt"="Eastern Daylight Time"
+"Std"="Eastern Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Eastern Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+"2006"=hex:2c,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:2c,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Egypt Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,04,00,05,00,17,00,3b,\
+  00,3b,00,e7,03,00,00,04,00,04,00,04,00,17,00,3b,00,3b,00,e7,03
+"MUI_Display"="@tzres.dll,-340"
+"MUI_Dlt"="@tzres.dll,-341"
+"MUI_Std"="@tzres.dll,-342"
+"Display"="(GMT+02:00) Cairo"
+"Dlt"="Egypt Daylight Time"
+"Std"="Egypt Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Egypt Standard Time\Dynamic DST]
+"2006"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,04,00,03,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,04,00,05,00,05,00,00,00,00,00,00,00,00,00
+"2007"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,04,00,01,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,04,00,04,00,05,00,17,00,3b,00,3b,00,e7,03
+"FirstEntry"=dword:000007d5
+"LastEntry"=dword:000007da
+"2008"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,08,00,04,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,04,00,04,00,05,00,17,00,3b,00,3b,00,e7,03
+"2005"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,04,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,04,00,05,00,05,00,00,00,00,00,00,00,00,00
+"2010"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,04,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,04,00,04,00,05,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,04,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,04,00,04,00,04,00,17,00,3b,00,3b,00,e7,03
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Ekaterinburg Standard Time]
+"TZI"=hex:d4,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-470"
+"MUI_Dlt"="@tzres.dll,-471"
+"MUI_Std"="@tzres.dll,-472"
+"Display"="(GMT+05:00) Ekaterinburg"
+"Dlt"="Ekaterinburg Daylight Time"
+"Std"="Ekaterinburg Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Fiji Standard Time]
+"TZI"=hex:30,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-730"
+"MUI_Dlt"="@tzres.dll,-731"
+"MUI_Std"="@tzres.dll,-732"
+"Display"="(GMT+12:00) Fiji, Kamchatka, Marshall Is."
+"Dlt"="Fiji Daylight Time"
+"Std"="Fiji Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\FLE Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,04,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,03,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-350"
+"MUI_Dlt"="@tzres.dll,-351"
+"MUI_Std"="@tzres.dll,-352"
+"Display"="(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius"
+"Dlt"="FLE Daylight Time"
+"Std"="FLE Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Georgian Standard Time]
+"TZI"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-433"
+"MUI_Dlt"="@tzres.dll,-434"
+"MUI_Std"="@tzres.dll,-435"
+"Display"="(GMT+03:00) Tbilisi"
+"Dlt"="Georgian Daylight Time"
+"Std"="Georgian Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\GMT Standard Time]
+"TZI"=hex:00,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,01,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-260"
+"MUI_Dlt"="@tzres.dll,-261"
+"MUI_Std"="@tzres.dll,-262"
+"Display"="(GMT) Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London"
+"Dlt"="GMT Daylight Time"
+"Std"="GMT Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Greenland Standard Time]
+"TZI"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-50"
+"MUI_Dlt"="@tzres.dll,-51"
+"MUI_Std"="@tzres.dll,-52"
+"Display"="(GMT-03:00) Greenland"
+"Dlt"="Greenland Daylight Time"
+"Std"="Greenland Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Greenwich Standard Time]
+"TZI"=hex:00,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-880"
+"MUI_Dlt"="@tzres.dll,-271"
+"MUI_Std"="@tzres.dll,-272"
+"Display"="(GMT) Monrovia, Reykjavik"
+"Dlt"="Greenwich Daylight Time"
+"Std"="Greenwich Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\GTB Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,04,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,03,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-360"
+"MUI_Dlt"="@tzres.dll,-361"
+"MUI_Std"="@tzres.dll,-362"
+"Display"="(GMT+02:00) Athens, Bucharest, Istanbul"
+"Dlt"="GTB Daylight Time"
+"Std"="GTB Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Hawaiian Standard Time]
+"TZI"=hex:58,02,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-230"
+"MUI_Dlt"="@tzres.dll,-231"
+"MUI_Std"="@tzres.dll,-232"
+"Display"="(GMT-10:00) Hawaii"
+"Dlt"="Hawaiian Daylight Time"
+"Std"="Hawaiian Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\India Standard Time]
+"TZI"=hex:b6,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-490"
+"MUI_Dlt"="@tzres.dll,-491"
+"MUI_Std"="@tzres.dll,-492"
+"Display"="(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi"
+"Dlt"="India Daylight Time"
+"Std"="India Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Iran Standard Time]
+"TZI"=hex:2e,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,01,00,03,00,17,00,3b,\
+  00,3b,00,e7,03,00,00,03,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+"MUI_Display"="@tzres.dll,-430"
+"MUI_Dlt"="@tzres.dll,-431"
+"MUI_Std"="@tzres.dll,-432"
+"Display"="(GMT+03:30) Tehran"
+"Dlt"="Iran Daylight Time"
+"Std"="Iran Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Iran Standard Time\Dynamic DST]
+"2005"=hex:2e,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,02,00,04,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2006"=hex:2e,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d5
+"LastEntry"=dword:000007d9
+"2007"=hex:2e,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"2008"=hex:2e,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,06,00,03,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,03,00,04,00,03,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:2e,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,01,00,03,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,03,00,06,00,03,00,17,00,3b,00,3b,00,e7,03
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Israel Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-370"
+"MUI_Dlt"="@tzres.dll,-371"
+"MUI_Std"="@tzres.dll,-372"
+"Display"="(GMT+02:00) Jerusalem"
+"Dlt"="Jerusalem Daylight Time"
+"Std"="Jerusalem Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Israel Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d4
+"LastEntry"=dword:000007e7
+"2004"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"2005"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,05,00,01,00,02,00,00,00,00,00,00,00
+"2006"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2007"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,03,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2008"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2009"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2010"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2011"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,05,00,01,00,02,00,00,00,00,00,00,00
+"2012"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,04,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2013"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2014"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,04,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2015"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,03,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2016"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,05,00,01,00,02,00,00,00,00,00,00,00
+"2017"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,04,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2018"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,03,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2019"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2020"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,04,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2021"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,05,00,05,00,02,00,00,00,00,00,00,00
+"2022"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,05,00,01,00,02,00,00,00,00,00,00,00
+"2023"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Jordan Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,05,00,05,00,01,00,00,\
+  00,00,00,00,00,00,00,03,00,04,00,05,00,17,00,3b,00,3b,00,e7,03
+"MUI_Display"="@tzres.dll,-333"
+"MUI_Dlt"="@tzres.dll,-334"
+"MUI_Std"="@tzres.dll,-335"
+"Display"="(GMT+02:00) Amman"
+"Dlt"="Jordan Daylight Time"
+"Std"="Jordan Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Jordan Standard Time\Dynamic DST]
+"2006"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,09,00,05,00,05,00,01,00,\
+  00,00,00,00,00,00,00,00,03,00,04,00,05,00,00,00,00,00,00,00,00,00
+"2007"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,05,00,05,00,01,00,\
+  00,00,00,00,00,00,00,00,03,00,04,00,05,00,17,00,3b,00,3b,00,e7,03
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Korea Standard Time]
+"TZI"=hex:e4,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-620"
+"MUI_Dlt"="@tzres.dll,-621"
+"MUI_Std"="@tzres.dll,-622"
+"Display"="(GMT+09:00) Seoul"
+"Dlt"="Korea Daylight Time"
+"Std"="Korea Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Mauritius Standard Time]
+"MUI_Display"="@tzres.dll,-910"
+"TZI"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+"Std"="Mauritius Standard Time"
+"MUI_Std"="@tzres.dll,-912"
+"Dlt"="Mauritius Daylight Time"
+"MUI_Dlt"="@tzres.dll,-911"
+"Display"="(GMT+04:00) Port Louis"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Mauritius Standard Time\Dynamic DST]
+"2007"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d9
+"2008"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,01,00,02,00,01,00,00,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+"2009"=hex:10,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Mid-Atlantic Standard Time]
+"TZI"=hex:78,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,09,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-30"
+"MUI_Dlt"="@tzres.dll,-31"
+"MUI_Std"="@tzres.dll,-32"
+"Display"="(GMT-02:00) Mid-Atlantic"
+"Dlt"="Mid-Atlantic Daylight Time"
+"Std"="Mid-Atlantic Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Middle East Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,00,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-363"
+"MUI_Dlt"="@tzres.dll,-364"
+"MUI_Std"="@tzres.dll,-365"
+"Display"="(GMT+02:00) Beirut"
+"Dlt"="Middle East Daylight Time"
+"Std"="Middle East Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Montevideo Standard Time]
+"MUI_Display"="@tzres.dll,-770"
+"TZI"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,02,00,02,00,00,\
+  00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"Std"="Montevideo Standard Time"
+"MUI_Std"="@tzres.dll,-772"
+"Dlt"="Montevideo Daylight Time"
+"MUI_Dlt"="@tzres.dll,-771"
+"Display"="(GMT-03:00) Montevideo"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Montevideo Standard Time\Dynamic DST]
+"2006"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,09,00,00,00,02,00,02,00,00,00,00,00,00,00
+"2007"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,02,00,02,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Morocco Standard Time]
+"MUI_Display"="@tzres.dll,-890"
+"TZI"=hex:00,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"Std"="Morocco Standard Time"
+"MUI_Std"="@tzres.dll,-892"
+"Dlt"="Morocco Daylight Time"
+"MUI_Dlt"="@tzres.dll,-891"
+"Display"="(GMT) Casablanca"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Morocco Standard Time\Dynamic DST]
+"2007"=hex:00,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d9
+"2008"=hex:00,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,08,00,00,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,05,00,06,00,05,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:00,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Mountain Standard Time]
+"TZI"=hex:a4,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-190"
+"MUI_Dlt"="@tzres.dll,-191"
+"MUI_Std"="@tzres.dll,-192"
+"Display"="(GMT-07:00) Mountain Time (US & Canada)"
+"Dlt"="Mountain Daylight Time"
+"Std"="Mountain Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Mountain Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+"2006"=hex:a4,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:a4,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Mountain Standard Time (Mexico)]
+"TZI"=hex:a4,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-180"
+"MUI_Dlt"="@tzres.dll,-181"
+"MUI_Std"="@tzres.dll,-182"
+"Display"="(GMT-07:00) Chihuahua, La Paz, Mazatlan"
+"Dlt"="Mountain Daylight Time (Mexico)"
+"Std"="Mountain Standard Time (Mexico)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Myanmar Standard Time]
+"TZI"=hex:7a,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-540"
+"MUI_Dlt"="@tzres.dll,-541"
+"MUI_Std"="@tzres.dll,-542"
+"Display"="(GMT+06:30) Yangon (Rangoon)"
+"Dlt"="Myanmar Daylight Time"
+"Std"="Myanmar Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\N. Central Asia Standard Time]
+"TZI"=hex:98,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-520"
+"MUI_Dlt"="@tzres.dll,-521"
+"MUI_Std"="@tzres.dll,-522"
+"Display"="(GMT+06:00) Almaty, Novosibirsk"
+"Dlt"="N. Central Asia Daylight Time"
+"Std"="N. Central Asia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Namibia Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,3c,00,00,00,00,00,09,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-383"
+"MUI_Dlt"="@tzres.dll,-384"
+"MUI_Std"="@tzres.dll,-385"
+"Display"="(GMT+02:00) Windhoek"
+"Dlt"="Namibia Daylight Time"
+"Std"="Namibia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Nepal Standard Time]
+"TZI"=hex:a7,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-500"
+"MUI_Dlt"="@tzres.dll,-501"
+"MUI_Std"="@tzres.dll,-502"
+"Display"="(GMT+05:45) Kathmandu"
+"Dlt"="Nepal Daylight Time"
+"Std"="Nepal Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\New Zealand Standard Time]
+"TZI"=hex:30,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,00,\
+  00,00,00,00,00,00,00,09,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-740"
+"MUI_Dlt"="@tzres.dll,-741"
+"MUI_Std"="@tzres.dll,-742"
+"Display"="(GMT+12:00) Auckland, Wellington"
+"Dlt"="New Zealand Daylight Time"
+"Std"="New Zealand Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\New Zealand Standard Time\Dynamic DST]
+"2006"=hex:30,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,03,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:30,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,03,00,03,00,\
+  00,00,00,00,00,00,00,00,09,00,00,00,05,00,02,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d8
+"2008"=hex:30,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,\
+  00,00,00,00,00,00,00,00,09,00,00,00,05,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Newfoundland Standard Time]
+"TZI"=hex:d2,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,00,00,01,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,00,00,01,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-70"
+"MUI_Dlt"="@tzres.dll,-71"
+"MUI_Std"="@tzres.dll,-72"
+"Display"="(GMT-03:30) Newfoundland"
+"Dlt"="Newfoundland Daylight Time"
+"Std"="Newfoundland Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Newfoundland Standard Time\Dynamic DST]
+"2006"=hex:d2,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,00,00,\
+  01,00,00,00,00,00,00,00,04,00,00,00,01,00,00,00,01,00,00,00,00,00
+"2007"=hex:d2,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,00,00,\
+  01,00,00,00,00,00,00,00,03,00,00,00,02,00,00,00,01,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\North Asia East Standard Time]
+"TZI"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-580"
+"MUI_Dlt"="@tzres.dll,-581"
+"MUI_Std"="@tzres.dll,-582"
+"Display"="(GMT+08:00) Irkutsk, Ulaan Bataar"
+"Dlt"="North Asia East Daylight Time"
+"Std"="North Asia East Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\North Asia Standard Time]
+"TZI"=hex:5c,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-550"
+"MUI_Dlt"="@tzres.dll,-551"
+"MUI_Std"="@tzres.dll,-552"
+"Display"="(GMT+07:00) Krasnoyarsk"
+"Dlt"="North Asia Daylight Time"
+"Std"="North Asia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pacific SA Standard Time]
+"TZI"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,06,00,02,00,17,00,3b,\
+  00,3b,00,e7,03,00,00,0a,00,06,00,02,00,17,00,3b,00,3b,00,e7,03
+"MUI_Display"="@tzres.dll,-90"
+"MUI_Dlt"="@tzres.dll,-91"
+"MUI_Std"="@tzres.dll,-92"
+"Display"="(GMT-04:00) Santiago"
+"Dlt"="Pacific SA Daylight Time"
+"Std"="Pacific SA Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pacific SA Standard Time\Dynamic DST]
+"2007"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,06,00,02,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,0a,00,06,00,02,00,17,00,3b,00,3b,00,e7,03
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d9
+"2008"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,06,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,0a,00,06,00,02,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,03,00,06,00,02,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,0a,00,06,00,02,00,17,00,3b,00,3b,00,e7,03
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pacific Standard Time]
+"TZI"=hex:e0,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-210"
+"MUI_Dlt"="@tzres.dll,-211"
+"MUI_Std"="@tzres.dll,-212"
+"Display"="(GMT-08:00) Pacific Time (US & Canada)"
+"Dlt"="Pacific Daylight Time"
+"Std"="Pacific Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pacific Standard Time\Dynamic DST]
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+"2006"=hex:e0,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,\
+  00,00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:e0,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0b,00,00,00,01,00,02,00,\
+  00,00,00,00,00,00,00,00,03,00,00,00,02,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pacific Standard Time (Mexico)]
+"TZI"=hex:e0,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,02,00,00,\
+  00,00,00,00,00,00,00,04,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-213"
+"MUI_Dlt"="@tzres.dll,-214"
+"MUI_Std"="@tzres.dll,-215"
+"Display"="(GMT-08:00) Tijuana, Baja California"
+"Dlt"="Pacific Daylight Time (Mexico)"
+"Std"="Pacific Standard Time (Mexico)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pakistan Standard Time]
+"MUI_Display"="@tzres.dll,-870"
+"TZI"=hex:d4,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"Std"="Pakistan Standard Time"
+"MUI_Std"="@tzres.dll,-872"
+"Dlt"="Pakistan Daylight Time"
+"MUI_Dlt"="@tzres.dll,-871"
+"Display"="(GMT+05:00) Islamabad, Karachi"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Pakistan Standard Time\Dynamic DST]
+"2007"=hex:d4,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d9
+"2008"=hex:d4,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,05,00,05,00,17,00,\
+  3b,00,3b,00,e7,03,00,00,05,00,06,00,05,00,17,00,3b,00,3b,00,e7,03
+"2009"=hex:d4,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Romance Standard Time]
+"TZI"=hex:c4,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-300"
+"MUI_Dlt"="@tzres.dll,-301"
+"MUI_Std"="@tzres.dll,-302"
+"Display"="(GMT+01:00) Brussels, Copenhagen, Madrid, Paris"
+"Dlt"="Romance Daylight Time"
+"Std"="Romance Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Russian Standard Time]
+"TZI"=hex:4c,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-420"
+"MUI_Dlt"="@tzres.dll,-421"
+"MUI_Std"="@tzres.dll,-422"
+"Display"="(GMT+03:00) Moscow, St. Petersburg, Volgograd"
+"Dlt"="Russian Daylight Time"
+"Std"="Russian Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\SA Eastern Standard Time]
+"TZI"=hex:b4,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-830"
+"MUI_Dlt"="@tzres.dll,-831"
+"MUI_Std"="@tzres.dll,-832"
+"Display"="(GMT-03:00) Georgetown"
+"Dlt"="SA Eastern Daylight Time"
+"Std"="SA Eastern Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\SA Pacific Standard Time]
+"TZI"=hex:2c,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-120"
+"MUI_Dlt"="@tzres.dll,-121"
+"MUI_Std"="@tzres.dll,-122"
+"Display"="(GMT-05:00) Bogota, Lima, Quito, Rio Branco"
+"Dlt"="SA Pacific Daylight Time"
+"Std"="SA Pacific Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\SA Western Standard Time]
+"TZI"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-790"
+"MUI_Dlt"="@tzres.dll,-791"
+"MUI_Std"="@tzres.dll,-792"
+"Display"="(GMT-04:00) La Paz"
+"Dlt"="SA Western Daylight Time"
+"Std"="SA Western Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Samoa Standard Time]
+"TZI"=hex:94,02,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-240"
+"MUI_Dlt"="@tzres.dll,-241"
+"MUI_Std"="@tzres.dll,-242"
+"Display"="(GMT-11:00) Midway Island, Samoa"
+"Dlt"="Samoa Daylight Time"
+"Std"="Samoa Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\SE Asia Standard Time]
+"TZI"=hex:5c,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-560"
+"MUI_Dlt"="@tzres.dll,-561"
+"MUI_Std"="@tzres.dll,-562"
+"Display"="(GMT+07:00) Bangkok, Hanoi, Jakarta"
+"Dlt"="SE Asia Daylight Time"
+"Std"="SE Asia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Singapore Standard Time]
+"TZI"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-590"
+"MUI_Dlt"="@tzres.dll,-591"
+"MUI_Std"="@tzres.dll,-592"
+"Display"="(GMT+08:00) Kuala Lumpur, Singapore"
+"Dlt"="Malay Peninsula Daylight Time"
+"Std"="Malay Peninsula Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\South Africa Standard Time]
+"TZI"=hex:88,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-380"
+"MUI_Dlt"="@tzres.dll,-381"
+"MUI_Std"="@tzres.dll,-382"
+"Display"="(GMT+02:00) Harare, Pretoria"
+"Dlt"="South Africa Daylight Time"
+"Std"="South Africa Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Sri Lanka Standard Time]
+"TZI"=hex:b6,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-530"
+"MUI_Dlt"="@tzres.dll,-531"
+"MUI_Std"="@tzres.dll,-532"
+"Display"="(GMT+05:30) Sri Jayawardenepura"
+"Dlt"="Sri Lanka Daylight Time"
+"Std"="Sri Lanka Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Taipei Standard Time]
+"TZI"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-600"
+"MUI_Dlt"="@tzres.dll,-601"
+"MUI_Std"="@tzres.dll,-602"
+"Display"="(GMT+08:00) Taipei"
+"Dlt"="Taipei Daylight Time"
+"Std"="Taipei Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Tasmania Standard Time]
+"TZI"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,00,\
+  00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-690"
+"MUI_Dlt"="@tzres.dll,-691"
+"MUI_Std"="@tzres.dll,-692"
+"Display"="(GMT+10:00) Hobart"
+"Dlt"="Tasmania Daylight Time"
+"Std"="Tasmania Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Tasmania Standard Time\Dynamic DST]
+"2007"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d7
+"LastEntry"=dword:000007d8
+"2008"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,04,00,00,00,01,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,01,00,02,00,00,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Tokyo Standard Time]
+"TZI"=hex:e4,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-630"
+"MUI_Dlt"="@tzres.dll,-631"
+"MUI_Std"="@tzres.dll,-632"
+"Display"="(GMT+09:00) Osaka, Sapporo, Tokyo"
+"Dlt"="Tokyo Daylight Time"
+"Std"="Tokyo Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Tonga Standard Time]
+"TZI"=hex:f4,fc,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-750"
+"MUI_Dlt"="@tzres.dll,-751"
+"MUI_Std"="@tzres.dll,-752"
+"Display"="(GMT+13:00) Nuku'alofa"
+"Dlt"="Tonga Daylight Time"
+"Std"="Tonga Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\US Eastern Standard Time]
+"TZI"=hex:2c,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-130"
+"MUI_Dlt"="@tzres.dll,-131"
+"MUI_Std"="@tzres.dll,-132"
+"Display"="(GMT-05:00) Indiana (East)"
+"Dlt"="US Eastern Daylight Time"
+"Std"="US Eastern Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\US Mountain Standard Time]
+"TZI"=hex:a4,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-200"
+"MUI_Dlt"="@tzres.dll,-201"
+"MUI_Std"="@tzres.dll,-202"
+"Display"="(GMT-07:00) Arizona"
+"Dlt"="US Mountain Daylight Time"
+"Std"="US Mountain Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Venezuela Standard Time]
+"MUI_Display"="@tzres.dll,-810"
+"TZI"=hex:0e,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"Std"="Venezuela Standard Time"
+"MUI_Std"="@tzres.dll,-812"
+"Dlt"="Venezuela Daylight Time"
+"MUI_Dlt"="@tzres.dll,-811"
+"Display"="(GMT-04:30) Caracas"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Venezuela Standard Time\Dynamic DST]
+"2006"=hex:f0,00,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"2007"=hex:0e,01,00,00,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d6
+"LastEntry"=dword:000007d7
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Vladivostok Standard Time]
+"TZI"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-700"
+"MUI_Dlt"="@tzres.dll,-701"
+"MUI_Std"="@tzres.dll,-702"
+"Display"="(GMT+10:00) Vladivostok"
+"Dlt"="Vladivostok Daylight Time"
+"Std"="Vladivostok Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\W. Australia Standard Time]
+"TZI"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-610"
+"MUI_Dlt"="@tzres.dll,-611"
+"MUI_Std"="@tzres.dll,-612"
+"Display"="(GMT+08:00) Perth"
+"Dlt"="W. Australia Daylight Time"
+"Std"="W. Australia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\W. Australia Standard Time\Dynamic DST]
+"2005"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"2006"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,d6,07,01,00,00,00,01,00,00,00,\
+  00,00,00,00,00,00,d6,07,0c,00,05,00,01,00,02,00,00,00,00,00,00,00
+"2007"=hex:20,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,03,00,00,00,05,00,03,00,\
+  00,00,00,00,00,00,00,00,0a,00,00,00,05,00,02,00,00,00,00,00,00,00
+"FirstEntry"=dword:000007d5
+"LastEntry"=dword:000007d7
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\W. Central Africa Standard Time]
+"TZI"=hex:c4,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-310"
+"MUI_Dlt"="@tzres.dll,-311"
+"MUI_Std"="@tzres.dll,-312"
+"Display"="(GMT+01:00) West Central Africa"
+"Dlt"="W. Central Africa Daylight Time"
+"Std"="W. Central Africa Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\W. Europe Standard Time]
+"TZI"=hex:c4,ff,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-320"
+"MUI_Dlt"="@tzres.dll,-321"
+"MUI_Std"="@tzres.dll,-322"
+"Display"="(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"
+"Dlt"="W. Europe Daylight Time"
+"Std"="W. Europe Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\West Asia Standard Time]
+"TZI"=hex:d4,fe,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-860"
+"MUI_Dlt"="@tzres.dll,-481"
+"MUI_Std"="@tzres.dll,-482"
+"Display"="(GMT+05:00) Tashkent"
+"Dlt"="West Asia Daylight Time"
+"Std"="West Asia Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\West Pacific Standard Time]
+"TZI"=hex:a8,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-710"
+"MUI_Dlt"="@tzres.dll,-711"
+"MUI_Std"="@tzres.dll,-712"
+"Display"="(GMT+10:00) Guam, Port Moresby"
+"Dlt"="West Pacific Daylight Time"
+"Std"="West Pacific Standard Time"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\Yakutsk Standard Time]
+"TZI"=hex:e4,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,0a,00,00,00,05,00,03,00,00,\
+  00,00,00,00,00,00,00,03,00,00,00,05,00,02,00,00,00,00,00,00,00
+"MUI_Display"="@tzres.dll,-640"
+"MUI_Dlt"="@tzres.dll,-641"
+"MUI_Std"="@tzres.dll,-642"
+"Display"="(GMT+09:00) Yakutsk"
+"Dlt"="Yakutsk Daylight Time"
+"Std"="Yakutsk Standard Time"
+
