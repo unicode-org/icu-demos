@@ -7,7 +7,7 @@ dnl @TOP@
 dnl CHECK_ICU_CONFIG
 AC_DEFUN(CHECK_ICU_CONFIG, [
  dnl look for the icu-config script.
- AC_PATH_PROGS(ICU_CONFIG, icu-config)
+ AC_PATH_PROGS(ICU_CONFIG, icu-config, :, ${prefix}/bin)
  AC_SUBST(ICU_CONFIG)
 
  if test -n "$ac_cv_path_ICU_CONFIG"; then

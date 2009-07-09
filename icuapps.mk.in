@@ -21,10 +21,10 @@ ICU_CONFIG=@ICU_CONFIG@
 ####################################################################
 CC=$(shell @ICU_CONFIG@ --cc)
 CXX=$(shell @ICU_CONFIG@ --cxx)
-CPPFLAGS=$(shell @ICU_CONFIG@ --cppflags)
+CPPFLAGS=$(shell @ICU_CONFIG@ --cppflags) @DEFS@
 CFLAGS=$(shell @ICU_CONFIG@ --cflags)
 CXXFLAGS=$(shell @ICU_CONFIG@ --cxxflags)
-LDFLAGS =$(shell @ICU_CONFIG@ --ldflags)
+LDFLAGS =$(shell @ICU_CONFIG@ --ldflags) @LIBS@
 LDFLAGS_ICUIO =$(shell @ICU_CONFIG@ --ldflags-icuio)
 LDFLAGS_OBSOLETE =$(shell @ICU_CONFIG@ --ldflags-obsolete)
 INVOKE =$(shell @ICU_CONFIG@ --invoke)
@@ -33,6 +33,8 @@ BINDIR = $(shell @ICU_CONFIG@ --bindir)
 GENRB=$(shell @ICU_CONFIG@ --invoke=genrb)
 UCONV=$(shell @ICU_CONFIG@ --invoke=uconv)
 PKGDATA=$(shell @ICU_CONFIG@ --invoke=pkgdata)
+
+CPPFLAGS_APPUTIL=-I$(top_builddir)/apputil
 
 # Warning: needs ICU's install nearby.
 LDFLAGS_TOOLUTIL =$(shell @ICU_CONFIG@ --ldflags-toolutil)
@@ -66,4 +68,5 @@ RMV=rm -rf
 
 # optional override file
 -include $(top_srcdir)/icuapps-mk.local
+
 

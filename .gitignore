@@ -16,6 +16,7 @@ apputil/Debug
 apputil/Makefile
 apputil/Release
 apputil/debug
+apputil/demo_config.h
 apputil/libapputil*
 apputil/release
 /bin

@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2006, International Business Machines
+## *   Copyright (C) 1999-2009, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -12,6 +12,8 @@ top_srcdir=@top_srcdir@
 ## Build directory information
 top_builddir = ..
 subdir = apputil
+CONFIG_H=demo_config.h
+
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
@@ -33,7 +35,7 @@ OBJECTS = demoutil.o tmplutil.o
 DATA_DIR=$(BINDIR)/data
 
 ## List of standard targets
-all: all-local
+all: all-local $(CONFIG_H)
 install: install-local
 clean: clean-local
 distclean : distclean-local
@@ -57,13 +59,17 @@ clean-local:
 	rm -f $(OBJECTS) $(SO_TARGET)
 
 distclean-local: clean-local
-	rm -f Makefile $(DEPS)
+	rm -f Makefile $(DEPS) $(CONFIG_H)
 
 check-local:
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+$(CONFIG_H): $(srcdir)/$(CONFIG_H).in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES= CONFIG_HEADERS=$(subdir)/$@ $(SHELL) ./config.status
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just

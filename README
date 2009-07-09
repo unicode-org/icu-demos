@@ -24,7 +24,7 @@ BUILDING
       prefix used to build the ICU, which can be set with the
      '--prefix=' option to it's ./configure.
 
-  2. icu-config should be on your PATH.
+  2. icu-config doesn't need to be on your PATH - just make sure the same --prefix is used as that which built ICU.
   
   3. Run the ./configure script in the icuapps directory.  You will need
      to supply the same '--prefix=XXX' argument that was passed to the

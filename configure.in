@@ -15,7 +15,13 @@ CHECK_ICU_CONFIG
 PACKAGE="icuapps"
 AC_SUBST(PACKAGE)
 
+
 AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, true)
+
+# ICU4C configure.in is working too hard. See below.
+AC_CHECK_HEADERS([dlfcn.h readline/readline.h])
+AC_SEARCH_LIBS(readline, [readline edit]) 
+AC_CHECK_FUNCS([dlopen readline])
 
 AC_PROG_INSTALL
 
@@ -26,6 +32,8 @@ if test "$srcdir" = "."; then
    INSTALL="\\\$(top_srcdir)/${ac_install_sh}"
   fi
 fi
+
+AC_CONFIG_HEADER(apputil/demo_config.h)
 
 
 AC_OUTPUT([icuapps.mk \

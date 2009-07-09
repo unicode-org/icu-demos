@@ -19,6 +19,10 @@ include $(top_builddir)/icuapps.mk
 TARGET = dumpdat
 
 OBJECTS = dumpdat.o
+# upkg.o
+
+#CPPFLAGS += 
+CPPFLAGS+=$(CPPFLAGS_APPUTIL)
 
 # enable the following if you have some kind of readline function
 #####
@@ -31,6 +35,9 @@ OBJECTS = dumpdat.o
 #CPPFLAGS += -DHAVE_DL -I/sw/include
 #LDFLAGS += -L/sw/lib -ldl -bind_at_load
 ####
+
+-include Makefile.local
+
 
 ## List of standard targets
 all: all-local
