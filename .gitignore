@@ -35,12 +35,14 @@ convexp/release
 datacustom/Makefile
 datacustom/gendatadep/Makefile
 dumpdat/Makefile
+dumpdat/Makefile.local
 dumpdat/dumpdat
 genjp/Debug
 genjp/genjp.ncb
 genjp/genjp.opt
 genjp/genjp.plg
 genjp/genjp.positions
+icu4jweb/bin
 icu4jweb/build
 /icuapps-mk.local
 /icuapps.mk
@@ -84,6 +86,7 @@ locexp/others.
 locexp/resource/*.res
 locexp/resource/.builtres
 locexp/resource/Makefile
+locexp/resource/Makefile.local
 locexp/resource/Makefile.res
 locexp/resource/escapeABundle
 locexp/resource/index.txt
@@ -127,6 +130,8 @@ redemo/Makefile
 redemo/debug
 redemo/redemo
 redemo/release
+regressionTest/CollRegressionTest/c/Makefile
+regressionTest/StrsrchRegressionTest/c/Makefile
 rtfcvrt/Makefile
 scompare/*.d
 scompare/*.o
@@ -152,11 +157,13 @@ ubrowse/*.res
 ubrowse/*ubrowseres*
 ubrowse/Debug
 ubrowse/Makefile
+ubrowse/Makefile.local
 ubrowse/Release
 ubrowse/debug
 ubrowse/icons.txt
 ubrowse/release
 ubrowse/ubrowse
+ubrowse/ubrowse.msg
 ubrowse/ubrowseres
 usort/Makefile
 usort/client/*.d

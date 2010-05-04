@@ -34,14 +34,14 @@
 ## Note: FSWF means Fetch String with Fallback.   see locexp.c
 export INVOKE_UCONV
 echo "// root file. Generated from $*"
-echo "// Copyright (C) 2000-2006, International Business Machines"
+echo "// Copyright (C) 2000-2010, International Business Machines"
 echo "// It's probably not a good idea to change this file."
 echo "// Better to change locexp.c or the ROOT.* source files and rebuild."
-echo
+echo "// Now with XLIFF tags"
 echo
 echo "root {"
 echo
-fgrep -h 'FSWF("' $* | sed -e 's%.*FSWF("\([^"]*\)",[ ]*"\([^"]*\)".*%   \1  {  "\2"  }%' | sort | uniq
+fgrep -h 'FSWF("' $* | sort | uniq | sed -f extractStrings.sed 
 echo 
 if [ -f root.txt.inc ]; then
     echo "// Special Cases"

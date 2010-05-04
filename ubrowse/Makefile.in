@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2006, International Business Machines
+## *   Copyright (C) 1999-2010, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -17,7 +17,7 @@ subdir = ubrowse
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ README_$(PKG).txt $(PKG).*   icons.txt *.res
+CLEANFILES = *~ README_$(PKG).txt $(PKG).*   icons.txt *.res ubrowse.msg
 
 ## Target information
 TARGET = ubrowse
@@ -26,6 +26,8 @@ LDFLAGS += -L../apputil -lapputil -L../locexp/util -liculxutil $(LDFLAGS_ICUIO)
 CPPFLAGS += -I$(top_srcdir)/apputil
 ITMP=icontmp
 ICONS=icons
+RES_DIR=res
+
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
@@ -50,7 +52,10 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(TARGET)
+#.PRECIOUS: ubrowse.msg
+
+
+all-local: $(TARGET) $(RES_DIR)/root.xlf
 
 install-local: all-local install-target
 
@@ -83,8 +88,32 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #         '$(LIBS) -licuuc -lusort' ...
 
 -include local.mk
+-include Makefile.local
 
+TRANSLATION_SRC=ubrowse.c
 
+ubrowse.msg: $(TRANSLATION_SRC) extractStringsUltra.sh extractStrings.sed
+	$(SHELL) ./extractStringsUltra.sh $(TRANSLATION_SRC) > $@
+
+$(RES_DIR)/root.txt: ubrowse.msg
+	@cp $^ $@.tmp
+	@if [ ! -f $@ ]; then \
+		echo installing new $@ ; \
+		mv $@.tmp $@ ; \
+	else \
+		if diff -q $@.tmp $@ ; then \
+			rm $@.tmp ; \
+		else  \
+			echo installing updated $@ ; \
+			mv $@.tmp $@ ; \
+		fi ; \
+	fi
+
+$(RES_DIR)/root.xlf: $(RES_DIR)/root.txt
+	$(INVOKE) $(GENRB) -s $(RES_DIR) -d $(RES_DIR) root.txt -x
+
+#mt.res: $(RES_DIR)/mt.xlf
+#	$(INVOKE) $(GENRB) -s . -d . $^
 
 # Run against HTMLTidy
 tidy: $(TARGET)
@@ -92,21 +121,20 @@ tidy: $(TARGET)
 	tidy -utf8 -q ubrowse.html 2>&1 | sed -e "s%^ubrowse.html%"`pwd`"/ubrowse.html%g"
 
 $(TARGET) : $(OBJECTS)
-	$(LINK.c) -o $@ $^ $(ICULIBS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
 icons.res: icons.txt
 	$(INVOKE) $(GENRB) -d. $<
 
-
 icons.txt: $(ICONS)/*.gif
 	echo creating $@
 	@echo "icons : table(nofallback) { " > $@
-	@for file in `cd $(ICONS) ; ls *.gif`; do \
+	@for file in `cd $(ICONS) ; ls *.gif *.css`; do \
 	  echo " $$file:import { $(ICONS)/$$file } " >> $@; \
 	done;
 	@echo "}" >> $@
 
-$(PKG).lst: Makefile.in	
+$(PKG).lst:
 	echo "icons.res" > $@
 
 $(PKG)_dat.o: $(PKG).lst icons.res 

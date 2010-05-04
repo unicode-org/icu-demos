@@ -77,6 +77,7 @@ typedef struct {
   char             calendar[LBUFSML];
   char             collation[LBUFSML];
   char             currency[LBUFSML];
+  char             provider[LBUFSML];
 } LocaleBlob;
 
 typedef struct 
@@ -343,6 +344,7 @@ typedef enum { kALL_PARTS   = 0,
                kNO_CAL = 8,      /* omit calendar */
                kNO_CURR = 16,    /* omit currency */
                kNO_SECT = 32,    /* omit section */
+               kNO_PROV = 64,   /* omit provider */
                kNO_URL = 0x10000, /* omit http://xxx.yyy */
                kNO_PARTS=0xFFFFFF
              } EBaseURLOpt;

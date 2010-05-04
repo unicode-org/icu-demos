@@ -614,6 +614,7 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
 #define kCollationPart 'S'
 #define kCurrencyPart 'Y'
 #define kTimezonePart 'z'
+#define kProviderPart 'P'
 
 
 /* void showKeywordMenuList(LXContext *lx, UEnumeration *e, UErrorCode *status) { */
@@ -734,6 +735,11 @@ void printChangeA(LXContext *lx, const char *locale, const char *prefix)
     u_fprintf(lx->OUT, "</td><td>");
     printChangeKeyword(lx, locale, prefix, "currency", kCurrencyPart);
     u_fprintf(lx->OUT, "</td>");
+#if defined (HAVE_LX_HOOK)
+    u_fprintf(lx->OUT, "<td>");
+    printChangeKeyword(lx, locale, prefix, "provider", kProviderPart);
+    u_fprintf(lx->OUT, "</td>");
+#endif
   }
   u_fprintf(lx->OUT, "</tr></table>");
 }
@@ -827,6 +833,9 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
   case kCurrencyPart:
     prefix="";
     strcpy(partStr, "currency"); break;
+  case kProviderPart:
+    prefix="";
+    strcpy(partStr, "provider"); break;
   default: ;
   }
   if(n>0 && (n%5)==0) {
@@ -972,6 +981,29 @@ static void showChangeTimezone(LXContext *lx) {
 
 }
 
+#if defined(HAVE_LX_HOOK)
+#include "lx_hook.h"
+static void showChangeProvider(LXContext *lx, int32_t *n, const char *myURL, const char *prefix, char part, const char *kwVal) {
+  const char *s;
+  
+  const char *kwn;
+  const char **kwv;
+  kwv = lx_hook_keywords (&kwn);
+
+  while(*kwv) {
+    UChar u[1024];
+    char floc[345];
+    sprintf(floc, "@%s=%s", kwn, *kwv);
+    u_uastrcpy(u, *kwv);
+    printCell(lx, myURL, prefix, part, *kwv, u, *n, kwVal);
+    (*n) ++;
+    kwv++;
+  }
+
+}
+#endif
+
+
 void showChangePage(LXContext *lx)
 {
   const char *changeWhat;
@@ -1015,6 +1047,7 @@ void showChangePage(LXContext *lx)
   case kCalendarPart: adds |= kNO_CAL; break;
   case kCollationPart: adds |= kNO_COLL; break;
   case kCurrencyPart: adds |= kNO_CURR; break;
+  case kProviderPart: adds |= kNO_PROV; break;
   default: adds=0;
   }
   baseU = getLXBaseURL(lx, kNO_URL | kNO_SECT | adds);
@@ -1096,6 +1129,16 @@ void showChangePage(LXContext *lx)
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF/* ERR: find the real str */ ("localeList_Timezone", "Timezone"));
     showChangeTimezone(lx);
     break;
+
+#if defined (HAVE_LX_HOOK)
+  case kProviderPart:
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF/* ERR: find the real str */ ("localeList_Provider", "Provider"));
+    startCell(lx);
+    showChangeProvider(lx,&n, myURL, prefix, part, b->provider);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->provider);
+    endCell(lx);
+    break;
+#endif
 
   default:
     u_fprintf(lx->OUT, "Err - unknown type code '%c'\n", part);

@@ -47,7 +47,7 @@ TARGET = locexp
 LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o lxbrk.o lxcgi.o version.o lxicir.o
 CGIOBJ = cgimain.o
 # FCGIOBJ = fcgimain.o
-OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ)
+OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ) $(LOCALOBJ)
 
 DEPS = $(OBJECTS:.o=.d)
 
@@ -63,7 +63,6 @@ CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(C
 CPPFLAGS += $(LXOPTIONS) -DLX_STATIC
 CPPFLAGS += -I../apputil
 CPPFLAGS += -I.
-
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
 distclean distclean-local dist dist-local check check-local all-recursive \
@@ -83,6 +82,8 @@ dist: dist-recursive dist-local
 check: check-recursive check-local
 
 -include Makefile.local
+CPPFLAGS += $(LOCAL_CPPFLAGS)
+
 
 ## Recursive targets
 all-recursive install-recursive clean-recursive distclean-recursive dist-recursive check-recursive:
@@ -131,9 +132,9 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licuuc -lusort' ...
 
-$(TARGET) : $(LXOBJ) $(CGIOBJ)  $(AHEADER) $(BUILTRES) $(CEOBJS)
+$(TARGET) : $(LXOBJ) $(CGIOBJ)  $(AHEADER) $(BUILTRES) $(CEOBJS) $(LOCALOBJ)
 	-$(RMV) $(TARGET)
-	$(LINK.cc) -o $@ $(CEOBJS) $(LXOBJ) $(CGIOBJ) $(ICULIBS) -llocexp
+	$(LINK.cc) -o $@ $(LOCALOBJ) $(CEOBJS) $(LXOBJ) $(CGIOBJ) $(ICULIBS) -llocexp $(LOCALLIBS)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)

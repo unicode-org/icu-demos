@@ -1056,6 +1056,7 @@ UResourceBundle *FSWF_getBundle()
     {
       FSWF_bundleErr = U_ZERO_ERROR;
       gRB = ures_open(  FSWF_bundlePath(), gLocale, &FSWF_bundleErr);
+      /*      fprintf(stderr, "FSWF: opening %s in %s --> %s \n", FSWF_bundlePath(), gLocale, u_errorName(FSWF_bundleErr));*/
       if(U_FAILURE(FSWF_bundleErr))
 	{
 	  gRB = 0;
@@ -1125,12 +1126,11 @@ U_CAPI void FSWF_setBundlePath(char *newPath)
 
 const char *FSWF_bundlePath()
 {
-  if(FSWF_path[0] == 0)
-    {
-      strcpy(FSWF_path, u_getDataDirectory());
-      strcat(FSWF_path, "FSWF/");
-    }
-  
+  if(FSWF_path[0] == 0) {
+    strcpy(FSWF_path, u_getDataDirectory());
+    strcat(FSWF_path, "FSWF/");
+  }
+ 
   return FSWF_path;
 }
 

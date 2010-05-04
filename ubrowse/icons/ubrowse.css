@@ -1,0 +1,32 @@
+/* @override http://127.0.0.1/srl-bin/ubrowse/r/ubrowse.css */
+
+/*
+*****************************************************************
+* Copyright (C) 2001-2010, IBM Corporation and others.
+* All Rights Reserved.                                                *
+*****************************************************************/
+
+.elsewhere {
+	margin-top: 1em;
+    margin-right: 3em;
+    border: 1px solid gray;
+    background-color: #FFFEFC;
+    padding: 1em 1em 1em 1em;
+    font-size: smaller;
+}
+
+table.blocks {
+	font-size: small;
+}
+
+table.blocks a {
+	background-color: white;
+	padding:  1px;
+	margin:  1px;
+	text-decoration: none;
+}
+
+.anydecompose {
+    color: #0d0;
+    /* italic */
+}

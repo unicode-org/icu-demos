@@ -437,7 +437,14 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patte
 
 
 
+#include "lx_hook.h"
+
 const char *getLXBaseURL(LXContext* lx, uint32_t o) {
+#if defined(HAVE_LX_HOOK)
+  const char *kwn;
+  const char **kwv;
+  kwv = lx_hook_keywords (&kwn);
+#endif
     if(!(o&kNO_URL)) {
         strcpy(lx->myURL, lx->myBaseURL);
     } else {
@@ -475,6 +482,14 @@ const char *getLXBaseURL(LXContext* lx, uint32_t o) {
             strcat(lx->myURL, lx->curLocaleBlob.currency);
             strcat(lx->myURL, "&amp;");
         }
+#if defined(HAVE_LX_HOOK)
+        if(!(o&kNO_PROV) && lx->curLocaleBlob.provider[0]) {
+            strcat(lx->myURL, kwn);
+            strcat(lx->myURL, "=");
+            strcat(lx->myURL, lx->curLocaleBlob.provider);
+            strcat(lx->myURL, "&amp;");
+        }
+#endif
     }
     /* Remove trailing &amp; */
     {

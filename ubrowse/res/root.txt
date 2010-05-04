@@ -1,0 +1,38 @@
+// root file. Generated from ubrowse.c
+// Copyright (C) 2000-2010, International Business Machines
+// It's probably not a good idea to change this file.
+// Better to change locexp.c or the ROOT.* source files and rebuild.
+// Now with XLIFF tags
+
+root {
+
+    /**
+     * @translate yes
+     */
+     ETOP_clickmsg  {  "Click on a type of character to view it in more detail"  }
+
+    /**
+     * @note Note about green text
+     * @translate yes
+     */
+     NOTE_ANY_DECOMPOSE  {  "Note: text in <span class='anydecompose'>Italic Green</span> is the best-try using decomposition. Underscore (_) denotes missing characters in the decomposition."  }
+
+    /**
+     * @translate yes
+     */
+     ETOP_blocks  {  "Blocks"  }
+
+    /**
+     * @translate yes
+     */
+     ETOP_general_categories  {  "General Categories"  }
+
+    /**
+     * @translate yes
+     */
+     APP_NAME  {  "Unicode Browser"  }
+
+
+
+}
+

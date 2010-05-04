@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2008, International Business Machines
+*   Copyright (C) 1999-2009, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
@@ -33,6 +33,10 @@ void initLX()
     char newPath[500];
     UErrorCode myError = U_ZERO_ERROR;
 
+#if defined(HAVE_LX_HOOK)
+    lx_hook_init();
+#endif
+
 #if defined(U_HAVE_CECAL)
     {
         UErrorCode ceError = U_ZERO_ERROR;
@@ -46,12 +50,16 @@ void initLX()
 #endif
 
 #ifdef LX_STATIC
+    /*    fprintf(stderr,"Setting app data..\n");*/
     /* try static data first .. then fall back to individual files */
     udata_setAppData( "locexp", (const void*) locexp_dat, &myError);
     if(U_SUCCESS(myError))
     {
+  /*        fprintf(stderr, "set app data!\n");*/
         FSWF_setBundlePath("locexp");
         return;
+    } else {
+  /*      fprintf(stderr, "failed to set appdata: %s\n", u_errorName(myError));*/
     }
 #endif
 
@@ -446,6 +454,8 @@ UResourceBundle *getDisplayBundle(LXContext *lx, UErrorCode *status)
   return lx->dispRB;
 }
 
+#include "lx_hook.h"
+
 void setBlobFromLocale(LXContext *lx, LocaleBlob* b, const char *loc, UErrorCode *status)
 {
   char *aL = b->l;
@@ -489,9 +499,12 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
   char *aCalendar = b->calendar;
   char *aCollator = b->collation;
   char *aCurrency = b->currency;
+  char *aProvider = b->provider;
   char fieldName[30]="";
   char *fieldChar;
   char *curLocale;
+      const char *kwn;
+      const char **kwv;
   const char *q;
   UErrorCode status = U_ZERO_ERROR;
   /*char aKeywords[LBUFBIG] ="";*/
@@ -521,11 +534,24 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
       uloc_getKeywordValue(curLocale, keyword, aCurrency, LBUFSML-1, &status);
     } else if(!strcmp(keyword,"collation")) {
       uloc_getKeywordValue(curLocale, keyword, aCollator, LBUFSML-1, &status);
+    } else if(!strcmp(keyword,"provider")) {
+      uloc_getKeywordValue(curLocale, keyword, aProvider, LBUFSML-1, &status);
     } else {
       /* unsupported keyword */
     }
   }
   uenum_close(keywordEnum);
+  
+  #if defined(HAVE_LX_HOOK)
+    {
+      kwv = lx_hook_keywords (&kwn);
+      uloc_getKeywordValue(curLocale, kwn, aProvider, LBUFSML-1, &status);
+    }
+  #else
+    *aProvider = 0;
+    kwn = 0;
+  #endif
+
 
   fieldChar[1] = 0;
   
@@ -560,10 +586,13 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
     if((q=queryField(lx, "calendar"))) {
       strncpy(aCalendar, q, LBUFSML-1);
     }
+    if((q=queryField(lx, "provider"))) {
+      strncpy(aProvider, q, LBUFSML-1);
+    }
   }
   curLocale[0]=0;
 
-  if((strlen(aL)+strlen(aS)+strlen(aR)+strlen(aV)+strlen(aCollator)+strlen(aCalendar)+strlen(aCurrency)+strlen("___@collation=&calendar=&currency=&=="))>LBUFSML-1) {
+  if((strlen(aL)+strlen(aS)+strlen(aR)+strlen(aProvider)+strlen(aV)+strlen(aCollator)+strlen(aCalendar)+strlen(aCurrency)+strlen("___@collation=&calendar=&currency=&=="))>LBUFSML-1) {
     strcpy(b->name,"locale_too_big_");
     return;
   }
@@ -631,6 +660,19 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
       strcat(curLocale, "currency=");
       strcat(curLocale, aCurrency);
     }
+#if defined(HAVE_LX_HOOK)
+    if(aProvider[0]) {
+      if(hadKw) {
+        strcat(curLocale, ";");
+      } else {
+        strcat(curLocale, "@");
+        hadKw = TRUE;
+      }
+      strcat(curLocale, kwn);
+      strcat(curLocale, "=");
+      strcat(curLocale, aProvider);
+    }
+#endif
   }
 }
 

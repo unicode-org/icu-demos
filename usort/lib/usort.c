@@ -214,6 +214,7 @@ usort_openWithCollator(UCollator *adopt, UBool ownText,
   n->ownsText = ownText;
   n->collator = adopt;
   n->func = ucol_getSortKey;
+  n->func2 = NULL;
   n->trim = FALSE;
 
   if(U_FAILURE(*status)) /* Failed to open the collator. */
@@ -335,15 +336,23 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
       usort->lines[usort->count].chars[len] = 0;
     }
 
+  /** TODO: guess and optimize preflight **/
   /* now,  collate it. Note we do NOT include the null or newline in the collation. */
   /*usort->lines[usort->count].keySize = ucol_getSortKey(usort->collator, usort->lines[usort->count].chars, len ,NULL, 0);*/
-  usort->lines[usort->count].keySize = usort->func(usort->collator, usort->lines[usort->count].chars, len ,NULL, 0);
+  if(usort->func2!=NULL) {
+      usort->lines[usort->count].keySize = usort->func2(usort, usort->lines[usort->count].chars, len ,NULL, 0);
+  } else {
+      usort->lines[usort->count].keySize = usort->func(usort->collator, usort->lines[usort->count].chars, len ,NULL, 0);
+  }
   usort->lines[usort->count].userData = userData;
 
   usort->lines[usort->count].key = malloc ( usort->lines[usort->count].keySize );
   /*ucol_getSortKey(usort->collator, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);*/
-  usort->func(usort->collator, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);
-
+  if(usort->func2!=NULL) {
+    usort->func2(usort, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);
+  } else {
+    usort->func(usort->collator, usort->lines[usort->count].chars, len ,usort->lines[usort->count].key, usort->lines[usort->count].keySize);
+  }
 
 #ifdef SDEBUG
   fprintf(stderr, "Line %d added, keysize %d\n", usort->count, usort->lines[usort->count].keySize);
@@ -605,6 +614,11 @@ usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter)
 void
 usort_setSortKeyFunction(USort *usort, SortKeyFunction skFunc) {
   usort->func = skFunc;
+}
+
+void
+usort_setSortKeyFunction2(USort *usort, SortKeyFunction2 skFunc) {
+  usort->func2 = skFunc;
 }
 
 UCollator *usort_getCollator(USort *usort)

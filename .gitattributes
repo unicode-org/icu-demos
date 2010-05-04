@@ -189,6 +189,7 @@ richedit/classes/src/com/ibm/richtext/textformat/package.html svneol=native#text
 richedit/classes/src/com/ibm/richtext/textlayout/attributes/package.html svneol=native#text/html
 richedit/classes/src/com/ibm/richtext/textpanel/package.html svneol=native#text/html
 test/testdata/uni-text.bin -text
+ubrowse/extractStrings.sed -text
 ubrowse/icons/all-x.gif -text
 ubrowse/icons/all.gif -text
 ubrowse/icons/block-x.gif -text
@@ -197,4 +198,6 @@ ubrowse/icons/ch-x.gif -text
 ubrowse/icons/ch.gif -text
 ubrowse/icons/column-x.gif -text
 ubrowse/icons/column.gif -text
+ubrowse/icons/ubrowse.css svneol=native#text/css
+ubrowse/res/root.xlf -text
 ufortune/res/ComboList.ico -text

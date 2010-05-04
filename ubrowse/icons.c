@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-* Copyright (C) 2004-2006, International Business Machines Corporation and    *
+* Copyright (C) 2004-2010, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 **/
 
@@ -11,17 +11,22 @@
 #include "unicode/ures.h"
 #include "icons.h"
 #include "demo_settings.h"
+#include "unicode/lx_utils.h"
 
 #include <string.h>
+
+#define BUNDLE_PATH "ubrowseres"
+#define ICON_BUNDLE "icons"
 
 U_CFUNC char ubrowseres_dat[];
 
 int icons_init() {
   UErrorCode status = U_ZERO_ERROR;
-  udata_setAppData( "ubrowseres", (const void*) ubrowseres_dat, &status);
+  udata_setAppData(BUNDLE_PATH, (const void*) ubrowseres_dat, &status);
   if(U_FAILURE(status)) {
     return 1;
   }
+  FSWF_setBundlePath(BUNDLE_PATH);
   return 0;
 }
   
@@ -34,9 +39,9 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
   UErrorCode s2 = U_ZERO_ERROR;
   const char *thePath = NULL;
 
-  thePath = "ubrowseres";
+  thePath = BUNDLE_PATH;
 
-  rb = ures_open(thePath, "icons", &status);   /* direct */
+  rb = ures_open(thePath,ICON_BUNDLE, &status);   /* direct */
 
   if(U_FAILURE(status))
   {
@@ -129,6 +134,8 @@ void icons_write ( /* UFILE *OUT, */ const char *path )
         type = "image/gif";
       else if(strstr(path, ".jpg"))
         type = "image/jpeg";
+      else if(strstr(path, ".css"))
+        type = "text/css";
       else
         type = "application/octet-stream";
 

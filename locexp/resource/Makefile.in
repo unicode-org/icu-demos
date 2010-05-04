@@ -82,7 +82,7 @@ all-local: build-dirs res-local root_SAMPLE.txt
 
 res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
 	@-$(RMV) $(BUILTRES)
-	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst
+	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst $(PKGDATA_OPTS)
 	touch $(BUILTRES)
 
 Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)

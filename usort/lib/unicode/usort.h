@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-*   Copyright (C) 1999-2003, International Business Machines
+*   Copyright (C) 1999-2009, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -70,6 +70,8 @@
 #include <unicode/uloc.h>
 #include <stdio.h>  /* for FILE*'s */
 
+struct USort;
+
 /* Sort key function. Can be ucol_getSortKey or compatible.
  * Get a sort key for a string from a UCollator.
  * Sort keys may be compared using <TT>strcmp</TT>.
@@ -82,6 +84,22 @@
  * @see ucol_getSortKey
  */
 typedef int32_t SortKeyFunction(const    UCollator    *coll, const    UChar        *source,
+        int32_t            sourceLength,
+        uint8_t            *result,
+        int32_t            resultLength);
+
+/** Version 2 Sort key function. Can use other data in the USort.
+ * Get a sort key for a string from a UCollator.
+ * Sort keys may be compared using <TT>strcmp</TT>.
+ * @param coll The UCollator containing the collation rules.
+ * @param source The string to transform.
+ * @param sourecLength The length of source, or -1 if null-terminated.
+ * @param result A pointer to a buffer to receive the attribute.
+ * @param resultLength The maximum size of result.
+ * @return The size needed to fully store the sort key..
+ * @see ucol_getSortKey
+ */
+typedef int32_t SortKeyFunction2(const  struct  USort    *sort, const    UChar        *source,
         int32_t            sourceLength,
         uint8_t            *result,
         int32_t            resultLength);
@@ -102,7 +120,7 @@ typedef struct
  * Structure for a list of lines to be sorted.
  */
 
-typedef struct
+typedef struct USort
 {
   USortLine *lines;     /* the list of lines to be sorted. 0wned. */
   int32_t    size;      /* the size of the list */
@@ -110,7 +128,9 @@ typedef struct
   UBool     ownsText;     /* True of the lineList owns the chars. */
   UCollator *collator;     /* Collator for text. 0wned.  */
   SortKeyFunction *func;   /* Function producing sortkeys */
+  SortKeyFunction2 *func2;  /* version 2 sortKey function */
   UBool     trim;
+  void    *privateData;  /* other data for a custom sortKey function */
 } USort;
 
 /**
@@ -207,6 +227,15 @@ usort_printToFILE(USort *usort, FILE *file, UConverter *toConverter);
  */
 T_USORT_API void
 usort_setSortKeyFunction(USort *usort, SortKeyFunction skFunc);
+
+/**
+ * Set the version 2 function to be used for the sort. 
+ * If set, the version 1 function is ignored.
+ * @param usort The sorted list to be set
+ * @param skFunc2 The function to be used for key generation
+ */
+T_USORT_API void
+usort_setSortKeyFunction2(USort *usort, SortKeyFunction2 skFunc2);
 
 /**
  * Get the internal UCollator object being used.

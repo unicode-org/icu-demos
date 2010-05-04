@@ -142,7 +142,7 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
   {
     int32_t ii;
-    if(aSort  && hasQueryField(lx,"showCollKey") && lineBelow  ) {
+    if(aSort  && !hasQueryField(lx,"hideCollKey") && lineBelow  ) {
       u_fprintf(lx->OUT, "<br /><tt class=\"key\">");
 
       for(ii=0;ii<aSort->lines[num].keySize;ii++) {
@@ -720,9 +720,9 @@ void showSort(LXContext *lx, const char *locale)
             isG7?"":"class=\"wide\" ",
             FSWF("EXPLORE_CollationElements_Sort", "Sort"));
 
-  u_fprintf(lx->OUT, "<input id=\"showcollkey\" type=\"checkbox\" %s name=\"showCollKey\" /><label for=\"showcollkey\">%S</label><br />\r\n",
-            (hasQueryField(lx,"showCollKey")?"checked=\"checked\"":""),
-            FSWF("EXPLORE_CollationElements_ShowCollKey", "Show Collation Key"));
+  u_fprintf(lx->OUT, "<input id=\"hidecollkey\" type=\"checkbox\" %s name=\"hideCollKey\" /><label for=\"showcollkey\">%S</label><br />\r\n",
+            (hasQueryField(lx,"hideCollKey")?"checked=\"checked\"":""),
+            FSWF("EXPLORE_CollationElements_HideCollKey", "Hide Collation Key"));
 
 /*  u_fprintf(lx->OUT, "</td>\r\n"); */
   
@@ -782,7 +782,12 @@ void showSort(LXContext *lx, const char *locale)
       }
             
       if(customSort == NULL) {
+#if defined(HAVE_LX_HOOK)
+        customSort = lx_hook_usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+#else
         customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+#endif
+        fprintf(stderr, "** COL SORT OPEN: %s\n", locale);
       }
 
       if(U_FAILURE(customError))
@@ -956,7 +961,7 @@ void showSort(LXContext *lx, const char *locale)
                     }
                     u_fprintf(lx->OUT, "\\u%04X", (uint32_t)strChars[j]);
                 }
-                if(hasQueryField(lx,"showCollKey"))
+                if(!hasQueryField(lx,"hideCollKey"))
                 {
                     int32_t ce = UCOL_NULLORDER;
                     UCollationElements *uci =  ucol_openElements(coll,
@@ -981,7 +986,7 @@ void showSort(LXContext *lx, const char *locale)
                     }
                     u_fprintf(lx->OUT, "\\u%04X", (uint32_t)schChars[i]);
                 }
-                if(hasQueryField(lx,"showCollKey"))
+                if(!hasQueryField(lx,"hideCollKey"))
                 {
                     int32_t ce = UCOL_NULLORDER;
                     UCollationElements *uci =  ucol_openElements(coll,

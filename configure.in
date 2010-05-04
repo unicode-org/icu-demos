@@ -1,7 +1,7 @@
 dnl -*-m4-*-
 dnl configure.in for ICU Apps
 dnl Steven R. Loomis
-dnl Copyright (C) 1999-2006, International Business Machines Corporation and
+dnl Copyright (C) 1999-2010, International Business Machines Corporation and
 dnl   others. All Rights Reserved.
 
 dnl Process this file with autoconf to produce a configure script
