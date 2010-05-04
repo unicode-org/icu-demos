@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2006-2007, International Business Machines
+*   Copyright (C) 2006-2010, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -168,9 +168,9 @@ public:
         : dependsOn(status),
         neededBy(status)
     {
-        dependsOn.setKeyCompartor(uhash_compareUnicodeString);
+        dependsOn.setKeyComparator(uhash_compareUnicodeString);
         dependsOn.setValueDeleter(uhash_deleteUVector);
-        neededBy.setKeyCompartor(uhash_compareUnicodeString);
+        neededBy.setKeyComparator(uhash_compareUnicodeString);
         neededBy.setValueDeleter(uhash_deleteUVector);
     }
     void addDependencyRoundtrip(const char *itemName, const UnicodeString &targetName, UErrorCode &status) {
