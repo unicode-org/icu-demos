@@ -454,7 +454,9 @@ UResourceBundle *getDisplayBundle(LXContext *lx, UErrorCode *status)
   return lx->dispRB;
 }
 
+#if defined(HAVE_LX_HOOK)
 #include "lx_hook.h"
+#endif
 
 void setBlobFromLocale(LXContext *lx, LocaleBlob* b, const char *loc, UErrorCode *status)
 {

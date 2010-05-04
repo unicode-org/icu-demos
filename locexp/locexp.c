@@ -436,8 +436,9 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patte
 }
 
 
-
+#if defined(HAVE_LX_HOOK)
 #include "lx_hook.h"
+#endif
 
 const char *getLXBaseURL(LXContext* lx, uint32_t o) {
 #if defined(HAVE_LX_HOOK)
