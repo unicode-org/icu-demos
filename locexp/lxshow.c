@@ -783,6 +783,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 {
     UErrorCode status = U_ZERO_ERROR;
     UErrorCode firstStatus;
+    UResourceBundle *subitem = NULL;
     const UChar *s  = 0;
     const UChar *toShow =0;
     UChar nothing[] = {(UChar)0x00B3, (UChar)0x0000};
@@ -944,7 +945,9 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
     for(i=0;desc[i];i++)
     {
-      
+     
+	UResType type;
+ 
         u_fprintf(lx->OUT, "<tr>\r\n<th>%d</th><td>%S</td><td>",
                   i, desc[i]);
 
@@ -952,7 +955,16 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
         exampleStatus = U_ZERO_ERROR;
 
         item = ures_getByIndex(array, i, item, &status);
-        s =    ures_getString(item, &len, &status);
+	type = ures_getType(item);
+        if(type==URES_STRING) {
+        	s =    ures_getString(item, &len, &status);
+	} else if(type==URES_ARRAY) {
+		subitem = ures_getByIndex(item, 0, subitem, &status);
+		s = ures_getString(subitem, &len, &status);
+	} else {
+		u_fprintf(lx->OUT, "[Unknown type:%d]</td></tr>", type);
+		continue;
+	}
 
         if(i==0)
             firstStatus = status;
@@ -1017,6 +1029,19 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
             u_fprintf(lx->OUT, "\r\n");
             break;
         }
+        if(type==URES_ARRAY) {
+		int i;
+		int sz = ures_getSize(item);
+		for(i=1;i<sz;i++) {
+			const UChar* s2;
+                	subitem = ures_getByIndex(item, i, subitem, &status);
+                	s2 = ures_getString(subitem, &len, &status);
+			if(U_SUCCESS(status)) {
+			u_fprintf(lx->OUT, "<br><font size='-1'>%d: %S</font>", i+1, s);
+			} else { u_fprintf(lx->OUT, "<br>%d: <b>err %s</b>", i+1, u_errorName(status)); 
+				sz=0; /* stop looping */ }
+		}
+	}
         u_fprintf(lx->OUT, "</td>");
       
         if(s) /* only if pattern exists */
@@ -1117,6 +1142,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     }
 
     showKeyAndEndItem(lx, key, locale);
+	ures_close(subitem);
     ures_close(item);
     ures_close(array);
 }
