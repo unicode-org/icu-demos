@@ -371,7 +371,7 @@ void search_setup(const UChar *buf, UErrorCode &status)
     
 }
 
-U_CALLCONV
+extern "C" {
 UBool search_fn(void *context,
                 UChar32 code,
                 UCharNameChoice nameChoice,
@@ -405,6 +405,8 @@ UBool search_fn(void *context,
     U16_APPEND_UNSAFE(workbuffer, worklen, code);
   }
   return TRUE;
+}
+
 }
 
 

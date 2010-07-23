@@ -200,4 +200,5 @@ ubrowse/icons/column-x.gif -text
 ubrowse/icons/column.gif -text
 ubrowse/icons/ubrowse.css svneol=native#text/css
 ubrowse/res/root.xlf -text
+ucd/ucd.vcproj -text
 ufortune/res/ComboList.ico -text
