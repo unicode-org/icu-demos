@@ -6,14 +6,12 @@ dnl   others. All Rights Reserved.
 
 dnl Process this file with autoconf to produce a configure script
 
+AC_INIT(icuapps, 0.0, http://icu-project.org/bugs, [ICU Apps], [http://icu-project.org])
 dnl Check a file in our files, just to make sure we have a sane setup..
-AC_INIT(usort/lib/unicode/usort.h)
+AC_CONFIG_SRCDIR(usort/lib/unicode/usort.h)
 
 dnl Will set the variable 'ICU_CONFIG'
 CHECK_ICU_CONFIG
-
-PACKAGE="icuapps"
-AC_SUBST(PACKAGE)
 
 
 AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, true)
@@ -57,6 +55,7 @@ datacustom/gendatadep/Makefile \
 icudemos/Makefile \
 xlitomatic/Makefile \
 rbbiperf/Makefile \
+ucd/Makefile \
 dumpdat/Makefile \
 rtfcvrt/Makefile \
 XMLConverter/Makefile \

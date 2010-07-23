@@ -27,7 +27,7 @@ AC_ARG_WITH(icu,
  AC_SUBST(ICU_CONFIG)
 
  if test -n "$ac_cv_path_ICU_CONFIG"; then
-    AC_MSG_CHECKING([ICU installation]))
+    AC_MSG_CHECKING([ICU installation])
     if ${ICU_CONFIG} --exists; then
         AC_MSG_RESULT([ok])
     else

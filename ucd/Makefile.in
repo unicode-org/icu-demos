@@ -1,0 +1,83 @@
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2010, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Makefile.in for ICU - icuapps/dumpdat
+## Steven R. Loomis
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+subdir= ucd
+TARGET_STUB_NAME=ucd
+
+top_builddir=..
+
+include $(top_builddir)/icuapps.mk
+
+## Target information
+TARGET = $(TARGET_STUB_NAME)$(EXEEXT)
+
+OBJECTS = $(TARGET_STUB_NAME).o ucdresult.o
+
+#CPPFLAGS += 
+CPPFLAGS+=$(CPPFLAGS_APPUTIL)
+
+# enable the following if you have some kind of readline function
+#####
+#CPPFLAGS += -DHAVE_READLINE -I/sw/include
+#LDFLAGS += -L/sw/lib -lreadline 
+#####
+
+# Enable the following if you have dlopen()
+#####
+#CPPFLAGS += -DHAVE_DL -I/sw/include
+#LDFLAGS += -L/sw/lib -ldl -bind_at_load
+####
+
+-include Makefile.local
+
+
+## List of standard targets
+all: all-local
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+## List of phony targets
+.PHONY : all all-local install install-local clean clean-local		\
+distclean distclean-local target-clean-local dist dist-local check	\
+check-local
+
+install-local: all-local
+	$(MKINSTALLDIRS) $(BINDIR)
+	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
+
+all-local: $(TARGET)
+
+dist-local:
+
+target-clean-local:
+	rm -f $(TARGET)
+
+clean-local: target-clean-local
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS)
+
+distclean-local: clean-local
+	rm -f Makefile 
+
+check-local: all-local
+	$(INVOKE) ./$(TARGET) -n -V
+	$(INVOKE) ./$(TARGET) -n u+0127 u+#295
+
+$(TARGET): $(OBJECTS)
+	$(LINK.cc) -o $@ $^ $(ICULIBS)  $(LDFLAGS_ICUIO)
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	$(MAKEFILE_POSTPROCESS)

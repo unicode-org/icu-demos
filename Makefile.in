@@ -19,7 +19,7 @@ CPPFLAGS+=$(CPPFLAGS_APPUTIL)
 
 ## Locale Explorer depends on usort [runtime].
 # Don't change this ordering!
-SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare redemo icudemos
+SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare redemo icudemos ucd
 # calexpo
 
 
