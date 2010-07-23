@@ -1,5 +1,9 @@
 /* Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved. */
 
+/*
+  Note: for help, run 'ucd h'
+*/
+
 #include "ucd.h"
 #include <unicode/ustdio.h>
 #include <unicode/utypes.h>
