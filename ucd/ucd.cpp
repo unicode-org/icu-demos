@@ -13,6 +13,10 @@
 #include <unicode/uset.h>
 #include <unicode/uclean.h>
 
+#if defined U_WINDOWS
+#include "windows.h"
+#endif
+
 /**
  * Globals
  */
@@ -29,10 +33,13 @@ UFILE *ustdin  = NULL;
 
 UConverter *def = NULL;
 
-const int32_t workmax = 2048;
+const int32_t workmax = 16384;
 UChar workbuffer[workmax] = {0};
 int32_t worklen = 0;
 
+/**
+ * If there are line endings at the end, remove them.
+ */
 void striplf(UChar *s)
 {
   int32_t l = u_strlen(s);
@@ -45,6 +52,9 @@ void striplf(UChar *s)
   }
 }
 
+/**
+ * Show the prompt 
+ */
 void prompt(void) {
   if(worklen>0) {
     u_fprintf(ustdout, "ucd %d> ", worklen);
@@ -54,6 +64,9 @@ void prompt(void) {
   u_fflush(ustdout);
 }
 
+/**
+ * Parse a file (including ustdin)
+ */
 void ucd_parseFile(UFILE *f, const char *fileName, UErrorCode &status)
 {
   int line = 0;
@@ -249,9 +262,9 @@ void ucd_cmd_info_long(const UChar *buf, int32_t len, UErrorCode &status)
 }
 
 typedef struct { 
-  UChar32 cmd;
-  const char *meaning;  
-  const char *example;  // or ""
+  UChar32 cmd;          // command character
+  const char *meaning;  // Explanation
+  const char *example;  // The rest of the example command (not including the command char itself). Could be "".
 } Help;
 
 void ucd_cmd_help(UErrorCode &status)
@@ -283,6 +296,9 @@ void ucd_cmd_help(UErrorCode &status)
   }
 }
 
+/**
+ * Show information (name) on every char in the workbuffer 
+ */
 void ucd_cmd_info(const UChar *buf, int32_t len, UErrorCode &status)
 {
   int32_t i = 0;
@@ -301,16 +317,25 @@ void ucd_cmd_info(const UChar *buf, int32_t len, UErrorCode &status)
   }
 }
 
+/**
+ * Mark that some output of the current workbuffer was printed
+ */
 void set_printed() {
   printed++;
 }
 
+/**
+ * Clear the workbuffer
+ */
 void clear_wb(void) {
     worklen=0;
     workbuffer[0]=0;
     printed=0;
 }
 
+/**
+ * If something was already printed, clear the workbuffer.
+ */
 void clear_if_printed() {
   if(printed && (worklen>0)) {
     clear_wb();
@@ -318,11 +343,22 @@ void clear_if_printed() {
   printed =0;
 }
 
-
+/**
+ * For search
+ */
 int words_count = 0;
+/**
+ * For search
+ */
 char words[16][50];
+/**
+ * For search
+ */
 char gSearchName[655];
 
+/**
+ * Set up a ubrowser-like search.
+ */
 void search_setup(const UChar *buf, UErrorCode &status)
 {
     const char *p, *q;
@@ -371,6 +407,9 @@ void search_setup(const UChar *buf, UErrorCode &status)
     
 }
 
+/**
+ * Callback function for ubrowse-like search.
+ */
 extern "C" {
 UBool search_fn(void *context,
                 UChar32 code,
@@ -405,11 +444,13 @@ UBool search_fn(void *context,
     U16_APPEND_UNSAFE(workbuffer, worklen, code);
   }
   return TRUE;
+ }
 }
 
-}
 
-
+/**
+ * Parse a single command
+ */
 void ucd_parseCommand(const UChar *cmd, UErrorCode &status)
 {
   if(cmd == NULL) {
@@ -613,6 +654,9 @@ void parseRc(UErrorCode &status)
   }
 }
 
+/**
+ * Load in/out/err files
+ */
 void initFiles(UErrorCode &status)
 {
   u_init(&status);
@@ -626,9 +670,9 @@ void initFiles(UErrorCode &status)
     return;
   }
 
-  ustderr = u_finit(stderr, NULL, NULL);
   ustdout = u_finit(stdout, NULL, NULL);
   ustdin = u_finit(stdin, NULL, NULL);
+  ustderr = u_finit(stderr, NULL, NULL);
 
   if(ustderr==NULL||ustdout==NULL||ustdin==NULL) {
     fprintf(stderr, "Error: couldn't open stdin/stdout/stderr\n");
@@ -653,6 +697,57 @@ void printFileInfo(UFILE *targ, UFILE *f, const char *name)
   u_fprintf(targ, "%s: locale %s, codepage %s\n", name, u_fgetlocale(f), u_fgetcodepage(f));
 }
 
+void printVersion() 
+{
+    UVersionInfo iver;
+    char iverstr[50];
+    UVersionInfo uver;
+    char uverstr[50];
+    u_fprintf(ustdout, "Unicode Character Database tool\n");
+    u_fprintf(ustdout, "%s\n", U_COPYRIGHT_STRING);
+    u_fprintf(ustdout, "  built against ICU %s and Unicode %s\n",
+            U_ICU_VERSION, U_UNICODE_VERSION);
+    u_getVersion(iver);
+    u_getUnicodeVersion(uver);
+    u_versionToString(iver, iverstr);
+    u_versionToString(uver, uverstr);
+    u_fprintf(ustdout, "running against ICU %s and Unicode %s\n", iverstr, uverstr);
+    printFileInfo(ustdout, ustdin, "<in ");
+    printFileInfo(ustdout, ustdout, ">out");
+    printFileInfo(ustdout, ustderr, "!err");
+}
+
+/**
+ * Print usage of the program
+ * @param argv0 argv[0]
+ */
+void printUsage(const char *argv0)
+{
+	u_fprintf(ustdout, "Usage: %s "
+#ifdef U_WINDOWS
+		" [ -W ] "
+#endif
+		" [ options.. ] [ commands... ] \n", argv0);
+
+#ifdef U_WINDOWS
+	u_fprintf(ustdout, "  On Windows, the -W option must be first, and requests a UTF-8 console.\n");
+#endif
+
+	u_fprintf(ustdout, "Options:\n"
+					   " -h   print this help text\n"
+					   " -v   set verbose (debugging) mode\n"
+					   " -n   don't read the file $HOME/" UCD_RCFILE " on startup\n"
+					   " -V   print version and configuration information\n"
+					   " -f filename             Run commands from filename\n"
+					   " -i   stay in interactive mode even if there are commands on the commandline.\n");
+
+	u_fprintf(ustdout, "\n\n commands can be any valid command, one per argument. So for example to run the \" (doublequote) command you might need to type:\n"
+		"\t%s '\"abc' \n", argv0);
+
+
+	u_fprintf(ustdout, "Try '%s h' to list valid commands.\n", argv0);
+}
+
 int main(int argc, const char** argv)
 {
   UErrorCode status = U_ZERO_ERROR;
@@ -661,34 +756,38 @@ int main(int argc, const char** argv)
   worklen=0;
   printed=0;
 
+#ifdef U_WINDOWS
+  for(int i=1;U_SUCCESS(status)&&i<argc;i++) {
+	  if(!strcmp(argv[i],"-W")) {
+		ucnv_setDefaultName("utf-8");
+		SetConsoleCP(CP_UTF8);
+		fprintf(stderr, "Windows mode enabled\n");
+	  }
+  }
+#endif
+
   initFiles(status);
   if(U_FAILURE(status)) return 1;
 
   for(int i=1;U_SUCCESS(status)&&(i<argc);i++) {
     if(argv[i][0]=='-') {
       switch(argv[i][1]) {
+	  case 'h':
+		printUsage(argv[0]);
+		DONE=1;
+		break;
+
       case 'v':
         VERBOSE=1;
         break;
-      case 'V':
+	  
+	  case 'W':
+		  break; // ignored here
+      
+	  case 'V':
         {
-          UVersionInfo iver;
-          char iverstr[50];
-          UVersionInfo uver;
-          char uverstr[50];
-          u_fprintf(ustdout, "Unicode Character Database tool\n");
-          u_fprintf(ustdout, "%s\n", U_COPYRIGHT_STRING);
-          u_fprintf(ustdout, "  built against ICU %s and Unicode %s\n",
-                    U_ICU_VERSION, U_UNICODE_VERSION);
-          u_getVersion(iver);
-          u_getUnicodeVersion(uver);
-          u_versionToString(iver, iverstr);
-          u_versionToString(uver, uverstr);
-          u_fprintf(ustdout, "running against ICU %s and Unicode %s\n", iverstr, uverstr);
-          printFileInfo(ustdout, ustdin, "<in ");
-          printFileInfo(ustdout, ustdout, ">out");
-          printFileInfo(ustdout, ustderr, "!err");
-          DONE=1;
+			printVersion();
+	        DONE=1;
         }
         return 0;
       case 'n':
@@ -719,6 +818,8 @@ int main(int argc, const char** argv)
   for(int i=1;!DONE&&U_SUCCESS(status)&&(i<argc);i++) {
     if((argv[i][0]=='-') && nodoublehyphen) {
       switch(argv[i][1]) {
+	  case 'W':
+		  break; // ignored
       case 'f':
         i++;
         ucd_parseFile(argv[i],status);

@@ -6,9 +6,6 @@
 #include "unicode/utypes.h"
 #include <unicode/ustdio.h>
 
-#include "ucdresult.h"
-
-
 /* === Special things === */
 /**
  * Startup commands
