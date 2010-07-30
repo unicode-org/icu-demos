@@ -210,10 +210,6 @@
 				RelativePath="ucd.cpp"
 				>
 			</File>
-			<File
-				RelativePath="ucdresult.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -221,10 +217,6 @@
 			>
 			<File
 				RelativePath="ucd.h"
-				>
-			</File>
-			<File
-				RelativePath="ucdresult.h"
 				>
 			</File>
 		</Filter>
