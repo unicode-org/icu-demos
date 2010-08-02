@@ -1,0 +1,49 @@
+<!--  content="Copyright (c) 2010 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" -->
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8" import="com.ibm.icu.util.ULocale" %>
+<%
+    // Usage:  
+    //	 gets and sets the "_" field, and the "locale" variable
+    // ( as a ULocale)
+%>
+<%
+	// Setup.
+	final String LOCALE_FIELD="_";
+	ULocale locale = null;
+	String locString = request.getParameter(LOCALE_FIELD);
+	if(locString != null) {
+		locale = ULocale.forLanguageTag(locString);
+		if(locale.toString().length()==0) {
+			locale = new ULocale(locString);
+		}
+	} else {
+		locale = ULocale.getDefault();
+	}
+	String localeDisplay = locale.getDisplayName(locale)+" ["+locale.toString()+"]";
+	// Use this if you need to show it as a hidden string
+	String localeHidden = "<input type=\"hidden\" name=\""+ LOCALE_FIELD +"\" value=\"" + locale.toString() + "\"/>\n";
+	
+	// TODO: localized message!
+	String localeMessage = "Locale";
+	
+	// now the actual form.
+%>
+<form method="GET" action="<%= request.getContextPath() +  request.getServletPath() %>">
+	<table class="locale">
+		<tr>
+			<th>
+				<label for="<%= LOCALE_FIELD %>">
+					<%= localeMessage %>
+				</label>
+			</th>
+			<td>
+				<input size="40" name="<%= LOCALE_FIELD %>" value="<%= locale.toLanguageTag() %>" />
+			</td>
+		</tr>
+		<tr>
+			<td><%= localeDisplay %></td>
+			<td><input type="submit"/></td>
+		</tr>
+	</table>
+</form>
+<hr/>

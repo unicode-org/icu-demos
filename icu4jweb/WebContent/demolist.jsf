@@ -5,6 +5,9 @@
 
 <div style="border: 1px solid gray; padding: 3px; float: right">
 <%
+
+request.setCharacterEncoding("utf-8"); // Shouldn't have to do this.
+
 String demolist_base=request.getContextPath();
 String demolist_jsps[] = { 
         "bidi", 
@@ -14,6 +17,7 @@ String demolist_jsps[] = {
         "interval",
         "patina",
         "numero",
+        "flexTest",
         "tuthu", 
         "testLocale", 
         //"uri",

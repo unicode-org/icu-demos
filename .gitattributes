@@ -120,16 +120,19 @@ icu4jweb/WebContent/demolist.jsf -text
 icu4jweb/WebContent/escaper.jsp -text
 icu4jweb/WebContent/files.jsp -text
 icu4jweb/WebContent/files_all.jsp -text
+icu4jweb/WebContent/flexTest.jsp -text svneol=unset#text/plain
 icu4jweb/WebContent/formatTest.jsp -text
 icu4jweb/WebContent/icuinfo.jsp -text
 icu4jweb/WebContent/index.jsp -text
 icu4jweb/WebContent/interval.jsp -text
+icu4jweb/WebContent/locale_chooser.jsf -text svneol=unset#text/plain
 icu4jweb/WebContent/numero.jsp -text
 icu4jweb/WebContent/patina.jpg -text svneol=unset#image/jpeg
 icu4jweb/WebContent/patina.jsp -text
 icu4jweb/WebContent/testLocale.jsp -text
 icu4jweb/WebContent/tuthu.jsp -text
 icu4jweb/WebContent/uri.jsp -text
+icu4jweb/src/com/ibm/icu/dev/demo/icu4jweb/ListPatternFormatter.java svneol=native#text/plain
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
 icudemos/makedata.mak -text
