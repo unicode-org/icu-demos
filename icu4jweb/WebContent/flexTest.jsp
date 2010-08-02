@@ -123,6 +123,17 @@ String[] CANONICAL_ITEMS = {
 	</tr></table>
 	
 	<hr/>
+	
+	<h3>Instructions </h3>
+	
+	<ol>	
+		<li>First, type in the locale you want to work with at the very top form, and click Submit. Use the locale ID such as en or el or ja</li>
+		<li>Second, you can type in a format skeleton, or click the buttons to build up your pattern. Click clear to start over.</li>
+		<li>To use one of the existing skeletons, click on the Available Skeletons.</li>
+	</ol>
+	
+	
+	
 	<h3>Available Skeletons:</h3>
 	<ul>
 	<%
