@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6bd94de3-1341-43ce-97fd-fa20f785343f}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{4faafd79-1b90-4e80-875e-f4495df8f18c}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Build Scripts">
+      <UniqueIdentifier>{75351ae9-28c7-4777-909a-28074215c399}</UniqueIdentifier>
+      <Extensions>mk;mak</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{e97d8814-2f13-4174-9bfd-a88420a3c690}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="calexp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgimain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\decompcb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\kangxi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="locexp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\lx_cpputils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\lx_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxbrk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxcgi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxconv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxdate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxicir.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxlocale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxnum.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxprint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxrun.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxshow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxshowloc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lxsort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="srchexp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\utimzone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="version.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wfobject.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="locexp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\resfiles.mk">
+      <Filter>Build Scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="resource\makedata.mak">
+      <Filter>Build Scripts</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

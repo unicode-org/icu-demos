@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a29c3b7a-1b54-4eef-a8bf-17164dca618d}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{cfb5438a-f6a8-468d-a376-ee545d882d66}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bidi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="convert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uchar_ob.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ucol_ob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unicode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unistrob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="unicode\bidi.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\convert.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\obsolete.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\uchar_ob.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\ucol_ob.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\unicode.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\unistrob.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unicode\unorm_ob.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

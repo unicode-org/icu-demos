@@ -1,77 +1,44 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "idnbrowser", "..\idnbrowser\idnbrowser.vcproj", "{77B06247-9A24-419D-B4C2-C281D265F1C5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "idnbrowser", "..\idnbrowser\idnbrowser.vcxproj", "{77B06247-9A24-419D-B4C2-C281D265F1C5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "locexp", "..\locexp\locexp.vcproj", "{B1EC30F8-575C-4271-B806-10ECDFFB227B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3E336F38-A961-466D-ADCF-77A8822FDCEE} = {3E336F38-A961-466D-ADCF-77A8822FDCEE}
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "locexp", "..\locexp\locexp.vcxproj", "{B1EC30F8-575C-4271-B806-10ECDFFB227B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obsolete", "..\obsolete\obsolete.vcproj", "{967B6924-B980-44F9-A742-1C2D3891EB14}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obsolete", "..\obsolete\obsolete.vcxproj", "{967B6924-B980-44F9-A742-1C2D3891EB14}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obstest", "..\test\obstest\obstest.vcproj", "{EE3A96A4-0B01-4EF9-B86D-95114E512BF1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{967B6924-B980-44F9-A742-1C2D3891EB14} = {967B6924-B980-44F9-A742-1C2D3891EB14}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obstest", "..\test\obstest\obstest.vcxproj", "{EE3A96A4-0B01-4EF9-B86D-95114E512BF1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ubrowse", "..\ubrowse\ubrowse.vcproj", "{35185E79-0A5D-448F-B879-4F17DB7A222E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-		{967A8361-DC2F-4AF9-9156-0C685511FC52} = {967A8361-DC2F-4AF9-9156-0C685511FC52}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ubrowse", "..\ubrowse\ubrowse.vcxproj", "{35185E79-0A5D-448F-B879-4F17DB7A222E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort_client", "..\usort\client\usort_client.vcproj", "{9CC2F688-2D88-435F-8A67-F4DF35C9C500}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3E336F38-A961-466D-ADCF-77A8822FDCEE} = {3E336F38-A961-466D-ADCF-77A8822FDCEE}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort_client", "..\usort\client\usort_client.vcxproj", "{9CC2F688-2D88-435F-8A67-F4DF35C9C500}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort_lib", "..\usort\lib\usort_lib.vcproj", "{3E336F38-A961-466D-ADCF-77A8822FDCEE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort_lib", "..\usort\lib\usort_lib.vcxproj", "{3E336F38-A961-466D-ADCF-77A8822FDCEE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convexp", "..\convexp\convexp.vcproj", "{148CF56D-7211-41FB-9F0C-BE29C4185347}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convexp", "..\convexp\convexp.vcxproj", "{148CF56D-7211-41FB-9F0C-BE29C4185347}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\locexp\util\util.vcproj", "{967A8361-DC2F-4AF9-9156-0C685511FC52}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\locexp\util\util.vcxproj", "{967A8361-DC2F-4AF9-9156-0C685511FC52}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbrowser", "..\nbrowser\nbrowser.vcproj", "{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbrowser", "..\nbrowser\nbrowser.vcxproj", "{B4BBFAE6-6EC0-4F74-9E7E-D450C236E223}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\scompare.vcproj", "{F4E8422B-9C62-4771-B37E-1F9309291C70}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scompare", "..\scompare\scompare.vcxproj", "{F4E8422B-9C62-4771-B37E-1F9309291C70}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "translitdemo", "..\translitdemo\translitdemo.vcproj", "{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "translitdemo", "..\translitdemo\translitdemo.vcxproj", "{6E640C8E-C72A-4A89-8332-6DD3CA13D96F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "apputil", "..\apputil\apputil.vcproj", "{FA1A8048-E5D1-4245-93BB-49B570441153}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "apputil", "..\apputil\apputil.vcxproj", "{FA1A8048-E5D1-4245-93BB-49B570441153}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redemo", "..\redemo\redemo.vcproj", "{18012D2A-8F83-4CB6-B2D1-6CAA46A6FB41}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redemo", "..\redemo\redemo.vcxproj", "{18012D2A-8F83-4CB6-B2D1-6CAA46A6FB41}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icudemos", "..\icudemos\icudemos.vcproj", "{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3E336F38-A961-466D-ADCF-77A8822FDCEE} = {3E336F38-A961-466D-ADCF-77A8822FDCEE}
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icudemos", "..\icudemos\icudemos.vcxproj", "{D6EA83A8-8D6B-4DF2-8BE3-70A38F7AB148}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gendatadep", "..\datacustom\gendatadep\gendatadep.vcproj", "{417C1878-B33C-4FA7-9017-B9D5084DFEED}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA1A8048-E5D1-4245-93BB-49B570441153} = {FA1A8048-E5D1-4245-93BB-49B570441153}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gendatadep", "..\datacustom\gendatadep\gendatadep.vcxproj", "{417C1878-B33C-4FA7-9017-B9D5084DFEED}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ucd", "..\ucd\ucd.vcxproj", "{7FAB9C19-C2AF-41A8-A0FB-197C776A1636}"
 EndProject
 Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
@@ -141,6 +108,10 @@ Global
 		{417C1878-B33C-4FA7-9017-B9D5084DFEED}.Debug|Win32.Build.0 = Debug|Win32
 		{417C1878-B33C-4FA7-9017-B9D5084DFEED}.Release|Win32.ActiveCfg = Release|Win32
 		{417C1878-B33C-4FA7-9017-B9D5084DFEED}.Release|Win32.Build.0 = Release|Win32
+		{7FAB9C19-C2AF-41A8-A0FB-197C776A1636}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7FAB9C19-C2AF-41A8-A0FB-197C776A1636}.Debug|Win32.Build.0 = Debug|Win32
+		{7FAB9C19-C2AF-41A8-A0FB-197C776A1636}.Release|Win32.ActiveCfg = Release|Win32
+		{7FAB9C19-C2AF-41A8-A0FB-197C776A1636}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

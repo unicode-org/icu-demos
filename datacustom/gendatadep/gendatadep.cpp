@@ -41,6 +41,12 @@ static const char *gHtmlFooter;
 static UVector *hiddenItems;
 static UVector *additionalItems;
 
+U_CAPI void U_EXPORT2
+uhash_deleteUVector(void *obj) {
+	U_NAMESPACE_USE
+	delete (UVector*) obj;
+}
+
 class ItemGroup {
 public:
     UBool hiddenByDefault;

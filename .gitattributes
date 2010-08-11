@@ -88,6 +88,8 @@ XMLConverter/samples/test.xml -text svneol=unset#text/xml
 XMLConverter/samples/testit.xml -text svneol=unset#text/xml
 XMLConverter/samples/utf8-sm_jis.xml -text svneol=unset#text/xml
 XMLConverter/samples/x.xml -text svneol=unset#text/xml
+apputil/apputil.vcxproj -text
+apputil/apputil.vcxproj.filters -text
 apputil/data/1x1.gif -text
 apputil/data/common-footer.html svneol=native#text/html
 apputil/data/common-leftnav.html svneol=native#text/html
@@ -96,6 +98,8 @@ apputil/data/icu.css svneol=native#text/css
 apputil/data/lines-gradient.gif -text
 apputil/data/lines.gif -text
 apputil/data/main.css svneol=native#text/css
+convexp/convexp.vcxproj -text
+convexp/convexp.vcxproj.filters -text
 datacustom/Makefile.in -text
 datacustom/README -text
 datacustom/build.xml -text
@@ -104,7 +108,8 @@ datacustom/data/datacustom.xml -text
 datacustom/data/root/datapackage.xsd -text
 datacustom/gendatadep/Makefile.in -text
 datacustom/gendatadep/gendatadep.cpp -text
-datacustom/gendatadep/gendatadep.vcproj -text
+datacustom/gendatadep/gendatadep.vcxproj -text
+datacustom/gendatadep/gendatadep.vcxproj.filters -text
 datacustom/gendatadep/listmod.cpp -text
 datacustom/gendatadep/listmod.h -text
 datacustom/gendatadep/makedata.mak -text
@@ -135,12 +140,18 @@ icu4jweb/WebContent/uri.jsp -text
 icu4jweb/src/com/ibm/icu/dev/demo/icu4jweb/ListPatternFormatter.java svneol=native#text/plain
 icudemos/icudemos-content-templ.html svneol=native#text/html
 icudemos/icudemos-page-templ.html svneol=native#text/html
+icudemos/icudemos.vcxproj -text
+icudemos/icudemos.vcxproj.filters -text
 icudemos/makedata.mak -text
+idnbrowser/idnbrowser.vcxproj -text
+idnbrowser/idnbrowser.vcxproj.filters -text
 /install-sh -text
 jle/.classpath -text
 jle/.project -text
 jle/.settings/org.eclipse.jdt.core.prefs -text
 jle/.settings/org.eclipse.jdt.ui.prefs -text
+locexp/locexp.vcxproj -text
+locexp/locexp.vcxproj.filters -text
 locexp/resource/da.txt -text svneol=unset#application/octet-stream
 locexp/resource/fr/displayproblems.gif -text
 locexp/resource/fr/explore.gif -text
@@ -170,6 +181,14 @@ locexp/resource/zh_SG/displayproblems.gif -text
 locexp/resource/zh_SG/dp.gif -text
 locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
+locexp/util/util.vcxproj -text
+locexp/util/util.vcxproj.filters -text
+nbrowser/nbrowser.vcxproj -text
+nbrowser/nbrowser.vcxproj.filters -text
+obsolete/obsolete.vcxproj -text
+obsolete/obsolete.vcxproj.filters -text
+redemo/redemo.vcxproj -text
+redemo/redemo.vcxproj.filters -text
 regressionTest/CollRegressionTest/README -text
 regressionTest/CollRegressionTest/c/Makefile.in -text
 regressionTest/CollRegressionTest/c/collationRegressionTest.cpp -text
@@ -191,7 +210,13 @@ richedit/classes/src/com/ibm/richtext/textapps/resources/unicode.hebrew.red -tex
 richedit/classes/src/com/ibm/richtext/textformat/package.html svneol=native#text/html
 richedit/classes/src/com/ibm/richtext/textlayout/attributes/package.html svneol=native#text/html
 richedit/classes/src/com/ibm/richtext/textpanel/package.html svneol=native#text/html
+scompare/scompare.vcxproj -text
+scompare/scompare.vcxproj.filters -text
+test/obstest/obstest.vcxproj -text
+test/obstest/obstest.vcxproj.filters -text
 test/testdata/uni-text.bin -text
+translitdemo/translitdemo.vcxproj -text
+translitdemo/translitdemo.vcxproj.filters -text
 ubrowse/extractStrings.sed -text
 ubrowse/icons/all-x.gif -text
 ubrowse/icons/all.gif -text
@@ -203,6 +228,15 @@ ubrowse/icons/column-x.gif -text
 ubrowse/icons/column.gif -text
 ubrowse/icons/ubrowse.css svneol=native#text/css
 ubrowse/res/root.xlf -text
+ubrowse/ubrowse.vcxproj -text
+ubrowse/ubrowse.vcxproj.filters -text
 ucd/readme.txt svneol=native#text/plain%3B+charset%3DUTF%3D8
-ucd/ucd.vcproj -text
+ucd/ucd.sln -text
+ucd/ucd.suo -text
+ucd/ucd.vcxproj -text
+ucd/ucd.vcxproj.filters -text
 ufortune/res/ComboList.ico -text
+usort/client/usort_client.vcxproj -text
+usort/client/usort_client.vcxproj.filters -text
+usort/lib/usort_lib.vcxproj -text
+usort/lib/usort_lib.vcxproj.filters -text
