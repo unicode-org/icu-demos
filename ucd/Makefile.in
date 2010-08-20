@@ -19,7 +19,7 @@ include $(top_builddir)/icuapps.mk
 ## Target information
 TARGET = $(TARGET_STUB_NAME)$(EXEEXT)
 
-OBJECTS = $(TARGET_STUB_NAME).o ucdresult.o
+OBJECTS = $(TARGET_STUB_NAME).o 
 
 #CPPFLAGS += 
 CPPFLAGS+=$(CPPFLAGS_APPUTIL)
