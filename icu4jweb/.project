@@ -3,7 +3,6 @@
 	<name>icu4jweb</name>
 	<comment></comment>
 	<projects>
-		<project>icu4jweb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

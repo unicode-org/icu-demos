@@ -118,6 +118,7 @@ datacustom/gendatadep/resources/pkgdatain.txt -text
 datacustom/gendatadep/resources/root.txt -text
 datacustom/gendatadep/ucmlocal.mk -text
 datacustom/source/com/ibm/icu/datacustom/DataCustomizer.java -text
+icu4jweb/.classpath -text
 icu4jweb/.project -text
 icu4jweb/WebContent/META-INF/MANIFEST.MF -text
 icu4jweb/WebContent/bidi.jsp -text
