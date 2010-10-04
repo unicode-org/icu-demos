@@ -13,8 +13,7 @@
   <meta content="Copyright (c) 2008-2010 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <title>Tuesdays and Thursdays</title>
-  <link href="/favicon.ico" rel="SHORTCUT ICON" />
-  <link href="/icu.css" rel="stylesheet" type="text/css" />
+<%@ include file="demohead.jsf" %>
 </head>
 <body>
 

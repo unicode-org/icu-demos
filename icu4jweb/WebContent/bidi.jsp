@@ -8,6 +8,7 @@ request.setCharacterEncoding("utf-8");
 	<head>
 		<title>Bidi Page</title>
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
+<%@ include file="demohead.jsf"  %>
 	</head>
 	<body>
 <%@ include file="demolist.jsf"  %>

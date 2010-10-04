@@ -2,6 +2,7 @@
 <head>
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 <title>Escaper</title>
+<%@ include file="demohead.jsf" %>
 </head>
 <body>
 

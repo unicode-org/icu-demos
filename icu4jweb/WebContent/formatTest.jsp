@@ -9,8 +9,7 @@
   <meta content="George Rhoten" name="AUTHOR" />
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <title>Format Tester</title>
-  <link href="/favicon.ico" rel="SHORTCUT ICON" />
-  <link href="/icu.css" rel="stylesheet" type="text/css" />
+<%@ include file="demohead.jsf" %>
 <%!
 static final String STR = "str";
 static final String NUM = "num";
@@ -170,8 +169,7 @@ function setArgumentBase(selectNode) {
 </script>
 </head>
 <body style="margin: 0.5em">
-<!-- %@ include file="demolist.jsf"  % -->
-<!--  jsp:include page="/ssi/header.fragment"  -->
+<%@ include file="demolist.jsf" %>
 
 <h2>Format Tester</h2>
 

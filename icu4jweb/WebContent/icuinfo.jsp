@@ -10,7 +10,7 @@
     .hilite {  background: yellow; }
  </style>
  <link rel="stylesheet" href="http://icu-project.org/xml/icumeta.css" />
- <link rel="stylesheet" href="http://icu-project.org/icu.css" />
+<%@ include file="demohead.jsf" %>
 </head>
 <body>
 

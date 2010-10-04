@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-  <!--  content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" -->
+  <!--  content="Copyright (c) 2008-2010 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" -->
 
-
-<div style="border: 1px solid gray; padding: 3px; float: right">
 <%
 
 request.setCharacterEncoding("utf-8"); // Shouldn't have to do this.
@@ -22,15 +20,38 @@ String demolist_jsps[] = {
         "testLocale", 
         //"uri",
         "escaper" };
+
+  String title = request.getServletPath();
+  if(title.startsWith("/")) {
+	  title = title.substring(1);
+  }
+  if(title.endsWith(".jsp")) {
+	  title = title.substring(0,title.length()-(".jsp").length());
+  }
+  if(title.equals("index")) {
+	  title = ""; // don't announce index.jsp
+  }
 %>
 
-<b>ICU4J<br/><a href="<%= demolist_base %>">Demos</a></b>:<br/>
+
+<table id="icupage" width="100%" cellpadding="0" cellspacing="0">
+    <tr id="headline">
+      <td id="hlines" valign="top" width="1px"></td>
+      <td id="fadedtop" valign="top" class="fadedtop"><a href="#main"><img src="c.gif" border="0" width="100" height="1" alt="Skip to main content" /></a></td>
+      <td id="ICUname" width="100%"><h1>
+      			<a class='subtle' href="http://icu-project.org">International Components for Unicode</a>: 
+      			ICU4J <a class='subtle' href="index.jsp">Web Demos</a>:
+      			 <%= title %></h1></td>
+    </tr>
+</table>
+
+<div class='demoList'>
+
+<b><a href="http://icu-project.org">ICU4J</a> <a href="<%= demolist_base %>">Web Demos</a></b>:<br/>
    <% for (String demolist_jsp : demolist_jsps) { 
         boolean bold = request.getServletPath().startsWith("/"+demolist_jsp);
-
+		String linkClass = bold?"currentDemo":"otherDemo";
     %>
-      <%= bold?"<b>":"" %>
-      <a href="<%= demolist_base+"/"+demolist_jsp %>.jsp"><%= demolist_jsp %></a><br/>
-      <%= bold?"</b>":"" %>
+      <div class="<%= linkClass %>"><a href="<%= demolist_base+"/"+demolist_jsp %>.jsp"><%= demolist_jsp %></a></div>
    <% } %>
 </div>

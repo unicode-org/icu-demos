@@ -9,7 +9,7 @@
 <head>
 <title>ICU Interval Demo</title>
 
-
+<%@ include file="demohead.jsf" %>
  </head>
 
 <body >

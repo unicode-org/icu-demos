@@ -1,3 +1,4 @@
+<html>
 <!-- Copyright (c) 2008 IBM. All Rights Reserved -->
 
 <%@ page contentType="text/html; charset=utf-8" import="com.ibm.icu.text.Bidi" %>
@@ -6,6 +7,10 @@
 <%@ page import="java.util.Random" %>
 
 
+<head>
+<%@ include file="demohead.jsf" %>
+<title>numero</title></head>
+<body>
 <%@ include file="demolist.jsf"  %>
 
 
@@ -50,3 +55,5 @@ To: <%= to.getDisplayName() %>
 </div>
 <hr>
 <i>based on <a href="http://icu-project.org">ICU4J <%= com.ibm.icu.util.VersionInfo.ICU_VERSION %></i>
+</body>
+</html>

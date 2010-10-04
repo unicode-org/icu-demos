@@ -6,6 +6,7 @@
 <head>
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<%@ include file="demohead.jsf" %>
 <title>ICU4J Web Demos</title>
 </head>
 <body>

@@ -128,12 +128,18 @@ icu4jweb/.settings/org.eclipse.wst.jsdt.ui.superType.container -text
 icu4jweb/.settings/org.eclipse.wst.jsdt.ui.superType.name -text
 icu4jweb/WebContent/META-INF/MANIFEST.MF -text
 icu4jweb/WebContent/bidi.jsp -text
+icu4jweb/WebContent/c.gif -text
+icu4jweb/WebContent/demohead.jsf -text svneol=unset#text/plain
 icu4jweb/WebContent/demolist.jsf -text
 icu4jweb/WebContent/escaper.jsp -text
+icu4jweb/WebContent/favicon.ico -text
 icu4jweb/WebContent/files.jsp -text
 icu4jweb/WebContent/files_all.jsp -text
 icu4jweb/WebContent/flexTest.jsp -text svneol=unset#text/plain
 icu4jweb/WebContent/formatTest.jsp -text
+icu4jweb/WebContent/gr100.gif -text
+icu4jweb/WebContent/hlines.gif -text
+icu4jweb/WebContent/icu4jweb.css -text svneol=unset#text/plain
 icu4jweb/WebContent/icuinfo.jsp -text
 icu4jweb/WebContent/index.jsp -text
 icu4jweb/WebContent/interval.jsp -text

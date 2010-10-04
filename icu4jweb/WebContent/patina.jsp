@@ -12,14 +12,15 @@
 
 <head>
 <title>ICU Patina Demo</title>
+<%@ include file="demohead.jsf" %>
+    <style type="text/css">
+            p { color: "white"; background-color: "navy"; padding: 2px; }
+    </style>
 
 
  </head>
 
 <body>
-    <style type="text/css">
-            p { color: "white"; background-color: "navy"; padding: 2px; }
-    </style>
 
 
 <%@ include file="demolist.jsf"  %>

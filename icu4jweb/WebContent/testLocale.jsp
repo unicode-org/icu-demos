@@ -1,5 +1,6 @@
 <html>
 	<head><title>Candidate List Demo</title>
+<%@ include file="demohead.jsf" %>
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 </head>
 
