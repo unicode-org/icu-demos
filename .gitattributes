@@ -120,6 +120,12 @@ datacustom/gendatadep/ucmlocal.mk -text
 datacustom/source/com/ibm/icu/datacustom/DataCustomizer.java -text
 icu4jweb/.classpath -text
 icu4jweb/.project -text
+icu4jweb/.settings/.jsdtscope -text
+icu4jweb/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+icu4jweb/.settings/org.eclipse.wst.common.component -text
+icu4jweb/.settings/org.eclipse.wst.common.project.facet.core.xml -text svneol=unset#text/plain
+icu4jweb/.settings/org.eclipse.wst.jsdt.ui.superType.container -text
+icu4jweb/.settings/org.eclipse.wst.jsdt.ui.superType.name -text
 icu4jweb/WebContent/META-INF/MANIFEST.MF -text
 icu4jweb/WebContent/bidi.jsp -text
 icu4jweb/WebContent/demolist.jsf -text
