@@ -90,6 +90,14 @@ idnbrowser/debug
 idnbrowser/idnbrowser
 idnbrowser/release
 /include
+iucsamples/c/greeting_example/greeting_example
+iucsamples/c/local.mk
+iucsamples/c/pen_example/myapp
+iucsamples/c/pen_example/myapp.dat
+iucsamples/c/pen_example/tmp
+iucsamples/c/testing_icu/testing_icu
+iucsamples/j/*.class
+iucsamples/j/local.mk
 /lib
 locexp/#
 locexp/(c)

@@ -159,6 +159,8 @@ icudemos/makedata.mak -text
 idnbrowser/idnbrowser.vcxproj -text
 idnbrowser/idnbrowser.vcxproj.filters -text
 /install-sh -text
+iucsamples/j/data/myapp/es.res -text
+iucsamples/j/data/myapp/root.res -text
 jle/.classpath -text
 jle/.project -text
 jle/.settings/org.eclipse.jdt.core.prefs -text
