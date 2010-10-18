@@ -16,10 +16,10 @@ int main(int argc, const char *argv[])
   out = u_finit(stdout, loc, NULL);
 
   UChar world[256];
-  uloc_getDisplayCountry("und_001", loc, world, 256, &status);
+  uloc_getDisplayCountry("und_001", NULL, world, 256, &status);
   ASSERT_OK(status);
 
-  u_fprintf(out, "%s: Hello, %S!\n", loc, world);
+  u_fprintf(out, "Hello, %S!\n", world);
 
   u_fclose(out);
 
