@@ -96,6 +96,7 @@ iucsamples/c/data/tmp
 iucsamples/c/local.mk
 iucsamples/c/s13_hello/s13_hello
 iucsamples/c/s14_hola/s13_hello
+iucsamples/c/s24_brkw/s24_brkw
 iucsamples/c/s33_res/s33_res
 iucsamples/c/s40_pen/s33_res
 iucsamples/c/s41_msg/s41_msg
