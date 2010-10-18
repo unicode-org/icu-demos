@@ -4,5 +4,6 @@ IUC 34 Samples
 
 This source package is provided as a convenience, and is not fully 'productized'.
 
-if ICU is installed, 'make check' should build samples in each dir.
+C: if ICU is installed, 'make check' should build samples in each dir.
 
+J: create  j/local.mk   with "ICU4J=/Users/srl/Downloads/icu4j-4_4.jar"   then 'make check' should operate.

@@ -20,3 +20,22 @@ check-%: %.class
 
 %.class: %.java
 	javac -classpath $(CLASSPATH) $^
+
+clean:
+	-rm *.class
+	-rm -f myapp.lst
+
+CDATA=../c/data
+
+#
+# This target rebuilds data from C
+#
+rebuild-data: $(CDATA)/myapp.dat
+	-rm -rf data/myapp/*.res
+	-mkdir -p data/myapp
+	icupkg -l $(CDATA)/myapp.dat > myapp.lst
+	icupkg -x myapp.lst -tb -d data $(CDATA)/myapp.dat
+	-rm -f myapp.lst
+
+$(CDATA)/myapp.dat:
+	make -C $(CDATA) clean all
