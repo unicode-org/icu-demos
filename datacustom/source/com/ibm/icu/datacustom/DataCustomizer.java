@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * Copyright (C) 2007-2007, International Business Machines Corporation and   *
+ * Copyright (C) 2007-2010, International Business Machines Corporation and   *
  * others. All Rights Reserved.                                               *
  ******************************************************************************
  */
@@ -176,7 +176,7 @@ public class DataCustomizer extends HttpServlet {
             }
             // TODO: Clean up after ourselves in case of a problem.
             //sessionDir.deleteOnExit();
-            if (!regenerateResIndexFiles(response, indexesToGenerateVect, localesToIndexVect, sessionDir)) {
+            if (!regenerateResIndexFiles(response, indexesToGenerateVect, localesToIndexVect, sessionDir, icuDataVersion)) {
                 return;  /* Something bad happened during the generation. */
             }
             if (icuDataType == ICUDataFormat.ICU4C) {
@@ -488,7 +488,7 @@ public class DataCustomizer extends HttpServlet {
         return "";
     }
 
-    private boolean regenerateResIndexFiles(HttpServletResponse response, Vector<String> listOfIndexes, Vector<String> listOfFiles, File targetDirectory)
+    private boolean regenerateResIndexFiles(HttpServletResponse response, Vector<String> listOfIndexes, Vector<String> listOfFiles, File targetDirectory, String icuDataVersion)
         throws IOException
     {
         for (int idx = 0; idx < listOfIndexes.size(); idx++) {
@@ -509,7 +509,7 @@ public class DataCustomizer extends HttpServlet {
             // TODO: Remove res_index.res when it's empty? 
             // Are we really indexing anything?
             //if (listOfLocales.size() > 0) {
-                if (!regenerateResIndex(response, listOfLocales, treeIndexDir)) {
+                if (!regenerateResIndex(response, listOfLocales, treeIndexDir, icuDataVersion)) {
                     reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, indexFile + " could not be regenerated.");
                     return false;
                 }
@@ -524,7 +524,7 @@ public class DataCustomizer extends HttpServlet {
         return true;
     }
     
-    private boolean regenerateResIndex(HttpServletResponse response, Vector<String> listOfLocales, File targetDirectory)
+    private boolean regenerateResIndex(HttpServletResponse response, Vector<String> listOfLocales, File targetDirectory, String icuDataVersion)
         throws IOException
     {
         String resIndexFileStr = targetDirectory.getAbsolutePath() + File.separator + "res_index.txt";
@@ -550,8 +550,15 @@ public class DataCustomizer extends HttpServlet {
         dataToPackageWriter.println("}");
         dataToPackageWriter.close();
         
+        // If building 3.8 or 4.0 data, use formatVersion 1 option
+        String genrbFormatVersionOption;
+        if (icuDataVersion.equals("40") || icuDataVersion.equals("38")) {
+            genrbFormatVersionOption = "--formatVersion 1";
+        } else {
+            genrbFormatVersionOption = "";
+        }
         // Compile res_index.txt
-        String command = "genrb " + resIndexFileStr;
+        String command = "genrb " + genrbFormatVersionOption + " " + resIndexFileStr;
         if (!runCommand(response, command, targetDirectory, "Index regeneration")) {
             return false;
         }
