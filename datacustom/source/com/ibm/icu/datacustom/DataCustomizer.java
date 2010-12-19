@@ -296,8 +296,17 @@ public class DataCustomizer extends HttpServlet {
                 reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 return;
             }*/
-            String pkgCommand = "icupkg -tb -s " + srcDir
-            	+ " -d " + packagePath + " " + itemToRead;
+            /* Use pre-46 icupkg for pre-46 data.
+             * This is needed for some data files (e.g. collation res files).
+             */
+            String icupkgCommand;
+            if (!icuDataVersion.equals("46")) {
+                icupkgCommand = "icupkg44";
+            } else {
+                icupkgCommand = "icupkg";
+            }
+            String pkgCommand = icupkgCommand + " -tb -s " + srcDir
+                + " -d " + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
                 return;
             }
