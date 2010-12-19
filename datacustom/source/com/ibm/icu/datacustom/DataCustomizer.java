@@ -278,6 +278,13 @@ public class DataCustomizer extends HttpServlet {
 
         // Copy and convert each file from big endian to little endian.
         String srcDir = toolHomeSrcDirStr + "icudt" + icuDataVersion + ENDIAN_STR + "/";
+        
+        String icupkgCommand;
+        if (Integer.parseInt(icuDataVersion) < 46) {
+            icupkgCommand = "icupkg44";
+        } else {
+            icupkgCommand = "icupkg";
+        }
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
             int treeIndex = itemToRead.lastIndexOf('/');
@@ -299,12 +306,6 @@ public class DataCustomizer extends HttpServlet {
             /* Use pre-46 icupkg for pre-46 data.
              * This is needed for some data files (e.g. collation res files).
              */
-            String icupkgCommand;
-            if (!icuDataVersion.equals("46")) {
-                icupkgCommand = "icupkg44";
-            } else {
-                icupkgCommand = "icupkg";
-            }
             String pkgCommand = icupkgCommand + " -tb -s " + srcDir
                 + " -d " + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
