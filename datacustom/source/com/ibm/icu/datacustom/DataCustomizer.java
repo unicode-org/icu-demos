@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * Copyright (C) 2007-2010, International Business Machines Corporation and   *
+ * Copyright (C) 2007-2011, International Business Machines Corporation and   *
  * others. All Rights Reserved.                                               *
  ******************************************************************************
  */
@@ -228,7 +228,14 @@ public class DataCustomizer extends HttpServlet {
             //reportError(response, HttpServletResponse.SC_CONFLICT, "Please finish the download of your existing request before creating a new request.");
             //return;
         }
-        String pkgCommand = "icupkg -tl -a " + packageList
+        
+        String icupkgCommand;
+        if (Integer.parseInt(icuDataVersion) == 40) {
+            icupkgCommand = "icupkg44";
+        } else {
+            icupkgCommand = "icupkg";
+        }
+        String pkgCommand = icupkgCommand + " -tl -a " + packageList
             + " -s " + toolHomeSrcDirStr + baseDataName
             + " new " + generatedDatFile;
         if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool")) {
@@ -239,7 +246,7 @@ public class DataCustomizer extends HttpServlet {
         }
         packageList = "";
         for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
-            String pkgIndexesCommand = "icupkg -tl -a " + (String)generatedIndexesVect.elementAt(idx) + " -s . " + generatedDatFile;
+            String pkgIndexesCommand = icupkgCommand + " -tl -a " + (String)generatedIndexesVect.elementAt(idx) + " -s . " + generatedDatFile;
             if (!runCommand(response, pkgIndexesCommand, sessionDir, "Packaging indexes tool")) {
                 return;
             }
@@ -282,6 +289,8 @@ public class DataCustomizer extends HttpServlet {
         String icupkgCommand;
         if (Integer.parseInt(icuDataVersion) < 46) {
             icupkgCommand = "icupkg44";
+        } else if (Integer.parseInt(icuDataVersion) == 46) {
+            icupkgCommand = "icupkg46";
         } else {
             icupkgCommand = "icupkg";
         }
