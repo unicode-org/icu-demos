@@ -1,0 +1,29 @@
+<%// Copyright 2011 IBM Corporation and Others. All rights reserved. %>
+<%0
+#include "lxuser.h"
+#include <string>
+#include "unicode/datefmt.h"
+%>
+<%
+LXUSER
+    UErrorCode status=U_ZERO_ERROR;
+%>
+
+<%
+    LocalPointer<DateFormat> df(DateFormat::createDateTimeInstance(DateFormat::kDefault,DateFormat::kDefault,lxu->ul));
+
+    UDate aDate = 1506195296000.0;
+    UnicodeString aString;
+%>
+
+<h3>Date/Time</h3>
+
+Date/Time example: <%=%S df->format(aDate,aString).getTerminatedBuffer() %>
+
+
+
+
+<%1
+setPattern("xyzzy",status); // no direct access
+
+%>

@@ -148,6 +148,9 @@ locexp/util/Makefile
 locexp/util/Makefile.local
 locexp/util/Release
 locexp/util/lib*lxutil*
+locexp2/itmpl/locexp2_tmpl.cpp
+locexp2/locexp2.xcodeproj/project.xcworkspace/xcuserdata
+locexp2/locexp2.xcodeproj/xcuserdata
 nbrowser/*.d
 nbrowser/*.o
 nbrowser/*.vcxproj.user

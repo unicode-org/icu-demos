@@ -1,0 +1,24 @@
+<%// Copyright 2011 IBM Corporation and Others. All rights reserved. %>
+<!-- begin lxfooter -->
+<% LXUSER %>
+<%0 
+    static int gggcount=0;
+%>
+
+    <div class='footer'>
+        <i>hitcount=<%=%d ++gggcount %></i>
+    </div>
+
+
+    <hr>
+
+        <a href="<%=%s SCRIPT_NAME %>/env.itml">Env Test</a>
+    <br>
+        ul=<%=%s lxu->ul %>, 
+        dl=<%=%s lxu->dl %>
+
+</body>
+</html>
+<%1
+setPattern("xyzzy",status); // no direct access
+%>

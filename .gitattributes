@@ -198,6 +198,16 @@ locexp/resource/zh_SG/explore.gif -text
 locexp/resource/zh_TW.txt -text
 locexp/util/util.vcxproj -text
 locexp/util/util.vcxproj.filters -text
+locexp2/itmpl/choose.itml -text
+locexp2/itmpl/env.itml -text
+locexp2/itmpl/if_date.itml -text
+locexp2/itmpl/index.itml -text
+locexp2/itmpl/info.itml -text
+locexp2/itmpl/lxfooter.itml -text
+locexp2/itmpl/lxheader.itml -text
+locexp2/itmpl/lxsetup.itml -text
+locexp2/locexp2.xcodeproj/project.pbxproj -text
+locexp2/locexp2.xcodeproj/project.xcworkspace/contents.xcworkspacedata -text
 nbrowser/nbrowser.vcxproj -text
 nbrowser/nbrowser.vcxproj.filters -text
 obsolete/obsolete.vcxproj -text

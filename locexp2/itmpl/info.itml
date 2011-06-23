@@ -1,0 +1,31 @@
+<%// Copyright 2011 IBM Corporation and Others. All rights reserved. %>
+<%0
+#include "lxuser.h"
+#include <string>
+%>
+<%
+LXBEGIN
+%>
+<%@ dispatch to="lxsetup" %><%
+LXUSER
+
+lxu->pageTitle=UnicodeString("Info About: ")+lxu->getDisplayName();
+%>
+<%@ dispatch to="lxheader" %>
+
+<a href="./choose.itml?_d=<%=%s lxu->dl %>">(View Other)</a><br/>
+
+<hr>
+
+
+<!-- date/time -->
+<%@ dispatch to="if_date" %>
+
+
+
+
+
+<%@ dispatch to="lxfooter" %>
+<%
+LXEND
+%>

@@ -1,0 +1,479 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1C527CA613B0212300D1F6F7 /* libfcgi++.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CA413B0212300D1F6F7 /* libfcgi++.2.dylib */; };
+		1C527CA713B0212300D1F6F7 /* libfcgi.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CA513B0212300D1F6F7 /* libfcgi.2.dylib */; };
+		1C527CAC13B0214F00D1F6F7 /* libicuio.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CA813B0214F00D1F6F7 /* libicuio.49.0.1.dylib */; };
+		1C527CAD13B0214F00D1F6F7 /* libicudata.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CA913B0214F00D1F6F7 /* libicudata.49.0.1.dylib */; };
+		1C527CAE13B0214F00D1F6F7 /* libicui18n.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CAA13B0214F00D1F6F7 /* libicui18n.49.0.1.dylib */; };
+		1C527CAF13B0214F00D1F6F7 /* libicuuc.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CAB13B0214F00D1F6F7 /* libicuuc.49.0.1.dylib */; };
+		1C527CB313B026C200D1F6F7 /* lxmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C527CB113B026C200D1F6F7 /* lxmain.cpp */; };
+		1C527CB613B128C200D1F6F7 /* locexp2 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1CE7B1A81381C184009B7476 /* locexp2 */; };
+		1C527CCD13B25D2200D1F6F7 /* webhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C527CCB13B25D2200D1F6F7 /* webhandler.cpp */; };
+		1C7E955813B2A0B30067B6D3 /* itml2cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E955713B2A0B30067B6D3 /* itml2cpp.cpp */; };
+		1C7E955D13B2A0E20067B6D3 /* libicuio.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CA813B0214F00D1F6F7 /* libicuio.49.0.1.dylib */; };
+		1C7E955E13B2A0F10067B6D3 /* libicudata.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CA913B0214F00D1F6F7 /* libicudata.49.0.1.dylib */; };
+		1C7E955F13B2A0F30067B6D3 /* libicui18n.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CAA13B0214F00D1F6F7 /* libicui18n.49.0.1.dylib */; };
+		1C7E956013B2A0F50067B6D3 /* libicuuc.49.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C527CAB13B0214F00D1F6F7 /* libicuuc.49.0.1.dylib */; };
+		1C9CE79713B2A9ED0082C5F2 /* locexp2_tmpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9CE79613B2A9ED0082C5F2 /* locexp2_tmpl.cpp */; };
+		1C9CE7A413B2B11F0082C5F2 /* itmplhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9CE7A213B2B11F0082C5F2 /* itmplhandler.cpp */; };
+		1C9CE7AA13B2BD000082C5F2 /* ItmlParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9CE7A813B2BD000082C5F2 /* ItmlParser.cpp */; };
+		1C9CE7CC13B3E2E70082C5F2 /* lxutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9CE7CA13B3E2E70082C5F2 /* lxutils.cpp */; };
+		1C9CE7D113B3F8700082C5F2 /* cgiutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9CE7CF13B3F8700082C5F2 /* cgiutils.cpp */; };
+		1C9CE7D313B3FD640082C5F2 /* lxuser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9CE7D213B3FD640082C5F2 /* lxuser.cpp */; };
+		1C9CE7D513B4002E0082C5F2 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CE7D413B4002E0082C5F2 /* CoreFoundation.framework */; };
+		1CE7B1B71381C877009B7476 /* ufcgi.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CE7B1B51381C877009B7476 /* ufcgi.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1C7E956113B2A2410067B6D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1CE7B19F1381C183009B7476 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C7E955313B2A0B30067B6D3;
+			remoteInfo = itmpl2cpp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1C527CB513B128B600D1F6F7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /xsrl/II/bin;
+			dstSubfolderSpec = 0;
+			files = (
+				1C527CB613B128C200D1F6F7 /* locexp2 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1C527CA413B0212300D1F6F7 /* libfcgi++.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libfcgi++.2.dylib"; path = "/opt/local/lib/libfcgi++.2.dylib"; sourceTree = "<absolute>"; };
+		1C527CA513B0212300D1F6F7 /* libfcgi.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfcgi.2.dylib; path = /opt/local/lib/libfcgi.2.dylib; sourceTree = "<absolute>"; };
+		1C527CA813B0214F00D1F6F7 /* libicuio.49.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicuio.49.0.1.dylib; path = /xsrl/II/lib/libicuio.49.0.1.dylib; sourceTree = "<absolute>"; };
+		1C527CA913B0214F00D1F6F7 /* libicudata.49.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicudata.49.0.1.dylib; path = /xsrl/II/lib/libicudata.49.0.1.dylib; sourceTree = "<absolute>"; };
+		1C527CAA13B0214F00D1F6F7 /* libicui18n.49.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicui18n.49.0.1.dylib; path = /xsrl/II/lib/libicui18n.49.0.1.dylib; sourceTree = "<absolute>"; };
+		1C527CAB13B0214F00D1F6F7 /* libicuuc.49.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicuuc.49.0.1.dylib; path = /xsrl/II/lib/libicuuc.49.0.1.dylib; sourceTree = "<absolute>"; };
+		1C527CB113B026C200D1F6F7 /* lxmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lxmain.cpp; sourceTree = "<group>"; };
+		1C527CB213B026C200D1F6F7 /* lxmain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lxmain.h; sourceTree = "<group>"; };
+		1C527CCB13B25D2200D1F6F7 /* webhandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = webhandler.cpp; sourceTree = "<group>"; };
+		1C527CCC13B25D2200D1F6F7 /* webhandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = webhandler.h; sourceTree = "<group>"; };
+		1C7E955413B2A0B30067B6D3 /* itmpl2cpp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = itmpl2cpp; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C7E955713B2A0B30067B6D3 /* itml2cpp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = itml2cpp.cpp; sourceTree = "<group>"; };
+		1C9CE79513B2A93B0082C5F2 /* index.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.itml; sourceTree = "<group>"; };
+		1C9CE79613B2A9ED0082C5F2 /* locexp2_tmpl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = locexp2_tmpl.cpp; path = itmpl/locexp2_tmpl.cpp; sourceTree = SOURCE_ROOT; };
+		1C9CE7A213B2B11F0082C5F2 /* itmplhandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = itmplhandler.cpp; path = ../itmpl2cpp/itmplhandler.cpp; sourceTree = "<group>"; };
+		1C9CE7A313B2B11F0082C5F2 /* itmplhandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = itmplhandler.h; path = ../itmpl2cpp/itmplhandler.h; sourceTree = "<group>"; };
+		1C9CE7A713B2BC2D0082C5F2 /* lxheader.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lxheader.itml; sourceTree = "<group>"; };
+		1C9CE7A813B2BD000082C5F2 /* ItmlParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItmlParser.cpp; sourceTree = "<group>"; };
+		1C9CE7A913B2BD000082C5F2 /* ItmlParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItmlParser.h; sourceTree = "<group>"; };
+		1C9CE7C613B3CA8D0082C5F2 /* lxfooter.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lxfooter.itml; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.html; };
+		1C9CE7C713B3D8040082C5F2 /* lxuser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lxuser.h; sourceTree = "<group>"; };
+		1C9CE7C813B3DA3E0082C5F2 /* lxsetup.itml */ = {isa = PBXFileReference; explicitFileType = text.html.documentation; fileEncoding = 4; path = lxsetup.itml; sourceTree = "<group>"; };
+		1C9CE7C913B3E1AC0082C5F2 /* env.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = env.itml; sourceTree = "<group>"; };
+		1C9CE7CA13B3E2E70082C5F2 /* lxutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lxutils.cpp; sourceTree = "<group>"; };
+		1C9CE7CB13B3E2E70082C5F2 /* lxutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lxutils.h; sourceTree = "<group>"; };
+		1C9CE7CD13B3E6D40082C5F2 /* choose.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = choose.itml; sourceTree = "<group>"; };
+		1C9CE7CE13B3F3660082C5F2 /* info.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = info.itml; sourceTree = "<group>"; };
+		1C9CE7CF13B3F8700082C5F2 /* cgiutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cgiutils.cpp; sourceTree = "<group>"; };
+		1C9CE7D013B3F8700082C5F2 /* cgiutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cgiutils.h; sourceTree = "<group>"; };
+		1C9CE7D213B3FD640082C5F2 /* lxuser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lxuser.cpp; sourceTree = "<group>"; };
+		1C9CE7D413B4002E0082C5F2 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		1C9CE7D613B401740082C5F2 /* if_date.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = if_date.itml; sourceTree = "<group>"; };
+		1CE7B1A81381C184009B7476 /* locexp2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = locexp2; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CE7B1B51381C877009B7476 /* ufcgi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ufcgi.c; sourceTree = "<group>"; };
+		1CE7B1B61381C877009B7476 /* ufcgi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ufcgi.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1C7E955113B2A0B30067B6D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C7E955D13B2A0E20067B6D3 /* libicuio.49.0.1.dylib in Frameworks */,
+				1C7E955E13B2A0F10067B6D3 /* libicudata.49.0.1.dylib in Frameworks */,
+				1C7E956013B2A0F50067B6D3 /* libicuuc.49.0.1.dylib in Frameworks */,
+				1C7E955F13B2A0F30067B6D3 /* libicui18n.49.0.1.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CE7B1A51381C184009B7476 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C9CE7D513B4002E0082C5F2 /* CoreFoundation.framework in Frameworks */,
+				1C527CA713B0212300D1F6F7 /* libfcgi.2.dylib in Frameworks */,
+				1C527CAF13B0214F00D1F6F7 /* libicuuc.49.0.1.dylib in Frameworks */,
+				1C527CAD13B0214F00D1F6F7 /* libicudata.49.0.1.dylib in Frameworks */,
+				1C527CAC13B0214F00D1F6F7 /* libicuio.49.0.1.dylib in Frameworks */,
+				1C527CAE13B0214F00D1F6F7 /* libicui18n.49.0.1.dylib in Frameworks */,
+				1C527CA613B0212300D1F6F7 /* libfcgi++.2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1C527CB013B026A000D1F6F7 /* main */ = {
+			isa = PBXGroup;
+			children = (
+				1C527CB113B026C200D1F6F7 /* lxmain.cpp */,
+				1C527CB213B026C200D1F6F7 /* lxmain.h */,
+			);
+			name = main;
+			path = cgi;
+			sourceTree = "<group>";
+		};
+		1C527CC713B1544B00D1F6F7 /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1C527CA813B0214F00D1F6F7 /* libicuio.49.0.1.dylib */,
+				1C527CA913B0214F00D1F6F7 /* libicudata.49.0.1.dylib */,
+				1C527CAA13B0214F00D1F6F7 /* libicui18n.49.0.1.dylib */,
+				1C527CAB13B0214F00D1F6F7 /* libicuuc.49.0.1.dylib */,
+				1C527CA413B0212300D1F6F7 /* libfcgi++.2.dylib */,
+				1C527CA513B0212300D1F6F7 /* libfcgi.2.dylib */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1C7E955613B2A0B30067B6D3 /* itmpl2cpp */ = {
+			isa = PBXGroup;
+			children = (
+				1C7E955713B2A0B30067B6D3 /* itml2cpp.cpp */,
+				1C9CE7A813B2BD000082C5F2 /* ItmlParser.cpp */,
+				1C9CE7A913B2BD000082C5F2 /* ItmlParser.h */,
+			);
+			path = itmpl2cpp;
+			sourceTree = "<group>";
+		};
+		1C7E957213B2A5130067B6D3 /* itmpl */ = {
+			isa = PBXGroup;
+			children = (
+				1C9CE79613B2A9ED0082C5F2 /* locexp2_tmpl.cpp */,
+				1C9CE79513B2A93B0082C5F2 /* index.itml */,
+				1C9CE7A713B2BC2D0082C5F2 /* lxheader.itml */,
+				1C9CE7C613B3CA8D0082C5F2 /* lxfooter.itml */,
+				1C9CE7C713B3D8040082C5F2 /* lxuser.h */,
+				1C9CE7C813B3DA3E0082C5F2 /* lxsetup.itml */,
+				1C9CE7C913B3E1AC0082C5F2 /* env.itml */,
+				1C9CE7CA13B3E2E70082C5F2 /* lxutils.cpp */,
+				1C9CE7CB13B3E2E70082C5F2 /* lxutils.h */,
+				1C9CE7CD13B3E6D40082C5F2 /* choose.itml */,
+				1C9CE7CE13B3F3660082C5F2 /* info.itml */,
+				1C9CE7D213B3FD640082C5F2 /* lxuser.cpp */,
+				1C9CE7D613B401740082C5F2 /* if_date.itml */,
+			);
+			path = itmpl;
+			sourceTree = SOURCE_ROOT;
+		};
+		1CE7B19D1381C183009B7476 = {
+			isa = PBXGroup;
+			children = (
+				1C9CE7D413B4002E0082C5F2 /* CoreFoundation.framework */,
+				1C527CB013B026A000D1F6F7 /* main */,
+				1CE7B1B41381C844009B7476 /* ufcgi */,
+				1C527CC713B1544B00D1F6F7 /* Linked Frameworks */,
+				1C7E955613B2A0B30067B6D3 /* itmpl2cpp */,
+				1CE7B1A91381C184009B7476 /* Products */,
+				1C7E957213B2A5130067B6D3 /* itmpl */,
+			);
+			sourceTree = "<group>";
+		};
+		1CE7B1A91381C184009B7476 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1CE7B1A81381C184009B7476 /* locexp2 */,
+				1C7E955413B2A0B30067B6D3 /* itmpl2cpp */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1CE7B1B41381C844009B7476 /* ufcgi */ = {
+			isa = PBXGroup;
+			children = (
+				1CE7B1B51381C877009B7476 /* ufcgi.c */,
+				1CE7B1B61381C877009B7476 /* ufcgi.h */,
+				1C527CCB13B25D2200D1F6F7 /* webhandler.cpp */,
+				1C527CCC13B25D2200D1F6F7 /* webhandler.h */,
+				1C9CE7CF13B3F8700082C5F2 /* cgiutils.cpp */,
+				1C9CE7A213B2B11F0082C5F2 /* itmplhandler.cpp */,
+				1C9CE7A313B2B11F0082C5F2 /* itmplhandler.h */,
+				1C9CE7D013B3F8700082C5F2 /* cgiutils.h */,
+			);
+			name = ufcgi;
+			path = cgi;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1C7E955313B2A0B30067B6D3 /* itmpl2cpp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C7E955A13B2A0B30067B6D3 /* Build configuration list for PBXNativeTarget "itmpl2cpp" */;
+			buildPhases = (
+				1C7E955013B2A0B30067B6D3 /* Sources */,
+				1C7E955113B2A0B30067B6D3 /* Frameworks */,
+				1C9CE7C513B2E5A80082C5F2 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = itmpl2cpp;
+			productName = itmpl2cpp;
+			productReference = 1C7E955413B2A0B30067B6D3 /* itmpl2cpp */;
+			productType = "com.apple.product-type.tool";
+		};
+		1CE7B1A71381C184009B7476 /* locexp2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CE7B1B11381C184009B7476 /* Build configuration list for PBXNativeTarget "locexp2" */;
+			buildPhases = (
+				1CE7B1A41381C184009B7476 /* Sources */,
+				1CE7B1A51381C184009B7476 /* Frameworks */,
+				1C527CB513B128B600D1F6F7 /* CopyFiles */,
+				1C527CC913B1737300D1F6F7 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1C7E956213B2A2410067B6D3 /* PBXTargetDependency */,
+			);
+			name = locexp2;
+			productName = locexp2;
+			productReference = 1CE7B1A81381C184009B7476 /* locexp2 */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1CE7B19F1381C183009B7476 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1CE7B1A21381C183009B7476 /* Build configuration list for PBXProject "locexp2" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1CE7B19D1381C183009B7476;
+			productRefGroup = 1CE7B1A91381C184009B7476 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1CE7B1A71381C184009B7476 /* locexp2 */,
+				1C7E955313B2A0B30067B6D3 /* itmpl2cpp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1C527CC913B1737300D1F6F7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "killall -9 locexp2 ; sleep 1 ; /xsrl/icu-bin/spawn-locexp2";
+			showEnvVarsInLog = 0;
+		};
+		1C9CE7C513B2E5A80082C5F2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "(env DYLD_LIBRARY_PATH=/xsrl/II/lib \"${BUILT_PRODUCTS_DIR}/${TARGETNAME}\" \"${SRCROOT}\"/itmpl/*.itml > \"${SRCROOT}\"/itmpl/locexp2_tmpl.cpp ) || /usr/bin/true";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1C7E955013B2A0B30067B6D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C7E955813B2A0B30067B6D3 /* itml2cpp.cpp in Sources */,
+				1C9CE7AA13B2BD000082C5F2 /* ItmlParser.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CE7B1A41381C184009B7476 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CE7B1B71381C877009B7476 /* ufcgi.c in Sources */,
+				1C527CB313B026C200D1F6F7 /* lxmain.cpp in Sources */,
+				1C527CCD13B25D2200D1F6F7 /* webhandler.cpp in Sources */,
+				1C9CE79713B2A9ED0082C5F2 /* locexp2_tmpl.cpp in Sources */,
+				1C9CE7A413B2B11F0082C5F2 /* itmplhandler.cpp in Sources */,
+				1C9CE7CC13B3E2E70082C5F2 /* lxutils.cpp in Sources */,
+				1C9CE7D113B3F8700082C5F2 /* cgiutils.cpp in Sources */,
+				1C9CE7D313B3FD640082C5F2 /* lxuser.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1C7E956213B2A2410067B6D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C7E955313B2A0B30067B6D3 /* itmpl2cpp */;
+			targetProxy = 1C7E956113B2A2410067B6D3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1C7E955B13B2A0B30067B6D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				HEADER_SEARCH_PATHS = /xsrl/II/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../II/lib\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1C7E955C13B2A0B30067B6D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				HEADER_SEARCH_PATHS = /xsrl/II/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../II/lib\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		1CE7B1AF1381C184009B7476 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/xsrl/II/include,
+					/opt/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/xsrl/II/lib,
+					/opt/local/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1CE7B1B01381C184009B7476 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/xsrl/II/include,
+					/opt/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/xsrl/II/lib,
+					/opt/local/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		1CE7B1B21381C184009B7476 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1CE7B1B31381C184009B7476 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1C7E955A13B2A0B30067B6D3 /* Build configuration list for PBXNativeTarget "itmpl2cpp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C7E955B13B2A0B30067B6D3 /* Debug */,
+				1C7E955C13B2A0B30067B6D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1CE7B1A21381C183009B7476 /* Build configuration list for PBXProject "locexp2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CE7B1AF1381C184009B7476 /* Debug */,
+				1CE7B1B01381C184009B7476 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1CE7B1B11381C184009B7476 /* Build configuration list for PBXNativeTarget "locexp2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CE7B1B21381C184009B7476 /* Debug */,
+				1CE7B1B31381C184009B7476 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1CE7B19F1381C183009B7476 /* Project object */;
+}

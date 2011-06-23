@@ -1,0 +1,14 @@
+<%// Copyright 2011 IBM Corporation and Others. All rights reserved. %>
+<%0
+#include "lxuser.h"
+
+%><%1
+setPattern("xyzzy",status); // no direct access
+
+%><%
+
+LXUSER
+
+lxu->pageTitle = "some page";
+
+%>

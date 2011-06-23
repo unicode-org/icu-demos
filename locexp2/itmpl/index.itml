@@ -1,0 +1,25 @@
+<%// Copyright 2011 IBM Corporation and Others. All rights reserved. %>
+<%0
+#include "lxuser.h"
+%>
+<%
+    LXBEGIN
+%>
+<%@ dispatch to="lxsetup" %><%
+    LXUSER
+    
+    lxu->pageTitle="Welcome Page";
+%>
+<%@ dispatch to="lxheader" %>
+
+<!-- content -->
+
+<a href="<%=%s SCRIPT_NAME %>/choose.itml">Choose a Locale</a> <br/>
+
+
+
+
+<%@ dispatch to="lxfooter" %>
+<%
+    LXEND
+%>

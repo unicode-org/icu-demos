@@ -1,0 +1,30 @@
+<%// Copyright 2011 IBM Corporation and Others. All rights reserved. %>
+<%0
+#include "lxuser.h"
+#include <string>
+%>
+<%
+LXBEGIN
+%>
+<%@ dispatch to="lxsetup" %><%
+LXUSER
+
+lxu->pageTitle="Choose a Locale";
+%>
+<%@ dispatch to="lxheader" %>
+
+<!-- content -->
+
+<%
+    UErrorCode status = U_ZERO_ERROR;
+    string theurl = "./info.itml";
+    theurl.append("?_d=");
+    theurl.append(lxu->dl);
+    theurl.append("&_=");
+    lxu->getTree(status)->writeTree(u,theurl.c_str(),status);
+%>
+
+<%@ dispatch to="lxfooter" %>
+<%
+LXEND
+%>
