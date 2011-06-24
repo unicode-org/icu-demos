@@ -3603,7 +3603,7 @@ ac_config_headers="$ac_config_headers apputil/demo_config.h"
 
 
 
-ac_config_files="$ac_config_files icuapps.mk Makefile apputil/Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile nbrowser/Makefile idnbrowser/Makefile convexp/Makefile scompare/Makefile redemo/Makefile datacustom/Makefile datacustom/gendatadep/Makefile icudemos/Makefile xlitomatic/Makefile rbbiperf/Makefile ucd/Makefile dumpdat/Makefile rtfcvrt/Makefile XMLConverter/Makefile obsolete/Makefile regressionTest/CollRegressionTest/c/Makefile regressionTest/StrsrchRegressionTest/c/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile"
+ac_config_files="$ac_config_files icuapps.mk Makefile apputil/Makefile usort/Makefile usort/lib/Makefile usort/client/Makefile locexp2/Makefile locexp/Makefile locexp/tools/Makefile locexp/util/Makefile locexp/resource/Makefile ubrowse/Makefile nbrowser/Makefile idnbrowser/Makefile convexp/Makefile scompare/Makefile redemo/Makefile datacustom/Makefile datacustom/gendatadep/Makefile icudemos/Makefile xlitomatic/Makefile rbbiperf/Makefile ucd/Makefile dumpdat/Makefile rtfcvrt/Makefile XMLConverter/Makefile obsolete/Makefile regressionTest/CollRegressionTest/c/Makefile regressionTest/StrsrchRegressionTest/c/Makefile test/Makefile test/testdata/Makefile test/obstest/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
