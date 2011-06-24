@@ -276,7 +276,7 @@ int ItmlParser::parse(const char *subname, UnicodeString &tmpl, UFILE *out, UErr
 }
 
 
-void ItmlParser::writeLiteral(UFILE *out, icu_49::UnicodeString &tmpl, int32_t start, int32_t limit, UErrorCode &status) {
+void ItmlParser::writeLiteral(UFILE *out, UnicodeString &tmpl, int32_t start, int32_t limit, UErrorCode &status) {
     if(start>=limit) {
         return;
     }
