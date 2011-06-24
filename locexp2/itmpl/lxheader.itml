@@ -3,12 +3,15 @@
 <html>
 <head>
     <title>Locexp2 &mdash; <%=%S lxu->pageTitle.getTerminatedBuffer() %></title>
+
+    <style type="text/css">
+         div.header { background-color: #ddf; }
+    </style>
 </head>
 <body>
     <div class='header'>
         <h1><a href="<%=%s SCRIPT_NAME %>">Locexp2</a>
                 &mdash; <b><%=%S lxu->pageTitle.getTerminatedBuffer() %></b></h1>
-        <h1>This is the header. Super exciting.</h1>
     </div>
 
 

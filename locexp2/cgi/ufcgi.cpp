@@ -1,5 +1,5 @@
 //
-//  ufcgi.c
+//  ufcgi.cpp
 //  locexp2
 //
 //  Created by Steven R. Loomis on 5/16/11.
