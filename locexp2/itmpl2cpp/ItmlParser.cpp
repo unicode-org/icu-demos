@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "unicode/regex.h"
 #include "unicode/ustdio.h"
+#include "unicode/ustring.h"
 
 #define ASSERT_STATUS if(U_FAILURE(status)) { fprintf(stderr,"%s:%d: error: %s\n", __FILE__, __LINE__, u_errorName(status)); return 8; }
 

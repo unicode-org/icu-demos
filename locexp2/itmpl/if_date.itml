@@ -3,6 +3,8 @@
 #include "lxuser.h"
 #include <string>
 #include "unicode/datefmt.h"
+    #include "unicode/smpdtfmt.h"
+    #include "unicode/dtfmtsym.h"
 %>
 <%
 LXUSER
@@ -18,8 +20,40 @@ LXUSER
 
 <h3>Date/Time</h3>
 
-Date/Time example: <%=%S df->format(aDate,aString).getTerminatedBuffer() %>
+Date/Time example: <%=%S df->format(aDate,aString).getTerminatedBuffer() %> <br>
 
+
+<%
+
+SimpleDateFormat *sdf = (SimpleDateFormat*) df.getAlias();
+    
+const DateFormatSymbols *dfs = sdf->getDateFormatSymbols();
+    
+    
+    int weekdayCount;
+    const UnicodeString * weekDays = dfs->getWeekdays(weekdayCount);
+    
+%>
+
+<table class='data'>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th><%=%S lxu->getDisplayName().getTerminatedBuffer() %></th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        <% for(int rll = UCAL_SUNDAY; rll<weekdayCount;  rll++ ) { /* 8 days a week */ %>
+            <tr>
+                <th><%=%d rll %></th>
+                
+                <th><%=%.*S weekDays[rll].length(),weekDays[rll].getBuffer() %> </th>
+            </tr>
+        <% } %>
+        
+    </tbody>
+</table>
 
 
 

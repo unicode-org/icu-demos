@@ -81,12 +81,12 @@
 		1C9CE7CA13B3E2E70082C5F2 /* lxutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lxutils.cpp; sourceTree = "<group>"; };
 		1C9CE7CB13B3E2E70082C5F2 /* lxutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lxutils.h; sourceTree = "<group>"; };
 		1C9CE7CD13B3E6D40082C5F2 /* choose.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = choose.itml; sourceTree = "<group>"; };
-		1C9CE7CE13B3F3660082C5F2 /* info.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = info.itml; sourceTree = "<group>"; };
+		1C9CE7CE13B3F3660082C5F2 /* info.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = info.itml; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.html; };
 		1C9CE7CF13B3F8700082C5F2 /* cgiutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cgiutils.cpp; sourceTree = "<group>"; };
 		1C9CE7D013B3F8700082C5F2 /* cgiutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cgiutils.h; sourceTree = "<group>"; };
 		1C9CE7D213B3FD640082C5F2 /* lxuser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lxuser.cpp; sourceTree = "<group>"; };
 		1C9CE7D413B4002E0082C5F2 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		1C9CE7D613B401740082C5F2 /* if_date.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = if_date.itml; sourceTree = "<group>"; };
+		1C9CE7D613B401740082C5F2 /* if_date.itml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = if_date.itml; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.html; };
 		1CE7B1A81381C184009B7476 /* locexp2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = locexp2; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CE7B1B51381C877009B7476 /* ufcgi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ufcgi.cpp; sourceTree = "<group>"; };
 		1CE7B1B61381C877009B7476 /* ufcgi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ufcgi.h; sourceTree = "<group>"; };

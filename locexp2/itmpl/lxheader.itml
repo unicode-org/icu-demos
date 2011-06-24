@@ -6,6 +6,24 @@
 
     <style type="text/css">
          div.header { background-color: #ddf; }
+
+        table.data {
+            border-collapse: collapse;
+            border: 1px solid purple;
+        }
+
+        table.data thead th {
+        background-color: #ddd;
+        }
+        table.data thead th {
+        background-color: #ddd;
+        }
+        table.data tbody th {
+        background-color: #ddf;
+        }
+        table.data tbody td {
+        background-color: #bbd;
+        }
     </style>
 </head>
 <body>
