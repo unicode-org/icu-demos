@@ -138,15 +138,16 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
 #if 1
   if(lineAbove) { u_fprintf(lx->OUT, "<div class=\"box%d\">\r\n", (evenOdd++)%2 ); }
-  u_fprintf(lx->OUT, "<tt class=\"count\">%02d:</tt>&nbsp;%S", (aSort==NULL)?num:(int32_t)aSort->lines[num].userData, chars);
+  u_fprintf(lx->OUT, "<tt class=\"count\">%02d:</tt>&nbsp;%S", (aSort==NULL)?num+1:(int32_t)aSort->lines[num].userData, chars);
 
   {
     int32_t ii;
-    if(aSort  && !hasQueryField(lx,"hideCollKey") && lineBelow  ) {
+    if( !hasQueryField(lx,"hideCollKey") && lineBelow  ) {
       u_fprintf(lx->OUT, "<br /><tt class=\"key\">");
-
-      for(ii=0;ii<aSort->lines[num].keySize;ii++) {
-        u_fprintf(lx->OUT, "%02x ", aSort->lines[num].key[ii]);
+      if(aSort) {
+        for(ii=0;ii<aSort->lines[num].keySize;ii++) {
+          u_fprintf(lx->OUT, "%02x ", aSort->lines[num].key[ii]);
+        }
       }
       u_fprintf(lx->OUT, "</tt>\r\n");
     }
