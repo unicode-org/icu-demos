@@ -9,6 +9,7 @@
 #include "unicode/ustdio.h"
 #include "unicode/regex.h"
 #include "ItmlParser.h"
+#include <string.h>
 
 int main (int argc, const char * argv[])
 {

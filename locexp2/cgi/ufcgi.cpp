@@ -139,7 +139,7 @@ U_CAPI void cgi_dumpEnv(UFCGI *u) {
     }
 }
 
-int main(int argc, const char *argv[])
+int main(int , const char *[])
 {
     FCGX_Init();
     init_cgi();

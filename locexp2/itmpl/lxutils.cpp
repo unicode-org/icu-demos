@@ -7,6 +7,7 @@
 
 #include "lxutils.h"
 
+#include <string.h>
 
 
 LocaleTree::LocaleTree(const char *dl, UErrorCode &status) : dl(dl) {

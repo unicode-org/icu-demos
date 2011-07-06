@@ -7,6 +7,7 @@
 
 #include "ItmlParser.h"
 #include <stdio.h>
+#include <string.h>
 #include "unicode/regex.h"
 #include "unicode/ustdio.h"
 #include "unicode/ustring.h"
