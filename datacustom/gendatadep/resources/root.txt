@@ -1,6 +1,6 @@
 // ***************************************************************************
 // *
-// * Copyright (C) 2006-2009 International Business Machines Corporation
+// * Copyright (C) 2006-2011 International Business Machines Corporation
 // * and others.  All Rights Reserved.
 // *
 // ***************************************************************************
@@ -177,6 +177,17 @@ root {
     ibm-970_P110_P110-2006_U2.cnv { "Korean (EUC-KR)" }
     ibm-971_P100-1995.cnv { "Korean (DBCS)" }
     icu-internal-25546.cnv { "Partial table for ISO-2022" }
+    icu-internal-compound-d1.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-d2.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-d3.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-d4.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-d5.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-d6.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-d7.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-s1.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-s2.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-s3.cnv { "Partial table for Compound Text" }
+    icu-internal-compound-t.cnv { "Partial table for Compound Text" }
     invuca.icu { "Inverse UCA table for creating custom collators from rules" }
     iso-8859_10-1998.cnv { "Latin 6 (ISO-8859-10)" }
     iso-8859_11-2001.cnv { "Thai (ISO-8859-11)" }
@@ -327,6 +338,7 @@ root {
     ibm-9577_P100-2001.cnv {"Simplified Chinese (DBCS subset of ibm-5488)"}
     //ibm-963_P100-1995.cnv {"Traditional Chinese (DBCS subset of ibm-965)"}
     iso-8859_16-2001.cnv {"Latin 10 (ISO-8859-16)"}
+    windows-51932-2006.cnv { "Japanese (EUC-JP variant)" }
     ubidi.icu { "Unicode bidirectional properties for ICU4J" }
     ucase.icu { "Unicode casing properties for ICU4J" }
     unorm.icu { "Unicode normalization properties for ICU4J" }
