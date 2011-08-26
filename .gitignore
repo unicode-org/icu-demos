@@ -97,13 +97,16 @@ iucsamples/c/local.mk
 iucsamples/c/s09_test/s09_test
 iucsamples/c/s13_hello/s13_hello
 iucsamples/c/s14_hola/s13_hello
+iucsamples/c/s14_hola/s14_hola
 iucsamples/c/s24_brkw/s24_brkw
 iucsamples/c/s33_res/s33_res
 iucsamples/c/s40_pen/s33_res
+iucsamples/c/s40_pen/s40_pen
 iucsamples/c/s41_msg/s41_msg
 iucsamples/c/s42_msg/s41_msg
 iucsamples/c/s43_named/s41_msg
 iucsamples/c/s45_plural/s41_msg
+iucsamples/c/s45_plural/s45_plural
 iucsamples/c/s46_choice/s41_msg
 iucsamples/j/*.class
 iucsamples/j/local.mk
