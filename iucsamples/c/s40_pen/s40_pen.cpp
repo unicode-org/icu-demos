@@ -21,8 +21,8 @@ int show(const char *loc) {
   u_fprintf(out, "\n\nlocale=%s\n", loc);
 
   UErrorCode status = U_ZERO_ERROR;
-  u_setDataDirectory(".:../data/myapp");
-  ResourceBundle resourceBundle("../data/myapp", l, status);
+  u_setDataDirectory(".:../data");
+  ResourceBundle resourceBundle("myapp", l, status);
 
   if(U_FAILURE(status)) {
     printf("Can't open resource bundle. Default %s Error is %s\n", l.getName(), u_errorName(status));

@@ -27,9 +27,11 @@ int show(const char *loc) {
     printf("Can't open resource bundle. Default %s Error is %s\n", l.getName(), u_errorName(status));
     return 1;
   }
+  u_fprintf(out, "Got the bundle for %s, status was %s\n", loc, u_errorName(status));
 
   // thing will be “pen” or “La pluma”
   UnicodeString thing = resourceBundle.getStringEx("pen", status);
+  u_fprintf(out, "Got the 'pen' for %s, status was %s\n", loc, u_errorName(status));
 
   u_fprintf(out, "Thing: %S\n", thing.getTerminatedBuffer());
 

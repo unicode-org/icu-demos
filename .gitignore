@@ -94,6 +94,7 @@ iucsamples/c/data/myapp
 iucsamples/c/data/myapp.dat
 iucsamples/c/data/tmp
 iucsamples/c/local.mk
+iucsamples/c/s09_test/s09_test
 iucsamples/c/s13_hello/s13_hello
 iucsamples/c/s14_hola/s13_hello
 iucsamples/c/s24_brkw/s24_brkw
