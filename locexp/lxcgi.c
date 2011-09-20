@@ -22,14 +22,14 @@ void initCGIVariables(LXContext* lx)
 {
   const char *tmp;
 
-  if((tmp=getenv("QUERY_STRING")) == NULL) {
+  if((tmp=getenv("GATEWAY_INTERFACE")) == NULL) {
     static char ho_str[1024];
     static char pi_str[1024];
     static char qs_str[1024];
     static char sn_str[1024];
     static char sp_str[1024];
     
-    fprintf(stderr, "This program is designed to be run as a CGI-BIN.  QUERY_STRING is undefined.");
+    fprintf(stderr, "This program is designed to be run as a CGI-BIN.  GATEWAY_INTERFACE is undefined.");
     
     strcpy(ho_str, "HTTP_HOST=host.moc");
     strcpy(pi_str, "PATH_INFO=");

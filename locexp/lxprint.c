@@ -614,6 +614,7 @@ void doFatal(LXContext *lx, const char *what, UErrorCode err)
 #define kCollationPart 'S'
 #define kCurrencyPart 'Y'
 #define kTimezonePart 'z'
+#define kNumberPart 'n'
 #define kProviderPart 'P'
 
 
@@ -734,6 +735,8 @@ void printChangeA(LXContext *lx, const char *locale, const char *prefix)
     printChangeKeyword(lx, locale, prefix, "collation", kCollationPart);
     u_fprintf(lx->OUT, "</td><td>");
     printChangeKeyword(lx, locale, prefix, "currency", kCurrencyPart);
+    u_fprintf(lx->OUT, "</td><td>");
+    printChangeKeyword(lx, locale, prefix, "numbers", kNumberPart);
     u_fprintf(lx->OUT, "</td>");
 #if defined (HAVE_LX_HOOK)
     u_fprintf(lx->OUT, "<td>");
@@ -880,6 +883,8 @@ void showKeywordMenu(LXContext *lx, const char *e, const char *kwVal, int32_t *n
     en = ucol_getKeywordValues(e, status);
   } else if(!strcmp(e, "currency")) {
     en = ures_getKeywordValues( NULL, "Currencies", status);
+  } else if(!strcmp(e, "number")) {
+    en = ures_getKeywordValues( NULL, "Numbers", status);
   } else  {
     en = ures_getKeywordValues( NULL, e, status);
   }
@@ -1048,6 +1053,7 @@ void showChangePage(LXContext *lx)
   case kCollationPart: adds |= kNO_COLL; break;
   case kCurrencyPart: adds |= kNO_CURR; break;
   case kProviderPart: adds |= kNO_PROV; break;
+  case kNumberPart: adds |= kNO_NUM; break;
   default: adds=0;
   }
   baseU = getLXBaseURL(lx, kNO_URL | kNO_SECT | adds);
@@ -1122,6 +1128,14 @@ void showChangePage(LXContext *lx)
     startCell(lx);
     showKeywordMenu(lx, "currency", b->currency, &n, myURL, prefix, part, &status);
     printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->currency);
+    endCell(lx);
+    break;
+
+  case kNumberPart:
+    u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Number", "Number"));
+    startCell(lx);
+    showKeywordMenu(lx, "number", b->numbers, &n, myURL, prefix, part, &status);
+    printCell(lx, myURL, prefix, part, "", FSWF("localeList_Default", "(default)"), n, b->numbers);
     endCell(lx);
     break;
     

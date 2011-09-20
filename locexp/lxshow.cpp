@@ -5,11 +5,15 @@
 
 /* Routines that show specific data types */
 
-#include "locexp.h"
 
 #include "unicode/uset.h"
 #include "unicode/ucurr.h"
 #include "unicode/putil.h"
+#include "unicode/calendar.h"
+
+extern "C" {
+#include "locexp.h"
+}
 
 /* Move Along.. nothing to see here.. */ 
 U_CAPI UResourceBundle* U_EXPORT2 
@@ -83,7 +87,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
     len2 = len;
 
-    scopy = malloc(len * sizeof(UChar));
+    scopy = (UChar*)malloc(len * sizeof(UChar));
     memcpy(scopy, s, len*sizeof(UChar));
 
     for(i=0;i<len;i++)
@@ -132,7 +136,7 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
             if(U_SUCCESS(status))
             {
 
-                compsBuf = malloc(sizeof(UChar) * (len*3));
+              compsBuf = (UChar*)malloc(sizeof(UChar) * (len*3));
                 comps = compsBuf;
               
                 {
@@ -1000,7 +1004,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 if(i == 3) /* scientific */
                     d = 1234567890;
 
-                exampleNF = unum_open(0, s,-1,locale, NULL, &exampleStatus);
+                exampleNF = unum_open((UNumberFormatStyle)0, s,-1,locale, NULL, &exampleStatus);
 #if 1
             u_strcpy(tempChars,s);
             toShow = tempChars;
@@ -1200,7 +1204,6 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
     int32_t    len;
     const int32_t   *elements;
     UBool isDefault = FALSE;
-    UResourceBundle *array = NULL, *item = NULL;
 
     const char *key = "DateTimeElements";
     /*
@@ -1208,79 +1211,82 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
       1: minimaldaysinfirstweek 
     */
 
-    status = U_ZERO_ERROR;
+    UResourceBundle *item = NULL;
 
-    array = loadCalRes(lx, key, &isDefault, &status);
-    elements = ures_getIntVector(array, &len, &status);
+    status = U_ZERO_ERROR;
 
     showKeyAndStartItem(lx, key, FSWF("DateTimeElements","Date and Time Options"), locale, FALSE, status);
 
-    if(len < 2)
-    {
-        u_fprintf(lx->OUT, "%S ", FSWF("DateTimeElements_short", "Error- resource is too short (should be 2 elements)!"));
-        ures_close(array);
-        showKeyAndEndItem(lx, key, locale);
-        return;
-    }
 
-    /* First day of the week ================= */
-    u_fprintf(lx->OUT, "%S ", FSWF("DateTimeElements0", "First day of the week: "));
-
-    if(U_SUCCESS(status))
-    {
-        int32_t  firstDayIndex;
-
-        firstDayIndex = (((elements[0])+6)%7); 
+    char id[99];
+    strcpy(id,locale);
+    strcat(id,"@calendar=");
+    strcat(id,lx->defaultCalendar);
+    Calendar *c = Calendar::createInstance(Locale(id),status);
+    if(c&&U_SUCCESS(status)) {
+      u_fprintf(lx->OUT, "%S ", FSWF("DateTimeElements0", "First day of the week: "));
       
-        u_fprintf(lx->OUT, " %d \r\n", elements[0]);
-        /* here's something fun: try to fetch that day from the user's current locale */
-        status = U_ZERO_ERROR;
       
-        if(lx->dispRB)
+      if(U_SUCCESS(status))
         {
-            /* don't use 'array' here because it's the DTE resource */
-            item = ures_getByKey(lx->dispRB, "DayNames", item, &status);
-            item = ures_getByIndex(item, firstDayIndex, item, &status);
-            s    = ures_getString(item, &len, &status);
+          int32_t  firstDayIndex;
+          
+            firstDayIndex = (((c->getFirstDayOfWeek())+6)%7); 
             
-            if(s && U_SUCCESS(status))
-            {
-                u_fprintf(lx->OUT, " = %S \r\n", s);
-            }
+            u_fprintf(lx->OUT, " %d \r\n", c->getFirstDayOfWeek());
+            /* here's something fun: try to fetch that day from the user's current locale */
             status = U_ZERO_ERROR;
+            
+            if(lx->dispRB)
+              {
+                /* don't use 'array' here because it's the DTE resource */
+                item = ures_getByKey(lx->dispRB, "DayNames", item, &status);
+                item = ures_getByIndex(item, firstDayIndex, item, &status);
+                s    = ures_getString(item, &len, &status);
+                
+                if(s && U_SUCCESS(status))
+                  {
+                    u_fprintf(lx->OUT, " = %S \r\n", s);
+                  } else {
+                  u_fprintf(lx->OUT, " ( %d=SUNDAY )\n", UCAL_SUNDAY);
+                }
+                status = U_ZERO_ERROR;
 
-            item = ures_getByKey(rb, "DayNames", item, &status);
-            item = ures_getByIndex(item, firstDayIndex, item, &status);
-            s    = ures_getString(item, &len, &status);
-
-            if(s && U_SUCCESS(status))
-            {
-                u_fprintf(lx->OUT, " = %S \r\n", s);
-            }
+                item = ures_getByKey(rb, "DayNames", item, &status);
+                item = ures_getByIndex(item, firstDayIndex, item, &status);
+                s    = ures_getString(item, &len, &status);
+                
+                if(s && U_SUCCESS(status))
+                  {
+                    u_fprintf(lx->OUT, " = %S \r\n", s);
+                  }
+              }
+            status = U_ZERO_ERROR;
         }
-        status = U_ZERO_ERROR;
-    }
-    else
-    {
+      else
+        {
+          explainStatus(lx, status, key);
+          u_fprintf(lx->OUT, "\r\n");
+        }
+      
+      u_fprintf(lx->OUT, "<br />\r\n");
+      
+      /* minimal days in week ================= */
+      u_fprintf(lx->OUT, "%S", FSWF("DateTimeElements1", "Minimal Days in First Week: "));
+      
+      if(U_SUCCESS(status)) {
+        u_fprintf(lx->OUT, " %d \r\n", c->getMinimalDaysInFirstWeek()); 
+      } else {
         explainStatus(lx, status, key);
         u_fprintf(lx->OUT, "\r\n");
-    }
+      }
+      
+      delete c;
 
-    u_fprintf(lx->OUT, "<br />\r\n");
-
-    /* minimal days in week ================= */
-    u_fprintf(lx->OUT, "%S", FSWF("DateTimeElements1", "Minimal Days in First Week: "));
-  
-    if(U_SUCCESS(status)) {
-      u_fprintf(lx->OUT, " %d \r\n", elements[1]); 
-    } else {
-        explainStatus(lx, status, key);
-        u_fprintf(lx->OUT, "\r\n");
     }
+    ures_close(item);
 
     showKeyAndEndItem(lx, key, locale);
-    ures_close(array);
-    ures_close(item);
 }
 
 void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, const char *keyStem)
@@ -1333,9 +1339,6 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
     stuff[1].title = FSWF("DayAbbreviations", "Short Names");
     stuff[2].title = FSWF("DayNames", "Long Names");
 
-/* FSWF("MonthAbbreviations", " - NOT USED - see DayAbbreviations ") */
-/* FSWF("MonthNames", "  - NOT USED - see DayNames ") */
-
     for(i=0;i<stuffCount;i++) {
       stuff[i].bund = loadCalRes3(lx, keyStem, type, stuff[i].style, &stuff[i].isDefault, &stuff[i].status);
       if(!U_FAILURE(stuff[i].status)) {
@@ -1343,6 +1346,9 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
           if(stuff[i].count > maxCount) {
             maxCount = stuff[i].count;
           }
+          //u_fprintf(lx->OUT, "[#%d/%s: %d]", i,stuff[i].style,stuff[i].count);
+      } else {
+        //u_fprintf(lx->OUT, "[#%d/%s: %s]", i,stuff[i].style,u_errorName(stuff[i].status));
       }
     }
 
@@ -1353,7 +1359,8 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       maxCount =0; /* recount max */
       for(i=0;i<stuffCount;i++) {
         if(U_FAILURE(stuff[i].status)) {
-            continue;
+          u_fprintf(lx->OUT, "<th>%s</th>", u_errorName(stuff[i].status));
+          continue;
         }
         u_fprintf(lx->OUT, "<th>%S", stuff[i].title);
         if((type!=NULL) &&
@@ -1385,10 +1392,11 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
         u_fprintf(lx->OUT, " <tr><th>%d</th>", j);
         for(i=0;i<stuffCount;i++) {
          if(U_FAILURE(stuff[i].status)) {
-            continue;
+           u_fprintf(lx->OUT, "<td>%s</td>\n", u_errorName(stuff[i].status));
+           continue;
          }
-         if(i>=stuff[i].count) {
-            u_fprintf(lx->OUT, "<td></td>");
+         if(j>=stuff[i].count) {
+           u_fprintf(lx->OUT, "<td></td>", i,stuff[i].count);
           } else {
             const UChar *s;
             int32_t len;
@@ -1396,7 +1404,9 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
             s = ures_getStringByIndex(stuff[i].bund, j, &len, &subStatus);
             if(U_SUCCESS(subStatus) && len) {
               u_fprintf(lx->OUT, "<td>%S</td>", s);
-            } else {
+            } else if (len==0) {
+                u_fprintf(lx->OUT, "<td><i>%S</i></td>", FSWF("empty","(Empty)"));
+            }else{
               u_fprintf(lx->OUT, "<td>");
               explainStatus(lx, subStatus, NULL);
               u_fprintf(lx->OUT, "</td>");
@@ -1585,7 +1595,6 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
   showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
 
   if(bigString && !userRequested) /* it's hidden. */  {
-    /* WIERD!! outputting '&#' through UTF8 seems to be -> '?' or something */
     u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" alt=\"+\" />%S</a><br />\r\n<br />\r\n", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
   } else {
     if(bigString) {
@@ -1902,15 +1911,15 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
     return NULL;
   } else {
     item1 = ures_getByKeyWithFallback(lx->calMyBundle, keyStem, item1, status);
-/*    u_fprintf(lx->OUT, "loading [%s]-%s<br/>", keyStem, u_errorName(*status)); */
+    /* u_fprintf(lx->OUT, "loading [%s]-%s<br/>", keyStem, u_errorName(*status)); */
   }
   
   if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
     *status = U_ZERO_ERROR;
     *isDefault = TRUE;
     item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
-/*     u_fprintf(lx->OUT, "loading3 [%s]-%s<br/>", keyStem, u_errorName(*status));*/
- }
+    /*u_fprintf(lx->OUT, "loading3 [%s]-%s<br/>", keyStem, u_errorName(*status));*/
+  }
 
   if(U_FAILURE(*status)) {
     ures_close(item1);
@@ -1921,11 +1930,7 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
 }
 
 UResourceBundle *loadCalRes3(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UErrorCode *status) {
-    if(type == NULL) {
-       return loadCalRes(lx, keyStem, isDefault, status);
-    } else {
-        return loadCalRes3x(lx,keyStem,type,style,isDefault,lx->calMyBundle,status);
-    }
+  return loadCalRes3x(lx,keyStem,type,style,isDefault,lx->calMyBundle,status);
 }
 
 UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *type, const char *style, UBool *isDefault, UResourceBundle *bnd, UErrorCode *status) {
@@ -1942,25 +1947,35 @@ UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *ty
     *status = U_INTERNAL_PROGRAM_ERROR;
     return NULL;
   } else {
-/*    u_fprintf(lx->OUT, "<tt>lcr3(%s/%s/%s) </tt><br/>", keyStem, type, style); */
+    //u_fprintf(lx->OUT, "<tt>lcr3(%s/%s/%s) </tt><br/>", keyStem, type, style); 
     item1 = ures_getByKeyWithFallback(bnd, keyStem, item1, status);
-/*    u_fprintf(lx->OUT, "<tt>0[%s]:=[%s]</tt></br>", keyStem, u_errorName(*status)); */
-    item2 = ures_getByKeyWithFallback(item1, type, item2, status);
-/* u_fprintf(lx->OUT, "<tt>1[%s]:=[%s]</tt></br>", type, u_errorName(*status)); */
+    //u_fprintf(lx->OUT, "<tt>0[%s]:=[%s]</tt></br>", keyStem, u_errorName(*status)); 
+    if(type) {
+      item2 = ures_getByKeyWithFallback(item1, type, item2, status);
+    } else {
+      item2 = item1;
+    }
+    //u_fprintf(lx->OUT, "<tt>1[%s]:=[%s]</tt></br>", type, u_errorName(*status)); 
     item3 = ures_getByKeyWithFallback(item2, style, item3, status);
-/*    u_fprintf(lx->OUT, "<tt>2[%s]:=[%s]</tt></br>", style, u_errorName(*status)); */
+    //u_fprintf(lx->OUT, "<tt>2[%s]:=[%s]</tt></br>", style, u_errorName(*status)); 
   }
-  
+   
   if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
     *status = U_ZERO_ERROR;
     *isDefault = TRUE;
     item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
-    item2 = ures_getByKeyWithFallback(item1, type, item2, status);
+    if(type) {
+      item2 = ures_getByKeyWithFallback(item1, type, item2, status);
+    } else {
+      item2 = item1;
+    }
     item3 = ures_getByKeyWithFallback(item2, style, item3, status);
   }
 
   ures_close(item1);
-  ures_close(item2);
+  if(type) {
+    ures_close(item2);
+  }
   if(U_FAILURE(*status)) {
     ures_close(item3);
     return NULL;
@@ -2152,7 +2167,7 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
     showShortLongCalType( lx, myRB, locale, "eras", NULL);
     showKeyAndEndItem(lx, "eras", locale);    
   }
-u_fprintf(lx->OUT, "</td></tr></table>");
+  u_fprintf(lx->OUT, "</td></tr></table>");
   
   
   {

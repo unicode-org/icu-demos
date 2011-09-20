@@ -1,5 +1,5 @@
  /**********************************************************************
-*   Copyright (C) 1999-2008, International Business Machines
+*   Copyright (C) 1999-2011, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -335,33 +335,38 @@ int32_t copyWithUnescaping( UChar* chars, const UChar* src, int32_t origLen)
 */
 
 void setDisplayText( MySortable *s, const char *inLocale, UErrorCode *status) {
+#if 1
   int32_t siz;
-  /* if( (status=U_ZERO_ERROR),(siz = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, status)) &&
-     (siz > 1) ) {
-     s->ustr = malloc((siz+2) * sizeof(UChar));
-     ((UChar*)(s->ustr))[0] = 0;
-     status = U_ZERO_ERROR;
-     uloc_getDisplayVariant( s->str, inLocale, (UChar*)(s->ustr), siz, status );
-     s->ustr[siz]=0;
-     } else
-  */
-  if( (*status=U_ZERO_ERROR),(siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, status))  &&
+  if( (*status=U_ZERO_ERROR),
+      (siz = uloc_getDisplayName( s->str, inLocale, NULL, 0, status))  &&
       (siz > 1) ) {
+    s->ustr = malloc((siz+999) * sizeof(UChar));
+    ((UChar*)(s->ustr))[0] = 0;
+    *status = U_ZERO_ERROR;
+    uloc_getDisplayName( s->str, inLocale, (UChar*)(s->ustr), siz+1, status );
+  } else {
+    s->ustr = 0;
+  }
+#else
+  int32_t siz;
+  if( (*status=U_ZERO_ERROR),
+      (siz = uloc_getDisplayCountry( s->str, inLocale, NULL, 0, status))  &&
+      (siz > 1) ) { /* is a country */
     int32_t vLen = 0;
     *status = U_ZERO_ERROR;
     vLen = uloc_getDisplayVariant( s->str, inLocale, NULL, 0, status);
-    if(vLen) {
-      vLen += 4;
-    }
-    s->ustr = malloc((siz+vLen+2) * sizeof(UChar));
+    /* if(vLen) { */
+    /*   vLen += 4; /\* show variant in ' (*)' *\/ */
+    /* } */
+    s->ustr = malloc((siz+vLen+2+999) * sizeof(UChar));
     ((UChar*)(s->ustr))[0] = 0;
     *status = U_ZERO_ERROR;
-    uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz, status );
+    uloc_getDisplayCountry( s->str, inLocale, (UChar*)(s->ustr), siz+1, status );
     if(vLen) {
       int32_t nsiz = 0;
       s->ustr[siz++] = (UChar)' ';
       s->ustr[siz++] = (UChar)'(';
-      nsiz = uloc_getDisplayVariant(s->str, inLocale, (UChar*)(s->ustr + siz), vLen-3, status);
+      nsiz = uloc_getDisplayVariant(s->str, inLocale, (UChar*)(s->ustr + siz), vLen, status);
       siz += nsiz;
       s->ustr[siz++] = (UChar)')';
     }
@@ -379,7 +384,7 @@ void setDisplayText( MySortable *s, const char *inLocale, UErrorCode *status) {
       /*       if((scriptLen=uloc_getScript(s->str, NULL, 0, status))>0) { */
       /*         siz += uloc_getDisplayScript(s->str, inLocale, NULL, 0, status) + 3; */
       /*       } */
-      aStr = s->ustr = malloc((siz+2) *sizeof(UChar)); 
+      aStr = s->ustr = malloc((999) *sizeof(UChar)); 
       /*       ((UChar*)(s->ustr))[0] = 0; */
       *status = U_ZERO_ERROR;
       len = uloc_getDisplayName( s->str, inLocale, (UChar*)(s->ustr), siz, status );
@@ -393,9 +398,9 @@ void setDisplayText( MySortable *s, const char *inLocale, UErrorCode *status) {
       /*               len++; */
       /*       } */
       aStr[len]=0;
-      len++;
     }
   }
+#endif
 }
 
 void resetSortsInTheirLocales(MySortable *s, UErrorCode *status, UBool recurse)

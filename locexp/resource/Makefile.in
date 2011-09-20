@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2006, International Business Machines
+## *   Copyright (C) 1999-2011, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -50,7 +50,7 @@ RES_SHORT = $(ALLSRC:.txt=.res)
 RES=$(RES_SHORT)
 
 # C Source files to extract FSWF strings from.  Remove items from here during development to not require a recompile.  
-FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.c ../lxshowloc.c  ../srchexp.c ../wfobject.c  ../lxsort.c ../lxcgi.c ../lxicir.c
+FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.cpp ../lxshowloc.c  ../srchexp.c ../wfobject.c  ../lxsort.c ../lxcgi.c ../lxicir.c
 
 %.res : %.txt
 	@echo Rebuilding $@

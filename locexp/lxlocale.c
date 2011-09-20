@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2011, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -400,7 +400,7 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
 
     if(toOpen == TRUE) 
     {
-        u_fprintf_u(lx->OUT, l->ustr);
+      u_fprintf_u(lx->OUT, l->ustr);
     }
     else
     {

@@ -5,6 +5,26 @@
 
 #include "locexp.h"
 #include "unicode/udata.h"
+#include "unicode/unumsys.h"
+#include "unicode/unum.h"
+
+#define U_ICUDATA_LANG U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "lang"
+#define U_ICUDATA_REGION U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "region"
+#define U_ICUDATA_CURR U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "curr"
+#define U_ICUDATA_ZONE U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "zone"
+
+static void showSubArray(LXContext *lx, const char *locale, const char *transKey, const char *path, const char *keyPath, UBool compareToDisplay) {
+  UResourceBundle *subRb = NULL;
+  UErrorCode status = U_ZERO_ERROR;
+
+  subRb = ures_open(path, locale, &status);
+  if(U_SUCCESS(status)) {
+    showTaggedArray(lx,subRb,locale,transKey,compareToDisplay);
+  }
+  ures_close(subRb);
+}
+
+
 
 /*  Main function for dumping the contents of a particular locale ---------------------------- */
 
@@ -12,8 +32,13 @@ void showOneLocale(LXContext *lx)
 {
   /*char *tmp;*/
     const char *locale = NULL;
+    char   nsys[10];
     UErrorCode status = U_ZERO_ERROR;
     UResourceBundle *myRB = NULL;
+    
+    
+    UNumberFormat *ourDecFmt;
+    UNumberFormat *ourCurFmt;
 
     locale = lx->curLocaleName;
     if(!locale && !*locale) {
@@ -49,9 +74,28 @@ void showOneLocale(LXContext *lx)
     myRB = ures_open(NULL, locale, &status);
 
 
+    {
+      UErrorCode nsErr = U_ZERO_ERROR;
+      const char *theNs = NULL;
+      UNumberingSystem *sys = unumsys_open(locale, &nsErr);
+      if(!U_FAILURE(nsErr)) {
+        theNs = unumsys_getName(sys);
+        strcpy(nsys,theNs);
+      } else {
+        nsys[0]=0;
+        u_fprintf(lx->OUT,"<b>An error occured [%s] getting the default number system for [%s]. Perhaps it doesn't exist? </b><br /><hr />\r\n",u_errorName(nsErr), locale);
+        return;
+      }
+
+      ourDecFmt =  unum_open(UNUM_DEFAULT, NULL, 0, locale, NULL, &status);
+
+      unumsys_close(sys);
+    }
+
+
     if(U_FAILURE(status))
     {
-        u_fprintf(lx->OUT,"<b>An error occured [%d] opening that resource bundle [%s]. Perhaps it doesn't exist? </b><br /><hr />\r\n",status, locale);
+      u_fprintf(lx->OUT,"<b>An error occured [%s] opening that resource bundle or decimal format [%s]. Perhaps it doesn't exist? </b><br /><hr />\r\n",u_errorName(status), locale);
         return;
     }
 
@@ -163,19 +207,40 @@ void showOneLocale(LXContext *lx)
         showUnicodeSet(lx, myRB, locale, "ExemplarCharacters", FALSE);
         /*    showString(lx, myRB, locale, "ExemplarCharacters", FALSE); */
     
-        showTaggedArray(lx, myRB, locale, "Languages", TRUE);
-        showTaggedArray(lx, myRB, locale, "Scripts", TRUE); 
-        showTaggedArray(lx, myRB, locale, "Countries", TRUE); 
-    
+        showSubArray(lx, locale, "Languages",
+                     U_ICUDATA_LANG,
+                     "Languages",
+                     TRUE);
+        showSubArray(lx, locale, "Scripts",
+                     U_ICUDATA_LANG,
+                     "Scripts",
+                     TRUE);
+        showSubArray(lx, locale, "Countries",
+                     U_ICUDATA_REGION,
+                     "Countries",
+                     TRUE);
+        
 
+        /* TODO: can't do this yet, need C wrapper for Calendar.getFDOW etc  */
         showDateTime(lx, myRB, locale);
 
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*     Numbers section %%%*/
+
+
+           /* Currency: needs rewrite. */
+#if 0        
         showCurrencies(lx, myRB, locale);
+#endif
+
+        u_fprintf(lx->OUT, "<h3>Numbering System: %s</h3>", nsys);
     
+#if 0
         { /*from dcfmtsym */
             const UChar *numDesc[12];
+
+            
+
             numDesc[0] = FSWF("NumberElements0", "Decimal Separator");
             numDesc[1] = FSWF("NumberElements1", "Grouping Separator");
             numDesc[2] = FSWF("NumberElements2", "Pattern Separator");
@@ -187,8 +252,9 @@ void showOneLocale(LXContext *lx)
             numDesc[8] = FSWF("NumberElements8", "PerMill [/1000]");
             numDesc[9] = FSWF("NumberElements9", "Infinity");
             numDesc[10] = FSWF("NumberElements10", "Not a number");
+            /* need more .. */
             numDesc[11] = 0;
-            showArrayWithDescription(lx, myRB, locale, numDesc, "NumberElements", kNormal);
+            showDecimSymsWithDescription(lx, ourDecFmt, locale, nsys, numDesc, "NumberElements", kNormal);
         }
     
     
@@ -219,6 +285,7 @@ void showOneLocale(LXContext *lx)
             }
             ures_close(nfrb);
         }
+#endif
 
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
         /*   Collation section %%%*/
