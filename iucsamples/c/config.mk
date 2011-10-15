@@ -1,8 +1,8 @@
-#  Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
+#  Copyright (c) 2010-2011 IBM Corporation and Others. All Rights Reserved.
 
-include ../local.mk
+-include ../local.mk
 -include local.mk
-ifneq ($(ICU_SRC),)
+ifneq ($(icubuild),)
 include ../icusrc.mk
 endif
 

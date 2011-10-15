@@ -24,8 +24,11 @@ int show(const char *loc) {
 
   if(U_FAILURE(status)) {
     printf("Can't open resource bundle. Default %s Error is %s\n", l.getName(), u_errorName(status));
-    return 1;
-  }
+    //return 1;
+    //  stat
+    //
+ status = U_ZERO_ERROR;  
+}
 
   ASSERT_OK(status);
   // ---- begin sample code -----
@@ -33,15 +36,13 @@ int show(const char *loc) {
   // ---- begin sample code -----
   // ---- begin sample code -----
 
-   UnicodeString pattern = "On {when, date, full} at {when, time, long} there was {what}.";
+   UnicodeString pattern = "Remove this {thing}.";
    Calendar *c = icu::Calendar::createInstance(status);
    Formattable args[] = {
-     c->getTime(status), // when
-     "a power failure"	// what
+      "page",
    };
    UnicodeString names[] = { 
-     "when",
-     "what"
+     "thing",
    };
    UnicodeString result; 
    MessageFormat fmt(pattern, status);
