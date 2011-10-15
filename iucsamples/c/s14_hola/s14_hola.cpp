@@ -1,4 +1,4 @@
-// Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
+// Copyright (c) 2010-2011 IBM Corporation and Others. All Rights Reserved.
 
 #include <unicode/ustdio.h>
 #include <unicode/uloc.h>
@@ -8,18 +8,15 @@ int main(int argc, const char *argv[])
 {
   UFILE *out;
   UErrorCode status = U_ZERO_ERROR;
-#if 1
-  const char *loc = uloc_getDefault();
-  if(argc==2) loc = argv[1];
-#endif
-
-  out = u_finit(stdout, loc, NULL);
+  const char *locale = "de"; // Get the user's locale from somewhere
+  
+  out = u_finit(stdout, locale, NULL);
 
   UChar world[256];
-  uloc_getDisplayCountry("und_001", "de", world, 256, &status);
-  ASSERT_OK(status);
+  uloc_getDisplayCountry("und_001", locale, world, 256, &status);
+  if(U_FAILURE(status)) { puts("Fail!"); return 1; }
 
-  u_fprintf(out, "%s: Hello, %S!\n", "de", world);
+  u_fprintf(out, "%s: Hello, %S!\n", locale, world);
 
   u_fclose(out);
 
