@@ -171,6 +171,8 @@ iucsamples/c/s41_msg/s41_msg.vcxproj -text
 iucsamples/c/s42_msg/s42_msg.vcxproj -text
 iucsamples/c/s43_named/s43_named.vcxproj -text
 iucsamples/c/s45_plural/s45_plural.vcxproj -text
+iucsamples/j/.classpath -text
+iucsamples/j/.project -text
 iucsamples/j/data/myapp/es.res -text
 iucsamples/j/data/myapp/root.res -text
 jle/.classpath -text

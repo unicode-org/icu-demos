@@ -39,3 +39,6 @@ rebuild-data: $(CDATA)/myapp.dat
 
 $(CDATA)/myapp.dat:
 	make -C $(CDATA) clean all
+
+local.mk:
+	$(error please read the readme.txt and create local.mk)
