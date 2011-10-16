@@ -1,4 +1,4 @@
-// Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
+// Copyright (c) 2010-2011 IBM Corporation and Others. All Rights Reserved.
 
 
 #include <unicode/ures.h>
@@ -38,8 +38,8 @@ int show(const char *loc) {
   u_fprintf(out, "\n\nlocale=%s\n", loc);
 
   UErrorCode status = U_ZERO_ERROR;
-  u_setDataDirectory(".:../data/myapp");
-  ResourceBundle resourceBundle("../data/myapp", locale, status);
+  u_setDataDirectory("." U_PATH_SEP_STRING ".." U_FILE_SEP_STRING "data");
+  ResourceBundle resourceBundle("myapp", locale, status);
 
   if(U_FAILURE(status)) {
     printf("Can't open resource bundle. Default %s Error is %s\n", locale.getName(), u_errorName(status));

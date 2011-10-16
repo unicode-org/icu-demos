@@ -1,7 +1,12 @@
 # Copyright (C) 2011 IBM Corporation and Others. All Rights Reserved.
 #
 
-Windows: use the project file.
+Windows Visual Studio: 
+
+Use the project file iucsamples.sln.  
+Set  variable IcuDir  to the root of your ICU build (containing bin, lib, include)
+set PATH=%IcuDir%\bin;%PATH% 
+
 
 UNIXes: see below.
 
