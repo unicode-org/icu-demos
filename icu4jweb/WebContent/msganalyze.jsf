@@ -1,0 +1,165 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+ import="com.ibm.icu.text.MessagePatternUtil.*,java.util.*,com.ibm.icu.text.*,com.ibm.icu.util.*"
+    pageEncoding="utf-8"%>
+<%!
+	static int n=0;
+static final String unEscapeString(String arg) {
+    return arg.replaceAll("&lt;", "<").replaceAll("&quot;", "\"").replaceAll("&gt;", ">").replaceAll("&amp;", "&");
+}
+
+%>
+<%
+String msg = (String)request.getAttribute("msgFmtStr");
+msg = unEscapeString(msg);
+try {
+
+%>
+<div id='msgAnalysis' class='msgAnalysis'>
+
+<%!
+
+void showNode(JspWriter out, TextNode node) throws java.io.IOException {
+	out.println("<span class='msgLiteral'>" +node.getText() + "</span>");
+}
+
+void showNode(JspWriter out, VariantNode node) throws java.io.IOException {
+	out.println("<tr><th>");
+
+	out.println(node.getSelector());
+	if(node.isSelectorNumeric()) {
+		out.println("&nbsp;&nbsp;" + node.getSelectorValue());
+	}
+	
+	out.println("</th><td>");
+	showNode(out,node.getMessage());
+	out.println("</td></tr>");
+}
+
+void showNode(JspWriter out, List<VariantNode> nodeList) throws java.io.IOException {
+	for(VariantNode node : nodeList) {
+		showNode(out,node);
+	}
+}
+
+void showNode(JspWriter out, ComplexArgStyleNode node) throws java.io.IOException {
+	MessagePattern.ArgType type = node.getArgType();
+	
+	out.println("<table class='msgSubPart'>");
+	
+	out.println("<thead>");
+	out.println("<tr><th>"+type.toString().toLowerCase()+"</th><td>");
+	if(node.hasExplicitOffset()) {
+		out.println("offset:"+node.getOffset());
+	}
+	out.println("</td></tr>");
+	out.println("</thead><tbody>");
+	
+	List<VariantNode> numericVariants = new ArrayList<VariantNode>();
+	List<VariantNode> keywordVariants = new ArrayList<VariantNode>();
+	
+	VariantNode otherNode = node.getVariantsByType(numericVariants, keywordVariants);
+		
+	showNode(out, numericVariants);
+	showNode(out, keywordVariants);
+	if(otherNode!=null) {
+		showNode(out, otherNode);
+	}
+	
+	out.println("</tbody></table>");
+}
+
+void showNode(JspWriter out, ArgNode node) throws java.io.IOException {
+	MessagePattern.ArgType type = node.getArgType();
+	switch(type) {
+	case NONE:
+	case SIMPLE:
+		   out.println("<span class='argNumber'>"+node.toString()+"</span>"); // enough info for now/
+		   break;
+		
+	case SELECT:
+	case CHOICE:
+	case PLURAL:
+		showNode(out, node.getComplexStyle());
+		break;
+				   
+		default:
+			   out.println("<span class='null'>"+node.toString()+"</span> (type="+node.getArgType()+")");
+	}
+}
+
+void showNode(JspWriter out, MessageContentsNode node) throws java.io.IOException {
+	   /* 
+	   	 ERR:  despite apidocs for buildMessageNode, node can NOT be a ComplexArgStyleNode, it may contain one though. 
+	   if(node instanceof ComplexArgStyleNode) {
+		   showNode(out, (ComplexArgStyleNode)node);
+	   } else */
+	   
+	   {
+
+		   switch(node.getType()) {
+		   case TEXT:
+			   showNode(out,(TextNode)node);
+			   break;
+		   case ARG:
+			   showNode(out,(ArgNode)node);
+			   break;
+		   case REPLACE_NUMBER:
+			   out.println("<span class='msgReplace'>#</span>");
+			   break;
+		   
+		   default:
+		   
+		   out.println("<div class='msgSubPart'>");
+		   //out.println("<pre class='argNumber'>"+node.toString()+"</pre>");
+		   
+		   
+		   out.println("type="+node.getType());
+		   
+		   out.println("</div>");
+		   break;
+		   }
+	   }
+	}
+
+
+void showNode(JspWriter out, MessageNode node) throws java.io.IOException {
+   /* 
+   	 ERR:  despite apidocs for buildMessageNode, node can NOT be a ComplexArgStyleNode, it may contain one though. 
+   if(node instanceof ComplexArgStyleNode) {
+	   showNode(out, (ComplexArgStyleNode)node);
+   } else */
+   
+   {
+		
+	   out.println("<div class='msgSubPart'>");
+	   //out.println("<pre class='argNumber'>"+node.toString()+"</pre>");
+	   
+	   List<MessagePatternUtil.MessageContentsNode> subNodes = node.getContents();
+	   
+	   for(MessagePatternUtil.MessageContentsNode subNode : subNodes) {
+		   showNode(out,subNode);
+	   }
+	   
+	   out.println("</div>");
+   }
+}
+%>
+
+<%
+	MessagePatternUtil.MessageNode rootNode = MessagePatternUtil.buildMessageNode(msg);
+
+
+	showNode(out, rootNode);
+%>
+</div>
+
+<%
+} catch (Exception e) {
+    out.print("</div><span class='null'>"+e.getMessage()+"</span>");
+} %>
+<% if(false &&  (n<30)) { %>
+<hr>
+<div class='null' style='font-size: 2em;'>
+<%= ++n %> : <%= new Date().toString() %>
+<% } %>
+</div>

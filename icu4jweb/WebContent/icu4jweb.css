@@ -1,35 +1,38 @@
-/* @override http://icu-project.org/icu.css */
+/* @override 
+	http://10.0.0.148:8080/icu4jweb/icu4jweb.css
+	http://apps.icu-project.org/icu4jweb/icu4jweb.css
+*/
 
 /*
  * Default CSS style sheet for the ICU Open Source site
- * Copyright (C) 2005-2010, International Business Machines
+ * Modified for icu4jweb demos
+ * Copyright (C) 2005-2011, International Business Machines
  * Corporation and others.  All Rights Reserved.
  */
 
 /* Global styles */
+
 body,p,li,ol,ul,th,td {
 	font-size: 10pt;
 	font-family: "Arial", "Helvetica", sans-serif;
 }
 
 body {
-		margin:  1em;
+	margin: 1em;
 }
-
 
 body.draft {
 	background-image: url(images/draftbg.png);
 }
 
-
 body.draft:before, body.draft:after {
-	content:  "NOTE: THIS WEBPAGE IS STILL A DRAFT.";
+	content: "NOTE: THIS WEBPAGE IS STILL A DRAFT.";
 	font-size: x-large;
 	margin-left: 1em;
-	margin-right:  1em;
+	margin-right: 1em;
 	border-bottom: solid black;
 	text-align: center;
-	color:  red;
+	color: red;
 }
 
 .mainbody {
@@ -39,6 +42,7 @@ body.draft:before, body.draft:after {
 /*
  * Customize the headers to have less space around them than usual
  */
+
 h1 {
 	margin-bottom: 5pt;
 	margin-top: 5pt;
@@ -51,7 +55,6 @@ a.subtle {
 	text-decoration: none;
 	color: white;
 }
-
 
 a.subtle:hover {
 	text-decoration: underline;
@@ -94,7 +97,8 @@ h5, h6 {
 /*
  * Navigation sidebar on the left hand of most pages
  */
-td.sidebar1 { 
+
+td.sidebar1 {
 	background-color: #99CCFF;
 	font-weight: 700;
 	margin-top: 0px;
@@ -104,7 +108,7 @@ td.sidebar1 {
 	white-space: nowrap;
 }
 
-td.sidebar2 { 
+td.sidebar2 {
 	background-color: #99CCFF;
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -117,7 +121,8 @@ td.sidebar2 {
 	text-decoration: none;
 	display: block;
 }
-td.sidebar2:hover { 
+
+td.sidebar2:hover {
 	background-color: #EEEEFF;
 	padding-top: 1px;
 	padding-bottom: 1px;
@@ -130,21 +135,26 @@ a.sidebar2 {
 	display: block;
 	width: 100%;
 }
+
 a.sidebar2:link {
 	color: #000099;
 	display: block;
 }
+
 a.sidebar2:hover {
 	background-color: #EEEEFF;
 	display: block;
 }
+
 .underlinehover:hover {
 	background-color: #EEEEFF;
 	text-decoration: underline;
 }
 
 .demoList {
-	border: 1px solid gray; padding: 3px; float: right;
+	border: 1px solid gray;
+	padding: 3px;
+	float: right;
 }
 
 .demoList .currentDemo {
@@ -165,6 +175,7 @@ a.sidebar2:hover {
 }
 
 /* Related site on the left */
+
 p.relatedsite {
 	color: White;
 	font-weight: 700;
@@ -176,45 +187,55 @@ p.relatedsite {
 }
 
 /* Related site on the left */
+
 p.sidebar3 {
 	margin-top: 0.75em;
 	margin-bottom: 0;
 	padding-left: 0.8em;
 }
+
 a.sidebar3 {
 	font-size: 0.9em;
 	text-decoration: none;
 }
+
 a.sidebar3:link {
 	text-decoration: none;
 	color: White;
 }
+
 a.sidebar3:hover {
 	text-decoration: underline;
 }
 
 /* FAQ */
+
 li.faq_contents {
 	font-weight: 500;
 }
+
 p.faq_q {
-	font-weight: 700; 
+	font-weight: 700;
 	margin-bottom: 0px;
 }
+
 p.faq_a {
 	margin-top: 0px;
 }
 
 /* News items */
+
 table.newsItem {
 	padding-left: 1em;
 	padding-right: 1em;
 	border-width: medium;
 }
+
 th.newsItem {
 	background-color: #666666;
 	color: White;
 }
+
 td.newsItem {
 	background-color: #CCCCCC;
 }
@@ -223,126 +244,249 @@ td.release-line,th.release-line {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	white-space: nowrap;
-	border:1px;
+	border: 1px;
 }
+
 .note {
 	font-style: italic;
 	font-size: small;
 	margin-left: 1em;
 }
 
+/*
+ * Demo stuff
+ */
 
+.null {
+	color: red;
+}
+
+table.formatTable {
+	border: solid black 1px;
+}
+
+table.formatTable 
+	div.argument {
+	
+}
+
+table.formatTable
+  th {
+	text-align: right;
+	background-color: #ffe;
+}
+
+pre.result {
+	border: solid black 1px;
+	white-space: pre;
+	font-size:  2em;
+	font-family: Georgia,monospace;
+	padding: 0.5em;
+}
+
+.msgLiteral {
+	padding: 2px;
+	margin: 2px;
+	background-color: #ddf;
+}
+
+.msgPart {
+	padding: 2px;
+	font-weight: bold;
+	margin: 2px;
+	background-color: #dfd;
+}
+
+
+.msgSubPart {
+	border: 1px solid gray;
+	margin: 0.5em;
+	padding: 0.5em;
+}
+
+.msgSubPart,
+.msgSubPart .msgSubPart .msgSubPart,
+.msgSubPart .msgSubPart .msgSubPart .msgSubPart .msgSubPart
+ {
+	border: 1px solid #ddd;
+}
+
+.msgSubPart .msgSubPart,
+.msgSubPart .msgSubPart .msgSubPart .msgSubPart,
+.msgSubPart .msgSubPart .msgSubPart .msgSubPart .msgSubPart  .msgSubPart
+ {
+ 	border: 1px solid #028;
+}
+
+
+table.msgSubPart {
+	border-collapse: collapse;
+	border: 1px solid blue;
+}
+
+table.msgSubPart thead th {
+	font-style: italic;
+	background-color: #ddd;
+}
+table.msgSubPart thead td {
+	font-weight: bold;
+}
+
+/*
+table.msgSubPart tbody tr th,
+table.msgSubPart tbody tr td,
+table.msgSubPart tbody tr {
+	border-top: 1px solid gray;
+}
+*/
+
+table.msgSubPart tbody th {
+	font-size: smaller;
+	text-align: right;
+}
+
+.argNumber {
+	padding: 2px;
+	margin: 2px;
+	background-color: #fdd;
+}
+
+.poweredByIcu {
+	margin-top: 5em;
+	font-size: small;
+	text-align: center;
+}
 
 /*
  *  Screen-specific overrides. 
  */
+
 @media screen {
-	tr#headline td#hlines {
-		background-image: url(hlines.gif); 
-		background-color: #006699	
-	}
+
+tr#headline td#hlines {
+	background-image: url(hlines.gif);
+	background-color: #006699
+}
+
 /* This is the faded header at the top */
-	tr#headline td.fadedtop {
+
+tr#headline td.fadedtop {
 	background-color: #006699;
 	background-image: url(gr100.gif);
-	}
-	tr#headline td#ICUname {
-		background-color: #006699;	
-	}
-	tr#headline td#ICUname h1 {
-		color: #fff;
-	}
-	td#sidebar {
-		white-space: nowrap;	
-	}
+}
 
-	samp {
-		margin-left: 1em;
-		margin-right: 2em;
-		border-style: groove;
-		padding: 1em;
-		display: block;
-		background-color: #EEEEEE
-	}
-	
-	table.rtable caption {
-		margin-left: 2px;
-		margin-right: 2px;
-		padding: 3px;
-		font-weight: bold;
-		background-color: #dee2ff;
-		text-align: left;
-	}
-	table.rtable tr th {
-		background-color: #dee2ff;
-		text-align: left;
-	}
-	table.rtable tr td {
-		background-color: #c0c0fd;
-		padding: 3px;
-	}
+tr#headline td#ICUname {
+	background-color: #006699;
+}
+
+tr#headline td#ICUname h1 {
+	color: #fff;
+}
+
+td#sidebar {
+	white-space: nowrap;
+}
+
+samp {
+	margin-left: 1em;
+	margin-right: 2em;
+	border-style: groove;
+	padding: 1em;
+	display: block;
+	background-color: #EEEEEE
+}
+
+table.rtable caption {
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 3px;
+	font-weight: bold;
+	background-color: #dee2ff;
+	text-align: left;
+}
+
+table.rtable tr th {
+	background-color: #dee2ff;
+	text-align: left;
+}
+
+table.rtable tr td {
+	background-color: #c0c0fd;
+	padding: 3px;
+}
 
 }
 
 /* Printing overrides. */
+
 @media print {
-	.demoList{
-		display: none;
-	}
-	
-	body {
-		margin:  1em;
-	}
-	
-	body.draft {
-		background-image: url(images/draftlt.png);
-	}
-	
-	tr#headline td#fadedtop.fadedtop {
-		display: none;
-	}
-	tr#headline td#ICUname {
-		background-color:  white;
-	}
-	td#sidebar {
-		display:  none;
-	}
-	h3 {
-		background-color:  #ddd;
-		color:  #000;
-	}
 
-	samp {
-		margin-left: 1em;
-		margin-right: 2em;
-		border-width: 2px;
-		padding: 1em;
-		display: block;
-	}
-	
-	
+.demoList {
+	display: none;
+}
 
-	table.rtable {
-	margin-left:  1em;
-	}
+body {
+	margin: 1em;
+}
 
-	table.rtable caption {
-		background-color:  #ccc;
-		margin-left: 2px;
-		margin-right: 2px;
-		padding: 3px;
-		font-weight: bold;
-		/*background-color: #dee2ff;*/
+body.draft {
+	background-image: url(images/draftlt.png);
+}
+
+tr#headline td#fadedtop.fadedtop {
+	display: none;
+}
+
+tr#headline td#ICUname {
+	background-color: white;
+}
+
+td#sidebar {
+	display: none;
+}
+
+h3 {
+	background-color: #ddd;
+	color: #000;
+}
+
+samp {
+	margin-left: 1em;
+	margin-right: 2em;
+	border-width: 2px;
+	padding: 1em;
+	display: block;
+}
+
+table.rtable {
+	margin-left: 1em;
+}
+
+table.rtable caption {
+	background-color: #ccc;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 3px;
+	font-weight: bold;
+	/*backg
+
+round-color: #dee2ff;*/
 		
 		text-align: left;
-	}
-	table.rtable tr th {
-		/*background-color: #dee2ff;*/
+}
+
+table.rtable tr th {
+	/
+
+*background-color: #dee2ff;*/
 		text-align: left;
-	}
-	table.rtable tr td {
-		/*background-color: #c0c0fd;*/
+}
+
+table.rtable tr td {
+	/
+
+*background-color: #c0c0fd;*/
 		padding: 3px;
-	}
+}
 
 }

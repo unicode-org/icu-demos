@@ -131,11 +131,13 @@ icu4jweb/WebContent/bidi.jsp -text
 icu4jweb/WebContent/c.gif -text
 icu4jweb/WebContent/demohead.jsf -text svneol=unset#text/plain
 icu4jweb/WebContent/demolist.jsf -text
+icu4jweb/WebContent/dojo.js -text svneol=unset#application/javascript
 icu4jweb/WebContent/escaper.jsp -text
 icu4jweb/WebContent/favicon.ico -text
 icu4jweb/WebContent/files.jsp -text
 icu4jweb/WebContent/files_all.jsp -text
 icu4jweb/WebContent/flexTest.jsp -text svneol=unset#text/plain
+icu4jweb/WebContent/formatAnalyze.jsp -text
 icu4jweb/WebContent/formatTest.jsp -text
 icu4jweb/WebContent/gr100.gif -text
 icu4jweb/WebContent/hlines.gif -text
@@ -144,6 +146,7 @@ icu4jweb/WebContent/icuinfo.jsp -text
 icu4jweb/WebContent/index.jsp -text
 icu4jweb/WebContent/interval.jsp -text
 icu4jweb/WebContent/locale_chooser.jsf -text svneol=unset#text/plain
+icu4jweb/WebContent/msganalyze.jsf -text
 icu4jweb/WebContent/numero.jsp -text
 icu4jweb/WebContent/patina.jpg -text svneol=unset#image/jpeg
 icu4jweb/WebContent/patina.jsp -text

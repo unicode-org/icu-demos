@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page language="java"
- import="java.util.*,java.text.*,com.ibm.icu.util.*"
+ import="com.ibm.icu.util.*,com.ibm.icu.text.MessagePattern,com.ibm.icu.text.*,java.text.ParsePosition"
  contentType="text/html; charset=utf-8"
  pageEncoding="utf-8"%>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -9,6 +9,8 @@
   <meta content="George Rhoten" name="AUTHOR" />
   <meta content="Copyright (c) 2008-2011 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <title>Format Tester</title>
+  				<script type="text/javascript" src="dojo.js"></script>
+ 
 <%@ include file="demohead.jsf" %>
 <%!
 static final String STR = "str";
@@ -39,7 +41,7 @@ static final Object convertToObject(String argType, String arg) {
             return "Invalid Type " + argType;
         }
         if (result == null) {
-            return "<span style=\"color:red;\">null</span>";
+            return "<span class='null'>null</span>";
         }
         else {
             return result;
@@ -108,7 +110,7 @@ String msgFmtStr = request.getParameter("msg");
 if (msgFmtStr == null) {
     msgFmtStr = "Hello {0}!";
 }
-msgFmtStr = escapeString(msgFmtStr);
+//msgFmtStr = escapeString(msgFmtStr);
 String args[] = request.getParameterValues("arg");
 if (args == null) {
     args = new String[]{"world","",""};
@@ -160,30 +162,79 @@ function addExample(selectionBox,idToModify) {
     // else leave as string
 }
 function setArgumentBase(selectNode) {
-    var baseNum = (selectNode.selectedIndex == 1) ? 1 : 0;
+	var msgAnalysis = dojo.byId("msgAnalysisSection");
+    var baseNum = (selectNode.selectedIndex == 2) ? 1 : 0; // printf
     for (var argIdx = 0; argIdx < argNum; argIdx++) {
         var argNode = document.getElementById('arg' + argIdx);
         argNode.innerHTML = argIdx + baseNum;
     }
+    if(selectNode.selectedIndex==0) {
+    	msgAnalysis.style.display='';
+    } else {
+    	msgAnalysis.style.display='none';
+    }
+    
 }
+
+var myInterval  = -1;
+
+
+function msgBlur( /* event */ e) {
+	var msg = dojo.byId("msg");
+	var msgAnalysis = dojo.byId("msgAnalysis");
+	
+	if(msgAnalysis != null) {
+		//msgAnalysis.innerHTML = "<i>Updating...</i><hr>" + msgAnalysis.innerHTML;
+		dojo.xhrGet( 
+				{ 
+					url:	'formatAnalyze.jsp',
+					handleAs: 'text',
+					content:  {
+						"msg": msg.value
+					},
+					
+					load: function(d) {
+							msgAnalysis.innerHTML = d;
+						},
+					error:  function(e) {
+								msgAnalysis.innerHTML = '<i class="null">'+e.toString()+'</i>';
+								window.clearInterval(myInterval);
+						}
+			   });
+	}
+}
+
+function msgFocus( /* event */ e) {
+	
+}
+
+
+dojo.addOnLoad(function(){
+	var ticks=0; // 1000;
+	if(ticks>0) {
+		myInterval = self.setInterval("msgBlur()",ticks);
+	}
+	//document.innerHTML("<h1>UPDATING EVERY "+ticks+" ms</h1>");
+});
+
 //]]>
 </script>
 </head>
 <body style="margin: 0.5em">
 <%@ include file="demolist.jsf" %>
 
-<h2>Format Taster</h2>
+<h2>Format Tester</h2>
 
 <form action='<%= request.getRequestURI() %>' method="post">
-<table style="border: solid black 1px;">
+<table class='formatTable'>
 <tr><th><label for="msg">Message</label></th>
-    <td><textarea id="msg" name="msg" rows="2" cols="80"><%= msgFmtStr %></textarea></td></tr>
+    <td><textarea  onchange="msgBlur()"  id="msg" name="msg" rows="2" cols="80"><%= escapeString(msgFmtStr) %></textarea></td></tr>
 
 <tr><th><label for="msgType">Message Type</label></th>
     <td><select id="msgType" name="msgType" onchange="setArgumentBase(this);">
+        <option value="icu4j"<%= (msgType.equals("icu4j")?" selected=\"selected\"":"") %>>ICU4J MessageFormat</option>
         <option value="java"<%= (msgType.equals("java")?" selected=\"selected\"":"") %>>Java MessageFormat</option>
         <option value="printf"<%= (msgType.equals("printf")?" selected=\"selected\"":"") %>>Java Formatter (printf)</option>
-        <option value="icu4j"<%= (msgType.equals("icu4j")?" selected=\"selected\"":"") %>>ICU4J MessageFormat</option>
         </select></td></tr>
 
 <tr><th><label for="locale">Locale</label></th>
@@ -201,7 +252,7 @@ for (int locIdx = 0; locIdx < locales.length; locIdx++) {
     <td id="argumentsCell"><%
 int argsLength = (args.length < argTypes.length ? args.length : argTypes.length);
 for (int argIdx = 0; argIdx < argsLength; argIdx++) {
-    out.println("<div style=\"margin-top: 5px\"><label id=\"arg" + argIdx + "\" for=\"argVal" + argIdx + "\">" + (msgType.equals("printf")?argIdx+1:argIdx) + "</label> <select id=\"argType" + argIdx + "\" name=\"argType\" onchange=\"addExample(this,'argVal" + argIdx + "');\">");
+    out.println("<div class='argument' ><label id=\"arg" + argIdx + "\" for=\"argVal" + argIdx + "\">" + (msgType.equals("printf")?argIdx+1:argIdx) + "</label> <select id=\"argType" + argIdx + "\" name=\"argType\" onchange=\"addExample(this,'argVal" + argIdx + "');\">");
     out.println(" <option value=\""+STR+"\""+(argTypes[argIdx].equals(STR)?" selected=\"selected\"":"")+">String</option>");
     out.println(" <option value=\""+NUM+"\""+(argTypes[argIdx].equals(NUM)?" selected=\"selected\"":"")+">Number ("+NUM_FMT+")</option>");
     out.println(" <option value=\""+DATE+"\""+(argTypes[argIdx].equals(DATE)?" selected=\"selected\"":"")+">Date ("+DATE_FMT+")</option>");
@@ -219,7 +270,7 @@ for (int argIdx = 0; argIdx < argsLength; argIdx++) {
 </form>
 
 <h3>Result</h3>
-<pre style="border: solid black 1px; white-space: pre; font-family: monospace; padding: 0.5em;"><%
+<pre id='result' class='result'><%
 try {
     ULocale currULoc = new ULocale(selectedLocale);
     if (msgType.equals("icu4j")) {
@@ -233,11 +284,21 @@ try {
     }
 }
 catch (Exception e) {
-    out.print("<span style=\"color:red;\">"+e.getMessage()+"</span>");
+    out.print("<span class='null'>"+e.getMessage()+"</span>");
 }
 %></pre>
 
-<p style="margin-top: 5em; font-size: small; text-align: center;">Powered by
+<div id='msgAnalysisSection'>
+<% if(msgType.equals("icu4j")) { %>
+<h3>Pattern Analysis</h3>
+<% request.setAttribute("msgFmtStr", msgFmtStr); %>
+<%@ include file="msganalyze.jsf" %>
+<%
+} /* end Pattern Analysis */
+%>
+</div>
+
+<p class='poweredByIcu'>Powered by
 <a href="http://www.icu-project.org/">ICU</a> <%= trimVersion(com.ibm.icu.util.VersionInfo.ICU_VERSION.toString()) %> and
 <%= System.getProperty("java.vendor") %> <a href="http://java.sun.com/">Java</a> <%= trimVersion(System.getProperty("java.version")) %></p>
 <!--  jsp:include page="/ssi/footer.fragment" -->

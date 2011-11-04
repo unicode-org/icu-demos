@@ -47,7 +47,7 @@
 					desc = "Jar file containing the sources.";
 				} else if(s.endsWith("-docs.jar")) {
 					desc = "Jar file containing the documentation.";
-				} else if(s.startsWith("icu4j-charsets")) {
+				} else if(s.startsWith("icu4j-charset")) {
 					desc = "Jar file containing binaries for charsets.";
 				} else if(s.startsWith("icu4j-localespi")) {
 					desc = "Jar file containing binaries for Locale SPI.";
