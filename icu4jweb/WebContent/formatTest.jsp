@@ -7,7 +7,7 @@
 <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
   <meta content="George Rhoten" name="AUTHOR" />
-  <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
+  <meta content="Copyright (c) 2008-2011 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <title>Format Tester</title>
 <%@ include file="demohead.jsf" %>
 <%!
@@ -93,7 +93,8 @@ static final String trimVersion(String ver) {
 }
 
 %><%
-
+request.setCharacterEncoding("UTF-8");
+response.setContentType("text/html;charset=utf-8");
 
 String selectedLocale = request.getParameter("locale");
 if (selectedLocale == null) {
@@ -171,7 +172,7 @@ function setArgumentBase(selectNode) {
 <body style="margin: 0.5em">
 <%@ include file="demolist.jsf" %>
 
-<h2>Format Tester</h2>
+<h2>Format Taster</h2>
 
 <form action='<%= request.getRequestURI() %>' method="post">
 <table style="border: solid black 1px;">
