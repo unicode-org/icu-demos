@@ -4,14 +4,10 @@
 <title>Escaper</title>
 <%@ page contentType="text/html; charset=utf-8" import="java.net.URI" %>
 <%@ include file="demohead.jsf" %>
-
 </head>
 <body>
-
 <%@ include file="demolist.jsf"  %>
-
 <%
-
      request.setCharacterEncoding("utf-8");
 
      String s = request.getParameter("v");
@@ -30,7 +26,7 @@ try  {
     
     s = new String(asBytes, "UTF-8");
 } catch(Throwable t) {
-    //
+    // TODO: report error.
 }
 					      
 %>
