@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009, International Business Machines Corporation and         *
+ * Copyright (C) 2009-2011, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -111,7 +111,7 @@ public class TimeZoneRegistry {
                 }
 
                 INSTANCE = new TimeZoneRegistry();
-                INSTANCE.initialize(new InputStreamReader(is, "Cp1252"));
+                INSTANCE.initialize(new InputStreamReader(is, "UTF-16LE"));
             } catch (IOException e) {
                 INSTANCE = null;
             }

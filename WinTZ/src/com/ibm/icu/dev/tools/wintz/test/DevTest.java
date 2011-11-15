@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009, International Business Machines Corporation and         *
+ * Copyright (C) 2009-2011, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -77,11 +77,11 @@ public class DevTest {
 
         GregorianCalendar greg = new GregorianCalendar(TimeZone.getTimeZone("Etc/GMT"));
         greg.clear();
-        greg.set(2006, Calendar.JANUARY, 1, 0, 0, 0);
+        greg.set(2008, Calendar.JANUARY, 1, 0, 0, 0);
         final long start = greg.getTimeInMillis();
 
         greg.clear();
-        greg.set(2010, Calendar.JANUARY, 1, 0, 0, 0);
+        greg.set(2012, Calendar.JANUARY, 1, 0, 0, 0);
         final long end = greg.getTimeInMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

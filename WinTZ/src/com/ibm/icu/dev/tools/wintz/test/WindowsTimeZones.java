@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009, International Business Machines Corporation and         *
+ * Copyright (C) 2009-2011, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -10,26 +10,96 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.ibm.icu.dev.tools.wintz.TimeZoneRegistry;
+import com.ibm.icu.text.LocaleDisplayNames;
 import com.ibm.icu.util.BasicTimeZone;
 import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.GregorianCalendar;
 import com.ibm.icu.util.TimeZone;
 import com.ibm.icu.util.TimeZoneTransition;
+import com.ibm.icu.util.ULocale;
 
 public class WindowsTimeZones {
 
     private static List<BasicTimeZone> OLSON_ZONES = null;
     private static List<BasicTimeZone> WINDOWS_ZONES = null;
 
-    static final int STARTYEAR = 2008;
-    static final int ENDYEAR = 2009;
-    static final int APPROX_DELTA = 2 * 60 * 60 * 1000; // 2 hours
-
     public static void main(String[] args) {
-        long startTime = getYearStart(STARTYEAR);
-        long endTime = getYearStart(ENDYEAR + 1);
+        // Default start year = current year - 1
+        GregorianCalendar cal = new GregorianCalendar();
+        int startYear = cal.get(Calendar.YEAR) - 1;
+        // Default numberOfYears = 1
+        int numYears = 1;
+        // Default approximate match delta hour
+        int deltaH = 2;
+
+        boolean argError = false;
+        int argidx = 0;
+        while (argidx < args.length) {
+            if (args[argidx].length() != 2 || args[argidx].charAt(0) != '-') {
+                argError = true;
+                break;
+            }
+            char optChar = args[argidx].charAt(1);
+            argidx++;
+            if (argidx >= args.length) {
+                argError = true;
+                break;
+            }
+            int optVal;
+            try {
+                optVal = Integer.parseInt(args[argidx]);
+            } catch (NumberFormatException e) {
+                argError = true;
+                break;
+            }
+            switch (optChar) {
+            case 'y':
+                startYear = optVal;
+                break;
+            case 'n':
+                if (optVal > 0) {
+                    numYears = optVal;
+                } else {
+                    argError = true;
+                }
+                break;
+            case 'd':
+                if (optVal >= 0) {
+                    deltaH = optVal;
+                } else {
+                    argError = true;
+                }
+                break;
+            default:
+                argError = true;
+            }
+            if (argError) {
+                break;
+            }
+            argidx++;
+        }
+
+        if (argError) {
+            System.out.println("Invalid command line arguments.");
+            System.out.println("Available options:");
+            System.out.println(" -y <start year>");
+            System.out.println(" -n <number of years>");
+            System.out.println(" -d <hour delta for approximate match>");
+            return;
+        }
+
+        System.out.println("####################################");
+        System.out.println("# Windows - Olson Time Zone mapping");
+        System.out.println("#  start year:             " + startYear);
+        System.out.println("#  number of year(s):      " + numYears);
+        System.out.println("#  approx match hour(+/-): " + deltaH);
+        System.out.println("####################################");
+
+        long startTime = getYearStart(startYear);
+        long endTime = getYearStart(startYear + numYears);
 
         StringBuilder buf = new StringBuilder();
 
@@ -41,30 +111,36 @@ public class WindowsTimeZones {
             buf.append(" - ");
             buf.append(getWindowsDisplayName(winID));
             buf.append("\n{");
-            List<String> equivalents = findOlsonEquivalents(winTZ, startTime, endTime, false);
-            if (equivalents != null) {
+            Set<String> equivalents = findOlsonEquivalents(winTZ, startTime, endTime, 0);
+            if (!equivalents.isEmpty()) {
+                buf.append("\n  # Exact Matches");
                 for (String equivalentID : equivalents) {
-                    buf.append("\n  ");
-                    buf.append(equivalentID);
+                    buf.append("\n    ");
+                    appendZoneInformation(buf, equivalentID);
                 }
-            } else {
-                equivalents = findOlsonEquivalents(winTZ, startTime, endTime, true);
-                if (equivalents != null) {
-                    buf.append("\n  <approximate matches only>");
-                    for (String equivalentID : equivalents) {
-                        buf.append("\n  ");
-                        buf.append(equivalentID);
+            }
+            Set<String> equivalentsApprox = findOlsonEquivalents(winTZ, startTime, endTime, deltaH * 60 * 60 * 1000);
+            if (!equivalentsApprox.isEmpty()) {
+                for (String exactMatch : equivalents) {
+                    equivalentsApprox.remove(exactMatch);
+                }
+                if (!equivalentsApprox.isEmpty()) {
+                    buf.append("\n  # Approximate Matches");
+                    for (String equivalentID : equivalentsApprox) {
+                        buf.append("\n    ");
+                        appendZoneInformation(buf, equivalentID);
                     }
-                } else {
-                    buf.append("\n  <no matches>");
                 }
+            }
+            if (equivalents.isEmpty() && equivalentsApprox.isEmpty()) {
+                buf.append("\n  # No Matches");
             }
             buf.append("\n}");
             System.out.println(buf);
         }
     }
 
-    static List<String> findOlsonEquivalents(BasicTimeZone winTZ, long start, long end, boolean approxMatch) {
+    static Set<String> findOlsonEquivalents(BasicTimeZone winTZ, long start, long end, int maxTransitionTimeDelta) {
         long t;
 
         int winTZOffset = winTZ.getOffset(start);
@@ -81,7 +157,7 @@ public class WindowsTimeZones {
         }
         int winTransitionCount = winTransitions.size();
 
-        List<String> equivalentOlsonIDs = new ArrayList<String>();
+        Set<String> equivalentOlsonIDs = new TreeSet<String>();
         for (BasicTimeZone olsonTZ : getOlsonZones()) {
             int olsonTZOffset = olsonTZ.getOffset(start);
 
@@ -112,8 +188,8 @@ public class WindowsTimeZones {
                 // compare transitions
                 boolean match = true;
                 for (int i = 0; i < winTransitionCount; i++) {
-                    if (approxMatch) {
-                        if (!winTransitions.get(i).approximateMatch(olsonTransitions.get(i), APPROX_DELTA)) {
+                    if (maxTransitionTimeDelta > 0) {
+                        if (!winTransitions.get(i).approximateMatch(olsonTransitions.get(i), maxTransitionTimeDelta)) {
                             match = false;
                             break;
                         }
@@ -128,9 +204,6 @@ public class WindowsTimeZones {
                     equivalentOlsonIDs.add(olsonTZ.getID());
                 }
             }
-        }
-        if (equivalentOlsonIDs.size() == 0) {
-            return null;
         }
         return equivalentOlsonIDs;
     }
@@ -197,5 +270,19 @@ public class WindowsTimeZones {
         gcal.clear();
         gcal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
         return gcal.getTimeInMillis();
+    }
+
+    static LocaleDisplayNames LOCDISPNAMS = LocaleDisplayNames.getInstance(ULocale.US);
+
+    static void appendZoneInformation(StringBuilder buf, String id) {
+        buf.append(id);
+        buf.append(" [");
+        String region = TimeZone.getRegion(id);
+        if (!region.equals("001")) {
+            buf.append(region).append(":").append(LOCDISPNAMS.regionDisplayName(region));
+        } else {
+            buf.append("--");
+        }
+        buf.append("]");        
     }
 }
