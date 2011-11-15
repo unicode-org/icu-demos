@@ -1,6 +1,6 @@
 <html>
 <head>
-  <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
+  <meta content="Copyright (c) 2008-2011 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 <title>Escaper</title>
 <%@ page contentType="text/html; charset=utf-8" import="java.net.URI" %>
 <%@ include file="demohead.jsf" %>
@@ -50,3 +50,4 @@ try  {
 
 </body>
 </html>
+
