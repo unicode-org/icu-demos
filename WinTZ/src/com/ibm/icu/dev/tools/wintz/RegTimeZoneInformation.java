@@ -11,9 +11,8 @@ public class RegTimeZoneInformation {
     private String _display;
     private String _dlt;
     private String _std;
-    private String _mapID;
-    private int _index;
     private TZI _tzi;
+    private boolean _isObsolete;
 
     public RegTimeZoneInformation(String tzid) {
         _tzid = tzid;
@@ -27,10 +26,8 @@ public class RegTimeZoneInformation {
             _dlt = RegUtil.getStringValue(line);
         } else if (key.equals("Std")) {
             _std = RegUtil.getStringValue(line);
-        } else if (key.equals("MapID")) {
-            _mapID = RegUtil.getStringValue(line);
-        } else if (key.equals("Index")) {
-            _index = RegUtil.getDwordValue(line);
+        } else if (key.equals("IsObsolete")) {
+            _isObsolete = (RegUtil.getDwordValue(line) == 1);
         } else if (key.equals("TZI")) {
             _tzi = TZI.getInstance(RegUtil.getBinaryValue(line));
         } else {
@@ -54,12 +51,8 @@ public class RegTimeZoneInformation {
         return _std;
     }
 
-    public String getMapID() {
-        return _mapID;
-    }
-
-    public int getIndex() {
-        return _index;
+    public boolean isObsolete() {
+        return _isObsolete;
     }
 
     public TZI getTZI() {

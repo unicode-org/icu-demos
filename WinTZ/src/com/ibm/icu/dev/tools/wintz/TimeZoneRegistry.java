@@ -24,11 +24,12 @@ public class TimeZoneRegistry {
 
     private static TimeZoneRegistry INSTANCE;
 
-    private static final String TZREG_PREFIX = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\";
+    private static final String TZREG_ROOT = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones";
     private static final String DYNDST_SUFFIX = "\\Dynamic DST";
 
     private static final int STARTYEAR = 1900;
 
+    private int _tzVersion;
     private TreeMap<String, RegTimeZoneInformation> _timezones;
     private TreeMap<String, RegDynamicDST> _dynamicDsts;
 
@@ -40,6 +41,7 @@ public class TimeZoneRegistry {
         _dynamicDsts = new TreeMap<String, RegDynamicDST>();
 
         boolean next = true;
+        boolean inTzRegRoot = false;
         RegTimeZoneInformation timezone = null;
         RegDynamicDST dynamicDST = null;
         StringBuilder lineBuf = new StringBuilder();
@@ -61,8 +63,12 @@ public class TimeZoneRegistry {
                 } else if (line.startsWith("[") && line.endsWith("]")) {
                     // new key
                     String newKey = line.trim().substring(1, line.length() - 1);
-                    if (newKey.startsWith(TZREG_PREFIX)) {
-                        String subKey = newKey.substring(TZREG_PREFIX.length());
+                    if (newKey.equals(TZREG_ROOT)) {
+                        inTzRegRoot = true;
+                        lineBuf.setLength(0);
+                    } else if (newKey.startsWith(TZREG_ROOT + "\\")) {
+                        inTzRegRoot = false;
+                        String subKey = newKey.substring(TZREG_ROOT.length() + 1);
                         if (subKey.endsWith(DYNDST_SUFFIX)) {
                             int idx = subKey.indexOf(DYNDST_SUFFIX);
                             String tzid = subKey.substring(0, idx);
@@ -79,7 +85,13 @@ public class TimeZoneRegistry {
             }
 
             if (lineBuf.length() > 0) {
-                if (timezone != null) {
+                if (inTzRegRoot) {
+                    String regDataLine = lineBuf.toString();
+                    if ("TzVersion".equals(RegUtil.getKey(regDataLine))) {
+                        _tzVersion = RegUtil.getDwordValue(regDataLine);
+                    }
+                    lineBuf.setLength(0);
+                } else if (timezone != null) {
                     timezone.set(lineBuf.toString());
                     lineBuf.setLength(0);
                 } else if (dynamicDST != null) {
@@ -122,8 +134,20 @@ public class TimeZoneRegistry {
     private TimeZoneRegistry() {
     }
 
+    public int getTzVersion() {
+        return _tzVersion;
+    }
+
     public Set<String> getAvailableTZIDs() {
         return _timezones.keySet();
+    }
+
+    public boolean isObsolete(String tzid) {
+        RegTimeZoneInformation tzInfo = _timezones.get(tzid);
+        if (tzInfo == null) {
+            return true;
+        }
+        return tzInfo.isObsolete();
     }
 
     public String getDisplayName(String tzid) {
