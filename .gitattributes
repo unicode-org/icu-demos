@@ -1,6 +1,11 @@
 * text=auto !eol
 CSharp/conversion/App.ico -text
 WinTZ/src/com/ibm/icu/dev/tools/wintz/TimeZone.reg -text svneol=unset#unset
+WinTZ/src/com/ibm/icu/dev/tools/wintz/mapper/ExemplarLocationData.java svneol=native#text/plain%3Bcharset%3Dutf-8
+WinTZ/src/com/ibm/icu/dev/tools/wintz/mapper/ExemplarLocationUtil.java svneol=native#text/plain%3Bcharset%3Dutf-8
+WinTZ/src/com/ibm/icu/dev/tools/wintz/mapper/MapData.java svneol=native#text/plain%3Bcharset%3Dutf-8
+WinTZ/src/com/ibm/icu/dev/tools/wintz/mapper/MapDataUtil.java svneol=native#text/plain%3Bcharset%3Dutf-8
+WinTZ/src/com/ibm/icu/dev/tools/wintz/test/MapDataCheck.java svneol=native#text/plain%3Bcharset%3Dutf-8
 XMLConverter/samples/a-ebc-ascii.xml -text svneol=unset#text/xml
 XMLConverter/samples/a-eucjp-ascii.xml -text svneol=unset#text/xml
 XMLConverter/samples/a-utf8.xml -text svneol=unset#text/xml

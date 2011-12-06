@@ -15,7 +15,7 @@ package com.ibm.icu.dev.tools.wintz;
 //    SYSTEMTIME DaylightDate;
 //}
 
-public class TZI {
+class TZI {
 
     private int _bias;
     private int _standardBias;

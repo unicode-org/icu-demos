@@ -1,12 +1,12 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009, International Business Machines Corporation and         *
+ * Copyright (C) 2009-2011, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
 package com.ibm.icu.dev.tools.wintz;
 
-public class RegTimeZoneInformation {
+class RegTimeZoneInformation {
     private String _tzid;
     private String _display;
     private String _dlt;
@@ -31,7 +31,7 @@ public class RegTimeZoneInformation {
         } else if (key.equals("TZI")) {
             _tzi = TZI.getInstance(RegUtil.getBinaryValue(line));
         } else {
-//            throw new IllegalArgumentException("Unknown Time Zone registry key type - " + line);
+            assert false: "Unknown Time Zone registry key type - " + line;
         }
     }
 

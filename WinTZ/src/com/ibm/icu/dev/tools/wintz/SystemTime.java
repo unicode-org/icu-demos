@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009, International Business Machines Corporation and         *
+ * Copyright (C) 2009-2011, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -17,7 +17,7 @@ package com.ibm.icu.dev.tools.wintz;
 //    WORD wMilliseconds;
 //} SYSTEMTIME, *PSYSTEMTIME;
 
-public class SystemTime {
+class SystemTime {
     private int _year;
     private int _month;
     private int _dayOfWeek;

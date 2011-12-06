@@ -10,8 +10,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.ibm.icu.util.AnnualTimeZoneRule;
 import com.ibm.icu.util.BasicTimeZone;
@@ -139,30 +141,32 @@ public class TimeZoneRegistry {
     }
 
     public Set<String> getAvailableTZIDs() {
+        return getAvailableTZIDs(false);
+    }
+
+    public Set<String> getAvailableTZIDs(boolean activeOnly) {
+        if (activeOnly) {
+            Set<String> activeIDs = new TreeSet<String>();
+            for (Entry<String, RegTimeZoneInformation> entry : _timezones.entrySet()) {
+                if (!entry.getValue().isObsolete()) {
+                    activeIDs.add(entry.getKey());
+                }
+            }
+            return activeIDs;
+        }
         return _timezones.keySet();
     }
 
     public boolean isObsolete(String tzid) {
-        RegTimeZoneInformation tzInfo = _timezones.get(tzid);
-        if (tzInfo == null) {
-            return true;
-        }
-        return tzInfo.isObsolete();
+        return getTZInfo(tzid).isObsolete();
     }
 
     public String getDisplayName(String tzid) {
-        RegTimeZoneInformation tzInfo = _timezones.get(tzid);
-        if (tzInfo == null) {
-            return null;
-        }
-        return tzInfo.getDisplay();
+        return getTZInfo(tzid).getDisplay();
     }
 
     public BasicTimeZone getTimeZone(String tzid) {
-        RegTimeZoneInformation tzInfo = _timezones.get(tzid);
-        if (tzInfo == null) {
-            return null;
-        }
+        RegTimeZoneInformation tzInfo = getTZInfo(tzid);
 
         int offset, stdOffset, dstOffset, dstSavings;
         SystemTime stdDate, dstDate;
@@ -350,6 +354,14 @@ public class TimeZoneRegistry {
         }
 
         return btz;
+    }
+
+    private RegTimeZoneInformation getTZInfo(String tzid) {
+        RegTimeZoneInformation tzInfo = _timezones.get(tzid);
+        if (tzInfo == null) {
+            throw new IllegalArgumentException("Unknown Windows TZID: " + tzid);
+        }
+        return tzInfo;
     }
 
     private static int biasToOffset(int bias) {

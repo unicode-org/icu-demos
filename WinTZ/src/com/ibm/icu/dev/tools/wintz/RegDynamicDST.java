@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009, International Business Machines Corporation and         *
+ * Copyright (C) 2009-2011, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -9,7 +9,7 @@ package com.ibm.icu.dev.tools.wintz;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RegDynamicDST {
+class RegDynamicDST {
     private String _tzid;
     private Map<Integer, TZI> _entries;
     private int _firstEntry;
