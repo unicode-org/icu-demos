@@ -1,67 +1,110 @@
 package com.ibm.icu.dev.tools.wintz.test;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
 import com.ibm.icu.dev.tools.wintz.TimeZoneRegistry;
 import com.ibm.icu.dev.tools.wintz.mapper.ExemplarLocationUtil;
 import com.ibm.icu.dev.tools.wintz.mapper.MapDataUtil;
+import com.ibm.icu.dev.tools.wintz.mapper.MapDataUtil.MapDataEntry;
 import com.ibm.icu.util.TimeZone;
 import com.ibm.icu.util.TimeZone.SystemTimeZoneType;
 
 public class MapDataCheck {
+
     public static void main(String... args) {
-        checkWindowsIdSet();
-        checkWindowsExemplarLocations();
-        checkDuplicate();
-        checkCanonical();
-        checkRegion();
-        checkNoBaseOffsetMatches();
-        printUnmappedOlsonIDs();
+        MapDataCheck checker = new MapDataCheck();
+        checker.testWindowsIdSet();
+        checker.testZoneIdSet();
+        checker.testWindowsExemplarLocations();
+        checker.testDuplicate();
+        checker.testCanonical();
+        checker.testRegion();
+        checker.testNoBaseOffsetMatches();
     }
 
-    static void checkWindowsIdSet() {
-        System.out.println("### Checking Available Windows IDs");
+    private PrintWriter pw;
+
+    public MapDataCheck() {
+        pw = new PrintWriter(System.out, true);
+    }
+
+    public void testWindowsIdSet() {
+        pw.println("### Checking Available Windows IDs");
         TimeZoneRegistry reg = TimeZoneRegistry.get();
         Set<String> regWinIDs = reg.getAvailableTZIDs(true);
-        Set<String> dataWinIDs = MapDataUtil.getAvailableWindowsIDs(true);
+        Set<String> dataWinIDs = MapDataUtil.getAllKnownWindowsIDs();
 
         boolean isOK = true;
 
         if (!dataWinIDs.containsAll(regWinIDs)) {
             isOK = false;
-            System.out.println("# Missing Windows IDs in MapData");
-            System.out.println("{");
+            pw.println("# Missing Windows IDs in MapData");
+            pw.println("{");
             for (String winID : regWinIDs) {
                 if (!dataWinIDs.contains(winID)) {
-                    System.out.println(winID);
+                    pw.println(winID);
                 }
             }
-            System.out.println("}");
+            pw.println("}");
         }
         if (!regWinIDs.containsAll(dataWinIDs)) {
             isOK = false;
-            System.out.println("# Windows IDs no longer available in the registry");
-            System.out.println("{");
+            pw.println("# Windows IDs no longer available in the registry");
+            pw.println("{");
             for (String winID : dataWinIDs) {
                 if (!regWinIDs.contains(winID)) {
-                    System.out.println(winID);
+                    pw.println(winID);
                 }
             }
-            System.out.println("}");
+            pw.println("}");
         }
         if (isOK) {
-            System.out.println("[OK]");
+            pw.println("[OK]");
         }
     }
 
-    static void checkWindowsExemplarLocations() {
-        System.out.println("### Checking if ExemplarLocationData contains all Windows exemplar locations");
+    public void testZoneIdSet() {
+        pw.println("### Checking Available Zone IDs");
+
+        Set<String> dataIDs = MapDataUtil.getAllKnownIDs();
+        Set<String> canonicalIDs = TimeZone.getAvailableIDs(SystemTimeZoneType.CANONICAL, null, null);
+
+        boolean isOK = true;
+
+        if (!dataIDs.containsAll(canonicalIDs)) {
+            isOK = false;
+            pw.println("# Missing Zone IDs in MapData");
+            pw.println("{");
+            for (String id : canonicalIDs) {
+                if (!dataIDs.contains(id)) {
+                    pw.println(id);
+                }
+            }
+            pw.println("}");
+        }
+        if (!canonicalIDs.containsAll(dataIDs)) {
+            isOK = false;
+            pw.println("# IDs not available in the tz database, or not canonical");
+            pw.println("{");
+            for (String dataID : dataIDs) {
+                if (!canonicalIDs.contains(dataID)) {
+                    pw.println(dataID);
+                }
+            }
+            pw.println("}");
+        }
+        if (isOK) {
+            pw.println("[OK]");
+        }
+    }
+
+    public void testWindowsExemplarLocations() {
+        pw.println("### Checking if ExemplarLocationData contains all Windows exemplar locations");
         TimeZoneRegistry reg = TimeZoneRegistry.get();
         Set<String> regWinIDs = reg.getAvailableTZIDs(true);
 
@@ -77,119 +120,113 @@ public class MapDataCheck {
 
         if (!knownLocations.containsAll(regLocations)) {
             isOK = false;
-            System.out.println("# Missing Windows exemplar locations in ExemplarLocationData");
-            System.out.println("{");
+            pw.println("# Missing Windows exemplar locations in ExemplarLocationData");
+            pw.println("{");
             for (String regLoc : regLocations) {
                 if (!knownLocations.contains(regLoc)) {
-                    System.out.println(regLoc);
+                    pw.println(regLoc);
                 }
             }
-            System.out.println("}");
+            pw.println("}");
         }
         if (!regLocations.containsAll(knownLocations)) {
             isOK = false;
-            System.out.println("# Windows exemplar locations no longer available in the registry");
-            System.out.println("{");
+            pw.println("# Windows exemplar locations no longer available in the registry");
+            pw.println("{");
             for (String knownLoc : knownLocations) {
                 if (!regLocations.contains(knownLoc)) {
-                    System.out.println(knownLoc);
+                    pw.println(knownLoc);
                 }
             }
-            System.out.println("}");
+            pw.println("}");
         }
         if (isOK) {
-            System.out.println("[OK]");
+            pw.println("[OK]");
         }
     }
 
-    static void checkDuplicate() {
-        System.out.println("### Checking duplicated Olson ID mappings");
+    public void testDuplicate() {
+        pw.println("### Checking duplicated Olson ID mappings");
 
         Set<String> olsonIDs = new HashSet<String>();
         Set<String> dupIDs = new TreeSet<String>();
-        Set<String> dataWinIDs = MapDataUtil.getAvailableWindowsIDs(true);
 
-        for (String winID : dataWinIDs) {
-            Map<String, List<String>> regionMap = MapDataUtil.getMapData(winID, true);
-            for (Entry<String, List<String>> data : regionMap.entrySet()) {
-                List<String> zoneList = data.getValue();
-                for (String olsonID : zoneList) {
-                    if (olsonIDs.contains(olsonID)) {
-                        dupIDs.add(olsonID);
-                    } else {
-                        olsonIDs.add(olsonID);
-                    }
-                }
+        for (MapDataEntry entry : MapDataUtil.getAllEntriesInMapData()) {
+            String id = entry.olsonID();
+            if (olsonIDs.contains(id)) {
+                dupIDs.add(id);
+            } else {
+                olsonIDs.add(id);
             }
         }
 
         if (dupIDs.isEmpty()) {
-            System.out.println("[OK]");
+            pw.println("[OK]");
         } else {
-            System.out.println("# Duplicated Olson ID mappings");
-            System.out.println("{");
+            pw.println("# Duplicated Olson ID mappings");
+            pw.println("{");
             for (String dup : dupIDs) {
-                System.out.println(dup);
+                pw.println(dup);
             }
-            System.out.println("}");
+            pw.println("}");
         }
 
     }
 
-    static void checkCanonical() {
-        System.out.println("### Checking if Olson IDs in the mapping data are canonical");
-        Set<String> olsonIDs = MapDataUtil.getAvailableOlsonIDsInMapData(true);
+    public void testCanonical() {
+        pw.println("### Checking if Olson IDs in the mapping data are canonical");
+        Set<String> olsonIDs = MapDataUtil.getAllKnownIDs();
         boolean isOK = true;
         for (String id : olsonIDs) {
             String canonical = TimeZone.getCanonicalID(id);
             if (!id.equals(canonical)) {
                 if (isOK) {
-                    System.out.println("# Non-canonical Olson IDs");
-                    System.out.println("{");
+                    pw.println("# Non-canonical Olson IDs");
+                    pw.println("{");
                     isOK = false;
                 }
-                System.out.println(id + "[" + canonical + "]");
+                pw.println(id + "[" + canonical + "]");
             }
         }
         if (isOK) {
-            System.out.println("[OK]");
+            pw.println("[OK]");
         } else {
-            System.out.println("}");
+            pw.println("}");
         }
     }
 
-    static void checkRegion() {
-        System.out.println("### Checking if Olson ID's region in the mapping data is correct");
+    public void testRegion() {
+        pw.println("### Checking if Olson ID's region in the mapping data is correct");
 
         boolean isOK = true;
-        Set<String> dataWinIDs = MapDataUtil.getAvailableWindowsIDs(true);
-        for (String winID : dataWinIDs) {
-            Map<String, List<String>> regionMap = MapDataUtil.getMapData(winID, true);
-            for (Entry<String, List<String>> data : regionMap.entrySet()) {
-                String dataRegion = data.getKey();
-                List<String> zoneList = data.getValue();
-                for (String olsonID : zoneList) {
-                    String region = TimeZone.getRegion(olsonID);
-                    if (!dataRegion.equals(region)) {
-                        if (isOK) {
-                            System.out.println("# Incorrect Olson time zone's region");
-                            System.out.println("{");
-                            isOK = false;
-                        }
-                        System.out.println(olsonID + ": " + dataRegion + " -> " + region);
-                    }
+
+        for (MapDataEntry entry : MapDataUtil.getAllEntriesInMapData()) {
+            String dataRegion = entry.region();
+            if (dataRegion.equals("ZZ")) {
+                // MapData uses "ZZ" for non-location zones, while ICU uses "001" when unknown.
+                dataRegion = "001";
+            }
+            String id = entry.olsonID();
+            String region = TimeZone.getRegion(id);
+            if (!dataRegion.equals(region)) {
+                if (isOK) {
+                    pw.println("# Incorrect Olson time zone's region");
+                    pw.println("{");
+                    isOK = false;
                 }
+                pw.println(id + ": " + dataRegion + " -> " + region);
             }
         }
+
         if (isOK) {
-            System.out.println("[OK]");
+            pw.println("[OK]");
         } else {
-            System.out.println("}");
+            pw.println("}");
         }
     }
 
-    static void checkNoBaseOffsetMatches() {
-        System.out.println("### Checking if the hardcoded list of zones without exact base offset match");
+    public void testNoBaseOffsetMatches() {
+        pw.println("### Checking if the hardcoded list of zones without exact base offset match");
         TimeZoneRegistry reg = TimeZoneRegistry.get();
         Set<String> regWinIDs = reg.getAvailableTZIDs(true);
         List<TimeZone> winZones = new ArrayList<TimeZone>(regWinIDs.size());
@@ -223,38 +260,15 @@ public class MapDataCheck {
         }
 
         if (buf.length() == 0) {
-            System.out.println("[OK]");
+            pw.println("[OK]");
         } else {
-            System.out.println("# Base offset matches");
-            System.out.println("{");
-            System.out.println(buf.append("}"));
+            pw.println("# Base offset matches");
+            pw.println("{");
+            pw.println(buf.append("}"));
         }
     }
 
-    static void printUnmappedOlsonIDs() {
-        System.out.println("### Printing Olson IDs not included in the mapping data");
-
-        Set<String> availableIDs = MapDataUtil.getAvailableOlsonIDsInMapData(true);
-        Set<String> canonicalIDs = TimeZone.getAvailableIDs(SystemTimeZoneType.CANONICAL, null, null);
-        Set<String> nonCldrIDs = MapDataUtil.getNonCLDRZones();
-        Set<String> noBaseOffsetMatchIDs = MapDataUtil.getNoBaseOffestMatchZones();
-
-        System.out.println("{");
-        for (String id : canonicalIDs) {
-            if (nonCldrIDs.contains(id)) {
-                continue;
-            }
-            if (!availableIDs.contains(id)) {
-                if (noBaseOffsetMatchIDs.contains(id)) {
-                    System.out.println(id + " [" + TimeZone.getRegion(id) + "]");
-                }
-            }
-        }
-        System.out.println("}");
-    }
-
-
-    static String ms2HourMin(int ms) {
+    private static String ms2HourMin(int ms) {
         boolean negative = ms < 0;
         if (negative) {
             ms *= -1;
