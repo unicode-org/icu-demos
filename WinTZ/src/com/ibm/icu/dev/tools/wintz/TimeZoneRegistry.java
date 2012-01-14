@@ -136,6 +136,10 @@ public class TimeZoneRegistry {
     private TimeZoneRegistry() {
     }
 
+    public String getTzVersionString() {
+        return String.format("%8x", _tzVersion);
+    }
+
     public int getTzVersion() {
         return _tzVersion;
     }

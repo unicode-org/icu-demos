@@ -1,9 +1,14 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2011-2012, International Business Machines Corporation and    *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -194,9 +199,9 @@ public class MapDataUtil {
         return NON_CLDR_ZONES;
     }
 
-    public static NavigableSet<String> getAllKnownWindowsIDs() {
+    public static SortedSet<String> getAllKnownWindowsIDs() {
         // All Windows IDs in the map data
-        NavigableSet<String> result = new TreeSet<String>(getAvailableWindowsIDsInMapData());
+        SortedSet<String> result = new TreeSet<String>(getAvailableWindowsIDsInMapData());
 
         // All unmappable Windows IDs
         for (String winID : getUnmappableWindowsZones()) {
@@ -206,8 +211,8 @@ public class MapDataUtil {
         return result;
     }
 
-    public static NavigableSet<String> getAllKnownIDs() {
-        NavigableSet<String> result = new TreeSet<String>();
+    public static SortedSet<String> getAllKnownIDs() {
+        SortedSet<String> result = new TreeSet<String>();
 
         // All Olson IDs in MapData.MAP_DATA_ARRAY;
         for (MapDataEntry entry : getAllEntriesInMapData()) {
@@ -224,5 +229,13 @@ public class MapDataUtil {
         result.addAll(getNonCLDRZones());
 
         return result;
+    }
+
+    public static String getTZDataVersion() {
+        return MapData.TZDATA_VERSION;
+    }
+
+    public static String getWINTZDataVersion() {
+        return MapData.WINTZDATA_VERSION;
     }
 }

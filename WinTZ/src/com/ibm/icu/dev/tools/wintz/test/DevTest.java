@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009-2011, International Business Machines Corporation and    *
+ * Copyright (C) 2009-2012, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -76,12 +76,14 @@ public class DevTest {
         int[] offsets = new int[2];
 
         GregorianCalendar greg = new GregorianCalendar(TimeZone.getTimeZone("Etc/GMT"));
+        int currentYear = greg.get(Calendar.YEAR);
+
         greg.clear();
-        greg.set(2008, Calendar.JANUARY, 1, 0, 0, 0);
+        greg.set(2006, Calendar.JANUARY, 1, 0, 0, 0);   // Windows historic rules are available back to 2006
         final long start = greg.getTimeInMillis();
 
         greg.clear();
-        greg.set(2012, Calendar.JANUARY, 1, 0, 0, 0);
+        greg.set(currentYear + 1, Calendar.JANUARY, 1, 0, 0, 0);
         final long end = greg.getTimeInMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -1,8 +1,14 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2011-2012, International Business Machines Corporation and    *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
     static final String TZDATA_VERSION = "2011n";
-    static final String WINTZDATA_VERSION = "07DC0000";
+    static final String WINTZDATA_VERSION = "07dc0000";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -210,8 +216,6 @@ public class MapData {
         // the Windows time zone with UTC-05:00/no DST, they cannot use anything else.
         {"SA Pacific Standard Time", "CA", "America/Coral_Harbour", REGION_DEFAULT},
 
-        {"SA Pacific Standard Time", "CU", "America/Havana", REGION_DEFAULT},
-
         {"SA Pacific Standard Time", "HT", "America/Port-au-Prince", REGION_DEFAULT},
 
         {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
@@ -326,7 +330,7 @@ public class MapData {
         {"SA Western Standard Time", "VI", "America/St_Thomas", REGION_DEFAULT},
 
         // This is the only Windows time zone with UTC offset -04:00 without DST
-        {"SA Western Standard Time", "ZZ", "Etc/GMT+4", DEFAULT},
+        {"SA Western Standard Time", "ZZ", "Etc/GMT+4", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -391,11 +395,6 @@ public class MapData {
         // Rothera station is in Antarctica. The zone is listed here just because we use
         // this zone as the default UTC-03:00/no DST zone.
         {"SA Eastern Standard Time", "AQ", "Antarctica/Rothera", REGION_DEFAULT},
-
-        // Falkland did not go back to winter time in April, 2011. So they use UTC-03:00
-        // (base offset: -4:00 + saving 1:00) offset for entire 2011. We're not sure they
-        // will continue to stay UTC-03:00.
-        {"SA Eastern Standard Time", "FK", "Atlantic/Stanley", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -638,6 +637,7 @@ public class MapData {
 
         {"FLE Standard Time", "UA", "Europe/Kiev", DEFAULT}, // Kyiv
         {"FLE Standard Time", "UA", "Europe/Uzhgorod"},
+        {"FLE Standard Time", "UA", "Europe/Simferopol"},
         {"FLE Standard Time", "UA", "Europe/Zaporozhye"},
 
 
@@ -694,14 +694,9 @@ public class MapData {
         // So we'll use this zone as default UTC+02:00/no DST zone.
         {"South Africa Standard Time", "ZZ", "Etc/GMT-2", REGION_DEFAULT},
 
-        // Following zones belong to EET. So (UTC+02:00) Cairo might be a better match.
-        // However, Cairo used to observe DST until very recently and may observe
-        // DST in near future. On the other hand, this Windows zone does not use DST
-        // at all. So, from time calculation aspect, this zone may fit better to these
-        // zones.
+        // Africa/Tripoli belong to EET. So (UTC+02:00) Cairo might be a better match.
+        // However, Cairo is not stable (see above), so we use this zone.
         {"South Africa Standard Time", "LY", "Africa/Tripoli", REGION_DEFAULT},
-
-        {"South Africa Standard Time", "UA", "Europe/Simferopol", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -1175,29 +1170,6 @@ public class MapData {
         {"Tonga Standard Time", "ZZ", "Etc/GMT-13", REGION_DEFAULT},
     };
 
-//    /*
-//     * Raw Windows ID - region - zones mapping data / supplemental mapping data including zones only matches base offset.
-//     */
-//    static final String[][] SUPPLEMENTAL_MAP_DATA_ARRAY = {
-//        // No DST in Hawaii, but Adak observes DST (US rule)
-//        {"Hawaiian Standard Time", "US", "America/Adak"},
-//
-//        // No Windows zones with UTC-08:00/no DST
-//        {"Pacific Standard Time", "ZZ", "Etc/GMT+8"},
-//        {"Pacific Standard Time", "US", "America/Metlakatla"},
-//        {"Pacific Standard Time", "PN", "Pacific/Pitcairn"},
-//
-//        // No Windows zones with UTC-09:00/no DST
-//        {"Alaskan Standard Time", "ZZ", "Etc/GMT+9"},
-//        {"Alaskan Standard Time", "PF", "Pacific/Gambier"},
-//
-//        // No UTC-06:00 zone with Southern Hemisphere style DST rule
-//        {"Central America Standard Time", "CL", "Pacific/Easter"},
-//
-//        // No UTC-03:00 zone with North American DST rule - Godthab uses the same offset, but EU DST rule
-//        {"Greenland Standard Time", "PM", "America/Miquelon"},
-//    };
-
     /*
      * 
      */
@@ -1244,6 +1216,15 @@ public class MapData {
         // UTC-06:00/Southern Hemisphere style DST rule.
         // Closest match - "Central America Standard Time" (observes Northern Hemisphere style DST rule).
         "Pacific/Easter",
+
+        // UTC-05:00/DST. DST usually starts on 2nd week of March and ends on last Sunday of October.
+        // In 2011, DST started on March 20, ended on Novermber 13.
+        // Closest match - "Eastern Standard Time" (observes North American DST rule)
+        "America/Havana",
+
+        // UTC-04:00/DST for a whole year in 2011 (therefore, currently equivalent to UTC-03:00/no DST).
+        // For now, no updates for 2012 in the tz database/updates from the official goverment source yet.
+        "Atlantic/Stanley",
 
         // UTC-03:00 zone with North American DST rule.
         // Closest match = "Greenland Standard Time" (observes EU DST rule).
