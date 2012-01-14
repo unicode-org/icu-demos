@@ -1,3 +1,9 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2012, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 import java.io.PrintWriter;
