@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2009, International Business Machines
+## *   Copyright (C) 1999-2012, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -20,7 +20,7 @@ include $(top_builddir)/icuapps.mk
 include $(shell $(ICU_CONFIG) --incfile) 
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~
+CLEANFILES = *~ $(DEPS)
 
 ## Target information
 SO_TARGET = libapputil.$(SO)
@@ -31,6 +31,7 @@ CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
 CFLAGS += $(SHAREDLIBCFLAGS)
 
 OBJECTS = demoutil.o tmplutil.o
+DEPS = $(OBJECTS:.o=.d)
 
 DATA_DIR=$(BINDIR)/data
 
@@ -82,3 +83,6 @@ $(SO_TARGET) : $(OBJECTS)
 	$(SHLIB.cc) -o $@ $^ $(ICULIBS)
 
 
+ifneq ($(MAKECMDGOALS),distclean)
+-include $(DEPS)
+endif

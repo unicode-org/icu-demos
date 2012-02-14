@@ -80,6 +80,6 @@ $(TARGET) : $(OBJECTS)
 	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
 
-
-
-
+ifneq ($(MAKECMDGOALS),distclean)
+-include $(DEPS)
+endif

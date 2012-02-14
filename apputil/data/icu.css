@@ -1,6 +1,6 @@
 /*
  * Default CSS style sheet for the ICU Open Source site
- * Copyright (C) 2005-2007, International Business Machines
+ * Copyright (C) 2005-2012, International Business Machines
  * Corporation and others.  All Rights Reserved.
  */
 
@@ -210,3 +210,16 @@ table.rtable tr td {
 	padding: 3px;
 }
 
+@media only print {
+    #leftnav {
+        display: none;
+    }
+
+    #topbar .tlbox, #topbar .fadedtop {
+        display: none;
+    }
+
+    #topbar {
+        display:none !important;
+    }
+}

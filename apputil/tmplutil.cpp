@@ -3,7 +3,7 @@
  *  icu4capps
  *
  *  Created by Steven R. Loomis on 28/07/2006.
- *  Copyright 2006 IBM. All rights reserved.
+ *  Copyright 2006-2012 IBM. All rights reserved.
  *
  */
 
@@ -207,7 +207,7 @@ U_CAPI void writeUnicodeStringCGI(const UnicodeString& outputText) {
 /**
  * substitute the DEMO_* macros into the string
  */
-U_CAPI void insertDemoStrings(UnicodeString& outputText, UErrorCode& status) {
+U_CAPI void insertDemoStrings(UnicodeString& outputText, UErrorCode& /*status*/) {
     insertTemplateFile(outputText, DEMO_COMMON_MASTHEAD, "%%DEMO_COMMON_MASTHEAD%%");
     insertTemplateString(outputText, DEMO_BEGIN_LEFT_NAV, "%%DEMO_BEGIN_LEFT_NAV%%");
     insertTemplateFile(outputText, DEMO_COMMON_LEFTNAV, "%%DEMO_COMMON_LEFTNAV%%");

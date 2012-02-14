@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -129,10 +129,12 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "%s", DEMO_BEGIN_CONTENT);
     }
 
+    u_fprintf(lx->OUT, "<div class='displayproblems'>");
     printHelpImg(lx, "display", 
                 FSWF("display_ALT", "Display Problems?"),
                 FSWF("display_GIF", "displayproblems.gif"),
                 FSWF("display_OPTIONS", "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"));
+    u_fprintf(lx->OUT, "</div>");
 
     u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
 

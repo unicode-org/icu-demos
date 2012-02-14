@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2008, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -1157,4 +1157,91 @@ void showChangePage(LXContext *lx)
   default:
     u_fprintf(lx->OUT, "Err - unknown type code '%c'\n", part);
   }
+}
+
+void printBigString(LXContext *lx, const UChar *str) {
+  UErrorCode status = U_ZERO_ERROR;
+  int32_t len = u_strlen(str);
+  if(len<80) {
+    u_fputs(str, lx->OUT);
+  } else {
+    if(lx->charBrk==NULL) {
+      lx->charBrk = ubrk_open(UBRK_WORD, lx->dispLocale, str, -1, &status);
+    } else {
+      ubrk_setText(lx->charBrk, str, -1, &status);
+    }
+    if(U_FAILURE(status)) {
+      u_fputs(str, lx->OUT);
+    } else {
+      int32_t where = ubrk_preceding(lx->charBrk,80);
+      if(where!=UBRK_DONE  && where<len) {
+        int32_t brksec = ++(lx->brksec);
+        UChar *first = calloc(u_strlen(str)+1,sizeof(first[0]));
+        const UChar *rest = str+where;
+        u_strncpy(first,str,where);
+
+        /* u_fprintf(lx->OUT, "%S<font color='#FF0000'>|</font>%S", first,rest);*/
+        u_fprintf(lx->OUT, "%S<div id='brksec%d' class='brksec-hid'>%S</div><button class='brksec-more' id='brksec%d-more' onclick='toggle(%d)'>%C</button>",
+                  first,
+                  brksec,
+                  rest,
+                  brksec,
+                  brksec,
+                  (UChar)0x2026);
+
+        free(first);
+      } else {
+        u_fputs(str, lx->OUT);
+      }
+    }
+  }
+}
+
+void showSortStyle(LXContext *lx)
+{
+
+  u_fprintf(lx->OUT, "%s",  "\r\n<style type=\"text/css\">\r\n"
+            "/*<![CDATA[*/"
+
+	       ".box0 { border: 1px solid gray ; margin: 0 }\r\n"
+	       ".box1 { border: 1px solid gray; margin: 0; background-color: #DDEEDD }\r\n" 
+
+            ".wide        { width: 100% }\r\n"
+            "select.wide  { font-size: smaller; left-padding: 1em; }\r\n"
+            ".optionname  { margin: 3px }\r\n"
+            ".high        { height: 100% }\r\n"
+            ".fill        { width: 100%; height: 100% }\r\n"
+
+	    /* ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
+	       ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n" */
+            );
+    u_fprintf(lx->OUT, "%s",    
+            "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
+            "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
+            "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
+            "               color: #000; vertical-align: top; border: 1px solid black; \r\n"
+            "               padding: 5px }\r\n"
+            );
+    u_fprintf(lx->OUT, "%s",
+            ".noborder    { border: 1px none white }\r\n"
+            ".widenoborder { width: 100%; border: 1px none white }\r\n"
+	      /* ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
+		 ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"*/
+            ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
+	      /* "tt.count { font-size: 80%; color: #0000FF }\r\n" */
+            "tt.key { font-size: 70%; color: #666666 }\r\n"
+
+              /* lxprint */
+#if 0
+            ".brksec-hid { opacity: 0.4; }\r\n"
+#else
+            "@media only screen { .brksec-hid { display: none; } }\r\n"
+#endif
+              " .rules { font-size: smaller; } \n"
+            "/*]]>*/\r\n"
+            "</style>\r\n");
+
+    u_fprintf(lx->OUT, "<style type='text/css' media='print'>.brksec-hid { display: inherited !important; } .displayproblems,.brksec-more { display: none !important; }</style>");
+
+    u_fprintf(lx->OUT, "<script>toggle=function(x){ var sec = document.getElementById('brksec'+x); var btn=document.getElementById('brksec'+x+'-more'); if(sec.className=='brksec-hid'){sec.className='brksec-show'; }else {sec.className='brksec-hid';}}</script>");
 }

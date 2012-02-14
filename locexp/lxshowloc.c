@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -228,12 +228,18 @@ void showOneLocale(LXContext *lx)
         /*     Numbers section %%%*/
 
 
-           /* Currency: needs rewrite. */
-#if 0        
+        /* Currency: needs rewrite  */
+#if 0
         showCurrencies(lx, myRB, locale);
 #endif
 
+
+#if 0
         u_fprintf(lx->OUT, "<h3>Numbering System: %s</h3>", nsys);
+#else
+        showNumberSystem(lx, locale, nsys);
+#endif
+
     
 #if 0
         { /*from dcfmtsym */
@@ -256,10 +262,11 @@ void showOneLocale(LXContext *lx)
             numDesc[11] = 0;
             showDecimSymsWithDescription(lx, ourDecFmt, locale, nsys, numDesc, "NumberElements", kNormal);
         }
-    
-    
+#endif
+
+#if 0
         { /*from dcfmtsym */
-            const UChar *numDesc[5];
+          const UChar *00numDesc[5]; /* MOVED TO LXNUM.C */
             numDesc[0] = FSWF("NumberPatterns0", "Decimal Pattern");
             numDesc[1] = FSWF("NumberPatterns1", "Currency Pattern");
             numDesc[2] = FSWF("NumberPatterns2", "Percent Pattern");

@@ -250,7 +250,7 @@ void usort_remove(USort *usort)
   usort->lines=0;
 }
 
-const UChar * U_EXPORT2
+static const UChar * U_EXPORT2
 u_strTrailingWhiteSpaceStart(const UChar *s, int32_t length) {
     int32_t i = 0, toReturn = 0;
     UChar32 c = 0;
@@ -494,7 +494,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
 	    {
 	      /* we have a fairly good calculation of where the error was. totalReadCount 
 		 has how many bytes have been successfully converted, */
-	      fprintf(stderr,"Error %d converting data around byte %d in the inputstream. (%d+ bytes successfully converted)\n", status, totalReadCount + (source-inBuf), totalReadCount);
+	      fprintf(stderr,"Error %s converting data around byte %d in the inputstream. (%d+ bytes successfully converted)\n", u_errorName(status), (int)totalReadCount + (source-inBuf), (int)totalReadCount);
 
 	      /* Ignore the data?? */
 	      fprintf(stderr, "** Aborting work on this file, err was %d.\n", status);

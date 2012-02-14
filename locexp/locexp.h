@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #ifndef LOCEXP_
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include "unicode/ubrk.h"
 
 #ifdef WIN32
 /* Silly Windows compatibility naming */
@@ -165,6 +166,10 @@ typedef struct
 
   char         myBaseURL[1024]; /* private: URL for getBaseUrl */
   char         myURL[1024]; /* private: URL for getBaseUrl */
+  
+  /* == break */
+  UBreakIterator *charBrk;
+  int32_t brksec;
 } LXContext;
 
 /********************** Some Konstants **** and structs ***************/

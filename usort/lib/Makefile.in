@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2000, International Business Machines
+## *   Copyright (C) 1999-2011, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -30,7 +30,7 @@ CPPFLAGS +=-I$(ICU_SOURCE)/tools/toolutil/
 
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~
+CLEANFILES = *~ $(DEPS)
 
 ## Target information
 SO_TARGET = libusort.$(SO)
@@ -38,6 +38,7 @@ SO_TARGET_VERSION_MAJOR=26
 
 OBJECTS = usort.o 
 HEADERS = unicode/usort.h
+DEPS = $(OBJECTS:.o=.d)
 
 ## List of phony targets
 .PHONY : all all-local install install-local clean clean-local \
@@ -93,5 +94,8 @@ $(SO_TARGET) : $(OBJECTS)
 	$(SHLIB.cc) -o $@ $^ $(ICULIBS)
 
 
+ifneq ($(MAKECMDGOALS),distclean)
+-include $(DEPS)
+endif
 
 

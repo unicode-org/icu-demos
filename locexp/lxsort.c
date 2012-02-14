@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2008, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -498,42 +498,6 @@ const char *sortLoadSearch(LXContext *lx, char *inputChars, const char *locale, 
 }
 
 
-void showSortStyle(LXContext *lx)
-{
-
-  u_fprintf(lx->OUT, "%s",  "\r\n<style type=\"text/css\">\r\n"
-            "/*<![CDATA[*/"
-
-	       ".box0 { border: 1px solid gray ; margin: 0 }\r\n"
-	       ".box1 { border: 1px solid gray; margin: 0; background-color: #DDEEDD }\r\n" 
-
-            ".wide        { width: 100% }\r\n"
-            "select.wide  { font-size: smaller; left-padding: 1em; }\r\n"
-            ".optionname  { margin: 3px }\r\n"
-            ".high        { height: 100% }\r\n"
-            ".fill        { width: 100%; height: 100% }\r\n"
-
-	    /* ".box0        { background-color: white; border: 1px inset gray; margin: 1px }\r\n"
-	       ".box1        { background-color: #CCEECC; border: 1px inset gray; margin: 1px }\r\n" */
-            );
-    u_fprintf(lx->OUT, "%s",    
-            "#main        { border-spacing: 0; border-collapse: collapse; border: 1px solid black }\r\n"
-            "#main tr th, #main tr td       { border-spacing: 0; border-collapse: collapse; font-family: \r\n"
-            "               'Lucida Sans Unicode', 'Arial Unicode MS', Arial, sans-serif; \r\n"
-            "               color: #000; vertical-align: top; border: 1px solid black; \r\n"
-            "               padding: 5px }\r\n"
-            );
-    u_fprintf(lx->OUT, "%s",
-            ".noborder    { border: 1px none white }\r\n"
-            ".widenoborder { width: 100%; border: 1px none white }\r\n"
-	      /* ".icustuff    { background-color: #AAEEAA; border: 1px none white }\r\n"
-		 ".icugray     { background-color: #afa8af; height: 2px; border: 1px none white }\r\n"*/
-            ".icublack    { background-color: #000000; height: 2px; border: 1px none white }\r\n"
-	      /* "tt.count { font-size: 80%; color: #0000FF }\r\n" */
-            "tt.key { font-size: 70%; color: #666666 }\r\n"
-            "/*]]>*/\r\n"
-            "</style>\r\n");
-}
 
 static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator *customCollator, const char *field, const UColAttributeValue values[], UBool lxSortReset)
 {

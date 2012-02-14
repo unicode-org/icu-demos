@@ -1,11 +1,111 @@
 /**********************************************************************
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
 #include "locexp.h"
+#include "unicode/uldnames.h"
 
-/* routines having to do with the number pattern sample */
+#if defined(U_HAVE_DBGUTIL)
+#include "udbgutil.h"
+#endif
+
+#include "unicode/ucurr.h"
+
+const UChar COLONSTR[] = { 0x20,0x3a, 0x20, 0 };
+const UChar CURRUNK[] = { 0x58, 0x58, 0x58, 0 }; /* XXX */
+
+#define NUMBERS "numbers"
+
+/* Routines having to do with the number pattern sample */
+void showNumberSystem(LXContext *lx, const char *locale, const char *nsys) {
+  UErrorCode status = U_ZERO_ERROR;
+  ULocaleDisplayNames *uldn = uldn_open(lx->dispLocale,ULDN_STANDARD_NAMES,&status);
+  UChar nums[1024];
+  UChar thisn[1024];
+  UChar disp[1024];
+  UChar curr[4];
+  int32_t currLen;
+  char maxLocale[ULOC_FULLNAME_CAPACITY];
+  
+  uloc_addLikelySubtags(locale, maxLocale, ULOC_FULLNAME_CAPACITY, &status);
+  currLen = ucurr_forLocaleAndDate(maxLocale, ucal_getNow(), 1, curr, 4, &status);
+  if(U_FAILURE(status)) {
+    u_strcpy(curr,CURRUNK);
+  }
+
+  uldn_keyDisplayName(uldn, NUMBERS, nums, sizeof(nums)/sizeof(nums[0]), &status);
+  uldn_keyValueDisplayName(uldn, NUMBERS, nsys, thisn, sizeof(thisn)/sizeof(thisn[0]), &status);
+  u_strcpy(disp,nums);
+  u_strcat(disp,COLONSTR);
+  u_strcat(disp,thisn);
+
+  showKeyAndStartItem(lx,NUMBERS,disp, locale, FALSE, status); /* Numbers : Western Digits */
+
+  {
+    int32_t n;
+    /*
+    const UChar *numDesc[5];
+    numDesc[0] = FSWF("NumberPatterns0", "Decimal Pattern");
+    numDesc[1] = FSWF("NumberPatterns1", "Currency Pattern");
+    numDesc[2] = FSWF("NumberPatterns2", "Percent Pattern");
+    numDesc[3] = FSWF("NumberPatterns3", "Scientific Pattern");
+    numDesc[4] = 0;
+    */
+
+    u_fprintf(lx->OUT, "<table class='data-table-2'><!--  NAME, PATTERN, EXAMPLE -->\n");
+    
+    for(n = 0; n<UNUM_FORMAT_STYLE_COUNT; n++) {
+      if(n==UNUM_PATTERN_DECIMAL || n==UNUM_PATTERN_RULEBASED || n==UNUM_NUMBERING_SYSTEM) continue;
+      UErrorCode subStatus = U_ZERO_ERROR;
+      UNumberFormat *nf = NULL;
+      double example = 1234.56;
+      UChar buf[1024];
+      UChar buf2[9024];
+      int32_t len2;
+      const char k[200];
+      const char *def = k;
+      sprintf(k,"NumberPatterns%d",n-UNUM_DECIMAL);
+#if defined(U_HAVE_DBGUTIL) && 1
+      def = udbg_enumName(UDBG_UNumberFormatStyle, n);
+#endif
+      u_fprintf(lx->OUT, "<tr><th>%S</th>", FSWF/**/(k,def));
+      
+      nf=unum_open((UNumberFormatStyle)n, NULL,-1,locale,NULL,&subStatus);
+
+      if(n == UNUM_CURRENCY) {
+        unum_formatDoubleCurrency(nf,example,curr,buf,sizeof(buf)/sizeof(buf[0]),NULL,&subStatus);
+      } else {
+        unum_formatDouble(nf,example,buf,sizeof(buf)/sizeof(buf[0]),NULL,&subStatus);
+      }
+
+      len2 = unum_toPattern(nf, FALSE, buf2,sizeof(buf2)/sizeof(buf2[0]),&subStatus);
+      
+      if(U_FAILURE(subStatus)) {
+        u_fprintf(lx->OUT, "<td colspan='2'>ERR: %s</td>\n", u_errorName(subStatus));
+      } else {
+        u_fprintf(lx->OUT, ("<td><span class='rules'>"));
+        printBigString(lx,buf2);
+        u_fprintf(lx->OUT, "</span></td><td>%S\n",  buf);
+        u_fprintf(lx->OUT, "</td>");
+      }
+      unum_close(nf);
+
+      u_fprintf(lx->OUT, "</tr>\n");
+
+    }
+    
+    u_fprintf(lx->OUT, "</table>");
+
+    u_fprintf(lx->OUT, "(Currency for %s: %S)<br>\n", maxLocale, curr);
+  }
+
+
+  showKeyAndEndItem(lx,nsys,locale);
+
+  uldn_close(uldn);
+}
+
 
 /*****************************************************************************
  *
