@@ -24,8 +24,8 @@ public class CLDRMapDataWriter {
 
         println(pw, "<windowsZones>", indent);
         indent++;
-        println(pw, "<mapTimezones typeVersion=\"" + MapDataUtil.getTZDataVersion() 
-                + "\" otherVersion=\"" + MapDataUtil.getWINTZDataVersion() + "\">", indent);
+        println(pw, "<mapTimezones otherVersion=\"" + MapDataUtil.getWINTZDataVersion() 
+                + "\" typeVersion=\"" + MapDataUtil.getTZDataVersion() + "\">", indent);
         indent++;
 
         // Collect map data

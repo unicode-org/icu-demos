@@ -299,6 +299,8 @@ public class MapData {
 
         {"SA Western Standard Time", "BL", "America/St_Barthelemy", REGION_DEFAULT},
 
+        {"SA Western Standard Time", "BQ", "America/Kralendijk", REGION_DEFAULT},
+
         {"SA Western Standard Time", "CA", "America/Blanc-Sablon", REGION_DEFAULT},
 
         {"SA Western Standard Time", "CW", "America/Curacao", REGION_DEFAULT},
@@ -320,6 +322,8 @@ public class MapData {
         {"SA Western Standard Time", "MQ", "America/Martinique", REGION_DEFAULT},
 
         {"SA Western Standard Time", "MS", "America/Montserrat", REGION_DEFAULT},
+
+        {"SA Western Standard Time", "SX", "America/Lower_Princes", REGION_DEFAULT},
 
         {"SA Western Standard Time", "TT", "America/Port_of_Spain", REGION_DEFAULT},
 
