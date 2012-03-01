@@ -7,7 +7,7 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2011n";
+    static final String TZDATA_VERSION = "2012a";
     static final String WINTZDATA_VERSION = "07dc0000";
 
     static final String DEFAULT = "D";
@@ -55,8 +55,6 @@ public class MapData {
         {"Hawaiian Standard Time", "CK", "Pacific/Rarotonga", REGION_DEFAULT},
 
         {"Hawaiian Standard Time", "PF", "Pacific/Tahiti", REGION_DEFAULT},
- 
-        {"Hawaiian Standard Time", "TK", "Pacific/Fakaofo", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -111,6 +109,7 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC-07:00) Arizona
         {"US Mountain Standard Time", "CA", "America/Dawson_Creek", REGION_DEFAULT},
+        {"US Mountain Standard Time", "CA", "America/Creston"},
 
         {"US Mountain Standard Time", "MX", "America/Hermosillo", REGION_DEFAULT},
 
@@ -263,6 +262,7 @@ public class MapData {
         // as Puta Arenas, Chile. The rule ChileAQ seems is out of sync with the rule Chile in
         // southamerica file in 2011n. This is probably a bug in the tz database. For now,
         // we assume Santiago and Palmer station are using the same time zone.
+        // [Update] 2012a updated Rule ChileAQ synchronized with Rule Chile.
         {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
 
 
@@ -385,6 +385,8 @@ public class MapData {
         {"SA Eastern Standard Time", "BR", "America/Maceio"},
         {"SA Eastern Standard Time", "BR", "America/Recife"},
         {"SA Eastern Standard Time", "BR", "America/Santarem"},
+
+        {"SA Eastern Standard Time", "FK", "Atlantic/Stanley", REGION_DEFAULT},
 
         {"SA Eastern Standard Time", "GF", "America/Cayenne", DEFAULT}, // Cayenne
 
@@ -1192,6 +1194,7 @@ public class MapData {
         "Australia/Lord_Howe",  // +10:30
         "Etc/GMT-14",           // +14:00
         "Pacific/Chatham",      // +12:45
+        "Pacific/Fakaofo",      // +14:00
         "Pacific/Kiritimati",   // +14:00
         "Pacific/Marquesas",    // -9:30
         "Pacific/Norfolk",      // +11:30
@@ -1225,10 +1228,6 @@ public class MapData {
         // In 2011, DST started on March 20, ended on Novermber 13.
         // Closest match - "Eastern Standard Time" (observes North American DST rule)
         "America/Havana",
-
-        // UTC-04:00/DST for a whole year in 2011 (therefore, currently equivalent to UTC-03:00/no DST).
-        // For now, no updates for 2012 in the tz database/updates from the official goverment source yet.
-        "Atlantic/Stanley",
 
         // UTC-03:00 zone with North American DST rule.
         // Closest match = "Greenland Standard Time" (observes EU DST rule).

@@ -427,7 +427,7 @@ public class MapDataCheck {
 
                 if (!winLocationMap) {
                     if (isOK) {
-                        _pw.println("[ERROR] Incompatible zones");
+                        _pw.println("[WARNING] Incompatible zones");
                         _pw.println("{");
                         isOK = false;
                     }
