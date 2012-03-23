@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2006-2010, International Business Machines
+*   Copyright (C) 2006-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -185,7 +185,7 @@ public:
         UVector *dependsOnVector;
         UnicodeString *targetNameStrPtr = new UnicodeString(targetName); // freed by dependsOnVector
         if (elem == NULL) {
-            dependsOnVector = new UVector(uhash_deleteUnicodeString, uhash_compareUnicodeString, status);
+            dependsOnVector = new UVector(uprv_deleteUObject, uhash_compareUnicodeString, status);
             dependsOn.put(itemNameUStr, dependsOnVector, status);
         }
         else {

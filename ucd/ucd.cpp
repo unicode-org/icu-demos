@@ -1,4 +1,4 @@
-/* Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved. */
+/* Copyright (c) 2010-2012 IBM Corporation and Others. All Rights Reserved. */
 
 /*
   Note: for help, run 'ucd h'
@@ -12,6 +12,9 @@
 #include <unicode/uchar.h>
 #include <unicode/uset.h>
 #include <unicode/uclean.h>
+
+#include <stdlib.h>
+#include <string.h>
 
 #if defined U_WINDOWS
 #include "windows.h"

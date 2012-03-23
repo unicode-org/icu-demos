@@ -71,8 +71,6 @@ void showOneLocale(LXContext *lx)
         return; /* BREAK out */
     }
 
-    myRB = ures_open(NULL, locale, &status);
-
 
     {
       UErrorCode nsErr = U_ZERO_ERROR;
@@ -92,6 +90,7 @@ void showOneLocale(LXContext *lx)
       unumsys_close(sys);
     }
 
+    myRB = ures_open(NULL, locale, &status);
 
     if(U_FAILURE(status))
     {
