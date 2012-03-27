@@ -229,11 +229,12 @@ public class DataCustomizer extends HttpServlet {
             //return;
         }
         
+        // Different versions of the data require different versions of the icupkg tool.
         String icupkgCommand;
         if (Integer.parseInt(icuDataVersion) == 40) {
             icupkgCommand = "icupkg44";
         } else {
-            icupkgCommand = "icupkg";
+            icupkgCommand = "icupkg"; // latest
         }
         String pkgCommand = icupkgCommand + " -tl -a " + packageList
             + " -s " + toolHomeSrcDirStr + baseDataName
@@ -286,13 +287,16 @@ public class DataCustomizer extends HttpServlet {
         // Copy and convert each file from big endian to little endian.
         String srcDir = toolHomeSrcDirStr + "icudt" + icuDataVersion + ENDIAN_STR + "/";
         
+        // Different versions of the data require different versions of the icupkg tool.
         String icupkgCommand;
         if (Integer.parseInt(icuDataVersion) < 46) {
             icupkgCommand = "icupkg44";
         } else if (Integer.parseInt(icuDataVersion) == 46) {
             icupkgCommand = "icupkg46";
+        } else if (Integer.parseInt(icuDataVersion) == 48) {
+            icupkgCommand = "icupkg48";
         } else {
-            icupkgCommand = "icupkg";
+            icupkgCommand = "icupkg49";
         }
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
