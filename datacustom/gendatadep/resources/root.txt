@@ -1,6 +1,6 @@
 // ***************************************************************************
 // *
-// * Copyright (C) 2006-2011 International Business Machines Corporation
+// * Copyright (C) 2006-2012 International Business Machines Corporation
 // * and others.  All Rights Reserved.
 // *
 // ***************************************************************************
@@ -104,6 +104,7 @@ root {
     ibm-500_P100-1995.cnv { "Latin 1 (EBCDIC)" }
     ibm-5012_P100-1999.cnv { "Hebrew (ISO-8859-8)" }
     ibm-5123_P100-1999.cnv { "Japanese with only Katakana (EBCDIC with Euro update of ibm-1027)" }
+    ibm-5233_P100-2011.cnv { "Devanagari EBCDIC, including Indian Rupee" }
     ibm-5346_P100-1998.cnv { "Central Europe (windows-1250)" }
     ibm-5347_P100-1998.cnv { "Cyrillic (windows-1251)" }
     ibm-5348_P100-1997.cnv { "Latin 1 (windows-1252)" }
