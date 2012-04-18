@@ -92,6 +92,7 @@ root {
     ibm-297_P100-1995.cnv { "France (EBCDIC)" }
     ibm-33722_P120-1999.cnv { "Japanese (EUC-JP)" }
     ibm-33722_P12A_P12A-2004_U2.cnv { "Japanese (EUC-JP)" }
+    ibm-33722_P12A_P12A-2009_U2.cnv { "Japanese (EUC-JP) with 83 NEC selected characters" }
     ibm-367_P100-1995.cnv { "US-ASCII with character fallbacks" }
     ibm-37_P100-1995.cnv { "Latin 1 (EBCDIC)" }
     ibm-420_X120-1999.cnv { "Arabic (EBCDIC)" }
