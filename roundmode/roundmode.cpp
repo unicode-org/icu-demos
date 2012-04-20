@@ -19,6 +19,7 @@
 
 #define ASSERTOK() if(U_FAILURE(status)) {fprintf(stderr,"%s:%d: Error: %s\n", __FILE__,__LINE__,u_errorName(status));return 1;}
 
+#define RMLINK "http://userguide.icu-project.org/formatparse/numbers/rounding-modes"
 
 #define MODE(x)   { x, #x, "" },
 
@@ -77,12 +78,13 @@ int main() {
   }
 
   ASSERTOK();
-  unum_setAttribute(nf, UNUM_DECIMAL_ALWAYS_SHOWN, 1);
-  unum_setAttribute(nf, UNUM_MAX_FRACTION_DIGITS, 1);
-  unum_setAttribute(nf, UNUM_MIN_FRACTION_DIGITS, 1);
+  //unum_setAttribute(nf, UNUM_DECIMAL_ALWAYS_SHOWN, 1);
+  unum_setAttribute(nf, UNUM_MAX_FRACTION_DIGITS, 0);
+  unum_setAttribute(nf, UNUM_MIN_FRACTION_DIGITS, 0);
 
+  fprintf(html,"<html><head><title>ICU Rounding Modes</title></head><body>\n");
   fprintf(html,"<!-- %s -->\n", U_COPYRIGHT_STRING);
-  fprintf(html,"<h1>ICU %s Rounding Modes</h1>\n", U_ICU_VERSION);
+  fprintf(html,"<h1>ICU %s <a href='%s'>Rounding Modes</a></h1>\n", U_ICU_VERSION, RMLINK);
 
   fprintf(html,"    <link rel=\"stylesheet\" type=\"text/css\" href=\"round.css\" />\n");
 
@@ -91,25 +93,22 @@ int main() {
   
   fprintf(html,"<div class='roundrow roundblank'><span class='roundspacer roundnum'>&nbsp;</span></div>\n"); // spacer
   
-  for(n=-100;n<=100;n++) {
-
-    if((n%10)==0) { 
-      hdr();
-    }
-      double d = n / 100.0;
+  hdr();
+  for(n=-20;n<=20;n++) {
+      double d = n / 10.0;
       const char *specialClass ="";
-      if((n%10)==5 || (n%10)==-5) {
+      if((n%10)==5 || ((n%10)==-5) || n==0) {
         specialClass = "nx5";
       }
       char rowId[10];
       if(n<0) {
-        sprintf(rowId,"m%03d",-n);
+        sprintf(rowId,"m%02d",-n);
       } else {
-        sprintf(rowId,"p%03d",n);
+        sprintf(rowId,"p%02d",n);
       }
 
       fprintf(html,"<div id='%s' class='roundrow %s'>",  rowId, specialClass);
-      fprintf(html,"<span class='roundnum'><a href='#%s'>%.2f</a></span>", rowId, d);
+      fprintf(html,"<span class='roundnum'><a href='#%s'>%.1f</a></span>", rowId, d);
 
       for(m=0 ;m<(int)(MODE_COUNT);m++) {
         UChar result[100];
@@ -120,21 +119,26 @@ int main() {
         ASSERTOK();
         u_UCharsToChars(result,str,u_strlen(result)+1);
         if(str[0]=='-') {  // get the 2 significant digits
-          c0=str[1];
-          c1=str[3];
+          c1=str[1]+2;
+          c0='0'; // str[3];
         } else {
           c0=str[0];
-          c1=str[2];
+          c1='0'; // str[2];
         }
         fprintf(html,"<span title='%s' class='n%c%c roundres'>%s</span>",roundModes[m].name, c0,c1,str); // class='n06'  0.6
 
 
-        fprintf(test,"format 0.0 %-10s \"%.2f\" \"%s\"\n", roundModes[m].testname, d, str);
+        fprintf(test,"format 0 %-10s \"%.1f\" \"%s\"\n", roundModes[m].testname, d, str);
       }
-      fprintf(html,"<span class='roundnum'><a href='#%s'>%.2f</a></span>", rowId, d);
+      fprintf(html,"<span class='roundnum'><a href='#%s'>%.1f</a></span>", rowId, d);
       fprintf(html,"</div>\n");
   }
+  hdr();
   fprintf(html,"</div>\n");
+
+  fprintf(html, "<hr>See: <a href=\"%s\">Rounding Modes</a>.<br>%s\n", RMLINK, U_COPYRIGHT_STRING);
+
+  fprintf(html, "</body></html>");
   
   unum_close(nf);
   fclose(html);
