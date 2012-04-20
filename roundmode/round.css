@@ -28,7 +28,7 @@ span {
     border: none !important;
 }
 .roundblank {
-display: none;
+    display: none;
 }
 .roundnum, .roundres, .roundtype {
     padding: 3px;
@@ -36,9 +36,12 @@ display: none;
 
 .roundnum {
     font-weight: bold;
-    
 }
 
+.roundnum a {
+    text-decoration: none;
+    color: black;
+}
 .roundhdr {
     /*position: fixed;*/
     width: 100%;
@@ -50,7 +53,8 @@ display: none;
     font-weight: bold;
 }
 
-.roundrow {
+.roundrow:target {
+    background-color: yellow !important;
 }
 
 .roundtype {
@@ -71,14 +75,10 @@ display: none;
 }
 
 
-
 .nx5 {
     text-decoration: underline;
     border-top: 2px dashed gray !important;
     border-bottom: 2px dashed gray !important;
-}
-
-div.nx5 span {
 }
 
 .n00 {
@@ -125,3 +125,8 @@ div.nx5 span {
     background-color: #DDE;
 }
 
+.roundrow:hover span,
+.roundrow:hover a {
+    background-color: #028 !important;
+    color: white !important;
+}
