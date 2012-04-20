@@ -259,6 +259,8 @@ richedit/classes/src/com/ibm/richtext/textapps/resources/unicode.hebrew.red -tex
 richedit/classes/src/com/ibm/richtext/textformat/package.html svneol=native#text/html
 richedit/classes/src/com/ibm/richtext/textlayout/attributes/package.html svneol=native#text/html
 richedit/classes/src/com/ibm/richtext/textpanel/package.html svneol=native#text/html
+roundmode/round.css -text
+roundmode/round.html -text svneol=unset#text/html
 scompare/scompare.vcxproj -text
 scompare/scompare.vcxproj.filters -text
 test/obstest/obstest.vcxproj -text

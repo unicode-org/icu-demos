@@ -1,0 +1,127 @@
+/**   Copyright (C) 2012, International Business Machines
+ *   Corporation and others.  All Rights Reserved.
+ */
+
+span {
+    text-align: center;
+}
+
+
+.roundtbl {
+    display: table;
+    margin-top: 3em;
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 52em;
+}
+
+.roundrow {
+    display: table-row;
+}
+
+.roundhdr span, .roundrow span, .roundhdr div {
+    display: table-cell;
+    border: 1px solid black;
+}
+
+.roundspacer {
+    border: none !important;
+}
+.roundblank {
+display: none;
+}
+.roundnum, .roundres, .roundtype {
+    padding: 3px;
+}
+
+.roundnum {
+    font-weight: bold;
+    
+}
+
+.roundhdr {
+    /*position: fixed;*/
+    width: 100%;
+    display: table-row;
+    table-layout: fixed;
+    margin-left: 0;
+    margin-right: 0;
+    background-color: #eee;
+    font-weight: bold;
+}
+
+.roundrow {
+}
+
+.roundtype {
+/*
+    writing-mode: vertical-lr;
+    -webkit-writing-mode: vertical-rl;
+*/
+    /*font-size: xx-small; */
+
+}
+
+.roundres {
+}
+
+
+.n00,.n02,.n04,.n06,.n08,.n10 {
+    font-weight: bold;
+}
+
+
+
+.nx5 {
+    text-decoration: underline;
+    border-top: 2px dashed gray !important;
+    border-bottom: 2px dashed gray !important;
+}
+
+div.nx5 span {
+}
+
+.n00 {
+    background-color: #EEC;
+}
+
+.n01 {
+    background-color: #ECE;
+}
+
+.n02 {
+    background-color: #ECC;
+}
+
+.n03 {
+    background-color: #CEE;
+}
+
+.n04 {
+    background-color: #CEC;
+}
+
+.n05 {
+    background-color: #CCE;
+}
+
+.n06 {
+    background-color: #CCD;
+}
+
+.n07 { 
+    background-color: #CDC;
+}
+
+.n08 {
+    background-color: #DCC;
+}
+
+.n09 { 
+    background-color: #DCD;
+}
+
+.n10 {
+    background-color: #DDE;
+}
+

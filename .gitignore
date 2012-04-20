@@ -226,6 +226,8 @@ redemo/redemo
 redemo/release
 regressionTest/CollRegressionTest/c/Makefile
 regressionTest/StrsrchRegressionTest/c/Makefile
+roundmode/roundmode
+roundmode/roundmode.exe
 rtfcvrt/Makefile
 scompare/*.d
 scompare/*.o
