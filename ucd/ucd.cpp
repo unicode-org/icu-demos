@@ -20,6 +20,10 @@
 #include "windows.h"
 #endif
 
+#include <stdlib.h>
+#include <string.h>
+
+
 /**
  * Globals
  */
@@ -36,10 +40,16 @@ UFILE *ustdin  = NULL;
 
 UConverter *def = NULL;
 
-const int32_t workmax = 16384;
-UChar workbuffer[workmax] = {0};
+int32_t workmax = 0;
+UChar *workbuffer = 0;
 int32_t worklen = 0;
 
+void realloc_work(int32_t len) {
+  if(len > workmax) {
+    workbuffer = (UChar*)realloc(workbuffer,len*sizeof(workbuffer[0]));
+    workmax = len;
+  }
+}
 /**
  * If there are line endings at the end, remove them.
  */
@@ -94,7 +104,11 @@ void ucd_parseFile(UFILE *f, const char *fileName, UErrorCode &status)
       }
       /* auto print */
       if(!printed && (worklen>0)) {
-        ucd_cmd_info(workbuffer, worklen, status); // show info
+        if(worklen < 100) {
+          ucd_cmd_info(workbuffer, worklen, status); // show info
+        } else {
+          u_fprintf(ustdout, "(Result: %d chars. Use '%C' to print all.)\n", worklen, UCD_CMD_I);
+        }
         set_printed();
       }
       prompt();
@@ -487,6 +501,7 @@ void ucd_parseCommand(const UChar *cmd, UErrorCode &status)
   case UCD_CMD_DBLQUOTE:  // "
     clear_if_printed();
     // TODO: unescape
+    realloc_work(u_strlen(cmd)-worklen);
     if((workmax-worklen)<=u_strlen(cmd)) {
       status = U_BUFFER_OVERFLOW_ERROR;
       u_fprintf(ustderr, "Overran internal workbuf of %d (%d chars short)\n", workmax, (u_strlen(cmd)-(workmax-worklen)));
@@ -548,6 +563,9 @@ void ucd_parseCommand(const UChar *cmd, UErrorCode &status)
         uset_freeze(aSet);
         for(UChar32 ch = 0;ch < UCHAR_MAX_VALUE;ch++) {
           if(uset_contains(aSet, ch)) {
+            if((workmax-10)>worklen) {
+              realloc_work(workmax*2);
+            }
             U16_APPEND_UNSAFE(workbuffer, worklen, ch);
             if(worklen >= workmax) {
               u_fprintf(ustderr, "Overran internal workbuf of %d\n", workmax);
@@ -601,7 +619,11 @@ void ucd_parseCommand(const UChar *cmd, UErrorCode &status)
       } else {
         res = u_sscanf(cmd, "%ld", &ch);
       }
-      if(res!=1) {
+
+      if(ch>UCHAR_MAX_VALUE) {
+        u_fprintf(ustderr, "Could not parse u+ sequence, exceeds max value U+%04X: '%S'\n", UCHAR_MAX_VALUE, cmd);
+        status = U_PARSE_ERROR;        
+      } else if(res!=1) {
         u_fprintf(ustderr, "Could not parse u+ sequence: '%S'\n", cmd);
         status = U_PARSE_ERROR;
       } else {
@@ -753,7 +775,10 @@ void printUsage(const char *argv0)
 
 int main(int argc, const char** argv)
 {
+
   UErrorCode status = U_ZERO_ERROR;
+
+  realloc_work(65535);
 
   workbuffer[0]=0;
   worklen=0;
