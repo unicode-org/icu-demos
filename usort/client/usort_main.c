@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-*   Copyright (C) 1999-2006, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -38,11 +38,13 @@ void usage(const char *pname, const char *msg)
   fprintf(stderr, "\n\t-F codepage      \n\t\tSet the input codepage\n");
   fprintf(stderr, "\n\t-T codepage      \n\t\tSet the output codepage\n");
   fprintf(stderr, "\n\t-L locale        \n\t\tSet the locale to 'locale'\n");
+  fprintf(stderr, "\n\t-c rules         \n\t\tUse 'rules' as custom tailoring rules\n");
+  /*  fprintf(stderr, "\n\t-C rulefile      \n\t\tRead from file 'rules' for custom tailoring rules, in the input codepage\n"); */
   fprintf(stderr, "\n\t-1, -2, -3, -I   \n\t\tSet the collation strength to \n\t\tprimary, secondary, tertiary, or identical (respectively)\n");
   fprintf(stderr, "\n\t-n               \n\t\tTurn the normalization on\n");
   fprintf(stderr, "\n\t-t               \n\t\tTrim the trailing spaces from the strings\n");
   fprintf(stderr, "\n");
-  fprintf(stderr, "Locale sensitive sort, (c) 1999-2003 IBM, Inc. Uses ICU.\n");
+  fprintf(stderr, "Locale sensitive sort, (c) 1999-2012 IBM, Inc. Uses ICU.\n");
   fprintf(stderr, "http://www.icu-project.org/\n");
   exit(-1);
 }
@@ -56,6 +58,8 @@ int main(int argc, const char *argv[])
   UErrorCode status = U_ZERO_ERROR;
   UConverter *fromConverter = NULL, *toConverter = NULL;
   const char *fromCodepage;
+  const char *customRulesStr = NULL;
+
   const char *toCodepage;
   const char *locale = NULL;
 #ifdef DECOMPOSE
@@ -89,13 +93,18 @@ int main(int argc, const char *argv[])
 	      useDecompose = TRUE;
 	      break;
 #endif
-	      
+	 
+            case 'c':
+              i++;
+              customRulesStr = argv[i];
+              break;
+              
  	    case 'T':
 	      i++;
 	      toCodepage = argv[i];
 	      break;
 
-    	case 'F':
+            case 'F':
 	      i++;
 	      fromCodepage = argv[i];
 	      break;
@@ -160,18 +169,6 @@ int main(int argc, const char *argv[])
   ucnv_setDefaultName(fromCodepage); /* sets OUTPUT codepage */
 
   /***   Options loaded. Now, set up some data */
-
-
-  list = usort_open(locale, strength, TRUE, &status);
-  ucol_setAttribute(usort_getCollator(list), UCOL_NORMALIZATION_MODE, normalizationMode, &status);
-  list->trim = trim;
-
-  if(U_FAILURE(status))
-    {
-      fprintf(stderr,"Couldn't open sortlist: %d\n", status);
-      abort();
-    }
- 
   if(verbose) fprintf(stderr, "Opening from converter %s\n",fromCodepage);
   fromConverter = ucnv_open(fromCodepage, &status);
 
@@ -181,6 +178,49 @@ int main(int argc, const char *argv[])
       abort();
     }
 
+
+  if(customRulesStr!=NULL) {
+    int32_t rulesMax = 2048;
+    int32_t rulesLen = 0;
+    const UChar *baseRules = NULL;
+    int32_t baseRulesLen =0;
+    UCollator *theCollator;
+    UChar *rules = (UChar*)malloc(rulesMax*sizeof(UChar));
+
+    theCollator = ucol_open(locale, &status);
+    if(U_FAILURE(status))   {
+      fprintf(stderr,"Couldn't open base collator:  %s  \n", u_errorName(status));
+      abort();
+    }
+    rulesLen = ucnv_toUChars(fromConverter, rules, rulesMax, customRulesStr, -1, &status);
+    if(U_FAILURE(status))   {
+      fprintf(stderr,"Couldn't convert custom rules to unicode: %s (max buffer=%d UChars) \n", u_errorName(status), rulesMax);
+      abort();
+    }
+    baseRules=ucol_getRules(theCollator, &baseRulesLen);
+    /* ok. Close the collator */
+    ucol_close(theCollator);
+    rules=realloc(rules, (rulesLen+baseRulesLen)*sizeof(UChar));
+    u_strncpy(rules+rulesLen, baseRules, baseRulesLen); /* append base rules */
+    rulesLen += baseRulesLen; /* now has base rules following */
+    theCollator = ucol_openRules(rules, rulesLen, normalizationMode, strength, NULL /* TODO: catch parseerr*/, &status);
+    if(U_FAILURE(status))   {
+      fprintf(stderr,"Couldn't open collator with cusotm rules: %s \n", u_errorName(status));
+      abort();
+    }
+    list = usort_openWithCollator(theCollator, TRUE, &status); /* common error check in a few lines.. */
+  } else {
+    list = usort_open(locale, strength, TRUE, &status);
+    ucol_setAttribute(usort_getCollator(list), UCOL_NORMALIZATION_MODE, normalizationMode, &status);
+  }
+
+  if(U_FAILURE(status))
+    {
+      fprintf(stderr,"Couldn't open sortlist: %d\n", status);
+      abort();
+    }
+  list->trim = trim;
+  
   if(verbose) fprintf(stderr, "Opening 'to' converter %s\n",toCodepage);
   toConverter = ucnv_open(toCodepage, &status);
 
