@@ -10,16 +10,12 @@ static void show(void);
 static void printString(const UChar* str);
 
 void printString(const UChar* str) {
-  UFILE *out;
-  out = u_finit(stdout, "en_US", NULL);
-  if(out) {
-    u_fprintf(out, "thing=`%S'\n", str);
-  }
-  u_fclose(out);
+  u_printf("thing=`%S'\n", str);
 }
 
 void show(void)
 {
+  /* BEGIN EXAMPLE */
   UErrorCode status = U_ZERO_ERROR;
   int32_t length;
   UResourceBundle *resourceBundle = NULL;
@@ -30,12 +26,10 @@ void show(void)
     return;
   }
   
-  /* thing will be “pen” or “La pluma” */
   thing = ures_getStringByKey(resourceBundle, "pen", &length, &status);
-  printString(thing);
-  ures_close(resourceBundle);
+  printString(thing);   /* thing will be “pen” or “La pluma” */
+  ures_close(resourceBundle);  /* 'thing' is no longer valid */
   /* END EXAMPLE */
-
 }
 
 

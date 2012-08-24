@@ -1,27 +1,14 @@
-// Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
+// Copyright (c) 2010-2012 IBM Corporation and Others. All Rights Reserved.
 
 #include <unicode/ustdio.h>
 #include <unicode/uloc.h>
 
-#include "../iucsamples.h"
-int main(int argc, const char *argv[])
-{
-  UFILE *out;
+int main() {
   UErrorCode status = U_ZERO_ERROR;
-#if 1
-  const char *loc = uloc_getDefault();
-  if(argc==2) loc = argv[1];
-#endif
-
-  out = u_finit(stdout, loc, NULL);
-
   UChar world[256];
   uloc_getDisplayCountry("und_001", NULL, world, 256, &status);
-  ASSERT_OK(status);
+  if(U_FAILURE(status)) { puts(u_errorName(status)); return 1; }
 
-  u_fprintf(out, "Hello, %S!\n", world);
-
-  u_fclose(out);
-
+  u_printf("Hello, %S!\n", world);
   return 0;
 }

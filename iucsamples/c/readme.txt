@@ -1,5 +1,16 @@
-# Copyright (C) 2011 IBM Corporation and Others. All Rights Reserved.
-#
+# Copyright (C) 2010-2012 IBM Corporation and Others. All Rights Reserved.
+
+
+Note:
+ These samples now use "u_printf" which was added in ICU 49.   You can get equivalent
+behavior on older ICUs with:
+  UFILE *out = u_finit(stdout, loc, NULL);
+  u_fprintf(out, "\n\nlocale=%s\n", loc);
+  ...
+  u_fclose(out);
+
+----
+
 
 Windows Visual Studio: 
 

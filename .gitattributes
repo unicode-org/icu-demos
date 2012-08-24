@@ -173,9 +173,12 @@ iucsamples/c/iucsamples.sln -text
 iucsamples/c/s09_test/s09_test.vcxproj -text
 iucsamples/c/s13_hello/s13_hello.vcxproj -text
 iucsamples/c/s14_hola/s14_hola.vcxproj -text
+iucsamples/c/s23_brki/Makefile -text
 iucsamples/c/s24_brkw/s24_brkw.vcxproj -text
+iucsamples/c/s27_brkl/Makefile -text
 iucsamples/c/s33_res/s33_res.vcxproj -text
 iucsamples/c/s33_res_c/Makefile -text
+iucsamples/c/s34_coll/Makefile -text
 iucsamples/c/s40_pen/s40_pen.vcxproj -text
 iucsamples/c/s41_msg/s41_msg.vcxproj -text
 iucsamples/c/s42_msg/s42_msg.vcxproj -text

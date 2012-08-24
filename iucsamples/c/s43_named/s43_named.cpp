@@ -36,18 +36,19 @@ int show(const char *loc) {
   // ---- begin sample code -----
   // ---- begin sample code -----
 
-   UnicodeString pattern = "Remove this {thing}.";
-   Calendar *c = icu::Calendar::createInstance(status);
+  UnicodeString pattern = "On {when, date, full} at {when, time, long} there was {what}.";
+   Calendar *c = Calendar::createInstance(status);
    Formattable args[] = {
-      "page",
+     c->getTime(status),
+     "a power failure"
    };
    UnicodeString names[] = { 
-     "thing",
+     "when",
+     "what"
    };
    UnicodeString result; 
    MessageFormat fmt(pattern, status);
    fmt.format(names, args, 2, result, status);
-   u_fprintf(out, "43--> [%s] %S\n", l.getName(), result.getTerminatedBuffer());
 
 
   // ---- end sample code -----
@@ -56,6 +57,7 @@ int show(const char *loc) {
   // ---- end sample code -----
   // ---- end sample code -----
  
+   u_fprintf(out, "43--> [%s] %S\n", l.getName(), result.getTerminatedBuffer());
   ASSERT_OK(status);
  
   // cleanup...

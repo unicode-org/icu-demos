@@ -13,20 +13,27 @@
 #include "../iucsamples.h"
 
 // slide 26
-int32_t countWords(BreakIterator *wordIterator, UnicodeString &text) {
-  UErrorCode status = U_ZERO_ERROR;
-  UnicodeString word; 
-  UnicodeSet letters(UnicodeString("[:letter:]"), status);
-  int32_t wordCount = 0; 
-  int32_t start = wordIterator->first();
-  for(int32_t end = wordIterator->next(); end != BreakIterator::DONE; start = end, end = wordIterator->next())  {
-    text.extractBetween(start, end, word);
-    if(letters.containsSome(word)) 
-      {
-        wordCount += 1;
-      } 
-  }
-  return wordCount;
+int32_t countWords(BreakIterator *wordIterator, UnicodeString &text)
+{
+    UErrorCode status = U_ZERO_ERROR;
+    UnicodeString word;
+    UnicodeSet letters(UnicodeString("[:letter:]"), status);
+
+    int32_t wordCount = 0;
+    int32_t start = wordIterator->first();
+
+    for(int32_t end = wordIterator->next();
+        end != BreakIterator::DONE;
+        start = end, end = wordIterator->next())
+    {
+        text.extractBetween(start, end, word);
+        
+        if(letters.containsSome(word)) {
+            wordCount += 1;
+        }
+    }
+
+    return wordCount;
 }
 
 int show(const char *loc) {

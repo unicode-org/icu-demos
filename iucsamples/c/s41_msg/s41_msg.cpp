@@ -13,17 +13,17 @@
 int show(const char *loc) {
   Locale l(loc);
 
-  UFILE *out = u_finit(stdout, loc, NULL);
+
   // Locale l = Locale::getDefault();
 
-  u_fprintf(out, "\n\nlocale=%s\n", loc);
+  u_printf( "\n\nlocale=%s\n", loc);
 
   UErrorCode status = U_ZERO_ERROR;
   u_setDataDirectory("." U_PATH_SEP_STRING ".." U_FILE_SEP_STRING "data");
   ResourceBundle resourceBundle("myapp", l, status);
 
   if(U_FAILURE(status)) {
-    printf("Can't open resource bundle. Default %s Error is %s\n", l.getName(), u_errorName(status));
+    u_printf("Can't open resource bundle. Default %s Error is %s\n", l.getName(), u_errorName(status));
     return 1;
   }
 
@@ -35,13 +35,13 @@ int show(const char *loc) {
 
 
   UnicodeString pattern = "On {0, date} at {0, time} there was {1}.";
-  Calendar *c = icu::Calendar::createInstance(status);
+  Calendar *c = Calendar::createInstance(status);
   Formattable args[] = {
     c->getTime(status), // 0
     "a power failure"	// 1
   };
-  UnicodeString result; MessageFormat::format(pattern, args, 2, result, status);
-  u_fprintf(out, "--> [%s] %S\n", l.getName(), result.getTerminatedBuffer());
+  UnicodeString result; 
+  MessageFormat::format(pattern, args, 2, result, status);
   
 
   // ---- end sample code -----
@@ -49,11 +49,10 @@ int show(const char *loc) {
   // ---- end sample code -----
   // ---- end sample code -----
   // ---- end sample code -----
+  u_printf( "--> [%s] %S\n", l.getName(), result.getTerminatedBuffer());
  
   ASSERT_OK(status);
  
-  // cleanup...
-  u_fclose(out);
   return 0;
 }
 
