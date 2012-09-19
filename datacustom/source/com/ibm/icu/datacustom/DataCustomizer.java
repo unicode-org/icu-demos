@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * Copyright (C) 2007-2011, International Business Machines Corporation and   *
+ * Copyright (C) 2007-2012, International Business Machines Corporation and   *
  * others. All Rights Reserved.                                               *
  ******************************************************************************
  */
@@ -454,6 +454,8 @@ public class DataCustomizer extends HttpServlet {
     		commandProcess = Runtime.getRuntime().exec(command, null, execDir);
     	}
         catch (IOException e) {
+            System.err.println(e.toString() + " running " + command + " in " + execDir.getAbsolutePath());
+            e.printStackTrace();
             reportError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, genericName + " could not be run." /* + e.getMessage()*/);
             return false;
         }
