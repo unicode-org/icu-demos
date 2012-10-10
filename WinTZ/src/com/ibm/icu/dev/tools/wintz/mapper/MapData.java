@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2012a";
-    static final String WINTZDATA_VERSION = "07dc0000";
+    static final String TZDATA_VERSION = "2012f";
+    static final String WINTZDATA_VERSION = "7dc0101";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -612,7 +612,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+02:00) Nicosia
+        // (UTC+02:00) E. Europe
         {"E. Europe Standard Time", "CY", "Asia/Nicosia", DEFAULT}, // Nicosia
 
 
@@ -1168,9 +1168,10 @@ public class MapData {
         // (UTC+13:00) Nuku'alofa
         {"Tonga Standard Time", "TO", "Pacific/Tongatapu", DEFAULT}, // *Nuku'alofa
 
-        // Enderbury is not in Tonga, but close enough and using the
+        // Enderbury/Fakaofo are not in Tonga, but close enough and using the
         // same UTC offset/no DST.
         {"Tonga Standard Time", "KI", "Pacific/Enderbury", REGION_DEFAULT},
+        {"Tonga Standard Time", "TK", "Pacific/Fakaofo", REGION_DEFAULT},
 
         // This is the only Windows time zone with UTC offset +13:00 without DST
         {"Tonga Standard Time", "ZZ", "Etc/GMT-13", REGION_DEFAULT},
@@ -1194,7 +1195,6 @@ public class MapData {
         "Australia/Lord_Howe",  // +10:30
         "Etc/GMT-14",           // +14:00
         "Pacific/Chatham",      // +12:45
-        "Pacific/Fakaofo",      // +14:00
         "Pacific/Kiritimati",   // +14:00
         "Pacific/Marquesas",    // -9:30
         "Pacific/Norfolk",      // +11:30
