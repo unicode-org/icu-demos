@@ -70,6 +70,7 @@ int show(const char *loc) {
   BreakIterator *sentenceIterator = BreakIterator::createSentenceInstance(locale, status);
   ASSERT_OK(status);
 
+  if(U_FAILURE(status)) return 1;
   // slide 25
   UnicodeString text;
   //readFile(file, text);

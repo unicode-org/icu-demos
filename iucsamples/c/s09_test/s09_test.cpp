@@ -15,3 +15,7 @@ int main() {
     }
     return 0;
 }
+
+/** Emacs Local Variables: **/
+/** Emacs compile-command: "icurun s09_test.cpp" **/
+/** Emacs End: **/

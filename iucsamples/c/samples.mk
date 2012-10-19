@@ -1,4 +1,4 @@
-#  Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
+#  Copyright (c) 2010-2012 IBM Corporation and Others. All Rights Reserved.
 # Note: local.mk must set 'ICU=/path/to/icu'
 
 include ../config.mk

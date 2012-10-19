@@ -13,3 +13,6 @@ all:
 	$(shell which pkgdata) $(PKGDATA_OPTS) -p myapp pkgdatain.txt
 clean:
 	-rm -rf tmp myapp*
+
+check:
+	@echo nothing to check

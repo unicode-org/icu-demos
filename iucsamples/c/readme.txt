@@ -37,3 +37,6 @@ To locate ICU for the purpose of these samples, ensure one of the following is t
 
 
 To build and run all samples, just run 'make check'. To build an individual sample, run 'make check' from inside that directory.
+
+The "icurun" script can also be used to build individual files. See
+  http://source.icu-project.org/repos/icu/tools/trunk/scripts/icurun

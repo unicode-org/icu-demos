@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2011 IBM Corporation and Others. All Rights Reserved.
+// Copyright (c) 2010-2012 IBM Corporation and Others. All Rights Reserved.
 
 
 #include <unicode/ures.h>
@@ -38,11 +38,11 @@ int show(const char *loc) {
  // ------- BEGIN SAMPLE
 
     UErrorCode status = U_ZERO_ERROR;
-    ResourceBundle resourceBundle("myapp", locale, status);
+    ResourceBundle resourceBundle("myapp", l, status);
 
     if(U_FAILURE(status)) {
       u_printf("Can't open resource bundle. Error is %s\n", u_errorName(status));
-      return;
+      return 1;
     }
 
     Formattable arguments[3];
@@ -72,3 +72,7 @@ int main()
   return 0;
 
 }
+
+/** Emacs Local Variables: **/
+/** Emacs compile-command: "icurun s40_pen.cpp" **/
+/** Emacs End: **/
