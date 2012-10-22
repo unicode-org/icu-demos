@@ -1,8 +1,10 @@
-//  Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
-import com.ibm.icu.util.*;
-import com.ibm.icu.text.*;
-import java.util.TreeSet;
+//  Copyright (c) 2010-2012 IBM Corporation and Others. All Rights Reserved.
 import java.util.TreeMap;
+
+import com.ibm.icu.text.CollationKey;
+import com.ibm.icu.text.Collator;
+import com.ibm.icu.text.RawCollationKey;
+import com.ibm.icu.util.ULocale;
 
 public class s56 {
     public static void collationKey() {
