@@ -295,8 +295,10 @@ public class DataCustomizer extends HttpServlet {
             icupkgCommand = "icupkg46";
         } else if (Integer.parseInt(icuDataVersion) == 48) {
             icupkgCommand = "icupkg48";
-        } else {
+        } else if (Integer.parseInt(icuDataVersion) == 49) {
             icupkgCommand = "icupkg49";
+        } else {
+            icupkgCommand = "icupkg50";
         }
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
