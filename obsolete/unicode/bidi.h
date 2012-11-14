@@ -1,7 +1,7 @@
 /*
 ******************************************************************************
 *
-*   Copyright (C) 1999-2005, International Business Machines
+*   Copyright (C) 1999-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 ******************************************************************************
@@ -22,7 +22,7 @@
 #include "unicode/ubidi.h"
 #include "unicode/obsolete.h"
 
-#ifndef XP_CPLUSPLUS
+#ifndef __cplusplus
 #   error This is a C++ header file.
 #endif
 
