@@ -12,6 +12,7 @@
 #include <unicode/uchar.h>
 #include <unicode/uset.h>
 #include <unicode/uclean.h>
+#include "unicode/usort.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -296,10 +297,13 @@ void ucd_cmd_help(UErrorCode &status)
     { UCD_CMD_0, "clear buffer", "" },
     { UCD_CMD_H, "show this help", "" },
     { UCD_CMD_P, "print buffer as a string", "" },
+    { UCD_CMD_S, "Print buffer as a set", ""},
     { UCD_CMD_U, "load a single hex codepoint", "+0127" },
     { UCD_CMD_U, "load a single dec codepoint", "#295" },
     { UCD_CMD_UU, "(same as 'u')", "+0127" },
     { UCD_CMD_UI, "show FULL info on the first codepoint in the buffer", "" },
+    { UCD_CMD_US, "Print buffer as a set (\\u escaped)", ""},
+    { UCD_CMD_UK, "Collate the string according to some locale (default to default)", "de-u-co-phonebk"},
     { UCD_CMD_I, "show name&number on every codepoint in the buffer\n(this is what happens if you don't give any other commands at the end)", "" },
     { UCD_CMD_Q, "quit ucd", "" }
   };
@@ -333,6 +337,72 @@ void ucd_cmd_info(const UChar *buf, int32_t len, UErrorCode &status)
     u_fprintf(ustdout, "\n");
   }
 }
+
+void ucd_cmd_set(UChar32 cmd, const UChar *str, int32_t len, UErrorCode &status)
+{
+  if(U_FAILURE(status)) {
+    return;
+  }
+  // make into set
+  // TODO: redundant. should cache old set
+  USet *aSet = uset_openEmpty();
+
+  int32_t i = 0;
+  UChar32 c;
+  
+  while(i<len) {
+    U16_NEXT(str, i, len, c);
+    uset_add(aSet, c);
+  }
+
+  UChar tmpbuf[workmax];
+  
+  len = uset_toPattern(aSet, tmpbuf, workmax, (cmd==UCD_CMD_US), &status);
+  
+  uset_close(aSet);
+
+  if(U_FAILURE(status)) {
+    u_fprintf(ustderr, "Failed to fetch pattern from set: %s\n", u_errorName(status));
+    return;
+  }
+
+  u_fprintf(ustderr, "%S\n", tmpbuf);
+  
+}
+
+// TODO: take locale
+void ucd_cmd_collate(const UChar *cmd, const UChar *str, int32_t len, UErrorCode &status)
+{
+  printf("Any locale, as long as it's slovakian\n");
+  USort *sort = usort_open("sk", UCOL_DEFAULT, TRUE, &status);
+  int32_t i = 0;
+  int32_t oldi = i;
+  UChar32 c;
+  
+  while(i<len) {
+    U16_NEXT(str, i, len, c);
+    //printf("%d..%d\n", oldi, i);
+    usort_addLine(sort, str+oldi, i-oldi, TRUE, NULL);
+    oldi = i;
+  }
+
+  usort_sort(sort);
+
+  // clear
+  clear_wb();
+
+  i = 0; // index in workbuf
+  for(int n=0;n<sort->count;n++) {
+    u_strcat(workbuffer+i,sort->lines[n].chars);
+    i += u_strlen(sort->lines[n].chars);
+  }
+  workbuffer[i]=0;
+  worklen = i;
+  
+  usort_close(sort);
+  
+}
+
 
 /**
  * Mark that some output of the current workbuffer was printed
@@ -599,6 +669,15 @@ void ucd_parseCommand(const UChar *cmd, UErrorCode &status)
       if(VERBOSE) u_fprintf(ustderr, "Wrote %d uchars + LF\n", n);
       set_printed();
     }
+    break;
+
+  case UCD_CMD_S:
+  case UCD_CMD_US:
+    ucd_cmd_set(cmdChar, workbuffer, worklen, status);
+    break;
+
+  case UCD_CMD_UK:
+    ucd_cmd_collate(cmd, workbuffer, worklen, status);
     break;
 
   case UCD_CMD_Q:

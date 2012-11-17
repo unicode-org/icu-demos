@@ -36,6 +36,10 @@ CPPFLAGS+=$(CPPFLAGS_APPUTIL)
 #LDFLAGS += -L/sw/lib -ldl -bind_at_load
 ####
 
+ICULIBS += -L../usort/lib -lusort
+CPPFLAGS += -I../usort/lib
+
+
 -include Makefile.local
 
 

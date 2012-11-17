@@ -275,6 +275,8 @@ ucd/*.opensdf
 ucd/*.sdf
 ucd/*.vcxproj.user
 ucd/Debug
+ucd/Makefile
+ucd/Makefile.local
 ucd/Release
 usort/Makefile
 usort/client/*.d

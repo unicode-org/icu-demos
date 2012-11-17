@@ -22,7 +22,9 @@
 
 // uppercase
 #define UCD_CMD_UI        0x49
+#define UCD_CMD_UK        0x4B
 #define UCD_CMD_UU        0x55
+#define UCD_CMD_US        0x53
 
 // lowercase
 #define UCD_CMD_H         0x68
@@ -30,6 +32,7 @@
 #define UCD_CMD_Q         0x71
 #define UCD_CMD_I         0x69
 #define UCD_CMD_U         0x75
+#define UCD_CMD_S         0x73
 
 // symbols
 #define UCD_CMD_DBLQUOTE  0x22
@@ -61,9 +64,11 @@ void ucd_parseCommand(const UChar *cmd, UErrorCode &status);
  */
 void ucd_cmd_info(const UChar *str, int32_t len, UErrorCode &status);
 void ucd_cmd_help(UErrorCode &status);
-
+void ucd_cmd_collate(const UChar *cmd, const UChar *str, int32_t len, UErrorCode &status);
+void ucd_cmd_set(UChar32 cmd, const UChar *str, int32_t len, UErrorCode &status);
 
 void set_printed(void);
 void clear_if_printed(void);
+void clear_wb(void);
 
 #endif
