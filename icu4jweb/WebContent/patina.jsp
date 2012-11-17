@@ -112,8 +112,7 @@ for(char c = aci.first();c!=CharacterIterator.DONE;c=aci.next()) {
        for ( Object k :  s.keySet() ) {
         DateFormat.Field f = (DateFormat.Field)k;
         int cf = f.getCalendarField();
-        String str = com.ibm.icu.dev.test.util.DebugUtilities.enumString(
-                com.ibm.icu.dev.test.util.DebugUtilitiesData.UCalendarDateFields, cf);
+        String str = f.toString();
        %><span class='field'><%= str %></span><% } 
        int end = aci.getRunLimit();
        aci.setIndex(end-1);

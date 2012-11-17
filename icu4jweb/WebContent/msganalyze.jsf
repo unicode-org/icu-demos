@@ -18,7 +18,7 @@ try {
 
 <%!
 
-void showNode(JspWriter out, TextNode node) throws java.io.IOException {
+void showNode(JspWriter out, com.ibm.icu.text.MessagePatternUtil.TextNode node) throws java.io.IOException {
 	out.println("<span class='msgLiteral'>" +node.getText() + "</span>");
 }
 
