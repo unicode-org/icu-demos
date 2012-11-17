@@ -17,6 +17,8 @@ lxu->pageTitle=UnicodeString("Info About: ")+lxu->getDisplayName();
 
 <hr>
 
+<!-- locale info -->
+<%@ dispatch to="if_info" %>
 
 <!-- date/time -->
 <%@ dispatch to="if_date" %>

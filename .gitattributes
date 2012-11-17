@@ -228,6 +228,7 @@ locexp/util/util.vcxproj.filters -text
 locexp2/itmpl/choose.itml -text
 locexp2/itmpl/env.itml -text
 locexp2/itmpl/if_date.itml -text
+locexp2/itmpl/if_info.itml -text
 locexp2/itmpl/index.itml -text
 locexp2/itmpl/info.itml -text
 locexp2/itmpl/lxfooter.itml -text

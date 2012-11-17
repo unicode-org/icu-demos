@@ -1,0 +1,18 @@
+<%// Copyright 2011-2012 IBM Corporation and Others. All rights reserved. %>
+<%0
+#include "lxuser.h"
+#include <string>
+#include "unicode/uloc.h"
+#include "unicode/locid.h"
+%>
+<%
+LXUSER
+UErrorCode status=U_ZERO_ERROR;
+%>
+
+
+<h3>Locale Info</h3>
+<b>Language</b>: <tt><%= lxu->ul_l.getLanguage() %></tt><br>
+<b>Script</b>: <tt><%= lxu->ul_l.getScript() %></tt><br>
+<b>Territory</b>: <tt><%= lxu->ul_l.getCountry() %></tt><br>
+<b>Variant</b>: <tt><%= lxu->ul_l.getVariant() %></tt><br>

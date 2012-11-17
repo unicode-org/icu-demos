@@ -6,7 +6,7 @@
 %>
 
     <div class='footer'>
-        <i>hitcount=<%=%d ++gggcount %></i>
+        <i>hitcount=<%=%d ++gggcount %></i> * <i>ICU <%= U_ICU_VERSION %></i>
     </div>
 
 

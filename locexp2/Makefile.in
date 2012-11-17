@@ -15,7 +15,7 @@ subdir = locexp2
 
 
 include $(top_builddir)/icuapps.mk
--include $(shell $(ICU_CONFIG) --incfile) 
+include $(shell $(ICU_CONFIG) --incfile) 
 
 DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
 DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)
@@ -32,20 +32,20 @@ TARGET = $(CNV_TARGET) $(LX_TARGET)
 
 ITMPL_DIR=./itmpl
 ITMPL_FILES=$(wildcard $(ITMPL_DIR)/*.itml)
-GEN_SRC=itmpl/locexp2_tmpl.cpp
+GEN_SRC=locexp2_tmpl.cpp
 GEN_OBJ=$(GEN_SRC:%.cpp=%.o)
 
 
-CNV_OBJ = itmpl2cpp/ItmlParser.o itmpl2cpp/itml2cpp.o
-LX_OBJ = cgi/cgiutils.o cgi/lxmain.o cgi/ufcgi.o cgi/webhandler.o \
-	itmpl2cpp/itmplhandler.o \
-	itmpl/lxuser.o  itmpl/lxutils.o $(GEN_OBJ)
+CNV_OBJ = ItmlParser.o itml2cpp.o
+LX_OBJ = cgiutils.o lxmain.o ufcgi.o webhandler.o \
+	itmplhandler.o \
+	lxuser.o  lxutils.o $(GEN_OBJ)
 
 OBJECTS = $(CNV_OBJ) $(LX_OBJ)
 
-#DEPS = $(OBJECTS:.o=.d)
+DEPS = $(OBJECTS:.o=.d)
 
-LXLIBS=-lfcgi 
+LXLIBS+=@LIBS@
 ICULIBS +=  $(LDFLAGS_ICUIO)
 
 ## List of phony targets
@@ -67,7 +67,7 @@ dist: dist-recursive dist-local
 check: check-recursive check-local
 
 -include Makefile.local
-CPPFLAGS += $(LOCAL_CPPFLAGS) -I./cgi -I./itmpl2cpp -I./itmpl -I./cgi
+CPPFLAGS += $(LOCAL_CPPFLAGS) -I. -I../apputil
 
 
 ## Recursive targets
@@ -116,6 +116,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 # if we wanted only part of the ICU, we could use (for example) just
 #         '$(LIBS) -licuuc -lusort' ...
 
+
+
 $(CNV_TARGET) : $(CNV_OBJ)
 	-$(RMV) $@
 	$(LINK.cc) -o $@ $(CNV_OBJ) $(LDFLAGS) $(ICULIBS) $(LOCALLIBS)
@@ -126,7 +128,6 @@ $(GEN_SRC): $(CNV_TARGET) $(ITMPL_FILES)
 $(LX_TARGET) : $(LX_OBJ)
 	-$(RMV) $@
 	$(LINK.cc) -o $@ $(LX_OBJ) $(LDFLAGS) $(ICULIBS) $(LOCALLIBS) $(LXLIBS)
-
 
 
 #ifneq ($(MAKECMDGOALS),distclean)

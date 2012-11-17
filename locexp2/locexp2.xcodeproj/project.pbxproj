@@ -286,7 +286,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "killall -9 locexp2 ; sleep 1 ; /xsrl/icu-bin/spawn-locexp2";
+			shellScript = "sudo killall locexp2 || /usr/bin/true";
 			showEnvVarsInLog = 0;
 		};
 		1C9CE7C513B2E5A80082C5F2 /* ShellScript */ = {

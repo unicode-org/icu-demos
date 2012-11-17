@@ -3,14 +3,22 @@
 //  locexp2
 //
 //  Created by Steven R. Loomis on 5/16/11.
-//  Copyright 2011 IBM Corporation and Others. All rights reserved.
+//  Copyright 2011-2012 IBM Corporation and Others. All rights reserved.
 //
 
+#ifndef PACKAGE_NAME
+#include "demo_config.h"
+#endif
+
 #include "ufcgi.h"
-#include <fcgiapp.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+
+#ifdef HAVE_FCGIAPP_H
+#include <fcgiapp.h>
+
 
 int running=1;
 
@@ -152,3 +160,86 @@ U_CAPI const char *cgi_getParam(UFCGI *u, const char *param) {
 }
 
 
+#else
+/** ------------------------- Non fastcgi ---------------- **/
+typedef struct {
+    char *content_type;
+} Stuff;
+
+
+U_CAPI const char *cgi_getParam(UFCGI *u, const char *param) {
+  return getenv(param);
+}
+
+U_CAPI void cgi_dumpEnv(UFCGI *u) {
+  system("env");
+}
+
+U_CAPI int32_t cgi_printf(UFCGI *u, const char *fmt, ...) {
+    va_list ap;
+    int32_t written;
+    
+//    if(ustdout==NULL) {
+//        ustdout= u_finit(stdout, NULL, NULL);
+//    }
+    
+    va_start(ap, fmt);
+    written = u_vfprintf(u->out, fmt, ap);
+    //printf("[writ=%d]\n", written);
+    va_end(ap);
+    u_fflush(u->out);
+    return written;
+}
+
+static void copyOut(FILE *f, UFCGI *u) {
+    char buf[2048];
+    size_t n;
+    Stuff *s = (Stuff*)u->stuff;
+    
+    while((n = fread(buf, sizeof(buf[0]), sizeof(buf)/sizeof(buf[0]), f))>0) {        
+      //printf("[copy=%d]\n", n);
+      fwrite(buf, 1, n, stdout);
+    }
+}
+static void writeHeader(UFCGI *u) {
+    Stuff *s = (Stuff*)u->stuff;
+    printf("Content-type: %s\r\n\r\n", s->content_type);
+}
+
+static void init_stuff(UFCGI *u) {
+    u->queryString = cgi_getParam(u,"QUERY_STRING");
+    u->postData=NULL;
+    u->cookies=NULL;
+}
+
+int main(int , const char *[])
+{
+    init_cgi();
+
+    UFCGI u;
+    Stuff s;
+    char fname[500];
+    u.stuff = &s;
+    tmpnam(fname);
+    FILE *tmpf;
+    s.content_type=strdup("text/html;charset=utf-8");
+    u.user=NULL; // reset
+    tmpf = fopen(fname, "w+");
+     if(!tmpf) {
+       fprintf(stderr, "ERR: bad fname %s\n", fname);
+       fflush(stderr);
+       return -1;
+     }
+    u.out = u_finit(tmpf,NULL, "utf-8");
+    
+    init_stuff(&u);
+    process_cgi(&u);
+    writeHeader(&u);
+    u_fclose(u.out);
+    fseek(tmpf,0,SEEK_SET);
+    copyOut(tmpf,&u);
+    fclose(tmpf);   
+    unlink(fname);   
+}
+
+#endif
