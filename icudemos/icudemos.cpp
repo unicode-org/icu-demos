@@ -38,15 +38,25 @@
 //  main()
 //
 
+#ifndef LENGTHOF
+#define LENGTHOF(array) (int32_t)(sizeof(array)/sizeof((array)[0]))
+#endif
+
+#include "demolist.h"
 
 void addDemoItem(USort *list, ResourceBundle &aRB, const char *demo, UErrorCode &inStatus) {
     if(U_FAILURE(inStatus)) { 
         return;
     }
+
+    if(!strcmp(demo,PROG_NAME)) {
+      return; // don't list ourself.
+    }
     
     UErrorCode status = U_ZERO_ERROR;
     
     ResourceBundle dB = aRB.get(demo, status);
+
     ResourceBundle dName = dB.get("name",status);
     UnicodeString name = dName.getString(status);
     if(U_FAILURE(status)) {
@@ -67,6 +77,7 @@ void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle 
     UErrorCode status = U_ZERO_ERROR;
     
     ResourceBundle dB = aRB.get(demo, status);
+
     ResourceBundle dName = dB.get("name",status);
     ResourceBundle dDesc = dB.get("desc",status);
     
@@ -192,18 +203,19 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
     {
         Locale theLocale(ourLocale);
         UnicodeString theDemos;
-        const char *demoList[] = { "convexp", "idnbrowser", "translit", "locexp", "nbrowser", "scompare", "ubrowse", "redemo", NULL };
+        
 
         USort *list = usort_open(ourLocale, UCOL_DEFAULT, TRUE, &status);
 
         if(U_SUCCESS(status)) {
             // add items unsorted
-            for(int n=0;demoList[n];n++) {
+
+          for(int n=0;n<LENGTHOF(demoList);n++) {
                 addDemoItem(list, *aRb, demoList[n], status);
             }
             usort_sort(list);
             // append the sorted items
-            for(int n=0;demoList[n];n++) {
+            for(int n=0;n<list->count;n++) {
                 appendDemoItem(theDemos, list, n, *aRb, status);
             }
             

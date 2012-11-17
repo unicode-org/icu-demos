@@ -6,6 +6,9 @@
 /* Define to 1 if you have the `dlopen' function. */
 #undef HAVE_DLOPEN
 
+/* Define to 1 if you have the <fcgiapp.h> header file. */
+#undef HAVE_FCGIAPP_H
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 

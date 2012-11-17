@@ -3390,7 +3390,7 @@ fi
 done
 
 
-for ac_header in dlfcn.h readline/readline.h
+for ac_header in dlfcn.h readline/readline.h fcgiapp.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -3455,6 +3455,62 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_readline" >&5
 $as_echo "$ac_cv_search_readline" >&6; }
 ac_res=$ac_cv_search_readline
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing FCGX_GetParam" >&5
+$as_echo_n "checking for library containing FCGX_GetParam... " >&6; }
+if test "${ac_cv_search_FCGX_GetParam+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char FCGX_GetParam ();
+int
+main ()
+{
+return FCGX_GetParam ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' fcgi; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_FCGX_GetParam=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if test "${ac_cv_search_FCGX_GetParam+set}" = set; then :
+  break
+fi
+done
+if test "${ac_cv_search_FCGX_GetParam+set}" = set; then :
+
+else
+  ac_cv_search_FCGX_GetParam=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_FCGX_GetParam" >&5
+$as_echo "$ac_cv_search_FCGX_GetParam" >&6; }
+ac_res=$ac_cv_search_FCGX_GetParam
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
 
@@ -4296,6 +4352,7 @@ do
     "usort/Makefile") CONFIG_FILES="$CONFIG_FILES usort/Makefile" ;;
     "usort/lib/Makefile") CONFIG_FILES="$CONFIG_FILES usort/lib/Makefile" ;;
     "usort/client/Makefile") CONFIG_FILES="$CONFIG_FILES usort/client/Makefile" ;;
+    "locexp2/Makefile") CONFIG_FILES="$CONFIG_FILES locexp2/Makefile" ;;
     "locexp/Makefile") CONFIG_FILES="$CONFIG_FILES locexp/Makefile" ;;
     "locexp/tools/Makefile") CONFIG_FILES="$CONFIG_FILES locexp/tools/Makefile" ;;
     "locexp/util/Makefile") CONFIG_FILES="$CONFIG_FILES locexp/util/Makefile" ;;
@@ -4367,7 +4424,7 @@ $debug ||
 if test -n "$CONFIG_FILES"; then
 
 
-ac_cr=`echo X |tr X "\015"`
+ac_cr=`echo X | tr X '\015'`
 # On cygwin, bash can eat \r inside `` if the user requested igncr.
 # But we know of no other shell where ac_cr would be empty at this
 # point, so we can use a bashism as a fallback.

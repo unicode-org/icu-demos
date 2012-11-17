@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2006, International Business Machines
+## *   Copyright (C) 1999-2011, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -18,7 +18,7 @@ subdir = icudemos
 include $(top_builddir)/icuapps.mk
 
 ## Extra files to remove for 'make clean'
-CLEANFILES = *~ *.res  $(PKG).lst README_$(PKG).txt $(PKG).dat
+CLEANFILES = *~ *.res  $(PKG).lst README_$(PKG).txt $(PKG).dat demolist.h
 
 ## Target information
 TARGET = $(subdir)
@@ -85,6 +85,17 @@ PKG=$(TARGET)
 LOCALES=root
 -include icudemos.mk
 
+icudemos.o: demolist.h
+
+demolist.h: $(top_srcdir)/icuapps.mk Makefile
+	@echo Generating $@
+	@echo > demolist.h "/* Generated from ../icuapps.mk.in : CGIAPPS. Do not edit. */" 
+	@echo >> demolist.h "const char *demoList[] = { ";
+	@for cgi in $(CGIAPPS); do \
+	  echo '"'$$cgi'",' >> demolist.h ;\
+	done
+	@echo '};' >> demolist.h
+
 $(TARGET) : $(OBJECTS) $(PKG)_dat.o
 	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
@@ -111,3 +122,9 @@ $(PKG).lst: icudemos.mk
 $(PKG)_dat.o: $(PKG).lst $(RESFILES)
 	-rm -f $@
 	-$(INVOKE) PATH=$$PATH:$(BINDIR) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(PKG).lst
+
+install-wrapper:
+	@for cgi in $(CGIAPPS); do \
+	  echo ln -s wrapper.sh $(CGI_TARGET)/$$cgi ;\
+	  ln -s wrapper.sh $(CGI_TARGET)/$$cgi ;\
+	done
