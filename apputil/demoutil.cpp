@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-*   Copyright (C) 2005-2010, International Business Machines
+*   Copyright (C) 2005-2012, International Business Machines
 *
 *   Corporation and others.  All Rights Reserved.
 *
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-U_CAPI int printHTMLFragment(UFILE *fileOut, UResourceBundle *displayBundle, char *templateFileName) {
+U_CAPI int printHTMLFragment(UFILE *fileOut, UResourceBundle *displayBundle, const char *templateFileName) {
     size_t size = 0;
     size_t savedPos;
     char *buffer;
@@ -81,3 +81,55 @@ U_CAPI int printHTMLFragment(UFILE *fileOut, UResourceBundle *displayBundle, cha
     return 1;
 }
 
+#define MBUFSIZ 4096
+// output the icu.css
+U_CAPI int writeOutFile(const char *fn, const char *type) {
+    FILE *f;
+    char buf[MBUFSIZ];
+    char file[1024];
+    sprintf(file, "./data%s", fn);
+    f = fopen(file, "r");
+    if(!f) {
+      printf("Status: 404\n\nCould not retreive the file indicated\n");
+      return 1;
+    }
+    printf("Content-type: %s\n", type);
+#if 0
+    // TODO
+    fseek ( seek_end, 0)
+      ftell(..)
+      frewind(..)
+      printf("Content-Length: %d\n", ...);
+#endif
+    printf("\n");
+    fflush(stdout);
+    fflush(stderr);
+    
+    while(!feof(f)) {
+        int n;
+        n = fread(buf,1,MBUFSIZ,f);
+        if(n>0) {
+            fwrite(buf,1,n,stdout);
+        }
+    }
+    fclose(f);
+    fflush(stdout);
+    
+    return 0;
+}
+
+
+U_CAPI 
+const char *serveStaticFile(const char *files[], const char *pathInfo) {
+  if(pathInfo==NULL) pathInfo=getenv("PATH_INFO");
+  if(pathInfo&&*pathInfo) {
+        int n;
+        for(n=0;files[n];n+=2) {
+            if(!strcmp(pathInfo, files[n])) {
+              (void)writeOutFile(files[n], files[n+1]);
+              return files[n];
+            }
+        }
+    }
+  
+}

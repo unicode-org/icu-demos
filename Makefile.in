@@ -1,6 +1,6 @@
 #******************************************************************************
 #
-#   Copyright (C) 1999-2006, International Business Machines
+#   Copyright (C) 1999-2012, International Business Machines
 #   Corporation and others.  All Rights Reserved.
 #
 #******************************************************************************
@@ -19,7 +19,7 @@ CPPFLAGS+=$(CPPFLAGS_APPUTIL)
 
 ## Locale Explorer depends on usort [runtime].
 # Don't change this ordering!
-SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare redemo icudemos ucd
+SUBDIRS= obsolete apputil usort locexp ubrowse dumpdat  XMLConverter  test nbrowser idnbrowser convexp translitdemo scompare redemo icudemos ucd icusegments
 # calexpo
 
 

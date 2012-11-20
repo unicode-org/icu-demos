@@ -20,6 +20,7 @@ apputil/*.vcxproj.user
 apputil/Debug
 apputil/Makefile
 apputil/Release
+apputil/apputil.dylib
 apputil/debug
 apputil/demo_config.h
 apputil/libapputil*

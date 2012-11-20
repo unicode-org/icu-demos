@@ -18,7 +18,11 @@ top_builddir = ../..
 subdir = usort/lib
 
 
-
+FINAL_SO_TARGET=  $(basename $(SO_TARGET)).$(SO_TARGET_VERSION).$(SO)
+MIDDLE_SO_TARGET= $(basename $(SO_TARGET)).$(SO_TARGET_VERSION_MAJOR).$(SO)
+ENABLE_SHARED=YES
+LIBPREFIX=lib
+TARGET_STUBNAME=usort
 include $(top_builddir)/icuapps.mk
 
 include $(shell $(ICU_CONFIG) --incfile) 
@@ -33,8 +37,8 @@ CPPFLAGS +=-I$(ICU_SOURCE)/tools/toolutil/
 CLEANFILES = *~ $(DEPS)
 
 ## Target information
-SO_TARGET = libusort.$(SO)
-SO_TARGET_VERSION_MAJOR=26
+SO_TARGET = $(LIBPREFIX)$(TARGET_STUBNAME)$(ICULIBSUFFIX).$(SO)
+ALL_SO_TARGETS = $(SO_TARGET) $(MIDDLE_SO_TARGET) $(FINAL_SO_TARGET) $(SHARED_OBJECT)
 
 OBJECTS = usort.o 
 HEADERS = unicode/usort.h
@@ -53,13 +57,22 @@ distclean : distclean-local
 dist: dist-local
 check: check-local
 
-all-local: $(SO_TARGET)
+all-local: $(SO_TARGET) $(ALL_SO_TARGETS)
 
 install-local: all-local install-headers install-library
 
 install-library: all-local
 	$(MKINSTALLDIRS) $(libdir)
 	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
+ifneq ($(ENABLE_SHARED),)
+	$(INSTALL-L) $(FINAL_SO_TARGET) $(DESTDIR)$(libdir)
+ifneq ($(FINAL_SO_TARGET),$(SO_TARGET))
+	cd $(DESTDIR)$(libdir) && $(RM) $(notdir $(SO_TARGET)) && ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $(SO_TARGET))
+ifneq ($(FINAL_SO_TARGET),$(MIDDLE_SO_TARGET))
+	cd $(DESTDIR)$(libdir) && $(RM) $(notdir $(MIDDLE_SO_TARGET)) && ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $(MIDDLE_SO_TARGET))
+endif
+endif
+endif
 
 
 install-headers:
@@ -91,7 +104,14 @@ ICULIBS += $(LDFLAGS_TOOLUTIL)
 
 
 $(SO_TARGET) : $(OBJECTS)
-	$(SHLIB.cc) -o $@ $^ $(ICULIBS)
+	$(SHLIB.cc) $(LD_SONAME) $(OUTOPT)$@ $^ $(ICULIBS)
+
+$(FINAL_SO_TARGET): $(SO_TARGET)
+	ln -s $(notdir $(SO_TARGET)) $(notdir $(FINAL_SO_TARGET))
+
+$(MIDDLE_SO_TARGET): $(FINAL_SO_TARGET)
+	ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $(MIDDLE_SO_TARGET))
+
 
 
 ifneq ($(MAKECMDGOALS),distclean)

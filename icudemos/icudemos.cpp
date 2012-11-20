@@ -4,7 +4,7 @@
  *
  ********************************************************************
  * COPYRIGHT:
- * Copyright (c) 2004-2006, International Business Machines Corporation and
+ * Copyright (c) 2004-2012, International Business Machines Corporation and
  * others. All Rights Reserved.
  ********************************************************************
  */
@@ -27,6 +27,7 @@
 #include "demo_settings.h"
 
 #include "tmplutil.h"
+#include "demoutil.h"
 
 #include "unicode/usort.h"
 
@@ -242,33 +243,6 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
     }
 }
 
-#define MBUFSIZ 4096
-// output the icu.css
-int doOut(const char *fn, const char *type) {
-    FILE *f;
-    char buf[MBUFSIZ];
-    char file[1024];
-    printf("Content-type: %s\n\n", type);
-    fflush(stdout);
-    fflush(stderr);
-    sprintf(file, "./data%s", fn);
-    f = fopen(file, "r");
-    if(!f) {
-        return 0;
-    }
-    
-    while(!feof(f)) {
-        int n;
-        n = fread(buf,1,MBUFSIZ,f);
-        if(n>0) {
-            fwrite(buf,1,n,stdout);
-        }
-    }
-    fclose(f);
-    fflush(stdout);
-    
-    return 0;
-}
 
 #define CSS_FILE "/icu.css"
 #define CSS_DEMO_FILE "/main.css"
@@ -287,25 +261,19 @@ const char *  files[] =
     NULL, NULL
 };
 
-int main(int argc, const char **argv) {
+int main(int /* argc */, const char ** /* argv */) {
     UErrorCode      status = U_ZERO_ERROR;
     UnicodeString   outputText;
     char *allocatedContent = 0;
     char *pi = 0;
+
     
+    if(serveStaticFile(files, NULL)) return 0;
     pi = getenv("PATH_INFO");
-    
     if(pi&&*pi) {
-        int n;
-        for(n=0;files[n];n+=2) {
-            if(!strcmp(pi, files[n])) {
-                return doOut(files[n], files[n+1]);
-            }
-        }
-        printf("Content-type: text/plain\n\nError: no file at this location.\n");
+        printf("Status: 404 Not Found\nContent-type: text/plain\n\nError: no file at this location.\n");
         return 0;
     }
-    
 
     udata_setAppData( "icudemos", (const void*) icudemos_dat, &status);
 

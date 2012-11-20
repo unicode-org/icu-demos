@@ -6,6 +6,8 @@ dnl   others. All Rights Reserved.
 
 dnl Process this file with autoconf to produce a configure script
 
+AC_PREREQ(2.69)
+
 AC_INIT(icuapps, 0.0, http://icu-project.org/bugs, [ICU Apps], [http://icu-project.org])
 dnl Check a file in our files, just to make sure we have a sane setup..
 AC_CONFIG_SRCDIR(usort/lib/unicode/usort.h)
@@ -37,36 +39,37 @@ AC_CONFIG_HEADER(apputil/demo_config.h)
 
 AC_OUTPUT([icuapps.mk \
 Makefile \
+XMLConverter/Makefile \
 apputil/Makefile \
-usort/Makefile \
-usort/lib/Makefile \
-usort/client/Makefile \
-locexp2/Makefile \
-locexp/Makefile \
-locexp/tools/Makefile \
-locexp/util/Makefile \
-locexp/resource/Makefile \
-ubrowse/Makefile \
-nbrowser/Makefile \
-idnbrowser/Makefile \
 convexp/Makefile \
-scompare/Makefile \
-redemo/Makefile \
 datacustom/Makefile \
 datacustom/gendatadep/Makefile \
-icudemos/Makefile \
-xlitomatic/Makefile \
-rbbiperf/Makefile \
-ucd/Makefile \
 dumpdat/Makefile \
-rtfcvrt/Makefile \
-XMLConverter/Makefile \
+icudemos/Makefile \
+icusegments/Makefile \
+idnbrowser/Makefile \
+locexp/Makefile \
+locexp/resource/Makefile \
+locexp/tools/Makefile \
+locexp/util/Makefile \
+locexp2/Makefile \
+nbrowser/Makefile \
 obsolete/Makefile \
+rbbiperf/Makefile \
+redemo/Makefile \
 regressionTest/CollRegressionTest/c/Makefile \
 regressionTest/StrsrchRegressionTest/c/Makefile \
+rtfcvrt/Makefile \
+scompare/Makefile \
 test/Makefile \
+test/obstest/Makefile \
 test/testdata/Makefile \
-test/obstest/Makefile])
+ubrowse/Makefile \
+ucd/Makefile \
+usort/Makefile \
+usort/client/Makefile \
+usort/lib/Makefile \
+xlitomatic/Makefile])
 
 dnl
 

@@ -1,7 +1,7 @@
 # -*-makefile-*-
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 2002-2005, International Business Machines
+## *   Copyright (C) 2002-2011, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -33,6 +33,12 @@ BINDIR = $(shell @ICU_CONFIG@ --bindir)
 GENRB=$(shell @ICU_CONFIG@ --invoke=genrb)
 UCONV=$(shell @ICU_CONFIG@ --invoke=uconv)
 PKGDATA=$(shell @ICU_CONFIG@ --invoke=pkgdata)
+
+# fake version #s for these.
+SO_TARGET_VERSION = 0.0
+SO_TARGET_VERSION_MAJOR = 0
+OUTOPT = -o # The extra space after the argument is needed.
+
 
 CPPFLAGS_APPUTIL=-I$(top_builddir)/apputil
 
@@ -66,7 +72,8 @@ RMV=rm -rf
 # SHLIB.c=      $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -shared
 # SHLIB.cc=     $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -shared
 
+# list of CGIs
+CGIAPPS=convexp idnbrowser translit locexp nbrowser scompare ubrowse redemo icudemos
+
 # optional override file
 -include $(top_srcdir)/icuapps-mk.local
-
-
