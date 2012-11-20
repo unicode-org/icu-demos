@@ -1,0 +1,24 @@
+/*
+ * Copyright (C) 2012 IBM Corporation and Others. All Rights Reserved.
+ */
+ 
+ #output {
+ 	padding:  1em;
+ }
+ 
+#output.change {
+	color:  #ddd;
+}
+
+#output.changing {
+	//background-color: #ddd;
+	opacity: 0.4;
+}
+ 
+ #output .brk {
+ 	border-right:  1px solid red;
+ }
+ 
+ #output.change .brk {
+ 	border-right:  none !important;
+ } 

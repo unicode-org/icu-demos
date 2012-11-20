@@ -82,6 +82,10 @@ icudemos/demolist.h
 icudemos/icudemos*
 icudemos/libicudemos*
 icudemos/release
+icusegments/Makefile
+icusegments/icusegments
+icusegments/icusegments.exe
+icusegments/local.mk
 idnbrowser/*.d
 idnbrowser/*.o
 idnbrowser/*.vcxproj.user
