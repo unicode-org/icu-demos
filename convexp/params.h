@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2007, International Business Machines
+*   Copyright (C) 2003-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -19,16 +19,14 @@
 */
 
 #include <unicode/utypes.h>
-
-#include "uhash.h"
-#include "cstring.h"
+#include <set>
 
 #define MAX_BYTE_SIZE 64
 
 U_CFUNC int32_t gMaxStandards;
 U_CFUNC char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH];
 U_CFUNC char gStartBytes[MAX_BYTE_SIZE];
-U_CFUNC UHashtable *gStandardsSelected;
+U_CFUNC std::set<std::string> *gStandardsSelected;
 U_CFUNC const char *gScriptName;
 U_CFUNC UBool gShowStartBytes;
 U_CFUNC UBool gShowUnicodeSet;

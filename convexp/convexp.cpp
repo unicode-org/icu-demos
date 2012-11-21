@@ -161,7 +161,7 @@ static void printOptions(UErrorCode *status) {
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
         }
-        if (uhash_find(gStandardsSelected, standard) != NULL) {
+        if (gStandardsSelected->count(std::string(standard))) {
             checked = " checked";
         }
         else {
@@ -176,7 +176,7 @@ static void printOptions(UErrorCode *status) {
                 checked);
         }
     }
-    if (uhash_find(gStandardsSelected, ALL) != NULL) {
+    if (gStandardsSelected->count(std::string(ALL))) {
         checked = " checked=\"checked\"";
     }
     else {
@@ -191,6 +191,7 @@ static void printOptions(UErrorCode *status) {
 
 static const char *getConverterType(UConverterType convType) {
     switch (convType) {
+    case UCNV_COMPOUND_TEXT:  return "UCNV_UNSUPPORTED_CONVERTER (compound text)";
     case UCNV_UNSUPPORTED_CONVERTER: return "UCNV_UNSUPPORTED_CONVERTER";
     case UCNV_SBCS: return "UCNV_SBCS";
     case UCNV_DBCS: return "UCNV_DBCS";
@@ -449,7 +450,7 @@ static void printUnicodeSet(USet *cnvSet, UErrorCode *status, UBool alwaysShowSe
     }
 }
 
-static void printLanguages(UConverter *cnv, USet *cnvSet, UErrorCode *status) {
+static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *status) {
     UChar patBuffer[128];
     char patBufferUTF8[1024]; /* 4 times as large as patBuffer */
     int32_t patLen;
@@ -631,7 +632,7 @@ static void printStandardHeaders(UErrorCode *status) {
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
         }
-        if (uhash_find(gStandardsSelected, standard) != NULL) {
+        if (gStandardsSelected->count(std::string(standard))) {
             if (*standard) {
                 printf("<th style=\"text-align: center\">%s</th>\n", standard);
             }
@@ -640,7 +641,7 @@ static void printStandardHeaders(UErrorCode *status) {
             }
         }
     }
-    if (uhash_find(gStandardsSelected, ALL) != NULL) {
+    if (gStandardsSelected->count(std::string(ALL))) { 
         puts("<th style=\"text-align: center\"><em>All Aliases</em></th>");
     }
     puts("</tr>");
@@ -714,11 +715,11 @@ static void printAliases(const char *canonicalName, UErrorCode *status) {
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
         standard = ucnv_getStandard((uint16_t)i, status);
-        if (uhash_find(gStandardsSelected, standard) != NULL) {
+        if (gStandardsSelected->count(std::string(standard))) {
             printStandardAliasList(canonicalName, standard, status);
         }
     }
-    if (uhash_find(gStandardsSelected, ALL) != NULL) {
+    if (gStandardsSelected->count(std::string(ALL))) {
         printAllAliasList(canonicalName, status);
     }
 }
@@ -737,8 +738,8 @@ static void printAliasTable() {
     }
     else {
         const char *canonicalName = NULL;
-        int32_t len = 0;
-        int32_t allNamesCount = uenum_count(convEnum, &status);
+        //int32_t len = 0;
+        //int32_t allNamesCount = uenum_count(convEnum, &status);
         while ((canonicalName = uenum_next(convEnum, NULL, &status))) {
             if (*gCurrConverter && strcmp(canonicalName, gCurrConverter) != 0) {
                 continue;
@@ -771,23 +772,8 @@ static void printAliasTable() {
     printf(endTable);
 }
 
-U_CDECL_BEGIN
-static int32_t U_CALLCONV
-convexp_hashPointer(const UHashTok key) {
-    /* You normally don't want to do this on os/400, which will cause a crash.
-       The data type is a 64-bit pointer, and not a 32-bit integer.
-       At this time, we doubt that we need this demo code ported to os/400. */
-    return key.integer;
-}
-
-static UBool U_CALLCONV
-convexp_comparePointer(const UHashTok key1, const UHashTok key2) {
-    return (UBool)(key1.pointer == key2.pointer);
-}
-U_CDECL_END
-
 extern int
-main(int argc, const char *argv[]) {
+main(int /*argc*/, const char * /*argv*/[]) {
     int32_t inputLength;
     UErrorCode errorCode = U_ZERO_ERROR;
     const char *cgi;
@@ -809,8 +795,8 @@ main(int argc, const char *argv[]) {
         puts(DEMO_BEGIN_CONTENT);
     }
     puts(breadCrumbMainHeader);
-    
-    gStandardsSelected = uhash_open(convexp_hashPointer, convexp_comparePointer, NULL, &errorCode);
+
+    gStandardsSelected = new std::set<std::string>();
     gMaxStandards = ucnv_countStandards();
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && *cgi) {
@@ -832,9 +818,9 @@ main(int argc, const char *argv[]) {
 //        puts(cgi);
         parseAllOptions(cgi, &errorCode);
     }
-    if (uhash_count(gStandardsSelected) == 0) {
+    if (gStandardsSelected->size() == 0) {
         /* Didn't specify a standard. Give the person something to look at. */
-        uhash_put(gStandardsSelected, (void*)ALL, (void*)ALL, &errorCode);
+        gStandardsSelected->insert(std::string(ALL));
         if (U_FAILURE(errorCode)) {
             printf("ERROR: uhash_put() -> %s\n", u_errorName(errorCode));
         }
@@ -876,6 +862,6 @@ main(int argc, const char *argv[]) {
     printHTMLFragment(NULL, NULL, DEMO_COMMON_FOOTER);
     puts(htmlFooter);
 
-    uhash_close(gStandardsSelected);
+    delete gStandardsSelected;
     return 0;
 }

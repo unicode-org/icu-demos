@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2007, International Business Machines
+*   Copyright (C) 2003-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -22,12 +22,15 @@
 #include "params.h"
 
 #include <stdio.h>
+#include <strings.h>
+#include <string.h>
+#include <ctype.h>
 
 int32_t gMaxStandards;
 UBool gShowStartBytes = FALSE;
 char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
 char gStartBytes[MAX_BYTE_SIZE] = "";
-UHashtable *gStandardsSelected = NULL;
+std::set<std::string> *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
 UBool gShowUnicodeSet = FALSE;
 UBool gShowLanguages = FALSE;
@@ -41,12 +44,13 @@ U_CFUNC const char *getStandardOptionsURL(UErrorCode *status) {
 
     if (!standards) {
         int32_t pos = -1;
-        const UHashElement *e;
         const char *standard;
         int32_t len = 0;
 
-        while ((e = uhash_nextElement(gStandardsSelected, &pos)) != NULL) {
-            standard = (const char*) e->value.pointer;
+        for(std::set<std::string>::iterator e = gStandardsSelected->begin();
+            e!=gStandardsSelected->end();
+            ++e) {
+            standard = e->c_str();
             if (len == 0) {
                 len += sprintf(optionsURL+len, "s=%s", standard);
             }
@@ -73,21 +77,17 @@ static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *s
     const char *standard;
 
     if (nameSize <= 0 || *newStandard == '-') {
-        uhash_put(gStandardsSelected,
-            (void*)ucnv_getStandard((uint16_t)(gMaxStandards-1), status),
-            (void*)ucnv_getStandard((uint16_t)(gMaxStandards-1), status),
-            status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
-        }
-        return;
+      gStandardsSelected->insert(
+                std::string(
+                            ucnv_getStandard((uint16_t)(gMaxStandards-1), status)));
+      if (U_FAILURE(*status)) {
+        printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
+      }
+      return;
     }
-    if (uprv_strnicmp(ALL, newStandard, nameSize) == 0) {
-        uhash_put(gStandardsSelected, (void*)ALL, (void*)ALL, status);
-        if (U_FAILURE(*status)) {
-            printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
-        }
-        return;
+    if (strncasecmp(ALL, newStandard, nameSize) == 0) {
+      gStandardsSelected->insert(std::string(ALL));
+      return;
     }
     for (i = 0; i < gMaxStandards; i++) {
         *status = U_ZERO_ERROR;
@@ -95,11 +95,8 @@ static void addStandard(const char *newStandard, int32_t nameSize, UErrorCode *s
         if (U_FAILURE(*status)) {
             printf("ERROR: ucnv_getStandard() -> %s\n", u_errorName(*status));
         }
-        if (uprv_strnicmp(standard, newStandard, nameSize) == 0) {
-            uhash_put(gStandardsSelected, (void*)standard, (void*)standard, status);
-            if (U_FAILURE(*status)) {
-                printf("ERROR: uhash_put() -> %s\n", u_errorName(*status));
-            }
+        if (strncasecmp(standard, newStandard, nameSize) == 0) {
+          gStandardsSelected->insert(std::string(standard));
             return;  // I'm done, I already found it.
         }
     }
