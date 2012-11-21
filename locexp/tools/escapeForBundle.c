@@ -1,5 +1,5 @@
 /* 
-   Copyright (C) 1999-2000, International Business Machines
+   Copyright (C) 1999-2012, International Business Machines
    Corporation and others.  All Rights Reserved.
 
    This little program takes utf16_be input and outputs 
@@ -25,7 +25,7 @@ int main()
     {
       cHi = getchar();
       
-      if(feof(stdin)) return; /* half-char */
+      if(feof(stdin)) return 1; /* half-char */
 
       cLo = getchar();
 
@@ -43,4 +43,5 @@ int main()
 	  printf("\\u%04X", (int) myChar);
 	}
     }
+    return 0;
 }

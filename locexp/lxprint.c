@@ -8,7 +8,7 @@
 
 #include "locexp.h"
 #include <unicode/uscript.h>
-#include "uresimp.h"
+/* #include "uresimp.h" */
 
 /* Explain what the status code means --------------------------------------------------------- */
 

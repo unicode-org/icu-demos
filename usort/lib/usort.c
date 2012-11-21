@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "unicode/usort.h"
-#include "uparse.h"
+/*#include "uparse.h"*/
 
 #ifdef WIN32
 #include <stdlib.h>

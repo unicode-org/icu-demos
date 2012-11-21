@@ -26,6 +26,8 @@ TARGET = $(subdir)$(EXEEXT)
 #LDFLAGS += $(LDFLAGS_TOOLUTIL)
 CPPFLAGS += -I$(ICU_SOURCE)/common
 CPPFLAGS += -I$(top_srcdir)/apputil
+CPPFLAGS += -D_GNU_SOURCE
+
 
 # ICULIBS includes all standard ICU libraries.
 # if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...

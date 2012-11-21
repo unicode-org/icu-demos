@@ -61,9 +61,9 @@ install-target: all-local
 ifneq ($(ENABLE_SHARED),)
 	$(INSTALL-L) $(FINAL_SO_TARGET) $(DESTDIR)$(libdir)
 ifneq ($(FINAL_SO_TARGET),$(SO_TARGET))
-	cd $(DESTDIR)$(libdir) && $(RM) $(notdir $(SO_TARGET)) && ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $(SO_TARGET))
+	cd $(DESTDIR)$(libdir) && $(RM) $(notdir $(SO_TARGET)) && ln -sf $(notdir $(FINAL_SO_TARGET)) $(notdir $(SO_TARGET))
 ifneq ($(FINAL_SO_TARGET),$(MIDDLE_SO_TARGET))
-	cd $(DESTDIR)$(libdir) && $(RM) $(notdir $(MIDDLE_SO_TARGET)) && ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $(MIDDLE_SO_TARGET))
+	cd $(DESTDIR)$(libdir) && $(RM) $(notdir $(MIDDLE_SO_TARGET)) && ln -fs $(notdir $(FINAL_SO_TARGET)) $(notdir $(MIDDLE_SO_TARGET))
 endif
 endif
 endif
@@ -99,10 +99,10 @@ $(SO_TARGET) : $(OBJECTS)
 	$(SHLIB.cc) $(LD_SONAME) $(OUTOPT)$@ $^ $(ICULIBS)
 
 $(FINAL_SO_TARGET): $(SO_TARGET)
-	ln -s $(notdir $(SO_TARGET)) $(notdir $(MIDDLE_SO_TARGET))
+	ln -s $(notdir $(SO_TARGET)) $(notdir $@)
 
 $(MIDDLE_SO_TARGET): $(FINAL_SO_TARGET)
-	ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $(MIDDLE_SO_TARGET))
+	ln -s $(notdir $(FINAL_SO_TARGET)) $(notdir $@)
 
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(DEPS)

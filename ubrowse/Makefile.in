@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2010, International Business Machines
+## *   Copyright (C) 1999-2012, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -127,9 +127,10 @@ icons.res: icons.txt
 	$(INVOKE) $(GENRB) -d. $<
 
 icons.txt: $(ICONS)/*.gif
-	echo creating $@
+	echo creating $@ in $(ICONS)
 	@echo "icons : table(nofallback) { " > $@
-	@for file in `cd $(ICONS) ; ls *.gif *.css`; do \
+	@for file in `cd ./$(ICONS) ; ls *.gif *.css`; do \
+	echo "Processing $$file " ; \
 	  echo " $$file:import { $(ICONS)/$$file } " >> $@; \
 	done;
 	@echo "}" >> $@

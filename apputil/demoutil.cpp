@@ -17,7 +17,7 @@
 #include "demoutil.h"
 #include "unicode/ustring.h"
 #include "unicode/unistr.h"
-
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 

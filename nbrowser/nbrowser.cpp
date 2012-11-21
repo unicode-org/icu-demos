@@ -28,7 +28,7 @@
 #include "unicode/ustring.h"
 #include "unicode/unistr.h"
 #include "unicode/unorm.h"
-#include "unormimp.h"           // ### TODO internal file, for normalization prototype
+/* #include "unormimp.h" */          // ### TODO internal file, for normalization prototype
 
 #include "demo_settings.h"
 #include "demoutil.h"

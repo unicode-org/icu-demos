@@ -6,7 +6,7 @@
 #include "locexp.h"
 #include "unicode/udata.h"
 #include "unicode/usearch.h"
-#include "uresimp.h"
+/* #include "uresimp.h" */
 
 #define G7COUNT 8  /* all 8 of the g7 locales. showSort() */
 static const char   G7s[G7COUNT][10] = { "de_DE", "en_GB", "en_US", "fr_CA", "fr_FR", "it_IT", "ja_JP", "sv_SE" };
