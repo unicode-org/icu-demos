@@ -321,7 +321,7 @@ struct token {
 		struct string *string;
 		double number;
 		_Bool boolean;
-	};
+	} u;
 }; /* struct token */
 
 
@@ -380,7 +380,7 @@ static void lex_init(struct lexer *L) {
 
 static void tok_free(struct token *T) {
 	if (T->type == T_STRING)
-		string_destroy(&T->string);
+		string_destroy(&T->u.string);
 
 	free(T);	
 } /* tok_free() */
@@ -413,17 +413,17 @@ static int lex_push(struct lexer *L, enum tokens type, ...) {
 	switch (type) {
 	case T_STRING:
 		va_start(ap, type);
-		T->string = va_arg(ap, struct string *);
+		T->u.string = va_arg(ap, struct string *);
 		va_end(ap);
 		break;
 	case T_NUMBER:
 		va_start(ap, type);
-		T->number = va_arg(ap, double);
+		T->u.number = va_arg(ap, double);
 		va_end(ap);
 		break;
 	case T_BOOLEAN:
 		va_start(ap, type);
-		T->boolean = va_arg(ap, int);
+		T->u.boolean = va_arg(ap, int);
 		va_end(ap);
 		break;
 	default:
@@ -728,7 +728,7 @@ struct node {
 	union {
 		struct json_value *key;
 		index_t index;
-	};
+	} k;
 
 	struct json_value *value;
 	struct json_value *parent;
@@ -736,7 +736,7 @@ struct node {
 	union {
 		LLRB_ENTRY(node) rbe;
 		CIRCLEQ_ENTRY(node) cqe;
-	};
+	} e;
 }; /* struct node */
 
 
@@ -755,7 +755,7 @@ struct json_value {
 	union { /* mutually exclusive usage */ 
 		struct json_value *root;
 		void *state;
-	};
+	} r;
 
 	union {
 		struct {
@@ -773,28 +773,28 @@ struct json_value {
 		double number;
 
 		_Bool boolean;
-	};
+	} u;
 }; /* struct json_value */
 
 
 static int array_cmp(struct node *a, struct node *b) {
-	return CMP(a->index, b->index);
+	return CMP(a->k.index, b->k.index);
 } /* array_cmp() */
 
-LLRB_GENERATE(array, node, rbe, array_cmp)
+LLRB_GENERATE(array, node, e.rbe, array_cmp)
 
 
 /* NOTE: All keys must be strings per RFC 4627. */
 static int object_cmp(struct node *a, struct node *b) {
 	int cmp;
 
-	if ((cmp = strncmp(a->key->string->text, b->key->string->text, MIN(a->key->string->length, b->key->string->length))))
+	if ((cmp = strncmp(a->k.key->u.string->text, b->k.key->u.string->text, MIN(a->k.key->u.string->length, b->k.key->u.string->length))))
 		return cmp;
 
-	return CMP(a->key->string->length, b->key->string->length);
+	return CMP(a->k.key->u.string->length, b->k.key->u.string->length);
 } /* object_cmp() */
 
-LLRB_GENERATE(object, node, rbe, object_cmp)
+LLRB_GENERATE(object, node, e.rbe, object_cmp)
 
 
 NOTUSED static const char *value_strtype(enum json_values type) {
@@ -819,16 +819,16 @@ static int value_init(struct json_value *V, enum json_values type, struct token 
 	switch (type) {
 	case JSON_V_STRING:
 		if (T) {
-			string_move(&V->string, &T->string);
+			string_move(&V->u.string, &T->u.string);
 		} else {
-			string_init(&V->string);
+			string_init(&V->u.string);
 		}
 		break;
 	case JSON_V_NUMBER:
-		V->number = (T)? T->number : 0.0;
+		V->u.number = (T)? T->u.number : 0.0;
 		break;
 	case JSON_V_BOOLEAN:
-		V->boolean = (T)? T->boolean : 0;
+		V->u.boolean = (T)? T->u.boolean : 0;
 		break;
 	default:
 		break;
@@ -858,12 +858,12 @@ static int array_push(struct json_value *A, struct json_value *V) {
 	if (!(N = make(sizeof *N, &error)))
 		return error;
 
-	N->index = A->array.count++;
+	N->k.index = A->u.array.count++;
 	N->value = V;
 	N->parent = A;
 	V->node = N;
 
-	LLRB_INSERT(array, &A->array.nodes, N);
+	LLRB_INSERT(array, &A->u.array.nodes, N);
 
 	return 0;
 } /* array_push() */
@@ -874,20 +874,20 @@ static int array_insert(struct json_value *A, int index, struct json_value *V) {
 	int error;
 
 	if (index < 0)
-		index = A->array.count - index;
+		index = A->u.array.count - index;
 
-	if (index < 0 || index >= A->array.count)
+	if (index < 0 || index >= A->u.array.count)
 		return array_push(A, V);
 
 	if (!(N = make(sizeof *N, &error)))
 		return error;
 
-	N->index = index;
+	N->k.index = index;
 	N->value = V;
 	N->parent = A;
 	V->node = N;
 
-	if (!(prev = LLRB_INSERT(array, &A->array.nodes, N)))
+	if (!(prev = LLRB_INSERT(array, &A->u.array.nodes, N)))
 		return 0;
 
 	free(N);
@@ -905,15 +905,15 @@ static struct json_value *array_index(struct json_value *A, int index) {
 	struct node node, *result;
 
 	if (index < 0) {
-		index = A->array.count - index;
+		index = A->u.array.count - index;
 
 		if (index < 0)
 			return NULL;
 	}
 
-	node.index = index;
+	node.k.index = index;
 
-	if ((result = LLRB_FIND(array, &A->array.nodes, &node)))
+	if ((result = LLRB_FIND(array, &A->u.array.nodes, &node)))
 		return result->value;
 
 	return NULL;
@@ -927,23 +927,23 @@ static int object_insert(struct json_value *O, struct json_value *K, struct json
 	if (!(N = make(sizeof *N, &error)))
 		return error;
 
-	N->key = K;
+	N->k.key = K;
 	N->value = V;
 	N->parent = O;
 	K->node = N;
 	V->node = N;
 
-	O->object.count++;
+	O->u.object.count++;
 
-	if (!(prev = LLRB_INSERT(object, &O->object.nodes, N)))
+	if (!(prev = LLRB_INSERT(object, &O->u.object.nodes, N)))
 		return 0;
 
 	free(N);
 
-	value_close(prev->key, 0);
+	value_close(prev->k.key, 0);
 	value_close(prev->value, 0);
 
-	prev->key = K;
+	prev->k.key = K;
 	prev->value = V;
 	K->node = prev;
 	V->node = prev;
@@ -957,10 +957,10 @@ static struct json_value *object_search(struct json_value *O, const void *name, 
 	struct node node, *result;
 
 	key.type = JSON_V_STRING;
-	key.string = string_fake(name, len);
-	node.key = &key;
+	key.u.string = string_fake(name, len);
+	node.k.key = &key;
 
-	if ((result = LLRB_FIND(object, &O->object.nodes, &node)))
+	if ((result = LLRB_FIND(object, &O->u.object.nodes, &node)))
 		return result->value;
 
 	return NULL;
@@ -970,18 +970,18 @@ static struct json_value *object_search(struct json_value *O, const void *name, 
 CIRCLEQ_HEAD(orphans, node);
 
 static void array_remove(struct json_value *V, struct node *N, struct orphans *indices) {
-	LLRB_REMOVE(array, &V->array.nodes, N);
+	LLRB_REMOVE(array, &V->u.array.nodes, N);
 	N->parent = 0;
 
-	CIRCLEQ_INSERT_TAIL(indices, N, cqe);
+	CIRCLEQ_INSERT_TAIL(indices, N, e.cqe);
 } /* array_remove() */
 
 
 static void array_clear(struct json_value *V, struct orphans *indices) {
 	struct node *N, *nxt;
 
-	for (N = LLRB_MIN(array, &V->array.nodes); N; N = nxt) {
-		nxt = LLRB_NEXT(array, &V->array.nodes, N);
+	for (N = LLRB_MIN(array, &V->u.array.nodes); N; N = nxt) {
+		nxt = LLRB_NEXT(array, &V->u.array.nodes, N);
 
 		array_remove(V, N, indices);
 	}
@@ -989,20 +989,20 @@ static void array_clear(struct json_value *V, struct orphans *indices) {
 
 
 static void object_remove(struct json_value *V, struct node *N, struct orphans *keys) {
-	LLRB_REMOVE(object, &V->object.nodes, N);
+	LLRB_REMOVE(object, &V->u.object.nodes, N);
 	N->parent = 0;
 
-	V->object.count--;
+	V->u.object.count--;
 
-	CIRCLEQ_INSERT_TAIL(keys, N, cqe);
+	CIRCLEQ_INSERT_TAIL(keys, N, e.cqe);
 } /* object_remove() */
 
 
 static void object_clear(struct json_value *V, struct orphans *keys) {
 	struct node *N, *nxt;
 
-	for (N = LLRB_MIN(object, &V->object.nodes); N; N = nxt) {
-		nxt = LLRB_NEXT(object, &V->array.nodes, N);
+	for (N = LLRB_MIN(object, &V->u.object.nodes); N; N = nxt) {
+		nxt = LLRB_NEXT(object, &V->u.array.nodes, N);
 
 		object_remove(V, N, keys);
 	}
@@ -1018,13 +1018,13 @@ static void value_clear(struct json_value *V, struct orphans *indices, struct or
 		object_clear(V, keys);
 		break;
 	case JSON_V_STRING:
-		string_reset(&V->string);
+		string_reset(&V->u.string);
 		break;
 	case JSON_V_BOOLEAN:
-		V->boolean = 0;
+		V->u.boolean = 0;
 		break;
 	case JSON_V_NUMBER:
-		V->number = 0.0;
+		V->u.number = 0.0;
 		break;
 	default:
 		break;
@@ -1044,7 +1044,7 @@ static void value_destroy(struct json_value *V, struct orphans *indices, struct 
 	value_clear(V, indices, keys);
 
 	if (V->type == JSON_V_STRING)
-		string_destroy(&V->string);
+		string_destroy(&V->u.string);
 } /* value_destroy() */
 
 
@@ -1054,7 +1054,7 @@ static void orphans_free(struct orphans *indices, struct orphans *keys) {
 	do {
 		while (!CIRCLEQ_EMPTY(indices)) {
 			N = CIRCLEQ_FIRST(indices);
-			CIRCLEQ_REMOVE(indices, N, cqe);
+			CIRCLEQ_REMOVE(indices, N, e.cqe);
 
 			value_destroy(N->value, indices, keys);
 			free(N->value);
@@ -1063,10 +1063,10 @@ static void orphans_free(struct orphans *indices, struct orphans *keys) {
 
 		while (!CIRCLEQ_EMPTY(keys)) {
 			N = CIRCLEQ_FIRST(keys);
-			CIRCLEQ_REMOVE(keys, N, cqe);
+			CIRCLEQ_REMOVE(keys, N, e.cqe);
 
-			value_destroy(N->key, indices, keys);
-			free(N->key);
+			value_destroy(N->k.key, indices, keys);
+			free(N->k.key);
 
 			value_destroy(N->value, indices, keys);
 			free(N->value);
@@ -1104,7 +1104,7 @@ static _Bool value_issimple(struct json_value *V) {
 
 
 static _Bool value_iskey(struct json_value *V) {
-	return (V->node && V->node->parent->type == JSON_V_OBJECT && V->node->key == V);
+	return (V->node && V->node->parent->type == JSON_V_OBJECT && V->node->k.key == V);
 } /* value_iskey() */
 
 
@@ -1125,7 +1125,7 @@ static int value_convert(struct json_value *V, enum json_values type) {
 	if (value_iskey(V))
 		return JSON_EASSERT;
 
-	R = V->root;
+	R = V->r.root;
 	N = V->node;
 
 	CIRCLEQ_INIT(&indices);
@@ -1137,33 +1137,33 @@ static int value_convert(struct json_value *V, enum json_values type) {
 	error = value_init(V, type, NULL);
 
 	V->node = N;
-	V->root = R;
+	V->r.root = R;
 
 	return error;
 } /* value_convert() */
 
 
 static double value_number(struct json_value *V) {
-	return (V && V->type == JSON_V_NUMBER)? V->number : 0.0;
+	return (V && V->type == JSON_V_NUMBER)? V->u.number : 0.0;
 } /* value_number() */
 
 
 static const char *value_string(struct json_value *V) {
-	return (V && V->type == JSON_V_STRING)? V->string->text : "";
+	return (V && V->type == JSON_V_STRING)? V->u.string->text : "";
 } /* value_string() */
 
 
 static double value_length(struct json_value *V) {
-	return (V && V->type == JSON_V_STRING)? V->string->length : 0;
+	return (V && V->type == JSON_V_STRING)? V->u.string->length : 0;
 } /* value_length() */
 
 
 static double value_count(struct json_value *V) {
 	switch ((V)? V->type : JSON_V_NULL) {
 	case JSON_V_ARRAY:
-		return V->array.count;
+		return V->u.array.count;
 	case JSON_V_OBJECT:
-		return V->object.count;
+		return V->u.object.count;
 	default:
 		return 0;
 	}
@@ -1175,15 +1175,15 @@ static _Bool value_boolean(struct json_value *V) {
 		return 0;
 
 	if (V->type == JSON_V_BOOLEAN)
-		return V->boolean;
+		return V->u.boolean;
 
 	switch (V->type) {
 	case JSON_V_NUMBER:
-		return isnormal(V->number);
+		return isnormal(V->u.number);
 	case JSON_V_ARRAY:
-		return !!V->array.count;
+		return !!V->u.array.count;
 	case JSON_V_OBJECT:
-		return !!V->object.count;
+		return !!V->u.object.count;
 	default:
 		return 0;
 	} /* switch() */
@@ -1227,11 +1227,11 @@ static struct json_value *value_descend(struct json_value *V) {
 	struct node *N;
 
 	if (V->type == JSON_V_ARRAY) {
-		if ((N = LLRB_MIN(array, &V->array.nodes)))
+		if ((N = LLRB_MIN(array, &V->u.array.nodes)))
 			return N->value;
 	} else if (V->type == JSON_V_OBJECT) {
-		if ((N = LLRB_MIN(object, &V->object.nodes)))
-			return N->key;
+		if ((N = LLRB_MIN(object, &V->u.object.nodes)))
+			return N->k.key;
 	}
 
 	return 0;
@@ -1240,9 +1240,9 @@ static struct json_value *value_descend(struct json_value *V) {
 
 static struct node *node_next(struct node *N) {
 	if (N->parent->type == JSON_V_ARRAY)
-		return LLRB_NEXT(array, &N->parent->array.nodes, N);
+		return LLRB_NEXT(array, &N->parent->u.array.nodes, N);
 	else
-		return LLRB_NEXT(object, &N->parent->object.nodes, N);
+		return LLRB_NEXT(object, &N->parent->u.object.nodes, N);
 } /* node_next() */
 
 
@@ -1253,7 +1253,7 @@ static struct json_value *value_adjacent(struct json_value *V) {
 		if (N->parent->type == JSON_V_ARRAY)
 			return N->value;
 		else
-			return N->key;
+			return N->k.key;
 	}
 
 	return 0;
@@ -1385,18 +1385,18 @@ static size_t print_simple(struct printer *P, void *dst, size_t lim, struct json
 
 		goto literal;
 	case JSON_V_STRING:
-		P->buffer.p = V->string->text;
-		P->buffer.pe = &V->string->text[V->string->length];
+		P->buffer.p = V->u.string->text;
+		P->buffer.pe = &V->u.string->text[V->u.string->length];
 
 		goto string;
 	case JSON_V_NUMBER: {
 		double i;
 		int count;
 
-		if (0.0 == modf(V->number, &i))
+		if (0.0 == modf(V->u.number, &i))
 			count = snprintf(P->literal, sizeof P->literal, "%lld", (long long)i);
 		else
-			count = snprintf(P->literal, sizeof P->literal, "%f", V->number);
+			count = snprintf(P->literal, sizeof P->literal, "%f", V->u.number);
 
 		if (count == -1) {
 			P->error = errno;
@@ -1414,7 +1414,7 @@ static size_t print_simple(struct printer *P, void *dst, size_t lim, struct json
 		goto literal;
 	}
 	case JSON_V_BOOLEAN: {
-		size_t count = strlcpy(P->literal, ((V->boolean)? "true" : "false"), sizeof P->literal);
+		size_t count = strlcpy(P->literal, ((V->u.boolean)? "true" : "false"), sizeof P->literal);
 
 		P->buffer.p = P->literal;
 		P->buffer.pe = &P->literal[count];
@@ -1642,21 +1642,21 @@ static struct json_value *tovalue(struct token *T, int *error) {
 } while (0)
 
 #define POPSTACK() do { \
-	void *state = P->root->state; \
+	void *state = P->root->r.state; \
 	if (P->root->node) \
 		P->root = P->root->node->parent; \
 	goto *state; \
 } while (0)
 
 #define PUSHARRAY(V) do { \
-	(V)->state = &&XPASTE(L, __LINE__); \
+	(V)->r.state = &&XPASTE(L, __LINE__); \
 	P->root = V; \
 	goto array; \
 	XPASTE(L, __LINE__): (void)0; \
 } while (0)
 
 #define PUSHOBJECT(V) do { \
-	(V)->state = &&XPASTE(L, __LINE__); \
+	(V)->r.state = &&XPASTE(L, __LINE__); \
 	P->root = V; \
 	goto object; \
 	XPASTE(L, __LINE__): (void)0; \
@@ -1704,14 +1704,14 @@ start:
 		if (!(P->root = value_open(JSON_V_ARRAY, T, &error)))
 			STOP(error);
 
-		P->root->state = &&stop;
+		P->root->r.state = &&stop;
 
 		goto array;
 	case T_BEGIN_OBJECT:
 		if (!(P->root = value_open(JSON_V_OBJECT, T, &error)))
 			STOP(error);
 
-		P->root->state = &&stop;
+		P->root->r.state = &&stop;
 
 		goto object;
 	default:
@@ -2128,7 +2128,7 @@ static int json_v_search_(struct json_value **V, struct json *J NOTUSED, struct 
 	if (!(K = value_open(JSON_V_STRING, NULL, &error)))
 		goto error;
 
-	if ((error = string_cats(&K->string, name, len)))
+	if ((error = string_cats(&K->u.string, name, len)))
 		goto error;
 
 	if (!(*V = value_open(JSON_V_NULL, NULL, &error)))
@@ -2266,7 +2266,7 @@ int json_v_setnumber(struct json *J, struct json_value *V, double number) {
 	if ((error = value_convert(V, JSON_V_NUMBER)))
 		return json_throw(J, error);
 
-	V->number = number;
+	V->u.number = number;
 
 	return 0;
 } /* json_v_setnumber() */
@@ -2278,9 +2278,9 @@ int json_v_setlstring(struct json *J, struct json_value *V, const void *sp, size
 	if ((error = value_convert(V, JSON_V_STRING)))
 		return json_throw(J, error);
 
-	string_reset(&V->string);
+	string_reset(&V->u.string);
 
-	return json_ifthrow(J, string_cats(&V->string, sp, len));
+	return json_ifthrow(J, string_cats(&V->u.string, sp, len));
 } /* json_v_setlstring() */
 
 
@@ -2295,7 +2295,7 @@ int json_v_setboolean(struct json *J, struct json_value *V, _Bool boolean) {
 	if ((error = value_convert(V, JSON_V_BOOLEAN)))
 		return json_throw(J, error);
 
-	V->boolean = boolean;
+	V->u.boolean = boolean;
 
 	return 0;
 } /* json_v_setboolean() */
@@ -2521,7 +2521,7 @@ int json_push(struct json *J, const char *fmt, ...) {
 	if ((error = path_exec(J, &path, JSON_M_AUTOVIV|JSON_M_CONVERT)))
 		return json_throw(J, error);
 
-	path.value->root = J->root;
+	path.value->r.root = J->root;
 	J->root = path.value;
 
 	return 0;
@@ -2531,9 +2531,9 @@ int json_push(struct json *J, const char *fmt, ...) {
 void json_pop(struct json *J) {
 	struct json_value *oroot;
 
-	if ((oroot = J->root) && oroot->root) {
-		J->root = oroot->root;
-		oroot->root = NULL;
+	if ((oroot = J->root) && oroot->r.root) {
+		J->root = oroot->r.root;
+		oroot->r.root = NULL;
 	}
 } /* json_pop() */
 
@@ -2541,9 +2541,9 @@ void json_pop(struct json *J) {
 void json_popall(struct json *J) {
 	struct json_value *oroot;
 
-	while ((oroot = J->root) && oroot->root) {
-		J->root = oroot->root;
-		oroot->root = NULL;
+	while ((oroot = J->root) && oroot->r.root) {
+		J->root = oroot->r.root;
+		oroot->r.root = NULL;
 	}
 } /* json_popall() */
 
@@ -3102,13 +3102,13 @@ static int lex_main(const char *file) {
 	if (fp != stdin)
 		fclose(fp);
 
-	CIRCLEQ_FOREACH(T, &L.tokens, cqe) {
+	CIRCLEQ_FOREACH(T, &L.tokens, e.cqe) {
 		switch (T->type) {
 		case T_STRING:
-			fprintf(stdout, "%s: %.*s\n", lex_strtype(T->type), (int)T->string->length, T->string->text);
+			fprintf(stdout, "%s: %.*s\n", lex_strtype(T->type), (int)T->u.string->length, T->u.string->text);
 			break;
 		case T_NUMBER:
-			fprintf(stdout, "%s: %f\n", lex_strtype(T->type), T->number);
+			fprintf(stdout, "%s: %f\n", lex_strtype(T->type), T->u.number);
 			break;
 		default:
 			fprintf(stdout, "%s\n", lex_strtype(T->type));
