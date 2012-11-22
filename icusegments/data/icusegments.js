@@ -6,7 +6,7 @@ var isBase = "./icusegments";
 var ajaxTimeout = 120000; // 2 minutes
 
 var gSettings  = { dLocale: 'en_US',
-					bLocale: 'en_US',
+					bLocale: 'en',
 					type: -1 };
 var gGlobals = {
 	brks: {},
@@ -74,6 +74,7 @@ function getJsonPost(stuff) {
 var initChangeBox = false;
 
 function handleRequestUpdate() {
+    window.location.hash = '#'+gSettings.type + '/' + gSettings.bLocale
 	// TODO: queues/mutex/timeout!
 	console.log("Updating.. " + JSON.stringify(gSettings));
 	try {
@@ -188,7 +189,30 @@ function handleLocale(loc) {
 function setLocaleMenu(brks) {
 	var menu = dojo.byId('localeList');
 	removeAllChildNodes(menu);
-	var results = setMenuFrom(menu, brks );
+	
+    for(k in brks) {
+        if(k.substring(k.length-4,k.length) == ("_ULI")) {
+            parentK = k.substring(0,k.length-4);
+            if(parentK.substring(parentK.length-1,parentK.length)==("_")) {
+                parentK = k.substring(0,k.length-5);
+            }
+            var subGroup = document.createElement('optgroup');
+            subGroup.label = brks[k];
+            subStuff = {};
+            subStuff[k] = brks[k];
+            subStuff[parentK] = brks[parentK]+' (non ULI)';
+            var results = setMenuFrom( subGroup,  subStuff  );
+            menu.appendChild(subGroup);
+        }
+    }
+    
+    var allLocs = document.createElement('optgroup');
+    allLocs.label = 'All';
+
+    var results = setMenuFrom(allLocs, brks);
+    menu.appendChild(allLocs);
+    
+    
 	listenFor(menu,"change", function() { handleLocale(menu.value); });
 	menu.value = gSettings.bLocale;
 	

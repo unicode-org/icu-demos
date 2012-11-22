@@ -5,18 +5,70 @@
 #include <unicode/ustdio.h>
 #include "json.hxx"
 
-#define SRCDIR "data/icusegments-ulijson"
+#include "demo_config.h"  /* for HAVE_SYS_TYPES */
 
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#include <sys/dir.h>
+#include <dirent.h>
+#include <unicode/stringpiece.h>
+#define USE_DIRENT
+#endif
+
+#define SRCDIR "data/icusegments-ulijson"
+#define JSON_SUFFIX ".js"
+#define JSON_SUFFIXLEN 3
 
 static UBool debug = FALSE;
-
+static UBool debug2 = FALSE;
 U_CAPI void ulibrk_install(UErrorCode &status) {
     if(U_FAILURE(status)) return;
     
-    LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale::getEnglish(),SRCDIR "/" "en" ".js", status));
     
-    URegistryKey k = BreakIterator::registerInstance(aBreak.orphan(), Locale("en","","ULI",""), UBRK_SENTENCE, status);
+#ifdef USE_DIRENT
+    // TODO: store key in a map
+    DIR *dir = opendir(SRCDIR);
+    if(!dir) {
+        status = U_MISSING_RESOURCE_ERROR;
+        if(debug) fprintf(stderr, "Could not opendir %s\n", SRCDIR);
+    } else {
+        struct dirent *ent;
+        while((ent=readdir(dir))!=NULL) {
+            if(!strncmp(ent->d_name+ent->d_namlen-JSON_SUFFIXLEN,JSON_SUFFIX,JSON_SUFFIXLEN)) {
+                char locname[200];
+                char pathname[200];
+                strcpy(pathname,SRCDIR "/");
+                strcat(pathname,ent->d_name);
 
+                strncpy(locname,ent->d_name,ent->d_namlen-JSON_SUFFIXLEN);
+                locname[ent->d_namlen-JSON_SUFFIXLEN]=0;
+                Locale loc(locname);
+                if(debug) fprintf(stderr, "About to create loc [%s] from path [%s]\n", loc.getName(), pathname);
+                LocalPointer<ULISentenceBreakIterator>
+                    aBreak(new ULISentenceBreakIterator(loc,
+                                                        pathname, status));
+                if(!*(loc.getCountry())) {
+                    strcat(locname,"_");
+                }
+                strcat(locname,"_ULI");
+                Locale loc2(locname);
+                URegistryKey k = BreakIterator::registerInstance(aBreak.orphan(), loc2, UBRK_SENTENCE, status);
+                if(debug) fprintf(stderr, "Registered: %s\n", loc2.getName());
+            }
+        }
+        closedir(dir);
+    }
+#else
+    /* non dirent - for testing. */
+    {
+        LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale::getEnglish(),SRCDIR "/" "en" ".js", status));
+        URegistryKey k = BreakIterator::registerInstance(aBreak.orphan(), Locale("en","","ULI",""), UBRK_SENTENCE, status);
+    }
+    {
+        LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale("de"),SRCDIR "/" "de" ".js", status));
+        URegistryKey k = BreakIterator::registerInstance(aBreak.orphan(), Locale("de","","ULI",""), UBRK_SENTENCE, status);
+    }
+ #endif
     // fprintf(stderr, "Installed w/ registrykey %x\n", (long)k);
     
 }
@@ -51,7 +103,7 @@ void ULISentenceBreakIterator::build(UErrorCode &status) {
     LocalJSONPointer j(json_open(0, &error));
 
     if(!error) {
-        error = json_loadpath(j.getAlias(), fJSONSource);
+        error = json_loadpath(j.getAlias(), fJSONSource.c_str());
     }
     
     if(!error) {
@@ -65,10 +117,11 @@ void ULISentenceBreakIterator::build(UErrorCode &status) {
             
             ustr.reverse();
             builder->add(ustr,1,status);
-            if(false) u_printf("Added: /%S/\n", ustr.getTerminatedBuffer());
+            //if(debug) u_printf("Added: /%S/\n", ustr.getTerminatedBuffer());
         }
+        if(debug) u_printf(" %s has %d abbrs.\n", fJSONSource.c_str(), subCount);
     } else {
-        if(debug) fprintf(stderr, "Error %s loading json from %s\n", json_strerror(error), fJSONSource);
+        if(debug) fprintf(stderr, "Error %s loading json from %s\n", json_strerror(error), fJSONSource.c_str());
     }
     
     fBackwardsTrie.adoptInstead(builder->build(USTRINGTRIE_BUILD_FAST, status));
@@ -87,14 +140,14 @@ int32_t ULISentenceBreakIterator::next() {
         UChar32 uch;
         
         if((uch=utext_previous32(fText.getAlias()))==(UChar32)0x0020) {  // TODO: skip a class of chars here??
-            if(debug) u_printf("/%C/ ya skip\n", (UChar)uch);
+            if(debug2) u_printf("/%C/ ya skip\n", (UChar)uch);
             UStringTrieResult r = USTRINGTRIE_INTERMEDIATE_VALUE;
             while((uch=utext_previous32(fText.getAlias()))!=U_SENTINEL  &&   // more to consume backwards and..
                   USTRINGTRIE_HAS_NEXT(r=fBackwardsTrie->nextForCodePoint(uch))) // more in the trie
-                if(debug) u_printf("/%C/ cont?%d\n", (UChar)uch, r);
+                if(debug2) u_printf("/%C/ cont?%d\n", (UChar)uch, r);
             
             if(USTRINGTRIE_MATCHES(r)) {  // matched - so,
-                if(debug) u_printf("/%C/ matched, skip..%d\n", (UChar)uch, r);
+                if(debug2) u_printf("/%C/ matched, skip..%d\n", (UChar)uch, r);
                 n = fDelegate->next(); // skip this one.
                 if(n==UBRK_DONE) return n;
 
@@ -103,7 +156,7 @@ int32_t ULISentenceBreakIterator::next() {
                 return n; // No match - so exit. Not an exception.
             }
         } else {
-            if(debug) u_printf("Not skipping for uch /%C/\n", (UChar)uch);
+            if(debug2) u_printf("Not skipping for uch /%C/\n", (UChar)uch);
             return n; // No leading 'whitespace', so exit.
         }
     } while(n != UBRK_DONE);
@@ -112,21 +165,7 @@ int32_t ULISentenceBreakIterator::next() {
 
 /// TEST
 
-U_CAPI void ulibrk_test(void) {
-    debug=TRUE;
-    
-    UErrorCode status = U_ZERO_ERROR;
-    u_printf("Test. status=%s\n", u_errorName(status));
-    ulibrk_install(status);
-    u_printf("ulibrk_install returns %s\n", u_errorName(status));
-    
-    //LocalPointer<BreakIterator> brk = BreakIterator::getInstance
-    UnicodeString ustr("For Mrs. Loomis, and young Mr. Loomis.","");
-    //ustr = UnicodeString("Mr. Weston Mr. Weston");
-    LocalPointer<BreakIterator> brk(BreakIterator::createSentenceInstance(Locale("en__ULI"),status));
-    brk->setText(ustr);
-    //LocalUBreakIteratorPointer brk(ubrk_open(UBRK_SENTENCE, "en__ULI", ustr.getTerminatedBuffer(), ustr.length(), &status));
-    u_printf("Opened, status=%s\n", u_errorName(status));
+static void prtbrks(BreakIterator* brk, UnicodeString &ustr) {
     u_printf("String = /%S/\n", ustr.getTerminatedBuffer());
     
     int32_t prev = 0;
@@ -136,5 +175,47 @@ U_CAPI void ulibrk_test(void) {
     }
     u_printf("%S$", ustr.tempSubString(prev,ustr.length()-prev).getTerminatedBuffer());
     u_printf("\n");
+}
+
+U_CAPI void ulibrk_test(void) {
+    debug=TRUE;
+    
+    UErrorCode status = U_ZERO_ERROR;
+    u_printf("Test. status=%s\n", u_errorName(status));
+    ulibrk_install(status);
+    u_printf("ulibrk_install returns %s\n", u_errorName(status));
+    
+    
+#if 1
+    {
+        u_printf("Testing English...\n");
+        UnicodeString ustr("For Mrs. Loomis, and young Mr. Loomis. Another sentence.","");
+        LocalPointer<BreakIterator> brk(BreakIterator::createSentenceInstance(Locale("en__ULI"),status));
+        brk->setText(ustr);
+        //LocalUBreakIteratorPointer brk(ubrk_open(UBRK_SENTENCE, "en__ULI", ustr.getTerminatedBuffer(), ustr.length(), &status));
+        u_printf("Opened, status=%s\n", u_errorName(status));
+        prtbrks(brk.getAlias(),ustr);
+    }
+    
+    {
+        u_printf("Testing 'German'...\n");
+        UnicodeString ustr("For Hrn. Loomis, und young Hr. Loomis. Another sentence.","");
+        LocalPointer<BreakIterator> brk(BreakIterator::createSentenceInstance(Locale("de__ULI"),status));
+        brk->setText(ustr);
+        u_printf("Opened, status=%s\n", u_errorName(status));
+        prtbrks(brk.getAlias(),ustr);
+    }
+#endif
+    {
+        u_printf("Testing 'Russian'...\n");
+        UChar str[2048];
+        u_unescape("Hello \\u043f\\u0440\\u043E\\u0444. Loomis. Another sentence.",str,2048);
+        UnicodeString ustr(str);
+        LocalPointer<BreakIterator> brk(BreakIterator::createSentenceInstance(Locale("ru__ULI"),status));
+        brk->setText(ustr);
+        u_printf("Opened, status=%s\n", u_errorName(status));
+        prtbrks(brk.getAlias(),ustr);
+    }
+    
     return;
 }

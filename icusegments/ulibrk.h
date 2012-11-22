@@ -5,6 +5,7 @@
 #include <unicode/brkiter.h>
 #include <unicode/localpointer.h>
 #include <unicode/ucharstrie.h>
+#include <string>
 
 U_CAPI void ulibrk_install(UErrorCode &status);
 U_CAPI void ulibrk_test(void);
@@ -20,7 +21,7 @@ private:
     LocalPointer<BreakIterator> fDelegate;
     LocalUTextPointer           fText;
     LocalPointer<UCharsTrie>    fBackwardsTrie;
-    const char *fJSONSource;
+    std::string                 fJSONSource;
     
     void                        build(UErrorCode& status);
 /* -- subclass interface -- */
