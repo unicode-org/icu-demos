@@ -37,7 +37,7 @@ ICULIBS := -L../apputil -lapputil $(LDFLAGS_ICUIO) $(ICULIBS)
 # Want to make sure the usort.h dependency is not on the installed version .. 
 #CPPFLAGS  += -I../locexp/util
 
-OBJECTS = $(subdir).o  libjson/json.o
+OBJECTS = $(subdir).o  libjson/json.o ulibrk.o
 CPPFLAGS += -I./libjson
 
 
@@ -75,7 +75,8 @@ clean-local:
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
 
-check-local:
+check-local: $(TARGET)
+	PATH_INFO=/ulitest ./$(TARGET)
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \

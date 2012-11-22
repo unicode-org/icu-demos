@@ -15,6 +15,18 @@ var gGlobals = {
 
 // COMMON
 
+// ?!!!!
+if(!Object.keys) {
+	Object.keys = function(x) {
+		var r = [];
+		for (j in x) {
+			r.push(j);
+		}
+		return r;
+	};
+}
+
+
 function removeAllChildNodes(td) {
 	if(td==null) return;
 	while(td.firstChild) {
@@ -151,7 +163,13 @@ function addChooseItem(menu) {
 
 function setMenuFrom(menu, brks, fn) {
 	var items = {};
-	for(k in brks) {
+    
+    for(k in brks) {
+    //    items[brks[k]] = k
+    //}
+    //
+	//for(qq in Object.keys(items).sort()) {
+    //    k = items[qq];
 		var e = document.createElement('option');
 		e.value = k;
 		e.appendChild(document.createTextNode(brks[k]));
@@ -204,7 +222,10 @@ dojo.ready(function() {
 			load: function(json) {
 				try {
 				
-					dojo.byId("icu_version").innerHTML="ICU Version: " + json.icu.version;
+            dojo.byId("icu_version").innerHTML="ICU Version: " + json.icu.version;
+            if(json.icu.ulistatus && json.icu.ulistatus != 'U_ZERO_ERROR') {
+                 dojo.byId("icu_version").innerHTML="ICU Version: " + json.icu.version + " - ULI breaks loaded with: " + json.icu.ulistatus;
+            }
 					
 					gGlobals.brks = json.brks;
 					setLocaleMenu(json.brks);

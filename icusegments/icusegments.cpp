@@ -19,11 +19,11 @@
 
 #include "demo_settings.h"
 #include "demoutil.h"
-typedef int _Bool;
 
-extern "C" {
-#include "json.h"
-}
+#include "ulibrk.h"
+
+
+#include "json.hxx"
 
 static const char *htmlHeader=
   "Content-Type: text/html; charset=utf-8\n"
@@ -61,9 +61,13 @@ const char *statics[] = {
 };
 
 static void doJSON(const char *pi);
+UErrorCode uliStatus = U_ZERO_ERROR;
 
 int main(void)
 {
+    
+  ulibrk_install(uliStatus);
+    
   const char *rm = getenv("REQUEST_METHOD");
   // static files
   const char *pi = getenv("PATH_INFO");
@@ -71,10 +75,15 @@ int main(void)
   if(!rm) rm = "GET";
 
   if(!strcmp(rm,"GET") && pi && *pi) { /* static */
-    if(serveStaticFile(statics, pi)) return 0;
-    printf("Status: 404 Not Found\nContent-type: text/plain\n\nError: no file at this location.\n");
-    return 0;
-
+    if(!strcmp(pi, "/ulitest")) {
+        printf("Content-type: text/plain\n\n");
+        ulibrk_test();
+        return 0;
+    } else {
+        if(serveStaticFile(statics, pi)) return 0;
+        printf("Status: 404 Not Found\nContent-type: text/plain\n\nError: no file at this location.\n");
+        return 0;
+    }
   } else if(strcmp(rm,"POST")) { /* homepage */
     //const char *script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
@@ -161,16 +170,14 @@ static void doJSON(const char *pi) {
   // now, the reply
   if(!strcmp(pi,"/version")) {
     json_setstring(j, U_ICU_VERSION, "icu.version");
-
+    json_setstring(j, u_errorName(uliStatus), "icu.ulistatus");
     // put a list of all break iterators available
-    int32_t a = ubrk_countAvailable();
-    for(int32_t i = 0;i<a;i++) {
+    //int32_t a = ubrk_countAvailable();
+    LocalPointer<StringEnumeration> availLocs(BreakIterator::getAvailableLocales());
+    const char *s;
+    for(int32_t i=0; (s=availLocs->next(NULL, status)); i++) {
       char tmp[200];
-      const char *ss = ubrk_getAvailable(i);
-
-      // now, get the real one
-      const char *s = ss;
-
+      
       sprintf(tmp, "brks.%s", s);
       UChar tmp2[2048] = {(UChar)0x0};
       uloc_getDisplayName(s, NULL, tmp2,2048,&status);
@@ -201,21 +208,47 @@ static void doJSON(const char *pi) {
       UnicodeString ustr(str, "utf-8");
       //LocalUTextPointer utxt(utext_openUTF8(NULL,str, -1, &status));
       
-      //LocalUBreakIteratorPointer brk(ubrk_open((UBreakIteratorType)type, bLocale, NULL, 0, &status));
+      json_setarray(j, "breaks.idx");
+      int n = 0;
+      int32_t next;
 
+      //LocalUBreakIteratorPointer brk(ubrk_open((UBreakIteratorType)type, bLocale, NULL, 0, &status));
+#if 1
+      // Argh. Have to use C++.  Filed #9764
+      LocalPointer<BreakIterator> brk;
+      Locale bLocId(bLocale);
+      // pointless duplication of ubrk.cpp
+      switch(type) {
+          case UBRK_CHARACTER:
+              brk.adoptInstead(BreakIterator::createCharacterInstance(bLocId,status));
+              break;
+          case UBRK_WORD:
+              brk.adoptInstead(BreakIterator::createWordInstance(bLocId,status));
+              break;
+          case UBRK_SENTENCE:
+              brk.adoptInstead(BreakIterator::createSentenceInstance(bLocId,status));
+              break;
+          case UBRK_LINE:
+              brk.adoptInstead(BreakIterator::createLineInstance(bLocId,status));
+              break;
+      }
+      brk->setText(ustr);
+      json_setnumber(j, brk->current(), "breaks.idx[#]", n++);
+      while((next=brk->next())!=UBRK_DONE) {
+          json_setnumber(j, next, "breaks.idx[#]", n++); // "next" would give us the UChar index.
+      }
+#else
       // Text comes in as UTF-8 - however, JavaScript will operate in UTF-16 (UCS-2?) chunks. So, go via UnicodeString
       LocalUBreakIteratorPointer brk(ubrk_open((UBreakIteratorType)type, bLocale, ustr.getTerminatedBuffer(), ustr.length(), &status));
       //ubrk_setUText(brk.getAlias(), utxt.getAlias(), &status);
 
-      json_setarray(j, "breaks.idx");
-      int n = 0;
       json_setnumber(j, ubrk_current(brk.getAlias()), "breaks.idx[#]", n++);
       //json_setnumber(j, utext_getNativeIndex(utxt.getAlias()), "breaks.idx[#]", n++); // ubrk_current would give us the UChar index.
-      int32_t next;
       while((next=ubrk_next(brk.getAlias()))!=UBRK_DONE) {
           json_setnumber(j, next, "breaks.idx[#]", n++); // "next" would give us the UChar index.
           //json_setnumber(j, utext_getNativeIndex(utxt.getAlias()), "breaks.idx[#]", n++); // "next" would give us the UChar index.
       }
+#endif
       
       //json_setnumber(j, utext_nativeLength(utxt.getAlias()), "debug.nativeLength");
       json_setnumber(j, strlen(str), "debug.strlen");

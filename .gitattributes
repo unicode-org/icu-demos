@@ -170,6 +170,7 @@ icusegments/data/icusegments-dojo.js -text
 icusegments/data/icusegments-header.html svneol=native#text/html
 icusegments/data/icusegments.css svneol=native#text/css
 icusegments/data/icusegments.js -text
+icusegments/json.hxx -text
 idnbrowser/idnbrowser.vcxproj -text
 idnbrowser/idnbrowser.vcxproj.filters -text
 /install-sh -text
