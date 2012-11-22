@@ -57,7 +57,10 @@ DATANAME=data
 DATADIR=./$(DATANAME)
 DATAINSTALL=$(INSTALL)
 
-install-target: all-local
+ULIDATA=$(DATANAME)/icusegments-ulijson
+ULIURL=http://unicode.org/repos/uli/trunk/abbrs/json
+
+install-target: all-local $(ULIDATA)
 	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/$(DATANAME)
 	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)
 	$(INSTALL) $(TARGET) $(BINDIR)/
@@ -75,7 +78,7 @@ clean-local:
 distclean-local: clean-local
 	rm -f Makefile $(DEPS)
 
-check-local: $(TARGET)
+check-local: $(TARGET) $(ULIDATA)
 	PATH_INFO=/ulitest ./$(TARGET)
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
@@ -96,6 +99,5 @@ tidy: $(TARGET)
 $(TARGET) : $(OBJECTS)
 	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
-
-
-
+$(ULIDATA):
+	svn co $(ULIURL) $(ULIDATA)/
