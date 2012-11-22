@@ -66,7 +66,6 @@ UErrorCode uliStatus = U_ZERO_ERROR;
 int main(void)
 {
     
-  ulibrk_install(uliStatus);
     
   const char *rm = getenv("REQUEST_METHOD");
   // static files
@@ -85,6 +84,7 @@ int main(void)
         return 0;
     }
   } else if(strcmp(rm,"POST")) { /* homepage */
+    ulibrk_install(uliStatus);
     //const char *script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
     if (FALSE || !printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "icusegments-header.html")) {

@@ -116,8 +116,9 @@ U_CAPI void ulibrk_test(void) {
     debug=TRUE;
     
     UErrorCode status = U_ZERO_ERROR;
-    
     u_printf("Test. status=%s\n", u_errorName(status));
+    ulibrk_install(status);
+    u_printf("ulibrk_install returns %s\n", u_errorName(status));
     
     //LocalPointer<BreakIterator> brk = BreakIterator::getInstance
     UnicodeString ustr("For Mrs. Loomis, and young Mr. Loomis.","");
