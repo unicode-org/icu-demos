@@ -47,7 +47,7 @@ void ULISentenceBreakIterator::build(UErrorCode &status) {
     builder->add(UnicodeString(".srM",""), 1, status);
 #endif
 
-    int error;
+    int error = 0;
     LocalJSONPointer j(json_open(0, &error));
 
     if(!error) {
@@ -122,7 +122,7 @@ U_CAPI void ulibrk_test(void) {
     
     //LocalPointer<BreakIterator> brk = BreakIterator::getInstance
     UnicodeString ustr("For Mrs. Loomis, and young Mr. Loomis.","");
-    ustr = UnicodeString("Mr. Weston Mr. Weston");
+    //ustr = UnicodeString("Mr. Weston Mr. Weston");
     LocalPointer<BreakIterator> brk(BreakIterator::createSentenceInstance(Locale("en__ULI"),status));
     brk->setText(ustr);
     //LocalUBreakIteratorPointer brk(ubrk_open(UBRK_SENTENCE, "en__ULI", ustr.getTerminatedBuffer(), ustr.length(), &status));
