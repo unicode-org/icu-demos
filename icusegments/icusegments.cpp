@@ -61,7 +61,7 @@ const char *statics[] = {
 };
 
 static void doJSON(const char *pi);
-UErrorCode uliStatus = U_ZERO_ERROR;
+UErrorCode uliStatus = U_BRK_INTERNAL_ERROR;
 
 int main(void)
 {
@@ -84,7 +84,6 @@ int main(void)
         return 0;
     }
   } else if(strcmp(rm,"POST")) { /* homepage */
-    ulibrk_install(uliStatus);
     //const char *script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
     if (FALSE || !printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "icusegments-header.html")) {
@@ -107,6 +106,8 @@ int main(void)
 
   } else {
     // POST.
+    uliStatus = U_ZERO_ERROR;
+    ulibrk_install(uliStatus);
     doJSON(pi);
   }
   
