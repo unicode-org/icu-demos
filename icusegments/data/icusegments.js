@@ -15,6 +15,10 @@ var gGlobals = {
 
 // COMMON
 
+var JSON = JSON || {};
+//console.log("JSON = " + JSON.toString());
+
+
 // ?!!!!
 if(!Object.keys) {
 	Object.keys = function(x) {
@@ -235,6 +239,18 @@ function setTypeMenu(brks) {
 }
 
 dojo.ready(function() {
+    // load JSON compatibility first
+    require(["dojo/json"], function(JSON2){
+	dojo.byId("status").innerHTML="Checking for missing JSON support";
+        if(!JSON.stringify) {
+	    dojo.byId("status").innerHTML="Fixing missing JSON support";
+            console.log("Installing compatibility JSON.stringify using dojo");
+            JSON.stringify = JSON2.stringify;
+        } else {
+	    dojo.byId("status").innerHTML="JSON OK..";
+        }
+
+        // rest of loading
 	dojo.byId("status").innerHTML="Fetching version:";
 	
 	var myPostData = {  };
@@ -273,4 +289,5 @@ dojo.ready(function() {
 		dojo.byId("status").innerHTML="Error requesting version: " + e.message;
 		console.log("Error requesting version: " + e.message);
 	}
+    });
 });
