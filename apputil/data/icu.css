@@ -1,3 +1,5 @@
+/* @override http://akka./srl-bin/icudemos/icu.css */
+
 /*
  * Default CSS style sheet for the ICU Open Source site
  * Copyright (C) 2005-2012, International Business Machines
@@ -209,6 +211,50 @@ table.rtable tr td {
 	background-color: #c0c0fd;
 	padding: 3px;
 }
+
+@media only screen {
+	#topbar {
+		background: #069 url(./lines-gradient.gif) repeat-y fixed;
+		padding-left:  100px;
+		padding-top:  0.25 em;
+		margin-top: 0;
+		margin-bottom: 0;
+		padding-bottom:  0.25 em;
+		color:  #fff;
+		left: 0;
+		position:  absolute;
+		width: 100%;
+		top: 0;
+		height: 50px;
+		vertical-align: bottom;
+		font-size: 2em;
+	}
+	#leftnav {
+		display:  inline-block;
+		background-color: #6699CC; white-space: nowrap;
+		position:  absolute;
+		left: 0;
+		width:  11.5em;
+		top: 50px;
+	}
+	#leftnav td, #leftnav p.relatedsite {
+		padding-left: 4px;
+    }
+	body {
+		padding-left:  12em !important;
+		padding-top:  50px !important;
+		margin-right: 1em !important;
+	}
+	
+	
+}
+
+/*
+  <td class='tlbox' valign="top" style="width: 1px; background-image: url(./icudemos/lines.gif); background-color: #006699; white-space: nowrap;"></td>
+  <td width="100" style="width: 100px" valign="top" class="fadedtop"><a href="#main"><img src="./icudemos/1x1.gif" border="0" width="100" height="1" alt="Skip to main content" /></a></td>
+  <td width="100%" style="background-color: #006699;"><h1 style="color: #FFFFFF">International Components                                                                                                                                    
+                for Unicode</h1></td>
+                */
 
 @media only print {
     #leftnav {

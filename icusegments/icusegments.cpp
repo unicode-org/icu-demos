@@ -102,6 +102,8 @@ int main(void)
       puts("<h1>Error: Could not load icusegments-body.html</h1>");
     }
 
+    puts(DEMO_END_CONTENT);
+    printHTMLFragment(NULL, NULL, DEMO_COMMON_FOOTER);
     puts(htmlFooter);
 
   } else {

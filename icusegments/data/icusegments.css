@@ -1,24 +1,40 @@
+/* @override http://akka./srl-bin/icusegments/icusegments.css */
+
 /*
  * Copyright (C) 2012 IBM Corporation and Others. All Rights Reserved.
  */
- 
- #output {
- 	padding:  1em;
- }
- 
-#output.change {
-	color:  #ddd;
+
+#output {
+	padding: 1em;
 }
 
-#output.changing {
+#output.change, #output2.change {
+	color: #ddd;
+}
+
+#output.changing, #output2.changing {
 	//background-color: #ddd;
 	opacity: 0.4;
 }
- 
- #output .brk {
- 	border-right:  1px solid red;
- }
- 
- #output.change .brk {
- 	border-right:  none !important;
- } 
+
+#output .brk {
+	border-right: 1px solid red;
+}
+
+#output.change .brk {
+	border-right: none !important;
+}
+
+#output2 {
+	display: block;
+	list-style-type: decimal;
+	padding-left: 1em;
+	padding-top:  1em;
+	margin-left:  1em;
+}
+
+#output2 li {
+	border-bottom-style: solid;
+	border-bottom-color: silver;
+}
+

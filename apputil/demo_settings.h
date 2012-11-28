@@ -31,9 +31,13 @@
 "<td width=\"150\" id=\"navigation\">\n" */
 #define DEMO_BEGIN_LEFT_NAV "<!-- DEMO_BEGIN_LEFT_NAV -->"
 
-#define DEMO_END_LEFT_NAV "</td>\n"
-#define DEMO_BEGIN_CONTENT "<td colspan=\"2\" valign=\"top\" style=\"padding-left: 5px; padding-right: 5px;\"><a name=\"main\"></a>\n"
+#define DEMO_END_LEFT_NAV "<!-- ending left nav ! -->"
+#define DEMO_BEGIN_CONTENT "<div id='main'>\n"
+#define DEMO_END_CONTENT "</div><!-- end main content -->\n"
+#if 0
+#define DEMO_BEGIN_CONTENT "<td id=\"maincontent\" colspan=\"2\" valign=\"top\" style=\"padding-left: 5px; padding-right: 5px;\"><a name=\"main\"></a>\n"
 #define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
+#endif
 
 #define ICU_URL "http://www.icu-project.org/"
 

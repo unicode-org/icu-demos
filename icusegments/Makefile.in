@@ -93,8 +93,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 # Run against HTMLTidy
 tidy: $(TARGET)
-	$(NBROWSEROPTS) $(INVOKE) ./$(TARGET) | tail +3 > nbrowser.html
-	tidy -utf8 -q $(subdir).html 2>&1 | sed -e "s%^nbrowser.html%"`pwd`"/$(subdir).html%g"
+	$(NBROWSEROPTS) $(INVOKE) ./$(TARGET) | tail +3 > $(subdir).html
+	tidy -utf8 -q $(subdir).html 2>&1 | sed -e "s%^$(subdir).html%"`pwd`"/$(subdir).html%g"
 
 $(TARGET) : $(OBJECTS)
 	$(LINK.cc) -o $@ $^ $(ICULIBS)
