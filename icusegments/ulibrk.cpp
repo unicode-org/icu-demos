@@ -15,13 +15,19 @@
 #define USE_DIRENT
 #endif
 
+#include <string.h>
+#include <strings.h>
+
 #define SRCDIR "data/icusegments-ulijson"
-#define JSON_SUFFIX ".js"
-#define JSON_SUFFIXLEN 3
+#define JSON_SUFFIX ".json"
+#define JSON_SUFFIXLEN 5
 
 static UBool debug = FALSE;
 static UBool debug2 = FALSE;
+
 U_CAPI void ulibrk_install(UErrorCode &status) {
+  if(debug) fprintf(stderr, "Installing ulibrk_install - err=%s\n", u_errorName(status));
+
     if(U_FAILURE(status)) return;
     
     
@@ -34,14 +40,14 @@ U_CAPI void ulibrk_install(UErrorCode &status) {
     } else {
         struct dirent *ent;
         while((ent=readdir(dir))!=NULL) {
-            if(!strncmp(ent->d_name+ent->d_namlen-JSON_SUFFIXLEN,JSON_SUFFIX,JSON_SUFFIXLEN)) {
+		int namlen = strlen(ent->d_name);
+            if(!strncmp(ent->d_name+namlen-JSON_SUFFIXLEN,JSON_SUFFIX,JSON_SUFFIXLEN)) {
                 char locname[200];
                 char pathname[200];
                 strcpy(pathname,SRCDIR "/");
                 strcat(pathname,ent->d_name);
-
-                strncpy(locname,ent->d_name,ent->d_namlen-JSON_SUFFIXLEN);
-                locname[ent->d_namlen-JSON_SUFFIXLEN]=0;
+                strncpy(locname,ent->d_name,namlen-JSON_SUFFIXLEN);
+                locname[namlen-JSON_SUFFIXLEN]=0;
                 Locale loc(locname);
                 if(debug) fprintf(stderr, "About to create loc [%s] from path [%s]\n", loc.getName(), pathname);
                 LocalPointer<ULISentenceBreakIterator>
@@ -61,11 +67,11 @@ U_CAPI void ulibrk_install(UErrorCode &status) {
 #else
     /* non dirent - for testing. */
     {
-        LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale::getEnglish(),SRCDIR "/" "en" ".js", status));
+        LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale::getEnglish(),SRCDIR "/" "en" JSON_SUFFIX, status));
         URegistryKey k = BreakIterator::registerInstance(aBreak.orphan(), Locale("en","","ULI",""), UBRK_SENTENCE, status);
     }
     {
-        LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale("de"),SRCDIR "/" "de" ".js", status));
+        LocalPointer<ULISentenceBreakIterator> aBreak(new ULISentenceBreakIterator(Locale("de"),SRCDIR "/" "de" JSON_SUFFIX, status));
         URegistryKey k = BreakIterator::registerInstance(aBreak.orphan(), Locale("de","","ULI",""), UBRK_SENTENCE, status);
     }
  #endif

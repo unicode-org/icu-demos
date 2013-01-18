@@ -83,7 +83,10 @@ icudemos/icudemos*
 icudemos/libicudemos*
 icudemos/release
 icusegments/Makefile
+icusegments/cgi.patch
+icusegments/data/icusegments-ulijson
 icusegments/icusegments
+icusegments/icusegments-ulijson
 icusegments/icusegments.exe
 icusegments/local.mk
 idnbrowser/*.d
