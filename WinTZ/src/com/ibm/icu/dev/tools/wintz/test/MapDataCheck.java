@@ -81,7 +81,7 @@ public class MapDataCheck {
             isOK = false;
             _pw.println("[ERROR] tzdata version mismatch - MapData: " + MapDataUtil.getTZDataVersion() + "/ICU: " + TimeZone.getTZDataVersion());
         }
-        if (WINTZREG.getTzVersionString().equals(MapDataUtil.getWINTZDataVersion())) {
+        if (!WINTZREG.getTzVersionString().equals(MapDataUtil.getWINTZDataVersion())) {
             isOK = false;
             _pw.println("[ERROR] Windows timezone version mismatch - MapData: " + MapDataUtil.getWINTZDataVersion() + "/Windows Registry Data: " + WINTZREG.getTzVersionString());
         }

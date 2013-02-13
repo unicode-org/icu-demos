@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2012f";
-    static final String WINTZDATA_VERSION = "7dc0101";
+    static final String TZDATA_VERSION = "2012j";
+    static final String WINTZDATA_VERSION = "7dd0000";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -364,6 +364,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-03:00) Brasilia
+        {"E. South America Standard Time", "BR", "America/Araguaina"},
         {"E. South America Standard Time", "BR", "America/Sao_Paulo", DEFAULT}, // *Brasilia
 
 
@@ -379,7 +380,6 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-03:00) Cayenne, Fortaleza
-        {"SA Eastern Standard Time", "BR", "America/Araguaina"},
         {"SA Eastern Standard Time", "BR", "America/Belem"},
         {"SA Eastern Standard Time", "BR", "America/Fortaleza", REGION_DEFAULT}, // Fortaleza
         {"SA Eastern Standard Time", "BR", "America/Maceio"},
@@ -610,6 +610,11 @@ public class MapData {
 
         {"W. Europe Standard Time", "VA", "Europe/Vatican", REGION_DEFAULT},
 
+        // Africa/Tripoli belong to CET again since 2012j, but using slightly
+        // different rule from EU countries. The transition dates are lastFri
+        // instead of lastSun.
+        {"W. Europe Standard Time", "LY", "Africa/Tripoli", REGION_DEFAULT},
+
 
         // --------------------------------------------------------------------
         // (UTC+02:00) E. Europe
@@ -699,10 +704,6 @@ public class MapData {
         // Another one is (UTC+02:00) Cairo, which used to observe DST until recently.
         // So we'll use this zone as default UTC+02:00/no DST zone.
         {"South Africa Standard Time", "ZZ", "Etc/GMT-2", REGION_DEFAULT},
-
-        // Africa/Tripoli belong to EET. So (UTC+02:00) Cairo might be a better match.
-        // However, Cairo is not stable (see above), so we use this zone.
-        {"South Africa Standard Time", "LY", "Africa/Tripoli", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------

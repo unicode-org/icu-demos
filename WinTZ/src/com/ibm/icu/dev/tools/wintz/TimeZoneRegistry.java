@@ -137,7 +137,7 @@ public class TimeZoneRegistry {
     }
 
     public String getTzVersionString() {
-        return String.format("%8x", _tzVersion);
+        return String.format("%x", _tzVersion);
     }
 
     public int getTzVersion() {
