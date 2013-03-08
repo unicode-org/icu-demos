@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2011, International Business Machines
+*   Copyright (C) 1999-2013, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -105,7 +105,9 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
         initStr = FALSE;
     }
 /* v14-gray-table-border */
-    u_fprintf(lx->OUT, "<table class='data-table-1' cellpadding=\"2\" cellspacing=\"2\">\r\n");
+    u_fprintf(lx->OUT, "<div id='choose_select'></div><!-- used by javascript only -->\n");
+    u_fprintf(lx->OUT, "<noscript><a href='#choose_region'>(Choose by Region)</a></noscript>");
+    u_fprintf(lx->OUT, "<table id='choose_lang' class='data-table-1' cellpadding=\"2\" cellspacing=\"2\">\r\n");
 
     u_fprintf(lx->OUT, "<tr><th class='mbg' align=\"left\">%S</th>\r\n<th class='mbg' align=\"left\">%S</th></tr>\r\n",
               FSWF("localeList_Locale", "Languages"),
@@ -169,6 +171,8 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     }
 
     u_fprintf(lx->OUT, "</table>\r\n");
+
+    chooseLocaleRegion(lx, toOpen, current, restored, showAll);
 
     if(hadUnsupportedLocales)
         u_fputs(FSWF("locale_experimental", "Locales in <I>Italics</I> are Draft and not officially supported."), lx->OUT);

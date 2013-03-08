@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2006, International Business Machines
+## *   Copyright (C) 1999-2013, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -44,7 +44,7 @@ CLEANFILES = *~
 ## Target information
 TARGET = locexp
 
-LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o lxbrk.o lxcgi.o version.o lxicir.o
+LXOBJ = locexp.o lxrun.o lxconv.o lxdate.o lxlocale.o lxnum.o lxsort.o lxprint.o lxshow.o lxshowloc.o wfobject.o calexp.o srchexp.o lxbrk.o lxcgi.o version.o lxicir.o lxregion.o
 CGIOBJ = cgimain.o
 # FCGIOBJ = fcgimain.o
 OBJECTS = $(LXOBJ) $(CGIOBJ) $(FCGIOBJ) $(LOCALOBJ)

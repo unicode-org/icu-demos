@@ -1,17 +1,16 @@
-// -*- Coding: iso-8859-1 -*-
 // some spanish words
-// Copyright (c) 2000-2005 IBM, Inc. and Others
+// Copyright (c) 2000-2013 IBM, Inc. and Others
 
 es
 {
     Collation { "Colaci\u00F3n" }
-    CurrencyElements0 { "Símbolo de moneda" }
-    CurrencyElements1 { "Símbolo de moneda internacional" }
+    CurrencyElements0 { "SÃ­mbolo de moneda" }
+    CurrencyElements1 { "SÃ­mbolo de moneda internacional" }
     CurrencyElements2 { "Separador de la moneda" }
     DateTimeElements { "Opciones de fecha y del tiempo" }
-    DateTimeElements0 { "Primer día de la semana: " }
-    DateTimeElements1 { "Días mínimos en la primera semana: " }
-    DateTimeElements_short { "¡Error - el recurso es demasiado corto (deben ser 2 elementos)!" }
+    DateTimeElements0 { "Primer dÃ­a de la semana: " }
+    DateTimeElements1 { "DÃ­as mÃ­nimos en la primera semana: " }
+    DateTimeElements_short { "Â¡Error - el recurso es demasiado corto (deben ser 2 elementos)!" }
     DateTimePatterns0 { "Tiempo Completo" }
     DateTimePatterns1 { "Tiempo Largo" }
     DateTimePatterns2 { "Tiempo Medio" }
@@ -20,24 +19,24 @@ es
     DateTimePatterns5 { "Fecha Largo" }
     DateTimePatterns6 { "Fecha Medio" }
     DateTimePatterns7 { "Fecha Corto" }
-    DateTimePatterns8 { "Patrón de fecha-tiempo.<BR>{0} = tiempo, {1} = fecha" }
+    DateTimePatterns8 { "PatrÃ³n de fecha-tiempo.<BR>{0} = tiempo, {1} = fecha" }
     DayAbbreviations { "Nombres Cortos" }
     DayNames { "Nombres Largos" }
-    EXPLORE_CollationElements { "Ejemplo de la colación (el clasificar)" }
-    EXPLORE_CollationElements_Prompt { "Mecanografíe adentro algunas líneas del texto que se clasificará." }
+    EXPLORE_CollationElements { "Ejemplo de la colaciÃ³n (el clasificar)" }
+    EXPLORE_CollationElements_Prompt { "MecanografÃ­e adentro algunas lÃ­neas del texto que se clasificarÃ¡." }
     EXPLORE_CollationElements_Sort { "Clasifique" }
 //    EXPLORE_CollationElements_g7sampleString { "bad\\u000DBad\\u000DBat\\u000Dbat\\u000Db\\u00E4d\\u000DBzt\\u000DB\\u00E4d\\u000Db\\u00E4t\\u000DB\\u00E4t" }
-    EXPLORE_CollationElements_strength { "Usted ve cuatro diversas columnas. El primer es el texto original para la comparación. Las líneas se numeran para demostrar su posición original. Las columnas restantes demuestran clasificar por diversas fuerzas (disponibles como parámetro para la función de la colación). Los grupos de las líneas que clasifican exacto igual son separados por una raya. Puesto que la colación trata estas líneas como idénticas, las líneas en el mismo grupo podrían aparecer en cualquier orden (dependiendo del algoritmo que clasifica exacto usado)." }
+    EXPLORE_CollationElements_strength { "Usted ve cuatro diversas columnas. El primer es el texto original para la comparaciÃ³n. Las lÃ­neas se numeran para demostrar su posiciÃ³n original. Las columnas restantes demuestran clasificar por diversas fuerzas (disponibles como parÃ¡metro para la funciÃ³n de la colaciÃ³n). Los grupos de las lÃ­neas que clasifican exacto igual son separados por una raya. Puesto que la colaciÃ³n trata estas lÃ­neas como idÃ©nticas, las lÃ­neas en el mismo grupo podrÃ­an aparecer en cualquier orden (dependiendo del algoritmo que clasifica exacto usado)." }
     EXPLORE_DateTimePatterns { "Explore &gt; Fecha/Tiempo" }
 //    EXPLORE_DateTimePatterns_dateAsNumber { "#" }
-    EXPLORE_NumberPatterns { "Explore &gt; Números" }
+    EXPLORE_NumberPatterns { "Explore &gt; NÃºmeros" }
 //    EXPLORE_NumberPatterns_defaultPattern { "#,###.###############" }
     EXPLORE_change { "Cambio" }
-    EXPLORE_search_found { "%d artículos fueron encontrados." }
-    EXPLORE_search_notfound { "Apesadumbrado, no se encontró nada." }
-    EXPLORE_search_oneperlocale { "Observe que solamente el primer emparejan en cada localidad está visto." }
+    EXPLORE_search_found { "%d artÃ­culos fueron encontrados." }
+    EXPLORE_search_notfound { "Apesadumbrado, no se encontrÃ³ nada." }
+    EXPLORE_search_oneperlocale { "Observe que solamente el primer emparejan en cada localidad estÃ¡ visto." }
     EXPLORE_search_searching { "El buscar para <B>%S</B>..." }
-    LocaleCodes { "Códigos De Localidad" }
+    LocaleCodes { "CÃ³digos De Localidad" }
     LocaleCodes_Country { "Regi\u00F3n" }
     LocaleCodes_Language { "Lenguage" }
     LocaleCodes_Variant { "Variante" }
@@ -49,47 +48,47 @@ es
     NoLocale { "NOMBRE DE LOCALE QUE FALTA" }
     NumberElements0 { "Separador De Decimal" }
     NumberElements1 { "Separador De Agrupando" }
-    NumberElements10 { "No un número" }
-    NumberElements2 { "Separador Del Patrón" }
+    NumberElements10 { "No un nÃºmero" }
+    NumberElements2 { "Separador Del PatrÃ³n" }
     NumberElements3 { "Por Ciento" }
-    NumberElements4 { "Dígito Cero" }
-    NumberElements5 { "Dígito" }
+    NumberElements4 { "DÃ­gito Cero" }
+    NumberElements5 { "DÃ­gito" }
     NumberElements6 { "Signo De Menos" }
     NumberElements7 { "Exponencial" }
     NumberElements8 { "PorMil [/1000]" }
     NumberElements9 { "Infinito" }
-    NumberPatterns0 { "Patrón Decimal" }
-    NumberPatterns1 { "Patrón De La Moneda" }
-    NumberPatterns2 { "Patrón De Los Por Ciento" }
-    NumberPatterns3 { "Patrón Científico" }
+    NumberPatterns0 { "PatrÃ³n Decimal" }
+    NumberPatterns1 { "PatrÃ³n De La Moneda" }
+    NumberPatterns2 { "PatrÃ³n De Los Por Ciento" }
+    NumberPatterns3 { "PatrÃ³n CientÃ­fico" }
     Spellout { "Explicar En Palabras" }
     UCAL_AM_PM { "Campo de AM/PM" }
     UCAL_DATE { "Campo de la fecha" }
-    UCAL_DAY_OF_WEEK { "Campo del día de la semana" }
-    UCAL_DAY_OF_WEEK_IN_MONTH { "Campo del día de la semana en mes" }
-    UCAL_DAY_OF_YEAR { "Campo del día del año" }
-    UCAL_DOW_LOCAL { "Día localizado de la semana (1..7)" }
+    UCAL_DAY_OF_WEEK { "Campo del dÃ­a de la semana" }
+    UCAL_DAY_OF_WEEK_IN_MONTH { "Campo del dÃ­a de la semana en mes" }
+    UCAL_DAY_OF_YEAR { "Campo del dÃ­a del aÃ±o" }
+    UCAL_DOW_LOCAL { "DÃ­a localizado de la semana (1..7)" }
     UCAL_DST_OFFSET { "Campo de DST diferencia" }
     UCAL_ERA { "Campo de la era" }
     UCAL_HOUR { "Campo de la hora" }
-    UCAL_HOUR_OF_DAY { "Campo del hora del día" }
+    UCAL_HOUR_OF_DAY { "Campo del hora del dÃ­a" }
     UCAL_MILLISECOND { "Campo del milisegundo" }
     UCAL_MINUTE { "Campo minucioso" }
     UCAL_MONTH { "Campo del mes" }
     UCAL_SECOND { "Campo del segundo" }
     UCAL_WEEK_OF_MONTH { "Campo del semana del mes" }
-    UCAL_WEEK_OF_YEAR { "Campo del semana del año" }
-    UCAL_YEAR { "Campo del año" }
-    UCAL_YEAR_WOY { "Año / semana del año" }
+    UCAL_WEEK_OF_YEAR { "Campo del semana del aÃ±o" }
+    UCAL_YEAR { "Campo del aÃ±o" }
+    UCAL_YEAR_WOY { "AÃ±o / semana del aÃ±o" }
     UCAL_ZONE_OFFSET { "Campo de diferencia de la zona" }
     UCOL_ALTERNATE_HANDLING { "Procesamiento alterna" }
     UCOL_CASE_FIRST { "Caso primero" }
     UCOL_CASE_LEVEL { "Caso nivel" }
-    UCOL_FRENCH_COLLATION { "Colación francesa" }
-    UCOL_IDENTICAL { "Idéntico" }
+    UCOL_FRENCH_COLLATION { "ColaciÃ³n francesa" }
+    UCOL_IDENTICAL { "IdÃ©ntico" }
     UCOL_LOWER_FIRST { "Baje primero" }
 //    UCOL_NON_IGNORABLE { "Non-ignorable" }  // Can't translate properly
-    UCOL_NORMALIZATION_MODE { "Modo de la normalización" }
+    UCOL_NORMALIZATION_MODE { "Modo de la normalizaciÃ³n" }
     UCOL_OFF { "Apagado" }  // Difficult to translate
     UCOL_ON { "Prendido" }    // Difficult to translate
 //    UCOL_ON_WITHOUT_HANGUL { "On sin Hangul" }// Difficult to translate
@@ -102,92 +101,92 @@ es
     UCOL_UPPER_FIRST { "Alto primero" }
     UNKNOWN_ERROR { "error desconocido" }
     U_MISSING_RESOURCE_ERROR { "(recurso que falta)" }
-    Version { "Versión" }
-    bigStringClickToExpand { "Truncada debido al tamaño. Chasque aquí para ver más." }
-    bigStringClickToShow { "(Omitida debido al tamaño. Chasque aquí para ver más.)" }
+    Version { "VersiÃ³n" }
+    bigStringClickToExpand { "Truncada debido al tamaÃ±o. Chasque aquÃ­ para ver mÃ¡s." }
+    bigStringClickToShow { "(Omitida debido al tamaÃ±o. Chasque aquÃ­ para ver mÃ¡s.)" }
     bigStringHide { "Piel" }
-    bigStringShorten { "No exhibición todos " }
+    bigStringShorten { "No exhibiciÃ³n todos " }
     bigStringSize { "(%d de %d exhibido)" }
     calexp_calTab { "Calendario" }
     calexp_errGet { "No puede conseguir la fecha inicial: " }
     calexp_fieldsTab { "Campos" }
-    changeEncoding { "Cambie Su Codificación" }  // Encoding is difficult to translate
+    changeEncoding { "Cambie Su CodificaciÃ³n" }  // Encoding is difficult to translate
     changeLocale { "Cambie el localidad usado para las etiquetas" }
-    char { "Carácter" }
+    char { "CarÃ¡cter" }
     charMeaning { "Significado" }
 //    charNum { "#" }
-    chooseEncoding { "Elija Su Codificación" }  // Encoding is difficult to translate
+    chooseEncoding { "Elija Su CodificaciÃ³n" }  // Encoding is difficult to translate
     chooseLocale { "Elija Su Localidad." }
     chooseLocale_summary { "Elija Localidad" }
-    convERR { "Un error ocurrió intentando clasificar los convertidores.\n" }
-    converter_matchesTo { "Buscar fósforos a estos caracteres: " }
+    convERR { "Un error ocurriÃ³ intentando clasificar los convertidores.\n" }
+    converter_matchesTo { "Buscar fÃ³sforos a estos caracteres: " }
     converter_searching { "Buscar para los convertidores que emparejan .." }
-    convsAvail { "%d convertidores están disponibles, total de %d alias." }
+    convsAvail { "%d convertidores estÃ¡n disponibles, total de %d alias." }
     convsMatch { "%d convertidores que emparejan (fuera de %d), total de %d." }
     cumulative_notshown { "datos acumulativos del padre no exhibido" }
     demos { "Demos" }
-    display_ALT { "¿Problemas De La Exhibición?" }
+    display_ALT { "Â¿Problemas De La ExhibiciÃ³n?" }
 //    display_GIF { "displayproblems.gif" }
 //    display_OPTIONS { "ALIGN=RIGHT" }
-    empty { "(Vacío)" }
-    encodingOK0 { "Chasque aquí si el '" }
-    encodingOK1 { "' de codificación es aceptable, o elija uno de abajo." }
-    encoding_Missing { "Los caracteres siguientes no se podían exhibir correctamente por la codificación actual:" }
-    encoding_PickABetter { "Chasque aquí para buscar para una codificación mejor" }
+    empty { "(VacÃ­o)" }
+    encodingOK0 { "Chasque aquÃ­ si el '" }
+    encodingOK1 { "' de codificaciÃ³n es aceptable, o elija uno de abajo." }
+    encoding_Missing { "Los caracteres siguientes no se podÃ­an exhibir correctamente por la codificaciÃ³n actual:" }
+    encoding_PickABetter { "Chasque aquÃ­ para buscar para una codificaciÃ³n mejor" }
 //    encoding_mime { "Note (ICU 1.6 release): This list has been pared down to only show MIME aliases that browsers would understand. I'll add a 'show all' button later.<!--If you translate this, remember it'll go away soon -->" }
-    encoding_translit_setting { "Transcripción:" }
+    encoding_translit_setting { "TranscripciÃ³n:" }
 //    exploreTitle { "Explore" }
-    explore_G7 { "Ensaya clasificar multilingüe" }
-    explore_search { "Búsqueda" }
-    explore_xlitomatic { "Transcripción-o-matic" }
+    explore_G7 { "Ensaya clasificar multilingÃ¼e" }
+    explore_search { "BÃºsqueda" }
+    explore_xlitomatic { "TranscripciÃ³n-o-matic" }
 
 
     formatExample_DateTimePatterns_What { "Este ejemplo demuestra el formato de los patrones de fecha y de la tiemp en este locale." }
-    formatExample_DateTimePatterns_errorFormat { "No podía ajustar a formato la fecha." }
-    formatExample_NumberPatterns_What { "Este ejemplo demuestra el formato de números en este locale." }
-    formatExample_errorFormatDefault { "Incapaz ajustar a formato número usando la versión del defecto del patrón." }
-    formatExample_errorFormat_number { "No podía ajustar a formato el número." }
-    formatExample_errorOpen { "No podía abrir el formateador." }
-    formatExample_errorOpenDefault { "No podía abrir el formateador del número del defecto." }
-    formatExample_errorParse { "No podía analizar esto. Substituido por un valor prefijado. Ajustó a formato este muchos caracteres:" }
-    formatExample_errorParse3 { "No podía analizar esto. Substituido por un valor prefijado." }
-    formatExample_errorParse_num { "No podía analizar esto. Substituido por un valor prefijado." }
-    formatExample_errorToPattern { "No podría convertir el patrón [toPattern]" }
+    formatExample_DateTimePatterns_errorFormat { "No podÃ­a ajustar a formato la fecha." }
+    formatExample_NumberPatterns_What { "Este ejemplo demuestra el formato de nÃºmeros en este locale." }
+    formatExample_errorFormatDefault { "Incapaz ajustar a formato nÃºmero usando la versiÃ³n del defecto del patrÃ³n." }
+    formatExample_errorFormat_number { "No podÃ­a ajustar a formato el nÃºmero." }
+    formatExample_errorOpen { "No podÃ­a abrir el formateador." }
+    formatExample_errorOpenDefault { "No podÃ­a abrir el formateador del nÃºmero del defecto." }
+    formatExample_errorParse { "No podÃ­a analizar esto. Substituido por un valor prefijado. AjustÃ³ a formato este muchos caracteres:" }
+    formatExample_errorParse3 { "No podÃ­a analizar esto. Substituido por un valor prefijado." }
+    formatExample_errorParse_num { "No podÃ­a analizar esto. Substituido por un valor prefijado." }
+    formatExample_errorToPattern { "No podrÃ­a convertir el patrÃ³n [toPattern]" }
     help { "Ayuda" }
 //    helpgif { "help.gif" }
 //    helpgif_opt { "BORDER=0" }
     inherited { "(heredado)" }
     inherited_from { "(heredado de %S)" }
-    introSpiel { "Este programa de la demostración ilustra los International Components for Unicode para los datos de la localización. Los datos cubren %V diversas idiomas, divididas más lejos en %V regiones y variantes. Para cada lengua, los datos tales como días de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de fuente abierta." }
+    introSpiel { "Este programa de la demostraciÃ³n ilustra los International Components for Unicode para los datos de la localizaciÃ³n. Los datos cubren %V diversas idiomas, divididas mÃ¡s lejos en %V regiones y variantes. Para cada lengua, los datos tales como dÃ­as de la semana, los meses, y sus abreviaturas se definen.</p><p>ICU es un proyecto de fuente abierta." }
     localPatternChars0 { "Era" }
-    localPatternChars1 { "Año" }
-    localPatternChars10 { "Día Del Año" }
-    localPatternChars11 { "Día De La Semana En Mes" }
-    localPatternChars12 { "Semana Del Año" }
+    localPatternChars1 { "AÃ±o" }
+    localPatternChars10 { "DÃ­a Del AÃ±o" }
+    localPatternChars11 { "DÃ­a De La Semana En Mes" }
+    localPatternChars12 { "Semana Del AÃ±o" }
     localPatternChars13 { "Semana Del Mes" }
 //    localPatternChars14 { "Am/Pm" }
     localPatternChars15 { "Hora 1" }
     localPatternChars16 { "Hora 0" }
 //    localPatternChars17 { "Timezone" }
     localPatternChars2 { "Mes" }
-    localPatternChars3 { "Día Del Mes" }
-    localPatternChars4 { "Hora Del Día 1" }
-    localPatternChars5 { "Hora Del Día 0" }
+    localPatternChars3 { "DÃ­a Del Mes" }
+    localPatternChars4 { "Hora Del DÃ­a 1" }
+    localPatternChars5 { "Hora Del DÃ­a 0" }
     localPatternChars6 { "Minuto" }
     localPatternChars7 { "Segundo" }
     localPatternChars8 { "Milisegundo" }
-    localPatternChars9 { "Día De la Semana" }
-    localeDataDefault { "Éste es los datos de la localización del defecto, que serán utilizados si no se especifica ningún otro localidad esta instalado." }
-    localeDataEuro { "Este localidad contiene la información del formato de la moneda para el uso con la moneda euro." }
-    localeDataLangCountry { "Este localidad contiene los datos para esta lengua, así como las convenciones para esta región particular." }
-    localeDataLangCountryVariant { "Este localidad contiene los datos para esta lengua, así como las convenciones para una variante dentro de esta región particular." }
-    localeDataLanguage { "No se especifica ninguna región, así que los datos son genéricos a esta lengua." }
-    localeDataWhat { "Esta página demuestra los datos de la localización para el locale enumerado en la izquierda." }
+    localPatternChars9 { "DÃ­a De la Semana" }
+    localeDataDefault { "Ã‰ste es los datos de la localizaciÃ³n del defecto, que serÃ¡n utilizados si no se especifica ningÃºn otro localidad esta instalado." }
+    localeDataEuro { "Este localidad contiene la informaciÃ³n del formato de la moneda para el uso con la moneda euro." }
+    localeDataLangCountry { "Este localidad contiene los datos para esta lengua, asÃ­ como las convenciones para esta regiÃ³n particular." }
+    localeDataLangCountryVariant { "Este localidad contiene los datos para esta lengua, asÃ­ como las convenciones para una variante dentro de esta regiÃ³n particular." }
+    localeDataLanguage { "No se especifica ninguna regiÃ³n, asÃ­ que los datos son genÃ©ricos a esta lengua." }
+    localeDataWhat { "Esta pÃ¡gina demuestra los datos de la localizaciÃ³n para el locale enumerado en la izquierda." }
     localeList_Locale { "Idiomas" }
     localeList_Sublocale { "Regiones" }
-    locale_experimental { "Localidades en <i>Itálica</i> es experimental y apoyado no oficialmente." }
-    locale_unsupported { "Este localidad de la exhibición, <U>%s</U>, está sin apoyo." }
-    myConverter { "Codificación:" }
+    locale_experimental { "Localidades en <i>ItÃ¡lica</i> es experimental y apoyado no oficialmente." }
+    locale_unsupported { "Este localidad de la exhibiciÃ³n, <U>%s</U>, estÃ¡ sin apoyo." }
+    myConverter { "CodificaciÃ³n:" }
     myLocale { "Etiqueta Localidad:" }
     none { "Ninguno" }
     off { "Apagado" }    // Difficult to translate
@@ -197,17 +196,17 @@ es
     poweredby_filebug { "Notifica un error" }   // I'm guessing this is right
     rules { "Reglas" }
     set { "Sistema" }    // This is a math set [a-z]
-    showAll { "Exhibición Todos" }
-    showSort_cantOpenCustomConverter { "No podía abrir un costumbre usort/collator por el Localidad y la razón siguientes" }
+    showAll { "ExhibiciÃ³n Todos" }
+    showSort_cantOpenCustomConverter { "No podÃ­a abrir un costumbre usort/collator por el Localidad y la razÃ³n siguientes" }
     sourceFile { "Mire La Fuente De Locale " }
     statusTableHeader { "Sus ajustes:" }
-    statusTableHeaderChange { "(Chasque aquí a cambiar)" }
-    stringClickToShow { "(Chasque aquí para ver.)" }
+    statusTableHeaderChange { "(Chasque aquÃ­ a cambiar)" }
+    stringClickToShow { "(Chasque aquÃ­ para ver.)" }
     sublocales { "Locales secundarios:" }
     taggedarrayTag { "etiqueta " }
 //   title { "ICU LocaleExplorer" }
-   translit_CantOpenPair { "Advertencia: No podía abrir el transliterator para el par del Localidad." }
-   transliterate_help { "Ayuda De la Transcripción" }
+   translit_CantOpenPair { "Advertencia: No podÃ­a abrir el transliterator para el par del Localidad." }
+   transliterate_help { "Ayuda De la TranscripciÃ³n" }
    ubrowse { "Hojee Unicode en este codepage" }
 //   usortOriginal { "Original" }
     usortPrimary { "Primario solamente" }
@@ -215,13 +214,13 @@ es
     usortSorted { "Clasificado" }
     usortSource { "Fuente" }
     usortTertiary { "Defecto" }
-    usortWhat { "Este ejemplo demuestra clasificar (colación) en este locale." }
+    usortWhat { "Este ejemplo demuestra clasificar (colaciÃ³n) en este locale." }
     usort_Custom { "Modifique para requisitos particulares..." }
     usort_CustomClose { "Quite El Arreglo para requisitos particulares." }
     usort_attrib { "Cualidades" }
-    warningExperimentalLocale { "Nota: Usted está viendo un locale experimental. ¡Este locale no es parte de la instalación del funcionario ICU! <font color=red>No archiva insectos por favor contra este localidad.</font>" }// I'm guessing bug is right
-    warningInheritedLocale { "Nota: Usted está viendo un locale no existente. El ICU apoyará esto con la información heredada. Pero no diseñan al explorador de Locale para entender tales localidades. ¡La información de la herencia puede ser incorrecta! " }
-    zoneStrings0 { "Canónico" }
+    warningExperimentalLocale { "Nota: Usted estÃ¡ viendo un locale experimental. Â¡Este locale no es parte de la instalaciÃ³n del funcionario ICU! <font color=red>No archiva insectos por favor contra este localidad.</font>" }// I'm guessing bug is right
+    warningInheritedLocale { "Nota: Usted estÃ¡ viendo un locale no existente. El ICU apoyarÃ¡ esto con la informaciÃ³n heredada. Pero no diseÃ±an al explorador de Locale para entender tales localidades. Â¡La informaciÃ³n de la herencia puede ser incorrecta! " }
+    zoneStrings0 { "CanÃ³nico" }
     zoneStrings1 { "Nombre Normal" }
     zoneStrings2 { "Abrev. Normal" }
     zoneStrings3 { "Nombre Del Verano/DST" }
@@ -233,7 +232,7 @@ es
 //   zone_warn { "Note: only works if you have cookies turned on." }  // cookies in Spanish?
 
 
-    Day { "Día" }
+    Day { "DÃ­a" }
     Month { "Mes" }
 //    helpPrefix { "default_" } // needed to get Maltese in the list of locales
 }

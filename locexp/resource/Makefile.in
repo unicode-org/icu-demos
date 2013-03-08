@@ -1,6 +1,6 @@
 ## ******************************************************************************
 ## *
-## *   Copyright (C) 1999-2011, International Business Machines
+## *   Copyright (C) 1999-2013, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *******************************************************************************
@@ -40,7 +40,7 @@ GENSRC = root.txt res_index.txt
 
 # resource files
 # AUTOGEN - source whose encoding is detected
-AUTOGENSRC = de.txt en.txt mt.txt el.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt  zh.txt da.txt
+AUTOGENSRC = de.txt en.txt mt.txt ja.txt ru.txt it.txt fr.txt ta.txt hi.txt es.txt  zh.txt da.txt
 
 # ones which have a BOM can just go here
 SRC    = res.txt th.txt sr.txt zh_TW.txt zh_SG.txt $(AUTOGENSRC)
@@ -80,13 +80,11 @@ check:  check-local
 
 all-local: build-dirs res-local root_SAMPLE.txt
 
-res-local: Makefile.res $(RES) $(OUT)/locexp.lst 
+res-local:  $(RES) $(OUT)/locexp.lst 
 	@-$(RMV) $(BUILTRES)
 	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst $(PKGDATA_OPTS)
 	touch $(BUILTRES)
 
-Makefile.res: Makefile.in detectEncodings.sh $(AUTOGENSRC)
-	sh ./detectEncodings.sh  $(PKG) $(AUTOGENSRC)
 
 -include Makefile.res
 

@@ -1,7 +1,0 @@
-// -*- Coding: iso-8859-7 -*-
-// Copyright (c) 1999, International Business Machines Corporation and
-// others. All Rights Reserved.
-el
-{
-	DefaultEncoding { "iso-8859-7" }
-}

@@ -212,6 +212,8 @@ locexp/resource/root/help.gif -text
 locexp/resource/root/help.html svneol=native#text/html
 locexp/resource/root/incorrect.gif -text
 locexp/resource/root/locexp-header.html svneol=native#text/html
+locexp/resource/root/locexp.css svneol=native#text/css
+locexp/resource/root/locexp.js svneol=native#text/javascript
 locexp/resource/root/lx.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/lxbar_dev.jpg -text svneol=unset#image/jpeg
 locexp/resource/root/lxbar_g.gif -text

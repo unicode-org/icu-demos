@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 2000-2005, International Business Machines
+*   Copyright (C) 2000-2013, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -189,6 +189,10 @@ void writeFileObject( LXContext *lx, const char *path )
         type = "image/gif";
       else if(strstr(path, ".jpg"))
         type = "image/jpeg";
+      else if(strstr(path, ".css"))
+        type = "text/css";
+      else if(strstr(path, ".js"))
+        type = "application/javascript";
       else
         type = "application/octet-stream";
 

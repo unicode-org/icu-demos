@@ -1,5 +1,5 @@
  /**********************************************************************
-*   Copyright (C) 1999-2011, International Business Machines
+*   Copyright (C) 1999-2013, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -13,7 +13,7 @@
 #include "unicode/ucnv_cb.h"
 
 /* Realloc broken on linux????? */
-void *my_realloc(void *ptr, size_t old, size_t size)
+static void *my_realloc(void *ptr, size_t old, size_t size)
 {
 #ifdef XLINUX
     void *newptr;

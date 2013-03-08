@@ -1,0 +1,56 @@
+/* @override 
+	http://127.0.0.1/srl-bin/locexp/mt/_/locexp.css
+	http://127.0.0.1/srl-bin/locexp/en/_/locexp.css
+*/
+
+/**
+ * Copyright (C) 2013 IBM Corporation and Others. All Rights Reserved.
+ */
+
+div#choose_region {
+	display:  table;
+	width:  90%;
+}
+
+.rgn-URGN_WORLD {
+	background-color: lightgreen;
+	display:  block;
+	width:  90%;
+}
+
+.rgn-URGN_CONTINENT {
+	background-color: whitesmoke;
+	display:  block;
+}
+
+.rgn-URGN_SUBCONTINENT {
+	background-color: silver;
+	display: inline-block;
+}
+
+.rgn-locs {
+	border-collapse: collapse;
+	display:  table;
+	margin-left:  1.5em;
+}
+
+.rgn-locs a {
+	display:  list-item;
+}
+
+.rgn-URGN_TERRITORY {
+	background-color: lightgoldenrodyellow;
+	display:  block;
+}
+
+.rgn {
+	border:  2px solid gray;
+    margin-left: 1em;
+    padding:  5px;
+    marign: 5px;
+    vertical-align: top;
+}
+
+.rgn-title {
+	display:  block;
+}

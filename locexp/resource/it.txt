@@ -1,5 +1,4 @@
-// -*- Coding: iso-8859-1 -*-
-// Copyright (c) 2000 IBM, Inc. and Others
+// Copyright (c) 2000-2013 IBM, Inc. and Others
 // some italian sort words
 
 it
@@ -11,7 +10,7 @@ it
        "regione|"
        "soldi|"
        "gatto|"
-       "universit‡|"
+       "universit√†|"
        "Milano|"
        "fratello|"
        "cognato|"

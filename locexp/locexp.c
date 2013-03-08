@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2012, International Business Machines
+*   Copyright (C) 1999-2013, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -121,7 +121,11 @@ void displayLocaleExplorer(LXContext *lx)
     }
 
     showSortStyle(lx);
-    u_fprintf(lx->OUT, "%s", "</head>\r\n<body>\r\n");
+    
+    u_fprintf(lx->OUT, "\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"" LDATA_PATH_LOC "locexp.css\" />\r\n",
+              lx->dispLocale);
+
+    u_fprintf(lx->OUT, "%s", "\r\n</head>\r\n<body>\r\n");
     if(!lx->altPath && printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
         u_fprintf(lx->OUT, "%s", DEMO_BEGIN_LEFT_NAV);
         printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_LEFTNAV);
@@ -352,6 +356,11 @@ void displayLocaleExplorer(LXContext *lx)
 
     if(!strcmp(lx->dispLocale,"tlh"))
         u_fprintf(lx->OUT, "<p>Thank you for using the ICU LocaleExplorer, from %s compiled %s on %s<p>\r\n", LXHOSTNAME, lx_version(), LXHOST);
+
+    u_fprintf(lx->OUT, "</div>");
+
+    u_fprintf(lx->OUT, "<script type=\"application/javascript\" src=\"" LDATA_PATH_LOC "locexp.js\"></script>",
+              lx->dispLocale);
 
     u_fprintf(lx->OUT, "</body></html>\r\n");
 

@@ -1,5 +1,5 @@
 /* 
-   Copyright (C) 1999-2012, International Business Machines
+   Copyright (C) 1999-2013, International Business Machines
    Corporation and others.  All Rights Reserved.
 
    This little program takes utf16_be input and outputs 
@@ -16,7 +16,7 @@
 typedef unsigned short UChar;
 
 
-int main()
+int main(void)
 {
   UChar myChar;
   char  cHi, cLo;
@@ -25,7 +25,7 @@ int main()
     {
       cHi = getchar();
       
-      if(feof(stdin)) return 1; /* half-char */
+      if(feof(stdin)) return -1; /* half-char */
 
       cLo = getchar();
 
@@ -43,5 +43,5 @@ int main()
 	  printf("\\u%04X", (int) myChar);
 	}
     }
-    return 0;
+  return 0;
 }

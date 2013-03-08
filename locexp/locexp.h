@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2012, International Business Machines
+*   Copyright (C) 1999-2013, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #ifndef LOCEXP_
@@ -48,6 +48,10 @@
 #include "unicode/utrans.h"
 #include <ctype.h>
 /* #include "unicode/collectcb.h" */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* for data */
 #ifdef LX_STATIC
@@ -240,6 +244,8 @@ extern void printSubLocales(LXContext *lx, const char *suffix) ;
 
 /* selection of locales and converter */
 extern void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *restored, UBool showAll);
+extern void chooseLocaleRegion(LXContext *lx, UBool toOpen, const char *current, const char *restored, UBool showAll);
+
 extern void chooseConverter(LXContext *lx, const char *restored);
 
 extern void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample);
@@ -438,5 +444,11 @@ extern void uastro_show(void *astro, LXContext *lx);
 
 #endif
 
-#endif
+#ifdef __cplusplus
+}
 
+/* any C++ specific? */
+
+#endif /* C++ */
+
+#endif /* header */
