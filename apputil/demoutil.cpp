@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-*   Copyright (C) 2005-2012, International Business Machines
+*   Copyright (C) 2005-2013, International Business Machines
 *
 *   Corporation and others.  All Rights Reserved.
 *
@@ -131,5 +131,5 @@ const char *serveStaticFile(const char *files[], const char *pathInfo) {
             }
         }
     }
-  
+  return NULL;
 }

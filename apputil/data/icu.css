@@ -225,7 +225,7 @@ table.rtable tr td {
 		position:  absolute;
 		width: 100%;
 		top: 0;
-		height: 50px;
+		height: 1em;
 		vertical-align: bottom;
 		font-size: 2em;
 	}
@@ -235,7 +235,7 @@ table.rtable tr td {
 		position:  absolute;
 		left: 0;
 		width:  11.5em;
-		top: 50px;
+		top: 2em;
 	}
 	#leftnav td, #leftnav p.relatedsite {
 		padding-left: 4px;
@@ -249,12 +249,6 @@ table.rtable tr td {
 	
 }
 
-/*
-  <td class='tlbox' valign="top" style="width: 1px; background-image: url(./icudemos/lines.gif); background-color: #006699; white-space: nowrap;"></td>
-  <td width="100" style="width: 100px" valign="top" class="fadedtop"><a href="#main"><img src="./icudemos/1x1.gif" border="0" width="100" height="1" alt="Skip to main content" /></a></td>
-  <td width="100%" style="background-color: #006699;"><h1 style="color: #FFFFFF">International Components                                                                                                                                    
-                for Unicode</h1></td>
-                */
 
 @media only print {
     #leftnav {
