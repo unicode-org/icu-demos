@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2012, International Business Machines Corporation and
+# Copyright (c) 2007-2013, International Business Machines Corporation and
 # others. All Rights Reserved.
 
 CHARSET_REPOSITORY_UCM=\
@@ -82,6 +82,7 @@ ibm-848_P100-1999.ucm\
 ibm-849_P100-1999.ucm\
 ibm-859_P100-1999.ucm\
 ibm-8612_P100-1995.ucm\
+ibm-864_X120-2012.ucm\
 ibm-872_P100-1999.ucm\
 ibm-880_P100-1995.ucm\
 ibm-896_P100-1995.ucm\

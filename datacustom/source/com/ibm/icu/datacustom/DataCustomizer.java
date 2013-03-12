@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * Copyright (C) 2007-2012, International Business Machines Corporation and   *
+ * Copyright (C) 2007-2013, International Business Machines Corporation and   *
  * others. All Rights Reserved.                                               *
  ******************************************************************************
  */
@@ -297,8 +297,10 @@ public class DataCustomizer extends HttpServlet {
             icupkgCommand = "icupkg48";
         } else if (Integer.parseInt(icuDataVersion) == 49) {
             icupkgCommand = "icupkg49";
-        } else {
+        } else if (Integer.parseInt(icuDataVersion) == 50) {
             icupkgCommand = "icupkg50";
+        } else {
+            icupkgCommand = "icupkg51";
         }
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
