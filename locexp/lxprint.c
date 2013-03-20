@@ -8,6 +8,7 @@
 
 #include "locexp.h"
 #include <unicode/uscript.h>
+#include <unicode/ulocdata.h>
 /* #include "uresimp.h" */
 
 /* Explain what the status code means --------------------------------------------------------- */
@@ -307,6 +308,22 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "<a href=\"" ICU_URL "\"><i>%S</i> %S</a><br />",
               FSWF("poweredby", "Powered by"),
               FSWF( /* NODEFAULT */ "poweredby_vers", "ICU " U_ICU_VERSION) );
+
+
+    {
+      char cldrVerStr[100];
+      UErrorCode cldrErr = U_ZERO_ERROR;
+      UVersionInfo cldrVer;
+      
+      ulocdata_getCLDRVersion(cldrVer, &cldrErr);
+
+      if(U_SUCCESS(cldrErr)) {
+        u_versionToString(cldrVer, cldrVerStr);
+        u_fprintf(lx->OUT, "<a href=\"http://cldr.unicode.org\"><i>%S</i> %s</a><br />",
+              FSWF("poweredby_cldr", "CLDR Version"),
+              cldrVerStr );
+      }
+    }
 
     dateStr = date( NULL,UDAT_FULL, lx->dispLocale,&status);
     u_fprintf(lx->OUT, "%S", dateStr);
