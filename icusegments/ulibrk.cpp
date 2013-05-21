@@ -8,6 +8,8 @@
 #include <unicode/ustdio.h>
 #include "json.hxx"
 
+#include <stdlib.h>
+
 #include "demo_config.h"  /* for HAVE_SYS_TYPES */
 
 #if HAVE_SYS_TYPES_H
