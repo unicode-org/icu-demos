@@ -1,3 +1,6 @@
+/**
+ * Copyright (C) 2012-2013 IBM Corporation and Others. All Rights Reserved.
+ */
 
 #ifndef ULIBRK_H
 #define ULIBRK_H
@@ -20,15 +23,17 @@ public:
 private:
     LocalPointer<BreakIterator> fDelegate;
     LocalUTextPointer           fText;
-    LocalPointer<UCharsTrie>    fBackwardsTrie;
+    LocalPointer<UCharsTrie>    fBackwardsTrie; //  i.e. ".srM" for Mrs.
+    LocalPointer<UCharsTrie>    fForwardsPartialTrie; //  Has ".a" for "a.M."
     std::string                 fJSONSource;
     
     void                        build(UErrorCode& status);
+
 /* -- subclass interface -- */
 public:
     /* -- cloning and other subclass stuff -- */
-    virtual BreakIterator *  createBufferClone(void *stackBuffer,
-                                               int32_t &BufferSize,
+    virtual BreakIterator *  createBufferClone(void */*stackBuffer*/,
+                                               int32_t &/*BufferSize*/,
                                                UErrorCode &status) {
         
         // TODO fix.
