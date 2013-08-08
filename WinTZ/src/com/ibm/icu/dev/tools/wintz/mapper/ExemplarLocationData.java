@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2011, International Business Machines Corporation and         *
+ * Copyright (C) 2011-2013, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -168,6 +168,7 @@ class ExemplarLocationData {
         {"Tbilisi", "Asia/Tbilisi"},
         {"Tehran", "Asia/Tehran"},
         {"Tokyo", "Asia/Tokyo"},
+        {"Tripoli", "Africa/Tripoli"},
         {"Ulaanbaatar", "Asia/Ulaanbaatar"},
         {"Urumqi", "Asia/Urumqi"},
         {"Vienna", "Europe/Vienna"},

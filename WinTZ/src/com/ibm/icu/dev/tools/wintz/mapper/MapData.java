@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2012j";
-    static final String WINTZDATA_VERSION = "7dd0000";
+    static final String TZDATA_VERSION = "2013d";
+    static final String WINTZDATA_VERSION = "7dd0003";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -187,6 +187,8 @@ public class MapData {
         {"Eastern Standard Time", "CA", "America/Thunder_Bay"},
         {"Eastern Standard Time", "CA", "America/Toronto", REGION_DEFAULT},
 
+        {"Eastern Standard Time", "HT", "America/Port-au-Prince", REGION_DEFAULT},
+
         {"Eastern Standard Time", "TC", "America/Grand_Turk", REGION_DEFAULT},
 
         {"Eastern Standard Time", "US", "America/Detroit"},
@@ -198,6 +200,12 @@ public class MapData {
         {"Eastern Standard Time", "US", "America/New_York", DEFAULT},
 
         {"Eastern Standard Time", "ZZ", "EST5EDT", REGION_DEFAULT},
+
+        // Starting in 2013, Cuba's DST start/end dates are same with
+        // US. Only the difference is time of the transition date
+        // (midnight in standard time for Cuba vs 2 o'clock in wall time
+        // for US).
+        {"Eastern Standard Time", "CU", "America/Havana", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -214,8 +222,6 @@ public class MapData {
         // Following zones are not South American Pacific regions. Because this is only
         // the Windows time zone with UTC-05:00/no DST, they cannot use anything else.
         {"SA Pacific Standard Time", "CA", "America/Coral_Harbour", REGION_DEFAULT},
-
-        {"SA Pacific Standard Time", "HT", "America/Port-au-Prince", REGION_DEFAULT},
 
         {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
 
@@ -585,6 +591,7 @@ public class MapData {
         {"W. Europe Standard Time", "CH", "Europe/Zurich", REGION_DEFAULT}, // *Bern
 
         {"W. Europe Standard Time", "DE", "Europe/Berlin", DEFAULT}, // Berlin
+        {"W. Europe Standard Time", "DE", "Europe/Busingen"},
 
         {"W. Europe Standard Time", "GI", "Europe/Gibraltar", REGION_DEFAULT},
 
@@ -610,10 +617,10 @@ public class MapData {
 
         {"W. Europe Standard Time", "VA", "Europe/Vatican", REGION_DEFAULT},
 
-        // Africa/Tripoli belong to CET again since 2012j, but using slightly
-        // different rule from EU countries. The transition dates are lastFri
-        // instead of lastSun.
-        {"W. Europe Standard Time", "LY", "Africa/Tripoli", REGION_DEFAULT},
+
+        // --------------------------------------------------------------------
+        // (UTC+01:00) Tripoli
+        {"Libya Standard Time", "LY", "Africa/Tripoli", DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -624,12 +631,6 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+02:00) Cairo
         {"Egypt Standard Time", "EG", "Africa/Cairo", DEFAULT},
-
-        // Following Palestine regions are in EET. They used to observe DST
-        // and the rule was different from Cairo. For now, these regions do
-        // not observe DST like Cairo.
-        {"Egypt Standard Time", "PS", "Asia/Gaza", REGION_DEFAULT},
-        {"Egypt Standard Time", "PS", "Asia/Hebron"},
 
 
         // --------------------------------------------------------------------
@@ -1093,6 +1094,7 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+10:00) Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakrtsk
+        {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
 
         // --------------------------------------------------------------------
@@ -1113,13 +1115,14 @@ public class MapData {
 
         // Macquarie Island does not belong to Central Pacific. The zone is listed here
         // just because we use this zone as the default UTC+11:00/no DST zone.
-        {"Central Pacific Standard Time", "AQ", "Antarctica/Macquarie", REGION_DEFAULT},
+        {"Central Pacific Standard Time", "AU", "Antarctica/Macquarie", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
         // (UTC+11:00) Vladivostok
         {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
         {"Vladivostok Standard Time", "RU", "Asia/Sakhalin"},
+        {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
 
 
         // --------------------------------------------------------------------
@@ -1225,14 +1228,14 @@ public class MapData {
         // Closest match - "Central America Standard Time" (observes Northern Hemisphere style DST rule).
         "Pacific/Easter",
 
-        // UTC-05:00/DST. DST usually starts on 2nd week of March and ends on last Sunday of October.
-        // In 2011, DST started on March 20, ended on Novermber 13.
-        // Closest match - "Eastern Standard Time" (observes North American DST rule)
-        "America/Havana",
-
         // UTC-03:00 zone with North American DST rule.
-        // Closest match = "Greenland Standard Time" (observes EU DST rule).
+        // Closest match - "Greenland Standard Time" (observes EU DST rule).
         "America/Miquelon",
+
+        // UTC+02:00 with DST (Mar - Sep).
+        // Closest match - "E. Europe Standard Time", "Israel Standard Time" and some others
+        "Asia/Gaza",
+        "Asia/Hebron",
     };
 
     /*

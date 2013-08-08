@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2009-2011, International Business Machines Corporation and    *
+ * Copyright (C) 2009-2013, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -33,7 +33,7 @@ public class WindowsTimeZones {
         // Default numberOfYears = 1
         int numYears = 1;
         // Default approximate match delta hour
-        int deltaH = 2;
+        int deltaH = 6;
 
         boolean argError = false;
         int argidx = 0;
