@@ -118,6 +118,8 @@ icufacts/c/s45_plural/*.user
 icufacts/c/s45_plural/Debug
 icufacts/c/s45_plural/s41_msg
 icufacts/c/s45_plural/s45_plural
+icufacts/c/s99_sort/s99_sort
+icufacts/c/s99_sort/s99_sort.exe
 icufacts/j/*.class
 icufacts/j/local.mk
 icusegments/Makefile
