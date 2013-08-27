@@ -1,0 +1,6 @@
+es {
+    Aunt { "mi tía" }
+    table { "en la tabla" }
+    pen { "La pluma" }
+    personPlaceThing { "{2} de {0} está {1}." }
+}

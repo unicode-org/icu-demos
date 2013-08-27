@@ -1,0 +1,6 @@
+root {
+    Aunt { "My Aunt" }
+    table { "on the table" }
+    pen { "pen" }
+    personPlaceThing { "{0}''s {2} is {1}." }
+}

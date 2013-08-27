@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="#readme.txt#|.classpath|.project|Makefile|data/|readme.txt|readme.txt~|s49.class" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ICU_UTILITIES"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
