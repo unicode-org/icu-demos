@@ -12,7 +12,7 @@ class CollatorLessThan : public std::binary_function<UnicodeString, UnicodeStrin
 public:
   /**
    * @param coll the Collator to use. Aliased, not adopted.
-   * @param status error status from comparison functions. U_SUCCESS(status) should be TRUE on entry. Check the error value on exit from the sort function.
+   * @param status error status from comparison functions. U_SUCCESS(status) should be TRUE on entry. Check the error value on exit from the sort function. NOTE: this reference is retained for the life of the CollatorLessThan object.
    */
   CollatorLessThan(Collator &coll, UErrorCode &status) : fColl(coll), fStatus(status) {}
   inline bool operator()(const UnicodeString& a, const UnicodeString& b) {
