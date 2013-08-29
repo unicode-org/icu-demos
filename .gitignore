@@ -87,6 +87,7 @@ icufacts/c/*.suo
 icufacts/c/Debug
 icufacts/c/ipch
 icufacts/c/local.mk
+icufacts/c/popdata/popdata
 icufacts/c/s13_hello/*.filters
 icufacts/c/s13_hello/*.user
 icufacts/c/s13_hello/Debug
@@ -95,6 +96,10 @@ icufacts/c/s13_hello/s13_hello.dSYM
 icufacts/c/s20_msg/s20_msg
 icufacts/c/s30_reshello/out
 icufacts/c/s30_reshello/s30_reshello
+icufacts/c/s40_popmsg/out
+icufacts/c/s40_popmsg/s40_popmsg
+icufacts/c/s50_popsort/out
+icufacts/c/s50_popsort/s50_popsort
 icufacts/c/s99_sort/s99_sort
 icufacts/c/s99_sort/s99_sort.exe
 icusegments/Makefile
