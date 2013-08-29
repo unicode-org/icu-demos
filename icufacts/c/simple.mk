@@ -3,7 +3,10 @@
 # set 'RESNAME=reshello'  to build resources 'reshello'.
 
 ifneq ($(RESNAME),)
-RESIN=./$(resname)
+ifeq ($(RESPAR),)
+RESPAR=.
+endif
+RESIN=$(RESPAR)/$(resname)
 RESOUT=./out
 EXTRA_CLEAN=$(RESOUT)
 EXTRA_TARGETS=build-res

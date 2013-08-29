@@ -7,12 +7,12 @@
 class TerritoryEntry {
  public:
   TerritoryEntry(const UnicodeString &countryName,
-                 int64_t population) : fCountryName(countryName), fPopulation(population) {}
-  const UnicodeString &getCountryName() const { return fCountryName; }
+                 int64_t population) : fTerritoryName(countryName), fPopulation(population) {}
+  const UnicodeString &getTerritoryName() const { return fTerritoryName; }
   int64_t getPopulation() const { return fPopulation; }
  private:
   int64_t fPopulation;
-  UnicodeString fCountryName;
+  UnicodeString fTerritoryName;
 };
 
 static double ldml2d(int32_t n);

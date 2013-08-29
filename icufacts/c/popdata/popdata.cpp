@@ -13,7 +13,7 @@ int main() {
   u_printf("count=%d\n", nTerr);
   for(int i=0;i<nTerr;i++) {
     u_printf("%20d %.*S\n", ent[i]->getPopulation(),
-             ent[i]->getCountryName().length(), ent[i]->getCountryName().getBuffer() );
+             ent[i]->getTerritoryName().length(), ent[i]->getTerritoryName().getBuffer() );
     delete ent[i];
   }
   delete [] ent;

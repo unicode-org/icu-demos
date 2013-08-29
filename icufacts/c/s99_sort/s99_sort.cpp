@@ -3,7 +3,7 @@
 #include <list>
 #include "../iucsamples.h"
 
-g/**
+/**
  * A comparison object for std::sort which compares two UnicodeStrings
  * according to the Collator given.
  * Note: UnicodeString is handled here, but UChar* could be handled similarly.
