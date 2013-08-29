@@ -10,12 +10,15 @@
 #include <unicode/unistr.h>
 #include <unicode/ures.h>
 #include <unicode/ustdio.h>
+#include <unicode/locdspnm.h>
 
 // C++ includes
 #ifdef __cplusplus
 #include <unicode/resbund.h>
 #include <unicode/msgfmt.h>
 #include <unicode/calendar.h>
+#include <unicode/coll.h>
+#include <unicode/ustream.h>
 #endif
 
 /**

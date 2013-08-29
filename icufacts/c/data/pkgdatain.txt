@@ -1,2 +1,0 @@
-myapp/es.res
-myapp/root.res
