@@ -165,7 +165,6 @@ icudemos/icudemos-page-templ.html svneol=native#text/html
 icudemos/icudemos.vcxproj -text
 icudemos/icudemos.vcxproj.filters -text
 icudemos/makedata.mak -text
-icufacts/2013putIcuToWork.oo3/contents.xml -text
 icusegments/data/icusegments-body.html svneol=native#text/html
 icusegments/data/icusegments-dojo.js -text
 icusegments/data/icusegments-header.html svneol=native#text/html

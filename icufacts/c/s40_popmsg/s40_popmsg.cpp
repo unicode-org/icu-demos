@@ -8,7 +8,7 @@ int main() {
   Locale locale = Locale::getDefault();
   u_setDataDirectory("out"); // this is where the data is generated, see Makefile
   int32_t territoryCount;
-  TerritoryEntry **territoryList = getTerritoryEntries(locale, territoryCount, status);
+  TerritoryEntry **territoryList = TerritoryEntry::getTerritoryEntries(locale, territoryCount, status);
   ASSERT_OK(status);
 
   // First, read the messages.

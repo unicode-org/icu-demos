@@ -27,7 +27,7 @@ int main() {
   // Locale to use - Danish.
   Locale loc("da");
   // Input data.
-  UnicodeString A[] = { "tirsdag", "aaland", "abel" };
+  UnicodeString A[] = { "tirsdag", "aaland", "abel", "zach" };
   const int N = sizeof(A) / sizeof(A[0]);
   UErrorCode errorCode = U_ZERO_ERROR;
 

@@ -31,7 +31,7 @@ int main() {
   Locale locale = Locale::getDefault();
   u_setDataDirectory("out"); // this is where the data is generated, see Makefile
   int32_t territoryCount;
-  TerritoryEntry **territoryList = getTerritoryEntries(Locale::getDefault(), territoryCount, status);
+  TerritoryEntry **territoryList = TerritoryEntry::getTerritoryEntries(locale, territoryCount, status);
   ASSERT_OK(status);
 
   // Create collator and sort the territories
@@ -55,7 +55,7 @@ int main() {
     UnicodeString result;
     fmt.format(names, args, 1, result, status);
     ASSERT_OK(status);
-    u_printf("%S\n\n", result.getTerminatedBuffer());
+    std::cout << result << std::endl;
   }
 
   {
@@ -74,7 +74,7 @@ int main() {
       };
       result = fmt.format(names, args, 2, result, status);
       ASSERT_OK(status);
-      u_printf("%S\n", result.getTerminatedBuffer());
+      std::cout << result << std::endl;
       delete territoryList[i]; // cleanup.
     }
   }
