@@ -10,7 +10,7 @@
 #include <unicode/unistr.h>
 #include <unicode/ures.h>
 #include <unicode/ustdio.h>
-#include <unicode/locdspnm.h>
+#include <unicode/uldnames.h>
 
 // C++ includes
 #ifdef __cplusplus
@@ -19,6 +19,9 @@
 #include <unicode/calendar.h>
 #include <unicode/coll.h>
 #include <unicode/ustream.h>
+#include <unicode/locdspnm.h>
+#include <ostream>
+#include <iostream>
 #endif
 
 /**

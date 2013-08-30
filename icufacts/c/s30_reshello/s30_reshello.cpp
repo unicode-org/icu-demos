@@ -10,7 +10,7 @@ int main()
 // BEGIN SAMPLE
   ResourceBundle resourceBundle("reshello", locale, status);
   UnicodeString thing = resourceBundle.getStringEx("hello", status);
-  u_printf("%S\n", thing.getTerminatedBuffer());
+  std::cout << thing << std::endl;
   ASSERT_OK(status);
   return 0;
 }

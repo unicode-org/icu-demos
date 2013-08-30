@@ -1,6 +1,7 @@
 root {
-  welcome { "Howdy! We have {territoryCount, number} territories!" }
-  //info { "The territory of {territory} has {population} persons!" }
-  info { "The territory of {territory} has {population, plural, one{one person} other{# persons}}." }
+  welcome { "Hello! We have {territoryCount, number} territories." }
+  info { "The territory of {territory} has {population} persons." }
+  //info { "The territory of {territory} has {population, plural, =0{no people} =1{one person} other{# persons}}."
+ }
 }
 

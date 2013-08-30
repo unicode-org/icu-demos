@@ -4,16 +4,21 @@
 
 int main() {
   UErrorCode status = U_ZERO_ERROR;
-  UChar world[256];
-  u_init(&status);
-  if(U_FAILURE(status)) { puts(u_errorName(status)); return 1; } // hereafter: ASSERT_OK
-  uloc_getDisplayCountry("und_001", NULL, world, 256, &status);
+  ULocaleDisplayNames *names = uldn_open(NULL, // = default
+                                         ULDN_DIALECT_NAMES,
+                                         &status);
+  UChar result[256];
+  int32_t len = uldn_regionDisplayName(names, "001", result, 256, &status);
+  uldn_close(names);
   ASSERT_OK(status);
-
-  u_printf("Hello, %S!\n", world);
+  UnicodeString msg("Hello, ");
+  msg.append(result, len);
+  msg.append(0x2603);
+  std::cout << msg << std::endl;
   return 0;
 }
 
 // Local Variables:
 // compile-command: "icurun s13_hello.cpp"
 // End:
+

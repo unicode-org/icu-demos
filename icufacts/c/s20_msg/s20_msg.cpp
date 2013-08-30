@@ -5,24 +5,22 @@
 int main()
 {
   UErrorCode status = U_ZERO_ERROR;
-  Locale loc = Locale::getDefault();
-  LocalPointer<LocaleDisplayNames> ldn(LocaleDisplayNames::createInstance(loc, ULDN_DIALECT_NAMES));
-  UnicodeString names[] = {
-    "locale",
-    "localestr",
-    "today"
-  };
-  UnicodeString locName;
-  Formattable args[] = {
-    ldn->localeDisplayName(loc,locName),
-    loc.getBaseName(),
-    Calendar::getNow()
-  };
+  Locale defaultLocaleId = Locale::getDefault();
+  LocalPointer<LocaleDisplayNames>
+    ldn(LocaleDisplayNames::createInstance(defaultLocaleId, ULDN_DIALECT_NAMES));
+  UnicodeString defaultLocaleName;
+  ldn->localeDisplayName(defaultLocaleId, defaultLocaleName);
+  UnicodeString world;
+  ldn->regionDisplayName("001",world);
+
+  UnicodeString names[] = { "mylocale", "world", "today", "part" };
+  Formattable args[] = { defaultLocaleName, world, Calendar::getNow(), 1.00 };
   UnicodeString result;
-  MessageFormat fmt("{localestr}: For {locale}, today is {today, date}!", loc, status);
-  fmt.format(names, args, 3, result, status);
+  MessageFormat fmt("A hello to {part, number, percent} of the {world}, in {mylocale}, on {today, date}!",
+                    defaultLocaleId, status);
+  fmt.format(names, args, 4, result, status);
   ASSERT_OK(status);
-  u_printf("%S\n", result.getTerminatedBuffer());
+  std::cout << result << std::endl;
   return 0;
 }
 

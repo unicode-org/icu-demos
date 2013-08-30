@@ -6,7 +6,7 @@ ifneq ($(RESNAME),)
 ifeq ($(RESPAR),)
 RESPAR=.
 endif
-RESIN=$(RESPAR)/$(resname)
+RESIN=$(RESPAR)/$(RESNAME)
 RESOUT=./out
 EXTRA_CLEAN=$(RESOUT)
 EXTRA_TARGETS=build-res
@@ -24,7 +24,7 @@ ifneq ($(RESNAME),)
 
 build-res:
 	-rm -rf "$(RESOUT)"
-	bldicures $(BLDICURES_OPTS) -n "$(RESNAME)" -d "$(RESOUT)" -f "$(RESIN)"
+	bldicures $(BLDICURES_OPTS) --name "$(RESNAME)" --dest "$(RESOUT)" --from "$(RESIN)"
 
 .PHONY: $(EXTRA_TARGETS)
 endif

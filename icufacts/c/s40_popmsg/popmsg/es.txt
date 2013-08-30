@@ -1,4 +1,5 @@
 es {
-     welcome { "Hola! Tiene {territoryCount, plural, one{un Region} other{# Regiones}}." } // TODO
-     info { "el Region {territory} tienen {population, plural, one{un persona} other{# personas}}" } // TODO
+     welcome { "¡Hola! Tenemos {territoryCount, number} regiónes." }
+     info { "En la región de “{territory}” hay {population, number} personas." }
+ //    info { "En la región de “{territory}” {population, plural, =0{no hay personas} =1{hay uno persona} other{hay # personas}}." }
 }

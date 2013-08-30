@@ -13,17 +13,19 @@ class TerritoryEntry {
  private:
   int64_t fPopulation;
   UnicodeString fTerritoryName;
+ public:
+    /**
+     * @param locale display locale
+     * @param count number of territories, on exit
+     * @param status error code (must be U_SUCCESS(status) on entry)
+     * @return array of pointers to TerritoryEntry.  Caller owns the pointers and the obj.
+     */
+    static inline TerritoryEntry **getTerritoryEntries(const Locale &locale, int32_t &count, UErrorCode &status);
 };
 
 static double ldml2d(int32_t n);
 
-/**
- * @param loc display locale
- * @param nTerr number of territories, on exit
- * @param status error code
- * @return array of pointers to TerritoryEntry.  Caller owns the pointers and the obj.
- */
-static TerritoryEntry **getTerritoryEntries(const Locale& loc, int32_t &nTerr, UErrorCode &status) {
+TerritoryEntry **TerritoryEntry::getTerritoryEntries(const Locale& loc, int32_t &nTerr, UErrorCode &status) {
   // Note: format of supplementalData is NOT STATIC and may change. It is internal to ICU.
   LocalUResourceBundlePointer suppData(ures_openDirect(NULL, "supplementalData", &status));
   LocalUResourceBundlePointer territoryInfo(ures_getByKey(suppData.getAlias(), "territoryInfo", NULL, &status));
@@ -61,6 +63,11 @@ static TerritoryEntry **getTerritoryEntries(const Locale& loc, int32_t &nTerr, U
   }
 
   return entries;
+}
+
+// shim
+static TerritoryEntry **getTerritoryEntries(const Locale& loc, int32_t &nTerr, UErrorCode &status) {
+    return TerritoryEntry::getTerritoryEntries(loc, nTerr, status);
 }
 
 /**

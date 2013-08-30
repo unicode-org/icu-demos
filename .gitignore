@@ -88,6 +88,7 @@ icufacts/c/Debug
 icufacts/c/ipch
 icufacts/c/local.mk
 icufacts/c/popdata/popdata
+icufacts/c/s00_hello/s00_hello
 icufacts/c/s13_hello/*.filters
 icufacts/c/s13_hello/*.user
 icufacts/c/s13_hello/Debug
