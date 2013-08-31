@@ -1,13 +1,17 @@
 <html>
 <head>
-  <meta content="Copyright (c) 2008-2011 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
+  <meta content="Copyright (c) 2008-2013 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 <title>Escaper</title>
 <%@ page contentType="text/html; charset=utf-8" import="java.net.URI" %>
 <%@ include file="demohead.jsf" %>
+
 </head>
 <body>
+
 <%@ include file="demolist.jsf"  %>
+
 <%
+
      request.setCharacterEncoding("utf-8");
 
      String s = request.getParameter("v");
@@ -26,7 +30,7 @@ try  {
     
     s = new String(asBytes, "UTF-8");
 } catch(Throwable t) {
-    // TODO: report error.
+    //
 }
 					      
 %>
@@ -43,12 +47,10 @@ try  {
 %>0x<%= Integer.toHexString( ((int)s.charAt(i)) & 0xFFFF) %><%= 
 	((i+1)==s.length())?"":", " %><%
  }
-					      %> , 0}; /* <%= s %> */
+					      %> , 0}; /* <%= escapeString(s) %> */
 </tt>
 
 
 
 </body>
 </html>
-
-

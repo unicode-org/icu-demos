@@ -1,4 +1,4 @@
-<!-- Copyright (c) 2008 IBM. All Rights Reserved -->
+<!-- Copyright (c) 2008-2013 IBM. All Rights Reserved -->
 <html>
 <%@ page contentType="text/html; charset=utf-8" import="com.ibm.icu.text.Bidi" %>
 <%@ page import="com.ibm.icu.util.*" %>
@@ -16,7 +16,6 @@
     <style type="text/css">
             p { color: "white"; background-color: "navy"; padding: 2px; }
     </style>
-
 
  </head>
 
@@ -36,13 +35,14 @@
 	//ULocale from = new ULocale("en_US_POSIX");
 	ULocale to = new ULocale("es_SV");
 	try {
-		to = new ULocale(request.getParameter("to"));
+		to = new ULocale(escapeString(request.getParameter("to")));
 	} catch(Throwable t) {
 		// ;
 	}
 	
 	String skel = request.getParameter("skel");
 	if(skel==null) skel= "";
+        skel = escapeString(skel);
 	
 	Date ta = new Date();
 	//Date tb = new Date();

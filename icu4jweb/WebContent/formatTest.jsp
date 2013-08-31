@@ -7,7 +7,7 @@
 <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
   <meta content="George Rhoten" name="AUTHOR" />
-  <meta content="Copyright (c) 2008-2011 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
+  <meta content="Copyright (c) 2008-2013 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
   <title>Format Tester</title>
   				<script type="text/javascript" src="dojo.js"></script>
  
@@ -59,9 +59,8 @@ static final Object[] convertToObjects(String[] argTypes, String[] args) {
     }
     return objs;
 }
-static final String escapeString(String arg) {
-    return arg.replaceAll("&", "&amp;").replaceAll("\"", "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-}
+// escapeString moved to demohead.jsf
+
 static final String[] escapeStrings(String[] args) {
     for (int argIdx = 0; argIdx < args.length; argIdx++) {
         args[argIdx] = escapeString(args[argIdx]);

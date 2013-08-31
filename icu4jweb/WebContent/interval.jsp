@@ -29,7 +29,7 @@
 	//ULocale from = new ULocale("en_US_POSIX");
 	ULocale to = new ULocale("es_SV");
 	try {
-		to = new ULocale(request.getParameter("to"));
+		to = new ULocale(request.getParameter("to").replaceAll("^a-zA-Z0-9_-",""));
 	} catch(Throwable t) {
 		// ;
 	}

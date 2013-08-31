@@ -1,7 +1,7 @@
 <html>
 	<head><title>Candidate List Demo</title>
 <%@ include file="demohead.jsf" %>
-  <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
+  <meta content="Copyright (c) 2008-2013 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 </head>
 
 	<body>
@@ -23,6 +23,7 @@
 					out.println("<html><font color=red>Please enter locale.</font></html>");
 				else{
 					String a = request.getParameter("locale");
+		                        a = escapeString(a);
 					System.out.println(a);
 					if(a.contains("@")){
 						baseLocale = a.substring(0, a.indexOf("@")-1);

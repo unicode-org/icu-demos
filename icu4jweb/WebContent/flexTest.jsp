@@ -27,6 +27,7 @@
 <%
 final String PAT="pat";
 String thePattern = request.getParameter(PAT);
+thePattern = escapeString(thePattern);
 if(thePattern==null) thePattern="";
 DateTimePatternGenerator dtpg = DateTimePatternGenerator.getInstance(locale);
 String formatName = "format";
