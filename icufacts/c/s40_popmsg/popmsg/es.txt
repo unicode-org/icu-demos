@@ -1,9 +1,10 @@
 es {
      welcome { "¡Hola! Tenemos {territoryCount, number} regiónes." }
    //  info { "En la región de “{territory}” hay {population, number} personas." }
- //    info { "En la región de “{territory}” {population, plural, =0{no hay personas} =1{hay uno persona} other{hay # personas}}." }
+ //    info { "En la región de “{territory}” {population, plural,
+//     =0{no hay ninguno personas} =1{hay uno persona} other{hay # personas}}." }
   info { "{population, plural, "
-	" =0{{territory} no hay personas.}"
+	" =0{{territory} no hay ninguno personas.}"
 	" =1{En la región de “{territory}” hay uno persona!}"
 	" other{En la región de “{territory}” hay # personas.}}" }
 
