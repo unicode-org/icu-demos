@@ -2,7 +2,7 @@ root {
   welcome { "Hello! We have {territoryCount, number} territories." }
   //info { "The territory of {territory} has {population} persons." }
   //info { "The territory of {territory} has {population, plural, =0{no people} =1{one person} other{# persons}}."
-  info { "{population, plural, =0{{territory} has a population of zero.} =1{Only one person lives on {territory}!} other{The territory of {territory} has # persons on it.}}"
+  info { "{population, plural, =0{{territory} has a population of zero.} =1{Only one person lives on {territory}!} other{The territory of {territory} has # persons in it.}}"
  }
 }
 
