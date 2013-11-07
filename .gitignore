@@ -314,6 +314,7 @@ ucd/Debug
 ucd/Makefile
 ucd/Makefile.local
 ucd/Release
+ucd/ucd
 usort/Makefile
 usort/client/*.d
 usort/client/*.o

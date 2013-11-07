@@ -355,19 +355,20 @@ void ucd_cmd_set(UChar32 cmd, const UChar *str, int32_t len, UErrorCode &status)
     uset_add(aSet, c);
   }
 
-  UChar tmpbuf[workmax];
-  
+  UChar *tmpbuf = (UChar *)malloc((workmax + 1) * sizeof(UChar));
   len = uset_toPattern(aSet, tmpbuf, workmax, (cmd==UCD_CMD_US), &status);
-  
+
   uset_close(aSet);
 
   if(U_FAILURE(status)) {
-    u_fprintf(ustderr, "Failed to fetch pattern from set: %s\n", u_errorName(status));
+    u_fprintf(ustderr, "Failed to fetch pattern from set: %s\n",
+      u_errorName(status));
     return;
   }
 
   u_fprintf(ustderr, "%S\n", tmpbuf);
-  
+
+  free(tmpbuf);
 }
 
 // TODO: take locale
