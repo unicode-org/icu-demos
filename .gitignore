@@ -25,6 +25,7 @@ apputil/debug
 apputil/demo_config.h
 apputil/libapputil*
 apputil/release
+/autom4te.cache
 /bin
 /config.cache
 /config.log

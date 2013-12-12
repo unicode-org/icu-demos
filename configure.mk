@@ -1,4 +1,4 @@
-#  Copyright (c) 2008-2009, International Business Machines Corporation and others. All Rights Reserved.
+#  Copyright (c) 2008-2013, International Business Machines Corporation and others. All Rights Reserved.
 # 
 #
 # Makefile for regenerating configure in the face of a bad ^M
@@ -8,8 +8,8 @@
 
 all: configure apputil/demo_config.h.in
 
-configure:	configure.in ./aclocal.m4
-	( autoconf && mv configure configure.tmp && sed -e 's%^ac_cr=.*%ac_cr=`echo X |tr X "\\015"`%'  < configure.tmp > configure && chmod a+rx $@ && rm configure.tmp ) || ( rm $@ ; "echo configure build failed" ; /usr/bin/false  )
+configure:	configure.ac ./acinclude.m4
+	aclocal && autoconf
 
-apputil/demo_config.h.in: configure.in
-	autoheader configure.in
+apputil/demo_config.h.in: configure.ac
+	autoheader configure.ac
