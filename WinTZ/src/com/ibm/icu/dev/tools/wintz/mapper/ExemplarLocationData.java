@@ -44,6 +44,7 @@ class ExemplarLocationData {
         {"Amman", "Asia/Amman"},
         {"Amsterdam", "Europe/Amsterdam"},
         {"Arizona", "America/Phoenix"},
+        {"Ashgabat", "Asia/Ashgabat"},
         {"Astana", "Asia/Almaty"},
         {"Asuncion", "America/Asuncion"},
         {"Athens", "Europe/Athens"},

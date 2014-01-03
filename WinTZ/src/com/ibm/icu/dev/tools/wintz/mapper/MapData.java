@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2013d";
-    static final String WINTZDATA_VERSION = "7dd0003";
+    static final String TZDATA_VERSION = "2013i";
+    static final String WINTZDATA_VERSION = "7de0000";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -210,11 +210,14 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-05:00) Bogota, Lima, Quito
+        {"SA Pacific Standard Time", "BR", "America/Eirunepe"},
+        {"SA Pacific Standard Time", "BR", "America/Rio_Branco", REGION_DEFAULT},
+
         {"SA Pacific Standard Time", "CO", "America/Bogota", DEFAULT}, // Bogota
 
-        {"SA Pacific Standard Time", "PE", "America/Lima", REGION_DEFAULT}, // Lima
-
         {"SA Pacific Standard Time", "EC", "America/Guayaquil", REGION_DEFAULT}, // *Quito
+
+        {"SA Pacific Standard Time", "PE", "America/Lima", REGION_DEFAULT}, // Lima
 
         // This is the only Windows time zone with UTC offset -05:00 without DST
         {"SA Pacific Standard Time", "ZZ", "Etc/GMT+5", REGION_DEFAULT},
@@ -282,10 +285,8 @@ public class MapData {
         {"SA Western Standard Time", "BO", "America/La_Paz", DEFAULT}, // La Paz
 
         {"SA Western Standard Time", "BR", "America/Boa_Vista"},
-        {"SA Western Standard Time", "BR", "America/Eirunepe"},
         {"SA Western Standard Time", "BR", "America/Manaus", REGION_DEFAULT}, // Manaus
         {"SA Western Standard Time", "BR", "America/Porto_Velho"},
-        {"SA Western Standard Time", "BR", "America/Rio_Branco"},
 
         {"SA Western Standard Time", "GY", "America/Guyana", REGION_DEFAULT}, // *Georgetown
 
@@ -370,7 +371,6 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-03:00) Brasilia
-        {"E. South America Standard Time", "BR", "America/Araguaina"},
         {"E. South America Standard Time", "BR", "America/Sao_Paulo", DEFAULT}, // *Brasilia
 
 
@@ -386,6 +386,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-03:00) Cayenne, Fortaleza
+        {"SA Eastern Standard Time", "BR", "America/Araguaina"},
         {"SA Eastern Standard Time", "BR", "America/Belem"},
         {"SA Eastern Standard Time", "BR", "America/Fortaleza", REGION_DEFAULT}, // Fortaleza
         {"SA Eastern Standard Time", "BR", "America/Maceio"},
@@ -407,10 +408,6 @@ public class MapData {
         // Rothera station is in Antarctica. The zone is listed here just because we use
         // this zone as the default UTC-03:00/no DST zone.
         {"SA Eastern Standard Time", "AQ", "Antarctica/Rothera", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC-02:00) Mid-Atlantic
 
 
         // --------------------------------------------------------------------
@@ -490,12 +487,11 @@ public class MapData {
 
         {"Greenwich Standard Time", "TG", "Africa/Lome", REGION_DEFAULT},
 
-        // Al Aaiun's time zone is actually WET/no DST
-        {"Greenwich Standard Time", "EH", "Africa/El_Aaiun", REGION_DEFAULT},
-
         
         // --------------------------------------------------------------------
         // (UTC) Casablanca
+        {"Morocco Standard Time", "EH", "Africa/El_Aaiun", REGION_DEFAULT},
+
         {"Morocco Standard Time", "MA", "Africa/Casablanca", DEFAULT},
 
 
@@ -619,7 +615,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+01:00) Tripoli
+        // (UTC+02:00) Tripoli
         {"Libya Standard Time", "LY", "Africa/Tripoli", DEFAULT},
 
 
@@ -837,7 +833,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+05:00) Tashkent
+        // (UTC+05:00) Ashgabat, Tashkent
         {"West Asia Standard Time", "KZ", "Asia/Aqtau"},
         {"West Asia Standard Time", "KZ", "Asia/Aqtobe"},
         {"West Asia Standard Time", "KZ", "Asia/Oral", REGION_DEFAULT},
@@ -1139,10 +1135,10 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+12:00) Auckland, Wellington
-        {"New Zealand Standard Time", "AQ", "Antarctica/McMurdo"},
-        {"New Zealand Standard Time", "AQ", "Antarctica/South_Pole", REGION_DEFAULT},
+        {"New Zealand Standard Time", "AQ", "Antarctica/McMurdo", REGION_DEFAULT},
 
         {"New Zealand Standard Time", "NZ", "Pacific/Auckland", DEFAULT}, // Auckland
+        {"New Zealand Standard Time", "NZ", "Antarctica/South_Pole"},
 
 
         // --------------------------------------------------------------------
@@ -1187,7 +1183,9 @@ public class MapData {
     static final String[] UNMAPPALBE_WINDOWS_ZONES_ARRAY = {
         // UTC-02:00/DST start: last Sun in March / end: last Sun in September
         // All UTC-02:00 zones in the tz dadtabase do not observe DST
-        "Mid-Atlantic Standard Time",
+
+    	// Removed in 7de0000
+    	//"Mid-Atlantic Standard Time",
     };
 
     /*
@@ -1245,9 +1243,10 @@ public class MapData {
     static final String[] NON_CLDR_ZONES_ARRAY = {
         "Factory",
 
-        "Asia/Riyadh87",
-        "Asia/Riyadh88",
-        "Asia/Riyadh89",
+        // Removed from tzdata2013i
+        //"Asia/Riyadh87",
+        //"Asia/Riyadh88",
+        //"Asia/Riyadh89",
 
         "SystemV/AST4",
         "SystemV/AST4ADT",
