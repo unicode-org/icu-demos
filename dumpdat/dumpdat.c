@@ -13,7 +13,7 @@
 *   created by: Markus W. Scherer  - gencmn
 *   modified by: steven r loomis [srl]
 *
-* 
+*
 */
 
 #include "unicode/utypes.h"
@@ -73,7 +73,7 @@ void printVersion(const uint8_t  *v);
 void printInfo(const UDataInfo *info);
 
 
-/* -------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------
 
  */
 void printVersion(const uint8_t  *v)
@@ -94,7 +94,7 @@ void printInfo(const UDataInfo *info)
 	   (int)info->size,
 	   "lB?"[info->isBigEndian],
 	   "AE?"[info->charsetFamily]);
-    
+ 
     printf("UChar=%d bytes.\n", info->sizeofUChar);
 
     printf("dataFormat   =");
@@ -167,7 +167,7 @@ void cmd_S(char *buf)
     char *equals;
     void *foo;
     const char *lib;
-    
+
 
     if(buf[0]=='S')
     {
