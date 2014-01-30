@@ -7,7 +7,7 @@ dnl   others. All Rights Reserved.
 dnl Process this file with autoconf to produce a configure script
 
 AC_PREREQ(2.69)
-
+AC_CONFIG_MACRO_DIR([m4])
 AC_INIT(icuapps, 0.0, http://icu-project.org/bugs, [ICU Apps], [http://icu-project.org])
 dnl Check a file in our files, just to make sure we have a sane setup..
 AC_CONFIG_SRCDIR(usort/lib/unicode/usort.h)

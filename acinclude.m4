@@ -1,3 +1,4 @@
+dnl -*- autoconf -*-
 dnl aclocal.m4 for ICU apps
 dnl Copyright (c) 2002-2013, International Business Machines Corporation and
 dnl others. All Rights Reserved.
@@ -5,7 +6,7 @@ dnl others. All Rights Reserved.
 dnl @TOP@
 
 dnl CHECK_ICU_CONFIG
-AC_DEFUN(CHECK_ICU_CONFIG, [
+AC_DEFUN([CHECK_ICU_CONFIG], [
 dnl look for the icu-config script.
 dnl example shown for apps that might want --without-icu as an option.
 dnl sets ICU_CONFIG and ICU_VERSION
