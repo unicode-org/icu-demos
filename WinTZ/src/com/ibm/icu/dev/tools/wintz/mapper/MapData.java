@@ -621,8 +621,8 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+02:00) E. Europe
-        {"E. Europe Standard Time", "CY", "Asia/Nicosia", DEFAULT}, // Nicosia
 
+        // No mappings
 
         // --------------------------------------------------------------------
         // (UTC+02:00) Cairo
@@ -651,6 +651,8 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+02:00) Athens, Bucharest
+        {"GTB Standard Time", "CY", "Asia/Nicosia", REGION_DEFAULT},
+
         {"GTB Standard Time", "GR", "Europe/Athens", REGION_DEFAULT}, // Athens
 
         {"GTB Standard Time", "MD", "Europe/Chisinau", REGION_DEFAULT},
@@ -1186,6 +1188,11 @@ public class MapData {
 
     	// Removed in 7de0000
     	//"Mid-Atlantic Standard Time",
+
+    	// UTC+02:00/DST start: last Sun in March at 2:00STD / end: last Sun in October at 3:00DST
+    	// There are 3 European zones with the base offset +2 and all of tz database zones
+    	// with UTC+02:00/EU DST rule aligns them, not this one.
+    	"E. Europe Standard Time",
     };
 
     /*
