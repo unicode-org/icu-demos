@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * Copyright (C) 2007-2013, International Business Machines Corporation and   *
+ * Copyright (C) 2007-2014, International Business Machines Corporation and   *
  * others. All Rights Reserved.                                               *
  ******************************************************************************
  */
@@ -301,9 +301,12 @@ public class DataCustomizer extends HttpServlet {
             icupkgCommand = "icupkg50";
         } else if (Integer.parseInt(icuDataVersion) == 51) {
             icupkgCommand = "icupkg51";
-        } else {
+        } else if (Integer.parseInt(icuDataVersion) == 52) {
             icupkgCommand = "icupkg52";
+        } else if (Integer.parseInt(icuDataVersion) == 53) {
+            icupkgCommand = "icupkg53";
         }
+        
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
             String itemToRead = (String)filesToPackage.elementAt(idx);
             int treeIndex = itemToRead.lastIndexOf('/');
@@ -333,7 +336,7 @@ public class DataCustomizer extends HttpServlet {
         }
         for (int idx = 0; idx < generatedIndexesVect.size(); idx++) {
             String itemToRead = (String)generatedIndexesVect.elementAt(idx);
-            String pkgCommand = "icupkg -tb -s . -d " + packagePath + " " + itemToRead;
+            String pkgCommand = icupkgCommand + " -tb -s . -d " + packagePath + " " + itemToRead;
             if (!runCommand(response, pkgCommand, sessionDir, "Packaging tool for index regeneration")) {
                 return;
             }
