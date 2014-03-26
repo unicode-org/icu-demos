@@ -7,7 +7,7 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2013i";
+    static final String TZDATA_VERSION = "2014b";
     static final String WINTZDATA_VERSION = "7de0000";
 
     static final String DEFAULT = "D";
@@ -95,7 +95,6 @@ public class MapData {
 
         {"Mountain Standard Time", "US", "America/Boise"},
         {"Mountain Standard Time", "US", "America/Denver", DEFAULT},
-        {"Mountain Standard Time", "US", "America/Shiprock"},
 
         {"Mountain Standard Time", "ZZ", "MST7MDT", REGION_DEFAULT},
 
@@ -645,7 +644,6 @@ public class MapData {
 
         {"FLE Standard Time", "UA", "Europe/Kiev", DEFAULT}, // Kyiv
         {"FLE Standard Time", "UA", "Europe/Uzhgorod"},
-        {"FLE Standard Time", "UA", "Europe/Simferopol"},
         {"FLE Standard Time", "UA", "Europe/Zaporozhye"},
 
 
@@ -822,6 +820,7 @@ public class MapData {
         {"Russian Standard Time", "RU", "Europe/Moscow", DEFAULT}, // Moscow
         {"Russian Standard Time", "RU", "Europe/Volgograd"}, // Volgograd
         {"Russian Standard Time", "RU", "Europe/Samara"},
+        {"Russian Standard Time", "RU", "Europe/Simferopol"},
 
 
         // --------------------------------------------------------------------
@@ -1140,7 +1139,6 @@ public class MapData {
         {"New Zealand Standard Time", "AQ", "Antarctica/McMurdo", REGION_DEFAULT},
 
         {"New Zealand Standard Time", "NZ", "Pacific/Auckland", DEFAULT}, // Auckland
-        {"New Zealand Standard Time", "NZ", "Antarctica/South_Pole"},
 
 
         // --------------------------------------------------------------------
@@ -1236,6 +1234,13 @@ public class MapData {
         // UTC-03:00 zone with North American DST rule.
         // Closest match - "Greenland Standard Time" (observes EU DST rule).
         "America/Miquelon",
+
+        // UTC with DST +2 hours (Mar - Oct).
+        // The Troll station seems to use 3 different offsets (UTC / UTC+1 / UTC+2)
+        // every year, but the tz database (as of 2014b) currently skips two short
+        // periods of UTC+1 (March 1st to last Sunday in March and last Sunday in
+        // October to November 7th) and make 2 transitions per year intead of 4 transitions.
+        "Antarctica/Troll",
 
         // UTC+02:00 with DST (Mar - Sep).
         // Closest match - "E. Europe Standard Time", "Israel Standard Time" and some others
