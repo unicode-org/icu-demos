@@ -1,0 +1,103 @@
+## ******************************************************************************
+## *
+## *   Copyright (C) 1999-2014, International Business Machines
+## *   Corporation and others.  All Rights Reserved.
+## *
+## *******************************************************************************
+## Originally by Andy Heninger, Oct 17, 2003
+## Makefile.in for ICU - collation webdemo
+##
+## To change the path that collation.html uses to call the sortcgi, add a line like:
+##
+##    CGIPATH=/icu-bin/sortcgi
+##
+## .. to the new file local.mk
+##
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+## Build directory information
+top_builddir = ../..
+subdir = webdemo/collation
+
+SORTCGI=sortcgi
+AVAILABLE=available
+CONTEXTPATH=/collation/
+
+CGIPATH=$(CONTEXTPATH)$(SORTCGI)
+
+# srcdir must be set before this is included
+include $(top_builddir)/icuapps.mk
+
+## Extra files to remove for 'make clean'
+CLEANFILES = *~ collation.html
+
+## Target information
+TARGET = available sortcgi
+
+#LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO)
+#LDFLAGS += $(LDFLAGS_TOOLUTIL)
+#LDFLAGS += -L../apputil
+CPPFLAGS += -I$(ICU_SOURCE)/common
+
+#CPPFLAGS += -I$(top_srcdir)/apputil
+# Want to make sure the usort.h dependency is not on the installed version .. 
+#CPPFLAGS  += -I../locexp/util
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just '$(LIBS) -licuuc -lusort' ...
+# -ldl is needed for DLL version
+#ICULIBS    +=  -licuio -lapputil
+
+#OBJECTS = scompare.o 
+HTML_FILES = scompare-content-templ.html scompare-page-templ.html
+
+## List of standard targets
+all: all-local
+install: install-local
+clean: clean-local
+distclean : distclean-local
+dist: dist-local
+check: check-local
+
+all-local: $(TARGET) collation.html
+
+collation.html: index.html
+	sed -e 's%\(<form action="\)[^"]*\(.*\)%\1'"$(CGIPATH)"'\2%' < $^ > $@
+
+install-local: all-local install-target
+
+
+install-target: all-local
+	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
+	$(INSTALL) sortcgi$(EXEEXT) $(BINDIR)/sortcgi$(EXEEXT)
+	$(INSTALL) available$(EXEEXT) $(BINDIR)/available$(EXEEXT)
+	$(INSTALL) collation.html $(BINDIR)/data/collation.html
+
+dist-local:
+
+clean-local:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	rm -f $(OBJECTS) $(SORTCGI)$(EXEEXT) $(AVAILABLE)$(EXEEXT)
+
+distclean-local: clean-local
+	rm -f Makefile $(DEPS)
+
+check-local:
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	 && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# ICULIBS includes all standard ICU libraries.
+# if we wanted only part of the ICU, we could use (for example) just
+#         '$(LIBS) -licuuc -lusort' ...
+
+-include local.mk
+
+%$(EXEEXT): %.o
+	$(LINK.cc) -o $@ $^ $(ICULIBS)
+
+
+
+

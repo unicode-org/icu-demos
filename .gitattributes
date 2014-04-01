@@ -303,3 +303,4 @@ usort/client/usort_client.vcxproj -text
 usort/client/usort_client.vcxproj.filters -text
 usort/lib/usort_lib.vcxproj -text
 usort/lib/usort_lib.vcxproj.filters -text
+webdemo/collation/index.html svneol=native#text/html

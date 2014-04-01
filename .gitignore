@@ -333,5 +333,9 @@ usort/lib/Debug
 usort/lib/Makefile
 usort/lib/Release
 usort/lib/lib*
+webdemo/collation/Makefile
+webdemo/collation/available
+webdemo/collation/collation.html
+webdemo/collation/sortcgi
 xlitomatic/Makefile
 xtradata/Makefile

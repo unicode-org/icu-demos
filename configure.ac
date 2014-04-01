@@ -1,7 +1,7 @@
 dnl -*-m4-*-
 dnl configure.in for ICU Apps
 dnl Steven R. Loomis
-dnl Copyright (C) 1999-2013, International Business Machines Corporation and
+dnl Copyright (C) 1999-2014, International Business Machines Corporation and
 dnl   others. All Rights Reserved.
 
 dnl Process this file with autoconf to produce a configure script
@@ -69,6 +69,7 @@ ucd/Makefile \
 usort/Makefile \
 usort/client/Makefile \
 usort/lib/Makefile \
+webdemo/collation/Makefile \
 xlitomatic/Makefile])
 
 dnl

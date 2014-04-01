@@ -1,6 +1,6 @@
 #******************************************************************************
 #
-#   Copyright (C) 1999-2012, International Business Machines
+#   Copyright (C) 1999-2014, International Business Machines
 #   Corporation and others.  All Rights Reserved.
 #
 #******************************************************************************
@@ -22,7 +22,7 @@ CPPFLAGS+=$(CPPFLAGS_APPUTIL)
 
 # TODO: disable obsolete and test by option.
 OBS=obsolete test
-SUBDIRS= $(OBS) apputil usort locexp ubrowse dumpdat  XMLConverter  nbrowser idnbrowser convexp translitdemo scompare redemo icudemos ucd icusegments
+SUBDIRS= $(OBS) apputil usort locexp ubrowse dumpdat  XMLConverter  nbrowser idnbrowser convexp translitdemo scompare redemo icudemos ucd icusegments webdemo/collation
 # calexpo
 
 

@@ -3686,7 +3686,7 @@ ac_config_headers="$ac_config_headers apputil/demo_config.h"
 
 
 
-ac_config_files="$ac_config_files icuapps.mk Makefile XMLConverter/Makefile apputil/Makefile convexp/Makefile datacustom/Makefile datacustom/gendatadep/Makefile dumpdat/Makefile icudemos/Makefile icusegments/Makefile idnbrowser/Makefile locexp/Makefile locexp/resource/Makefile locexp/tools/Makefile locexp/util/Makefile locexp2/Makefile nbrowser/Makefile obsolete/Makefile rbbiperf/Makefile redemo/Makefile regressionTest/CollRegressionTest/c/Makefile regressionTest/StrsrchRegressionTest/c/Makefile rtfcvrt/Makefile scompare/Makefile test/Makefile test/obstest/Makefile test/testdata/Makefile ubrowse/Makefile ucd/Makefile usort/Makefile usort/client/Makefile usort/lib/Makefile xlitomatic/Makefile"
+ac_config_files="$ac_config_files icuapps.mk Makefile XMLConverter/Makefile apputil/Makefile convexp/Makefile datacustom/Makefile datacustom/gendatadep/Makefile dumpdat/Makefile icudemos/Makefile icusegments/Makefile idnbrowser/Makefile locexp/Makefile locexp/resource/Makefile locexp/tools/Makefile locexp/util/Makefile locexp2/Makefile nbrowser/Makefile obsolete/Makefile rbbiperf/Makefile redemo/Makefile regressionTest/CollRegressionTest/c/Makefile regressionTest/StrsrchRegressionTest/c/Makefile rtfcvrt/Makefile scompare/Makefile test/Makefile test/obstest/Makefile test/testdata/Makefile ubrowse/Makefile ucd/Makefile usort/Makefile usort/client/Makefile usort/lib/Makefile webdemo/collation/Makefile xlitomatic/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4412,6 +4412,7 @@ do
     "usort/Makefile") CONFIG_FILES="$CONFIG_FILES usort/Makefile" ;;
     "usort/client/Makefile") CONFIG_FILES="$CONFIG_FILES usort/client/Makefile" ;;
     "usort/lib/Makefile") CONFIG_FILES="$CONFIG_FILES usort/lib/Makefile" ;;
+    "webdemo/collation/Makefile") CONFIG_FILES="$CONFIG_FILES webdemo/collation/Makefile" ;;
     "xlitomatic/Makefile") CONFIG_FILES="$CONFIG_FILES xlitomatic/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
