@@ -19,13 +19,13 @@ th { text-align:right }
 </style>
 </head>
 <body>
+<form action="/cgi-bin/collation/dosort.sh" method="post" target="output">
 <div id="intro">
 <h1><a href="http://site.icu-project.org/">ICU</a> Collation Demo</h1>
 <p><a href="http://userguide.icu-project.org/collation/customization">User Guide</a> —
 <a href="http://www.unicode.org/reports/tr35/tr35-collation.html">LDML Collation</a> —
 <a href="http://demo.icu-project.org/icu-bin/icudemos">ICU4C Demos</a> —
 <a href="http://icu-project.org/icu4jdemos.html">ICU4J Demos</a></p>
-<form action="/cgi-bin/collation/dosort.sh" method="post" target="output">
 <select name="co"><!-- begin output from webdemo/collation/available -->
 <option value="">und (type=standard):   Root (Standard Sort Order)</option>
 <option value="root@collation=eor">root-u-co-eor:   Root (European Ordering Rules)</option>
