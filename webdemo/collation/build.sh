@@ -1,7 +1,7 @@
 #! /bin/sh
 ICU_SRC=/home/mscherer/svn.icu/trunk/src
 PREFIX=/home/mscherer/svn.icu/trunk/inst
-ICUAPPS_SRC=/home/mscherer/svn.icuapps/collv2/src
+ICUAPPS_SRC=/home/mscherer/svn.icuapps/trunk/src
 CGI_BIN=/var/www/cgi-bin
 
 CC=/home/mscherer/clang/bin/clang
@@ -21,4 +21,4 @@ chmod a+rx $CGI_BIN/collation/sortcgi
 cp webdemo/collation/index.html /var/www/collation.html
 chmod a+r /var/www/collation.html
 
-# ~/svn.icuapps/collv2/src$ webdemo/collation/build.sh
+# ~/svn.icuapps/trunk/src$ webdemo/collation/build.sh
