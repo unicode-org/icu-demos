@@ -1,7 +1,7 @@
 #!/bin/sh
 # Copyright (c) 2010 IBM Corporation and Others. All Rights Reserved.
 
-make -C data
+#make -C data
 
 for dir in `ls`;
 do

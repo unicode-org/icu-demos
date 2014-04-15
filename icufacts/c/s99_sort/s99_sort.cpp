@@ -1,6 +1,9 @@
 #include <ostream>
 #include <iostream>
 #include <list>
+#include <memory> // for auto_ptr
+#include <algorithm> // for sort
+
 #include "../iucsamples.h"
 
 /**

@@ -24,7 +24,7 @@ ifneq ($(RESNAME),)
 
 build-res:
 	-rm -rf "$(RESOUT)"
-	bldicures $(BLDICURES_OPTS) --name "$(RESNAME)" --dest "$(RESOUT)" --from "$(RESIN)"
+	../bldicures.py $(BLDICURES_OPTS) --name "$(RESNAME)" --dest "$(RESOUT)" --from "$(RESIN)"
 
 .PHONY: $(EXTRA_TARGETS)
 endif

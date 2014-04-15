@@ -34,7 +34,9 @@ To locate ICU for the purpose of these samples, ensure one of the following is t
 
 3. ICU built, installed, icu-config is on the $PATH
 
-
+Note:
+ Make sure icu's bin and sbin dirs are on the PATH.
+ You may want to set [DY]LD_LIBRARY_PATH to include icu's lib dir also.
 
 To build and run all samples, just run 'make check'. To build an individual sample, run 'make check' from inside that directory.
 
