@@ -1,0 +1,3 @@
+ja {
+  info { "{territory}には、{population,number}人います。" }
+}
