@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2011-2013, International Business Machines Corporation and    *
+ * Copyright (C) 2011-2014, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -145,6 +145,7 @@ class ExemplarLocationData {
         {"Quito", "America/Guayaquil"},
         {"Reykjavik", "Atlantic/Reykjavik"},
         {"Riga", "Europe/Riga"},
+        {"Rio Branco", "America/Rio_Branco"},
         {"Riyadh", "Asia/Riyadh"},
         {"Rome", "Europe/Rome"},
         {"Salvador", "America/Bahia"},
@@ -171,7 +172,7 @@ class ExemplarLocationData {
         {"Tokyo", "Asia/Tokyo"},
         {"Tripoli", "Africa/Tripoli"},
         {"Ulaanbaatar", "Asia/Ulaanbaatar"},
-        {"Urumqi", "Asia/Urumqi"},
+        {"Urumqi", ""},	// In tzdata2014f, Asia/Urumqi was changed to UT+6
         {"Vienna", "Europe/Vienna"},
         {"Vilnius", "Europe/Vilnius"},
         {"Vladivostok", "Asia/Vladivostok"},

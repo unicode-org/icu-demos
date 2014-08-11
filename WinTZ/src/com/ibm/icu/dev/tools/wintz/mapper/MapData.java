@@ -1,14 +1,14 @@
 /*
  *******************************************************************************
- * Copyright (C) 2011-2013, International Business Machines Corporation and    *
+ * Copyright (C) 2011-2014, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2014b";
-    static final String WINTZDATA_VERSION = "7de0000";
+    static final String TZDATA_VERSION = "2014f";
+    static final String WINTZDATA_VERSION = "7de0002";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -208,7 +208,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-05:00) Bogota, Lima, Quito
+        // (UTC-05:00) Bogota, Lima, Quito, Rio Branco
         {"SA Pacific Standard Time", "BR", "America/Eirunepe"},
         {"SA Pacific Standard Time", "BR", "America/Rio_Branco", REGION_DEFAULT},
 
@@ -900,6 +900,8 @@ public class MapData {
         // are just listed here.
         {"Central Asia Standard Time", "AQ", "Antarctica/Vostok", REGION_DEFAULT},
 
+        {"Central Asia Standard Time", "CN", "Asia/Urumqi", REGION_DEFAULT},
+
         {"Central Asia Standard Time", "IO", "Indian/Chagos", REGION_DEFAULT},
 
 
@@ -955,11 +957,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
-        {"China Standard Time", "CN", "Asia/Chongqing"}, // Chongquing
-        {"China Standard Time", "CN", "Asia/Harbin"},
-        {"China Standard Time", "CN", "Asia/Kashgar"},
         {"China Standard Time", "CN", "Asia/Shanghai", DEFAULT}, // *Beijing
-        {"China Standard Time", "CN", "Asia/Urumqi"}, // Urumqi
 
         {"China Standard Time", "HK", "Asia/Hong_Kong", REGION_DEFAULT}, // Hong Kong
 
@@ -1090,7 +1088,8 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+10:00) Yakutsk
-        {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakrtsk
+        {"Yakutsk Standard Time", "RU", "Asia/Chita"},	// In 2014f, UTC+10 until 2014-10-26, then UTC+8 after the date
+        {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
 
@@ -1132,6 +1131,7 @@ public class MapData {
         {"Magadan Standard Time", "RU", "Asia/Anadyr"},
         {"Magadan Standard Time", "RU", "Asia/Kamchatka"},
         {"Magadan Standard Time", "RU", "Asia/Magadan", DEFAULT}, // Magadan
+        {"Magadan Standard Time", "RU", "Asia/Srednekolymsk"},	// In 2014f, UTC+12 until 2014-10-26, then UTC+11 after the date
 
 
         // --------------------------------------------------------------------
