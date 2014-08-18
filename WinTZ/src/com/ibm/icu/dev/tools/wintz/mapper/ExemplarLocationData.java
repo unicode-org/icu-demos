@@ -106,6 +106,7 @@ class ExemplarLocationData {
         {"Kaliningrad", "Europe/Kaliningrad"},
         {"Karachi", "Asia/Karachi"},
         {"Kathmandu", "Asia/Kathmandu"},
+        {"Kiritimati Island", "Pacific/Kiritimati"},
         {"Kolkata", "Asia/Kolkata"},
         {"Krasnoyarsk", "Asia/Krasnoyarsk"},
         {"Kuala Lumpur", "Asia/Kuala_Lumpur"},

@@ -8,7 +8,7 @@ package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
     static final String TZDATA_VERSION = "2014f";
-    static final String WINTZDATA_VERSION = "7de0002";
+    static final String WINTZDATA_VERSION = "7de0006";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -1175,6 +1175,12 @@ public class MapData {
 
         // This is the only Windows time zone with UTC offset +13:00 without DST
         {"Tonga Standard Time", "ZZ", "Etc/GMT-13", REGION_DEFAULT},
+
+        // --------------------------------------------------------------------
+        // (UTC+14:00) Kiritimati Island
+        {"Line Islands Standard Time", "KI", "Pacific/Kiritimati", DEFAULT}, // *Kiritimati Island
+
+        {"Line Islands Standard Time", "ZZ", "Etc/GMT-14", REGION_DEFAULT},
     };
 
     /*
@@ -1200,9 +1206,7 @@ public class MapData {
     static final String[] NO_BASE_OFFSET_MATCH_ZONES_ARRAY = {
         "Australia/Eucla",      // +8:45
         "Australia/Lord_Howe",  // +10:30
-        "Etc/GMT-14",           // +14:00
         "Pacific/Chatham",      // +12:45
-        "Pacific/Kiritimati",   // +14:00
         "Pacific/Marquesas",    // -9:30
         "Pacific/Norfolk",      // +11:30
     };
