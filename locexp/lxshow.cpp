@@ -981,7 +981,8 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 if(i < 8)
                 {
                     len = 0;
-                    exampleDF = udat_open(UDAT_IGNORE, UDAT_IGNORE, locale,NULL, 0, s,-1,&exampleStatus);
+                    exampleDF = udat_open(UDAT_LONG, UDAT_LONG, locale,NULL, 0, s,-1,&exampleStatus);
+                    udat_applyPattern(exampleDF, FALSE, s, -1);
 #if 1
                     toShow = s;
 #else
