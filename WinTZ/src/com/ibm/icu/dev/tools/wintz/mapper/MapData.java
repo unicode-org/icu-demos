@@ -7,7 +7,7 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2014f";
+    static final String TZDATA_VERSION = "2014g";
     static final String WINTZDATA_VERSION = "7de0006";
 
     static final String DEFAULT = "D";
@@ -188,8 +188,6 @@ public class MapData {
 
         {"Eastern Standard Time", "HT", "America/Port-au-Prince", REGION_DEFAULT},
 
-        {"Eastern Standard Time", "TC", "America/Grand_Turk", REGION_DEFAULT},
-
         {"Eastern Standard Time", "US", "America/Detroit"},
         {"Eastern Standard Time", "US", "America/Indiana/Petersburg"},
         {"Eastern Standard Time", "US", "America/Indiana/Vincennes"},
@@ -330,6 +328,8 @@ public class MapData {
         {"SA Western Standard Time", "MS", "America/Montserrat", REGION_DEFAULT},
 
         {"SA Western Standard Time", "SX", "America/Lower_Princes", REGION_DEFAULT},
+
+        {"SA Western Standard Time", "TC", "America/Grand_Turk", REGION_DEFAULT},
 
         {"SA Western Standard Time", "TT", "America/Port_of_Spain", REGION_DEFAULT},
 
