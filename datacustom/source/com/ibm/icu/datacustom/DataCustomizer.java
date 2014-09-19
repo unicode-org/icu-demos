@@ -307,6 +307,8 @@ public class DataCustomizer extends HttpServlet {
             icupkgCommand = "icupkg53";
         } else if (Integer.parseInt(icuDataVersion) == 54) {
             icupkgCommand = "icupkg54";
+        } else {
+            icupkgCommand = "icupkg";
         }
         
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
