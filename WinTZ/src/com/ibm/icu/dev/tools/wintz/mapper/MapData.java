@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2014g";
-    static final String WINTZDATA_VERSION = "7de0006";
+    static final String TZDATA_VERSION = "2014h";
+    static final String WINTZDATA_VERSION = "7de0007";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -43,7 +43,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-10:00) Hawaii
-        {"Hawaiian Standard Time", "US", "Pacific/Honolulu", DEFAULT}, // *Hawaii
+        {"Hawaiian Standard Time", "US", "Pacific/Honolulu", DEFAULT}, // Hawaii
 
         {"Hawaiian Standard Time", "UM", "Pacific/Johnston", REGION_DEFAULT},
 
@@ -59,11 +59,16 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-09:00) Alaska
-        {"Alaskan Standard Time", "US", "America/Anchorage", DEFAULT}, // *Alaska
+        {"Alaskan Standard Time", "US", "America/Anchorage", DEFAULT}, // Alaska
         {"Alaskan Standard Time", "US", "America/Juneau"},
         {"Alaskan Standard Time", "US", "America/Nome"},
         {"Alaskan Standard Time", "US", "America/Sitka"},
         {"Alaskan Standard Time", "US", "America/Yakutat"},
+
+
+        // --------------------------------------------------------------------
+        // (UTC-08:00) Baja California
+        {"Pacific Standard Time (Mexico)", "MX", "America/Santa_Isabel", DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -80,8 +85,22 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-08:00) Baja California
-        {"Pacific Standard Time (Mexico)", "MX", "America/Santa_Isabel", DEFAULT},
+        // (UTC-07:00) Arizona
+        {"US Mountain Standard Time", "CA", "America/Dawson_Creek", REGION_DEFAULT},
+        {"US Mountain Standard Time", "CA", "America/Creston"},
+
+        {"US Mountain Standard Time", "MX", "America/Hermosillo", REGION_DEFAULT},
+
+        {"US Mountain Standard Time", "US", "America/Phoenix", DEFAULT}, // Arizona
+
+        // This is the only Windows time zone with UTC offset -07:00 without DST
+        {"US Mountain Standard Time", "ZZ", "Etc/GMT+7", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC-07:00) Chihuahua, La Paz, Mazatlan
+        {"Mountain Standard Time (Mexico)", "MX", "America/Chihuahua", DEFAULT}, // Chihuahua
+        {"Mountain Standard Time (Mexico)", "MX", "America/Mazatlan"}, // Mazatlan
 
 
         // --------------------------------------------------------------------
@@ -97,31 +116,6 @@ public class MapData {
         {"Mountain Standard Time", "US", "America/Denver", DEFAULT},
 
         {"Mountain Standard Time", "ZZ", "MST7MDT", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC-07:00) Chihuahua, La Paz, Mazatlan
-        {"Mountain Standard Time (Mexico)", "MX", "America/Chihuahua", DEFAULT}, // Chihuahua
-        {"Mountain Standard Time (Mexico)", "MX", "America/Mazatlan"}, // Mazatlan
-
-
-        // --------------------------------------------------------------------
-        // (UTC-07:00) Arizona
-        {"US Mountain Standard Time", "CA", "America/Dawson_Creek", REGION_DEFAULT},
-        {"US Mountain Standard Time", "CA", "America/Creston"},
-
-        {"US Mountain Standard Time", "MX", "America/Hermosillo", REGION_DEFAULT},
-
-        {"US Mountain Standard Time", "US", "America/Phoenix", DEFAULT}, // *Arizona
-
-        // This is the only Windows time zone with UTC offset -07:00 without DST
-        {"US Mountain Standard Time", "ZZ", "Etc/GMT+7", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC-06:00) Saskatchewan
-        {"Canada Central Standard Time", "CA", "America/Regina", DEFAULT}, // *Saskatchewan
-        {"Canada Central Standard Time", "CA", "America/Swift_Current"},
 
 
         // --------------------------------------------------------------------
@@ -176,6 +170,37 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC-06:00) Saskatchewan
+        {"Canada Central Standard Time", "CA", "America/Regina", DEFAULT}, // Saskatchewan
+        {"Canada Central Standard Time", "CA", "America/Swift_Current"},
+
+
+        // --------------------------------------------------------------------
+        // (UTC-05:00) Bogota, Lima, Quito, Rio Branco
+        {"SA Pacific Standard Time", "BR", "America/Eirunepe"},
+        {"SA Pacific Standard Time", "BR", "America/Rio_Branco", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "CO", "America/Bogota", DEFAULT}, // Bogota
+
+        {"SA Pacific Standard Time", "EC", "America/Guayaquil", REGION_DEFAULT}, // Quito
+
+        {"SA Pacific Standard Time", "PE", "America/Lima", REGION_DEFAULT}, // Lima
+
+        // This is the only Windows time zone with UTC offset -05:00 without DST
+        {"SA Pacific Standard Time", "ZZ", "Etc/GMT+5", REGION_DEFAULT},
+
+        // Following zones are not South American Pacific regions. Because this is only
+        // the Windows time zone with UTC-05:00/no DST, they cannot use anything else.
+        {"SA Pacific Standard Time", "CA", "America/Coral_Harbour", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "KY", "America/Cayman", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "PA", "America/Panama", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
         // (UTC-05:00) Eastern Time (US & Canada)
         {"Eastern Standard Time", "BS", "America/Nassau", REGION_DEFAULT},
 
@@ -206,33 +231,8 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-05:00) Bogota, Lima, Quito, Rio Branco
-        {"SA Pacific Standard Time", "BR", "America/Eirunepe"},
-        {"SA Pacific Standard Time", "BR", "America/Rio_Branco", REGION_DEFAULT},
-
-        {"SA Pacific Standard Time", "CO", "America/Bogota", DEFAULT}, // Bogota
-
-        {"SA Pacific Standard Time", "EC", "America/Guayaquil", REGION_DEFAULT}, // *Quito
-
-        {"SA Pacific Standard Time", "PE", "America/Lima", REGION_DEFAULT}, // Lima
-
-        // This is the only Windows time zone with UTC offset -05:00 without DST
-        {"SA Pacific Standard Time", "ZZ", "Etc/GMT+5", REGION_DEFAULT},
-
-        // Following zones are not South American Pacific regions. Because this is only
-        // the Windows time zone with UTC-05:00/no DST, they cannot use anything else.
-        {"SA Pacific Standard Time", "CA", "America/Coral_Harbour", REGION_DEFAULT},
-
-        {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
-
-        {"SA Pacific Standard Time", "KY", "America/Cayman", REGION_DEFAULT},
-
-        {"SA Pacific Standard Time", "PA", "America/Panama", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
         // (UTC-05:00) Indiana (East)
-        {"US Eastern Standard Time", "US", "America/Indianapolis", DEFAULT}, // *Indiana (East)
+        {"US Eastern Standard Time", "US", "America/Indianapolis", DEFAULT}, // Indiana (East)
         {"US Eastern Standard Time", "US", "America/Indiana/Marengo"},
         {"US Eastern Standard Time", "US", "America/Indiana/Vevay"},
 
@@ -240,6 +240,11 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC-04:30) Caracas
         {"Venezuela Standard Time", "VE", "America/Caracas", DEFAULT}, // Caracas
+
+
+        // --------------------------------------------------------------------
+        // (UTC-04:00) Asuncion
+        {"Paraguay Standard Time", "PY", "America/Asuncion", DEFAULT}, // Asuncion
 
 
         // --------------------------------------------------------------------
@@ -261,23 +266,6 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-04:00) Santiago
-        {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
-
-        // According to the description in antarctica file, Palmer station keeps the same time
-        // as Puta Arenas, Chile. The rule ChileAQ seems is out of sync with the rule Chile in
-        // southamerica file in 2011n. This is probably a bug in the tz database. For now,
-        // we assume Santiago and Palmer station are using the same time zone.
-        // [Update] 2012a updated Rule ChileAQ synchronized with Rule Chile.
-        {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC-04:00) Asuncion
-        {"Paraguay Standard Time", "PY", "America/Asuncion", DEFAULT}, // Asuncion
-
-
-        // --------------------------------------------------------------------
         // (UTC-04:00) Georgetown, La Paz, Manaus, San Juan
         {"SA Western Standard Time", "BO", "America/La_Paz", DEFAULT}, // La Paz
 
@@ -285,7 +273,7 @@ public class MapData {
         {"SA Western Standard Time", "BR", "America/Manaus", REGION_DEFAULT}, // Manaus
         {"SA Western Standard Time", "BR", "America/Porto_Velho"},
 
-        {"SA Western Standard Time", "GY", "America/Guyana", REGION_DEFAULT}, // *Georgetown
+        {"SA Western Standard Time", "GY", "America/Guyana", REGION_DEFAULT}, // Georgetown
 
         {"SA Western Standard Time", "PR", "America/Puerto_Rico", REGION_DEFAULT}, // *San Juan - Note: There are many locations named San Juan. It's most likely San Juan, Puerto Rico.
 
@@ -344,8 +332,25 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC-04:00) Santiago
+        {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
+
+        // According to the description in antarctica file, Palmer station keeps the same time
+        // as Puta Arenas, Chile. The rule ChileAQ seems is out of sync with the rule Chile in
+        // southamerica file in 2011n. This is probably a bug in the tz database. For now,
+        // we assume Santiago and Palmer station are using the same time zone.
+        // [Update] 2012a updated Rule ChileAQ synchronized with Rule Chile.
+        {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
         // (UTC-03:30) Newfoundland
-        {"Newfoundland Standard Time", "CA", "America/St_Johns", DEFAULT}, // *Newfoundland
+        {"Newfoundland Standard Time", "CA", "America/St_Johns", DEFAULT}, // Newfoundland
+
+
+        // --------------------------------------------------------------------
+        // (UTC-03:00) Brasilia
+        {"E. South America Standard Time", "BR", "America/Sao_Paulo", DEFAULT}, // Brasilia
 
 
         // --------------------------------------------------------------------
@@ -362,25 +367,6 @@ public class MapData {
         {"Argentina Standard Time", "AR", "America/Cordoba"},
         {"Argentina Standard Time", "AR", "America/Jujuy"},
         {"Argentina Standard Time", "AR", "America/Mendoza"},
-
-
-        // --------------------------------------------------------------------
-        // (UTC-03:00) Salvador
-        {"Bahia Standard Time", "BR", "America/Bahia", DEFAULT}, // *Salvador
-
-        // --------------------------------------------------------------------
-        // (UTC-03:00) Brasilia
-        {"E. South America Standard Time", "BR", "America/Sao_Paulo", DEFAULT}, // *Brasilia
-
-
-        // --------------------------------------------------------------------
-        // (UTC-03:00) Greenland
-        {"Greenland Standard Time", "GL", "America/Godthab", DEFAULT}, // *Greenland
-
-
-        // --------------------------------------------------------------------
-        // (UTC-03:00) Montevideo
-        {"Montevideo Standard Time", "UY", "America/Montevideo", DEFAULT}, // Montevideo
 
 
         // --------------------------------------------------------------------
@@ -410,12 +396,28 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC-03:00) Greenland
+        {"Greenland Standard Time", "GL", "America/Godthab", DEFAULT}, // Greenland
+
+
+        // --------------------------------------------------------------------
+        // (UTC-03:00) Montevideo
+        {"Montevideo Standard Time", "UY", "America/Montevideo", DEFAULT}, // Montevideo
+
+
+        // --------------------------------------------------------------------
+        // (UTC-03:00) Salvador
+        {"Bahia Standard Time", "BR", "America/Bahia", DEFAULT}, // Salvador
+
+
+        // --------------------------------------------------------------------
         // (UTC-02:00) Coordinated Universal Time-02
         {"UTC-02", "BR", "America/Noronha", REGION_DEFAULT},
 
         {"UTC-02", "GS", "Atlantic/South_Georgia", REGION_DEFAULT},
 
         {"UTC-02", "ZZ", "Etc/GMT+2", DEFAULT},
+
 
         // --------------------------------------------------------------------
         // (UTC-01:00) Azores
@@ -432,6 +434,20 @@ public class MapData {
 
         // This is the only Windows time zone with UTC offset -01:00 without DST
         {"Cape Verde Standard Time", "ZZ", "Etc/GMT+1", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC) Casablanca
+        {"Morocco Standard Time", "EH", "Africa/El_Aaiun", REGION_DEFAULT},
+
+        {"Morocco Standard Time", "MA", "Africa/Casablanca", DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC) Coordinated Universal Time
+        {"UTC", "ZZ", "Etc/GMT", DEFAULT},
+
+        {"UTC", "GL", "America/Danmarkshavn", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -486,19 +502,41 @@ public class MapData {
 
         {"Greenwich Standard Time", "TG", "Africa/Lome", REGION_DEFAULT},
 
-        
-        // --------------------------------------------------------------------
-        // (UTC) Casablanca
-        {"Morocco Standard Time", "EH", "Africa/El_Aaiun", REGION_DEFAULT},
-
-        {"Morocco Standard Time", "MA", "Africa/Casablanca", DEFAULT},
-
 
         // --------------------------------------------------------------------
-        // (UTC) Coordinated Universal Time
-        {"UTC", "ZZ", "Etc/GMT", DEFAULT},
+        // (UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
+        {"W. Europe Standard Time", "AD", "Europe/Andorra",REGION_DEFAULT},
 
-        {"UTC", "GL", "America/Danmarkshavn", REGION_DEFAULT},
+        {"W. Europe Standard Time", "AT", "Europe/Vienna", REGION_DEFAULT}, // Vienna
+
+        {"W. Europe Standard Time", "CH", "Europe/Zurich", REGION_DEFAULT}, // Bern
+
+        {"W. Europe Standard Time", "DE", "Europe/Berlin", DEFAULT}, // Berlin
+        {"W. Europe Standard Time", "DE", "Europe/Busingen"},
+
+        {"W. Europe Standard Time", "GI", "Europe/Gibraltar", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "IT", "Europe/Rome", REGION_DEFAULT}, // Rome
+
+        {"W. Europe Standard Time", "LI", "Europe/Vaduz", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "LU", "Europe/Luxembourg", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "MC", "Europe/Monaco", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "MT", "Europe/Malta", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "NL", "Europe/Amsterdam", REGION_DEFAULT}, // Amsterdam
+
+        {"W. Europe Standard Time", "NO", "Europe/Oslo", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "SE", "Europe/Stockholm", REGION_DEFAULT}, // Stockholm
+
+        {"W. Europe Standard Time", "SJ", "Arctic/Longyearbyen", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "SM", "Europe/San_Marino", REGION_DEFAULT},
+
+        {"W. Europe Standard Time", "VA", "Europe/Vatican", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -517,21 +555,6 @@ public class MapData {
 
         {"Central Europe Standard Time", "SK", "Europe/Bratislava", REGION_DEFAULT}, // Bratislava
 
-        // --------------------------------------------------------------------
-        // (UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb
-        {"Central European Standard Time", "BA", "Europe/Sarajevo", REGION_DEFAULT}, // Sarajevo
-
-        {"Central European Standard Time", "HR", "Europe/Zagreb", REGION_DEFAULT}, // Zagreb
-
-        {"Central European Standard Time", "MK", "Europe/Skopje", REGION_DEFAULT}, // Skopje
-
-        {"Central European Standard Time", "PL", "Europe/Warsaw", DEFAULT}, // Warsaw
-
-
-        // --------------------------------------------------------------------
-        // (UTC+01:00) Windhoek
-        {"Namibia Standard Time", "NA", "Africa/Windhoek", DEFAULT}, // Windhoek
-
 
         // --------------------------------------------------------------------
         //(UTC+01:00) Brussels, Copenhagen, Madrid, Paris
@@ -543,6 +566,18 @@ public class MapData {
         {"Romance Standard Time", "ES", "Europe/Madrid", REGION_DEFAULT}, // Madrid
 
         {"Romance Standard Time", "FR", "Europe/Paris", DEFAULT}, // Paris
+
+
+        // --------------------------------------------------------------------
+        // (UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb
+        {"Central European Standard Time", "BA", "Europe/Sarajevo", REGION_DEFAULT}, // Sarajevo
+
+        {"Central European Standard Time", "HR", "Europe/Zagreb", REGION_DEFAULT}, // Zagreb
+
+        {"Central European Standard Time", "MK", "Europe/Skopje", REGION_DEFAULT}, // Skopje
+
+        {"Central European Standard Time", "PL", "Europe/Warsaw", DEFAULT}, // Warsaw
+
 
         // --------------------------------------------------------------------
         // (UTC+01:00) West Central Africa
@@ -578,73 +613,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
-        {"W. Europe Standard Time", "AD", "Europe/Andorra",REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "AT", "Europe/Vienna", REGION_DEFAULT}, // Vienna
-
-        {"W. Europe Standard Time", "CH", "Europe/Zurich", REGION_DEFAULT}, // *Bern
-
-        {"W. Europe Standard Time", "DE", "Europe/Berlin", DEFAULT}, // Berlin
-        {"W. Europe Standard Time", "DE", "Europe/Busingen"},
-
-        {"W. Europe Standard Time", "GI", "Europe/Gibraltar", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "IT", "Europe/Rome", REGION_DEFAULT}, // Rome
-
-        {"W. Europe Standard Time", "LI", "Europe/Vaduz", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "LU", "Europe/Luxembourg", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "MC", "Europe/Monaco", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "MT", "Europe/Malta", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "NL", "Europe/Amsterdam", REGION_DEFAULT}, // Amsterdam
-
-        {"W. Europe Standard Time", "NO", "Europe/Oslo", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "SE", "Europe/Stockholm", REGION_DEFAULT}, // Stockholm
-
-        {"W. Europe Standard Time", "SJ", "Arctic/Longyearbyen", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "SM", "Europe/San_Marino", REGION_DEFAULT},
-
-        {"W. Europe Standard Time", "VA", "Europe/Vatican", REGION_DEFAULT},
+        // (UTC+01:00) Windhoek
+        {"Namibia Standard Time", "NA", "Africa/Windhoek", DEFAULT}, // Windhoek
 
 
         // --------------------------------------------------------------------
-        // (UTC+02:00) Tripoli
-        {"Libya Standard Time", "LY", "Africa/Tripoli", DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+02:00) E. Europe
-
-        // No mappings
-
-        // --------------------------------------------------------------------
-        // (UTC+02:00) Cairo
-        {"Egypt Standard Time", "EG", "Africa/Cairo", DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius
-        {"FLE Standard Time", "AX", "Europe/Mariehamn", REGION_DEFAULT},
-
-        {"FLE Standard Time", "BG", "Europe/Sofia", REGION_DEFAULT}, // Sofia
-
-        {"FLE Standard Time", "EE", "Europe/Tallinn", REGION_DEFAULT}, // Tallinn
-
-        {"FLE Standard Time", "FI", "Europe/Helsinki", REGION_DEFAULT}, // Helsinki
-
-        {"FLE Standard Time", "LT", "Europe/Vilnius", REGION_DEFAULT}, // Vilnius
-
-        {"FLE Standard Time", "LV", "Europe/Riga", REGION_DEFAULT}, // Riga
-
-        {"FLE Standard Time", "UA", "Europe/Kiev", DEFAULT}, // Kyiv
-        {"FLE Standard Time", "UA", "Europe/Uzhgorod"},
-        {"FLE Standard Time", "UA", "Europe/Zaporozhye"},
+        // (UTC+02:00) Amman
+        {"Jordan Standard Time", "JO", "Asia/Amman", DEFAULT}, // Amman
 
 
         // --------------------------------------------------------------------
@@ -659,18 +634,23 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+02:00) Jerusalem
-        {"Israel Standard Time", "IL", "Asia/Jerusalem", DEFAULT}, // Jerusalem
-
-
-        // --------------------------------------------------------------------
-        // (UTC+02:00) Amman
-        {"Jordan Standard Time", "JO", "Asia/Amman", DEFAULT}, // Amman
-
-
-        // --------------------------------------------------------------------
         // (UTC+02:00) Beirut
         {"Middle East Standard Time", "LB", "Asia/Beirut", DEFAULT}, // Beirut
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) Cairo
+        {"Egypt Standard Time", "EG", "Africa/Cairo", DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) Damascus
+        {"Syria Standard Time", "SY", "Asia/Damascus", DEFAULT}, // Damascus
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) E. Europe
+        // No mappings
 
 
         // --------------------------------------------------------------------
@@ -704,13 +684,47 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+02:00) Damascus
-        {"Syria Standard Time", "SY", "Asia/Damascus", DEFAULT}, // Damascus
+        // (UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius
+        {"FLE Standard Time", "AX", "Europe/Mariehamn", REGION_DEFAULT},
+
+        {"FLE Standard Time", "BG", "Europe/Sofia", REGION_DEFAULT}, // Sofia
+
+        {"FLE Standard Time", "EE", "Europe/Tallinn", REGION_DEFAULT}, // Tallinn
+
+        {"FLE Standard Time", "FI", "Europe/Helsinki", REGION_DEFAULT}, // Helsinki
+
+        {"FLE Standard Time", "LT", "Europe/Vilnius", REGION_DEFAULT}, // Vilnius
+
+        {"FLE Standard Time", "LV", "Europe/Riga", REGION_DEFAULT}, // Riga
+
+        {"FLE Standard Time", "UA", "Europe/Kiev", DEFAULT}, // Kyiv
+        {"FLE Standard Time", "UA", "Europe/Uzhgorod"},
+        {"FLE Standard Time", "UA", "Europe/Zaporozhye"},
 
 
         // --------------------------------------------------------------------
         // (UTC+02:00) Istanbul
         {"Turkey Standard Time", "TR", "Europe/Istanbul", DEFAULT}, // Istanbul
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) Jerusalem
+        {"Israel Standard Time", "IL", "Asia/Jerusalem", DEFAULT}, // Jerusalem
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) Tripoli
+        {"Libya Standard Time", "LY", "Africa/Tripoli", DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) Kaliningrad (RTZ 1)
+        {"Kaliningrad Standard Time", "RU", "Europe/Kaliningrad", DEFAULT}, // Kaliningrad
+
+
+        // --------------------------------------------------------------------
+        // (UTC+03:00) Baghdad
+        {"Arabic Standard Time", "IQ", "Asia/Baghdad", DEFAULT}, // Baghdad
 
 
         // --------------------------------------------------------------------
@@ -727,8 +741,15 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+03:00) Baghdad
-        {"Arabic Standard Time", "IQ", "Asia/Baghdad", DEFAULT}, // Baghdad
+        // (UTC+03:00) Minsk
+        {"Belarus Standard Time", "BY", "Europe/Minsk", DEFAULT}, // Minsk
+
+
+        // --------------------------------------------------------------------
+        // (UTC+03:00) Moscow, St. Petersburg, Volgograd (RTZ 2)
+        {"Russian Standard Time", "RU", "Europe/Moscow", DEFAULT}, // Moscow
+        {"Russian Standard Time", "RU", "Europe/Volgograd"}, // Volgograd
+        {"Russian Standard Time", "RU", "Europe/Simferopol"},
 
 
         // --------------------------------------------------------------------
@@ -767,20 +788,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+03:00) Kaliningrad, Minsk
-        {"Kaliningrad Standard Time", "BY", "Europe/Minsk", REGION_DEFAULT}, // Minsk
-
-        {"Kaliningrad Standard Time", "RU", "Europe/Kaliningrad", DEFAULT}, // Kaliningrad
-
-
-        // --------------------------------------------------------------------
         // (UTC+03:30) Tehran
         {"Iran Standard Time", "IR", "Asia/Tehran", DEFAULT}, // Tehran
 
 
         // --------------------------------------------------------------------
         // (UTC+04:00) Abu Dhabi, Muscat
-        {"Arabian Standard Time", "AE", "Asia/Dubai", DEFAULT}, // *Abu Dhabi
+        {"Arabian Standard Time", "AE", "Asia/Dubai", DEFAULT}, // Abu Dhabi
 
         {"Arabian Standard Time", "OM", "Asia/Muscat", REGION_DEFAULT}, // Muscat
 
@@ -795,18 +809,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+04:00) Yerevan
-        {"Caucasus Standard Time", "AM", "Asia/Yerevan", DEFAULT}, // Yerevan
-
-
-        // --------------------------------------------------------------------
-        // (UTC+04:00) Tbilisi
-        {"Georgian Standard Time", "GE", "Asia/Tbilisi", DEFAULT}, // Tbilisi
+        // (UTC+04:00) Izhevsk, Samara (RTZ 3)
+        {"Russia Time Zone 3", "RU", "Europe/Samara", DEFAULT}, // Samara
 
 
         // --------------------------------------------------------------------
         // (UTC+04:00) Port Louis
-        {"Mauritius Standard Time", "MU", "Indian/Mauritius", DEFAULT}, // *Port Luis
+        {"Mauritius Standard Time", "MU", "Indian/Mauritius", DEFAULT}, // Port Luis
 
         // Following zones are not Mauritius, but close enough and using the
         // same UTC offset/no DST.
@@ -816,21 +825,18 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+04:00) Moscow, St. Petersburg, Volgograd
-        {"Russian Standard Time", "RU", "Europe/Moscow", DEFAULT}, // Moscow
-        {"Russian Standard Time", "RU", "Europe/Volgograd"}, // Volgograd
-        {"Russian Standard Time", "RU", "Europe/Samara"},
-        {"Russian Standard Time", "RU", "Europe/Simferopol"},
+        // (UTC+04:00) Tbilisi
+        {"Georgian Standard Time", "GE", "Asia/Tbilisi", DEFAULT}, // Tbilisi
+
+
+        // --------------------------------------------------------------------
+        // (UTC+04:00) Yerevan
+        {"Caucasus Standard Time", "AM", "Asia/Yerevan", DEFAULT}, // Yerevan
 
 
         // --------------------------------------------------------------------
         // (UTC+04:30) Kabul
         {"Afghanistan Standard Time", "AF", "Asia/Kabul", DEFAULT}, // Kabul
-
-
-        // --------------------------------------------------------------------
-        // (UTC+05:00) Islamabad, Karachi
-        {"Pakistan Standard Time", "PK", "Asia/Karachi", DEFAULT}, // Karachi
 
 
         // --------------------------------------------------------------------
@@ -862,13 +868,23 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+05:00) Ekaterinburg (RTZ 4)
+        {"Ekaterinburg Standard Time", "RU", "Asia/Yekaterinburg", DEFAULT}, // Ekaterinburg
+
+
+        // --------------------------------------------------------------------
+        // (UTC+05:00) Islamabad, Karachi
+        {"Pakistan Standard Time", "PK", "Asia/Karachi", DEFAULT}, // Karachi
+
+
+        // --------------------------------------------------------------------
         // (UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi
         {"India Standard Time", "IN", "Asia/Calcutta", DEFAULT}, // Kolkata
 
 
         // --------------------------------------------------------------------
         // (UTC+05:30) Sri Jayawardenepura
-        {"Sri Lanka Standard Time", "LK", "Asia/Colombo", DEFAULT}, // *Sri Jayawardenepura
+        {"Sri Lanka Standard Time", "LK", "Asia/Colombo", DEFAULT}, // Sri Jayawardenepura
 
 
         // --------------------------------------------------------------------
@@ -877,17 +893,10 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+06:00) Dhaka
-        {"Bangladesh Standard Time", "BD", "Asia/Dhaka", DEFAULT}, // Dhaka
-
-        {"Bangladesh Standard Time", "BT", "Asia/Thimphu", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
         // (UTC+06:00) Astana
         {"Central Asia Standard Time", "KG", "Asia/Bishkek", REGION_DEFAULT},
 
-        {"Central Asia Standard Time", "KZ", "Asia/Almaty", DEFAULT}, // *Astana
+        {"Central Asia Standard Time", "KZ", "Asia/Almaty", DEFAULT}, // Astana
         {"Central Asia Standard Time", "KZ", "Asia/Qyzylorda"},
 
         // There are three Windows time zones with UTC offset +06:00 without DST for now.
@@ -906,8 +915,16 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+06:00) Ekaterinburg
-        {"Ekaterinburg Standard Time", "RU", "Asia/Yekaterinburg", DEFAULT}, // Ekaterinburg
+        // (UTC+06:00) Dhaka
+        {"Bangladesh Standard Time", "BD", "Asia/Dhaka", DEFAULT}, // Dhaka
+
+        {"Bangladesh Standard Time", "BT", "Asia/Thimphu", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+06:00) Novosibirsk (RTZ 5)
+        {"N. Central Asia Standard Time", "RU", "Asia/Novosibirsk", DEFAULT}, // Novosibirsk
+        {"N. Central Asia Standard Time", "RU", "Asia/Omsk"},
 
 
         // --------------------------------------------------------------------
@@ -918,13 +935,6 @@ public class MapData {
         // Cocos Island is not related to Myanmar, but this is the only Windows zone
         // with UTC+06:30/no DST.
         {"Myanmar Standard Time", "CC", "Indian/Cocos", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+07:00) Novosibirsk
-        {"N. Central Asia Standard Time", "RU", "Asia/Novokuznetsk"},
-        {"N. Central Asia Standard Time", "RU", "Asia/Novosibirsk", DEFAULT}, // Novosibirsk
-        {"N. Central Asia Standard Time", "RU", "Asia/Omsk"},
 
 
         // --------------------------------------------------------------------
@@ -956,6 +966,12 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+07:00) Krasnoyarsk (RTZ 6)
+        {"North Asia Standard Time", "RU", "Asia/Krasnoyarsk", DEFAULT}, // Krasnoyarsk
+        {"North Asia Standard Time", "RU", "Asia/Novokuznetsk"},
+
+
+        // --------------------------------------------------------------------
         // (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
         {"China Standard Time", "CN", "Asia/Shanghai", DEFAULT}, // *Beijing
 
@@ -963,9 +979,11 @@ public class MapData {
 
         {"China Standard Time", "MO", "Asia/Macau", REGION_DEFAULT},
 
+
         // --------------------------------------------------------------------
-        // (UTC+08:00) Krasnoyarsk
-        {"North Asia Standard Time", "RU", "Asia/Krasnoyarsk", DEFAULT}, // Krasnoyarsk
+        // (UTC+08:00) Irkutsk (RTZ 7)
+        {"North Asia East Standard Time", "RU", "Asia/Chita"},
+        {"North Asia East Standard Time", "RU", "Asia/Irkutsk", DEFAULT}, // Irkutsk
 
 
         // --------------------------------------------------------------------
@@ -988,6 +1006,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+08:00) Perth
+        {"W. Australia Standard Time", "AU", "Australia/Perth", DEFAULT}, // Perth
+
+        {"W. Australia Standard Time", "AQ", "Antarctica/Casey", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
         // (UTC+08:00) Taipei
         {"Taipei Standard Time", "TW", "Asia/Taipei", DEFAULT}, // Taipei
 
@@ -996,25 +1021,6 @@ public class MapData {
         // (UTC+08:00) Ulaanbaatar
         {"Ulaanbaatar Standard Time", "MN", "Asia/Ulaanbaatar", DEFAULT}, // Ulaanbaatar
         {"Ulaanbaatar Standard Time", "MN", "Asia/Choibalsan"},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+08:00) Perth
-        {"W. Australia Standard Time", "AU", "Australia/Perth", DEFAULT}, // Perth
-
-        {"W. Australia Standard Time", "AQ", "Antarctica/Casey", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+09:00) Seoul
-        {"Korea Standard Time", "KP", "Asia/Pyongyang", REGION_DEFAULT},
-
-        {"Korea Standard Time", "KR", "Asia/Seoul", DEFAULT}, // Seoul
-
-
-        // --------------------------------------------------------------------
-        // (UTC+09:00) Irkutsk
-        {"North Asia East Standard Time", "RU", "Asia/Irkutsk", DEFAULT}, // Irkutsk
 
 
         // --------------------------------------------------------------------
@@ -1037,8 +1043,16 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+09:30) Darwin
-        {"AUS Central Standard Time", "AU", "Australia/Darwin", DEFAULT}, // Darwin
+        // (UTC+09:00) Seoul
+        {"Korea Standard Time", "KP", "Asia/Pyongyang", REGION_DEFAULT},
+
+        {"Korea Standard Time", "KR", "Asia/Seoul", DEFAULT}, // Seoul
+
+
+        // --------------------------------------------------------------------
+        // (UTC+10:00) Yakutsk (RTZ 8)
+        {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
+        {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
 
         // --------------------------------------------------------------------
@@ -1048,9 +1062,8 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Canberra, Melbourne, Sydney
-        {"AUS Eastern Standard Time", "AU", "Australia/Melbourne"}, // Melbourne
-        {"AUS Eastern Standard Time", "AU", "Australia/Sydney", DEFAULT}, // Sydney
+        // (UTC+09:30) Darwin
+        {"AUS Central Standard Time", "AU", "Australia/Darwin", DEFAULT}, // Darwin
 
 
         // --------------------------------------------------------------------
@@ -1060,9 +1073,9 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Hobart
-        {"Tasmania Standard Time", "AU", "Australia/Currie"},
-        {"Tasmania Standard Time", "AU", "Australia/Hobart", DEFAULT}, // Hobert
+        // (UTC+10:00) Canberra, Melbourne, Sydney
+        {"AUS Eastern Standard Time", "AU", "Australia/Melbourne"}, // Melbourne
+        {"AUS Eastern Standard Time", "AU", "Australia/Sydney", DEFAULT}, // Sydney
 
 
         // --------------------------------------------------------------------
@@ -1087,11 +1100,31 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Yakutsk
-        {"Yakutsk Standard Time", "RU", "Asia/Chita"},	// In 2014f, UTC+10 until 2014-10-26, then UTC+8 after the date
-        {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
-        {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
+        // (UTC+10:00) Hobart
+        {"Tasmania Standard Time", "AU", "Australia/Currie"},
+        {"Tasmania Standard Time", "AU", "Australia/Hobart", DEFAULT}, // Hobert
 
+
+        // --------------------------------------------------------------------
+        // (UTC+10:00) Magadan
+        {"Magadan Standard Time", "RU", "Asia/Magadan", DEFAULT}, // Magadan
+        // Note: This Windows zone will be deprecated and will be merged into
+        //       Vladivostok Standard Time. Until then, we keep this entry.
+
+
+        // --------------------------------------------------------------------
+        // (UTC+10:00) Vladivostok, Magadan (RTZ 9)
+        // {"Vladivostok Standard Time", "RU", "Asia/Magadan"}, // Magadan
+        // Note: When "Magadan Standard Time" is marked as deprecated, this entry
+        //       will be uncommented.
+        {"Vladivostok Standard Time", "RU", "Asia/Sakhalin"},
+        {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
+        {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
+
+
+        // --------------------------------------------------------------------
+        // (UTC+11:00) Chokurdakh (RTZ 10)
+        {"Russia Time Zone 10", "RU", "Asia/Srednekolymsk", DEFAULT}, // Chokurdakh
 
         // --------------------------------------------------------------------
         // (UTC+11:00) Solomon Is., New Caledonia
@@ -1100,7 +1133,7 @@ public class MapData {
 
         {"Central Pacific Standard Time", "NC", "Pacific/Noumea", REGION_DEFAULT}, // New Caledonia
 
-        {"Central Pacific Standard Time", "SB", "Pacific/Guadalcanal", DEFAULT}, // *Solomon Is.
+        {"Central Pacific Standard Time", "SB", "Pacific/Guadalcanal", DEFAULT}, // Solomon Is.
 
         {"Central Pacific Standard Time", "VU", "Pacific/Efate", REGION_DEFAULT},
 
@@ -1115,23 +1148,9 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+11:00) Vladivostok
-        {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
-        {"Vladivostok Standard Time", "RU", "Asia/Sakhalin"},
-        {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+12:00) Fiji
-        {"Fiji Standard Time", "FJ", "Pacific/Fiji", DEFAULT}, // Fiji
-
-
-        // --------------------------------------------------------------------
-        // (UTC+12:00) Magadan
-        {"Magadan Standard Time", "RU", "Asia/Anadyr"},
-        {"Magadan Standard Time", "RU", "Asia/Kamchatka"},
-        {"Magadan Standard Time", "RU", "Asia/Magadan", DEFAULT}, // Magadan
-        {"Magadan Standard Time", "RU", "Asia/Srednekolymsk"},	// In 2014f, UTC+12 until 2014-10-26, then UTC+11 after the date
+        // (UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky (RTZ 11)
+        {"Russia Time Zone 11", "RU", "Asia/Anadyr"}, // Anadyr
+        {"Russia Time Zone 11", "RU", "Asia/Kamchatka", DEFAULT}, // Petropavlovsk-Kamchatsky
 
 
         // --------------------------------------------------------------------
@@ -1160,13 +1179,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+13:00) Samoa
-        {"Samoa Standard Time", "WS", "Pacific/Apia", DEFAULT}, // *Samoa
+        // (UTC+12:00) Fiji
+        {"Fiji Standard Time", "FJ", "Pacific/Fiji", DEFAULT}, // Fiji
 
 
         // --------------------------------------------------------------------
         // (UTC+13:00) Nuku'alofa
-        {"Tonga Standard Time", "TO", "Pacific/Tongatapu", DEFAULT}, // *Nuku'alofa
+        {"Tonga Standard Time", "TO", "Pacific/Tongatapu", DEFAULT}, // Nuku'alofa
 
         // Enderbury/Fakaofo are not in Tonga, but close enough and using the
         // same UTC offset/no DST.
@@ -1177,8 +1196,13 @@ public class MapData {
         {"Tonga Standard Time", "ZZ", "Etc/GMT-13", REGION_DEFAULT},
 
         // --------------------------------------------------------------------
+        // (UTC+13:00) Samoa
+        {"Samoa Standard Time", "WS", "Pacific/Apia", DEFAULT}, // Samoa
+
+
+        // --------------------------------------------------------------------
         // (UTC+14:00) Kiritimati Island
-        {"Line Islands Standard Time", "KI", "Pacific/Kiritimati", DEFAULT}, // *Kiritimati Island
+        {"Line Islands Standard Time", "KI", "Pacific/Kiritimati", DEFAULT}, // Kiritimati Island
 
         {"Line Islands Standard Time", "ZZ", "Etc/GMT-14", REGION_DEFAULT},
     };
@@ -1190,13 +1214,13 @@ public class MapData {
         // UTC-02:00/DST start: last Sun in March / end: last Sun in September
         // All UTC-02:00 zones in the tz dadtabase do not observe DST
 
-    	// Removed in 7de0000
-    	//"Mid-Atlantic Standard Time",
+        // Removed in 7de0000
+        //"Mid-Atlantic Standard Time",
 
-    	// UTC+02:00/DST start: last Sun in March at 2:00STD / end: last Sun in October at 3:00DST
-    	// There are 3 European zones with the base offset +2 and all of tz database zones
-    	// with UTC+02:00/EU DST rule aligns them, not this one.
-    	"E. Europe Standard Time",
+        // UTC+02:00/DST start: last Sun in March at 2:00STD / end: last Sun in October at 3:00DST
+        // There are 3 European zones with the base offset +2 and all of tz database zones
+        // with UTC+02:00/EU DST rule aligns them, not this one.
+        "E. Europe Standard Time",
     };
 
     /*

@@ -30,7 +30,14 @@ public class ExemplarLocationUtil {
         int substrIdx = dispName.indexOf(')');
         if (substrIdx > 0) {
             substrIdx++;
-            String[] tokens = dispName.substring(substrIdx).trim().split(",");
+            dispName = dispName.substring(substrIdx);
+            // Trim out (...) in display name, e.g. "Chokurdakh (RTZ 10)"
+            substrIdx = dispName.indexOf('(');
+            if (substrIdx >= 0) {
+                dispName = dispName.substring(0, substrIdx);
+            }
+
+            String[] tokens = dispName.trim().split(",");
             for (String s: tokens) {
                 s = s.trim();
                 if (!isNonExemplarLocations(s)) {

@@ -43,6 +43,7 @@ class ExemplarLocationData {
         {"Alaska", "America/Anchorage"},
         {"Amman", "Asia/Amman"},
         {"Amsterdam", "Europe/Amsterdam"},
+        {"Anadyr", "Asia/Anadyr"},
         {"Arizona", "America/Phoenix"},
         {"Ashgabat", "Asia/Ashgabat"},
         {"Astana", "Asia/Almaty"},
@@ -75,6 +76,7 @@ class ExemplarLocationData {
         {"Cayenne", "America/Cayenne"},
         {"Chennai", ""},
         {"Chihuahua", "America/Chihuahua"},
+        {"Chokurdakh", "Asia/Srednekolymsk"},
         {"Chongqing", "Asia/Chongqing"},
         {"Copenhagen", "Europe/Copenhagen"},
         {"Cuiaba", "America/Cuiaba"},
@@ -96,10 +98,11 @@ class ExemplarLocationData {
         {"Helsinki", "Europe/Helsinki"},
         {"Hobart", "Australia/Hobart"},
         {"Hong Kong", "Asia/Hong_Kong"},
-        {"Indiana (East)", "America/Indianapolis"},
+        {"Indiana", "America/Indianapolis"},
         {"Irkutsk", "Asia/Irkutsk"},
         {"Islamabad", ""},
         {"Istanbul", "Europe/Istanbul"},
+        {"Izhevsk", ""},
         {"Jakarta", "Asia/Jakarta"},
         {"Jerusalem", "Asia/Jerusalem"},
         {"Kabul", "Asia/Kabul"},
@@ -139,6 +142,7 @@ class ExemplarLocationData {
         {"Osaka", ""},
         {"Paris", "Europe/Paris"},
         {"Perth", "Australia/Perth"},
+        {"Petropavlovsk-Kamchatsky", "Asia/Kamchatka"},
         {"Port Louis", "Indian/Mauritius"},
         {"Port Moresby", "Pacific/Port_Moresby"},
         {"Prague", "Europe/Prague"},
@@ -150,6 +154,7 @@ class ExemplarLocationData {
         {"Riyadh", "Asia/Riyadh"},
         {"Rome", "Europe/Rome"},
         {"Salvador", "America/Bahia"},
+        {"Samara", ""},
         {"Samoa", "Pacific/Apia"},
         {"San Juan", "America/Puerto_Rico"},
         {"Santiago", "America/Santiago"},
@@ -173,7 +178,7 @@ class ExemplarLocationData {
         {"Tokyo", "Asia/Tokyo"},
         {"Tripoli", "Africa/Tripoli"},
         {"Ulaanbaatar", "Asia/Ulaanbaatar"},
-        {"Urumqi", ""},	// In tzdata2014f, Asia/Urumqi was changed to UT+6
+        {"Urumqi", ""}, // In tzdata2014f, Asia/Urumqi was changed to UT+6
         {"Vienna", "Europe/Vienna"},
         {"Vilnius", "Europe/Vilnius"},
         {"Vladivostok", "Asia/Vladivostok"},
@@ -182,22 +187,22 @@ class ExemplarLocationData {
         {"Wellington", ""},
         {"Windhoek", "Africa/Windhoek"},
         {"Yakutsk", "Asia/Yakutsk"},
-        {"Yangon (Rangoon)", "Asia/Rangoon"},
+        {"Yangon", "Asia/Rangoon"},
         {"Yerevan", "Asia/Yerevan"},
         {"Zagreb", "Europe/Zagreb"},
     };
 
-    // Not all Windows time zone display names contain exemplar location names.
+    // Not all Windows time zone display names contain exemplar location names
     static final String[] NON_LOCATIONS = {
-        "Atlantic Time (Canada)",
+        "Atlantic Time", // (Canada)
         "Central America",
-        "Central Time (US & Canada)",
+        "Central Time", // (US & Canada)
         "International Date Line West",
-        "Eastern Time (US & Canada)",
+        "Eastern Time", // (US & Canada)
         "E. Europe",
         "Mid-Atlantic",
-        "Mountain Time (US & Canada)",
-        "Pacific Time (US & Canada)",
+        "Mountain Time", // (US & Canada)
+        "Pacific Time", // (US & Canada)
         "West Central Africa",
     };
 }
