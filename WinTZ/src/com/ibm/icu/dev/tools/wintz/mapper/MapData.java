@@ -7,7 +7,7 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2014h";
+    static final String TZDATA_VERSION = "2014i";
     static final String WINTZDATA_VERSION = "7de0007";
 
     static final String DEFAULT = "D";
@@ -1086,6 +1086,7 @@ public class MapData {
 
         {"West Pacific Standard Time", "MP", "Pacific/Saipan", REGION_DEFAULT},
 
+        {"West Pacific Standard Time", "PG", "Pacific/Bougainville"}, // After 2014-12-28, this entry should be moved to UTC+11
         {"West Pacific Standard Time", "PG", "Pacific/Port_Moresby", DEFAULT}, // Port Moresby
 
         // There are three Windows time zones with UTC offset +10:00 without DST for now.

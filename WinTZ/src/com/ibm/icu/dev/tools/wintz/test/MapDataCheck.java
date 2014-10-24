@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2011-2013, International Business Machines Corporation and    *
+ * Copyright (C) 2011-2014, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -31,7 +31,16 @@ import com.ibm.icu.util.TimeZone.SystemTimeZoneType;
 public class MapDataCheck {
 
     public static void main(String... args) {
-        MapDataCheck checker = new MapDataCheck();
+        GregorianCalendar cal = new GregorianCalendar();
+        int year = cal.get(Calendar.YEAR);
+        if (args.length > 0) {
+            year = Integer.parseInt(args[0]);
+        }
+        int maxIncompatDays = 7;
+        if (args.length > 1) {
+            maxIncompatDays = Integer.parseInt(args[1]);
+        }
+        MapDataCheck checker = new MapDataCheck(year, maxIncompatDays);
         checker.printInfo();
         checker.testVersion();
         checker.testWindowsIdSet();
@@ -50,13 +59,13 @@ public class MapDataCheck {
 
     private PrintWriter _pw;
     private int _referenceYear;
-    private int _maxmumIncompatibleDaysAllowed = 7;
+    private int _maxmumIncompatibleDaysAllowed;
     private static TimeZoneRegistry WINTZREG = TimeZoneRegistry.get();
 
-    public MapDataCheck() {
+    public MapDataCheck(int year, int maxIncompatDays) {
         _pw = new PrintWriter(System.out, true);
-        GregorianCalendar cal = new GregorianCalendar();
-        _referenceYear = cal.get(Calendar.YEAR);
+        _referenceYear = year;
+        _maxmumIncompatibleDaysAllowed = maxIncompatDays;
     }
 
     public MapDataCheck(Writer out, int referenceYear) {
