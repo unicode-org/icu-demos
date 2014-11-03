@@ -46,4 +46,9 @@ root {
 	desc { "Performs string comparisons, with results being equal, equal ignoring case, or equal ignoring canonical (normalization) differences." }
   }
 
+  "collation.html" {
+                   name { "Collation Demo" }
+                   desc { "Demonstrates Collation." }
+  }
+
 }

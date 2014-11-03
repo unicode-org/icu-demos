@@ -214,6 +214,8 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
           for(int n=0;n<LENGTHOF(demoList);n++) {
                 addDemoItem(list, *aRb, demoList[n], status);
             }
+            // TODO: hack: add this one manually.
+            addDemoItem(list, *aRb, "collation.html", status);
             usort_sort(list);
             // append the sorted items
             for(int n=0;n<list->count;n++) {
