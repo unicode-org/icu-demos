@@ -21,6 +21,10 @@
 	border-right: 1px solid red;
 }
 
+#output .brk:hover {
+	border-right: 3px solid red;
+}
+
 #output.change .brk {
 	border-right: none !important;
 }

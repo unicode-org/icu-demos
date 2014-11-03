@@ -1,5 +1,5 @@
-/* 
-   Copyright (C) 1999-2012, International Business Machines
+/*
+   Copyright (C) 1999-2014, International Business Machines
    Corporation and others.  All Rights Reserved.
 
     ICU Segments Demo
@@ -16,11 +16,12 @@
 #include "unicode/ustring.h"
 #include "unicode/uloc.h"
 #include "unicode/localpointer.h"
+#include "unicode/filteredbrk.h"
 
 #include "demo_settings.h"
 #include "demoutil.h"
 
-#include "ulibrk.h"
+//#include "ulibrk.h"
 
 
 #include "json.hxx"
@@ -65,8 +66,8 @@ UErrorCode uliStatus = U_BRK_INTERNAL_ERROR;
 
 int main(void)
 {
-    
-    
+
+
   const char *rm = getenv("REQUEST_METHOD");
   // static files
   const char *pi = getenv("PATH_INFO");
@@ -76,7 +77,8 @@ int main(void)
   if(!strcmp(rm,"GET") && pi && *pi) { /* static */
     if(!strcmp(pi, "/ulitest")) {
         printf("Content-type: text/plain\n\n");
-        ulibrk_test();
+        printf("N/A");
+        //ulibrk_test();
         return 0;
     } else {
         if(serveStaticFile(statics, pi)) return 0;
@@ -108,11 +110,11 @@ int main(void)
 
   } else {
     // POST.
-    uliStatus = U_ZERO_ERROR;
-    ulibrk_install(uliStatus);
+    //uliStatus = U_ZERO_ERROR;
+    //ulibrk_install(uliStatus);
     doJSON(pi);
   }
-  
+
   return 0;
 }
 
@@ -169,23 +171,43 @@ static void doJSON(const char *pi) {
       }
     }
   }
-    
+
   // now, the reply
   if(!strcmp(pi,"/version")) {
     json_setstring(j, U_ICU_VERSION, "icu.version");
-    json_setstring(j, u_errorName(uliStatus), "icu.ulistatus");
+    //json_setstring(j, u_errorName(uliStatus), "icu.ulistatus");
     // put a list of all break iterators available
     //int32_t a = ubrk_countAvailable();
     LocalPointer<StringEnumeration> availLocs(BreakIterator::getAvailableLocales());
     const char *s;
     for(int32_t i=0; (s=availLocs->next(NULL, status)); i++) {
       char tmp[200];
-      
+
       sprintf(tmp, "brks.%s", s);
       UChar tmp2[2048] = {(UChar)0x0};
       uloc_getDisplayName(s, NULL, tmp2,2048,&status);
       json_setUString(j, tmp2, tmp);
     }
+    // HACK - need a way to list these
+    const char *uliLocs[] = { "de",
+                              "en",
+                              "es",
+                              "fr",
+                              "it",
+                              "pt",
+                              "ru",
+                              NULL
+    };
+    for(int32_t i =0;uliLocs[i];i++) {
+      char tmp[200];
+      char s[200];
+      sprintf(s, "%s__ULI", uliLocs[i]);
+      sprintf(tmp, "brks.%s", s);
+      UChar tmp2[2048] = {(UChar)0x0};
+      uloc_getDisplayName(s, NULL, tmp2,2048,&status);
+      json_setUString(j, tmp2, tmp);
+    }
+
 
     // add types
     {
@@ -200,17 +222,17 @@ static void doJSON(const char *pi) {
       const char *bLocale = json_string(ji, "settings.bLocale");
       //const char *dLocale = json_string(ji, "settings.dLocale");
       const char *str     = json_string(ji, "param.str");
-      const char *tstr =            json_string(ji, "settings.type"); // TODO: json_number failed us here. 
+      const char *tstr =            json_string(ji, "settings.type"); // TODO: json_number failed us here.
       int type =-1;
       if(!sscanf(tstr, "%d", &type)) {
           type=-1;
       }
-      
+
       //UChar ustr[2048];
       UErrorCode status = U_ZERO_ERROR;
       UnicodeString ustr(str, "utf-8");
       //LocalUTextPointer utxt(utext_openUTF8(NULL,str, -1, &status));
-      
+
       json_setarray(j, "breaks.idx");
       int n = 0;
       int32_t next;
@@ -229,8 +251,23 @@ static void doJSON(const char *pi) {
               brk.adoptInstead(BreakIterator::createWordInstance(bLocId,status));
               break;
           case UBRK_SENTENCE:
-              brk.adoptInstead(BreakIterator::createSentenceInstance(bLocId,status));
-              break;
+            brk.adoptInstead(BreakIterator::createSentenceInstance(bLocId,status));
+            if(strcmp(bLocId.getVariant(),"ULI") == 0) {
+              // TODO: using _ULI is a hack here anyways.
+              // should include keywords here.
+              // TODO: worse than that. _ULI is a territory..
+              Locale locId(bLocId.getLanguage(), bLocId.getCountry(), NULL, NULL);
+              LocalPointer<FilteredBreakIteratorBuilder> builder;
+              builder.adoptInstead(FilteredBreakIteratorBuilder::createInstance(locId,
+                                                                                status));
+              fprintf(stderr, "%s -> %s\n", locId.getBaseName(), u_errorName(status));
+              json_setstring(j, locId.getBaseName(), "_dbg.locid");
+              json_setstring(j, u_errorName(status), "_dbg.status");
+              brk.adoptInstead(builder->build(brk.orphan(), status)); // adopt filtered
+            } else {
+              json_setstring(j, bLocId.getCountry(), "_dbg.variant");
+            }
+            break;
           case UBRK_LINE:
               brk.adoptInstead(BreakIterator::createLineInstance(bLocId,status));
               break;
@@ -252,17 +289,17 @@ static void doJSON(const char *pi) {
           //json_setnumber(j, utext_getNativeIndex(utxt.getAlias()), "breaks.idx[#]", n++); // "next" would give us the UChar index.
       }
 #endif
-      
+
       //json_setnumber(j, utext_nativeLength(utxt.getAlias()), "debug.nativeLength");
       json_setnumber(j, strlen(str), "debug.strlen");
-      
+
       json_setstring(j, bLocale, "debug.bLocale");
       json_setnumber(j, type, "debug.type");
-      
+
       if(U_FAILURE(status)) {
           json_setstring(j, u_errorName(status), "err.message");
       }
-      
+
   } else {
       json_setstring(j, "Unknown path!","err.message");
   }
