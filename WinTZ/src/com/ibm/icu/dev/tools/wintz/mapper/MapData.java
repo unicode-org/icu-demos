@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2014i";
-    static final String WINTZDATA_VERSION = "7de0007";
+    static final String TZDATA_VERSION = "2015a";
+    static final String WINTZDATA_VERSION = "7df0000";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -163,7 +163,6 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC-06:00) Guadalajara, Mexico City, Monterrey
         {"Central Standard Time (Mexico)", "MX", "America/Bahia_Banderas"},
-        {"Central Standard Time (Mexico)", "MX", "America/Cancun"},
         {"Central Standard Time (Mexico)", "MX", "America/Merida"},
         {"Central Standard Time (Mexico)", "MX", "America/Mexico_City", DEFAULT}, // Mexico City
         {"Central Standard Time (Mexico)", "MX", "America/Monterrey"}, // Monterrey
@@ -196,6 +195,8 @@ public class MapData {
         {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
 
         {"SA Pacific Standard Time", "KY", "America/Cayman", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "MX", "America/Cancun", REGION_DEFAULT},
 
         {"SA Pacific Standard Time", "PA", "America/Panama", REGION_DEFAULT},
 
@@ -335,11 +336,6 @@ public class MapData {
         // (UTC-04:00) Santiago
         {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
 
-        // According to the description in antarctica file, Palmer station keeps the same time
-        // as Puta Arenas, Chile. The rule ChileAQ seems is out of sync with the rule Chile in
-        // southamerica file in 2011n. This is probably a bug in the tz database. For now,
-        // we assume Santiago and Palmer station are using the same time zone.
-        // [Update] 2012a updated Rule ChileAQ synchronized with Rule Chile.
         {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
 
 
@@ -429,7 +425,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-01:00) Cape Verde Is.
+        // (UTC-01:00) Cabo Verde Is.
         {"Cape Verde Standard Time", "CV", "Atlantic/Cape_Verde", DEFAULT}, // Cape Verde Is.
 
         // This is the only Windows time zone with UTC offset -01:00 without DST
@@ -1086,7 +1082,6 @@ public class MapData {
 
         {"West Pacific Standard Time", "MP", "Pacific/Saipan", REGION_DEFAULT},
 
-        {"West Pacific Standard Time", "PG", "Pacific/Bougainville"}, // After 2014-12-28, this entry should be moved to UTC+11
         {"West Pacific Standard Time", "PG", "Pacific/Port_Moresby", DEFAULT}, // Port Moresby
 
         // There are three Windows time zones with UTC offset +10:00 without DST for now.
@@ -1133,6 +1128,8 @@ public class MapData {
         {"Central Pacific Standard Time", "FM", "Pacific/Ponape", REGION_DEFAULT},
 
         {"Central Pacific Standard Time", "NC", "Pacific/Noumea", REGION_DEFAULT}, // New Caledonia
+
+        {"Central Pacific Standard Time", "PG", "Pacific/Bougainville", REGION_DEFAULT}, // since 2014-12-28
 
         {"Central Pacific Standard Time", "SB", "Pacific/Guadalcanal", DEFAULT}, // Solomon Is.
 

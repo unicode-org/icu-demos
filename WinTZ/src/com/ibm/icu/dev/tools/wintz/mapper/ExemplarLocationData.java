@@ -70,7 +70,7 @@ class ExemplarLocationData {
         {"Buenos Aires", "America/Buenos_Aires"},
         {"Cairo", "Africa/Cairo"},
         {"Canberra", ""},
-        {"Cape Verde Is.", "Atlantic/Cape_Verde"},
+        {"Cabo Verde Is.", "Atlantic/Cape_Verde"},
         {"Caracas", "America/Caracas"},
         {"Casablanca", "Africa/Casablanca"},
         {"Cayenne", "America/Cayenne"},
