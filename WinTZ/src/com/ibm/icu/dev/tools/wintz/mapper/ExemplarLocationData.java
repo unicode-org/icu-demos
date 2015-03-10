@@ -75,6 +75,7 @@ class ExemplarLocationData {
         {"Casablanca", "Africa/Casablanca"},
         {"Cayenne", "America/Cayenne"},
         {"Chennai", ""},
+        {"Chetumal", "America/Cancun"},
         {"Chihuahua", "America/Chihuahua"},
         {"Chokurdakh", "Asia/Srednekolymsk"},
         {"Chongqing", "Asia/Chongqing"},

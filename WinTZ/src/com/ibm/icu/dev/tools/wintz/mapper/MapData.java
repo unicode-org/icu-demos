@@ -8,7 +8,7 @@ package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
     static final String TZDATA_VERSION = "2015a";
-    static final String WINTZDATA_VERSION = "7df0000";
+    static final String WINTZDATA_VERSION = "7df0004";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -196,10 +196,12 @@ public class MapData {
 
         {"SA Pacific Standard Time", "KY", "America/Cayman", REGION_DEFAULT},
 
-        {"SA Pacific Standard Time", "MX", "America/Cancun", REGION_DEFAULT},
-
         {"SA Pacific Standard Time", "PA", "America/Panama", REGION_DEFAULT},
 
+
+        // --------------------------------------------------------------------
+        // (UTC-05:00) Chetumal
+        {"Eastern Standard Time (Mexico)", "MX", "America/Cancun", DEFAULT},
 
         // --------------------------------------------------------------------
         // (UTC-05:00) Eastern Time (US & Canada)
@@ -333,13 +335,6 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-04:00) Santiago
-        {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
-
-        {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
         // (UTC-03:30) Newfoundland
         {"Newfoundland Standard Time", "CA", "America/St_Johns", DEFAULT}, // Newfoundland
 
@@ -404,6 +399,13 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC-03:00) Salvador
         {"Bahia Standard Time", "BR", "America/Bahia", DEFAULT}, // Salvador
+
+
+        // --------------------------------------------------------------------
+        // (UTC-03:00) Santiago
+        {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
+
+        {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
