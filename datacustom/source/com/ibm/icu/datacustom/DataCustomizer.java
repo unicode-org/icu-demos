@@ -291,24 +291,9 @@ public class DataCustomizer extends HttpServlet {
         String icupkgCommand;
         if (Integer.parseInt(icuDataVersion) < 46) {
             icupkgCommand = "icupkg44";
-        } else if (Integer.parseInt(icuDataVersion) == 46) {
-            icupkgCommand = "icupkg46";
-        } else if (Integer.parseInt(icuDataVersion) == 48) {
-            icupkgCommand = "icupkg48";
-        } else if (Integer.parseInt(icuDataVersion) == 49) {
-            icupkgCommand = "icupkg49";
-        } else if (Integer.parseInt(icuDataVersion) == 50) {
-            icupkgCommand = "icupkg50";
-        } else if (Integer.parseInt(icuDataVersion) == 51) {
-            icupkgCommand = "icupkg51";
-        } else if (Integer.parseInt(icuDataVersion) == 52) {
-            icupkgCommand = "icupkg52";
-        } else if (Integer.parseInt(icuDataVersion) == 53) {
-            icupkgCommand = "icupkg53";
-        } else if (Integer.parseInt(icuDataVersion) == 54) {
-            icupkgCommand = "icupkg54";
         } else {
-            icupkgCommand = "icupkg";
+            // Each version of ICU needs to use its own icupkg (e.g. icupkg54)
+            icupkgCommand = "icupkg" + icuDataVersion;
         }
         
         for (int idx = 0; idx < filesToPackage.size(); idx++) {
