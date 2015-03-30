@@ -28,11 +28,12 @@ th { text-align:right }
 <a href="http://icu-project.org/icu4jdemos.html">ICU4J Demos</a></p>
 <select name="co"><!-- begin output from webdemo/collation/available -->
 <option value="">und (type=standard):   Root (Standard Sort Order)</option>
+<option value="root@collation=emoji">root-u-co-emoji:   Root (Emoji Sort Order)</option>
 <option value="root@collation=eor">root-u-co-eor:   Root (European Ordering Rules)</option>
 <option value="root@collation=search">root-u-co-search (normalization=on):   Root (General-Purpose Search)</option>
 <option value="af">af (type=standard):   Afrikaans (Standard Sort Order)</option>
 <option value="ar">ar (type=standard):   Arabic (Standard Sort Order)</option>
-<option value="ar@collation=compat">ar-u-co-compat:   Arabic (Sort Order: compat)</option>
+<option value="ar@collation=compat">ar-u-co-compat:   Arabic (Previous Sort Order, for compatibility)</option>
 <option value="as">as (type=standard, normalization=on):   Assamese (Standard Sort Order)</option>
 <option value="az">az (type=standard):   Azerbaijani (Standard Sort Order)</option>
 <option value="az@collation=search">az-u-co-search (normalization=on):   Azerbaijani (General-Purpose Search)</option>
@@ -51,6 +52,7 @@ th { text-align:right }
 <option value="da@collation=search">da-u-co-search (normalization=on):   Danish (General-Purpose Search)</option>
 <option value="de@collation=phonebook">de-u-co-phonebk:   German (Phonebook Sort Order)</option>
 <option value="de@collation=search">de-u-co-search (normalization=on):   German (General-Purpose Search)</option>
+<option value="de_AT@collation=phonebook">de-AT-u-co-phonebk:   Austrian German (Phonebook Sort Order)</option>
 <option value="dsb">dsb (type=standard):   Lower Sorbian (Standard Sort Order)</option>
 <option value="ee">ee (type=standard):   Ewe (Standard Sort Order)</option>
 <option value="el">el (type=standard, normalization=on):   Greek (Standard Sort Order)</option>
@@ -98,6 +100,7 @@ th { text-align:right }
 <option value="ko@collation=searchjl">ko-u-co-searchjl (normalization=on):   Korean (Search By Hangul Initial Consonant)</option>
 <option value="ko@collation=unihan">ko-u-co-unihan:   Korean (Radical-Stroke Sort Order)</option>
 <option value="kok">kok (type=standard, normalization=on):   Konkani (Standard Sort Order)</option>
+<option value="ky">ky (type=standard):   Kyrgyz (Standard Sort Order)</option>
 <option value="lkt">lkt (type=standard):   Lakota (Standard Sort Order)</option>
 <option value="ln">ln (type=standard):   Lingala (Standard Sort Order)</option>
 <option value="ln@collation=phonetic">ln-u-co-phonetic:   Lingala (Phonetic Sort Order)</option>
@@ -118,8 +121,6 @@ th { text-align:right }
 <option value="pl">pl (type=standard):   Polish (Standard Sort Order)</option>
 <option value="ps">ps (type=standard, normalization=on):   Pashto (Standard Sort Order)</option>
 <option value="ro">ro (type=standard):   Romanian (Standard Sort Order)</option>
-<option value="root@collation=eor">root-u-co-eor:   Root (European Ordering Rules)</option>
-<option value="root@collation=search">root-u-co-search (normalization=on):   Root (General-Purpose Search)</option>
 <option value="ru">ru (type=standard):   Russian (Standard Sort Order)</option>
 <option value="se">se (type=standard):   Northern Sami (Standard Sort Order)</option>
 <option value="se@collation=search">se-u-co-search (normalization=on):   Northern Sami (General-Purpose Search)</option>
