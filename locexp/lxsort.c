@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2012, International Business Machines
+*   Copyright (C) 1999-2015, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -509,6 +509,9 @@ static void showSort_doCustom(LXContext *lx, UColAttribute attribute, UCollator 
     int i;
 /*    u_fprintf(lx->OUT, "<span class=\"optionname\"><b>%S</b></span><br />\n", showSort_attributeName(attribute)); */
     status = U_ZERO_ERROR;
+    if(customCollator==NULL) {
+       u_fprintf(lx->OUT, "<!-- customCollator == NULL -->");
+    }
     defaultvalue = value = ucol_getAttribute(customCollator, attribute, &status);
     status = U_ZERO_ERROR; /* we're prepared to just let the collator fail later. */
     if(!lxSortReset && (ss=queryField(lx, field))) {
@@ -752,7 +755,7 @@ void showSort(LXContext *lx, const char *locale)
 #else
         customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
 #endif
-        fprintf(stderr, "** COL SORT OPEN: %s\n", locale);
+        /*        fprintf(stderr, "** COL SORT OPEN: %s \n", locale);*/
       }
 
       if(U_FAILURE(customError))
@@ -763,6 +766,11 @@ void showSort(LXContext *lx, const char *locale)
         customError=U_ZERO_ERROR;
         customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
       } 
+
+      if(U_FAILURE(customError)) {
+        u_fprintf(lx->OUT, "<!-- could not open custom collator - %s -->\n", u_errorName(customError));
+        return;
+      }
 
       customCollator = usort_getCollator(customSort);
       /* for standard: see       showSort_attrib(lx, locale, NULL); */

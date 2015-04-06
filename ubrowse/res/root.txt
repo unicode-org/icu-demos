@@ -1,5 +1,5 @@
 // root file. Generated from ubrowse.c
-// Copyright (C) 2000-2010, International Business Machines
+// Copyright (C) 2000-2015, International Business Machines
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
 // Now with XLIFF tags
@@ -10,6 +10,11 @@ root {
      * @translate yes
      */
      ETOP_clickmsg  {  "Click on a type of character to view it in more detail"  }
+
+    /**
+     * @translate yes
+     */
+     APP_NAME  {  "Unicode Browser"  }
 
     /**
      * @note Note about green text
@@ -26,11 +31,6 @@ root {
      * @translate yes
      */
      ETOP_general_categories  {  "General Categories"  }
-
-    /**
-     * @translate yes
-     */
-     APP_NAME  {  "Unicode Browser"  }
 
 
 

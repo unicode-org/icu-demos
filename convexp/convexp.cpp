@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2003-2007, International Business Machines
+*   Copyright (C) 2003-2015, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -32,7 +32,7 @@ TODO:
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <unistd.h>
 #include "printcp.h"
 #include "params.h"
 
@@ -777,6 +777,8 @@ main(int /*argc*/, const char * /*argv*/[]) {
     int32_t inputLength;
     UErrorCode errorCode = U_ZERO_ERROR;
     const char *cgi;
+
+	alarm(10);
 
     gScriptName=getenv("SCRIPT_NAME");
     if (gScriptName == NULL) {

@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 2003-2006, International Business Machines
+*   Copyright (C) 2003-2015, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 #include "locexp.h"
@@ -438,5 +438,5 @@ void uurl_close(UUrlIter *u)
 }
 
 const char *cgi_url(LXContext *lx  ) {
-    return "./locexp";
+  return lx->scriptName;
 }

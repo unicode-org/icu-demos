@@ -1,5 +1,5 @@
 /**********************************************************************
-*   Copyright (C) 1999-2013, International Business Machines
+*   Copyright (C) 1999-2015, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 ***********************************************************************/
 
@@ -62,7 +62,7 @@ static void showTree(LXContext *lx, const Region &top, int indent, UErrorCode &s
   }
   u_fprintf(lx->OUT, "</div>");
 
-  LocalPointer<StringEnumeration> set(top.getContainedRegions());
+  LocalPointer<StringEnumeration> set(top.getContainedRegions(status));
   if(set.isValid()) {
     const char *str;
     for(;(str=set->next(NULL, status))!=NULL &&U_SUCCESS(status);) {

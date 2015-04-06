@@ -1,7 +1,7 @@
 /*
 *******************************************************************************
 *
-*   Copyright (C) 2006-2012, International Business Machines
+*   Copyright (C) 2006-2015, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 *******************************************************************************
@@ -114,8 +114,12 @@ double convertBytesToKilobytes(double bytes) {
 }
 
 UnicodeString replaceAll(UnicodeString str, const UnicodeString &fromStr, const UnicodeString &toStr) {
-    int32_t idx;
+    int32_t idx, prev_idx = -1;
     while ((idx = str.indexOf(fromStr)) >= 0) {
+        if (idx == prev_idx) {
+            break;
+        }
+        prev_idx = idx;
         str.replace(idx, fromStr.length(), toStr);
     }
     return str;

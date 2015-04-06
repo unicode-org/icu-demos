@@ -4,7 +4,7 @@
  *
  ********************************************************************
  * COPYRIGHT:
- * Copyright (c) 2004-2012, International Business Machines Corporation and
+ * Copyright (c) 2004-2015, International Business Machines Corporation and
  * others. All Rights Reserved.
  ********************************************************************
  */
@@ -256,6 +256,7 @@ const char *  files[] =
 
 { 
     CSS_FILE, CSS_TYPE ,
+	"/icu_v2.css", CSS_TYPE ,
     CSS_DEMO_FILE, CSS_TYPE ,
     "/1x1.gif", GIF_TYPE ,
     "/lines.gif", GIF_TYPE ,

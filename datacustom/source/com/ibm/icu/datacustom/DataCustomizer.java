@@ -42,7 +42,7 @@ public class DataCustomizer extends HttpServlet {
 	private static final long serialVersionUID = 1430423129503208114L;
 
 	// Standard logging for information and errors
-    public static Logger logger = Logger.getLogger("com.ibm.icu.DataCustomizer");
+    public static Logger logger = Logger.getLogger(DataCustomizer.class.getName());
 
     // Summary log of each request. For example, what was requested, size and time of request.
     public static Logger requestLogger;
@@ -82,6 +82,11 @@ public class DataCustomizer extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException
     {
+        if(requestLogger == null) {
+            requestLogger = logger;
+            requestLogger.warning("requestLogger was null, using logger");
+        }
+
         String sessionID = request.getSession().getId();
         applyNoCache(response);
 
@@ -780,7 +785,7 @@ public class DataCustomizer extends HttpServlet {
         }
         
         try {
-            requestLogger = Logger.getLogger("com.ibm.icu.DataCustomizerRequest");
+            requestLogger = Logger.getLogger(DataCustomizer.class.getName()+"Request");
             requestLogger.setUseParentHandlers(false); // Disable console output
     
             File logDir = new File(toolHome + "log");

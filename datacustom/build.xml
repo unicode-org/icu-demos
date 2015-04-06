@@ -1,7 +1,7 @@
 <!--
 /*
 *******************************************************************************
-* Copyright (C) 2007-2007, International Business Machines Corporation and    *
+* Copyright (C) 2007-2015, International Business Machines Corporation and    *
 * others. All Rights Reserved.                                                *
 *******************************************************************************
 */
@@ -14,6 +14,10 @@
         <property name="jar.file" value="datacustom.jar"/>
         <!-- Load environment variables -->
         <property environment="env"/>
+
+        <!-- load build.properties -->
+        <property file="build.properties" />
+
         
         <path id="build.classpath">
             <pathelement path="${build.dir}"/>
@@ -78,24 +82,33 @@
         <!-- for now: depends on tomcat (catalina) for servlet API. -->
         <property name="tomcat.home"        value="${env.CATALINA_HOME}"/>
         <condition property="is.tomcat.home.set" >
-                <isset property="env.CATALINA_HOME" />
+                <isset property="tomcat.home" />
         </condition > 
         <fail unless="is.tomcat.home.set" message="Please set the CATALINA_HOME environment variable to point at your Tomcat installation."/>   
         
-        <property name="icu.home"           value="${env.ICU4J_HOME}"/>
+       <!-- <property name="icu.home"           value="${env.ICU4J_HOME}"/> -->
         
         <property name="servlet.jar"        value="${tomcat.home}/lib/servlet-api.jar"/>
 
+        <path id="catalina-ant.classpath">
+          <fileset dir="${tomcat.home}/lib">
+            <include name="**/*.jar"/>
+          </fileset>
+          <fileset dir="${tomcat.home}/bin">
+            <include name="**/*.jar"/>
+          </fileset>
+        </path>
+
         <property name="wardata" value="data"/>
         <!-- Configure the custom Ant tasks for the Manager application -->
-        <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
-        <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"/>
-        <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"/>
-        <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"/>
-        <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"/>
-        <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"/>
-        <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>
-        <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>
+        <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+        <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+        <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+        <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+        <!-- <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"><classpath refid="catalina-ant.classpath" /></taskdef> -->
+        <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+        <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+        <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"><classpath refid="catalina-ant.classpath" /></taskdef>
 
         <!-- Configure the context path for this application -->
         <!-- property name="path"     value="/cldr-apps"/ -->

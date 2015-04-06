@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-* Copyright (C) 2014, International Business Machines
+* Copyright (C) 2014-2015, International Business Machines
 * Corporation and others.  All Rights Reserved.
 *******************************************************************************
 * icuapps/webdemo/collation/available.cpp
@@ -171,7 +171,7 @@ main(int argc, char* argv[]) {
 
     std::unique_ptr<icu::LocaleDisplayNames> ldn(
         icu::LocaleDisplayNames::createInstance(Locale::getEnglish(), ULDN_DIALECT_NAMES));
-    assert(ldn != NULL);
+    assert(ldn.get() != NULL);
 
     for(const auto &entry : locToColl) {
         UnicodeString text;
