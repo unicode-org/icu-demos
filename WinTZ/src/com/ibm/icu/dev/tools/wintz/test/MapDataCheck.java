@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (C) 2011-2014, International Business Machines Corporation and    *
+ * Copyright (C) 2011-2015, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
@@ -74,10 +74,12 @@ public class MapDataCheck {
     }
 
     public void printInfo() {
+        String tzver = TimeZone.getTZDataVersion();
         _pw.println("-------------------------------------------------");
         _pw.println("MapDataCheck");
         _pw.println("  Reference Year:                  " + _referenceYear);
         _pw.println("  Maximum incompable days allowed: " + _maxmumIncompatibleDaysAllowed);
+        _pw.println("  ICU4J tzdata version:            " + tzver);
         _pw.println("-------------------------------------------------");
     }
 

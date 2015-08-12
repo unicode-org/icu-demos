@@ -1,13 +1,13 @@
 /*
  *******************************************************************************
- * Copyright (C) 2011-2014, International Business Machines Corporation and    *
+ * Copyright (C) 2011-2015, International Business Machines Corporation and    *
  * others. All Rights Reserved.                                                *
  *******************************************************************************
  */
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2015a";
+    static final String TZDATA_VERSION = "2015f";
     static final String WINTZDATA_VERSION = "7df0004";
 
     static final String DEFAULT = "D";
@@ -1042,8 +1042,6 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+09:00) Seoul
-        {"Korea Standard Time", "KP", "Asia/Pyongyang", REGION_DEFAULT},
-
         {"Korea Standard Time", "KR", "Asia/Seoul", DEFAULT}, // Seoul
 
 
@@ -1228,6 +1226,7 @@ public class MapData {
      * Windows time zones. These zones are not supported by Windows.
      */
     static final String[] NO_BASE_OFFSET_MATCH_ZONES_ARRAY = {
+        "Asia/Pyongyang",       // +8:30
         "Australia/Eucla",      // +8:45
         "Australia/Lord_Howe",  // +10:30
         "Pacific/Chatham",      // +12:45
