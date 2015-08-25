@@ -8,7 +8,7 @@ package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
     static final String TZDATA_VERSION = "2015f";
-    static final String WINTZDATA_VERSION = "7df0004";
+    static final String WINTZDATA_VERSION = "7df0005";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -345,22 +345,6 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-03:00) Buenos Aires
-        {"Argentina Standard Time", "AR", "America/Argentina/La_Rioja"},
-        {"Argentina Standard Time", "AR", "America/Argentina/Rio_Gallegos"},
-        {"Argentina Standard Time", "AR", "America/Argentina/Salta"},
-        {"Argentina Standard Time", "AR", "America/Argentina/San_Juan"},
-        {"Argentina Standard Time", "AR", "America/Argentina/San_Luis"},
-        {"Argentina Standard Time", "AR", "America/Argentina/Tucuman"},
-        {"Argentina Standard Time", "AR", "America/Argentina/Ushuaia"},
-        {"Argentina Standard Time", "AR", "America/Buenos_Aires", DEFAULT}, // Buenos Aires
-        {"Argentina Standard Time", "AR", "America/Catamarca"},
-        {"Argentina Standard Time", "AR", "America/Cordoba"},
-        {"Argentina Standard Time", "AR", "America/Jujuy"},
-        {"Argentina Standard Time", "AR", "America/Mendoza"},
-
-
-        // --------------------------------------------------------------------
         // (UTC-03:00) Cayenne, Fortaleza
         {"SA Eastern Standard Time", "BR", "America/Araguaina"},
         {"SA Eastern Standard Time", "BR", "America/Belem"},
@@ -384,6 +368,22 @@ public class MapData {
         // Rothera station is in Antarctica. The zone is listed here just because we use
         // this zone as the default UTC-03:00/no DST zone.
         {"SA Eastern Standard Time", "AQ", "Antarctica/Rothera", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC-03:00) City of Buenos Aires
+        {"Argentina Standard Time", "AR", "America/Argentina/La_Rioja"},
+        {"Argentina Standard Time", "AR", "America/Argentina/Rio_Gallegos"},
+        {"Argentina Standard Time", "AR", "America/Argentina/Salta"},
+        {"Argentina Standard Time", "AR", "America/Argentina/San_Juan"},
+        {"Argentina Standard Time", "AR", "America/Argentina/San_Luis"},
+        {"Argentina Standard Time", "AR", "America/Argentina/Tucuman"},
+        {"Argentina Standard Time", "AR", "America/Argentina/Ushuaia"},
+        {"Argentina Standard Time", "AR", "America/Buenos_Aires", DEFAULT}, // Buenos Aires
+        {"Argentina Standard Time", "AR", "America/Catamarca"},
+        {"Argentina Standard Time", "AR", "America/Cordoba"},
+        {"Argentina Standard Time", "AR", "America/Jujuy"},
+        {"Argentina Standard Time", "AR", "America/Mendoza"},
 
 
         // --------------------------------------------------------------------
