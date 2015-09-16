@@ -151,11 +151,14 @@ main(int argc, char* argv[]) {
             errorCode.assertSuccess();
             Locale actual = coll->getLocale(ULOC_ACTUAL_LOCALE, errorCode);
             string actualName(actual.getName());
-            if(isRoot || actualName.empty()) {
+            bool skip = false;
+            if(isRoot) {
                 // Make root locales sort before others.
                 actualName.insert(0, " ");
+            } else if(actualName.empty() || actualName.compare(0, 4, "root") == 0) {
+                skip = true;
             }
-            if(locToColl.find(actualName) == locToColl.end()) {
+            if(!skip && locToColl.find(actualName) == locToColl.end()) {
                 locToColl[actualName] = coll.release();
             }
             const char *nextType = types->next(NULL, errorCode);
