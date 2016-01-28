@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2015f";
-    static final String WINTZDATA_VERSION = "7df0005";
+    static final String TZDATA_VERSION = "2016a";
+    static final String WINTZDATA_VERSION = "7df0103";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -61,6 +61,7 @@ public class MapData {
         // (UTC-09:00) Alaska
         {"Alaskan Standard Time", "US", "America/Anchorage", DEFAULT}, // Alaska
         {"Alaskan Standard Time", "US", "America/Juneau"},
+        {"Alaskan Standard Time", "US", "America/Metlakatla"},  // since 2015-11-01
         {"Alaskan Standard Time", "US", "America/Nome"},
         {"Alaskan Standard Time", "US", "America/Sitka"},
         {"Alaskan Standard Time", "US", "America/Yakutat"},
@@ -68,7 +69,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC-08:00) Baja California
-        {"Pacific Standard Time (Mexico)", "MX", "America/Santa_Isabel", DEFAULT},
+        // no mappings
 
 
         // --------------------------------------------------------------------
@@ -78,6 +79,7 @@ public class MapData {
         {"Pacific Standard Time", "CA", "America/Whitehorse"},
 
         {"Pacific Standard Time", "MX", "America/Tijuana", REGION_DEFAULT},
+        {"Pacific Standard Time", "MX", "America/Santa_Isabel"},
 
         {"Pacific Standard Time", "US", "America/Los_Angeles", DEFAULT},
 
@@ -88,6 +90,7 @@ public class MapData {
         // (UTC-07:00) Arizona
         {"US Mountain Standard Time", "CA", "America/Dawson_Creek", REGION_DEFAULT},
         {"US Mountain Standard Time", "CA", "America/Creston"},
+        {"US Mountain Standard Time", "CA", "America/Fort_Nelson"},
 
         {"US Mountain Standard Time", "MX", "America/Hermosillo", REGION_DEFAULT},
 
@@ -191,6 +194,8 @@ public class MapData {
         // Following zones are not South American Pacific regions. Because this is only
         // the Windows time zone with UTC-05:00/no DST, they cannot use anything else.
         {"SA Pacific Standard Time", "CA", "America/Coral_Harbour", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "CL", "Pacific/Easter", REGION_DEFAULT},
 
         {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
 
@@ -626,8 +631,6 @@ public class MapData {
 
         {"GTB Standard Time", "GR", "Europe/Athens", REGION_DEFAULT}, // Athens
 
-        {"GTB Standard Time", "MD", "Europe/Chisinau", REGION_DEFAULT},
-
         {"GTB Standard Time", "RO", "Europe/Bucharest", DEFAULT}, // Bucharest
 
 
@@ -648,7 +651,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+02:00) E. Europe
-        // No mappings
+        {"E. Europe Standard Time", "MD", "Europe/Chisinau", DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -958,8 +961,6 @@ public class MapData {
         // are just listed here.
         {"SE Asia Standard Time", "AQ", "Antarctica/Davis", REGION_DEFAULT},
 
-        {"SE Asia Standard Time", "MN", "Asia/Hovd", REGION_DEFAULT},
-
         {"SE Asia Standard Time", "CX", "Indian/Christmas", REGION_DEFAULT},
 
 
@@ -980,7 +981,6 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+08:00) Irkutsk (RTZ 7)
-        {"North Asia East Standard Time", "RU", "Asia/Chita"},
         {"North Asia East Standard Time", "RU", "Asia/Irkutsk", DEFAULT}, // Irkutsk
 
 
@@ -1022,6 +1022,11 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+08:30) Pyongyang
+        {"North Korea Standard Time", "KP", "Asia/Pyongyang", DEFAULT}, // Pyongyang
+
+
+        // --------------------------------------------------------------------
         // (UTC+09:00) Osaka, Sapporo, Tokyo
         {"Tokyo Standard Time", "JP", "Asia/Tokyo", DEFAULT}, // Tokyo
 
@@ -1047,6 +1052,7 @@ public class MapData {
 
         // --------------------------------------------------------------------
         // (UTC+10:00) Yakutsk (RTZ 8)
+        {"Yakutsk Standard Time", "RU", "Asia/Chita"},  // after 2015-03-27
         {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
@@ -1129,6 +1135,8 @@ public class MapData {
 
         {"Central Pacific Standard Time", "NC", "Pacific/Noumea", REGION_DEFAULT}, // New Caledonia
 
+        {"Central Pacific Standard Time", "NF", "Pacific/Norfolk", REGION_DEFAULT}, // since 2015-10-04
+
         {"Central Pacific Standard Time", "PG", "Pacific/Bougainville", REGION_DEFAULT}, // since 2014-12-28
 
         {"Central Pacific Standard Time", "SB", "Pacific/Guadalcanal", DEFAULT}, // Solomon Is.
@@ -1209,16 +1217,27 @@ public class MapData {
      * 
      */
     static final String[] UNMAPPALBE_WINDOWS_ZONES_ARRAY = {
+        // Removed in 7de0000
         // UTC-02:00/DST start: last Sun in March / end: last Sun in September
         // All UTC-02:00 zones in the tz dadtabase do not observe DST
-
-        // Removed in 7de0000
         //"Mid-Atlantic Standard Time",
 
+        // Removed by tz2015f update
         // UTC+02:00/DST start: last Sun in March at 2:00STD / end: last Sun in October at 3:00DST
         // There are 3 European zones with the base offset +2 and all of tz database zones
         // with UTC+02:00/EU DST rule aligns them, not this one.
-        "E. Europe Standard Time",
+        //"E. Europe Standard Time",
+
+        // Added by tz2016a update. See the comment below:
+        //
+        // # From Paul Eggert (2015-10-08):
+        // # Formerly there was an America/Santa_Isabel zone, but this appears to
+        // # have come from a misreading of
+        // # http://dof.gob.mx/nota_detalle.php?codigo=5127480&fecha=06/01/2010
+        // # It has been moved to the 'backward' file.
+        //
+        // It looks the Windows zone was introduced by the misreadin above.
+        "Pacific Standard Time (Mexico)",
     };
 
     /*
@@ -1226,12 +1245,10 @@ public class MapData {
      * Windows time zones. These zones are not supported by Windows.
      */
     static final String[] NO_BASE_OFFSET_MATCH_ZONES_ARRAY = {
-        "Asia/Pyongyang",       // +8:30
         "Australia/Eucla",      // +8:45
         "Australia/Lord_Howe",  // +10:30
         "Pacific/Chatham",      // +12:45
         "Pacific/Marquesas",    // -9:30
-        "Pacific/Norfolk",      // +11:30
     };
 
     /*
@@ -1246,17 +1263,12 @@ public class MapData {
         // UTC-08:00/no DST.
         // Closest match - "Pacific Standard Time" (observes DST).
         "Etc/GMT+8",
-        "America/Metlakatla",
         "Pacific/Pitcairn",
 
         // UTC-09:00/no DST
         // Closest match - "Alaskan Standard Time" (observes DST).
         "Etc/GMT+9",
         "Pacific/Gambier",
-
-        // UTC-06:00/Southern Hemisphere style DST rule.
-        // Closest match - "Central America Standard Time" (observes Northern Hemisphere style DST rule).
-        "Pacific/Easter",
 
         // UTC-03:00 zone with North American DST rule.
         // Closest match - "Greenland Standard Time" (observes EU DST rule).
@@ -1273,6 +1285,11 @@ public class MapData {
         // Closest match - "E. Europe Standard Time", "Israel Standard Time" and some others
         "Asia/Gaza",
         "Asia/Hebron",
+
+        // UTC+07:00 with DST (Mar - Sep) since 2015.
+        // Closest match - "SE Asia Standard Time", "North Asia Standard Time"
+        // (UTC+07:00 / no DST)
+        "Asia/Hovd",
     };
 
     /*

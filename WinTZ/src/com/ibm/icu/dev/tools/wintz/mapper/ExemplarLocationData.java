@@ -148,6 +148,7 @@ class ExemplarLocationData {
         {"Port Moresby", "Pacific/Port_Moresby"},
         {"Prague", "Europe/Prague"},
         {"Pretoria", "Africa/Johannesburg"},
+        {"Pyongyang", "Asia/Pyongyang"},
         {"Quito", "America/Guayaquil"},
         {"Reykjavik", "Atlantic/Reykjavik"},
         {"Riga", "Europe/Riga"},
