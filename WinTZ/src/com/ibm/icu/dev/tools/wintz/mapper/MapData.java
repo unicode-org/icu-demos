@@ -7,7 +7,7 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2016a";
+    static final String TZDATA_VERSION = "2016b";
     static final String WINTZDATA_VERSION = "7df0103";
 
     static final String DEFAULT = "D";
@@ -182,6 +182,8 @@ public class MapData {
         {"SA Pacific Standard Time", "BR", "America/Eirunepe"},
         {"SA Pacific Standard Time", "BR", "America/Rio_Branco", REGION_DEFAULT},
 
+        {"SA Pacific Standard Time", "CL", "Pacific/Easter", REGION_DEFAULT},
+
         {"SA Pacific Standard Time", "CO", "America/Bogota", DEFAULT}, // Bogota
 
         {"SA Pacific Standard Time", "EC", "America/Guayaquil", REGION_DEFAULT}, // Quito
@@ -191,13 +193,14 @@ public class MapData {
         // This is the only Windows time zone with UTC offset -05:00 without DST
         {"SA Pacific Standard Time", "ZZ", "Etc/GMT+5", REGION_DEFAULT},
 
-        // Following zones are not South American Pacific regions. Because this is only
-        // the Windows time zone with UTC-05:00/no DST, they cannot use anything else.
+        // Following zones are not South American Pacific regions. Because this was only
+        // the Windows time zone with UTC-05:00/no DST before "Eastern Standard Time (Mexico)"
+        // was added recently.
         {"SA Pacific Standard Time", "CA", "America/Coral_Harbour", REGION_DEFAULT},
 
-        {"SA Pacific Standard Time", "CL", "Pacific/Easter", REGION_DEFAULT},
-
         {"SA Pacific Standard Time", "JM", "America/Jamaica", REGION_DEFAULT},
+
+        {"SA Pacific Standard Time", "HT", "America/Port-au-Prince", REGION_DEFAULT},
 
         {"SA Pacific Standard Time", "KY", "America/Cayman", REGION_DEFAULT},
 
@@ -218,8 +221,6 @@ public class MapData {
         {"Eastern Standard Time", "CA", "America/Pangnirtung"},
         {"Eastern Standard Time", "CA", "America/Thunder_Bay"},
         {"Eastern Standard Time", "CA", "America/Toronto", REGION_DEFAULT},
-
-        {"Eastern Standard Time", "HT", "America/Port-au-Prince", REGION_DEFAULT},
 
         {"Eastern Standard Time", "US", "America/Detroit"},
         {"Eastern Standard Time", "US", "America/Indiana/Petersburg"},
@@ -812,6 +813,8 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+04:00) Izhevsk, Samara (RTZ 3)
         {"Russia Time Zone 3", "RU", "Europe/Samara", DEFAULT}, // Samara
+        {"Russia Time Zone 3", "RU", "Europe/Astrakhan"},
+        {"Russia Time Zone 3", "RU", "Europe/Ulyanovsk"},
 
 
         // --------------------------------------------------------------------
@@ -967,6 +970,7 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+07:00) Krasnoyarsk (RTZ 6)
         {"North Asia Standard Time", "RU", "Asia/Krasnoyarsk", DEFAULT}, // Krasnoyarsk
+        {"North Asia Standard Time", "RU", "Asia/Barnaul"},
         {"North Asia Standard Time", "RU", "Asia/Novokuznetsk"},
 
 
@@ -1051,8 +1055,8 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Yakutsk (RTZ 8)
-        {"Yakutsk Standard Time", "RU", "Asia/Chita"},  // after 2015-03-27
+        // (UTC+09:00) Yakutsk (RTZ 8)
+        {"Yakutsk Standard Time", "RU", "Asia/Chita"},  // after 2016-03-27
         {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
@@ -1119,13 +1123,13 @@ public class MapData {
         // {"Vladivostok Standard Time", "RU", "Asia/Magadan"}, // Magadan
         // Note: When "Magadan Standard Time" is marked as deprecated, this entry
         //       will be uncommented.
-        {"Vladivostok Standard Time", "RU", "Asia/Sakhalin"},
         {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
         {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
 
 
         // --------------------------------------------------------------------
         // (UTC+11:00) Chokurdakh (RTZ 10)
+        {"Russia Time Zone 10", "RU", "Asia/Sakhalin"},
         {"Russia Time Zone 10", "RU", "Asia/Srednekolymsk", DEFAULT}, // Chokurdakh
 
         // --------------------------------------------------------------------
