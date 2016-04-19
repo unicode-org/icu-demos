@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2016b";
-    static final String WINTZDATA_VERSION = "7df0103";
+    static final String TZDATA_VERSION = "2016d";
+    static final String WINTZDATA_VERSION = "7e00100";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -750,6 +750,7 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+03:00) Moscow, St. Petersburg, Volgograd (RTZ 2)
         {"Russian Standard Time", "RU", "Europe/Moscow", DEFAULT}, // Moscow
+        {"Russian Standard Time", "RU", "Europe/Kirov"},
         {"Russian Standard Time", "RU", "Europe/Volgograd"}, // Volgograd
         {"Russian Standard Time", "RU", "Europe/Simferopol"},
 
@@ -806,15 +807,19 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+04:00) Astrakhan, Ulyanovsk
+        {"Astrakhan Standard Time", "RU", "Europe/Astrakhan", DEFAULT}, // Astrakhan
+        {"Astrakhan Standard Time", "RU", "Europe/Ulyanovsk"}, // Ulyanovsk
+
+
+        // --------------------------------------------------------------------
         // (UTC+04:00) Baku
         {"Azerbaijan Standard Time", "AZ", "Asia/Baku", DEFAULT}, // Baku
 
 
         // --------------------------------------------------------------------
-        // (UTC+04:00) Izhevsk, Samara (RTZ 3)
+        // (UTC+04:00) Izhevsk, Samara
         {"Russia Time Zone 3", "RU", "Europe/Samara", DEFAULT}, // Samara
-        {"Russia Time Zone 3", "RU", "Europe/Astrakhan"},
-        {"Russia Time Zone 3", "RU", "Europe/Ulyanovsk"},
 
 
         // --------------------------------------------------------------------
@@ -849,7 +854,7 @@ public class MapData {
         {"West Asia Standard Time", "KZ", "Asia/Aqtobe"},
         {"West Asia Standard Time", "KZ", "Asia/Oral", REGION_DEFAULT},
         
-        {"West Asia Standard Time", "TM", "Asia/Ashgabat", REGION_DEFAULT},
+        {"West Asia Standard Time", "TM", "Asia/Ashgabat", REGION_DEFAULT}, // Ashgabat
 
         {"West Asia Standard Time", "TJ", "Asia/Dushanbe", REGION_DEFAULT},
 
@@ -872,7 +877,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+05:00) Ekaterinburg (RTZ 4)
+        // (UTC+05:00) Ekaterinburg
         {"Ekaterinburg Standard Time", "RU", "Asia/Yekaterinburg", DEFAULT}, // Ekaterinburg
 
 
@@ -926,7 +931,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+06:00) Novosibirsk (RTZ 5)
+        // (UTC+06:00) Novosibirsk
         {"N. Central Asia Standard Time", "RU", "Asia/Novosibirsk", DEFAULT}, // Novosibirsk
         {"N. Central Asia Standard Time", "RU", "Asia/Omsk"},
 
@@ -968,9 +973,14 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+07:00) Krasnoyarsk (RTZ 6)
+        // (UTC+07:00) Barnaul, Gorno-Altaysk
+        {"Altai Standard Time", "RU", "Asia/Barnaul", DEFAULT}, // Barnaul
+        {"Altai Standard Time", "RU", "Asia/Tomsk"},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+07:00) Krasnoyarsk
         {"North Asia Standard Time", "RU", "Asia/Krasnoyarsk", DEFAULT}, // Krasnoyarsk
-        {"North Asia Standard Time", "RU", "Asia/Barnaul"},
         {"North Asia Standard Time", "RU", "Asia/Novokuznetsk"},
 
 
@@ -1031,6 +1041,11 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+09:00) Chita
+        {"Transbaikal Standard Time", "RU", "Asia/Chita", DEFAULT}, // Chita
+
+
+        // --------------------------------------------------------------------
         // (UTC+09:00) Osaka, Sapporo, Tokyo
         {"Tokyo Standard Time", "JP", "Asia/Tokyo", DEFAULT}, // Tokyo
 
@@ -1055,8 +1070,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+09:00) Yakutsk (RTZ 8)
-        {"Yakutsk Standard Time", "RU", "Asia/Chita"},  // after 2016-03-27
+        // (UTC+09:00) Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
@@ -1114,23 +1128,23 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+10:00) Magadan
         {"Magadan Standard Time", "RU", "Asia/Magadan", DEFAULT}, // Magadan
-        // Note: This Windows zone will be deprecated and will be merged into
-        //       Vladivostok Standard Time. Until then, we keep this entry.
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Vladivostok, Magadan (RTZ 9)
-        // {"Vladivostok Standard Time", "RU", "Asia/Magadan"}, // Magadan
-        // Note: When "Magadan Standard Time" is marked as deprecated, this entry
-        //       will be uncommented.
+        // (UTC+10:00) Vladivostok
         {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
         {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
 
 
         // --------------------------------------------------------------------
-        // (UTC+11:00) Chokurdakh (RTZ 10)
-        {"Russia Time Zone 10", "RU", "Asia/Sakhalin"},
+        // (UTC+11:00) Chokurdakh
         {"Russia Time Zone 10", "RU", "Asia/Srednekolymsk", DEFAULT}, // Chokurdakh
+
+
+        // --------------------------------------------------------------------
+        // (UTC+11:00) Sakhalin
+        {"Sakhalin Standard Time", "RU", "Asia/Sakhalin", DEFAULT}, // Sakhalin
+
 
         // --------------------------------------------------------------------
         // (UTC+11:00) Solomon Is., New Caledonia
@@ -1158,7 +1172,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky (RTZ 11)
+        // (UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky
         {"Russia Time Zone 11", "RU", "Asia/Anadyr"}, // Anadyr
         {"Russia Time Zone 11", "RU", "Asia/Kamchatka", DEFAULT}, // Petropavlovsk-Kamchatsky
 
