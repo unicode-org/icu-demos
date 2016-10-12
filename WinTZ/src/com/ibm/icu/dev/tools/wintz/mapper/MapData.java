@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2016f";
-    static final String WINTZDATA_VERSION = "7e00401";
+    static final String TZDATA_VERSION = "2016g";
+    static final String WINTZDATA_VERSION = "7e00402";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -90,6 +90,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC-08:00) Coordinated Universal Time-08
+        {"UTC-08", "ZZ", "Etc/GMT+8", DEFAULT},
+
+        {"UTC-08", "PN", "Pacific/Pitcairn", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
         // (UTC-08:00) Pacific Time (US & Canada)
         {"Pacific Standard Time", "CA", "America/Vancouver", REGION_DEFAULT},
         {"Pacific Standard Time", "CA", "America/Dawson"},
@@ -98,14 +105,6 @@ public class MapData {
         {"Pacific Standard Time", "US", "America/Los_Angeles", DEFAULT},
 
         {"Pacific Standard Time", "ZZ", "PST8PDT", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC-08:00) Coordinated Universal Time-08
-        {"UTC-08", "ZZ", "Etc/GMT+8", DEFAULT},
-
-        {"UTC-08", "PN", "Pacific/Pitcairn", REGION_DEFAULT},
-
 
 
         // --------------------------------------------------------------------
@@ -274,11 +273,6 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-04:30) Caracas
-        {"Venezuela Standard Time", "VE", "America/Caracas", DEFAULT}, // Caracas
-
-
-        // --------------------------------------------------------------------
         // (UTC-04:00) Asuncion
         {"Paraguay Standard Time", "PY", "America/Asuncion", DEFAULT}, // Asuncion
 
@@ -293,6 +287,11 @@ public class MapData {
         {"Atlantic Standard Time", "CA", "America/Moncton"},
 
         {"Atlantic Standard Time", "GL", "America/Thule", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC-04:00) Caracas
+        {"Venezuela Standard Time", "VE", "America/Caracas", DEFAULT}, // Caracas
 
 
         // --------------------------------------------------------------------
@@ -366,6 +365,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC-04:00) Santiago
+        {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
+
+        {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
         // (UTC-04:00) Turks and Caicos
         {"Turks And Caicos Standard Time", "TC", "America/Grand_Turk", DEFAULT}, // Turks and Caicos
 
@@ -376,13 +382,13 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-03:00) Brasilia
-        {"E. South America Standard Time", "BR", "America/Sao_Paulo", DEFAULT}, // Brasilia
+        // (UTC-03:00) Araguaina
+        {"Tocantins Standard Time", "BR", "America/Araguaina", DEFAULT}, // Araguaina
 
 
         // --------------------------------------------------------------------
-        // (UTC-03:00) Araguaina
-        {"Tocantins Standard Time", "BR", "America/Araguaina", DEFAULT}, // Araguaina
+        // (UTC-03:00) Brasilia
+        {"E. South America Standard Time", "BR", "America/Sao_Paulo", DEFAULT}, // Brasilia
 
 
         // --------------------------------------------------------------------
@@ -444,13 +450,6 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC-03:00) Salvador
         {"Bahia Standard Time", "BR", "America/Bahia", DEFAULT}, // Salvador
-
-
-        // --------------------------------------------------------------------
-        // (UTC-03:00) Santiago
-        {"Pacific SA Standard Time", "CL", "America/Santiago", DEFAULT}, // Santiago
-
-        {"Pacific SA Standard Time", "AQ", "Antarctica/Palmer", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -793,11 +792,12 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+03:00) Moscow, St. Petersburg, Volgograd (RTZ 2)
+        // (UTC+03:00) Moscow, St. Petersburg, Volgograd
         {"Russian Standard Time", "RU", "Europe/Moscow", DEFAULT}, // Moscow
         {"Russian Standard Time", "RU", "Europe/Kirov"},
         {"Russian Standard Time", "RU", "Europe/Volgograd"}, // Volgograd
-        {"Russian Standard Time", "RU", "Europe/Simferopol"},
+
+        {"Russian Standard Time", "UA", "Europe/Simferopol", REGION_DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -922,7 +922,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+05:00) Ekaterinburg (RTZ 4)
+        // (UTC+05:00) Ekaterinburg
         {"Ekaterinburg Standard Time", "RU", "Asia/Yekaterinburg", DEFAULT}, // Ekaterinburg
 
 
@@ -976,10 +976,8 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+06:00) Novosibirsk (RTZ 5)
-        {"N. Central Asia Standard Time", "RU", "Asia/Novosibirsk", DEFAULT}, // Novosibirsk
-        {"N. Central Asia Standard Time", "RU", "Asia/Omsk"},
-
+        // (UTC+06:00) Omsk
+        {"Omsk Standard Time", "RU", "Asia/Omsk", DEFAULT},
 
         // --------------------------------------------------------------------
         // (UTC+06:30) Yangon (Rangoon)
@@ -1027,9 +1025,14 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+07:00) Krasnoyarsk (RTZ 6)
+        // (UTC+07:00) Krasnoyarsk
         {"North Asia Standard Time", "RU", "Asia/Krasnoyarsk", DEFAULT}, // Krasnoyarsk
         {"North Asia Standard Time", "RU", "Asia/Novokuznetsk"},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+07:00) Novosibirsk
+        {"N. Central Asia Standard Time", "RU", "Asia/Novosibirsk", DEFAULT}, // Novosibirsk
 
 
         // --------------------------------------------------------------------
@@ -1047,7 +1050,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+08:00) Irkutsk (RTZ 7)
+        // (UTC+08:00) Irkutsk
         {"North Asia East Standard Time", "RU", "Asia/Irkutsk", DEFAULT}, // Irkutsk
 
 
@@ -1128,7 +1131,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Yakutsk (RTZ 8)
+        // (UTC+10:00) Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Yakutsk", DEFAULT}, // Yakutsk
         {"Yakutsk Standard Time", "RU", "Asia/Khandyga"},
 
@@ -1184,19 +1187,14 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Magadan
-        {"Magadan Standard Time", "RU", "Asia/Magadan", DEFAULT}, // Magadan
-        // Note: This Windows zone will be deprecated and will be merged into
-        //       Vladivostok Standard Time. Until then, we keep this entry.
+        // (UTC+10:00) Vladivostok
+        {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
+        {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
 
 
         // --------------------------------------------------------------------
-        // (UTC+10:00) Vladivostok, Magadan (RTZ 9)
-        // {"Vladivostok Standard Time", "RU", "Asia/Magadan"}, // Magadan
-        // Note: When "Magadan Standard Time" is marked as deprecated, this entry
-        //       will be uncommented.
-        {"Vladivostok Standard Time", "RU", "Asia/Ust-Nera"},
-        {"Vladivostok Standard Time", "RU", "Asia/Vladivostok", DEFAULT}, // Vladivostok
+        // (UTC+10:30) Lord Howe Island
+        {"Lord Howe Standard Time", "AU", "Australia/Lord_Howe", DEFAULT}, // Lord Howe Island
 
 
         // --------------------------------------------------------------------
@@ -1205,13 +1203,23 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+11:00) Chokurdakh (RTZ 10)
+        // (UTC+11:00) Chokurdakh
         {"Russia Time Zone 10", "RU", "Asia/Srednekolymsk", DEFAULT}, // Chokurdakh
+
+
+        // --------------------------------------------------------------------
+        // (UTC+11:00) Magadan
+        {"Magadan Standard Time", "RU", "Asia/Magadan", DEFAULT}, // Magadan
 
 
         // --------------------------------------------------------------------
         // (UTC+11:00) Norfolk Island
         {"Norfolk Standard Time", "NF", "Pacific/Norfolk", DEFAULT}, // Norfolk Island
+
+
+        // --------------------------------------------------------------------
+        // (UTC+11:00) Sakhalin
+        {"Sakhalin Standard Time", "RU", "Asia/Sakhalin", DEFAULT}, // Sakhalin
 
 
         // --------------------------------------------------------------------
@@ -1236,12 +1244,7 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+12:00) Sakhalin
-        {"Sakhalin Standard Time", "RU", "Asia/Sakhalin", DEFAULT}, // Sakhalin
-
-
-        // --------------------------------------------------------------------
-        // (UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky (RTZ 11)
+        // (UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky
         {"Russia Time Zone 11", "RU", "Asia/Anadyr"}, // Anadyr
         {"Russia Time Zone 11", "RU", "Asia/Kamchatka", DEFAULT}, // Petropavlovsk-Kamchatsky
 
@@ -1279,11 +1282,6 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+12:45) Chatham Islands
         {"Chatham Islands Standard Time", "NZ", "Pacific/Chatham", DEFAULT}, // Chatham
-
-
-        // --------------------------------------------------------------------
-        // (UTC+13:00) Lord Howe Island
-        {"Lord Howe Standard Time", "AU", "Australia/Lord_Howe", DEFAULT}, // Lord Howe Island
 
 
         // --------------------------------------------------------------------

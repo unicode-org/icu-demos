@@ -160,6 +160,7 @@ class ExemplarLocationData {
         {"Norfolk Island", "Pacific/Norfolk"},
         {"Novosibirsk", "Asia/Novosibirsk"},
         {"Nuku'alofa", "Pacific/Tongatapu"},
+        {"Omsk", "Asia/Omsk"},
         {"Osaka", ""},
         {"Paris", "Europe/Paris"},
         {"Perth", "Australia/Perth"},
