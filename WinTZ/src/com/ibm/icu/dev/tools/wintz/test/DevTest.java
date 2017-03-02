@@ -6,8 +6,11 @@
  */
 package com.ibm.icu.dev.tools.wintz.test;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.ibm.icu.dev.tools.wintz.RegUtil;
 import com.ibm.icu.dev.tools.wintz.TimeZoneRegistry;
@@ -26,6 +29,7 @@ public class DevTest {
 //        regUtilDwordValue();
 //        timezoneRegistry();
         dumpWindowsTimeZones();
+//        showDisplayNames();
     }
 
     static void regUtilKeyValue() {
@@ -167,5 +171,40 @@ public class DevTest {
         }
 
         return buf.toString();
+    }
+
+
+    static class WinTzInfo {
+    	private String tzid;
+    	private String dispName;
+    	private int stdOffset;
+
+    	static class Cmp implements Comparator<WinTzInfo> {
+			@Override
+			public int compare(WinTzInfo arg0, WinTzInfo arg1) {
+				int diffOffset = arg0.stdOffset - arg1.stdOffset;
+				if (diffOffset != 0) {
+					return diffOffset;
+				}
+				return arg0.dispName.compareTo(arg1.dispName);
+			}
+    	}
+    }
+
+    static void showDisplayNames() {
+        TimeZoneRegistry reg = TimeZoneRegistry.get();
+        Set<String>winIDs = reg.getAvailableTZIDs();
+        SortedSet<WinTzInfo> sortedSet = new TreeSet<WinTzInfo>(new WinTzInfo.Cmp());
+        for (String winID: winIDs) {
+        	WinTzInfo tzinf = new WinTzInfo();
+        	tzinf.tzid = winID;
+        	tzinf.dispName = reg.getDisplayName(winID);
+        	tzinf.stdOffset = reg.getTimeZone(winID).getRawOffset();
+        	sortedSet.add(tzinf);
+        }
+
+        for (WinTzInfo tzinf : sortedSet) {
+        	System.out.println(tzinf.dispName + "[" + tzinf.tzid + "]");
+        }
     }
 }
