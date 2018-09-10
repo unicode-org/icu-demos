@@ -7,7 +7,7 @@
 
 #endif
 
-// #ifdef CPLUSPLUS
+#ifdef CPLUSPLUS
 #include <unicode/utypes.h>
 using namespace icu;
-// #endif
+#endif
