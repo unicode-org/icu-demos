@@ -11,12 +11,16 @@ behavior on older ICUs with:
 
 ----
 
+Mac with homebrew:
+
+$ brew install icu4c pkg-config
 
 Windows Visual Studio: 
 
-Use the project file iucsamples.sln.  
-Set  variable IcuDir  to the root of your ICU build (containing bin, lib, include)
-set PATH=%IcuDir%\bin;%PATH% 
+NOTE: currently broken, needs to be updated.
+#Use the project file iucsamples.sln.  
+#Set  variable IcuDir  to the root of your ICU build (containing bin, lib, include)
+#set PATH=%IcuDir%\bin;%PATH% 
 
 
 UNIXes: see below.
