@@ -1,6 +1,7 @@
 // Copyright (c) 2010-2012 IBM Corporation and Others. All Rights Reserved.
 
 #include "../iucsamples.h"
+#include <unicode/errorcode.h>
 #include <unicode/ustdio.h>
 #include <unicode/brkiter.h>
 #include <stdio.h>
@@ -10,25 +11,29 @@ void menu() {
     u_printf("[c]urrent(), [f]irst(), [l]ast(), [n]ext(), [p]revious() or [q]uit: ");
 }
 
-int main() {
+int main(int argc, const char** argv) {
   const char *locale = "en_US";
-  UErrorCode status = U_ZERO_ERROR;
-  BreakIterator *characterIterator = BreakIterator::createCharacterInstance(locale, status);
+  icu::ErrorCode status;
+  BreakIterator *breakIterator = BreakIterator::createWordInstance(locale, status);
   ASSERT_OK(status);
 
   UnicodeString text;
-  text = "Text";
-  characterIterator->setText(text);
+  if (argc <= 1) {
+    text = "Hello, world! How are you?";
+  } else {
+    text = argv[1];
+  }
+  breakIterator->setText(text);
   
   char buf[200];
   menu();
   while(!feof(stdin) && fgets(buf,200,stdin) && buf[0]!='q') {
     switch(buf[0]) {
-    case 'c': u_printf("current() == %d\n", characterIterator->current()); break;
-    case 'f': u_printf("first()==%d\n", characterIterator->first()); break;
-    case 'l': u_printf("last()==%d\n", characterIterator->last()); break;
-    case 'n': u_printf("next()==%d\n", characterIterator->next()); break;
-    case 'p': u_printf("previous()==%d\n", characterIterator->previous()); break;
+    case 'c': u_printf("current() == %d\n", breakIterator->current()); break;
+    case 'f': u_printf("first()==%d\n", breakIterator->first()); break;
+    case 'l': u_printf("last()==%d\n", breakIterator->last()); break;
+    case 'n': u_printf("next()==%d\n", breakIterator->next()); break;
+    case 'p': u_printf("previous()==%d\n", breakIterator->previous()); break;
     default:  u_printf(" ( didn't understand \"%c\" )\n", buf[0]);
     }
     menu();
