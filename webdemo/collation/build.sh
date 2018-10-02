@@ -6,22 +6,22 @@
 
 # To update the index.html file for the demo:
 # 1. "make install" ICU, for example with
-#   .../runConfigureICU Linux --prefix=/usr/local/google/home/mscherer/svn.icu/trunk/inst/icu4c
+#   .../runConfigureICU Linux --prefix=/usr/local/google/home/mscherer/icu/mine/inst/icu4c
 # 2. Adjust the local-machine variables below, and then do this:
-#   ~/svn.icuapps/trunk/src$ webdemo/collation/build.sh
+#   ~/icu-demos/mine/src$ webdemo/collation/build.sh
 # 3. Check the output from "available":
-#   ~/svn.icuapps/trunk/src$ meld webdemo/collation/index.html ../available-collators.txt
+#   ~/icu-demos/mine/src$ meld webdemo/collation/index.html ../available-collators.txt
 #   Compare the part of index.html between the "begin output" and "end output" lines
 #   with the newly generated HTML snippet.
 # 4. Fix problems & regenerate if necessary.
 # 5. If there are changes, then
-#   ~/svn.icuapps/trunk/src$ cp ../available-collators.txt webdemo/collation/index.html
+#   ~/icu-demos/mine/src$ cp ../available-collators.txt webdemo/collation/index.html
 #   and review diffs again, and commit into the repository.
 
 HOME=/usr/local/google/home/mscherer
-ICU_SRC=$HOME/svn.icu/trunk/src/icu4c
-PREFIX=$HOME/svn.icu/trunk/inst/icu4c
-ICUAPPS_SRC=$HOME/svn.icuapps/trunk/src
+ICU_SRC=$HOME/icu/mine/src/icu4c
+PREFIX=$HOME/icu/mine/inst/icu4c
+ICUAPPS_SRC=$HOME/icu-demos/mine/src
 CGI_BIN=/var/www/cgi-bin
 
 CXX=clang++
