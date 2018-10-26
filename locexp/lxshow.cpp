@@ -11,6 +11,8 @@
 #include "unicode/putil.h"
 #include "unicode/calendar.h"
 
+using namespace icu; // TODO: fix namespace
+
 #include "locexp.h"
 
 /* Move Along.. nothing to see here.. */ 

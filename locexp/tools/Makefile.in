@@ -47,7 +47,6 @@ dist:  dist-local
 check:  check-local
 
 all-local: $(TARGET)
-	chmod a+x $(SCRIPTS)
 
 install-local: all-local install-target
 
@@ -55,7 +54,9 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(bindir)
 	$(INSTALL_PROGRAM) $(TARGET) $(sbindir)/$(TARGET)
-	$(INSTALL_SCRIPT) $(SCRIPTS) $(sbindir)
+	@for script in $(SCRIPTS) ; do \
+		$(INSTALL_SCRIPT) $(srcdir)/$(script) $(sbindir) ;\
+	done
 
 dist-local:
 

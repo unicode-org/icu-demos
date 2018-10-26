@@ -29,7 +29,7 @@ LDFLAGS := -L../lib $(LDFLAGS)
 ICULIBS    += -lusort $(LDFLAGS_TOOLUTIL)
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  := -I../lib $(CPPFLAGS)
+CPPFLAGS  := -I$(srcdir)/../lib $(CPPFLAGS)
 
 OBJECTS = usort_main.o 
 
@@ -53,8 +53,8 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR)
-	$(INSTALL_PROGRAM) $(TARGET) $(BINDIR)/$(TARGET)
+	$(MKINSTALLDIRS) $(DESTDIR)$(BINDIR)
+	$(INSTALL_PROGRAM) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
 
 dist-local:
 

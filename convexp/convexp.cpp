@@ -81,7 +81,7 @@ static const char endHeaderBeginBody[]=
     "<body>\n";
 
 static const char breadCrumbMainHeader[]=
-    "<div style=\"font-size: 6px\">"NBSP"</div>\n"
+    "<div style=\"font-size: 6px\">" NBSP "</div>\n"
     "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
@@ -127,10 +127,10 @@ static const char endForm[]=
 
     "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"175\" class=\"v14-gray-table-border\">\n"
     "<tr><th colspan=\"3\" class=\"v14-header-1-small\">Related Topics</th></tr>\n"
-    "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\">"NBSP"</td><td align=\"left\">&middot;"NBSP"<a href=\"http://www.icu-project.org/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\">"NBSP"</td><td align=\"left\">&middot;"NBSP"<a href=\"http://www.icu-project.org/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
-    "<tr><td><span style=\"font-size: 5px\">"NBSP"</span></td></tr>\n"
+    "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">" NBSP "</span></td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\">" NBSP "</td><td align=\"left\">&middot;" NBSP "<a href=\"http://www.icu-project.org/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\">" NBSP "</td><td align=\"left\">&middot;" NBSP "<a href=\"http://www.icu-project.org/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td><span style=\"font-size: 5px\">" NBSP "</span></td></tr>\n"
     "</table>\n"
 
     "</td></tr>\n"
@@ -184,7 +184,7 @@ static void printOptions(UErrorCode *status) {
     }
     printf("<input type=\"checkbox\" name=\"s\" value=\"ALL\" id=\"AllAliases\"%s /> <label for=\"AllAliases\"><em>All Aliases</em></label><br />\n",
         checked);
-    printf("<input type=\"checkbox\" name=\"" SHOW_UNAVAILABLE "\" value=\"\" id=\""SHOW_UNAVAILABLE"\"%s /> <label for=\""SHOW_UNAVAILABLE"\"><em>Show Unavailable Converters</em></label><br />\n",
+    printf("<input type=\"checkbox\" name=\"" SHOW_UNAVAILABLE "\" value=\"\" id=\"" SHOW_UNAVAILABLE "\"%s /> <label for=\"" SHOW_UNAVAILABLE "\"><em>Show Unavailable Converters</em></label><br />\n",
         ( gShowUnavailable ? " checked=\"checked\"" : ""));
     puts("<br />");
 }
@@ -298,7 +298,7 @@ static void printAmbiguousAliasedConverters() {
                 }
                 canonicalName = ucnv_getCanonicalName(alias, standard, &status);
                 if (canonicalName && strcmp(gCurrConverter, canonicalName) != 0) {
-                    printf("<a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a> %s { %s }<br />\n",
+                    printf("<a href=\"%s?conv=%s" OPTION_SEP_STR "%s\">%s</a> %s { %s }<br />\n",
                         gScriptName, canonicalName, getStandardOptionsURL(&status), canonicalName, alias, standard);
                 }
             }
@@ -445,7 +445,7 @@ static void printUnicodeSet(USet *cnvSet, UErrorCode *status, UBool alwaysShowSe
         *status = U_ZERO_ERROR;
     }
     else {
-        printf("<p><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR"%s#"SHOW_UNICODESET"\">View Complete Set...</a></p>\n",
+        printf("<p><a href=\"%s?conv=%s" OPTION_SEP_STR SHOW_UNICODESET OPTION_SEP_STR "%s#" SHOW_UNICODESET "\">View Complete Set...</a></p>\n",
             gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
     }
 }
@@ -463,9 +463,9 @@ static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *statu
         return;
     }
     puts("<br /><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"data-table-1\">\n");
-    puts("<caption><em><a name=\""SHOW_LOCALES"\"></a>List of Languages Representable By This Codepage</em></caption>\n");
+    puts("<caption><em><a name=\"" SHOW_LOCALES "\"></a>List of Languages Representable By This Codepage</em></caption>\n");
     if (!gShowLanguages) {
-        printf("<tr><td><a href=\"%s?conv=%s"OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR"%s#ShowLocales\">View Complete Set...</a></td></tr>\n",
+        printf("<tr><td><a href=\"%s?conv=%s" OPTION_SEP_STR SHOW_LOCALES OPTION_SEP_STR "%s#ShowLocales\">View Complete Set...</a></td></tr>\n",
             gScriptName, gCurrConverter, getStandardOptionsURL(&myStatus));
     }
     else {
@@ -505,7 +505,7 @@ static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *statu
                         printf("</td></tr>\n");
                     }*/
                     /*else {
-                        printf("<tr><td>%s</td><td>"NBSP" -- Skipped --</td></tr>\n",
+                        printf("<tr><td>%s</td><td>" NBSP " -- Skipped --</td></tr>\n",
                             locale);
                     }*/
                     uset_close(flatLocSet);
@@ -603,7 +603,7 @@ static void printConverterInfo(UErrorCode *status) {
 
     printLanguages(cnv, cnvSet, status);
 
-    puts("<br /><h2><a name=\""SHOW_UNICODESET"\"></a>Set of Unicode Characters Representable By This Codepage</h2>");
+    puts("<br /><h2><a name=\"" SHOW_UNICODESET "\"></a>Set of Unicode Characters Representable By This Codepage</h2>");
     printUnicodeSet(cnvSet, status, gShowUnicodeSet);
 
     if (convType == UCNV_UTF16 || convType == UCNV_UTF16_BigEndian
@@ -653,7 +653,7 @@ static inline void printAlias(const char *alias, UBool isFinal) {
         puts("<!-- This alias is way too long. So we do special formatting so that the browser can word wrap. -->");
         printf("<span style=\"font-style: italic\" title=\"%s\">", alias);
         while ((nextUnderscore = strchr(nextUnderscore, '_'))) {
-            printf("%.*s<br />\n"NBSP NBSP NBSP NBSP, nextUnderscore-alias, alias);
+            printf("%.*s<br />\n" NBSP NBSP NBSP NBSP, nextUnderscore-alias, alias);
             alias = nextUnderscore;
             nextUnderscore++; // Skip the current '_'
         }
@@ -756,7 +756,7 @@ static void printAliasTable() {
                         continue;
                     }
                 }
-                printf("<tr>\n<th style=\"white-space: nowrap\"><a href=\"%s?conv=%s"OPTION_SEP_STR"%s\">%s</a></th>\n",
+                printf("<tr>\n<th style=\"white-space: nowrap\"><a href=\"%s?conv=%s" OPTION_SEP_STR "%s\">%s</a></th>\n",
                     gScriptName, canonicalName, getStandardOptionsURL(&status), canonicalName);
             }
             status = U_ZERO_ERROR;

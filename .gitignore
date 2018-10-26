@@ -338,3 +338,5 @@ webdemo/collation/collation.html
 webdemo/collation/sortcgi
 xlitomatic/Makefile
 xtradata/Makefile
+*.o
+*.d

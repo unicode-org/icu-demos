@@ -35,7 +35,7 @@ RES_DIR=res
 #ICULIBS    +=  -lustdio 
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  += -I../locexp/util
+CPPFLAGS  += -I$(top_srcdir)/locexp/util
 
 OBJECTS = ubrowse.o icons.o $(PKG)_dat.o
 
@@ -61,10 +61,10 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
-	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
-	$(INSTALL) ubrowse-header.html $(BINDIR)/data
-	$(INVOKE) $(PKGDATA) -I $(BINDIR)/../lib -p $(PKG)  -m $(PKGMODE) -c -d $(OUT) -T $(OUT) $(PKG).lst 
+	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
+	$(INSTALL) ubrowse-header.html $(DESTDIR)$(BINDIR)/data
+	$(INVOKE) $(PKGDATA) -I $(DESTDIR)$(BINDIR)/../lib -p $(PKG)  -m $(PKGMODE) -c -d $(OUT) -T $(OUT) $(PKG).lst 
 
 dist-local:
 

@@ -20,8 +20,8 @@ BUILTRES=resource/.builtres
 include $(top_builddir)/icuapps.mk
 -include $(shell $(ICU_CONFIG) --incfile) 
 
-CPPFLAGS+=-I../apputil
-CPPFLAGS+=-I$(ICU_SORUCE)/common
+CPPFLAGS+=-I$(srcdir)/../apputil
+CPPFLAGS+=-I$(ICU_SORUCE)/common -I$(srcdir)
 
 
 # See the end of this makefile for documentation on the 
@@ -59,7 +59,7 @@ ICULIBS := $(ICULIBS) -L../apputil -lapputil $(LXLIBS) $(LDFLAGS_TOOLUTIL) $(LDF
 LDFLAGS += -L../usort/lib -L./util -L./resource/out/ 
 
 # get the hostname the code is built on
-CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I../usort/lib -I./util $(CPPFLAGS) -DLXHOST=\"$(host)\"
+CPPFLAGS := $(URLPREFIX) -DLXHOSTNAME=\"`hostname`\" -I$(top_srcdir)/usort/lib -I$(top_srcdir)/locexp/util $(CPPFLAGS) -DLXHOST=\"$(host)\"
 CPPFLAGS += $(LXOPTIONS) -DLX_STATIC
 CPPFLAGS += -I../apputil
 CPPFLAGS += -I.
@@ -110,8 +110,8 @@ install-local: install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(bindir)
-	$(INSTALL) $(TARGET) $(bindir)/$(TARGET)
+	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
+	$(INSTALL) $(TARGET) $(DESTDIR)$(bindir)/$(TARGET)
 
 dist-local:
 

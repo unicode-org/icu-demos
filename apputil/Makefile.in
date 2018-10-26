@@ -56,8 +56,8 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(libdir) $(BINDIR) $(DATA_DIR)
-	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
+	$(MKINSTALLDIRS) $(libdir) $(DESTDIR)$(BINDIR) $(DESTDIR)$(DATA_DIR)
+	$(INSTALL) $(SO_TARGET) $(DESTDIR)$(libdir)/$(SO_TARGET)
 ifneq ($(ENABLE_SHARED),)
 	$(INSTALL-L) $(FINAL_SO_TARGET) $(DESTDIR)$(libdir)
 ifneq ($(FINAL_SO_TARGET),$(SO_TARGET))
@@ -67,7 +67,7 @@ ifneq ($(FINAL_SO_TARGET),$(MIDDLE_SO_TARGET))
 endif
 endif
 endif
-	cp -R data/*.gif data/*.html data/*.css $(DATA_DIR)
+	cp -R $(srcdir)/data/*.gif $(srcdir)/data/*.html $(srcdir)/data/*.css $(DESTDIR)$(DATA_DIR)
 
 dist-local:
 

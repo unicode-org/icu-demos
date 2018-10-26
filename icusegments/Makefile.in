@@ -15,6 +15,7 @@ subdir = icusegments
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
+include $(shell $(ICU_CONFIG) --incfile) 
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
@@ -39,9 +40,10 @@ ICULIBS := -L../apputil -lapputil $(LDFLAGS_ICUIO) $(ICULIBS)
 
 #  libjson/json.o ulibrk.o
 OBJECTS = $(subdir).o
-OBJECTS += libjson/json.o
-CPPFLAGS += -I./libjson
+OBJECTS += json.o
+# CPPFLAGS += -I$(srcdir)/
 
+# libjson_json.o: $(srcdir)/libjson/json.c
 
 ## List of standard targets
 all: all-local
@@ -63,11 +65,11 @@ DATAINSTALL=$(INSTALL)
 #ULIURL=http://unicode.org/repos/uli/trunk/abbrs/json
 
 install-target: all-local $(ULIDATA)
-	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/$(DATANAME)
+	$(MKINSTALLDIRS) $(DESTDIR)$(BINDIR) $(DESTDIR)$(BINDIR)/$(DATANAME)
 	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)
-	$(INSTALL) $(TARGET) $(BINDIR)/
-	for file in $(wildcard $(DATADIR)/icusegments*); do \
-		 $(DATAINSTALL) $$file $(BINDIR)/$(DATANAME)/ ; \
+	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/
+	for file in $(wildcard $(srcdir)/$(DATADIR)/icusegments*); do \
+		 $(DATAINSTALL) $$file $(DESTDIR)$(BINDIR)/$(DATANAME)/ ; \
 		echo ' # Installed: ' $$file ; \
 	done
 

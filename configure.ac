@@ -69,6 +69,7 @@ ucd/Makefile \
 usort/Makefile \
 usort/client/Makefile \
 usort/lib/Makefile \
+icusegments/libjson \
 webdemo/collation/Makefile \
 xlitomatic/Makefile])
 

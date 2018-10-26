@@ -1179,7 +1179,7 @@ const char* IntlTest::loadTestData(UErrorCode& err){
     UResourceBundle* test =NULL;
     char* tdpath=NULL;
     const char* directory = ".";
-    const char* tdrelativepath = U_FILE_SEP_STRING"out"U_FILE_SEP_STRING;
+    const char* tdrelativepath = U_FILE_SEP_STRING "out" U_FILE_SEP_STRING;
     if( _testDataPath == NULL){
 
      /* get the data/out dir */
@@ -1240,7 +1240,7 @@ const char* IntlTest::loadTestData(UErrorCode& err){
         {
             fprintf(stderr, "Path %s failed to load testdata\n", tdpath);
             strcpy(tdpath,directory);
-            strcat(tdpath,".."U_FILE_SEP_STRING);
+            strcat(tdpath,".." U_FILE_SEP_STRING);
             strcat(tdpath, tdrelativepath);
             strcat(tdpath,"testdata");
             err =U_ZERO_ERROR;
@@ -1251,8 +1251,8 @@ const char* IntlTest::loadTestData(UErrorCode& err){
             if(U_FAILURE(err)){
                 fprintf(stderr, "Path %s failed to load testdata\n", tdpath);
                 strcpy(tdpath,directory);
-                strcat(tdpath,".."U_FILE_SEP_STRING);
-                strcat(tdpath,".."U_FILE_SEP_STRING);
+                strcat(tdpath,".." U_FILE_SEP_STRING);
+                strcat(tdpath,".." U_FILE_SEP_STRING);
                 strcat(tdpath, tdrelativepath);
                 strcat(tdpath,"testdata");
                 err =U_ZERO_ERROR;

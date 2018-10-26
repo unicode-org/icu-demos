@@ -14,7 +14,7 @@
  * ENCODING and return it.  Caller must delete returned pointer.
  * Return value will be 0 if out of memory.
  */
-char* util_createChars(const UnicodeString& str);
+char* util_createChars(const icu::UnicodeString& str);
 
 /**
  * Write the given bytes out to the given file.  The
@@ -32,18 +32,18 @@ char* util_readFrom(FILE* file, int32_t& length);
  * inverse of this operation is util_readFrom().  Unlike
  * util_printf(), this function writes a length long.
  */
-UBool util_writeTo(FILE* file, const UnicodeString& str);
+UBool util_writeTo(FILE* file, const icu::UnicodeString& str);
 
 /**
  * Return TRUE on success.
  */
-UBool util_readFrom(FILE* file, UnicodeString& key);
+UBool util_readFrom(FILE* file, icu::UnicodeString& key);
 
 /**
  * Escape a string for JavaScript, such that JavaScript's unescape()
  * function recovers the original string.  Modifies the string in place.
  */
-void util_escapeJavaScriptString(UnicodeString& str);
+void util_escapeJavaScriptString(icu::UnicodeString& str);
 
 /**
  * Write the given string to the given FILE*, escaping certain
@@ -57,12 +57,12 @@ void util_fprintf(FILE* out, const char* str, UBool inQuote);
  * certain characters assuming we are within a JavaScript double
  * quoted string if inQuote is true.
  */
-UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote=FALSE);
+UBool util_fprintf(FILE* out, const icu::UnicodeString& str, UBool inQuote=FALSE);
 
 /**
  * Send the given UnicodeString to 'out' using ENCODING and
  * JavaScript escaping for double quotes ONLY.  Good for HIDDEN fields.
  */
-UBool util_fprintfq(FILE* out, const UnicodeString& str);
+UBool util_fprintfq(FILE* out, const icu::UnicodeString& str);
 
 #endif

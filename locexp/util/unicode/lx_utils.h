@@ -28,7 +28,6 @@
 #include "unicode/uchar.h"
 #include "ctype.h"
 
-
 /* Some misc utils that were used in listrb but aren't specific 
    to listrb. */
 

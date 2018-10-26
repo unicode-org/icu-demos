@@ -52,7 +52,7 @@ RES=$(RES_SHORT)
 # C Source files to extract FSWF strings from.  Remove items from here during development to not require a recompile.  
 FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.cpp ../lxshowloc.c  ../srchexp.c ../wfobject.c  ../lxsort.c ../lxcgi.c ../lxicir.c
 
-%.res : %.txt
+%.res : $(srcdir)/%.txt
 	@echo Rebuilding $@
 	@$(INVOKE) $(GENRB) -d. $<
 
@@ -88,11 +88,11 @@ res-local:  $(RES) $(OUT)/locexp.lst
 
 -include Makefile.res
 
-root.txt: $(FSWF_SRC) root.txt.inc ../tools/extractStrings.sh
-	$(INVOKE) PATH="../tools:$(bindir):$(sbindir):$(PATH)" extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
+root.txt: $(FSWF_SRC) root.txt.inc $(srcdir)/../tools/extractStrings.sh
+	$(INVOKE) PATH="$(srcdir)/../tools:$(bindir):$(sbindir):$(PATH)" extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
 
-res_index.txt: Makefile.in $(SRC) ../tools/genIndex.sh
-	sh ../tools/genIndex.sh $(SRC) root.txt > $@
+res_index.txt: Makefile.in $(SRC) $(srcdir)/../tools/genIndex.sh
+	sh $(srcdir)/../tools/genIndex.sh $(SRC) $(srcdir)/root.txt > $@
 
 install-local: install-res
 
@@ -127,19 +127,19 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 #sr.txt:  sr.utf16.txt escapeABundle
 #	../../uconv/uconv -f utf-16le -t utf-16be < sr.utf16.txt | escapeABundle > sr.txt || rm -f sr.txt
 
-$(PKG)_sr.res : sr.txt
+$(PKG)_sr.res : $(srcdir)/sr.txt
 	echo Rebuilding $@ - utf-16le
 	$(INVOKE)  $(GENRB) --package-name $(PKG) -d. -eutf-16le $<
 
-$(PKG)_root.res : root.txt
+$(PKG)_root.res : $(srcdir)/root.txt
 	echo Rebuilding $@ - utf-8
 	$(INVOKE)  $(GENRB) --package-name $(PKG) -d. -eutf-8 $<
 
-escapeABundle: escapeABundle.c
-	cc -o escapeABundle escapeABundle.c
+escapeABundle: $(srcdir)/escapeABundle.c
+	cc -o escapeABundle $(srcdir)/escapeABundle.c
 
 
-root_SAMPLE.txt: root.txt
+root_SAMPLE.txt: $(srcdir)/root.txt
 	echo "// Generated copy of root.txt. Also look at 'en.txt'." > root_SAMPLE.txt
 	cat < root.txt >> root_SAMPLE.txt
 

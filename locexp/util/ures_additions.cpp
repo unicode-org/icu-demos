@@ -44,7 +44,7 @@ U_CAPI const char* ures_getTaggedArrayTag(const UResourceBundle *resourceBundle,
       return NULL;
     }
 
-  UnicodeString uStr = ((ResourceBundle*)resourceBundle)->getStringEx(index,*status);
+  icu::UnicodeString uStr = ((icu::ResourceBundle*)resourceBundle)->getStringEx(index,*status);
   if (U_SUCCESS(*status))
     {
        char *str = (char*)malloc(uStr.length() + 3);

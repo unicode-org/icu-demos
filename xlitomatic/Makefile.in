@@ -25,7 +25,7 @@ LDFLAGS := $(LDFLAGS) -L../locexp/util -L../usort/lib
 ICULIBS    += -lustdio -llxutil -lusort
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  := -I../locexp/util -I../usort/lib $(CPPFLAGS)
+CPPFLAGS  := -I$(top_srcdir)/locexp/util -I$(top_srcdir)/usort/lib $(CPPFLAGS)
 
 OBJECTS = xlitomatic.o dsource.o filesource.o xlitsource.o urlsource.o
 

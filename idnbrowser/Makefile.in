@@ -31,7 +31,7 @@ CPPFLAGS += -I$(top_srcdir)/apputil
 ICULIBS := -L../apputil -lapputil $(LDFLAGS_ICUIO) $(ICULIBS)
 
 # Want to make sure the usort.h dependency is not on the installed version .. 
-CPPFLAGS  += -I../locexp/util
+CPPFLAGS  += -I$(top_srcdir)/locexp/util
 
 OBJECTS = parseqs.o idnbrwsr.o 
 
@@ -49,9 +49,9 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
-	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
-	$(INSTALL) idna-header.html $(BINDIR)/data
+	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
+	$(INSTALL) idna-header.html $(DESTDIR)$(BINDIR)/data
 
 dist-local:
 
