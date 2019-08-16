@@ -6,8 +6,8 @@
 
 # RUNNING WITH [docker](https://docker.io)
 
-- `docker build -t icu4jweb:latest .`
-- `docker run --rm -p 8083:9080 icu4jweb:latest`  (^C to stop and delete the container)
+- `sh build-docker.sh`
+- `docker run --rm -p 8083:9080 unicode/icu4jweb:latest`  (^C to stop and delete the container)
 - now go to [http://127.0.0.1:8083/icu4jweb/](http://127.0.0.1:8083/icu4jweb/)
 
 # License
