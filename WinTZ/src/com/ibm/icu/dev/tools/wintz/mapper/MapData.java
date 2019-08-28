@@ -7,8 +7,8 @@
 package com.ibm.icu.dev.tools.wintz.mapper;
 
 public class MapData {
-    static final String TZDATA_VERSION = "2017a";
-    static final String WINTZDATA_VERSION = "7e00600";
+    static final String TZDATA_VERSION = "2019b";
+    static final String WINTZDATA_VERSION = "7e11200";
 
     static final String DEFAULT = "D";
     static final String REGION_DEFAULT = "R";
@@ -273,6 +273,11 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC-05:00) Turks and Caicos
+        {"Turks And Caicos Standard Time", "TC", "America/Grand_Turk", DEFAULT}, // Turks and Caicos
+
+
+        // --------------------------------------------------------------------
         // (UTC-04:00) Asuncion
         {"Paraguay Standard Time", "PY", "America/Asuncion", DEFAULT}, // Asuncion
 
@@ -370,11 +375,6 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC-04:00) Turks and Caicos
-        {"Turks And Caicos Standard Time", "TC", "America/Grand_Turk", DEFAULT}, // Turks and Caicos
-
-
-        // --------------------------------------------------------------------
         // (UTC-03:30) Newfoundland
         {"Newfoundland Standard Time", "CA", "America/St_Johns", DEFAULT}, // Newfoundland
 
@@ -418,10 +418,6 @@ public class MapData {
         // zone defined as of March 1, 2017.
         {"SA Eastern Standard Time", "AQ", "Antarctica/Palmer"},
 
-        // New zone in tzdata2017a, UTC-3:00 all year long since Dec 2016.
-        // Windows may add a new zone for this. For now, we use this mapping
-        // with other UTC-3:00/No DST zones.
-        {"SA Eastern Standard Time", "CL", "America/Punta_Arenas", REGION_DEFAULT},
 
         // --------------------------------------------------------------------
         // (UTC-03:00) City of Buenos Aires
@@ -447,6 +443,11 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC-03:00) Montevideo
         {"Montevideo Standard Time", "UY", "America/Montevideo", DEFAULT}, // Montevideo
+
+
+        // --------------------------------------------------------------------
+        // (UTC-03:00) Punta Arenas
+        {"Magallanes Standard Time", "CL", "America/Punta_Arenas", DEFAULT}, // Punta Arenas
 
 
         // --------------------------------------------------------------------
@@ -491,13 +492,6 @@ public class MapData {
         {"UTC", "ZZ", "Etc/UTC"},	// Etc/UTC became a canonical zone in CLDR 31
 
         {"UTC", "GL", "America/Danmarkshavn", REGION_DEFAULT},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+00:00) Casablanca
-        {"Morocco Standard Time", "EH", "Africa/El_Aaiun", REGION_DEFAULT},
-
-        {"Morocco Standard Time", "MA", "Africa/Casablanca", DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -548,9 +542,19 @@ public class MapData {
 
         {"Greenwich Standard Time", "SN", "Africa/Dakar", REGION_DEFAULT},
 
-        {"Greenwich Standard Time", "ST", "Africa/Sao_Tome", REGION_DEFAULT},
-
         {"Greenwich Standard Time", "TG", "Africa/Lome", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+00:00) Sao Tome
+        {"Sao Tome Standard Time", "ST", "Africa/Sao_Tome", DEFAULT}, // Sao Tome
+
+
+        // --------------------------------------------------------------------
+        // (UTC+00:00) Casablanca
+        {"Morocco Standard Time", "EH", "Africa/El_Aaiun", REGION_DEFAULT},
+
+        {"Morocco Standard Time", "MA", "Africa/Casablanca", DEFAULT},
 
 
         // --------------------------------------------------------------------
@@ -663,11 +667,6 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+01:00) Windhoek
-        {"Namibia Standard Time", "NA", "Africa/Windhoek", DEFAULT}, // Windhoek
-
-
-        // --------------------------------------------------------------------
         // (UTC+02:00) Amman
         {"Jordan Standard Time", "JO", "Asia/Amman", DEFAULT}, // Amman
 
@@ -675,10 +674,12 @@ public class MapData {
         // --------------------------------------------------------------------
         // (UTC+02:00) Athens, Bucharest
         {"GTB Standard Time", "CY", "Asia/Nicosia", REGION_DEFAULT},
+        {"GTB Standard Time", "CY", "Asia/Famagusta"},
 
         {"GTB Standard Time", "GR", "Europe/Athens", REGION_DEFAULT}, // Athens
 
         {"GTB Standard Time", "RO", "Europe/Bucharest", DEFAULT}, // Bucharest
+
 
 
         // --------------------------------------------------------------------
@@ -767,8 +768,18 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+02:00) Khartoum
+        {"Sudan Standard Time", "SD", "Africa/Khartoum", DEFAULT}, // Khartoum
+
+
+        // --------------------------------------------------------------------
         // (UTC+02:00) Tripoli
         {"Libya Standard Time", "LY", "Africa/Tripoli", DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+02:00) Windhoek
+        {"Namibia Standard Time", "NA", "Africa/Windhoek", DEFAULT}, // Windhoek
 
 
         // --------------------------------------------------------------------
@@ -780,11 +791,6 @@ public class MapData {
         // (UTC+03:00) Istanbul
         {"Turkey Standard Time", "TR", "Europe/Istanbul", DEFAULT}, // Istanbul
 
-        // Asia/Famagusta was separated from Asia/Nicosia.
-        // This is UTC+3:00/No DST. We don't map Famagusta to E. Africa Standard Time
-        // (default mapping for UTC+3:00/No DST), because it follows Turkey.
-        {"Turkey Standard Time", "CY", "Asia/Famagusta", REGION_DEFAULT},
-        
 
         // --------------------------------------------------------------------
         // (UTC+03:00) Kuwait, Riyadh
@@ -805,10 +811,9 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
-        // (UTC+03:00) Moscow, St. Petersburg, Volgograd
+        // (UTC+03:00) Moscow, St. Petersburg
         {"Russian Standard Time", "RU", "Europe/Moscow", DEFAULT}, // Moscow
         {"Russian Standard Time", "RU", "Europe/Kirov"},
-        {"Russian Standard Time", "RU", "Europe/Volgograd"}, // Volgograd
 
         {"Russian Standard Time", "UA", "Europe/Simferopol", REGION_DEFAULT},
 
@@ -826,8 +831,6 @@ public class MapData {
         {"E. Africa Standard Time", "KM", "Indian/Comoro", REGION_DEFAULT},
 
         {"E. Africa Standard Time", "MG", "Indian/Antananarivo", REGION_DEFAULT},
-
-        {"E. Africa Standard Time", "SD", "Africa/Khartoum", REGION_DEFAULT},
 
         {"E. Africa Standard Time", "SO", "Africa/Mogadishu", REGION_DEFAULT},
 
@@ -869,11 +872,6 @@ public class MapData {
         {"Astrakhan Standard Time", "RU", "Europe/Astrakhan", DEFAULT}, // Astrakhan
         {"Astrakhan Standard Time", "RU", "Europe/Ulyanovsk"}, // Ulyanovsk
  
-        // We don't know how Windows handle Europe/Saratov at this moment.
-        // This is separated from Europe/Volgograd. Since Dec 4 2016, Europe/Saratov
-        // moved from UTC+3 to UTC+4. This zone could be mapped to Russian Time Zone 3,
-        // but this zone shares the same offset a bit longer in 2016.
-        {"Astrakhan Standard Time", "RU", "Europe/Saratov"},
 
         // --------------------------------------------------------------------
         // (UTC+04:00) Baku
@@ -897,8 +895,18 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+04:00) Saratov
+        {"Saratov Standard Time", "RU", "Europe/Saratov", DEFAULT}, // Saratov
+
+
+        // --------------------------------------------------------------------
         // (UTC+04:00) Tbilisi
         {"Georgian Standard Time", "GE", "Asia/Tbilisi", DEFAULT}, // Tbilisi
+
+
+        // --------------------------------------------------------------------
+        // (UTC+04:00) Volgograd
+        {"Volgograd Standard Time", "RU", "Europe/Volgograd", DEFAULT}, // Volgograd
 
 
         // --------------------------------------------------------------------
@@ -951,6 +959,11 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+05:00) Qyzylorda
+        {"Qyzylorda Standard Time", "KZ", "Asia/Qyzylorda", DEFAULT}, // Qyzylorda
+
+
+        // --------------------------------------------------------------------
         // (UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi
         {"India Standard Time", "IN", "Asia/Calcutta", DEFAULT}, // Kolkata
 
@@ -970,7 +983,7 @@ public class MapData {
         {"Central Asia Standard Time", "KG", "Asia/Bishkek", REGION_DEFAULT},
 
         {"Central Asia Standard Time", "KZ", "Asia/Almaty", DEFAULT}, // Astana
-        {"Central Asia Standard Time", "KZ", "Asia/Qyzylorda"},
+        {"Central Asia Standard Time", "KZ", "Asia/Qostanay"},
 
         // There are three Windows time zones with UTC offset +06:00 without DST for now.
         // Other two used to observe DST until recently comparing to this zone. So we'll
@@ -1086,6 +1099,11 @@ public class MapData {
 
         {"Singapore Standard Time", "SG", "Asia/Singapore", DEFAULT}, // Singapore
 
+        // Casey station uses UTC+8 (no DST). It's Australian facility, therefore we may
+        // put this into W. Australia Standard Time, but this zone observes DST. For now,
+        // we put Casey in the same group with Etc/GMT-8.
+        {"Singapore Standard Time", "AQ", "Antarctica/Casey", REGION_DEFAULT},
+
         // There are six Windows time zones with UTC offset +08:00 without DST for now.
         // Probably, this zone never observe DST in near future comparing to others,
         // so we'll use this zone as default UTC+08:00/no DST zone.
@@ -1106,11 +1124,6 @@ public class MapData {
         // (UTC+08:00) Ulaanbaatar
         {"Ulaanbaatar Standard Time", "MN", "Asia/Ulaanbaatar", DEFAULT}, // Ulaanbaatar
         {"Ulaanbaatar Standard Time", "MN", "Asia/Choibalsan"},
-
-
-        // --------------------------------------------------------------------
-        // (UTC+08:30) Pyongyang
-        {"North Korea Standard Time", "KP", "Asia/Pyongyang", DEFAULT}, // Pyongyang
 
 
         // --------------------------------------------------------------------
@@ -1140,6 +1153,11 @@ public class MapData {
         {"Tokyo Standard Time", "TL", "Asia/Dili", REGION_DEFAULT},
 
         {"Tokyo Standard Time", "PW", "Pacific/Palau", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
+        // (UTC+09:00) Pyongyang
+        {"North Korea Standard Time", "KP", "Asia/Pyongyang", DEFAULT}, // Pyongyang
 
 
         // --------------------------------------------------------------------
@@ -1259,10 +1277,6 @@ public class MapData {
         // just because we use this zone as the default UTC+11:00/no DST zone.
         {"Central Pacific Standard Time", "AU", "Antarctica/Macquarie", REGION_DEFAULT},
 
-        // Same as Macquarie Island above. Using this zone for UTC+11:00/no DST zones
-        // which don't really belong to others.
-        {"Central Pacific Standard Time", "AQ", "Antarctica/Casey", REGION_DEFAULT},
-
 
         // --------------------------------------------------------------------
         // (UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky
@@ -1306,16 +1320,18 @@ public class MapData {
 
 
         // --------------------------------------------------------------------
+        // (UTC+13:00) Coordinated Universal Time+13
+        {"UTC+13", "ZZ", "Etc/GMT-13", DEFAULT},
+
+        {"UTC+13", "KI", "Pacific/Enderbury", REGION_DEFAULT},
+
+        {"UTC+13", "TK", "Pacific/Fakaofo", REGION_DEFAULT},
+
+
+        // --------------------------------------------------------------------
         // (UTC+13:00) Nuku'alofa
         {"Tonga Standard Time", "TO", "Pacific/Tongatapu", DEFAULT}, // Nuku'alofa
 
-        // Enderbury/Fakaofo are not in Tonga, but close enough and using the
-        // same UTC offset/no DST.
-        {"Tonga Standard Time", "KI", "Pacific/Enderbury", REGION_DEFAULT},
-        {"Tonga Standard Time", "TK", "Pacific/Fakaofo", REGION_DEFAULT},
-
-        // This is the only Windows time zone with UTC offset +13:00 without DST
-        {"Tonga Standard Time", "ZZ", "Etc/GMT-13", REGION_DEFAULT},
 
         // --------------------------------------------------------------------
         // (UTC+13:00) Samoa
