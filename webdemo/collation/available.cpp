@@ -129,21 +129,22 @@ main(int argc, char* argv[]) {
     std::map<string, string> locToDefaultType;
     locToDefaultType[string()] = "standard";
     const Locale &root = Locale::getRoot();
-    locToColl[string(" ") + root.getName()] = Collator::createInstance(root, errorCode);
+    string rootKey = string(" ") + root.getName();
+    locToColl[rootKey] = Collator::createInstance(root, errorCode);
     errorCode.assertSuccess();
 
     std::unique_ptr<icu::StringEnumeration> locales(Collator::getAvailableLocales());
-    const char *localeID = "root";
+    const char *localeID = root.getName();
     bool isRoot = true;
     do {
         Locale locale(localeID);
         std::unique_ptr<icu::StringEnumeration> types(
                 Collator::getKeywordValuesForLocale("collation", locale, FALSE, errorCode));
         errorCode.assertSuccess();
-        const char *type = NULL;  // Ask ICU for the default collation type.
+        const char *type = nullptr;  // Ask ICU for the default collation type.
         for(;;) {
             Locale localeWithType(locale);
-            if(type != NULL) {
+            if(type != nullptr) {
                 localeWithType.setKeywordValue("collation", type, errorCode);
             }
             errorCode.assertSuccess();
@@ -155,26 +156,27 @@ main(int argc, char* argv[]) {
             if(isRoot) {
                 // Make root locales sort before others.
                 actualName.insert(0, " ");
-            } else if(actualName.empty() || actualName.compare(0, 4, "root") == 0) {
+            } else if(actualName.empty() || actualName[0] == '@' ||
+                    actualName.compare(0, 4, "root") == 0) {
                 skip = true;
             }
             if(!skip && locToColl.find(actualName) == locToColl.end()) {
                 locToColl[actualName] = coll.release();
             }
-            const char *nextType = types->next(NULL, errorCode);
-            if(nextType == NULL) { break; }
-            if(type == NULL) {
+            const char *nextType = types->next(nullptr, errorCode);
+            if(nextType == nullptr) { break; }
+            if(type == nullptr) {
                 // There is always at least the default type which is the first list item.
                 locToDefaultType[localeID] = nextType;
             }
             type = nextType;
         }
         isRoot = false;
-    } while((localeID = locales->next(NULL, errorCode)) != NULL);
+    } while((localeID = locales->next(nullptr, errorCode)) != nullptr);
 
     std::unique_ptr<icu::LocaleDisplayNames> ldn(
         icu::LocaleDisplayNames::createInstance(Locale::getEnglish(), ULDN_DIALECT_NAMES));
-    assert(ldn.get() != NULL);
+    assert(ldn.get() != nullptr);
 
     for(const auto &entry : locToColl) {
         UnicodeString text;
