@@ -18,8 +18,9 @@
 *
 */
 
-#include <unicode/utypes.h>
+#include <string>
 #include <set>
+#include <unicode/utypes.h>
 
 #define MAX_BYTE_SIZE 64
 

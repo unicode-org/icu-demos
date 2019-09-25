@@ -41,6 +41,8 @@
 //#   include "windows.h"
 //#endif
 
+using namespace icu; // TODO: fix types
+
 /* The following must be able to handle the largest idna/normalization expansion, like the result from \uFDFA */
 #define LONGEST_NORMALIZATION_EXPANSION 18
 

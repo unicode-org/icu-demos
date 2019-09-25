@@ -5,6 +5,7 @@
 
 #include "unicode/unistr.h"
 #include "hash.h"
+using namespace icu; //TODO:
 
 /**
  * A cache of text objects.  The cache is stored on disk.

@@ -10,15 +10,15 @@
 
 #include <stdlib.h>
 
-TimeZone *gmtZone  = NULL; // for comparison
+icu::TimeZone *gmtZone  = NULL; // for comparison
 
 U_CAPI UTimeZone *utz_open(const UChar* id)
 {
-  TimeZone *z = TimeZone::createTimeZone(UnicodeString(id));
+  icu::TimeZone *z = icu::TimeZone::createTimeZone(icu::UnicodeString(id));
 
   if(gmtZone == NULL)
     {
-      TimeZone *aZone = TimeZone::createTimeZone("GMT");
+      icu::TimeZone *aZone = icu::TimeZone::createTimeZone("GMT");
       gmtZone = aZone; // no concurrency problem here, possible leak.
     }
 
@@ -36,13 +36,13 @@ U_CAPI UTimeZone *utz_open(const UChar* id)
 }
 
 U_CAPI UTimeZone *utz_openDefault() {
-    TimeZone *z = TimeZone::createDefault();
+    icu::TimeZone *z = icu::TimeZone::createDefault();
     return z;
 }
 
 U_CAPI int utz_getID(const UTimeZone *zone, char *idbuf, int idlen) {
-    UnicodeString id;
-    ((TimeZone*)zone)->getID(id);
+    icu::UnicodeString id;
+    ((icu::TimeZone*)zone)->getID(id);
     idbuf[0]=0;
     return id.extract(0,id.length(),idbuf);
 }
@@ -50,12 +50,12 @@ U_CAPI int utz_getID(const UTimeZone *zone, char *idbuf, int idlen) {
 
 U_CAPI void utz_close(UTimeZone* zone)
 {
-  delete ((TimeZone*)zone);
+  delete ((icu::TimeZone*)zone);
 }
 
 U_CAPI int32_t utz_getRawOffset(const UTimeZone *zone)
 {
-  return ((TimeZone*)zone)->getRawOffset();
+  return ((icu::TimeZone*)zone)->getRawOffset();
 }
 
 // int32_t utz_getDisplayName(zone, daylight, style, locale, result, resultLength, status)
@@ -69,28 +69,28 @@ U_CAPI const UChar* utz_hackyGetDisplayName(const UTimeZone *zone)
   if(!zone)
     return NULL;
 
-  return ((const TimeZone*)zone)->getDisplayName(*(new UnicodeString())).getBuffer();
+  return ((const icu::TimeZone*)zone)->getDisplayName(*(new icu::UnicodeString())).getBuffer();
 }
 
 U_CAPI void utz_setDefault(const UTimeZone *zone)
 {
-    TimeZone::setDefault(*((TimeZone*)zone));
+    icu::TimeZone::setDefault(*((icu::TimeZone*)zone));
 }
 
 U_CAPI UStringEnumeration * utz_createEnumerationForTerritory(const char *territory) {
-    return (UStringEnumeration*)TimeZone::createEnumeration(territory);
+    return (UStringEnumeration*)icu::TimeZone::createEnumeration(territory);
 }
 
 U_CAPI const char *ustre_next(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status) {
-    return ((StringEnumeration*)e)->next(resultLength, *status);
+    return ((icu::StringEnumeration*)e)->next(resultLength, *status);
 }
 
 U_CAPI const UChar *ustre_unext(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status) {
-    return ((StringEnumeration*)e)->unext(resultLength, *status);
+    return ((icu::StringEnumeration*)e)->unext(resultLength, *status);
 }
 
 U_CAPI const char *ustre_nextz(UStringEnumeration *e, int32_t *resultLength, UErrorCode *status) {
-    const UnicodeString *us =  ((StringEnumeration*)e)->snext(*status);
+    const icu::UnicodeString *us =  ((icu::StringEnumeration*)e)->snext(*status);
     if(us == NULL) {
         return NULL;
     }
@@ -103,8 +103,8 @@ U_CAPI const char *ustre_nextz(UStringEnumeration *e, int32_t *resultLength, UEr
  
 
 U_CAPI void ustre_close(UStringEnumeration *e) {
-    delete ((StringEnumeration*)e);
+    delete ((icu::StringEnumeration*)e);
 }
 U_CAPI int32_t ustre_count(UStringEnumeration *e, UErrorCode *status) {
-    return ((StringEnumeration*)e)->count(*status);
+    return ((icu::StringEnumeration*)e)->count(*status);
 }

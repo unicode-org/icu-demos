@@ -1,6 +1,7 @@
 #include "unicode/unumsys.h"
 #include <unicode/numsys.h>
 
+using namespace icu; // TODO:
 
 U_CAPI UNumberingSystem *unumsys_open(const char *loc, UErrorCode *status){
   return (UNumberingSystem*)NumberingSystem::createInstance(Locale(loc),*status);

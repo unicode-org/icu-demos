@@ -37,7 +37,7 @@ CPPFLAGS+=$(CPPFLAGS_APPUTIL)
 ####
 
 ICULIBS += -L../usort/lib -lusort
-CPPFLAGS += -I../usort/lib
+CPPFLAGS += -I$(top_srcdir)/usort/lib
 
 
 -include Makefile.local

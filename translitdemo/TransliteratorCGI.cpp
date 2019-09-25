@@ -49,6 +49,8 @@
 #include <stdlib.h> // qsort (Linux)
 #include <string.h> // strncmp (Linux)
 
+using namespace icu; //TODO:
+
 // Encoding we use for interchange to/from the browser
 #define ENCODING "UTF8"
 

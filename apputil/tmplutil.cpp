@@ -9,6 +9,9 @@
 
 #include "tmplutil.h"
 
+
+using namespace icu;
+
 //
 // Function gets one parameter by name out of the string of data POSTed by
 //   the html form.

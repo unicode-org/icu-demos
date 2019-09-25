@@ -341,7 +341,7 @@ main(int argc, const char *argv[]) {
             u_strFromUTF8(buffer16, LENGTHOF(buffer16), &inputLength,
                           buffer, inputLength,
                           &errorCode);
-            UnicodeString us(FALSE, (const UChar *)buffer16, U_SUCCESS(errorCode) ? inputLength : 0); // readonly alias
+            icu::UnicodeString us(FALSE, (const UChar *)buffer16, U_SUCCESS(errorCode) ? inputLength : 0); // readonly alias
             inputLength=us.unescape().extract(input, LENGTHOF(input), errorCode);
             u_strToUTF8(input8, sizeof(input8), NULL,
                         input, inputLength,

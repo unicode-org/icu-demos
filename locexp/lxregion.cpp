@@ -7,6 +7,8 @@
 
 #include "unicode/region.h"
 
+using namespace icu; // TODO namespace
+
 #define RGNTYPE(x) case x: return #x
 
 static const char* typestr(URegionType t) {

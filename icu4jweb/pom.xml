@@ -6,14 +6,13 @@ Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ibm.icu.demos.icu4jweb</groupId>
+  <groupId>org.unicode.icu.demos.icu4jweb</groupId>
   <artifactId>icu4jweb</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>icu4jweb Maven Webapp</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://www.icu-project.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,7 +24,7 @@ Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
     <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
-      <version>63.1</version>
+      <version>64.2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

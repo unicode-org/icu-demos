@@ -4,7 +4,7 @@
 
 // Encoding we use
 #define ENCODING "UTF8"
-
+using namespace icu; //TODO:
 /**
  * Given a UnicodeString, extract its contents to a char* buffer using
  * ENCODING and return it.  Caller must delete returned pointer.

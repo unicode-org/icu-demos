@@ -72,6 +72,10 @@ RMV=rm -rf
 # SHLIB.c=      $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -shared
 # SHLIB.cc=     $(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -shared
 
+%.o: $(srcdir)/%.c
+
+%.o: $(srcdir)/%.cpp
+
 # list of CGIs
 CGIAPPS=convexp idnbrowser translit locexp nbrowser scompare ubrowse redemo icudemos
 

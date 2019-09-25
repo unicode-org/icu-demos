@@ -62,8 +62,8 @@ all-local: $(SO_TARGET) $(ALL_SO_TARGETS)
 install-local: all-local install-headers install-library
 
 install-library: all-local
-	$(MKINSTALLDIRS) $(libdir)
-	$(INSTALL) $(SO_TARGET) $(libdir)/$(SO_TARGET)
+	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)
+	$(INSTALL) $(SO_TARGET) $(DESTDIR)$(libdir)/$(SO_TARGET)
 ifneq ($(ENABLE_SHARED),)
 	$(INSTALL-L) $(FINAL_SO_TARGET) $(DESTDIR)$(libdir)
 ifneq ($(FINAL_SO_TARGET),$(SO_TARGET))
@@ -76,10 +76,10 @@ endif
 
 
 install-headers:
-	$(MKINSTALLDIRS) $(includedir)
+	$(MKINSTALLDIRS) $(DESTDIR)$(includedir)
 	@list='$(HEADERS)'; for file in $$list; do \
-	 echo " $(INSTALL_DATA) $$file $(includedir)/$$file"; \
-	 $(INSTALL_DATA) $$file $(includedir)/$$file; \
+	 echo " $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(includedir)/$$file"; \
+	 $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(includedir)/$$file; \
 	done
 
 dist-local:

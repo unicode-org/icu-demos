@@ -16,6 +16,7 @@ subdir = icudemos
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
+include $(shell $(ICU_CONFIG) --incfile) 
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~ *.res  $(PKG).lst README_$(PKG).txt $(PKG).dat demolist.h
@@ -26,8 +27,8 @@ TARGET = $(subdir)
 #LDFLAGS += -L../locexp/util -liculxutil $(LDFLAGS_USTDIO) -L../apputil
 #LDFLAGS += $(LDFLAGS_TOOLUTIL)
 LDFLAGS += -L../usort/lib
-CPPFLAGS += -I$(ICU_SOURCE)/common -I../usort/lib
-CPPFLAGS += -I$(top_srcdir)/apputil
+CPPFLAGS += -I$(ICU_SOURCE)/common -I$(top_srcdir)/usort/lib
+CPPFLAGS += -I$(top_srcdir)/apputil -I. -I$(srcdir)
 # Want to make sure the usort.h dependency is not on the installed version .. 
 #CPPFLAGS  += -I../locexp/util
 
@@ -53,10 +54,11 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
-	$(INSTALL) $(TARGET) $(BINDIR)/$(TARGET)
-	$(INSTALL) $(TARGET)-content-templ.html $(BINDIR)/data
-	$(INSTALL) $(TARGET)-page-templ.html $(BINDIR)/data
+	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
+	$(INSTALL) $(srcdir)/$(TARGET)-content-templ.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/$(TARGET)-page-templ.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/icu_v2.css $(DESTDIR)$(BINDIR)/data
 
 dist-local:
 
@@ -83,11 +85,11 @@ PKG=$(TARGET)
 -include local.mk
 
 LOCALES=root
--include icudemos.mk
+include $(srcdir)/icudemos.mk
 
 icudemos.o: demolist.h
 
-demolist.h: $(top_srcdir)/icuapps.mk Makefile
+demolist.h: $(top_builddir)/icuapps.mk Makefile
 	@echo Generating $@
 	@echo > demolist.h "/* Generated from ../icuapps.mk.in : CGIAPPS. Do not edit. */" 
 	@echo >> demolist.h "const char *demoList[] = { ";
@@ -100,7 +102,7 @@ $(TARGET) : $(OBJECTS) $(PKG)_dat.o
 	$(LINK.cc) -o $@ $^ $(ICULIBS)
 
 
-%.res: %.txt
+%.res: $(srcdir)/%.txt
 	$(INVOKE) $(GENRB) -d. $<
 
 #icons.txt: $(ICONS)/*.gif
@@ -115,7 +117,7 @@ RESFILES=$(LOCALES:%=%.res)
 PKGMODE=static
 OUT=.
 
-$(PKG).lst: icudemos.mk     
+$(PKG).lst: $(srcdir)/icudemos.mk     
 	@echo building $@
 	@(for locale in $(LOCALES); do echo $$locale.res; done; ) > $@
 
@@ -125,6 +127,6 @@ $(PKG)_dat.o: $(PKG).lst $(RESFILES)
 
 install-wrapper:
 	@for cgi in $(CGIAPPS); do \
-	  echo ln -s wrapper.sh $(CGI_TARGET)/$$cgi ;\
-	  ln -s wrapper.sh $(CGI_TARGET)/$$cgi ;\
+	  echo ln -s wrapper.sh $(DESTDIR)$(CGI_TARGET)/$$cgi ;\
+	  ln -s wrapper.sh $(DESTDIR)$(CGI_TARGET)/$$cgi ;\
 	done

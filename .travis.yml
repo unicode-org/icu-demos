@@ -1,0 +1,9 @@
+sudo: required
+services: docker
+install: true
+script:
+  - '( cd icu4jweb && docker run -it --rm -v $HOME/.m2/:/root/.m2/ -v $(pwd)/:/usr/src -w /usr/src maven:3-jdk-8 mvn package && sh build-docker.sh )'
+  - '( cd icu-kube && sh build.sh )'
+cache:
+  directories:
+  - $HOME/.m2

@@ -20,6 +20,8 @@ extern "C" {
 
 // ICU
 #include <unicode/localpointer.h>
+using namespace icu;
+
 U_DEFINE_LOCAL_OPEN_POINTER(LocalJSONPointer, struct json, json_close);
 
 

@@ -10,6 +10,7 @@
 #include "unicode/lx_utils.h"
 #include "unicode/caniter.h"
 
+using namespace icu;  // TODO: fix
 
 class HTMLFilter : public UnicodeFilter
 {
@@ -90,7 +91,7 @@ public:
             }
 	}
 
-    virtual UnicodeFunctor* clone() const  { return new HTMLFilter(*this); }
+    virtual HTMLFilter* clone() const  { return new HTMLFilter(*this); }
 
 private:
     int fState;

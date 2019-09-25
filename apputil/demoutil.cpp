@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+using namespace icu;
+
 U_CAPI int printHTMLFragment(UFILE *fileOut, UResourceBundle *displayBundle, const char *templateFileName) {
     size_t size = 0;
     size_t savedPos;

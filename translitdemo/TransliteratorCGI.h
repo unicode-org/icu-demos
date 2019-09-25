@@ -29,12 +29,12 @@ class TransliteratorCGI : public TemplateCGI {
 
     static char* cleanupNewlines(const char*);
 
-    static UBool buildUserRules(const UnicodeString& id,
-                               const UnicodeString& rules,
-                               UnicodeString& errMsg);
+    static UBool buildUserRules(const icu::UnicodeString& id,
+                               const icu::UnicodeString& rules,
+                               icu::UnicodeString& errMsg);
 
-    static Transliterator* xCreateFromRules(const UnicodeString& id,
-                                            const UnicodeString& rules,
+    static icu::Transliterator* xCreateFromRules(const icu::UnicodeString& id,
+                                            const icu::UnicodeString& rules,
                                             UTransDirection dir,
                                             UParseError& err,
                                             UErrorCode& status);
@@ -43,9 +43,9 @@ class TransliteratorCGI : public TemplateCGI {
     char** getAvailableIDs();
     char** getAvailableRBTIDs();
 
-    static void handle_USER_IDS(int32_t i, const UnicodeString& key,
+    static void handle_USER_IDS(int32_t i, const icu::UnicodeString& key,
                                 void* context);
-    static void registerUserRules(int32_t i, const UnicodeString& id,
+    static void registerUserRules(int32_t i, const icu::UnicodeString& id,
                                   void* /*ignoredContext*/);
 
  private:
@@ -62,12 +62,12 @@ class TransliteratorCGI : public TemplateCGI {
     int32_t availableRBTIDsCount;
 
     // Cached transliterators
-    Transliterator* translit1;
-    Transliterator* translit2;
+    icu::Transliterator* translit1;
+    icu::Transliterator* translit2;
 
     UBool isIntermediateInitialized;
     UBool isIntermediateBogus;
-    UnicodeString intermediate;
+    icu::UnicodeString intermediate;
 
     UBool areUserTransliteratorsLoaded;
 
