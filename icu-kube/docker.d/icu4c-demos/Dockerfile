@@ -46,6 +46,7 @@ RUN if [ $ICU_PATH = "system" ]; then apk --update add icu-dev ; else apk --upda
 COPY --from=build /home/build/icu /home/build/icu
 RUN if [ -d /home/build/icu/usr/local ]; then (cd /home/build/icu/usr/; ln -sv local/* .); fi; ls -l /home/build/icu/usr/bin/
 ENV LD_LIBRARY_PATH /home/build/icu/usr/lib
-EXPOSE 80
+EXPOSE 8080
 COPY icu-kube/lighttpd.conf /etc/lighttpd/lighttpd.conf
+COPY icu-kube/index.html /var/www/localhost/htdocs/index.html
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
