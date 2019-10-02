@@ -1,7 +1,7 @@
 #!/bin/sh
 ## *****************************************************************************
 ## *
-## *   Copyright (C) 1999-2010, International Business Machines
+## *   Copyright (C) 1999-2019, International Business Machines
 ## *   Corporation and others.  All Rights Reserved.
 ## *
 ## *****************************************************************************
@@ -41,14 +41,14 @@ echo "// Now with XLIFF tags"
 echo
 echo "root {"
 echo
-fgrep -h 'FSWF("' $* | sort | uniq | sed -f extractStrings.sed 
+fgrep -h 'FSWF("' $* | sort | uniq | sed -f ${srcdir}/extractStrings.sed 
 echo 
-if [ -f root.txt.inc ]; then
+if [ -f ${srcdir}/root.txt.inc ]; then
     echo "// Special Cases"
     echo
     echo
     echo " // Imported from: root.txt.inc "
-    cat root.txt.inc
+    cat ${srcdir}/root.txt.inc
 fi
 echo
 echo "}"

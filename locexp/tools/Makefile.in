@@ -15,7 +15,6 @@ subdir = locexp/tools
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
--include $(shell $(ICU_CONFIG) --incfile) 
 
 SCRIPTS = genIndex.sh emitResourceFromFile.sh extractStrings.sh
 
@@ -52,10 +51,10 @@ install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(bindir)
-	$(INSTALL_PROGRAM) $(TARGET) $(sbindir)/$(TARGET)
+	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
+	$(INSTALL_PROGRAM) $(TARGET) $(DESTDIR)$(sbindir)/$(TARGET)
 	@for script in $(SCRIPTS) ; do \
-		$(INSTALL_SCRIPT) $(srcdir)/$(script) $(sbindir) ;\
+		$(INSTALL_SCRIPT) $(srcdir)/$$script $(DESTDIR)$(sbindir) ;\
 	done
 
 dist-local:

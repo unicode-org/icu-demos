@@ -53,7 +53,7 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
 	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
-	$(INSTALL) normalization-header.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/normalization-header.html $(DESTDIR)$(BINDIR)/data
 
 dist-local:
 

@@ -44,7 +44,7 @@ OBJECTS += util.o
 OBJECTS +=  TextCache.o
 
 CPPFLAGS += -I$(ICU_COMMON_HEADERS) 
-CPPFLAGS += -I../apputil
+CPPFLAGS += -I$(base_top_srcdir)/apputil -I../apputil
 
 ICULIBS := -L../apputil $(ICULIBS) -lapputil $(ICULIBS_ICUIO)
 
@@ -67,15 +67,15 @@ $(TARGET): $(OBJECTS)
 TRANSLITD=$(bindir)/data
 
 install: all
-	-mkdir $(bindir)
-	cp $(TARGET) $(bindir)
-	-mkdir $(TRANSLITD)
-	cp  data/js/*.js $(TRANSLITD)/
-	cp  data/*.html $(TRANSLITD)
-	-mkdir $(TRANSLITD)/cache
-	-chmod a+rw $(TRANSLITD)/cache
-	-find $(TRANSLITD) -type d -print | xargs chmod a+x
-	-find $(TRANSLITD) -type f -print | xargs chmod a+r
+	-mkdir $(DESTDIR)$(bindir)
+	cp $(TARGET) $(DESTDIR)$(bindir)
+	-mkdir $(DESTDIR)$(TRANSLITD)
+	cp  data/js/*.js $(DESTDIR)$(TRANSLITD)/
+	cp  data/*.html $(DESTDIR)$(TRANSLITD)
+	-mkdir $(DESTDIR)$(TRANSLITD)/cache
+	-chmod a+rw $(DESTDIR)$(TRANSLITD)/cache
+	-find $(DESTDIR)$(TRANSLITD) -type d -print | xargs chmod a+x
+	-find $(DESTDIR)$(TRANSLITD) -type f -print | xargs chmod a+r
 
 $(ICU_INC):
 	@echo "Please read the directions at the top of this file (Makefile)"

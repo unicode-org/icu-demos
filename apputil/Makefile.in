@@ -17,7 +17,6 @@ CONFIG_H=demo_config.h
 LIBPREFIX=lib
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
-include $(shell $(ICU_CONFIG) --incfile) 
 
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~ $(DEPS)

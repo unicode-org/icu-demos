@@ -1,330 +1,5 @@
 // Generated copy of root.txt. Also look at 'en.txt'.
 // root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.cpp ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c ../lxicir.c
-// Copyright (C) 2000-2015, International Business Machines
-// It's probably not a good idea to change this file.
-// Better to change locexp.c or the ROOT.* source files and rebuild.
-
-
-root {
-
-   ...  {  "..."  }
-   AmPmMarkers0  {  "am"  }
-   AmPmMarkers1  {  "pm"  }
-   bigStringClickToExpand  {  "Truncated due to size. Click here to show. "  }
-   bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
-   bigStringHide  {  "Hide"  }
-   bigStringShorten  {  "Don't show all"  }
-   bigStringSize  {  "(%d of %d shown)"  }
-   Calendar_type_format  {  "Formatting"  }
-   Calendar_type_stand-alone  {  "Stand-alone"  }
-   calexp_calTab  {  "Calendar"  }
-   calexp_chg  {  "Change buttons:"  }
-   calexp_chg_roll_decr  {  "Roll down"  }
-   calexp_chg_roll_incr  {  "Roll up"  }
-   calexp_chg_set_decr  {  "Decrement"  }
-   calexp_chg_set_incr  {  "Increment"  }
-   calexp_errGet  {  "Can't get initial date: "  }
-   calexp_fieldsTab  {  "Fields"  }
-   changeEncoding  {  "Change Your Encoding"  }
-   changeLocale  {  "Change the Locale used for Labels"  }
-   char  {  "Char"  }
-   charMeaning  {  "Meaning"  }
-   charNum  {  "#"  }
-   chooseEncoding  {  "Choose Your Encoding"  }
-   chooseLocale  {  "Choose Your Locale."  }
-   chooseZone  {  "Choose Your Timezone."  }
-   Collation  {  "Collation"  }
-   convERR  {  "AN error occured trying to sort the converters.\n"  }
-   converter_matchesTo  {  "Looking for matches to these chars: "  }
-   converter_searching  {  "Searching for converters which match .."  }
-   convsAvail  {  "%d converters available, %d aliases total."  }
-   convsMatch  {  "%d converters match (out of %d), %d aliases total."  }
-   cumulative_notshown  {  "cumulative data from parent not shown"  }
-   currCode  {  "Code"  }
-   currDefault  {  "Default Currency for this locale"  }
-   currDigits  {  "Decimal Digits"  }
-   currName  {  "Name"  }
-   currNoDefault  {  "No Default Currency"  }
-   currNotInLoc  {  "Note: localization for this currency was not found in this locale"  }
-   currSymbol  {  "Symbol"  }
-   DateTimeElements0  {  "First day of the week: "  }
-   DateTimeElements1  {  "Minimal Days in First Week: "  }
-   DateTimeElements  {  "Date and Time Options"  }
-   DateTimePatterns0  {  "Full Time"  }
-   DateTimePatterns1  {  "Long Time"  }
-   DateTimePatterns2  {  "Medium Time"  }
-   DateTimePatterns3  {  "Short Time"  }
-   DateTimePatterns4  {  "Full Date"  }
-   DateTimePatterns5  {  "Long Date"  }
-   DateTimePatterns6  {  "Medium Date"  }
-   DateTimePatterns7  {  "Short Date"  }
-   DateTimePatterns8  {  "Date-Time pattern.<br />{0} = time, {1} = date"  }
-   DayAbbreviations  {  "Short Names"  }
-   DayNames  {  "Long Names"  }
-   DayNarrow  {  "Narrow Names"  }
-   display_ALT  {  "Display Problems?"  }
-   display_GIF  {  "displayproblems.gif"  }
-   display_OPTIONS  {  "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"  }
-   empty  {  "(Empty)"  }
-   encoding_mime  {  "Note (ICU 1.6 release): This list has been pared down to only show MIME aliases that browsers would understand. I'll add a 'show all' button later.<!--If you translate this, remember it'll go away soon -->"  }
-   encoding_Missing  {  "The following characters could not be displayed properly by the current encoding:"  }
-   encodingOK0  {  "Click here if the encoding '"  }
-   encodingOK1  {  "' is acceptable, or choose one from below."  }
-   encoding_PickABetter  {  "Click here to search for a better encoding"  }
-   encoding_translit_setting  {  "Transliteration:"  }
-   EXPLORE_change  {  "Change"  }
-   EXPLORE_CollationElements_Defaults  {  "Reset Rules and Options"  }
-   EXPLORE_CollationElements_HideCollKey  {  "Hide Collation Key"  }
-   EXPLORE_CollationElements_moreInfo1  {  "For more information, see the"  }
-   EXPLORE_CollationElements_moreInfo2  {  "ICU userguide"  }
-   EXPLORE_CollationElements_options  {  "Options"  }
-   EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
-   EXPLORE_CollationElements_Sort  {  "Sort"  }
-   EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
-   EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
-   explore_G7  {  "Try Multi-lingual Sorting"  }
-   EXPLORE_NumberPatterns_defaultPattern  {  "#,###.###############"  }
-   EXPLORE_NumberPatterns  {  "Explore &gt; Numbers"  }
-   EXPLORE_search_found  {  "%d items were found."  }
-   EXPLORE_search_notfound  {  "Sorry, nothing was found."  }
-   EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
-   explore_search  {  "Search"  }
-   EXPLORE_search_searching  {  "Searching for <B>%S</B>..."  }
-   exploreTitle  {  "Explore"  }
-   explore_xlitomatic  {  "Translit-o-matic"  }
-   formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date."  }
-   formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
-   formatExample_errorFormatDefault  {  "Unable to format number using default version of the pattern"  }
-   formatExample_errorFormat_number  {  "Couldn't format the number."  }
-   formatExample_errorOpen  {  "Couldn't open the formatter"  }
-   formatExample_errorOpenDefault  {  "Couldn't open the default number fmt"  }
-   formatExample_errorParse3  {  "Could not parse this, replaced with a default value."  }
-   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
-   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
-   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
-   formatExample_NumberPatterns_What  {  "This example demonstrates formatting of numbers in this locale."  }
-   helpgif  {  "help.gif"  }
-   helpgif_opt  {  "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22"  }
-   help  {  "Help"  }
-   ibmg11n  {  "ICU Demonstration - "  }
-   icir_Basics  {  "Basics"  }
-   icir_c  {  "Fixed"  }
-   icir_email  {  "Email Address: (required for submissions)"  }
-   icir_intro  {  "Each section below has an example in %S (as determined by the 'Display Locale' setting at the bottom of the page), followed by the translation in %S.<!-- sorry, order of the %%S's is important. -->"  }
-   icir_menu  {  "Section: "  }
-   icir_Misc  {  "Misc"  }
-   icir_none  {  "(no action)"  }
-   icir_submit  {  "Submit"  }
-   icirView  {  "Switch to Survey View"  }
-   icir_v  {  "Verified"  }
-   icir_w  {  "Incorrect"  }
-   idat  {  "Date and Time"  }
-   iloc  {  "Display Names"  }
-   inherited_from  {  "(inherited from %S)"  }
-   inherited  {  "(inherited)"  }
-   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."  }
-   inum  {  "Numbers"  }
-   keyword_Current  {  "Current"  }
-   keyword_Default  {  "Default"  }
-   LocaleCodes_3  {  "3"  }
-   LocaleCodes_Country  {  "Region"  }
-   LocaleCodes_Language  {  "Language"  }
-   LocaleCodes  {  "Locale Codes"  }
-   LocaleCodes_Region  {  "Region"  }
-   LocaleCodes_Variant  {  "Variant"  }
-   localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
-   localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
-   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular region."  }
-   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular region."  }
-   localeDataLanguage  {  "No region is specified, so the data is generic to this language."  }
-   localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
-   locale_experimental  {  "Locales in <I>Italics</I> are Draft and not officially supported."  }
-   localeList_Calendar  {  "Calendars"  }
-   localeList_Collation  {  "Collation"  }
-   localeList_Currency  {  "Currency"  }
-   localeList_Default  {  "(default)"  }
-   localeList_Locale  {  "Languages"  }
-   localeList_None  {  "(none)"  }
-   localeList_Number  {  "Number"  }
-   localeList_Sublocale  {  "Regions"  }
-   locale  {  "locale"  }
-   LocaleScriptAbbreviations  {  "Short Names"  }
-   LocaleScript  {  "Locale Script"  }
-   LocaleScriptNames  {  "Long Names"  }
-   locale_unsupported  {  "This display locale, <strong>%s</strong>, is unsupported."  }
-   localPatternChars0  {  "Era"  }
-   localPatternChars10  {  "Day Of Year"  }
-   localPatternChars11  {  "Day Of Week In Month"  }
-   localPatternChars12  {  "Week Of Year"  }
-   localPatternChars13  {  "Week Of Month"  }
-   localPatternChars14  {  "Am/Pm"  }
-   localPatternChars15  {  "Hour 1"  }
-   localPatternChars16  {  "Hour 0"  }
-   localPatternChars17  {  "Timezone"  }
-   localPatternChars18  {  "Year (of 'Week of Year')"  }
-   localPatternChars19  {  "Day of Week (1=first day according to locale)"  }
-   localPatternChars1  {  "Year"  }
-   localPatternChars2  {  "Month"  }
-   localPatternChars3  {  "Day of Month"  }
-   localPatternChars4  {  "Hour Of Day 1"  }
-   localPatternChars5  {  "Hour Of Day 0"  }
-   localPatternChars6  {  "Minute"  }
-   localPatternChars7  {  "Second"  }
-   localPatternChars8  {  "Millisecond"  }
-   localPatternChars9  {  "Day Of Week"  }
-   LX_UCOL_DEFAULT  {  "Don't change"  }
-   LX_UCOL_DEFAULTMSG0  {  "Default ("  }
-   LX_UCOL_DEFAULTMSG1  {  ")"  }
-   MonthAbbreviations  {  " - NOT USED - see DayAbbreviations "  }
-   MonthNames  {  "  - NOT USED - see DayNames "  }
-   myConverter  {  "Encoding:"  }
-   myLocale  {  "Label Locale:"  }
-   NoLocale  {  "MISSING LOCALE NAME"  }
-   none  {  "None"  }
-   NumberElements0  {  "Decimal Separator"  }
-   NumberElements10  {  "Not a number"  }
-   NumberElements1  {  "Grouping Separator"  }
-   NumberElements2  {  "Pattern Separator"  }
-   NumberElements3  {  "Percent"  }
-   NumberElements4  {  "ZeroDigit"  }
-   NumberElements5  {  "Digit"  }
-   NumberElements6  {  "Minus Sign"  }
-   NumberElements7  {  "Exponential"  }
-   NumberElements8  {  "PerMill [/1000]"  }
-   NumberElements9  {  "Infinity"  }
-   NumberPatterns0  {  "Decimal Pattern"  }
-   NumberPatterns1  {  "Currency Pattern"  }
-   NumberPatterns2  {  "Percent Pattern"  }
-   NumberPatterns3  {  "Scientific Pattern"  }
-   off  {  "off"  }
-   on  {  "on"  }
-   otherLanguageSameCountryLocales  {  "<b>%S</b> under other languages"  }
-   poweredby_cldr  {  "CLDR Version"  }
-   poweredby_filebug  {  "File a bug"  }
-   poweredby  {  "Powered by"  }
-   poweredby_tz  {  "Timezone ID"  }
-   rules  {  "Rules"  }
-   set  {  "Set"  }
-   showAll  {  "Show All"  }
-   showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
-   showSort_Context  {  "Error shown by this mark:"  }
-   showSort_shortString  {  "Using Short String"  }
-   sourceFile  {  "View Locale Source"  }
-   Spellout  {  "Spellout"  }
-   statusTableHeaderChange  {  "(click to change)"  }
-   statusTableHeader  {  "Your settings:"  }
-   stringClickToShow  {  "(Click here to show.)"  }
-   sublocales  {  "Sublocales:"  }
-   taggedarrayTag  {  "Tag"  }
-   title  {  "Locale Explorer"  }
-   translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
-   transliterate_help  {  "Transliteration Help"  }
-   ubrowse  {  "Browse Unicode in this codepage"  }
-   UCAL_AM_PM  {  "AM/PM field"  }
-   UCAL_DATE  {  "Date field"  }
-   UCAL_DAY_OF_WEEK  {  "Day of week field"  }
-   UCAL_DAY_OF_WEEK_IN_MONTH  {  "Day of week in month field"  }
-   UCAL_DAY_OF_YEAR  {  "Day of year field"  }
-   UCAL_DOW_LOCAL  {  "Day of week localized (1..7)"  }
-   UCAL_DST_OFFSET  {  "DST offset field"  }
-   UCAL_ERA  {  "Era field"  }
-   UCAL_HOUR  {  "Hour field"  }
-   UCAL_HOUR_OF_DAY  {  "Hour of day field"  }
-   UCAL_MILLISECOND  {  "Millisecond field"  }
-   UCAL_MINUTE  {  "Minute field"  }
-   UCAL_MONTH  {  "Month field"  }
-   UCAL_SECOND  {  "Second field"  }
-   UCAL_WEEK_OF_MONTH  {  "Week of month field"  }
-   UCAL_WEEK_OF_YEAR  {  "Week of year field"  }
-   UCAL_YEAR_WOY  {  "Year / week of year"  }
-   UCAL_YEAR  {  "Year field"  }
-   UCAL_ZONE_OFFSET  {  "Zone offset field"  }
-   UCOL_ALTERNATE_HANDLING  {  "Alternate handling"  }
-   UCOL_CASE_FIRST  {  "Case first"  }
-   UCOL_CASE_LEVEL  {  "Add case level"  }
-   UCOL_FRENCH_COLLATION  {  "French accents"  }
-   UCOL_HIRAGANA__QUATERNARY_MODE  {  "Add Hiragana Level"  }
-   UCOL_IDENTICAL  {  "L5 = L4 + Codepoint"  }
-   UCOL_LOWER_FIRST  {  "Force Lowercase first"  }
-   UCOL_noforcecase  {  "Don't force case"  }
-   UCOL_NON_IGNORABLE  {  "Punctuation = Base"  }
-   UCOL_NORMALIZATION_MODE  {  "Full normalization mode"  }
-   UCOL_NUMERIC_COLLATION  {  "Numeric collation"  }
-   UCOL_OFF  {  "Off"  }
-   UCOL_ON  {  "On"  }
-   UCOL_ON_WITHOUT_HANGUL  {  "On,without Hangul"  }
-   UCOL_PRIMARY  {  "L1 = Base Letters"  }
-   UCOL_QUATERNARY  {  "L4 = L3 + Punct."  }
-   UCOL_SECONDARY  {  "L2 = L1 + Accents"  }
-   UCOL_SHIFTED  {  "Ignore Punctuation"  }
-   UCOL_STRENGTH  {  "Strength"  }
-   UCOL_TERTIARY  {  "L3 = L2 + Case"  }
-   UCOL_UPPER_FIRST  {  "Force Uppercase first"  }
-   U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
-   usort_attrib  {  "Attributes"  }
-   usortCollated  {  "Collated"  }
-   usortCustomRules  {  "Custom Rules"  }
-   usortCustomRules_note0  {  "Click"  }
-   usortCustomRules_note1  {  "above, to edit rules"  }
-   usortLocaleRules1  {  "Fetch rules for"  }
-   usortLocaleRules2  {  ""  }
-   usortOriginal  {  "Original"  }
-   usortSearchResults  {  "Search Results"  }
-   usortSearch  {  "Search for: (or leave blank for no search)"  }
-   usortSource  {  "Source"  }
-   usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
-   Version  {  "Version"  }
-   warningExperimentalLocale  {  "Note: You're viewing a Draft locale. This locale is not part of the official ICU installation. &nbsp;"  }
-   warningInheritedLocale  {  "Note: You're viewing a locale that does not have verified data . ICU will support this with inherited information, but that information is not verified to be correct."  }
-   warningNoBug  {  "Please do not file bugs against this locale."  }
-   XMLcomp  {  "Compare"  }
-   XMLsource  {  "XML Source"  }
-   zone_set  {  "Set timezone to:"  }
-   zoneStrings0  {  "Canonical"  }
-   zoneStrings1  {  "Normal Name"  }
-   zoneStrings2  {  "Normal Abbrev"  }
-   zoneStrings3  {  "Summer/DST Name"  }
-   zoneStrings4  {  "Summer/DST Abbrev"  }
-   zoneStrings5  {  "Example City"  }
-   zoneStrings6  {  "Raw Offset"  }
-   zoneStrings_open_failed  {  "<I>Unknown</I>"  }
-   zone_warn  {  "Note: only works if you have cookies turned on."  }
-
-// Special Cases
-
-
- // Imported from: root.txt.inc 
-
-// [root.txt.inc] Copyright (c) 2000-2013 IBM, Inc. and Others, all rights reserved
-
-   c.gif:import { "root/c.gif" }
-   opened.gif:import { "root/opened.gif" }
-   locexp.css:import { "root/locexp.css" }
-   locexp.js:import { "root/locexp.js" }
-   closed.gif:import { "root/closed.gif" }
-   help.html:import  { "root/help.html" }
-   transliteration.html:import { "root/transliteration.html" }
-   sortHelp:include { "root/sortHelp.html" }
-   displayproblems.gif:import { "root/displayproblems.gif" }
-   explore.gif:import { "root/explore.gif" }
-   help.gif:import { "root/help.gif" }
-   incorrect.gif:import { "root/incorrect.gif" }
-   lx.jpg:import { "root/lx.jpg" }
-   lxbar_dev.jpg:import { "root/lxbar_dev.jpg" }
-   lxbar_g.gif:import { "root/lxbar_g.gif" }
-   lxbar_ibm.jpg:import { "root/lxbar_ibm.jpg" }
-   lxbar_icu.jpg:import { "root/lxbar_icu.jpg" }
-   "data/locexp-header.html":include { "root/locexp-header.html" }
-
-// tab
-   tab_bot.gif:import { "root/tab_bot.gif" }
-   tab_aleft.gif:import { "root/tab_aleft.gif" }
-   tab_aright.gif:import { "root/tab_aright.gif" }
-
-
-}
-
-// root file. Generated from ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.cpp ../lxshowloc.c ../srchexp.c ../wfobject.c ../lxsort.c ../lxcgi.c ../lxicir.c
 // Copyright (C) 2000-2006, International Business Machines
 // It's probably not a good idea to change this file.
 // Better to change locexp.c or the ROOT.* source files and rebuild.
@@ -335,46 +10,12 @@ root {
    ...  {  "..."  }
    AmPmMarkers0  {  "am"  }
    AmPmMarkers1  {  "pm"  }
-   bigStringClickToExpand  {  "Truncated due to size. Click here to show. "  }
-   bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
-   bigStringHide  {  "Hide"  }
-   bigStringShorten  {  "Don't show all"  }
-   bigStringSize  {  "(%d of %d shown)"  }
    Calendar_type_format  {  "Formatting"  }
    Calendar_type_stand-alone  {  "Stand-alone"  }
-   calexp_calTab  {  "Calendar"  }
-   calexp_chg  {  "Change buttons:"  }
-   calexp_chg_roll_decr  {  "Roll down"  }
-   calexp_chg_roll_incr  {  "Roll up"  }
-   calexp_chg_set_decr  {  "Decrement"  }
-   calexp_chg_set_incr  {  "Increment"  }
-   calexp_errGet  {  "Can't get initial date: "  }
-   calexp_fieldsTab  {  "Fields"  }
-   changeEncoding  {  "Change Your Encoding"  }
-   changeLocale  {  "Change the Locale used for Labels"  }
-   char  {  "Char"  }
-   charMeaning  {  "Meaning"  }
-   charNum  {  "#"  }
-   chooseEncoding  {  "Choose Your Encoding"  }
-   chooseLocale  {  "Choose Your Locale."  }
-   chooseZone  {  "Choose Your Timezone."  }
    Collation  {  "Collation"  }
-   convERR  {  "AN error occured trying to sort the converters.\n"  }
-   converter_matchesTo  {  "Looking for matches to these chars: "  }
-   converter_searching  {  "Searching for converters which match .."  }
-   convsAvail  {  "%d converters available, %d aliases total."  }
-   convsMatch  {  "%d converters match (out of %d), %d aliases total."  }
-   cumulative_notshown  {  "cumulative data from parent not shown"  }
-   currCode  {  "Code"  }
-   currDefault  {  "Default Currency for this locale"  }
-   currDigits  {  "Decimal Digits"  }
-   currName  {  "Name"  }
-   currNoDefault  {  "No Default Currency"  }
-   currNotInLoc  {  "Note: localization for this currency was not found in this locale"  }
-   currSymbol  {  "Symbol"  }
+   DateTimeElements  {  "Date and Time Options"  }
    DateTimeElements0  {  "First day of the week: "  }
    DateTimeElements1  {  "Minimal Days in First Week: "  }
-   DateTimeElements  {  "Date and Time Options"  }
    DateTimePatterns0  {  "Full Time"  }
    DateTimePatterns1  {  "Long Time"  }
    DateTimePatterns2  {  "Medium Time"  }
@@ -387,128 +28,40 @@ root {
    DayAbbreviations  {  "Short Names"  }
    DayNames  {  "Long Names"  }
    DayNarrow  {  "Narrow Names"  }
-   display_ALT  {  "Display Problems?"  }
-   display_GIF  {  "displayproblems.gif"  }
-   display_OPTIONS  {  "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"  }
-   empty  {  "(Empty)"  }
-   encoding_mime  {  "Note (ICU 1.6 release): This list has been pared down to only show MIME aliases that browsers would understand. I'll add a 'show all' button later.<!--If you translate this, remember it'll go away soon -->"  }
-   encoding_Missing  {  "The following characters could not be displayed properly by the current encoding:"  }
-   encodingOK0  {  "Click here if the encoding '"  }
-   encodingOK1  {  "' is acceptable, or choose one from below."  }
-   encoding_PickABetter  {  "Click here to search for a better encoding"  }
-   encoding_translit_setting  {  "Transliteration:"  }
-   EXPLORE_change  {  "Change"  }
    EXPLORE_CollationElements_Defaults  {  "Reset Rules and Options"  }
    EXPLORE_CollationElements_HideCollKey  {  "Hide Collation Key"  }
+   EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
+   EXPLORE_CollationElements_Sort  {  "Sort"  }
    EXPLORE_CollationElements_moreInfo1  {  "For more information, see the"  }
    EXPLORE_CollationElements_moreInfo2  {  "ICU userguide"  }
    EXPLORE_CollationElements_options  {  "Options"  }
-   EXPLORE_CollationElements_Prompt  {  "Type in some lines of text to be sorted."  }
-   EXPLORE_CollationElements_Sort  {  "Sort"  }
-   EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
    EXPLORE_DateTimePatterns  {  "Explore &gt; Date/Time"  }
-   explore_G7  {  "Try Multi-lingual Sorting"  }
-   EXPLORE_NumberPatterns_defaultPattern  {  "#,###.###############"  }
+   EXPLORE_DateTimePatterns_dateAsNumber  {  "#"  }
    EXPLORE_NumberPatterns  {  "Explore &gt; Numbers"  }
+   EXPLORE_NumberPatterns_defaultPattern  {  "#,###.###############"  }
+   EXPLORE_change  {  "Change"  }
    EXPLORE_search_found  {  "%d items were found."  }
    EXPLORE_search_notfound  {  "Sorry, nothing was found."  }
    EXPLORE_search_oneperlocale  {  "Note that only the first match in each locale is shown."  }
-   explore_search  {  "Search"  }
    EXPLORE_search_searching  {  "Searching for <B>%S</B>..."  }
-   exploreTitle  {  "Explore"  }
-   explore_xlitomatic  {  "Translit-o-matic"  }
-   formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date."  }
-   formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
-   formatExample_errorFormatDefault  {  "Unable to format number using default version of the pattern"  }
-   formatExample_errorFormat_number  {  "Couldn't format the number."  }
-   formatExample_errorOpen  {  "Couldn't open the formatter"  }
-   formatExample_errorOpenDefault  {  "Couldn't open the default number fmt"  }
-   formatExample_errorParse3  {  "Could not parse this, replaced with a default value."  }
-   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
-   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
-   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
-   formatExample_NumberPatterns_What  {  "This example demonstrates formatting of numbers in this locale."  }
-   helpgif  {  "help.gif"  }
-   helpgif_opt  {  "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22"  }
-   help  {  "Help"  }
-   ibmg11n  {  "ICU Demonstration - "  }
-   icir_Basics  {  "Basics"  }
-   icir_c  {  "Fixed"  }
-   icir_email  {  "Email Address: (required for submissions)"  }
-   icir_intro  {  "Each section below has an example in %S (as determined by the 'Display Locale' setting at the bottom of the page), followed by the translation in %S.<!-- sorry, order of the %%S's is important. -->"  }
-   icir_menu  {  "Section: "  }
-   icir_Misc  {  "Misc"  }
-   icir_none  {  "(no action)"  }
-   icir_submit  {  "Submit"  }
-   icirView  {  "Switch to Survey View"  }
-   icir_v  {  "Verified"  }
-   icir_w  {  "Incorrect"  }
-   idat  {  "Date and Time"  }
-   iloc  {  "Display Names"  }
-   inherited_from  {  "(inherited from %S)"  }
-   inherited  {  "(inherited)"  }
-   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."  }
-   inum  {  "Numbers"  }
-   keyword_Current  {  "Current"  }
-   keyword_Default  {  "Default"  }
-   LocaleCodes_3  {  "3"  }
-   LocaleCodes_Country  {  "Region"  }
-   LocaleCodes_Language  {  "Language"  }
-   LocaleCodes  {  "Locale Codes"  }
-   LocaleCodes_Region  {  "Region"  }
-   LocaleCodes_Variant  {  "Variant"  }
-   localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
-   localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
-   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular region."  }
-   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular region."  }
-   localeDataLanguage  {  "No region is specified, so the data is generic to this language."  }
-   localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
-   locale_experimental  {  "Locales in <I>Italics</I> are Draft and not officially supported."  }
-   localeList_Calendar  {  "Calendars"  }
-   localeList_Collation  {  "Collation"  }
-   localeList_Currency  {  "Currency"  }
-   localeList_Default  {  "(default)"  }
-   localeList_Locale  {  "Languages"  }
-   localeList_None  {  "(none)"  }
-   localeList_Number  {  "Number"  }
-   localeList_Sublocale  {  "Regions"  }
-   locale  {  "locale"  }
-   LocaleScriptAbbreviations  {  "Short Names"  }
-   LocaleScript  {  "Locale Script"  }
-   LocaleScriptNames  {  "Long Names"  }
-   locale_unsupported  {  "This display locale, <strong>%s</strong>, is unsupported."  }
-   localPatternChars0  {  "Era"  }
-   localPatternChars10  {  "Day Of Year"  }
-   localPatternChars11  {  "Day Of Week In Month"  }
-   localPatternChars12  {  "Week Of Year"  }
-   localPatternChars13  {  "Week Of Month"  }
-   localPatternChars14  {  "Am/Pm"  }
-   localPatternChars15  {  "Hour 1"  }
-   localPatternChars16  {  "Hour 0"  }
-   localPatternChars17  {  "Timezone"  }
-   localPatternChars18  {  "Year (of 'Week of Year')"  }
-   localPatternChars19  {  "Day of Week (1=first day according to locale)"  }
-   localPatternChars1  {  "Year"  }
-   localPatternChars2  {  "Month"  }
-   localPatternChars3  {  "Day of Month"  }
-   localPatternChars4  {  "Hour Of Day 1"  }
-   localPatternChars5  {  "Hour Of Day 0"  }
-   localPatternChars6  {  "Minute"  }
-   localPatternChars7  {  "Second"  }
-   localPatternChars8  {  "Millisecond"  }
-   localPatternChars9  {  "Day Of Week"  }
    LX_UCOL_DEFAULT  {  "Don't change"  }
    LX_UCOL_DEFAULTMSG0  {  "Default ("  }
    LX_UCOL_DEFAULTMSG1  {  ")"  }
+   LocaleCodes  {  "Locale Codes"  }
+   LocaleCodes_3  {  "3"  }
+   LocaleCodes_Country  {  "Region"  }
+   LocaleCodes_Language  {  "Language"  }
+   LocaleCodes_Region  {  "Region"  }
+   LocaleCodes_Variant  {  "Variant"  }
+   LocaleScript  {  "Locale Script"  }
+   LocaleScriptAbbreviations  {  "Short Names"  }
+   LocaleScriptNames  {  "Long Names"  }
    MonthAbbreviations  {  " - NOT USED - see DayAbbreviations "  }
    MonthNames  {  "  - NOT USED - see DayNames "  }
-   myConverter  {  "Encoding:"  }
-   myLocale  {  "Label Locale:"  }
    NoLocale  {  "MISSING LOCALE NAME"  }
-   none  {  "None"  }
    NumberElements0  {  "Decimal Separator"  }
-   NumberElements10  {  "Not a number"  }
    NumberElements1  {  "Grouping Separator"  }
+   NumberElements10  {  "Not a number"  }
    NumberElements2  {  "Pattern Separator"  }
    NumberElements3  {  "Percent"  }
    NumberElements4  {  "ZeroDigit"  }
@@ -521,30 +74,7 @@ root {
    NumberPatterns1  {  "Currency Pattern"  }
    NumberPatterns2  {  "Percent Pattern"  }
    NumberPatterns3  {  "Scientific Pattern"  }
-   off  {  "off"  }
-   on  {  "on"  }
-   otherLanguageSameCountryLocales  {  "<b>%S</b> under other languages"  }
-   poweredby_cldr  {  "CLDR Version"  }
-   poweredby_filebug  {  "File a bug"  }
-   poweredby  {  "Powered by"  }
-   poweredby_tz  {  "Timezone ID"  }
-   rules  {  "Rules"  }
-   set  {  "Set"  }
-   showAll  {  "Show All"  }
-   showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
-   showSort_Context  {  "Error shown by this mark:"  }
-   showSort_shortString  {  "Using Short String"  }
-   sourceFile  {  "View Locale Source"  }
    Spellout  {  "Spellout"  }
-   statusTableHeaderChange  {  "(click to change)"  }
-   statusTableHeader  {  "Your settings:"  }
-   stringClickToShow  {  "(Click here to show.)"  }
-   sublocales  {  "Sublocales:"  }
-   taggedarrayTag  {  "Tag"  }
-   title  {  "Locale Explorer"  }
-   translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
-   transliterate_help  {  "Transliteration Help"  }
-   ubrowse  {  "Browse Unicode in this codepage"  }
    UCAL_AM_PM  {  "AM/PM field"  }
    UCAL_DATE  {  "Date field"  }
    UCAL_DAY_OF_WEEK  {  "Day of week field"  }
@@ -561,8 +91,8 @@ root {
    UCAL_SECOND  {  "Second field"  }
    UCAL_WEEK_OF_MONTH  {  "Week of month field"  }
    UCAL_WEEK_OF_YEAR  {  "Week of year field"  }
-   UCAL_YEAR_WOY  {  "Year / week of year"  }
    UCAL_YEAR  {  "Year field"  }
+   UCAL_YEAR_WOY  {  "Year / week of year"  }
    UCAL_ZONE_OFFSET  {  "Zone offset field"  }
    UCOL_ALTERNATE_HANDLING  {  "Alternate handling"  }
    UCOL_CASE_FIRST  {  "Case first"  }
@@ -571,7 +101,6 @@ root {
    UCOL_HIRAGANA__QUATERNARY_MODE  {  "Add Hiragana Level"  }
    UCOL_IDENTICAL  {  "L5 = L4 + Codepoint"  }
    UCOL_LOWER_FIRST  {  "Force Lowercase first"  }
-   UCOL_noforcecase  {  "Don't force case"  }
    UCOL_NON_IGNORABLE  {  "Punctuation = Base"  }
    UCOL_NORMALIZATION_MODE  {  "Full normalization mode"  }
    UCOL_NUMERIC_COLLATION  {  "Numeric collation"  }
@@ -585,8 +114,156 @@ root {
    UCOL_STRENGTH  {  "Strength"  }
    UCOL_TERTIARY  {  "L3 = L2 + Case"  }
    UCOL_UPPER_FIRST  {  "Force Uppercase first"  }
+   UCOL_noforcecase  {  "Don't force case"  }
    U_MISSING_RESOURCE_ERROR  {  "(missing resource)"  }
-   usort_attrib  {  "Attributes"  }
+   Version  {  "Version"  }
+   XMLcomp  {  "Compare"  }
+   XMLsource  {  "XML Source"  }
+   bigStringClickToExpand  {  "Truncated due to size. Click here to show. "  }
+   bigStringClickToShow  {  "(Omitted due to size. Click here to show.)"  }
+   bigStringHide  {  "Hide"  }
+   bigStringShorten  {  "Don't show all"  }
+   bigStringSize  {  "(%d of %d shown)"  }
+   calexp_calTab  {  "Calendar"  }
+   calexp_chg  {  "Change buttons:"  }
+   calexp_chg_roll_decr  {  "Roll down"  }
+   calexp_chg_roll_incr  {  "Roll up"  }
+   calexp_chg_set_decr  {  "Decrement"  }
+   calexp_chg_set_incr  {  "Increment"  }
+   calexp_errGet  {  "Can't get initial date: "  }
+   calexp_fieldsTab  {  "Fields"  }
+   changeEncoding  {  "Change Your Encoding"  }
+   changeLocale  {  "Change the Locale used for Labels"  }
+   char  {  "Char"  }
+   charMeaning  {  "Meaning"  }
+   charNum  {  "#"  }
+   chooseEncoding  {  "Choose Your Encoding"  }
+   chooseLocale  {  "Choose Your Locale."  }
+   chooseZone  {  "Choose Your Timezone."  }
+   convERR  {  "AN error occured trying to sort the converters.\n"  }
+   converter_matchesTo  {  "Looking for matches to these chars: "  }
+   converter_searching  {  "Searching for converters which match .."  }
+   convsAvail  {  "%d converters available, %d aliases total."  }
+   convsMatch  {  "%d converters match (out of %d), %d aliases total."  }
+   cumulative_notshown  {  "cumulative data from parent not shown"  }
+   currCode  {  "Code"  }
+   currDefault  {  "Default Currency for this locale"  }
+   currDigits  {  "Decimal Digits"  }
+   currName  {  "Name"  }
+   currNoDefault  {  "No Default Currency"  }
+   currNotInLoc  {  "Note: localization for this currency was not found in this locale"  }
+   currSymbol  {  "Symbol"  }
+   display_ALT  {  "Display Problems?"  }
+   display_GIF  {  "displayproblems.gif"  }
+   display_OPTIONS  {  "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"  }
+   empty  {  "(Empty)"  }
+   encodingOK0  {  "Click here if the encoding '"  }
+   encodingOK1  {  "' is acceptable, or choose one from below."  }
+   encoding_Missing  {  "The following characters could not be displayed properly by the current encoding:"  }
+   encoding_PickABetter  {  "Click here to search for a better encoding"  }
+   encoding_mime  {  "Note (ICU 1.6 release): This list has been pared down to only show MIME aliases that browsers would understand. I'll add a 'show all' button later.<!--If you translate this, remember it'll go away soon -->"  }
+   encoding_translit_setting  {  "Transliteration:"  }
+   exploreTitle  {  "Explore"  }
+   explore_G7  {  "Try Multi-lingual Sorting"  }
+   explore_search  {  "Search"  }
+   explore_xlitomatic  {  "Translit-o-matic"  }
+   formatExample_DateTimePatterns_What  {  "This example demonstrates the formatting of date and time patterns in this locale."  }
+   formatExample_DateTimePatterns_errorFormat  {  "Couldn't format the date."  }
+   formatExample_NumberPatterns_What  {  "This example demonstrates formatting of numbers in this locale."  }
+   formatExample_errorFormatDefault  {  "Unable to format number using default version of the pattern"  }
+   formatExample_errorFormat_number  {  "Couldn't format the number."  }
+   formatExample_errorOpen  {  "Couldn't open the formatter"  }
+   formatExample_errorOpenDefault  {  "Couldn't open the default number fmt"  }
+   formatExample_errorParse  {  "Could not parse this, replaced with a default value. Formatted This many chars:"  }
+   formatExample_errorParse3  {  "Could not parse this, replaced with a default value."  }
+   formatExample_errorParse_num  {  "Could not parse this, replaced with a default value."  }
+   formatExample_errorToPattern  {  "Couldn't convert the pattern [toPattern]"  }
+   help  {  "Help"  }
+   helpgif  {  "help.gif"  }
+   helpgif_opt  {  "border=\x22\x30\x22 width=\x22\x34\x30\x22  height=\x22\x34\x30\x22"  }
+   ibmg11n  {  "ICU Demonstration - "  }
+   icirView  {  "Switch to Survey View"  }
+   icir_Basics  {  "Basics"  }
+   icir_Misc  {  "Misc"  }
+   icir_c  {  "Fixed"  }
+   icir_email  {  "Email Address: (required for submissions)"  }
+   icir_intro  {  "Each section below has an example in %S (as determined by the 'Display Locale' setting at the bottom of the page), followed by the translation in %S.<!-- sorry, order of the %%S's is important. -->"  }
+   icir_menu  {  "Section: "  }
+   icir_none  {  "(no action)"  }
+   icir_submit  {  "Submit"  }
+   icir_v  {  "Verified"  }
+   icir_w  {  "Incorrect"  }
+   idat  {  "Date and Time"  }
+   iloc  {  "Display Names"  }
+   inherited  {  "(inherited)"  }
+   inherited_from  {  "(inherited from %S)"  }
+   introSpiel  {  "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."  }
+   inum  {  "Numbers"  }
+   keyword_Current  {  "Current"  }
+   keyword_Default  {  "Default"  }
+   localPatternChars0  {  "Era"  }
+   localPatternChars1  {  "Year"  }
+   localPatternChars10  {  "Day Of Year"  }
+   localPatternChars11  {  "Day Of Week In Month"  }
+   localPatternChars12  {  "Week Of Year"  }
+   localPatternChars13  {  "Week Of Month"  }
+   localPatternChars14  {  "Am/Pm"  }
+   localPatternChars15  {  "Hour 1"  }
+   localPatternChars16  {  "Hour 0"  }
+   localPatternChars17  {  "Timezone"  }
+   localPatternChars18  {  "Year (of 'Week of Year')"  }
+   localPatternChars19  {  "Day of Week (1=first day according to locale)"  }
+   localPatternChars2  {  "Month"  }
+   localPatternChars3  {  "Day of Month"  }
+   localPatternChars4  {  "Hour Of Day 1"  }
+   localPatternChars5  {  "Hour Of Day 0"  }
+   localPatternChars6  {  "Minute"  }
+   localPatternChars7  {  "Second"  }
+   localPatternChars8  {  "Millisecond"  }
+   localPatternChars9  {  "Day Of Week"  }
+   locale  {  "locale"  }
+   localeDataDefault  {  "This is the default localization data, which will be used if no other installed locale is specified."  }
+   localeDataEuro  {  "This Locale contains currency formatting information for use with the Euro currency."  }
+   localeDataLangCountry  {  "This Locale contains data for this language, as well as conventions for this particular region."  }
+   localeDataLangCountryVariant  {  "This Locale contains data for this language, as well as conventions for a variant within this particular region."  }
+   localeDataLanguage  {  "No region is specified, so the data is generic to this language."  }
+   localeDataWhat  {  "This page shows the localization data for the locale listed at left. "  }
+   localeList_Calendar  {  "Calendars"  }
+   localeList_Collation  {  "Collation"  }
+   localeList_Currency  {  "Currency"  }
+   localeList_Default  {  "(default)"  }
+   localeList_Locale  {  "Languages"  }
+   localeList_None  {  "(none)"  }
+   localeList_Number  {  "Number"  }
+   localeList_Sublocale  {  "Regions"  }
+   locale_experimental  {  "Locales in <I>Italics</I> are Draft and not officially supported."  }
+   locale_unsupported  {  "This display locale, <strong>%s</strong>, is unsupported."  }
+   myConverter  {  "Encoding:"  }
+   myLocale  {  "Label Locale:"  }
+   none  {  "None"  }
+   off  {  "off"  }
+   on  {  "on"  }
+   otherLanguageSameCountryLocales  {  "<b>%S</b> under other languages"  }
+   poweredby  {  "Powered by"  }
+   poweredby_cldr  {  "CLDR Version"  }
+   poweredby_filebug  {  "File a bug"  }
+   poweredby_tz  {  "Timezone ID"  }
+   rules  {  "Rules"  }
+   set  {  "Set"  }
+   showAll  {  "Show All"  }
+   showSort_Context  {  "Error shown by this mark:"  }
+   showSort_cantOpenCustomConverter  {  "Could not open a custom usort/collator for the following locale and reason"  }
+   showSort_shortString  {  "Using Short String"  }
+   sourceFile  {  "View Locale Source"  }
+   statusTableHeader  {  "Your settings:"  }
+   statusTableHeaderChange  {  "(click to change)"  }
+   stringClickToShow  {  "(Click here to show.)"  }
+   sublocales  {  "Sublocales:"  }
+   taggedarrayTag  {  "Tag"  }
+   title  {  "Locale Explorer"  }
+   translit_CantOpenPair  {  "Warning: Could not open the transliterator for the locale pair."  }
+   transliterate_help  {  "Transliteration Help"  }
+   ubrowse  {  "Browse Unicode in this codepage"  }
    usortCollated  {  "Collated"  }
    usortCustomRules  {  "Custom Rules"  }
    usortCustomRules_note0  {  "Click"  }
@@ -594,17 +271,14 @@ root {
    usortLocaleRules1  {  "Fetch rules for"  }
    usortLocaleRules2  {  ""  }
    usortOriginal  {  "Original"  }
-   usortSearchResults  {  "Search Results"  }
    usortSearch  {  "Search for: (or leave blank for no search)"  }
+   usortSearchResults  {  "Search Results"  }
    usortSource  {  "Source"  }
    usortWhat  {  "This example demonstrates sorting (collation) in this locale."  }
-   Version  {  "Version"  }
+   usort_attrib  {  "Attributes"  }
    warningExperimentalLocale  {  "Note: You're viewing a Draft locale. This locale is not part of the official ICU installation. &nbsp;"  }
    warningInheritedLocale  {  "Note: You're viewing a locale that does not have verified data . ICU will support this with inherited information, but that information is not verified to be correct."  }
    warningNoBug  {  "Please do not file bugs against this locale."  }
-   XMLcomp  {  "Compare"  }
-   XMLsource  {  "XML Source"  }
-   zone_set  {  "Set timezone to:"  }
    zoneStrings0  {  "Canonical"  }
    zoneStrings1  {  "Normal Name"  }
    zoneStrings2  {  "Normal Abbrev"  }
@@ -613,6 +287,7 @@ root {
    zoneStrings5  {  "Example City"  }
    zoneStrings6  {  "Raw Offset"  }
    zoneStrings_open_failed  {  "<I>Unknown</I>"  }
+   zone_set  {  "Set timezone to:"  }
    zone_warn  {  "Note: only works if you have cookies turned on."  }
 
 // Special Cases

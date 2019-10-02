@@ -19,7 +19,6 @@ subdir = locexp/resource
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
--include $(shell $(ICU_CONFIG) --incfile) 
 
 # the 'locexp' directory lives inside the exported ICU data dir..
 lxdatadir= $(libdir)/$(PACKAGE)/$(VERSION)/locexp
@@ -50,7 +49,23 @@ RES_SHORT = $(ALLSRC:.txt=.res)
 RES=$(RES_SHORT)
 
 # C Source files to extract FSWF strings from.  Remove items from here during development to not require a recompile.  
-FSWF_SRC= ../calexp.c ../cgimain.c ../fcgimain.c ../locexp.c ../lxconv.c ../lxdate.c ../lxlocale.c ../lxnum.c ../lxprint.c ../lxrun.c ../lxshow.cpp ../lxshowloc.c  ../srchexp.c ../wfobject.c  ../lxsort.c ../lxcgi.c ../lxicir.c
+FSWF_SRC= $(srcdir)/../calexp.c $(srcdir)/../cgimain.c $(srcdir)/../fcgimain.c $(srcdir)/../locexp.c $(srcdir)/../lxconv.c $(srcdir)/../lxdate.c $(srcdir)/../lxlocale.c $(srcdir)/../lxnum.c $(srcdir)/../lxprint.c $(srcdir)/../lxrun.c $(srcdir)/../lxshow.cpp $(srcdir)/../lxshowloc.c  $(srcdir)/../srchexp.c $(srcdir)/../wfobject.c  $(srcdir)/../lxsort.c $(srcdir)/../lxcgi.c $(srcdir)/../lxicir.c
+
+all:  root Makefile all-local
+
+ifneq ($(top_srcdir),.)
+# for out of source, add a symlink for res files
+root:	$(srcdir)/root
+	ln -sv $< $@
+endif
+
+root.res : root.txt
+	@echo Rebuilding $@
+	@$(INVOKE) $(GENRB) -d. $<
+
+res_index.res : res_index.txt
+	@echo Rebuilding $@
+	@$(INVOKE) $(GENRB) -d. $<
 
 %.res : $(srcdir)/%.txt
 	@echo Rebuilding $@
@@ -71,7 +86,6 @@ build-dirs
 -include Makefile.local
 
 ## List of standard targets
-all:  Makefile all-local
 install:  install-local
 clean:  clean-local
 distclean :  distclean-local
@@ -88,10 +102,10 @@ res-local:  $(RES) $(OUT)/locexp.lst
 
 -include Makefile.res
 
-root.txt: $(FSWF_SRC) root.txt.inc $(srcdir)/../tools/extractStrings.sh
-	$(INVOKE) PATH="$(srcdir)/../tools:$(bindir):$(sbindir):$(PATH)" extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
+root.txt: $(FSWF_SRC) $(srcdir)/root.txt.inc $(srcdir)/../tools/extractStrings.sh
+	$(INVOKE) PATH="$(srcdir)/../tools:$(bindir):$(sbindir):$(PATH)" srcdir=$(srcdir)/ extractStrings.sh $(FSWF_SRC) > ../resource/root.txt || ( rm -f root.txt ; false )
 
-res_index.txt: Makefile.in $(SRC) $(srcdir)/../tools/genIndex.sh
+res_index.txt: $(srcdir)/Makefile.in $(SRC:%.txt=$(srcdir)/%.txt) $(srcdir)/../tools/genIndex.sh
 	sh $(srcdir)/../tools/genIndex.sh $(SRC) $(srcdir)/root.txt > $@
 
 install-local: install-res
@@ -106,7 +120,7 @@ $(OUT)/locexp.lst: build-dirs Makefile
 	done;
 
 install-res: all-local
-	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst -I $(libdir)
+	$(INVOKE) $(XPATH) $(PKGDATA) -p $(PKG)  -m $(PKGMODE) -v -c -d $(OUT) -T $(OUT) $(OUT)/locexp.lst -I $(DESTDIR)$(libdir)
 
 dist-local:
 
@@ -136,12 +150,12 @@ $(PKG)_root.res : $(srcdir)/root.txt
 	$(INVOKE)  $(GENRB) --package-name $(PKG) -d. -eutf-8 $<
 
 escapeABundle: $(srcdir)/escapeABundle.c
-	cc -o escapeABundle $(srcdir)/escapeABundle.c
+	cc -o escapeABundle $<
 
 
-root_SAMPLE.txt: $(srcdir)/root.txt
+root_SAMPLE.txt: root.txt
 	echo "// Generated copy of root.txt. Also look at 'en.txt'." > root_SAMPLE.txt
-	cat < root.txt >> root_SAMPLE.txt
+	cat < $< >> root_SAMPLE.txt
 
 
 #-include *.d

@@ -54,8 +54,8 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
 	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
-	$(INSTALL) scompare-content-templ.html $(DESTDIR)$(BINDIR)/data
-	$(INSTALL) scompare-page-templ.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/scompare-content-templ.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/scompare-page-templ.html $(DESTDIR)$(BINDIR)/data
 
 dist-local:
 

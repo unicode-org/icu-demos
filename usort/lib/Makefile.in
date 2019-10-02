@@ -25,8 +25,6 @@ LIBPREFIX=lib
 TARGET_STUBNAME=usort
 include $(top_builddir)/icuapps.mk
 
-include $(shell $(ICU_CONFIG) --incfile) 
-
 CXXFLAGS += $(SHAREDLIBCXXFLAGS)
 CPPFLAGS += $(SHAREDLIDBCPPFLAGS)
 CFLAGS += $(SHAREDLIBCFLAGS)

@@ -43,12 +43,12 @@ echo "root {"
 echo
 fgrep -h 'FSWF("' $* | sed -e 's%.*FSWF("\([^"]*\)",[ ]*"\([^"]*\)".*%   \1  {  "\2"  }%' | sort | uniq
 echo 
-if [ -f root.txt.inc ]; then
+if [ -f ${srcdir}root.txt.inc ]; then
     echo "// Special Cases"
     echo
     echo
     echo " // Imported from: root.txt.inc "
-    cat root.txt.inc
+    cat ${srcdir}root.txt.inc
 fi
 echo
 echo "}"

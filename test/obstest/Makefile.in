@@ -16,10 +16,6 @@ subdir = test/obstest
 
 include $(top_builddir)/icuapps.mk
 
-# for the LDLIBRARYPATH_ENVVAR
-include $(shell @ICU_CONFIG@ --incfile)
-
-
 ## Extra files to remove for 'make clean'
 CLEANFILES = *~
 

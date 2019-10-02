@@ -25,6 +25,7 @@ CPPFLAGS=$(shell @ICU_CONFIG@ --cppflags) @DEFS@
 CFLAGS=$(shell @ICU_CONFIG@ --cflags)
 CXXFLAGS=$(shell @ICU_CONFIG@ --cxxflags)
 LDFLAGS =$(shell @ICU_CONFIG@ --ldflags) @LIBS@
+# We assume CFLAGS / CPPFLAGS for IO and OBSOLETE are the same, below…
 LDFLAGS_ICUIO =$(shell @ICU_CONFIG@ --ldflags-icuio)
 LDFLAGS_OBSOLETE =$(shell @ICU_CONFIG@ --ldflags-obsolete)
 INVOKE =$(shell @ICU_CONFIG@ --invoke)
@@ -77,7 +78,13 @@ RMV=rm -rf
 %.o: $(srcdir)/%.cpp
 
 # list of CGIs
-CGIAPPS=convexp idnbrowser translit locexp nbrowser scompare ubrowse redemo icudemos
+CGIAPPS=convexp idnbrowser translit locexp nbrowser scompare ubrowse redemo icudemos icusegments
+
+# include icu-config's include file
+# TODO we will need to remove this for a pkgconfig 
+ifneq ($(ICU_CONFIG),)
+-include $(shell $(ICU_CONFIG) --incfile)
+endif
 
 # optional override file
 -include $(top_srcdir)/icuapps-mk.local

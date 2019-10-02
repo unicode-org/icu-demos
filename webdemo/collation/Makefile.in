@@ -40,6 +40,10 @@ TARGET = available sortcgi
 #LDFLAGS += -L../apputil
 CPPFLAGS += -I$(ICU_SOURCE)/common
 
+ifneq ($(ICU_COMMON_HEADERS),)
+CPPFLAGS += -I$(ICU_COMMON_HEADERS)
+endif
+
 #CPPFLAGS += -I$(top_srcdir)/apputil
 # Want to make sure the usort.h dependency is not on the installed version .. 
 #CPPFLAGS  += -I../locexp/util
@@ -62,17 +66,17 @@ check: check-local
 
 all-local: $(TARGET) collation.html
 
-collation.html: index.html
+collation.html: $(srcdir)/index.html
 	sed -e 's%\(<form action="\)[^"]*\(.*\)%\1'"$(CGIPATH)"'\2%' < $^ > $@
 
 install-local: all-local install-target
 
 
 install-target: all-local
-	$(MKINSTALLDIRS) $(BINDIR) $(BINDIR)/data
-	$(INSTALL) sortcgi$(EXEEXT) $(BINDIR)/sortcgi$(EXEEXT)
-	$(INSTALL) available$(EXEEXT) $(BINDIR)/available$(EXEEXT)
-	$(INSTALL) collation.html $(BINDIR)/data/collation.html
+	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) sortcgi$(EXEEXT) $(DESTDIR)$(BINDIR)/sortcgi$(EXEEXT)
+	$(INSTALL) available$(EXEEXT) $(DESTDIR)$(BINDIR)/available$(EXEEXT)
+	$(INSTALL) collation.html $(DESTDIR)$(BINDIR)/data/collation.html
 
 dist-local:
 
