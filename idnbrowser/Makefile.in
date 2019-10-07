@@ -51,7 +51,7 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
 	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
-	$(INSTALL) idna-header.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/idna-header.html $(DESTDIR)$(BINDIR)/data
 
 dist-local:
 

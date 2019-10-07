@@ -15,7 +15,6 @@ subdir = locexp2
 
 
 include $(top_builddir)/icuapps.mk
-include $(shell $(ICU_CONFIG) --incfile) 
 
 DYNAMICCPPFLAGS = $(SHAREDLIBCPPFLAGS)
 DYNAMICCFLAGS = $(SHAREDLIBCFLAGS)

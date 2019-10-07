@@ -20,10 +20,12 @@ include $(top_builddir)/icuapps.mk
 CLEANFILES = *~ README_$(PKG).txt $(PKG).*   icons.txt *.res ubrowse.msg
 
 ## Target information
-TARGET = ubrowse
+TARGET = $(subdir)
 
-LDFLAGS += -L../apputil -lapputil -L../locexp/util -liculxutil $(LDFLAGS_ICUIO)
 CPPFLAGS += -I$(top_srcdir)/apputil
+ICULIBS := -L../apputil -lapputil -L../locexp/util -liculxutil $(LDFLAGS_ICUIO) $(ICULIBS)
+LDFLAGS += $(ICULIBS)
+
 ITMP=icontmp
 ICONS=icons
 RES_DIR=res
@@ -63,7 +65,7 @@ install-local: all-local install-target
 install-target: all-local
 	$(MKINSTALLDIRS) $(BINDIR) $(DESTDIR)$(BINDIR)/data
 	$(INSTALL) $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
-	$(INSTALL) ubrowse-header.html $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/ubrowse-header.html $(DESTDIR)$(BINDIR)/data
 	$(INVOKE) $(PKGDATA) -I $(DESTDIR)$(BINDIR)/../lib -p $(PKG)  -m $(PKGMODE) -c -d $(OUT) -T $(OUT) $(PKG).lst 
 
 dist-local:
@@ -90,12 +92,13 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 -include local.mk
 -include Makefile.local
 
-TRANSLATION_SRC=ubrowse.c
+TRANSLATION_SRC=$(srcdir)/ubrowse.c
 
-ubrowse.msg: $(TRANSLATION_SRC) extractStringsUltra.sh extractStrings.sed
-	$(SHELL) ./extractStringsUltra.sh $(TRANSLATION_SRC) > $@
+ubrowse.msg: $(TRANSLATION_SRC) $(srcdir)/extractStringsUltra.sh $(srcdir)/extractStrings.sed
+	srcdir=$(srcdir) $(SHELL) $(srcdir)/extractStringsUltra.sh $(TRANSLATION_SRC) > $@
 
 $(RES_DIR)/root.txt: ubrowse.msg
+	@$(MKINSTALLDIRS) $(RES_DIR)
 	@cp $^ $@.tmp
 	@if [ ! -f $@ ]; then \
 		echo installing new $@ ; \
@@ -110,6 +113,7 @@ $(RES_DIR)/root.txt: ubrowse.msg
 	fi
 
 $(RES_DIR)/root.xlf: $(RES_DIR)/root.txt
+	@$(MKINSTALLDIRS) $(RES_DIR)
 	$(INVOKE) $(GENRB) -s $(RES_DIR) -d $(RES_DIR) root.txt -x
 
 #mt.res: $(RES_DIR)/mt.xlf
@@ -126,12 +130,13 @@ $(TARGET) : $(OBJECTS)
 icons.res: icons.txt
 	$(INVOKE) $(GENRB) -d. $<
 
-icons.txt: $(ICONS)/*.gif
+icons.txt: $(srcdir)/$(ICONS)/*.gif
+	@$(MKINSTALLDIRS) $(ICONS)
 	echo creating $@ in $(ICONS)
 	@echo "icons : table(nofallback) { " > $@
-	@for file in `cd ./$(ICONS) ; ls *.gif *.css`; do \
+	@for file in `cd $(srcdir)/$(ICONS) ; ls *.gif *.css`; do \
 	echo "Processing $$file " ; \
-	  echo " $$file:import { $(ICONS)/$$file } " >> $@; \
+	  echo " $$file:import { $(srcdir)/$(ICONS)/$$file } " >> $@; \
 	done;
 	@echo "}" >> $@
 

@@ -18,7 +18,6 @@ BUILTRES=resource/.builtres
 
 # srcdir must be set before this is included
 include $(top_builddir)/icuapps.mk
--include $(shell $(ICU_CONFIG) --incfile) 
 
 CPPFLAGS+=-I$(srcdir)/../apputil
 CPPFLAGS+=-I$(ICU_SORUCE)/common -I$(srcdir)

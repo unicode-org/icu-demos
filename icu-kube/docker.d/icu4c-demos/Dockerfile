@@ -31,10 +31,13 @@ RUN mkdir /home/build/build /home/build/src
 WORKDIR /home/build/build
 ADD . /home/build/src/
 ENV PREFIX=/home/build/icu
-RUN ~/src/configure  --prefix=${PREFIX} ICU_CONFIG=$(which icu-config) 
-RUN make all OBS= && make install OBS= DESTDIR=${PREFIX}
+# HACK: translitdemo is not out of source enabled
+RUN cp -R /home/build/src/translitdemo /home/build/build/translitdemo
+RUN ~/src/configure  --prefix=${PREFIX} ICU_CONFIG=$(which icu-config) && \
+ make all install OBS= DESTDIR=${PREFIX} CONTEXTPATH=/icu-bin/ ICU_COMMON_HEADERS=/home/build/src/icu-kube/icuheaders
 #make -k DEPS= clean && make -k DEPS= distclean && sudo apt-get purge -y git subversion python3 doxygen zip curl g++ && sudo apt-get -y autoremove && sudo apt-get clean -y
 #RUN make all
+RUN cp -R /home/build/src/translitdemo /home/build/icu/translitdemo
 
 FROM alpine:latest as httpd
 USER root
@@ -47,6 +50,8 @@ COPY --from=build /home/build/icu /home/build/icu
 RUN if [ -d /home/build/icu/usr/local ]; then (cd /home/build/icu/usr/; ln -sv local/* .); fi; ls -l /home/build/icu/usr/bin/
 ENV LD_LIBRARY_PATH /home/build/icu/usr/lib
 EXPOSE 8080
+# this needs special treatment
+RUN cp -v /home/build/icu/usr/bin/data/collation.html /var/www/localhost/htdocs/ || true
 COPY icu-kube/lighttpd.conf /etc/lighttpd/lighttpd.conf
 COPY icu-kube/index.html /var/www/localhost/htdocs/index.html
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]

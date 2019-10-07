@@ -25,6 +25,10 @@ root {
 	name { "Locale Explorer" }
 	desc { "Illustrates the International Components for Unicode localization data." }
   }
+  icusegments {
+    name { "ICU Segments" }
+    desc { "Shows various ICU Segmentation (BreakIterator) boundaries" }
+  }
 
   nbrowser {
 	name { "Normalization Browser" }
