@@ -1,3 +1,4 @@
-# Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
-FROM open-liberty:webProfile7-java8-ibmsfj
-COPY target/icu4jweb.war /config/dropins/
+# Copyright (c) 2019 and later Unicode, Inc. and others. All Rights Reserved.
+FROM tomcat:9-jdk11-openjdk-slim
+ADD target/icu4jweb.war /usr/local/tomcat/webapps/
+EXPOSE 8080
