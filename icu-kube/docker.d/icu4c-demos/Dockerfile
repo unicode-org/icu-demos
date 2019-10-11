@@ -14,7 +14,11 @@ RUN addgroup build && adduser -g "Build user" -h $HOME -S -G build -D -s /bin/sh
 ARG ICU_PATH
 ENV ICU_PATH=${ICU_PATH}
 
-RUN if [ $ICU_PATH = "system" ]; then apk --update add icu-dev; else curl -L $ICU_PATH | (cd / ; tar xvfpz - --strip-components 2 ); fi
+# The fun one. Note DEPS= speeds up the build when we're doing a one time compile.
+# nproc gives the number of processors.
+RUN if [ $ICU_PATH = "system" ]; then apk --update add icu-dev; \
+ else curl -L $ICU_PATH | (mkdir /tmp/icu && cd /tmp/icu && tar xvfpz - && \
+  cd icu/source && ./configure --prefix=/usr && make DEPS= -j$(nproc) install && make DEPS= -j$(nproc)  DESTDIR=/tmp/ICU/usr install); fi
 USER build
 
 # Wanted to use this: --wildcards -s '%icu[^/]*%%' 
@@ -25,14 +29,15 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 # VOLUME /mnt/icu
 RUN icuinfo | tee /tmp/icuinfo.txt
 
-USER build
 # VOLUME /home/build
 RUN mkdir /home/build/build /home/build/src
 WORKDIR /home/build/build
-ADD . /home/build/src/
 ENV PREFIX=/home/build/icu
+RUN if [ -d /tmp/ICU ]; then mkdir -p /home/build/icu/ICU && cp -R /tmp/ICU /home/build/icu/ICU; fi
+ADD . /home/build/src/
 # HACK: translitdemo is not out of source enabled
 RUN cp -R /home/build/src/translitdemo /home/build/build/translitdemo
+#  No -j$(nproc) - not multithread safe!
 RUN ~/src/configure  --prefix=${PREFIX} ICU_CONFIG=$(which icu-config) && \
  make all install OBS= DESTDIR=${PREFIX} CONTEXTPATH=/icu-bin/ ICU_COMMON_HEADERS=/home/build/src/icu-kube/icuheaders
 #make -k DEPS= clean && make -k DEPS= distclean && sudo apt-get purge -y git subversion python3 doxygen zip curl g++ && sudo apt-get -y autoremove && sudo apt-get clean -y
@@ -44,9 +49,10 @@ USER root
 ARG ICU_PATH
 ENV ICU_PATH=${ICU_PATH}
 RUN apk --update add lighttpd
-# run this again. Two downloads, but keeps the layers smaller..
-RUN if [ $ICU_PATH = "system" ]; then apk --update add icu-dev ; else apk --update add libstdc++ curl ; curl -L $ICU_PATH | (cd / ; tar xvfpz - --strip-components 2 ); fi
 COPY --from=build /home/build/icu /home/build/icu
+# Try to re-install the same ICU
+RUN if [ $ICU_PATH = "system" ]; then apk --update add icu-dev; \
+ else apk --update add libstdc++ && cp -Rv /home/build/icu/ICU/ICU/usr/usr / && rm -rf /home/build/icu/ICU/usr ; fi
 RUN if [ -d /home/build/icu/usr/local ]; then (cd /home/build/icu/usr/; ln -sv local/* .); fi; ls -l /home/build/icu/usr/bin/
 ENV LD_LIBRARY_PATH /home/build/icu/usr/lib
 EXPOSE 8080
