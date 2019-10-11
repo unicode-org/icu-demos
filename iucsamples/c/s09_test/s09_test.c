@@ -2,15 +2,16 @@
 
 #include <stdio.h>
 #include "unicode/uclean.h"
+#include "unicode/ustdio.h"
 
 int main() {
     UErrorCode status = U_ZERO_ERROR;
     u_init(&status);
-    printf("This is ICU %s!\n", U_ICU_VERSION);
+    u_printf_u(u"This is ICU %s! 😼\n", U_ICU_VERSION);
     if (U_SUCCESS(status)) {
-        printf("everything is OK\n");
+        u_printf_u(u"everything is OK 🎉\n");
     } else {
-        printf("error %s initializing.\n", u_errorName(status));
+        u_printf_u(u"error 😕 %s initializing.\n", u_errorName(status));
         return 1;
     }
     return 0;
