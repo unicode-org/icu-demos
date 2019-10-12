@@ -67,7 +67,7 @@ void s36_cppsort() {
   if(U_SUCCESS(status)) {
     for(i=listSize-1; i>=1; i--) {
       for(j=0; j<i; j++) {
-        if(coll->compare(s[j], s[j+1]) == UCOL_LESS) {
+        if(coll->compare(s[j], s[j+1], status) == UCOL_LESS) {
           swap(s[j], s[j+1]);
         }
       }

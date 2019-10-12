@@ -9,3 +9,14 @@ CPPFLAGS+=$(shell $(ICUPKGCONFIG) icu-io --cflags)
 CXX=c++ -std=c++11
 
 INVOKE=
+
+# make sure LDFLAGS come last due to library ordering
+
+%: %.c
+	$(CC) $(CPPFLAGS) -o $@ $< $(LDFLAGS)
+
+%: %.cc
+	$(CXX) $(CPPFLAGS) -o $@ $< $(LDFLAGS)
+
+%: %.cpp
+	$(CXX) $(CPPFLAGS) -o $@ $< $(LDFLAGS)

@@ -8,11 +8,13 @@ more information on the ICU:
  URL:   http://icu-project.org/
 
 
-
  If you have an application that is written using the ICU that you
 would like to contribute, join the ICU mailing list [above URL] and
 contact us.
 
+- The "iucsamples" directory contains samples for the
+Unicode conference <unicodeconference.org> and has its own
+build instructions.
 
 BUILDING
 --------

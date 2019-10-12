@@ -1,3 +1,0 @@
-es {
-  hello { "¡Hola!" }
-}

@@ -1,3 +1,0 @@
-mt {
- hello { "Merħba!" }
-}
