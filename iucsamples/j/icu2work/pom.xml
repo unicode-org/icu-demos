@@ -9,7 +9,7 @@
 
 	<groupId>org.icu-project.sample.icu2work</groupId>
 	<artifactId>icu2work</artifactId>
-	<version>1.0-iuc41-SNAPSHOT</version>
+	<version>1.0-iuc43-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>icu2work</name>
@@ -108,7 +108,7 @@
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
-			<version>62.1</version>
+			<version>65.1</version>
 		</dependency>
 	</dependencies>
 </project>
