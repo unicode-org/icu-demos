@@ -10,8 +10,8 @@ PKGDATA=env DYLD_LIBRARY_PATH=$(icubuild)/lib  LD_LIBRARY_PATH=$(icubuild)/lib p
 
 all:
 	-mkdir myapp
-	$(GENRB) -d myapp root.txt
-	$(GENRB) -d myapp es.txt
+	$(GENRB) -e utf-8 -d myapp root.txt
+	$(GENRB) -e utf-8 -d myapp es.txt
 	-mkdir tmp
 	$(PKGDATA) $(PKGDATA_OPTS) -p myapp pkgdatain.txt
 clean:

@@ -10,6 +10,11 @@
 #include <unicode/ustream.h>
 #include <iostream>
 
+#if U_ICU_VERSION_MAJOR_NUM < 62
+# error for ICU before 62.x, change toString(status) to toString()
+#endif
+
+
 #define ASSERT_OK(status) \
   if(status.isFailure()) { \
     printf("Error on line %d:\n", __LINE__); \
