@@ -34,7 +34,7 @@ RUN mkdir /home/build/build /home/build/src
 WORKDIR /home/build/build
 ENV PREFIX=/home/build/icu
 RUN if [ -d /tmp/ICU ]; then mkdir -p /home/build/icu/ICU && cp -R /tmp/ICU /home/build/icu/ICU; fi
-ADD . /home/build/src/
+ADD --chown=build . /home/build/src/
 # HACK: translitdemo is not out of source enabled
 RUN cp -R /home/build/src/translitdemo /home/build/build/translitdemo
 #  No -j$(nproc) - not multithread safe!
