@@ -1,9 +1,16 @@
 sudo: required
+language: java
+jdk:
+  - openjdk8
 services: docker
 install: true
 script:
-  - '( cd icu4jweb && docker run -it --rm -v $HOME/.m2/:/root/.m2/ -v $(pwd)/:/usr/src -w /usr/src maven:3-jdk-8 mvn package && sh build-docker.sh )'
+  - mvn -f icu4jweb/pom.xml package
+  - '( cd icu4jweb && sh build-docker.sh )'
   - '( cd icu-kube && sh build.sh )'
+  - '( cd iucsamples/c && docker run --rm -v $HOME/.apk:/etc/apk/cache -v $(pwd)/:/usr/src -w /usr/src alpine:edge sh -c "apk --update add gcc make g++ bsd-compat-headers pkgconfig icu-dev && make all check" )'
+  - mvn -f iucsamples/j/icu2work/pom.xml test
 cache:
   directories:
   - $HOME/.m2
+  - $HOME/.apk

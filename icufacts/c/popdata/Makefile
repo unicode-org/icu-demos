@@ -1,3 +1,0 @@
-# 
-include ../simple.mk
-

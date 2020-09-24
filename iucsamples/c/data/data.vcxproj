@@ -47,8 +47,8 @@
     </Link>
     <CustomBuildStep>
       <Command>mkdir tmp myapp
-genrb -d myapp root.txt
-genrb -d myapp es.txt
+genrb -e utf-8 -d myapp root.txt
+genrb -e utf-8 -d myapp es.txt
 pkgdata -v -T tmp -p myapp pkgdatain.txt -s . -d $(OutDir)</Command>
     </CustomBuildStep>
     <CustomBuildStep>

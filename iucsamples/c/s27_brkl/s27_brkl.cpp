@@ -3,6 +3,7 @@
 #include "../iucsamples.h"
 #include <unicode/ustdio.h>
 #include <unicode/brkiter.h>
+#include <unicode/ubrk.h>
 #include <stdio.h>
 
 int32_t previousBreak(BreakIterator *breakIterator, UnicodeString &text,
