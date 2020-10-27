@@ -38,7 +38,7 @@ ADD --chown=build . /home/build/src/
 # HACK: translitdemo is not out of source enabled
 RUN cp -R /home/build/src/translitdemo /home/build/build/translitdemo
 #  No -j$(nproc) - not multithread safe!
-RUN ~/src/configure  --prefix=${PREFIX} ICU_CONFIG=$(which icu-config) && \
+RUN /home/build/src/configure  --prefix=${PREFIX} ICU_CONFIG=$(which icu-config) && \
  make all install OBS= DESTDIR=${PREFIX} CONTEXTPATH=/icu-bin/ ICU_COMMON_HEADERS=/home/build/src/icu-kube/icuheaders
 #make -k DEPS= clean && make -k DEPS= distclean && sudo apt-get purge -y git subversion python3 doxygen zip curl g++ && sudo apt-get -y autoremove && sudo apt-get clean -y
 #RUN make all
