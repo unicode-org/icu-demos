@@ -36,7 +36,7 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
   
     showKeyAndStartItem(lx, "EXPLORE_DateTimePatterns",
                         FSWF("EXPLORE_DateTimePatterns", "Explore &gt; Date/Time"),
-                        locale, FALSE, U_ZERO_ERROR);
+                        locale, false, U_ZERO_ERROR);
 
     u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_DateTimePatterns_What","This example demonstrates the formatting of date and time patterns in this locale."));
   
@@ -45,10 +45,10 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
     df = udat_open(UDAT_LONG,UDAT_LONG,locale, NULL, -1, NULL, 0, &status);
     if(pattern[0]) {
-        udat_applyPattern(df, FALSE, pattern, -1);
+        udat_applyPattern(df, false, pattern, -1);
     } else {
         udat_toPattern(    df,
-                        FALSE,
+                        false,
                         pattern,
                         PATTERN_LEN,
                         &status);
@@ -163,9 +163,9 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
 
         u_fprintf(lx->OUT, "<textarea name=\"NP_DEF\" rows=\"1\" cols=\"50\">");
 
-        lx->backslashCtx.html = FALSE;
+        lx->backslashCtx.html = false;
         u_fprintf(lx->OUT, "%S", defChars); 
-        lx->backslashCtx.html = TRUE;
+        lx->backslashCtx.html = true;
       
         status = U_ZERO_ERROR;
       
@@ -236,6 +236,6 @@ void showExploreDateTimePatterns( LXContext *lx, UResourceBundle *myRB, const ch
     { 
         UResourceBundle *rootRB;
         rootRB = ures_open(NULL, "root", &status);
-        showLPC(lx, rootRB, "root", FALSE);
+        showLPC(lx, rootRB, "root", false);
     }
 }

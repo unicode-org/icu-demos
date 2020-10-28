@@ -27,7 +27,7 @@ int32_t FileSource::read(const uint8_t* &start, const uint8_t* &end)
   //  if(!u_fgets(f, sizeof(buffer)/sizeof(UChar), buffer))
   if(feof(f) || fEOF)
     {
-      fEOF = TRUE;
+      fEOF = true;
       return 0;
     }
 
@@ -36,13 +36,13 @@ int32_t FileSource::read(const uint8_t* &start, const uint8_t* &end)
   c = fgets(buffer, (sizeof(buffer)/sizeof(buffer[0]))-2, f);
   if(!c)
     {
-      fEOF = TRUE;
+      fEOF = true;
       return 0;
     }
 
   if(feof(f))
     {
-      fEOF = TRUE;
+      fEOF = true;
     }
 
   len = strlen(c);
@@ -67,7 +67,7 @@ ToUSource::ToUSource(RawSource& src, const char *enc)
   u = ucnv_open(enc, &status);
   if(U_FAILURE(status))
     {
-      fEOF = TRUE;
+      fEOF = true;
       if(u) 
         {
           ucnv_close(u);
@@ -92,14 +92,14 @@ void ToUSource::rewind()
 
 int32_t ToUSource::read(const UChar* &start, const UChar* &end)
 {
-  if(fEOF == TRUE)
+  if(fEOF == true)
     {
       return 0;
     }
 
   if(source.eof())
     {
-      fEOF = TRUE;
+      fEOF = true;
       return 0;
     }
 
@@ -108,7 +108,7 @@ int32_t ToUSource::read(const UChar* &start, const UChar* &end)
 
   if(source.read(sourceData, sourceDataLimit) == 0)
     {
-      fEOF = TRUE;
+      fEOF = true;
       return 0;
     }
 

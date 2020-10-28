@@ -271,7 +271,7 @@ parseString(const char *s,
     UBool isError;
 
     length=0;
-    isError=FALSE;
+    isError=false;
     for(;;) {
         s=skipEscapedWhitespace(s);
         if(*s=='&' || *s==0) {
@@ -327,7 +327,7 @@ main(int argc, const char *argv[]) {
     puts(breadCrumbMainHeader);
 
     inputLength=options=0;
-    inputIsUTF8=FALSE;
+    inputIsUTF8=false;
     errorCode=U_ZERO_ERROR;
 
     if((cgi=getenv("QUERY_STRING"))!=NULL && cgi[0]!=0) {
@@ -335,13 +335,13 @@ main(int argc, const char *argv[]) {
         const char *in;
 
         if((in=strstr(cgi, "t="))!=NULL && in[2]!='&' && in[2]!=0) {
-            inputIsUTF8=TRUE;
+            inputIsUTF8=true;
             in+=2; // skip "t="
             inputLength=parseEscaped(in, buffer, sizeof(buffer), errorCode);
             u_strFromUTF8(buffer16, LENGTHOF(buffer16), &inputLength,
                           buffer, inputLength,
                           &errorCode);
-            icu::UnicodeString us(FALSE, (const UChar *)buffer16, U_SUCCESS(errorCode) ? inputLength : 0); // readonly alias
+            icu::UnicodeString us(false, (const UChar *)buffer16, U_SUCCESS(errorCode) ? inputLength : 0); // readonly alias
             inputLength=us.unescape().extract(input, LENGTHOF(input), errorCode);
             u_strToUTF8(input8, sizeof(input8), NULL,
                         input, inputLength,

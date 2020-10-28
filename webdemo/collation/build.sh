@@ -19,11 +19,16 @@
 #   part of webdemo/collation/index.html
 #   and commit into the repository.
 
-HOME=/usr/local/google/home/mscherer
-ICU_SRC=$HOME/icu/mine/src/icu4c
-PREFIX=$HOME/icu/mine/inst/icu4c
-ICUAPPS_SRC=$HOME/icu-demos/mine/src
+HOME=/usr/local/google/home/ccornelius/ICU68_release
+ICU_SRC=$HOME/icu/icu4c
+PREFIX=/tmp/icu68_release
+ICUAPPS_SRC=$HOME/icu-demos
 CGI_BIN=/var/www/cgi-bin
+
+echo "ICUAPPS_SRC:"
+echo $ICUAPPS_SRC
+echo "PREFIX IS:"
+echo $PREFIX
 
 CXX=clang++
 CXXFLAGS="-g --std=c++11 -W -Wall -pedantic -Wpointer-arith -Wwrite-strings -Wno-long-long -DU_USING_ICU_NAMESPACE=0"

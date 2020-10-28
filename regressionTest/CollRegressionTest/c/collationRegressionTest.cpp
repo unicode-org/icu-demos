@@ -38,8 +38,8 @@ static int32_t runTest(Collator *coll, const char *resultDirPath, const char *lo
 
 int main (int argc, char **argv) {
     int result = 0;
-    UBool printUsage = FALSE;
-    UBool printVersion = FALSE;
+    UBool printUsage = false;
+    UBool printVersion = false;
     int32_t optind = 0;
     char *arg;
     char resultDir[LARGE_BUFFER_SIZE] = "";
@@ -77,11 +77,11 @@ int main (int argc, char **argv) {
         }
         /* version info */
         if(strcmp(arg, "-v") == 0 || strcmp(arg, "--version") == 0) {
-            printVersion = TRUE;
+            printVersion = true;
         }
         /* usage info */
         else if(strcmp(arg, "-h") == 0 || strcmp(arg, "--help") == 0) {
-            printUsage = TRUE;;
+            printUsage = true;;
         }
         /* POSIX.1 says all arguments after -- are not options */
         else if(strcmp(arg, "--") == 0) {
@@ -92,7 +92,7 @@ int main (int argc, char **argv) {
         /* unrecognized option */
         else if(strncmp(arg, "-", strlen("-")) == 0) {
             printf("collationRegressionTest: invalid option -- %s\n", arg+1);
-            printUsage = TRUE;;
+            printUsage = true;;
         }
         /* done with options, display cal */
         else {
@@ -137,7 +137,7 @@ static void version() {
 static int32_t startTest(const char *resultDirPath, const char *dataFile) {
     int result = 0;
     UErrorCode status = U_ZERO_ERROR;
-    UBool getUCAVersion = TRUE;
+    UBool getUCAVersion = true;
     UVersionInfo version;
     char versionStringICU[SMALL_BUFFER_SIZE] = "";
     char versionStringUCA[SMALL_BUFFER_SIZE] = "";
@@ -178,7 +178,7 @@ static int32_t startTest(const char *resultDirPath, const char *dataFile) {
             ucol_getUCAVersion(((RuleBasedCollator *)coll)->getUCollator(), version);
             u_versionToString(version, versionStringUCA);
 
-            getUCAVersion = FALSE;
+            getUCAVersion = false;
         }
 
         if (runTestLoop(coll, resultDirPath, localeName, versionStringICU, versionStringUCA, pDataFile) != 0) {

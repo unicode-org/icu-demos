@@ -255,7 +255,7 @@ static UErrorCode initSets(){
 static void breakScripts(const UChar* src, int32_t srcLength, UnicodeString& result) {
 
   UScriptCode lastScript = USCRIPT_INVALID_CODE;
-  UBool inSpan = FALSE;
+  UBool inSpan = false;
   int32_t spanCount = 0;
   UErrorCode status = U_ZERO_ERROR;
   UnicodeString str( src, srcLength );
@@ -330,7 +330,7 @@ printTableText(const UChar *s, int32_t length, UBool useBreakScripts, UBool make
     errorCode=U_ZERO_ERROR;
     UnicodeString result;
     UnicodeString str(s,length);
-    if(makeLink == TRUE){
+    if(makeLink == true){
         result.append("<a href=\"");
         if(str.indexOf(http)==-1){
             result.append(http);
@@ -343,7 +343,7 @@ printTableText(const UChar *s, int32_t length, UBool useBreakScripts, UBool make
     }else{
         result.append(s,length);
     }
-    if(makeLink == TRUE){
+    if(makeLink == true){
         result.append("</a>\n");
     }
     u_strToUTF8(buffer, sizeof(buffer), &utf8Length, result.getBuffer(), result.length(), &errorCode);
@@ -367,8 +367,8 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
     UChar* tempOut = (UChar*) malloc(U_SIZEOF_UCHAR * length);
     int32_t outputLength;
     UParseError parseError;
-    printUnassignedError = FALSE;
-    printSTD3Error = FALSE;
+    printUnassignedError = false;
+    printSTD3Error = false;
 
     printf("<tr><td>%s</td>", modeNames[3]);
 /*
@@ -390,15 +390,15 @@ printToUnicode (const UChar *s, int32_t length, UBool &printUnassignedError, UBo
         
         uidna_IDNToUnicode(s, length, tempOut,  length, UIDNA_DEFAULT, &parseError, &errorCode);
         if(errorCode == U_IDNA_UNASSIGNED_ERROR){
-            printUnassignedError  = TRUE;
+            printUnassignedError  = true;
         }
         errorCode = U_ZERO_ERROR;
         uidna_IDNToUnicode(s, length, tempOut, length, UIDNA_USE_STD3_RULES, &parseError, &errorCode);
         if(errorCode == U_IDNA_STD3_ASCII_RULES_ERROR){
-            printSTD3Error = TRUE;
+            printSTD3Error = true;
         }
         
-        printTableText(output, outputLength,TRUE,FALSE);
+        printTableText(output, outputLength,true,false);
         printTableString(output,outputLength);
 
     }
@@ -440,7 +440,7 @@ printToUnicode (const UChar *s, int32_t length) {
     else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
-        printTableText(output, outputLength, TRUE,FALSE);
+        printTableText(output, outputLength, true,false);
         printTableString(output,outputLength);
     }
 
@@ -457,8 +457,8 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
     UChar *tempOut = (UChar*) malloc(U_SIZEOF_UCHAR * capacity);
     int32_t outputLength;
     UParseError parseError;
-    printUnassignedError = FALSE;
-    printSTD3Error = FALSE;
+    printUnassignedError = false;
+    printSTD3Error = false;
     printf("<tr><td>%s</td>", modeNames[2]);
 /*    
     UnicodeString str(s,length);
@@ -479,15 +479,15 @@ printToASCII(const UChar *s, int32_t length,UBool &printUnassignedError, UBool &
         uidna_IDNToASCII(s, length, tempOut,  capacity, UIDNA_DEFAULT, &parseError, &errorCode);
 
         if(errorCode == U_IDNA_UNASSIGNED_ERROR){
-            printUnassignedError  = TRUE;
+            printUnassignedError  = true;
         }
         errorCode = U_ZERO_ERROR;
         uidna_IDNToASCII(s, length, tempOut, capacity, UIDNA_USE_STD3_RULES, &parseError, &errorCode);
         if(errorCode == U_IDNA_STD3_ASCII_RULES_ERROR){
-            printSTD3Error = TRUE;
+            printSTD3Error = true;
         }
 
-        printTableText(output, outputLength,FALSE,TRUE);
+        printTableText(output, outputLength,false,true);
         printTableString(output, outputLength);
     }
 
@@ -527,7 +527,7 @@ printToASCII (const UChar *s, int32_t length) {
     else if(U_FAILURE(errorCode)) {
         printf("<td>%s</td><td>&nbsp;</td>", u_errorName(errorCode));
     } else {
-        printTableText(output, outputLength,FALSE,TRUE);
+        printTableText(output, outputLength,false,true);
         printTableString(output,outputLength);
     }
 
@@ -594,7 +594,7 @@ parseString(const char *s, int32_t srcLen,
     UBool isError;
     const char* srcLimit = s + srcLen;
     length=0;
-    isError=FALSE;
+    isError=false;
     for(;;) {
         s=skipEscapedWhitespace(s);
         if((s >= srcLimit) || *s=='&' || *s==0) {
@@ -664,7 +664,7 @@ main(int argc, const char *argv[]) {
     puts(breadCrumbMainHeader);
 
     inputLength=0;
-    inputIsUTF8=FALSE;
+    inputIsUTF8=false;
     errorCode=U_ZERO_ERROR; 
     
 /* on win32 systems to debug uncomment the block below
@@ -692,7 +692,7 @@ main(int argc, const char *argv[]) {
         const char* inputType = options[INPUT_TYPE].value;
         int32_t len = (options[INPUT].valueLen * 2);
         if ( len != 0 ) {
-            inputIsUTF8=TRUE;
+            inputIsUTF8=true;
             buffer = (char*) malloc( len );
             inputLength=parseEscaped(options[INPUT].value,options[INPUT].valueLen, buffer, len, errorCode);
             if(U_FAILURE(errorCode)){
@@ -740,7 +740,7 @@ main(int argc, const char *argv[]) {
 
     printf(startTable);
     
-    printTableText(input, inputLength,TRUE,FALSE);
+    printTableText(input, inputLength,true,false);
     
     printf("<td>");
     
@@ -773,13 +773,13 @@ main(int argc, const char *argv[]) {
     puts(endTable);
     if(inputLength > 0  && (status == U_IDNA_UNASSIGNED_ERROR || status == U_IDNA_STD3_ASCII_RULES_ERROR)){
         printf("<font size=\"4\"><b>Information </b></font><br />\n");
-        if((std31==TRUE ||std32 ==TRUE)){
+        if((std31==true ||std32 ==true)){
             printf(STD3Fail);
         }else if(status !=  U_IDNA_UNASSIGNED_ERROR){
             printf(STD3Pass);
         }
         printf("<br />\n");
-        if(unass1==TRUE || unass2 ==TRUE){
+        if(unass1==true || unass2 ==true){
             printf(unassignedFail);
         }else{
             printf(unassignedPass);

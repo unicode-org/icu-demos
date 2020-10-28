@@ -86,7 +86,7 @@ void ucd_parseFile(UFILE *f, const char *fileName, UErrorCode &status)
   int line = 0;
   UChar linebuf[2048];
   UBool isStdin = (f==ustdin);
-  UBool ignoredErr = FALSE;
+  UBool ignoredErr = false;
   if(!DONE&&U_SUCCESS(status)&&isStdin) {
     prompt();
   }
@@ -99,7 +99,7 @@ void ucd_parseFile(UFILE *f, const char *fileName, UErrorCode &status)
       if(U_FAILURE(status)) {
         if(!ignoredErr) {
           u_fprintf(ustderr, "Note: use the 'h' command for help.\n");
-          ignoredErr=TRUE;
+          ignoredErr=true;
         }
         status = U_ZERO_ERROR; /* we're in interactive mode - swallow it. */
       }
@@ -375,7 +375,7 @@ void ucd_cmd_set(UChar32 cmd, const UChar *str, int32_t len, UErrorCode &status)
 void ucd_cmd_collate(const UChar *cmd, const UChar *str, int32_t len, UErrorCode &status)
 {
   printf("Any locale, as long as it's slovakian\n");
-  USort *sort = usort_open("sk", UCOL_DEFAULT, TRUE, &status);
+  USort *sort = usort_open("sk", UCOL_DEFAULT, true, &status);
   int32_t i = 0;
   int32_t oldi = i;
   UChar32 c;
@@ -383,7 +383,7 @@ void ucd_cmd_collate(const UChar *cmd, const UChar *str, int32_t len, UErrorCode
   while(i<len) {
     U16_NEXT(str, i, len, c);
     //printf("%d..%d\n", oldi, i);
-    usort_addLine(sort, str+oldi, i-oldi, TRUE, NULL);
+    usort_addLine(sort, str+oldi, i-oldi, true, NULL);
     oldi = i;
   }
 
@@ -505,10 +505,10 @@ UBool search_fn(void *context,
                 const char *name,
                 int32_t length)
 {
-  UBool isFound = FALSE;
+  UBool isFound = false;
   //enumHits++;
   if(strstr(name, gSearchName)) {
-    isFound = TRUE;
+    isFound = true;
   } else if(words_count>1) {
     const char *k = name;
     int n;
@@ -525,13 +525,13 @@ UBool search_fn(void *context,
       }
     }
     if(k != NULL) {
-      isFound = TRUE;
+      isFound = true;
     }
   }
-  if(isFound == TRUE) {
+  if(isFound == true) {
     U16_APPEND_UNSAFE(workbuffer, worklen, code);
   }
-  return TRUE;
+  return true;
  }
 }
 

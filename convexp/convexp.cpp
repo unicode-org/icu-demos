@@ -317,10 +317,10 @@ static UBool containsAmbiguousAliases() {
         alias = ucnv_getAlias(gCurrConverter, idx, &status);
         ucnv_getStandardName(alias, "", &status);
         if (status == U_AMBIGUOUS_ALIAS_WARNING) {
-            return TRUE;
+            return true;
         }
     }
-    return FALSE;
+    return false;
 }
 
 /* Is 0x20-7F always the same? */
@@ -347,12 +347,12 @@ static UBool isASCIIcompatible(UConverter *cnv) {
     ucnv_toUnicode(cnv,
                    &target, target+sizeof(output)/sizeof(output[0]),
                    &source, source+sizeof(ascii),
-                   NULL, TRUE, &status);
+                   NULL, true, &status);
     ucnv_reset(cnv);
     if (U_SUCCESS(status) && memcmp(expected, output, sizeof(expected)) == 0) {
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 /*
@@ -401,7 +401,7 @@ static void printUnicodeSet(USet *cnvSet, UErrorCode *status, UBool alwaysShowSe
     char setStrBuf[64];
     UChar setUStrBuf[sizeof(setStrBuf)];
     UErrorCode myStatus = U_ZERO_ERROR;
-    patLen = uset_toPattern(cnvSet, NULL, 0, TRUE, &myStatus) + 1;
+    patLen = uset_toPattern(cnvSet, NULL, 0, true, &myStatus) + 1;
     if (alwaysShowSet || patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
         if (patLen < (int32_t)(sizeof(setUStrBuf)/sizeof(setUStrBuf[0]))) {
             patBuffer = setUStrBuf;
@@ -413,7 +413,7 @@ static void printUnicodeSet(USet *cnvSet, UErrorCode *status, UBool alwaysShowSe
         }
         if (U_SUCCESS(*status) && patBuffer && patBufferUTF8) {
             myStatus = U_ZERO_ERROR;
-            patLen = uset_toPattern(cnvSet, patBuffer, patLen, TRUE, &myStatus) + 1;
+            patLen = uset_toPattern(cnvSet, patBuffer, patLen, true, &myStatus) + 1;
             u_strToUTF8(patBufferUTF8, patLen, NULL, patBuffer, patLen, &myStatus);
 
             /*
@@ -456,7 +456,7 @@ static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *statu
     int32_t patLen;
     int32_t locCount = uloc_countAvailable();
     int32_t locIndex;
-    UBool localeFound = FALSE;
+    UBool localeFound = false;
     UErrorCode myStatus = U_ZERO_ERROR;
 
     if (U_FAILURE(*status)) {
@@ -491,7 +491,7 @@ static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *statu
                             u_strToUTF8(patBufferUTF8, sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0]), NULL, patBuffer, patLen, &myStatus);
                             patBufferUTF8[sizeof(patBufferUTF8)/sizeof(patBufferUTF8[0])-1] = 0;
                             if (!localeFound) {
-                                localeFound = TRUE;
+                                localeFound = true;
                                 puts("<tr><th>Locale</th><th>Locale Name</th></tr>");
                             }
                             printf("<tr><td>%s</td><td>%s</td></tr>\n",
@@ -501,7 +501,7 @@ static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *statu
                     /*else {
                         uset_removeAll(flatLocSet, cnvSet);
                         printf("<tr><td>%s</td><td>", locale);
-                        printUnicodeSet(flatLocSet, status, TRUE);
+                        printUnicodeSet(flatLocSet, status, true);
                         printf("</td></tr>\n");
                     }*/
                     /*else {
@@ -524,7 +524,7 @@ static void printLanguages(UConverter * /*cnv*/, USet *cnvSet, UErrorCode *statu
 static void printConverterInfo(UErrorCode *status) {
     char buffer[64];    // It would be insane if it were lager than 64 bytes
     UBool starterBufferBool[256];
-    UBool ambiguousAlias = FALSE;
+    UBool ambiguousAlias = false;
     char starterBuffer[sizeof(starterBufferBool)+1];    // Add one for the NULL
     int8_t len;
     UConverter *cnv = ucnv_open(gCurrConverter, status);
@@ -586,19 +586,19 @@ static void printConverterInfo(UErrorCode *status) {
         printf("</td></tr>\n");
     }
 
-    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
-    printf("<tr><th>Is ASCII [\\u0020-\\u007E] ambiguous?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "true" : "false"));
+    printf("<tr><th>Is ASCII [\\u0020-\\u007E] ambiguous?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "true" : "false"));
 
     ambiguousAlias = containsAmbiguousAliases();
-    printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
+    printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (ambiguousAlias ? "true" : "false"));
     if (ambiguousAlias) {
         puts("<tr><th>Converters with conflicting aliases</th><td>");
         printAmbiguousAliasedConverters();
         puts("</td></tr>");
     }
 
-    printf("<tr><th>Always generates Unicode NFC?</th><td>%s</td></tr>\n", (uset_containsAll(nfcSet, cnvSet) ? "TRUE": "UNKNOWN"));
-    printf("<tr><th>Contains BiDi characters?</th><td>%s</td></tr>\n", (uset_containsSome(bidiSet, cnvSet) ? "TRUE": "FALSE"));
+    printf("<tr><th>Always generates Unicode NFC?</th><td>%s</td></tr>\n", (uset_containsAll(nfcSet, cnvSet) ? "true": "UNKNOWN"));
+    printf("<tr><th>Contains BiDi characters?</th><td>%s</td></tr>\n", (uset_containsSome(bidiSet, cnvSet) ? "true": "false"));
     puts(endTable);
 
     printLanguages(cnv, cnvSet, status);

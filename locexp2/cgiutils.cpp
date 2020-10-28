@@ -135,9 +135,9 @@ UBool cgi_hasQueryField(UFCGI* u, const char *field)
 {
     const char *val =  cgi_getQueryField(u,field);
     if((val == NULL) || (*val == '&')) {
-        return FALSE; 
+        return false; 
     } else {
-        return TRUE; 
+        return true; 
     }
 }
 
@@ -147,7 +147,7 @@ const char *cgi_cookieField(UFCGI* u, const char *field)
     const char *val;
     
     if((u->cookies == NULL) || !u->cookies[0]) {
-        return FALSE;
+        return false;
     }
     val =  cgi_fieldInCookie(u->cookies, field);
     
@@ -158,13 +158,13 @@ UBool cgi_hasCookieField(UFCGI* u, const char *field)
 {
     const char *val;
     if((u->cookies == NULL) || !u->cookies[0]) {
-        return FALSE;
+        return false;
     }
     val =  cgi_fieldInCookie(u->cookies, field);
     if((val == NULL) || (*val == ';')) {
-        return FALSE; 
+        return false; 
     } else {
-        return TRUE; 
+        return true; 
     }
 }
 

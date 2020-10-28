@@ -139,7 +139,7 @@ main(int argc, char* argv[]) {
     do {
         Locale locale(localeID);
         std::unique_ptr<icu::StringEnumeration> types(
-                Collator::getKeywordValuesForLocale("collation", locale, FALSE, errorCode));
+                Collator::getKeywordValuesForLocale("collation", locale, false, errorCode));
         errorCode.assertSuccess();
         const char *type = nullptr;  // Ask ICU for the default collation type.
         for(;;) {
@@ -187,7 +187,7 @@ main(int argc, char* argv[]) {
             ++locID;  // root locale with prepended space
         }
         char langTag[100];
-        uloc_toLanguageTag(locID, langTag, LENGTHOF(langTag), /* strict= */ FALSE, errorCode);
+        uloc_toLanguageTag(locID, langTag, LENGTHOF(langTag), /* strict= */ false, errorCode);
         errorCode.assertSuccess();
         text.append(UnicodeString(langTag, -1, US_INV));
 

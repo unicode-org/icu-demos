@@ -58,7 +58,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
                     &sourceAlias,
                     sourceLimit,
                     NULL,
-                    TRUE,
+                    true,
                     &subErr); /* pass them the real error. */
   
   if(subErr == U_INDEX_OUTOFBOUNDS_ERROR)
@@ -76,7 +76,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
                        &sourceAlias,
                        sourceLimit,
                        NULL,
-                       TRUE,
+                       true,
                        &subErr);
 #else
       ucnv_fromUnicode(&myConverter,
@@ -85,7 +85,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
                        &sourceAlias,
                        sourceLimit,
                        NULL,
-                       TRUE,
+                       true,
                        &subErr);
 #endif
       /* fix the charBufferLength */
@@ -155,18 +155,18 @@ static void writeStr(const char *str, unsigned char **target, const unsigned cha
 U_CAPI UBool
 fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *targetLimit,const UChar ** source,const UChar * sourceLimit,int32_t *offsets,UBool flush,UErrorCode * err)
 {
-  UBool inFont = FALSE;
+  UBool inFont = false;
  
  
   UChar buf[kBufLen];
   int32_t typ[kBufLen];
   int32_t n = 0;
-  UBool  sawLiveConsonant = FALSE;
+  UBool  sawLiveConsonant = false;
   unsigned char tmp[99];
  
   const UChar *mysrc = *source;
   UChar  p;
-  UBool shouldAdvanceSource = FALSE;
+  UBool shouldAdvanceSource = false;
  
   for(mysrc = (*source - 1);mysrc < sourceLimit;mysrc++)
     {
@@ -177,7 +177,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
         }
       else
         {
-          shouldAdvanceSource = TRUE;
+          shouldAdvanceSource = true;
           p = *mysrc;
         }
       
@@ -186,7 +186,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
       if( (p<U_FONTED_KANNADA_START) ||
           (p>U_FONTED_KANNADA_END)) // non kannada
         {
-          if(inFont == TRUE)
+          if(inFont == true)
             {
               UnicodeString str  = "</FONT>";
               int len = str.length();
@@ -196,17 +196,17 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
 #else
               convertIntoTargetOrErrChars(_this,target,(unsigned char*)targetLimit,&chars,chars+len,err);
 #endif
-              inFont = FALSE;
+              inFont = false;
             }
           
-          return TRUE;
+          return true;
         }
       
 
-      if(shouldAdvanceSource == TRUE)
+      if(shouldAdvanceSource == true)
         (*source)++;
       
-      if(inFont == FALSE)
+      if(inFont == false)
         {
           UnicodeString str  = "<FONT FACE=\"Kpnews,kpnews\">";
           int len = str.length();
@@ -216,7 +216,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
 #else
           convertIntoTargetOrErrChars(_this,target,(unsigned char*)targetLimit,&chars,chars+len,err);
 #endif
-          inFont = TRUE;
+          inFont = true;
         }
       
       if(kanTable[(p-0x0C80)][0])
@@ -235,7 +235,7 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
 #endif
         }
       
-      if(inFont == TRUE)
+      if(inFont == true)
         {
           UnicodeString str  = "</FONT>";
           int len = str.length();
@@ -245,10 +245,10 @@ fonted_kannada (UConverter * _this,unsigned char **target,const unsigned char *t
 #else
           convertIntoTargetOrErrChars(_this,target,(unsigned char*)targetLimit,&chars,chars+len,err);
 #endif
-          inFont = FALSE;
+          inFont = false;
         }
     } 
-  return TRUE;
+  return true;
 }
 
 

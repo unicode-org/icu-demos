@@ -43,7 +43,7 @@ UBool UnicodeConverter_cleanup()
         availableConverterNames = NULL;
     }
     availableConverterNamesCount = 0;
-    return TRUE;
+    return true;
 }
 
 U_NAMESPACE_BEGIN
@@ -181,7 +181,7 @@ UnicodeConverter::fromUnicodeString(char*                    target,
                  &mySource,
                  mySource + mySourceLength,
                  NULL,
-                 TRUE,
+                 true,
                  &err);
     targetSize = myTarget - target;
 }
@@ -239,7 +239,7 @@ UnicodeConverter::toUnicodeString(UnicodeString&         target,
                     &mySource,
                     mySourceLimit,
                     NULL,
-                    TRUE,
+                    true,
                     &err);
 
         /*appends what we got thus far to the UnicodeString*/

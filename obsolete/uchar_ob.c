@@ -120,7 +120,7 @@ u_charCellWidth(UChar32 ch)
    * @param length the number of characters to measure
    * @param asian The <TT>asian</TT> parameter controls whether characters
    * considered NEUTRAL by the Unicode class are treated as halfwidth or 
-   * fullwidth here.  If you set <TT>asian</TT> to FALSE, neutrals are 
+   * fullwidth here.  If you set <TT>asian</TT> to false, neutrals are 
    * treated as halfwidth, and this function returns a close approximation
    * of how many Latin display cells the text will take up in a monospaced
    * font.
@@ -129,7 +129,7 @@ u_charCellWidth(UChar32 ch)
    */
   int32_t numDisplayCells(int32_t start = 0,
               int32_t length = INT32_MAX,
-              UBool asian = TRUE) const;
+              UBool asian = true) const;
 
 /* from unistr.cpp */
 int32_t

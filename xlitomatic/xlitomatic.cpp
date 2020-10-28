@@ -75,8 +75,8 @@ int32_t setLocaleAndEncodingAndOpenUFILE(CTX *c)
   char newLocale[100];
   UFILE *f;
   UChar x[2];
-  bool_t DSL = FALSE, *didSetLocale = &DSL;
-  bool_t DSE = FALSE, *didSetEncoding = &DSE;
+  bool_t DSL = false, *didSetLocale = &DSL;
+  bool_t DSE = false, *didSetEncoding = &DSE;
 
   locale = (const char *)c->cLocale;
   encoding = c->outEncoding; 
@@ -96,7 +96,7 @@ int32_t setLocaleAndEncodingAndOpenUFILE(CTX *c)
       if ( *locale != 0) /* don't want 0-length locales */
 	{
           strcpy(c->cLocale, locale);
-	  *didSetLocale = TRUE;
+	  *didSetLocale = true;
 	}
 
       if(tmp) /* have encoding */
@@ -114,7 +114,7 @@ int32_t setLocaleAndEncodingAndOpenUFILE(CTX *c)
 	    {
 	      encoding = pi;
 /*              fprintf(stderr, "DSE1+%s\n", pi); */
-	      *didSetEncoding = TRUE;  
+	      *didSetEncoding = true;  
 
 	    }
 	}
@@ -148,7 +148,7 @@ int32_t setLocaleAndEncodingAndOpenUFILE(CTX *c)
       newLocale[3] = toupper(newLocale[3]);
       newLocale[4] = toupper(newLocale[4]);
 
-      /*      if(isSupportedLocale(newLocale, TRUE)) */
+      /*      if(isSupportedLocale(newLocale, true)) */
       /* DO NOT pick an unsupported locale from the browser's settings! */
         strcpy(c->cLocale, newLocale);
 
@@ -221,7 +221,7 @@ void addCustomItem(USort *mySort, const char *str, int &count)
 {
   str = strdup(str); 
   usort_addLine(mySort, FSWF(/**/str,str), -1, 
-                FALSE, (void*)str);
+                false, (void*)str);
   count++;
 }
 
@@ -235,12 +235,12 @@ void showList(CTX *c)
 
   count = utrns_countAvailableIDs();
 
-  mySort = usort_open(c->cLocale, UCOL_DEFAULT_STRENGTH, FALSE, &status);
+  mySort = usort_open(c->cLocale, UCOL_DEFAULT_STRENGTH, false, &status);
 
   for(i=0;i<count;i++)
     {
       str = utrns_getAvailableID(i);
-      usort_addLine(mySort, FSWF(/**/str,str), -1, FALSE, (void*)str);
+      usort_addLine(mySort, FSWF(/**/str,str), -1, false, (void*)str);
     }
   
   addCustomItem(mySort, "Hangul-Jamo;Jamo-Latin", count);
@@ -487,7 +487,7 @@ bool_t parseParams(CTX *c, const char *qs)
 
   if( (!strstr(qs,"xlit=")||(!strstr(qs,"url="))) )
     {
-      return TRUE;
+      return true;
     }
 
   qs += 8;
@@ -495,7 +495,7 @@ bool_t parseParams(CTX *c, const char *qs)
   end = strchr(qs, '&');
   if(!end)
     {
-      return TRUE;
+      return true;
     }
   
   doDecodeQueryField(qs, c->translit, (end-qs));
@@ -513,6 +513,6 @@ bool_t parseParams(CTX *c, const char *qs)
   //  strncpy(c->url, qs, (end-qs));
   c->url[(end-qs)] = 0;
   
-  return FALSE;
+  return false;
 }
 

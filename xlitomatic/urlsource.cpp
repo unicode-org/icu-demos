@@ -130,12 +130,12 @@ int32_t URLSourceImp::readInternal(char *out, int32_t len)
   if(n == -1)
     {
       fprintf(stderr, "Got err on socket, -> EOF\n");
-      eof = TRUE;
+      eof = true;
       return 0;
     }
   if(n == 0)
     {
-      eof = TRUE;
+      eof = true;
     }
   return n;
 }
@@ -272,7 +272,7 @@ URLSource::URLSource(const char *url)
   imp->fSd = -1;
   imp->rdPtr = 0;
   imp->wrPtr = 0;
-  imp->eof = TRUE;
+  imp->eof = true;
 }
 
 
@@ -284,7 +284,7 @@ URLSource::URLSource(const char *url, bool_t testEnc)
   imp->fSd = -1;
   imp->rdPtr = 0;
   imp->wrPtr = 0;
-  imp->eof = TRUE;
+  imp->eof = true;
 }
 
 void URLSource::rewind()
@@ -295,7 +295,7 @@ void URLSource::rewind()
     {
       close(imp->fSd);
       imp->fSd = -1;
-      imp->eof = TRUE;
+      imp->eof = true;
     }
 }
 
@@ -315,7 +315,7 @@ int32_t URLSource::read(const uint8_t* &start, const uint8_t* &end)
       strncpy(junk,buffer,len);
       fprintf(stderr, "%s<<\n", junk);
     }
-  fEOF = TRUE;
+  fEOF = true;
 
   return 0;
 }
@@ -336,7 +336,7 @@ const char *URLSource::getEncoding()
   if(imp->encodingTry == FALSE) 
     {
       // use a sub object
-      URLSource sub(u, TRUE);
+      URLSource sub(u, true);
       return sub.getEncoding();
     }
 

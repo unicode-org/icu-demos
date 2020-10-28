@@ -144,7 +144,7 @@ void  toUnicodeString(UnicodeString&    target,
  * that it encounters that are semantically invalid.
  * if T_UnicodeConverter_setMissingCharAction is called with an action other than STOP
  * before a call is made to this API, consumed and source should point to the same place
- * (unless target ends with an imcomplete sequence of bytes and flush is FALSE).
+ * (unless target ends with an imcomplete sequence of bytes and flush is false).
  * @param target : I/O parameter. Input : Points to the beginning of the buffer to copy
  *  codepage characters to. Output : points to after the last codepage character copied
  *  to target.
@@ -156,12 +156,12 @@ void  toUnicodeString(UnicodeString&    target,
  * e.g: <TT>offsets[3]</TT> is equal to 6, it means that the <TT>target[3]</TT> was a result of transcoding <TT>source[6]</TT>
  * For output data carried across calls, and other data without a specific source character
  * (such as from escape sequences or callbacks)  -1 will be placed for offsets. 
- * @param flush set to <TT>TRUE</TT> if the current source buffer is the last available
- * chunk of the source, <TT>FALSE</TT> otherwise. Note that if a failing status is returned,
- * this function may have to be called multiple times wiht flush set to <TT>TRUE</TT> until
+ * @param flush set to <TT>true</TT> if the current source buffer is the last available
+ * chunk of the source, <TT>false</TT> otherwise. Note that if a failing status is returned,
+ * this function may have to be called multiple times wiht flush set to <TT>true</TT> until
  * the source buffer is consumed.
- * @param flush TRUE if the buffer is the last buffer and the conversion will finish
- * in this call, FALSE otherwise.  (future feature pending)
+ * @param flush true if the buffer is the last buffer and the conversion will finish
+ * in this call, false otherwise.  (future feature pending)
  * @param UErrorCode the error status.  U_ILLEGAL_ARGUMENT_ERROR will be returned if the
  * converter is null.
  * @obsolete ICU 2.4. Use the parallel ucnv_ C API instead since this API will be removed in that release.
@@ -182,7 +182,7 @@ void fromUnicode(char*&         target,
  * that it encounters that are semantically invalid.
  * if T_UnicodeConverter_setMissingUnicodeAction is called with an action other than STOP
  * before a call is made to this API, consumed and source should point to the same place
- * (unless target ends with an imcomplete sequence of bytes and flush is FALSE).
+ * (unless target ends with an imcomplete sequence of bytes and flush is false).
  * @param target : I/O parameter. Input : Points to the beginning of the buffer to copy
  *  Unicode characters to. Output : points to after the last UChar copied to target.
  * @param targetLimit the pointer to the end of the target array
@@ -193,12 +193,12 @@ void fromUnicode(char*&         target,
  * e.g: <TT>offsets[3]</TT> is equal to 6, it means that the <TT>target[3]</TT> was a result of transcoding <TT>source[6]</TT>
  * For output data carried across calls, and other data without a specific source character
  * (such as from escape sequences or callbacks)  -1 will be placed for offsets. 
- * @param flush set to <TT>TRUE</TT> if the current source buffer is the last available
- * chunk of the source, <TT>FALSE</TT> otherwise. Note that if a failing status is returned,
- * this function may have to be called multiple times wiht flush set to <TT>TRUE</TT> until
+ * @param flush set to <TT>true</TT> if the current source buffer is the last available
+ * chunk of the source, <TT>false</TT> otherwise. Note that if a failing status is returned,
+ * this function may have to be called multiple times wiht flush set to <TT>true</TT> until
  * the source buffer is consumed.
- * @param flush TRUE if the buffer is the last buffer and the conversion will finish
- * in this call, FALSE otherwise.  (future feature pending)
+ * @param flush true if the buffer is the last buffer and the conversion will finish
+ * in this call, false otherwise.  (future feature pending)
  * @param err the error code status  U_ILLEGAL_ARGUMENT_ERROR will be returned if the
  * converter is null, targetLimit < target, sourceLimit < source
  * @obsolete ICU 2.4. Use the parallel ucnv_ C API instead since this API will be removed in that release.
@@ -240,7 +240,7 @@ UConverterType getType(void) const;
  *will fill in an <TT>U_ILLEGAL_ARGUMENT_ERROR</TT> if converter passed in
  *is not MBCS.
  *fills in an array of boolean, with the value of the byte as offset to the array.
- *At return, if TRUE is found in at offset 0x20, it means that the byte 0x20 is a starter byte
+ *At return, if true is found in at offset 0x20, it means that the byte 0x20 is a starter byte
  *in this converter.
  * @param starters: an array of size 256 to be filled in
  * @param err: an array of size 256 to be filled in
@@ -444,8 +444,8 @@ void fixFileSeparator(UnicodeString& source) const;
 /**
  * Determines if the converter contains ambiguous mappings of the same
  * character or not.
- * @return TRUE if the converter contains ambiguous mapping of the same 
- * character, FALSE otherwise.
+ * @return true if the converter contains ambiguous mapping of the same 
+ * character, false otherwise.
  * @obsolete ICU 2.4. Use the parallel ucnv_ C API instead since this API will be removed in that release.
  */
 UBool isAmbiguous(void) const;

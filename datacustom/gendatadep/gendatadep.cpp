@@ -309,16 +309,16 @@ generateHTML(Package *pkg, UErrorCode &status) {
     DependencyInfo depInfo(status);
 
     ItemGroup catagorizedItems[] = {
-        ItemGroup(FALSE, ".+\\.cnv$", "conv", "Charset Mapping Tables", status),
-        ItemGroup(FALSE, "brkitr/.+", "brkiter", "Break Iterator", status),
-        ItemGroup(FALSE, "(coll/.+|ucadata.icu|invuca.icu)", "coll", "Collators", status),
-        ItemGroup(FALSE, "rbnf/.+", "rbnf", "Rule Based Number Format", status),
-        ItemGroup(FALSE, "translit/.+", "translit", "Transliterators", status),
-        //ItemGroup(TRUE, "zoneinfo.res", "zoneinfo", "Timezone Data", status), // Doesn't need to be a lone item?
+        ItemGroup(false, ".+\\.cnv$", "conv", "Charset Mapping Tables", status),
+        ItemGroup(false, "brkitr/.+", "brkiter", "Break Iterator", status),
+        ItemGroup(false, "(coll/.+|ucadata.icu|invuca.icu)", "coll", "Collators", status),
+        ItemGroup(false, "rbnf/.+", "rbnf", "Rule Based Number Format", status),
+        ItemGroup(false, "translit/.+", "translit", "Transliterators", status),
+        //ItemGroup(true, "zoneinfo.res", "zoneinfo", "Timezone Data", status), // Doesn't need to be a lone item?
         // This next one should be the last one searching for .res locale files.
-        ItemGroup(FALSE, "(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
-        ItemGroup(TRUE, "(pnames.icu|unames.icu|.+\\.spp|.+\\.res)", "misc", "Miscellaneous Data", status),
-        ItemGroup(FALSE, ".+", BASE_DATA, "Base Data", status)
+        ItemGroup(false, "(...?(_|\\.).*res|root.res)$", "format", "Formatting, Display Names and Other Localized Data", status),
+        ItemGroup(true, "(pnames.icu|unames.icu|.+\\.spp|.+\\.res)", "misc", "Miscellaneous Data", status),
+        ItemGroup(false, ".+", BASE_DATA, "Base Data", status)
     };
 
     if (U_FAILURE(status)) {
@@ -421,17 +421,17 @@ generateHTML(Package *pkg, UErrorCode &status) {
             UBool hideItemForIndexing = currCategory->hiddenByDefault;
 
             if (!inputID.endsWith(UnicodeString("_res"))) {
-                hideItemForIndexing = FALSE;
+                hideItemForIndexing = false;
             }
             if (hiddenItems->contains(currItem->name)) {
                 rowClass = " class=\"hide\"";
-                hideItemForIndexing = TRUE;
+                hideItemForIndexing = true;
             }
             else if (additionalItems->contains(&itemToFind)) {
                 rowClass = " class=\"unselected\"";
             }
             if (inputID.endsWith(UnicodeString("root_res"))) {
-                hideItemForIndexing = TRUE;
+                hideItemForIndexing = true;
             }
 
             variables += UnicodeString("gItems['") + inputID

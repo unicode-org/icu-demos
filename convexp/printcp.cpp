@@ -174,9 +174,9 @@ static UBool isShortestUTF8(char *source, int32_t size) {
             || (source[0] == (char)0xF0 && source[1] < (char)0x90)
             || (source[0] == (char)0xF4 && source[1] > (char)0x8F))))
     {
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 /* The CESU-8 converter will try to convert non-shortest form, but it will return a
@@ -192,9 +192,9 @@ static UBool isShortestCESU8(char *source, int32_t size) {
         || (size >= 3 && (source[3] == (char)0xc0 || source[3] == (char)0xc1 || source[3] > (char)0xef))
         || (size >= 4 && (source[3] == (char)0xE0 && source[4] < (char)0xA0)))
     {
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 static inline void printUChars(const UChar *targetBuffer, int32_t targetSize, UErrorCode *status) {
@@ -277,7 +277,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
     UChar *target;
     UChar *targetLimit;
     int8_t cnvMaxCharSize;
-    UBool hideContinueBytes = FALSE;
+    UBool hideContinueBytes = false;
     UErrorCode localStatus = U_ZERO_ERROR;
 
     if (U_FAILURE(*status)) {
@@ -330,7 +330,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             puts("<br /><p>Codepage layout information is not available for this converter at this time.</p>");
             return;
         }
-        hideContinueBytes = TRUE;
+        hideContinueBytes = true;
     }
     puts("<br /><br />\n"
         "<table width=\"100%\" cellspacing=\"0\" class=\"data-table-2\" summary=\"A 16 by 16 table with headers on each side of the table representing the nibble of a byte.\">\n"
@@ -413,7 +413,7 @@ void printCPTable(UConverter *cnv, char *startBytes, UErrorCode *status) {
             targetBuffer[0] = 0;
             source = sourceBuffer;
             target = targetBuffer;
-            ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, TRUE, &localStatus);
+            ucnv_toUnicode(cnv, &target, targetLimit, (const char **)&source, (const char *)sourceLimit, NULL, true, &localStatus);
             targetSize = (target - targetBuffer);
 
             if (((convType == UCNV_UTF8 && !isShortestUTF8(sourceBuffer, source - sourceBuffer))

@@ -12,7 +12,7 @@
 
 
 /* Recursive search of a bundle.  'lastTag' is the "path" to the current object.. it's an in/out parameter. 
-    TRUE will be returned if anything was found at all. */
+    true will be returned if anything was found at all. */
 static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *str, MySortable *loc,
         int *totalHits,  char * lastTag, UStringSearch *search, UErrorCode *status)
 {
@@ -21,7 +21,7 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
   const char *key;
   int lastTagLen;
 
-  if(U_FAILURE(*status)) return FALSE;
+  if(U_FAILURE(*status)) return false;
     
   lastTagLen = strlen(lastTag);
   key = ures_getKey(r);
@@ -47,17 +47,17 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
         
         if(len  > 0)
         {
-            if(U_FAILURE(s2)) { fprintf(lx->fOUT, " Err %s\n", u_errorName(s2));  return FALSE; }
+            if(U_FAILURE(s2)) { fprintf(lx->fOUT, " Err %s\n", u_errorName(s2));  return false; }
             
             
             usearch_setText(     search,u,len,status);
-            if(U_FAILURE(*status)) { fprintf(lx->fOUT, " Err on setText %s\n", u_errorName(*status));  return FALSE; }
+            if(U_FAILURE(*status)) { fprintf(lx->fOUT, " Err on setText %s\n", u_errorName(*status));  return false; }
             for (pos = usearch_first(search, status); 
                                         pos != USEARCH_DONE; 
                                         pos = usearch_next(search, status))
             {
 	      (*totalHits)++;
-              return TRUE;
+              return true;
             }
         }
       }
@@ -73,11 +73,11 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
 	  if(U_FAILURE(s2)) break;
           
           /* Recurse. */
-	  if(bundleHasString(sub, lx, str, loc, totalHits, lastTag, search, status) == TRUE)
+	  if(bundleHasString(sub, lx, str, loc, totalHits, lastTag, search, status) == true)
           {
             /* Close up shop and get out. */
             ures_close(sub);
-            return TRUE;
+            return true;
           }
         }
       }
@@ -93,10 +93,10 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
 	  if(U_FAILURE(s2)) break;
           
           /* Recurse */
-	  if(bundleHasString(sub, lx, str, loc, totalHits, lastTag, search, status) == TRUE)
+	  if(bundleHasString(sub, lx, str, loc, totalHits, lastTag, search, status) == true)
           {
             ures_close(sub);
-            return TRUE;
+            return true;
           }
         }
       }
@@ -108,7 +108,7 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
     }
     
     lastTag[lastTagLen]=0; /*Chop the string back to what it was when we were called */
-    return FALSE;
+    return false`;
 }
 
 

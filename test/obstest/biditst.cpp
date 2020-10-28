@@ -758,7 +758,7 @@ void BiDiTest::TestInverseBiDi(BiDi& bidi, const UChar *src, int32_t srcLength, 
         logln("inverse BiDi: testInverseBiDi(L)\n");
 
         /* convert visual to logical */
-        bidi.setInverse(TRUE);
+        bidi.setInverse(true);
         bidi.setPara(src, srcLength, 0, NULL, errorCode);
         logicalLength=bidi.writeReordered(logicalDest, LENGTHOF(logicalDest),
                                            UBIDI_DO_MIRRORING|UBIDI_INSERT_LRM_FOR_NUMERIC, errorCode);
@@ -767,7 +767,7 @@ void BiDiTest::TestInverseBiDi(BiDi& bidi, const UChar *src, int32_t srcLength, 
         logln("\n");
 
         /* convert back to visual LTR */
-        bidi.setInverse(FALSE);
+        bidi.setInverse(false);
         bidi.setPara(logicalDest, logicalLength, 0, NULL, errorCode);
         visualLength=bidi.writeReordered(visualDest, LENGTHOF(visualDest),
                                           UBIDI_DO_MIRRORING|UBIDI_REMOVE_BIDI_CONTROLS, errorCode);
@@ -781,7 +781,7 @@ void BiDiTest::TestInverseBiDi(BiDi& bidi, const UChar *src, int32_t srcLength, 
         logln("\n");
 
         /* convert visual RTL to logical */
-        bidi.setInverse(TRUE);
+        bidi.setInverse(true);
         bidi.setPara(visualLTR, ltrLength, 0, NULL, errorCode);
         logicalLength=bidi.writeReordered(logicalDest, LENGTHOF(logicalDest),
                                            UBIDI_DO_MIRRORING|UBIDI_INSERT_LRM_FOR_NUMERIC, errorCode);
@@ -790,7 +790,7 @@ void BiDiTest::TestInverseBiDi(BiDi& bidi, const UChar *src, int32_t srcLength, 
         logln("\n");
 
         /* convert back to visual RTL */
-        bidi.setInverse(FALSE);
+`        bidi.setInverse(false);
         bidi.setPara(logicalDest, logicalLength, 0, NULL, errorCode);
         visualLength=bidi.writeReordered(visualDest, LENGTHOF(visualDest),
                                           UBIDI_DO_MIRRORING|UBIDI_REMOVE_BIDI_CONTROLS|UBIDI_OUTPUT_REVERSE, errorCode);

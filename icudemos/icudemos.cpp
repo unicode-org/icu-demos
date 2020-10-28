@@ -63,7 +63,7 @@ void addDemoItem(USort *list, ResourceBundle &aRB, const char *demo, UErrorCode 
     if(U_FAILURE(status)) {
         name = UnicodeString(demo, "");
     }
-    usort_addLine(list, name.getTerminatedBuffer(), -1, TRUE, (void*)demo);
+    usort_addLine(list, name.getTerminatedBuffer(), -1, true, (void*)demo);
 }
 
 void appendDemoItem(UnicodeString &theDemos, USort *list, int n, ResourceBundle &aRB, UErrorCode &inStatus) {
@@ -146,7 +146,7 @@ void getDefaultLocale(UErrorCode &status) {
         available = ures_openAvailableLocales(NULL, &acceptStatus);
         newLocaleLen = uloc_acceptLanguageFromHTTP(newLocale, 200, &outResult,
             acceptLanguage, available, &acceptStatus);
-        if(U_SUCCESS(status) /* && isSupportedLocale(newLocale, TRUE)*/) { 
+        if(U_SUCCESS(status) /* && isSupportedLocale(newLocale, true)*/) { 
             strcpy(locBuf, newLocale);
             ourLocale = locBuf;
         }
@@ -206,7 +206,7 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
         UnicodeString theDemos;
         
 
-        USort *list = usort_open(ourLocale, UCOL_DEFAULT, TRUE, &status);
+        USort *list = usort_open(ourLocale, UCOL_DEFAULT, true, &status);
 
         if(U_SUCCESS(status)) {
             // add items unsorted

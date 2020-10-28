@@ -57,7 +57,7 @@ void printRuleString(LXContext *lx, const UChar*s)
   UBool oldHtml;
 
   oldHtml = lx->backslashCtx.html;
-  lx->backslashCtx.html = FALSE;
+  lx->backslashCtx.html = false;
 
   while(*s) {
     switch(*s) {
@@ -83,7 +83,7 @@ void printRuleString(LXContext *lx, const UChar*s)
   }
 
   /* pop state */
-  lx->backslashCtx.html = TRUE;
+  lx->backslashCtx.html = true;
 }
 
 /**
@@ -101,36 +101,36 @@ void showSort_outputWord(LXContext *lx, USort *aSort, int32_t num, const UChar* 
 
   if(aSort == NULL) {
     /* no USort */
-    lineAbove = TRUE;
-    lineBelow = TRUE;
+    lineAbove = true;
+    lineBelow = true;
   } else {
     /* calculate lineAbove */
     if(num == 0) {  
       evenOdd = 0;
-      lineAbove = TRUE; /* first item - always a line above */
+      lineAbove = true; /* first item - always a line above */
     } else if( aSort->lines[num-1].keySize == aSort->lines[num].keySize  &&
                !memcmp(aSort->lines[num-1].key,
                        aSort->lines[num].key,
                        aSort->lines[num].keySize) ) {
       /* item is identical to previous - no line above */
-      lineAbove = FALSE;
+      lineAbove = false;
     } else {
       /* different than prev - line above. */
-      lineAbove = TRUE;
+      lineAbove = true;
     }
 
     /* calculate lineBelow */
     if(num == (aSort->count-1)) {
-      lineBelow = TRUE; /* last item - always line below */
+      lineBelow = true; /* last item - always line below */
     } else if( aSort->lines[num+1].keySize == aSort->lines[num].keySize  &&
                !memcmp(aSort->lines[num+1].key,
                        aSort->lines[num].key,
                        aSort->lines[num].keySize) ) {
       /* item is identical to next - no line below */
-      lineBelow = FALSE;
+      lineBelow = false;
     } else {
       /* different than next - line below. */
-      lineBelow = TRUE;
+      lineBelow = true;
     }
   }
 
@@ -563,7 +563,7 @@ void showSort(LXContext *lx, const char *locale)
   UChar  schChars[SORTSIZE];
   UChar  ruleChars[SORTSIZE]; /* Custom rule UChars */
   UChar  fixedRuleChars[SORTSIZE]; /* Custom rule UChars without comments */
-  UBool lxCustSortOpts = FALSE;  /* if TRUE, then user has approved the custom settings.  If FALSE, go with defaults.  See "lxCustSortOpts=" tag. */
+  UBool lxCustSortOpts = false;  /* if true, then user has approved the custom settings.  If false, go with defaults.  See "lxCustSortOpts=" tag. */
   /* The 'g7' locales to demonstrate. Note that there eight.  */
   UErrorCode status = U_ZERO_ERROR;  
 
@@ -572,17 +572,17 @@ void showSort(LXContext *lx, const char *locale)
   USort              *customSort     = NULL;
   UCollator          *customCollator = NULL;
 
-  UBool isG7 = FALSE;
+  UBool isG7 = false;
 
-  UBool lxSortReset = FALSE;
+  UBool lxSortReset = false;
 
   if(hasQueryField(lx,"lxCustSortOpts")) {
-    lxCustSortOpts = TRUE;
+    lxCustSortOpts = true;
   }
 
   if(hasQueryField(lx,"lxSortReset")) {
-    lxCustSortOpts = FALSE;
-    lxSortReset = TRUE;
+    lxCustSortOpts = false;
+    lxSortReset = true;
   }
 
   u_fprintf(lx->OUT, "<p><b>%S</b></p>", FSWF("usortWhat","This example demonstrates sorting (collation) in this locale."));
@@ -593,7 +593,7 @@ void showSort(LXContext *lx, const char *locale)
     UErrorCode funcStat = U_ZERO_ERROR;
     UBool isAvail;
     
-    ures_getFunctionalEquivalent(funcLoc, 1023, U_ICUDATA_NAME U_TREE_SEPARATOR_STRING  "coll", "collations", "collation", locale, &isAvail, FALSE, &funcStat);
+    ures_getFunctionalEquivalent(funcLoc, 1023, U_ICUDATA_NAME U_TREE_SEPARATOR_STRING  "coll", "collations", "collation", locale, &isAvail, false, &funcStat);
     u_fprintf(lx->OUT, "<p>FE: %s</p>\n", funcLoc);
   }
 #endif
@@ -603,7 +603,7 @@ void showSort(LXContext *lx, const char *locale)
 
   if(strstr(locale,"g7") != NULL)
   {
-    isG7 = TRUE;
+    isG7 = true;
   }
 
   /* load text to be sorted */
@@ -662,7 +662,7 @@ void showSort(LXContext *lx, const char *locale)
   /* the search box  =======================================================================================*/
   if(!isG7) {
       const char *overlap;
-      UBool doOverlap = FALSE;
+      UBool doOverlap = false;
       overlap = queryField(lx, "usearch_overlap");
       doOverlap = overlap && *overlap;
       
@@ -714,7 +714,7 @@ void showSort(LXContext *lx, const char *locale)
                                 &parseErr,
                                 &customError);
 
-        customSort = usort_openWithCollator(coll, TRUE, &customError);
+        customSort = usort_openWithCollator(coll, true, &customError);
         
         if(U_FAILURE(customError) || !customSort) {
           u_fprintf(lx->OUT, "<B>%S %s %s:</B>", 
@@ -740,20 +740,20 @@ void showSort(LXContext *lx, const char *locale)
         if(shortstr && *shortstr) {
            UCollator *coll;
            coll = ucol_openFromShortString(shortstr,
-                                            FALSE,
+                                            false,
                                             NULL,
                                             &customError );
             u_fprintf(lx->OUT, "%S <tt style='border: solid black; margin: 2px; padding: 2px;'>%s</tt>", 
                   FSWF("showSort_shortString", "Using Short String"), shortstr);
-           customSort = usort_openWithCollator(coll, TRUE, &customError);
+           customSort = usort_openWithCollator(coll, true, &customError);
         }
       }
             
       if(customSort == NULL) {
 #if defined(HAVE_LX_HOOK)
-        customSort = lx_hook_usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+        customSort = lx_hook_usort_open(locale, UCOL_DEFAULT, true, &customError);
 #else
-        customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+        customSort = usort_open(locale, UCOL_DEFAULT, true, &customError);
 #endif
         /*        fprintf(stderr, "** COL SORT OPEN: %s \n", locale);*/
       }
@@ -764,7 +764,7 @@ void showSort(LXContext *lx, const char *locale)
                   FSWF("showSort_cantOpenCustomConverter", "Could not open a custom usort/collator for the following locale and reason"), locale);
         explainStatus(lx, customError, NULL); 
         customError=U_ZERO_ERROR;
-        customSort = usort_open(locale, UCOL_DEFAULT, TRUE, &customError);
+        customSort = usort_open(locale, UCOL_DEFAULT, true, &customError);
       } 
 
       if(U_FAILURE(customError)) {
@@ -1002,7 +1002,7 @@ void showSort(LXContext *lx, const char *locale)
           
           /* add lines from buffer */
           
-          /* For now, we pass TRUE to clone the text. Wasteful! But, 
+          /* For now, we pass true to clone the text. Wasteful! But, 
              it avoids having to modify the in text AND keep track of the
              ptrs. Now if a usort could be cloned and resorted before
              output.. */
@@ -1011,7 +1011,7 @@ void showSort(LXContext *lx, const char *locale)
           while(*next) {
             if(*next == 0x000A) {
               if(first != next) {
-                usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+                usort_addLine(aSort, first, next-first, true, (void*)++count);
               }
               first = next+1;
             }
@@ -1019,7 +1019,7 @@ void showSort(LXContext *lx, const char *locale)
           }
           
           if(first != next) { /* get the LAST line */
-            usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+            usort_addLine(aSort, first, next-first, true, (void*)++count);
           }      
           
           if(n != 0) {
@@ -1064,11 +1064,11 @@ void showSort(LXContext *lx, const char *locale)
           UChar *first, *next;
           int32_t i, count=0;
           
-          aSort = usort_open(G7s[n], UCOL_TERTIARY, TRUE, &sortErr);
+          aSort = usort_open(G7s[n], UCOL_TERTIARY, true, &sortErr);
           
           /* add lines from buffer */
           
-          /* For now, we pass TRUE to clone the text. Wasteful! But, 
+          /* For now, we pass true to clone the text. Wasteful! But, 
              it avoids having to modify the in text AND keep track of the
              ptrs. Now if a usort could be cloned and resorted before
              output.. */
@@ -1080,7 +1080,7 @@ void showSort(LXContext *lx, const char *locale)
             {
               if(first != next)
               {
-                usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+                usort_addLine(aSort, first, next-first, true, (void*)++count);
               }
               first = next+1;
             }
@@ -1089,7 +1089,7 @@ void showSort(LXContext *lx, const char *locale)
           
           if(first != next) /* get the LAST line */
           {
-            usort_addLine(aSort, first, next-first, TRUE, (void*)++count);
+            usort_addLine(aSort, first, next-first, true, (void*)++count);
           }      
           
           usort_sort(aSort);

@@ -230,21 +230,21 @@ void ConvertTest::TestConvert()
     }
 
     logln("\n---Testing UnicodeConverter::operator==...");
-    if (((*someConverters[1] == *someConverters[0])==TRUE)&&
-    (*someConverters[1] == *someConverters[2])==FALSE)
+    if (((*someConverters[1] == *someConverters[0])==true)&&
+    (*someConverters[1] == *someConverters[2])==false)
       logln("Equality test ok");
     else {
-      if(!((*someConverters[1] == *someConverters[0])==TRUE)) {
+      if(!((*someConverters[1] == *someConverters[0])==true)) {
         errln("Equality test failed line " + UnicodeString() + 244);
       }
-      if(!((*someConverters[1] == *someConverters[2])==FALSE)) {
+      if(!((*someConverters[1] == *someConverters[2])==false)) {
         errln("Equality test failed line " + UnicodeString() + 247);
       }
     }
     
     logln("\n---Testing UnicodeConverter::operator!=...");
-    if (((*someConverters[1] != *someConverters[0])==FALSE)&&
-    (*someConverters[1] != *someConverters[2])==TRUE)
+    if (((*someConverters[1] != *someConverters[0])==false)&&
+    (*someConverters[1] != *someConverters[2])==true)
       logln("Not Equal test ok");
     else
         errln("Not Equal test failed");
@@ -544,7 +544,7 @@ void ConvertTest::TestConvert()
                      tmp_ucs_buf,
                      ucs_file_buffer_use+i,
                      NULL,
-                     TRUE,
+                     true,
                      err);
         //    consumedUni = (UChar*)tmp_consumedUni;
 
@@ -561,7 +561,7 @@ void ConvertTest::TestConvert()
                    tmp_mytarget_use,
                    mytarget_use+strlen((char*)mytarget_use),
                    NULL,
-                   FALSE,
+                   false,
                    err);
         consumed = (char*)tmp_consumed;
         if (U_FAILURE(err))
@@ -613,7 +613,7 @@ void ConvertTest::TestConvert()
     {
         logln("\n---Testing Jitterbug 778 ...");
         UErrorCode err = U_ZERO_ERROR;
-        UBool passed = TRUE;
+        UBool passed = true;
         UnicodeString unicode_string((UChar)0x592a);
         UErrorCode error = U_ZERO_ERROR;
         UnicodeConverter cnv( "iso-2022-jp-2", error );
@@ -631,7 +631,7 @@ void ConvertTest::TestConvert()
         while(*expected!='\0'){
             if(*got!=*expected){
                 errln(UnicodeString("Error while testing jitterbug 778. Expected: ") + (char) *expected + " got: " + (char) *got);
-                passed =FALSE;
+                passed =false;
             }
             got++;
             expected++;

@@ -77,7 +77,7 @@ uprint(const UChar *s,
     /* perform the conversion */
     ucnv_fromUnicode(converter, &myTarget, myTarget + arraySize,
              &mySource, mySourceEnd, NULL,
-             TRUE, status);
+             true, status);
 
     /* Write the converted data to the FILE* */
     fwrite(buf, sizeof(char), myTarget - buf, f);
@@ -127,7 +127,7 @@ static void usort_printChars(const UChar *s, FILE *f, UConverter *converter, UEr
     /* perform the conversion */
     ucnv_fromUnicode(converter, &myTarget,  myTarget + arraySize,
 		     &mySource, mySourceEnd, NULL,
-		     TRUE, status);
+		     true, status);
 
     /* Write the converted data to the FILE* */
     fwrite(buf, sizeof(char), myTarget - buf, f);
@@ -215,7 +215,7 @@ usort_openWithCollator(UCollator *adopt, UBool ownText,
   n->collator = adopt;
   n->func = ucol_getSortKey;
   n->func2 = NULL;
-  n->trim = FALSE;
+  n->trim = false;
 
   if(U_FAILURE(*status)) /* Failed to open the collator. */
   {
@@ -525,7 +525,7 @@ usort_addLinesFromFILE( USort *usort, FILE *f, UConverter *fromConverter, UBool 
 #endif
 
 		  /* #1 Append the line  to the list */
-		  usort_addLine(usort, outBuf, p-outBuf, TRUE, NULL);
+		  usort_addLine(usort, outBuf, p-outBuf, true, NULL);
 
 		  /* #2 copy everything back.. */
 		  if( (p+1) < target )

@@ -75,7 +75,7 @@ UBool util_writeTo(FILE* file, const UnicodeString& str) {
 }
 
 /**
- * Return TRUE on success.
+ * Return true on success.
  */
 UBool util_readFrom(FILE* file, UnicodeString& key) {
     int32_t length = 0;
@@ -85,7 +85,7 @@ UBool util_readFrom(FILE* file, UnicodeString& key) {
     }
     key = UnicodeString(charBuf, ENCODING);
     delete[] charBuf;
-    return TRUE;
+    return true;
 }
 
 /**
@@ -152,7 +152,7 @@ UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote) {
     }
     util_fprintf(out, charBuf, inQuote);
     delete[] charBuf;
-    return TRUE;
+    return true;
 }
 
 /**
@@ -174,5 +174,5 @@ UBool util_fprintfq(FILE* out, const UnicodeString& str) {
         ++p;
     }
     delete[] charBuf;
-    return TRUE;
+    return true;
 }

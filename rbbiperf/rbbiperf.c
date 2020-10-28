@@ -36,7 +36,7 @@
 UBool     gRun;
 
 void handleALRMSignal(int sig) {
-    gRun = FALSE;
+    gRun = false;
 }
 
 void checkICUFailure(UErrorCode status) {
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     //    very consistent results.
     //
     breakCount = 0;
-    gRun = TRUE;
+    gRun = true;
     signal(SIGALRM, handleALRMSignal);
     ualarm(1000000, 0);
     
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         // for (pos=ubrk_first(bi); pos!=UBRK_DONE; pos=ubrk_next(bi)) {
         for (pos=ubrk_last(bi); pos!=UBRK_DONE; pos=ubrk_previous(bi)) {
              breakCount++;
-             if (gRun == FALSE) {
+             if (gRun == false) {
                  goto breakOut;
              }
         }

@@ -693,7 +693,7 @@ void UnicodeTest::TestCharLength()
         }else{
             logln((UnicodeString)"The no: of code units for" + prettify(msg) + " is " + Unicode::charLength(c)); 
         }
-        multiple=(UBool)(codepoint[i] == 1 ? FALSE : TRUE);
+        multiple=(UBool)(codepoint[i] == 1 ? false : true);
         if(Unicode::needMultipleUChar(c) != multiple){
             errln("ERROR: Unicode::needMultipleUChar() failed for" + prettify(msg));
         }
@@ -880,7 +880,7 @@ void UnicodeTest::TestScript()
 //%    uint32_t i;
 //%    UChar32 start, end;
 //%
-//%    // test all TRUE properties
+//%    // test all true properties
 //%    for(i=0; i<LENGTHOF(derivedCorePropsNames); ++i) {
 //%        rangeCount=derivedCoreProps[i].getRangeCount();
 //%        for(range=0; range<rangeCount; ++range) {
@@ -888,7 +888,7 @@ void UnicodeTest::TestScript()
 //%            end=derivedCoreProps[i].getRangeEnd(range);
 //%            for(; start<=end; ++start) {
 //%                if(!u_hasBinaryProperty(start, derivedCorePropsIndex[i])) {
-//%                    errln("UnicodeTest error: u_hasBinaryProperty(U+%04lx, %s)==FALSE is wrong\n", start, derivedCorePropsNames[i]);
+//%                    errln("UnicodeTest error: u_hasBinaryProperty(U+%04lx, %s)==false is wrong\n", start, derivedCorePropsNames[i]);
 //%                }
 //%            }
 //%        }
@@ -899,7 +899,7 @@ void UnicodeTest::TestScript()
 //%        derivedCoreProps[i].complement();
 //%    }
 //%
-//%    // test all FALSE properties
+//%    // test all false properties
 //%    for(i=0; i<LENGTHOF(derivedCorePropsNames); ++i) {
 //%        rangeCount=derivedCoreProps[i].getRangeCount();
 //%        for(range=0; range<rangeCount; ++range) {
@@ -907,7 +907,7 @@ void UnicodeTest::TestScript()
 //%            end=derivedCoreProps[i].getRangeEnd(range);
 //%            for(; start<=end; ++start) {
 //%                if(u_hasBinaryProperty(start, derivedCorePropsIndex[i])) {
-//%                    errln("UnicodeTest error: u_hasBinaryProperty(U+%04lx, %s)==TRUE is wrong\n", start, derivedCorePropsNames[i]);
+//%                    errln("UnicodeTest error: u_hasBinaryProperty(U+%04lx, %s)==true is wrong\n", start, derivedCorePropsNames[i]);
 //%                }
 //%            }
 //%        }

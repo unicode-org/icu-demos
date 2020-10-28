@@ -12,7 +12,7 @@
 #include "unicode/collectcb.h"
 
 UConverterFromUCallback COLLECT_lastResortCallback = UCNV_FROM_U_CALLBACK_SUBSTITUTE;
-UBool                  COLLECT_alnum = FALSE;
+UBool                  COLLECT_alnum = false;
 
 static UChar *COLLECT_BAD_CHARS = NULL;
 static int32_t COLLECT_BAD_CHARS_SIZE = 0;
@@ -50,7 +50,7 @@ static void COLLECT_badChar(UChar c)
     return;
 
   /* restrict the set */
-  if((COLLECT_alnum == TRUE) && (u_isalnum(c) == FALSE))
+  if((COLLECT_alnum == true) && (u_isalnum(c) == false))
     return;
 
   if(COLLECT_BAD_CHARS == NULL)
