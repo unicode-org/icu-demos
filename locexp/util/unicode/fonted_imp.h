@@ -14,7 +14,7 @@
 
 #include "unicode/ucnv.h"
 
-/* Sub modules. Return TRUE on success. */
+/* Sub modules. Return true on success. */
 
 #define U_FONTED_DEVANAGARI_START 0x0900
 #define U_FONTED_DEVANAGARI_END   0x097F

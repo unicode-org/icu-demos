@@ -31,8 +31,8 @@
 #define kPARTIAL (1<<0) //< partial - need to run through forward trie
 #define kMATCH (1<<1) //< exact match - skip this one.
 
-static UBool debug = FALSE;
-static UBool debug2 = FALSE;
+static UBool debug = false;
+static UBool debug2 = false;
 
 U_CAPI void ulibrk_install(UErrorCode &status) {
   if(debug) u_printf("Installing ulibrk_install - err=%s\n", u_errorName(status));
@@ -348,7 +348,7 @@ static void prtbrks(BreakIterator* brk, UnicodeString &ustr) {
 }
 
 U_CAPI void ulibrk_test(void) {
-    debug=TRUE;
+    debug=true;
     
     UErrorCode status = U_ZERO_ERROR;
     u_printf("Test. status=%s\n", u_errorName(status));

@@ -44,7 +44,7 @@ class UnicodeSource : public Source
 
 /********* inline imps ************/
 inline Source::Source()
-: fEOF(FALSE)
+: fEOF(false)
 {
 }
 

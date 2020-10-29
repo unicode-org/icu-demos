@@ -317,7 +317,7 @@ main(int argc, const char *argv[]) {
     puts(htmlHeader);
 
     inputLength=0;
-    inputIsUTF8=FALSE;
+    inputIsUTF8=false;
     errorCode=U_ZERO_ERROR; 
     
 /* on win32 systems to debug uncomment the block below

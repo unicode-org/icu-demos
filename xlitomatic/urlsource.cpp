@@ -260,14 +260,14 @@ void URLSourceImp::connect(const char *host, int32_t port)
       throw "Error in connect";
     }
   setAlarm(0);
-  eof = FALSE;
+  eof = false;
 }
 
 
 URLSource::URLSource(const char *url)
   : u(url), encoding(NULL), imp(new URLSourceImp)
 {
-  imp->encodingTry = FALSE;
+  imp->encodingTry = false;
   imp->hp = NULL;
   imp->fSd = -1;
   imp->rdPtr = 0;
@@ -332,8 +332,8 @@ const char *URLSource::getEncoding()
     {
       return encoding;
     }
-  
-  if(imp->encodingTry == FALSE) 
+
+  if(imp->encodingTry == false)
     {
       // use a sub object
       URLSource sub(u, true);
@@ -434,7 +434,7 @@ void writeData(char *b, int n)
 		     &source,
 		     source+n,
 			NULL,
-		     FALSE,
+		     false,
 		     &status);
 
       

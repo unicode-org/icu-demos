@@ -35,7 +35,7 @@ char* util_readFrom(FILE* file, int32_t& length);
 UBool util_writeTo(FILE* file, const icu::UnicodeString& str);
 
 /**
- * Return TRUE on success.
+ * Return true on success.
  */
 UBool util_readFrom(FILE* file, icu::UnicodeString& key);
 
@@ -57,7 +57,7 @@ void util_fprintf(FILE* out, const char* str, UBool inQuote);
  * certain characters assuming we are within a JavaScript double
  * quoted string if inQuote is true.
  */
-UBool util_fprintf(FILE* out, const icu::UnicodeString& str, UBool inQuote=FALSE);
+UBool util_fprintf(FILE* out, const icu::UnicodeString& str, UBool inQuote=false);
 
 /**
  * Send the given UnicodeString to 'out' using ENCODING and

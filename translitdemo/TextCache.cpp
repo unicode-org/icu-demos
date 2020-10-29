@@ -75,7 +75,7 @@ void TextCache::readIndex() {
             }
             strcpy(obj->filename, name);
             delete[] name;
-            obj->isLoaded = FALSE;
+            obj->isLoaded = false;
 
             // Successfully read a key-value pair; store it
             hash.put(key, obj, status);
@@ -96,7 +96,7 @@ UBool TextCache::writeIndex() {
     FILE *indexFile = fopen(path, "w+b");
     UBool success = true;
     if (indexFile == NULL) {
-        success = FALSE;
+        success = false;
     } else {
         int32_t pos = -1;
         for (;;) {
@@ -164,12 +164,12 @@ UBool TextCache::reposWrite(const UnicodeString& key, const UnicodeString& value
 	if(access(path, W_OK)) {
 		perror("access path write");
 		fprintf(stderr, "# translit: could not access [%s] for write.\n", path);
-		return FALSE; // could not write
+		return false; // could not write
 	}
 	*/
 
     FILE* file = fopen(path, "wb");
-    if (file == NULL) return FALSE;
+    if (file == NULL) return false;
 	// BOM?
 	char *chars = util_createChars(value);
     fwrite(chars, 1, strlen(chars), file);
@@ -186,7 +186,7 @@ UBool TextCache::reposWrite(const UnicodeString& key, const UnicodeString& value
 }
 
 UBool TextCache::put(const UnicodeString& key, const UnicodeString& value) {
-    UBool doUpdateIndex = FALSE;
+    UBool doUpdateIndex = false;
     CacheObj* obj = (CacheObj*) hash.get(key);
     UErrorCode status = U_ZERO_ERROR;
     if (obj == 0) {
@@ -209,13 +209,13 @@ UBool TextCache::put(const UnicodeString& key, const UnicodeString& value) {
 UBool TextCache::get(const UnicodeString& key, UnicodeString& value) {
     CacheObj* obj = (CacheObj*) hash.get(key);
     if (obj == 0) {
-        return FALSE;
+        return false;
     }
     acquireLock();
     UBool loadOk = obj->load(root);
     releaseLock();
     if (!loadOk) {
-        return FALSE;
+        return false;
     }
     value = obj->text;
     return true;
@@ -245,7 +245,7 @@ UBool TextCache::CacheObj::load(const char* root) {
     strcpy(path, root);
     strcat(path, filename);
     FILE* file = fopen(path, "rb");
-    if (file == NULL) return FALSE;
+    if (file == NULL) return false;
     UBool result = util_readFrom(file, text);
     fclose(file);
     return result;
@@ -260,7 +260,7 @@ UBool TextCache::CacheObj::save(const char* root) {
     strcpy(path, root);
     strcat(path, filename);
     FILE* file = fopen(path, "w+b");
-    if (file == NULL) return FALSE;
+    if (file == NULL) return false;
     UBool result = util_writeTo(file, text);
     fclose(file);
     return result;
@@ -344,7 +344,7 @@ void TextCache::releaseLock(UBool allTheWay) {
 }
 
 UBool TextCache::fileExists(const char* fullpath) {
-    UBool result = FALSE;
+    UBool result = false;
     FILE* file = fopen(fullpath, "r");
     if (file != NULL) {
         result = true;

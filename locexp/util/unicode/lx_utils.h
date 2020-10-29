@@ -197,7 +197,7 @@ U_CFUNC UChar *uastrdup(const char *hostchars);
  * @param sampleLen length of sample uchars
  * @param buffer output buffer for the test
  * @param bufLen length of the output buffer
- * @return TRUE if the converter handles the test, FALSE otherwise.
+ * @return true if the converter handles the test, false otherwise.
  */
 
 

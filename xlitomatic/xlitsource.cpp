@@ -10,7 +10,7 @@
 /****************** TranslitUSource ************/
 TranslitUSource::TranslitUSource(UnicodeSource& src, const char *xlit)
   : source(src), trans(NULL), result(),
-    inTag(FALSE)
+    inTag(false)
 {
   char transname[500];
   sprintf(transname, "HTMLEntities-Unicode;%s", xlit);
@@ -73,7 +73,7 @@ int32_t TranslitUSource::read(const UChar* &start, const UChar* &end)
               break; // rest of the line is in a tag
             }
           i = j+1;
-          inTag = FALSE;
+          inTag = false;
         }
       else // looking for '<'
         {
