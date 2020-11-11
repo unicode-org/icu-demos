@@ -117,7 +117,7 @@ typedef struct
   const char *convName;      /* HTML friendly name of the current charset. was 'ourCharsetName' */
   const char *convRequested; /* The explicit charset in the URL, or the implied (detected) charset. Was 'chosenEncoding' */
   const char *convUsed;      /* Actual converter opened with ucnv_open() */
-  UBool       convSet;       /* set to TRUE if user specified a converter */
+  UBool       convSet;       /* set to true if user specified a converter */
 
   /* ============= OTHER STATE */
   UBool  inDemo;       /* are we in a 'demo' (EXPLORER) page? If so, don't show encoding and other options */
@@ -305,7 +305,7 @@ extern void showKeyAndEndItem(LXContext *lx, const char *key, const char *locale
  * Try to figure out what a good encoding to use is.
  * 
  * @param chosenEncoding (on return) the encoding that was chosen
- * @param didSetLocale   (on return) TRUE if a locale was chosen
+ * @param didSetLocale   (on return) true if a locale was chosen
  * @return the new UFILE. Doesn't set any callbacks
  */
 extern UFILE *openUFILE(LXContext *lx);

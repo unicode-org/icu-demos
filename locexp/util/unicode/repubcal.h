@@ -125,8 +125,8 @@ class RepublicainCalendar : public Calendar {
   //
     
   /**
-   * <code>TRUE</code> if this object uses the revised modified calendar
-   * and <code>FALSE</code> if it uses the original calendar. 
+   * <code>true</code> if this object uses the revised modified calendar
+   * and <code>false</code> if it uses the original calendar.
    */
   UBool modified;
 
@@ -241,7 +241,7 @@ class RepublicainCalendar : public Calendar {
 
 
   /**
-   * Returns TRUE because the Republicain Calendar does have a default century
+   * Returns true because the Republicain Calendar does have a default century
    * @internal
    */
   virtual UBool haveDefaultCentury() const;
