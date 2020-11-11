@@ -5,9 +5,9 @@ FROM alpine:latest as build
 LABEL maintainer="srl@icu-project.org"
 
 USER root
-ENV HOME /home/build 
+ENV HOME /home/build
 
-RUN apk --update add gcc make python3 g++ ccache valgrind pkgconfig doxygen tar zip curl wget git bash bsd-compat-headers
+RUN apk --update add gcc make python3 g++ ccache valgrind pkgconfig doxygen tar zip curl wget git bash bsd-compat-headers patch
 RUN addgroup build && adduser -g "Build user" -h $HOME -S -G build -D -s /bin/sh build
 
 ## Change this to a file:///mnt/icu/blah.tgz to replace, or another URL.
@@ -18,7 +18,9 @@ ENV ICU_PATH=${ICU_PATH}
 # nproc gives the number of processors.
 RUN if [ $ICU_PATH = "system" ]; then apk --update add icu-dev; \
  else curl -L $ICU_PATH | (mkdir /tmp/icu && cd /tmp/icu && tar xvfpz - && \
-  cd icu/source && ./configure --prefix=/usr && make DEPS= -j$(nproc) install && make DEPS= -j$(nproc)  DESTDIR=/tmp/ICU/usr install); fi
+  cd icu/source && \
+  echo -e '@@ -293 +293 @@ typedef int8_t UBool;\n-#   define U_DEFINE_FALSE_AND_TRUE 0\n+#   define U_DEFINE_FALSE_AND_TRUE 1' | patch common/unicode/umachine.h && \
+  ./configure --prefix=/usr && make DEPS= -j$(nproc) install && make DEPS= -j$(nproc)  DESTDIR=/tmp/ICU/usr install); fi
 USER build
 
 # Wanted to use this: --wildcards -s '%icu[^/]*%%' 
@@ -30,7 +32,7 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 RUN icuinfo | tee /tmp/icuinfo.txt
 
 # VOLUME /home/build
-RUN mkdir -p /home/build/build /home/build/src
+RUN mkdir /home/build/build /home/build/src
 WORKDIR /home/build/build
 ENV PREFIX=/home/build/icu
 RUN if [ -d /tmp/ICU ]; then mkdir -p /home/build/icu/ICU && cp -R /tmp/ICU /home/build/icu/ICU; fi
