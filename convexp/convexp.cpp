@@ -586,19 +586,19 @@ static void printConverterInfo(UErrorCode *status) {
         printf("</td></tr>\n");
     }
 
-    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "true" : "false"));
-    printf("<tr><th>Is ASCII [\\u0020-\\u007E] ambiguous?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "true" : "false"));
+    printf("<tr><th>Is ASCII [\\x20-\\x7E] compatible?</th><td>%s</td></tr>\n", (isASCIIcompatible(cnv) ? "TRUE" : "FALSE"));
+    printf("<tr><th>Is ASCII [\\u0020-\\u007E] ambiguous?</th><td>%s</td></tr>\n", (ucnv_isAmbiguous(cnv) ? "TRUE" : "FALSE"));
 
     ambiguousAlias = containsAmbiguousAliases();
-    printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (ambiguousAlias ? "true" : "false"));
+    printf("<tr><th>Contains ambiguous aliases?</th><td>%s</td></tr>\n", (ambiguousAlias ? "TRUE" : "FALSE"));
     if (ambiguousAlias) {
         puts("<tr><th>Converters with conflicting aliases</th><td>");
         printAmbiguousAliasedConverters();
         puts("</td></tr>");
     }
 
-    printf("<tr><th>Always generates Unicode NFC?</th><td>%s</td></tr>\n", (uset_containsAll(nfcSet, cnvSet) ? "true": "UNKNOWN"));
-    printf("<tr><th>Contains BiDi characters?</th><td>%s</td></tr>\n", (uset_containsSome(bidiSet, cnvSet) ? "true": "false"));
+    printf("<tr><th>Always generates Unicode NFC?</th><td>%s</td></tr>\n", (uset_containsAll(nfcSet, cnvSet) ? "TRUE": "UNKNOWN"));
+    printf("<tr><th>Contains BiDi characters?</th><td>%s</td></tr>\n", (uset_containsSome(bidiSet, cnvSet) ? "TRUE": "FALSE"));
     puts(endTable);
 
     printLanguages(cnv, cnvSet, status);
