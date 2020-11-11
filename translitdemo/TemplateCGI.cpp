@@ -268,7 +268,7 @@ void TemplateCGI::processTemplate(FILE* in, FILE* out) {
 
 void TemplateCGI::die(const char* msg) {
     printf("<h1>Fatal Error</h1><p>");
-    printf(msg);
+    puts(msg);
     exit(0);
 }
 
