@@ -693,7 +693,7 @@ void UnicodeTest::TestCharLength()
         }else{
             logln((UnicodeString)"The no: of code units for" + prettify(msg) + " is " + Unicode::charLength(c)); 
         }
-        multiple=(UBool)(codepoint[i] == 1 ? false : true);
+        multiple = codepoint[i] != 1;
         if(Unicode::needMultipleUChar(c) != multiple){
             errln("ERROR: Unicode::needMultipleUChar() failed for" + prettify(msg));
         }
