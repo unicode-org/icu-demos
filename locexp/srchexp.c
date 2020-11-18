@@ -108,7 +108,7 @@ static UBool bundleHasString( UResourceBundle *r, LXContext *lx, const UChar *st
     }
     
     lastTag[lastTagLen]=0; /*Chop the string back to what it was when we were called */
-    return false`;
+    return false;
 }
 
 
