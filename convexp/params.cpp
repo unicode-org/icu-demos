@@ -27,14 +27,14 @@
 #include <ctype.h>
 
 int32_t gMaxStandards;
-UBool gShowStartBytes = FALSE;
+UBool gShowStartBytes = false;
 char gCurrConverter[UCNV_MAX_CONVERTER_NAME_LENGTH] = "";
 char gStartBytes[MAX_BYTE_SIZE] = "";
 std::set<std::string> *gStandardsSelected = NULL;
 const char *gScriptName = NULL;
-UBool gShowUnicodeSet = FALSE;
-UBool gShowLanguages = FALSE;
-UBool gShowUnavailable = FALSE;
+UBool gShowUnicodeSet = false;
+UBool gShowLanguages = false;
+UBool gShowUnavailable = false;
 
 const char ALL[]="ALL";
 
@@ -199,7 +199,7 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
             strncpy(gStartBytes, nextVal, nextOpt - nextVal);
             gStartBytes[sizeof(gStartBytes)-1] = 0;   // NULL terminate for safety
             gStartBytes[((strlen(gStartBytes)>>1)<<1)] = 0;// Make it an even number of chars
-            gShowStartBytes = TRUE;
+            gShowStartBytes = true;
             while (*strItr) {
                 if (!isxdigit(*strItr)) {
                     // Bad data! Ignore the whole thing
@@ -211,15 +211,15 @@ U_CFUNC void parseAllOptions(const char *queryStr, UErrorCode *status) {
         }
         else if (strncmp(src, SHOW_UNICODESET, strlen(SHOW_UNICODESET)) == 0) {
             /* Show the Unicode Set */
-            gShowUnicodeSet = TRUE;
+            gShowUnicodeSet = true;
         }
         else if (strncmp(src, SHOW_UNAVAILABLE, strlen(SHOW_UNAVAILABLE)) == 0) {
             /* Show unavailable converters */
-            gShowUnavailable = TRUE;
+            gShowUnavailable = true;
         }
         else if (strncmp(src, SHOW_LOCALES, strlen(SHOW_LOCALES)) == 0) {
             /* Show the list of languages */
-            gShowLanguages = TRUE;
+            gShowLanguages = true;
         }
         else {
             // Woah! I don't know what this option is.

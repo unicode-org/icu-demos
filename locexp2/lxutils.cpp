@@ -32,7 +32,7 @@ void LocaleTree::writeTree(UFCGI *u, const char *newUrl, UErrorCode &status) {
         const char *cstr = thestr.c_str();
         
         bcp47[0]=0;
-        uloc_toLanguageTag(cstr, bcp47, 400, FALSE, &status);
+        uloc_toLanguageTag(cstr, bcp47, 400, false, &status);
         if(newUrl!=NULL) {
             cgi_printf(u, "<a href='%s%s'>", newUrl,bcp47);
         }
@@ -62,7 +62,7 @@ LocaleTree* LocaleTree::getInstance(const char *dl, UErrorCode &status) {
 extern const char *dupBcp47(const char *ch) {
     char bcp47[400];
     UErrorCode status2 = U_ZERO_ERROR;
-    uloc_toLanguageTag(ch, bcp47, 400, FALSE, &status2);
+    uloc_toLanguageTag(ch, bcp47, 400, false, &status2);
     return strdup(bcp47);
 }
 

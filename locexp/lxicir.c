@@ -14,10 +14,10 @@ static void showICIRSubMenu(LXContext *lx, const char *section, const UChar* nam
     UBool isSelected;
     
     if(!strcmp(lx->section,section)) {
-        isSelected = TRUE;
+        isSelected = true;
         u_fprintf(lx->OUT,"<b>");
     } else {
-        isSelected = FALSE;
+        isSelected = false;
         u_fprintf(lx->OUT,"");
     }
     u_fprintf(lx->OUT,"<a href=\"%s&amp;x=%s\">%S</a>", getLXBaseURL(lx,kNO_SECT), section, name);
@@ -34,10 +34,10 @@ static void showICIRMenu(LXContext *lx, const char *superSection, const char *su
     UBool isSelected;
     
     if(!strcmp(superSection,section)) {
-        isSelected = TRUE;
+        isSelected = true;
         u_fprintf(lx->OUT,"<td bgcolor=\"#DDDDFF\"><b>");
     } else {
-        isSelected = FALSE;
+        isSelected = false;
         u_fprintf(lx->OUT,"<td>");
     }
     u_fprintf(lx->OUT,"<a href=\"%s&amp;x=%s\">%S</a>", getLXBaseURL(lx,kNO_SECT), section, name);
@@ -171,7 +171,7 @@ static void showICIRloc_lng_menu(LXContext *lx)
     int i;
     o=queryField(lx,"o");
     if(o) { n = atoi(o); }
-    mySort(lx->locales, &status, TRUE); /* need the whole thing sorted */
+    mySort(lx->locales, &status, true); /* need the whole thing sorted */
     /*showICIRloc_lng_1(lx, lx->curLocaleName);*/
     u_fprintf(lx->OUT, "<form method=post action=\"%s\">", getLXBaseURL(lx, kALL_PARTS));
     u_fprintf(lx->OUT, "<select name=o>");
@@ -390,9 +390,9 @@ static void showICIRShortLongCalType( LXContext *lx, UResourceBundle *rb,
 	  UResourceBundle *pbund;
 	  UResourceBundle *dbund;
       UBool isDefault;
-    } stuff[] = { {"narrow", NULL, -1, NULL, NULL,NULL,FALSE},
-                  {"abbreviated", NULL, -1, NULL, NULL,NULL,FALSE},
-                  {"wide", NULL, -1, NULL, NULL,NULL,FALSE} };
+    } stuff[] = { {"narrow", NULL, -1, NULL, NULL,NULL,false},
+                  {"abbreviated", NULL, -1, NULL, NULL,NULL,false},
+                  {"wide", NULL, -1, NULL, NULL,NULL,false} };
  
     sprintf(part,"%s_%s", type, keyStem);
     stuffCount = sizeof(stuff)/sizeof(stuff[0]);

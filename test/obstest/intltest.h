@@ -75,10 +75,10 @@ public:
 
     virtual UBool runTest( char* name = NULL, char* par = NULL ); // not to be overidden
 
-    virtual UBool setVerbose( UBool verbose = TRUE );
-    virtual UBool setNoErrMsg( UBool no_err_msg = TRUE );
-    virtual UBool setQuick( UBool quick = TRUE );
-    virtual UBool setLeaks( UBool leaks = TRUE );
+    virtual UBool setVerbose( UBool verbose = true );
+    virtual UBool setNoErrMsg( UBool no_err_msg = true );
+    virtual UBool setQuick( UBool quick = true );
+    virtual UBool setLeaks( UBool leaks = true );
 
     virtual int32_t getErrors( void );
 
@@ -147,7 +147,7 @@ protected:
     // used for collation result reporting, defined here for convenience
 
     static UnicodeString &prettify(const UnicodeString &source, UnicodeString &target);
-    static UnicodeString prettify(const UnicodeString &source, UBool parseBackslash=FALSE);
+    static UnicodeString prettify(const UnicodeString &source, UBool parseBackslash=false);
     static UnicodeString &appendHex(uint32_t number, int32_t digits, UnicodeString &target);
 
     /* complete a relative path to a full pathname, and convert to platform-specific syntax. */

@@ -112,7 +112,7 @@ isAcceptable(void *context,
   fprintf(stderr, "isAcceptable() called on:\n");
   printInfo(pInfo);
   fprintf(stderr, "\n");
-    return TRUE;
+    return true;
 }
 
 #if CAN_DYNAMIC_LOAD
@@ -280,7 +280,7 @@ void cmd_version(UBool noLoad)
     u_versionToString(icu, str);
     fprintf(stderr, "\nCompiled against ICU " U_ICU_VERSION ", currently running ICU %s\n", str);
     fprintf(stderr, "Default locale is %s\n", uloc_getDefault());
-    if(noLoad == FALSE)
+    if(noLoad == false)
     {
         fprintf(stderr, "Default converter is %s.\n", ucnv_getDefaultName());
     }
@@ -416,7 +416,7 @@ doInteractive()
     char *rl;
 #endif
 
-    cmd_version(TRUE);
+    cmd_version(true);
     cmd_path("p");
     fprintf(stderr, "\nEntering interactive mode. Typing ? gets help.\n");
 #if CAN_DYNAMIC_LOAD
@@ -467,7 +467,7 @@ doInteractive()
             break;
             
         case 'v':
-            cmd_version(FALSE);
+            cmd_version(false);
             break;
 
         case 'l':

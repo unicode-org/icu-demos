@@ -529,12 +529,12 @@ IntlTest::IntlTest()
 {
     caller = NULL;
     path = NULL;
-    LL_linestart = TRUE;
+    LL_linestart = true;
     errorCount = 0;
-    verbose = FALSE;
-    no_err_msg = FALSE;
-    quick = FALSE;
-    leaks = FALSE;
+    verbose = false;
+    no_err_msg = false;
+    quick = false;
+    leaks = false;
     testoutfp = stdout;
     LL_indentlevel = indentLevel_offset;
 }
@@ -615,7 +615,7 @@ UBool IntlTest::runTest( char* name, char* par )
 
     }else if (strcmp( name, "LIST" ) == 0) {
         this->usage();
-        rval = TRUE;
+        rval = true;
 
     }else{
         rval = runTestLoop( name, par );
@@ -648,29 +648,29 @@ UBool IntlTest::runTestLoop( char* testname, char* par )
     const char*   name;
     UBool  run_this_test;
     int32_t    lastErrorCount;
-    UBool  rval = FALSE;
+    UBool  rval = false;
     UBool   lastTestFailed;
 
     IntlTest* saveTest = gTest;
     gTest = this;
     do {
-        this->runIndexedTest( index, FALSE, name );
+        this->runIndexedTest( index, false, name );
         if (!name || (name[0] == 0))
             break;
         if (!testname) {
-            run_this_test = TRUE;
+            run_this_test = true;
         }else{
             run_this_test = (UBool) (strcmp( name, testname ) == 0);
         }
         if (run_this_test) {
             lastErrorCount = errorCount;
             execCount++;
-            this->runIndexedTest( index, TRUE, name, par );
-            rval = TRUE; // at least one test has been called
+            this->runIndexedTest( index, true, name, par );
+            rval = true; // at least one test has been called
             char msg[256];
             if (lastErrorCount == errorCount) {
                 sprintf( msg, "---OK:   %s", name );
-                lastTestFailed = FALSE;
+                lastTestFailed = false;
             }else{
                 sprintf(msg, "---ERRORS (%li) in %s", (long)(errorCount-lastErrorCount), name);
 
@@ -679,15 +679,15 @@ UBool IntlTest::runTestLoop( char* testname, char* par )
                 }
                 errorList += name;
                 errorList += "\n";
-                lastTestFailed = TRUE;
+                lastTestFailed = true;
             }
             LL_indentlevel -= 3;
             if (lastTestFailed) {
-                LL_message( "", TRUE);
+                LL_message( "", true);
             }
-            LL_message( msg, TRUE);
+            LL_message( msg, true);
             if (lastTestFailed) {
-                LL_message( "", TRUE);
+                LL_message( "", true);
             }
             LL_indentlevel += 3;
         }
@@ -705,7 +705,7 @@ UBool IntlTest::runTestLoop( char* testname, char* par )
 void IntlTest::log( const UnicodeString &message )
 {
     if( verbose ) {
-        LL_message( message, FALSE );
+        LL_message( message, false );
     }
 }
 
@@ -716,14 +716,14 @@ void IntlTest::log( const UnicodeString &message )
 void IntlTest::logln( const UnicodeString &message )
 {
     if( verbose ) {
-        LL_message( message, TRUE );
+        LL_message( message, true );
     }
 }
 
 void IntlTest::logln( void )
 {
     if( verbose ) {
-        LL_message( "", TRUE );
+        LL_message( "", true );
     }
 }
 
@@ -732,7 +732,7 @@ void IntlTest::logln( void )
 */
 void IntlTest::info( const UnicodeString &message )
 {
-  LL_message( message, FALSE );
+  LL_message( message, false );
 }
 
 /**
@@ -741,12 +741,12 @@ void IntlTest::info( const UnicodeString &message )
 */
 void IntlTest::infoln( const UnicodeString &message )
 {
-  LL_message( message, TRUE );
+  LL_message( message, true );
 }
 
 void IntlTest::infoln( void )
 {
-  LL_message( "", TRUE );
+  LL_message( "", true );
 }
 
 int32_t IntlTest::IncErrorCount( void )
@@ -763,13 +763,13 @@ void IntlTest::err() {
 void IntlTest::err( const UnicodeString &message )
 {
     IncErrorCount();
-    if (!no_err_msg) LL_message( message, FALSE );
+    if (!no_err_msg) LL_message( message, false );
 }
 
 void IntlTest::errln( const UnicodeString &message )
 {
     IncErrorCount();
-    if (!no_err_msg) LL_message( message, TRUE );
+    if (!no_err_msg) LL_message( message, true );
 }
 
 /* convenience functions that include sprintf formatting */
@@ -850,7 +850,7 @@ void IntlTest::errln(const char *fmt, ...)
 
 void IntlTest::printErrors()
 {
-     IntlTest::LL_message(errorList, TRUE);
+     IntlTest::LL_message(errorList, true);
 }
 
 void IntlTest::LL_message( UnicodeString message, UBool newline )
@@ -870,7 +870,7 @@ void IntlTest::LL_message( UnicodeString message, UBool newline )
         32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
         32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
     };
-    UnicodeString indent(FALSE, indentUChars, 1 + LL_indentlevel);
+    UnicodeString indent(false, indentUChars, 1 + LL_indentlevel);
 
     char buffer[10000];
     int32_t length;
@@ -905,14 +905,14 @@ void IntlTest::LL_message( UnicodeString message, UBool newline )
 */
 void IntlTest::usage( void )
 {
-    UBool save_verbose = setVerbose( TRUE );
+    UBool save_verbose = setVerbose( true );
     logln("Test names:");
     logln("-----------");
 
     int32_t index = 0;
     const char* name = NULL;
     do{
-        this->runIndexedTest( index, FALSE, name );
+        this->runIndexedTest( index, false, name );
         if (!name) break;
         logln(name);
         index++;
@@ -943,14 +943,14 @@ IntlTest::run_phase2( char* name, char* par ) // supports reporting memory leaks
 int
 main(int argc, char* argv[])
 {
-    UBool syntax = FALSE;
-    UBool all = TRUE;
-    UBool verbose = FALSE;
-    UBool no_err_msg = FALSE;
-    UBool quick = TRUE;
-    UBool name = FALSE;
-    UBool leaks = FALSE;
-    UBool warnOnMissingData = FALSE;
+    UBool syntax = false;
+    UBool all = true;
+    UBool verbose = false;
+    UBool no_err_msg = false;
+    UBool quick = true;
+    UBool name = false;
+    UBool leaks = false;
+    UBool warnOnMissingData = false;
     UErrorCode errorCode = U_ZERO_ERROR;
     UConverter *cnv = NULL;
     const char *warnOrErr = "Failure"; 
@@ -981,39 +981,39 @@ main(int argc, char* argv[])
         if (argv[i][0] == '-') {
             const char* str = argv[i] + 1;
             if (strcmp("verbose", str) == 0)
-                verbose = TRUE;
+                verbose = true;
             else if (strcmp("v", str) == 0)
-                verbose = TRUE;
+                verbose = true;
             else if (strcmp("noerrormsg", str) == 0)
-                no_err_msg = TRUE;
+                no_err_msg = true;
             else if (strcmp("n", str) == 0)
-                no_err_msg = TRUE;
+                no_err_msg = true;
             else if (strcmp("exhaustive", str) == 0)
-                quick = FALSE;
+                quick = false;
             else if (strcmp("e", str) == 0)
-                quick = FALSE;
+                quick = false;
             else if (strcmp("all", str) == 0)
-                all = TRUE;
+                all = true;
             else if (strcmp("a", str) == 0)
-                all = TRUE;
+                all = true;
             else if (strcmp("leaks", str) == 0)
-                leaks = TRUE;
+                leaks = true;
             else if (strcmp("l", str) == 0)
-                leaks = TRUE;
+                leaks = true;
             else if (strcmp("w", str) == 0) {
-              warnOnMissingData = TRUE;
+              warnOnMissingData = true;
               warnOrErr = "WARNING";
             } else {
-                syntax = TRUE;
+                syntax = true;
             }
         }else{
-            name = TRUE;
-            all = FALSE;
+            name = true;
+            all = false;
         }
     }
 
-    if (all && name) syntax = TRUE;
-    if (!all && !name) syntax = TRUE;
+    if (all && name) syntax = true;
+    if (!all && !name) syntax = true;
 
     if (syntax) {
         fprintf(stdout,
@@ -1036,7 +1036,7 @@ main(int argc, char* argv[])
         return 1;
     }
 
-    UBool all_tests_exist = TRUE;
+    UBool all_tests_exist = true;
     MajorTestLevel major;
     major.setVerbose( verbose );
     major.setNoErrMsg( no_err_msg );
@@ -1126,7 +1126,7 @@ main(int argc, char* argv[])
                 }
                 if (!res || (execCount <= 0)) {
                     fprintf(stdout, "\n---ERROR: Test doesn't exist: %s!\n", name);
-                    all_tests_exist = FALSE;
+                    all_tests_exist = false;
                 }
             }
         }

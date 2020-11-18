@@ -41,7 +41,7 @@ void writeSubObject( LXContext *lx, UResourceBundle *n )
           int32_t length = 0;
           int32_t bufsz = 0;
           const UChar *up = u;
-          UBool usError = FALSE;
+          UBool usError = false;
 
           bufsz = (u_strlen(u)+2)*(9);
 	  out = calloc(1,bufsz); /* space for \uXXXX */

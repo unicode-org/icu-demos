@@ -124,9 +124,9 @@ char    gSearchName[512];
 char    gSearchHTML[512];
 UChar usf[1024]; /* unicode string set */
 UChar32 gSearchChar = 0xFFFF;
-UBool gSearchCharValid = FALSE;
+UBool gSearchCharValid = false;
 
-UBool anyDecompose = FALSE;
+UBool anyDecompose = false;
 
 UFILE      *gOut = NULL;
 const char *locale = "en_US";
@@ -301,7 +301,7 @@ SubstituteWithValueHTML (UConverter * _this,
                     &myValueSource,
                     myValueSource + (5+4+4),
                     NULL,
-                    TRUE,
+                    true,
                     &err2);
 
   if (U_FAILURE (err2))
@@ -437,10 +437,10 @@ UBool myEnumCharNamesFn(void *context,
                         const char *name,
                        int32_t length)
 {
-  UBool isFound = FALSE;
+  UBool isFound = false;
   enumHits++;
   if(strstr(name, gSearchName)) {
-    isFound = TRUE;
+    isFound = true;
   } else if(words_count>1) {
     const char *k = name;
     int n;
@@ -457,24 +457,24 @@ UBool myEnumCharNamesFn(void *context,
       }
     }
     if(k != NULL) {
-      isFound = TRUE;
+      isFound = true;
     }
   }
-  if(isFound == TRUE) {
+  if(isFound == true) {
     if(foundCount == 0) {
-      printRowHeader(TRUE);
+      printRowHeader(true);
     }
 
     foundCount ++;
 
 
-    printRow(code, TRUE, "",  "ch");
+    printRow(code, true, "",  "ch");
 
     if((foundCount % 15) ==14) /* ------------ Search by name: too many hits --- */
     {
         u_fprintf(gOut, "</table> <blockquote><H4><a href=\"?s=%s&amp;cs=%04X\">Continue search for '%s' from U+%04X...</a></H4></blockquote><p>",
              gSearchHTML, code+1, gSearchName, code+1);
-      return FALSE;
+      return false;
     }
 
 /*     u_fprintf(gOut, "<LI><a href=\"?k1=%04X#here\"><tt>%04X</tt> - %s\n", */
@@ -483,7 +483,7 @@ UBool myEnumCharNamesFn(void *context,
 /*     printOneUChar32( code ); */
 /*     u_fprintf(gOut, "</a>\n"); */
   }
-  return TRUE;
+  return true;
 }
 
 void printIconMenu(const char *alt, const char *name, ESearchMode target, ESearchMode current)
@@ -560,7 +560,7 @@ void printRowHeader(UBool showBlock)
   u_fprintf(gOut, "<td>C</td>"); /* 1: char */
   u_fprintf(gOut, "<td>N</td>"); /* 2: char #, name */
   u_fprintf(gOut, "<td><b>General Category</b></td>"); /* 3: type */ 
-  if(showBlock == TRUE) 
+  if(showBlock == true) 
     {
       u_fprintf(gOut, "<td><b>Block</b></td>"); /* 3 1/2 */
     }
@@ -849,7 +849,7 @@ main(int argc,
       else if(sscanf(qs, "k1=%x", &block) == 1)
         {
           gSearchChar = block;
-          gSearchCharValid = TRUE;
+          gSearchCharValid = true;
           block &= 0x1FFFF0;
           mode = ECOLUMN;
         }
@@ -1095,14 +1095,14 @@ main(int argc,
   else if(mode == ECOLUMN ) /****************************** COLUMN **************************/
     {
       const char *hilite;
-      UBool showBlock = FALSE;
+      UBool showBlock = false;
       if(  ((block&~0xF)==0xFFF0) ||    /* FFFD/FFFF and */
            ((block&~0xF)==0xFEF0) ) {   /* FEFF are exceptional columns */
-        showBlock = TRUE;
+        showBlock = true;
       }
       /* Unicode table  at column 'block' */
 
-      if(showBlock == FALSE) /* Explain what the block is ONCE: here */
+      if(showBlock == false) /* Explain what the block is ONCE: here */
       {  
         theChar = block;
         u_fprintf(gOut, "</td></tr></table></form>");  /* closer */
@@ -1481,8 +1481,8 @@ void printModeCHAR(UChar32 ch)
   u_fprintf(gOut, "</td></tr></table><br /><br />\n");
   
   u_fprintf(gOut, "<table class='basicrow' summary=\"Character Basic Row\" border=\"2\">");
-  printRowHeader(TRUE);
-  printRow(ch, TRUE, "", "k1");
+  printRowHeader(true);
+  printRow(ch, true, "", "k1");
   u_fprintf(gOut, "</table>\n<br /><br />\n");
   
   u_fprintf(gOut, "<table class='detailprop' summary=\"Detailed Character Properties\" border=\"2\">\n");
@@ -1584,7 +1584,7 @@ void printModeSET(const char *qs, ESearchMode mode)
     int32_t iCount; /* item count */
     int32_t charCount; /* chars count */
     UChar   littleBuffer[412];
-    UBool charNSet = FALSE;
+    UBool charNSet = false;
     int bCount =0;
 
     u_fprintf(gOut, "</td></tr></table></form>"); /* closer */
@@ -1594,7 +1594,7 @@ void printModeSET(const char *qs, ESearchMode mode)
     }
     if((q = strstr(qs,"charN="))) {
       q += 6;    charN=atoi(q);
-      charNSet = TRUE;
+      charNSet = true;
     }
 
 #if defined (UB_DEBUG)
@@ -1680,7 +1680,7 @@ void printModeSET(const char *qs, ESearchMode mode)
             }
           } else {
             if(len == 0) { /* range */
-              if(charNSet == FALSE) {
+              if(charNSet == false) {
                 cur=start;
               } else {
                 cur=start+charN;
@@ -1697,7 +1697,7 @@ void printModeSET(const char *qs, ESearchMode mode)
           
           /* make sure charN is always 0 apart from first load */
           if(charNSet) {
-            charNSet = FALSE;
+            charNSet = false;
           } else {
             charN = 0;
           }
@@ -1708,7 +1708,7 @@ void printModeSET(const char *qs, ESearchMode mode)
             /**
              * print char 
              */
-            printRow(cur, TRUE, "",  "ch");
+            printRow(cur, true, "",  "ch");
           } else {
             if(mode==ESETCHUNK && ((bCount++)%10)==0) {
               u_fprintf(gOut, "</tr><tr>");

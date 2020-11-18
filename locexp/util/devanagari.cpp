@@ -63,7 +63,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 		    &sourceAlias,
 		    sourceLimit,
 		    NULL,
-		    TRUE,
+		    true,
 		    &subErr); /* pass them the real error. */
   
   if(subErr == U_INDEX_OUTOFBOUNDS_ERROR)
@@ -81,7 +81,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 		       &sourceAlias,
 		       sourceLimit,
 		       NULL,
-		       TRUE,
+		       true,
 		       &subErr);
 #else
       ucnv_fromUnicode(&myConverter,
@@ -90,7 +90,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 		       &sourceAlias,
 		       sourceLimit,
 		       NULL,
-		       TRUE,
+		       true,
 		       &subErr);
 #endif
       /* fix the charBufferLength */
@@ -189,18 +189,18 @@ U_CAPI UBool
 					    UBool flush,
 					    UErrorCode * err)
 {
-  UBool inFont = FALSE;
+  UBool inFont = false;
 
 
   UChar buf[kBufLen];
   int32_t typ[kBufLen];
   int32_t n = 0;
-  UBool  sawLiveConsonant = FALSE;
+  UBool  sawLiveConsonant = false;
   unsigned char tmp[99];
 
   const UChar *mysrc = *source;
   UChar  p, nextp;
-  UBool shouldAdvanceSource = FALSE;
+  UBool shouldAdvanceSource = false;
 
   for(mysrc = (*source - 1);mysrc < sourceLimit;mysrc++)
   {
@@ -211,7 +211,7 @@ U_CAPI UBool
       }
     else
       {
-        shouldAdvanceSource = TRUE;
+        shouldAdvanceSource = true;
         p = *mysrc;
         nextp = mysrc[1];
       }
@@ -221,7 +221,7 @@ U_CAPI UBool
    if((p == 0x0020)) // always..
    {
      flushDevanagari(buf,typ,n,target,targetLimit,err);
-     sawLiveConsonant = FALSE;
+     sawLiveConsonant = false;
      n = 0;
      
      WriteByte((*p)&0xFF); /* BUG - should use the right codepage */
@@ -237,14 +237,14 @@ U_CAPI UBool
           }
 
 #if 0
-	if(inFont == TRUE)
+	if(inFont == true)
 	{
 		flushDevanagari(buf,typ,n);
-		sawLiveConsonant = FALSE;
+		sawLiveConsonant = false;
 		n = 0;
 
 		printf("</FONT>");
-		inFont = FALSE;
+		inFont = false;
 	}
 
 	if(((p)&0xFF00) == 0x0700)
@@ -272,11 +272,11 @@ U_CAPI UBool
    }
 #endif
 
-  if(shouldAdvanceSource == TRUE)
+  if(shouldAdvanceSource == true)
       (*source)++;
 
      // hindi.
-   if(inFont == FALSE)
+   if(inFont == false)
    {
      UnicodeString str  = "<FONT FACE=\"Xdvng,xdvng\">";
      int len = str.length();
@@ -286,7 +286,7 @@ U_CAPI UBool
 #else
      convertIntoTargetOrErrChars(_this,target,(unsigned char*)targetLimit,&chars,chars+len,err);
 #endif
-     inFont = TRUE;
+     inFont = true;
    }
 
   //sprintf(tmp,"<font face=arial>n=%d %02x</font>",n,(*p) & 0x7f); *this << tmp;
@@ -303,7 +303,7 @@ U_CAPI UBool
 	 if(sawLiveConsonant) 
    	{
 	  flushDevanagari(buf,typ,n,target,targetLimit,err);
-	  sawLiveConsonant = FALSE;
+	  sawLiveConsonant = false;
 	  n = 0;
 	}
 	 
@@ -321,7 +321,7 @@ U_CAPI UBool
 	     buf[n] = p;
 	     typ[n] = dv_C;
 	     n++;
-	     sawLiveConsonant = TRUE;
+	     sawLiveConsonant = true;
 	   }
        }
      else if(p == dv_VS_LEFT)
@@ -347,7 +347,7 @@ U_CAPI UBool
 // final flush
   flushDevanagari(buf,typ,n,target,targetLimit,err);
 
-  if(inFont == TRUE)
+  if(inFont == true)
   {
      UnicodeString str  = "</FONT>";
      int len = str.length();
@@ -359,10 +359,10 @@ U_CAPI UBool
      convertIntoTargetOrErrChars(_this,target,targetLimit,&chars,chars+len,err);
 #endif
 
-     inFont = TRUE;
+     inFont = true;
   }
 #ifdef WIN32
-  return TRUE;
+  return true;
 #endif
 }
 

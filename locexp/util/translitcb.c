@@ -134,7 +134,7 @@ U_CAPI void
     }
 
     /* the <FONT> thing */
-    if(ctx->html == TRUE)
+    if(ctx->html == true)
     {
         const UChar *mySource;
         mySource = beginMark;
@@ -216,7 +216,7 @@ U_CAPI void
       n = 0; /* reset */
     }
     
-    if(ctx->html == TRUE)
+    if(ctx->html == true)
     {
         const UChar *mySource;
         mySource = endMark;

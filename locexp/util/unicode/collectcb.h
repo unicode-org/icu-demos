@@ -21,8 +21,8 @@
 
 extern UConverterFromUCallback COLLECT_lastResortCallback;
 
-/* if TRUE, collect will only record chars that pass the u_isalnum() 
-   test in uchars.h. if FALSE (default), collect will record all chars.
+/* if true, collect will only record chars that pass the u_isalnum() 
+   test in uchars.h. if false (default), collect will record all chars.
 */
 #ifdef WIN32
 UBool                  COLLECT_alnum;

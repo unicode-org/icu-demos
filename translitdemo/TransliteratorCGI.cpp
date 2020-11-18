@@ -63,9 +63,9 @@ TransliteratorCGI::TransliteratorCGI() :
     availableIDsCount = 0;
     availableRBTIDs = 0;
     availableRBTIDsCount = 0;
-    isIntermediateInitialized = FALSE;
-    isIntermediateBogus = FALSE;
-    areUserTransliteratorsLoaded = FALSE;
+    isIntermediateInitialized = false;
+    isIntermediateBogus = false;
+    areUserTransliteratorsLoaded = false;
     translit1 = 0;
     translit2 = 0;
 }
@@ -308,7 +308,7 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
                     fprintf(out, "// Cannot create ");
                     util_fprintf(out, id);
                 } else {
-		    t->toRules(rule, FALSE);
+		    t->toRules(rule, false);
 		    util_fprintfq(out, rule);
 		    delete t;
                 }
@@ -340,12 +340,12 @@ void TransliteratorCGI::handleTemplateVariable(FILE* out, const char* var,
  * transliterator, or NULL on failure.  On failure, put the relevant
  * error message in errMsg.
  *
- * Return TRUE on success.
+ * Return true on success.
  */
 UBool TransliteratorCGI::buildUserRules(const UnicodeString& id,
                                        const UnicodeString& rules,
                                        UnicodeString& errMsg) {
-    UBool success = TRUE;
+    UBool success = true;
     for (int loop=0; loop<2; ++loop) {
         UTransDirection dir = (loop == 0) ? UTRANS_FORWARD : UTRANS_REVERSE;
         UParseError err;
@@ -369,7 +369,7 @@ UBool TransliteratorCGI::buildUserRules(const UnicodeString& id,
                     errMsg += err.postContext;
                 }
             }
-            success = FALSE;
+            success = false;
         }
         delete t;
     }
@@ -387,7 +387,7 @@ void TransliteratorCGI::loadUserTransliterators() {
 
     ruleCache.visitKeys(registerUserRules, this);
 
-    areUserTransliteratorsLoaded = TRUE;
+    areUserTransliteratorsLoaded = true;
 }
 
 /**

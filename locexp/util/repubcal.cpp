@@ -81,7 +81,7 @@ Calendar* RepublicainCalendar::clone() const {
 
 RepublicainCalendar::RepublicainCalendar(const Locale& aLocale, UErrorCode& success)
   :   Calendar(TimeZone::createDefault(), aLocale, success),
-      modified(TRUE)
+      modified(true)
 {
   setTimeInMillis(getNow(), success); // Call this again now that the vtable is set up properly.
 }
@@ -320,7 +320,7 @@ void RepublicainCalendar::handleComputeFields(int32_t julianDay, UErrorCode &sta
         // approx could be +/- 1.  Find year which 
         U_DEBUG_RC_MSG(("jd%d approx=%d\n", julianDay, approxYear));
         for(year = approxYear-1; year<=approxYear; year++) {
-          int32_t tryy = handleComputeMonthStart(year+1, 0, FALSE);
+          int32_t tryy = handleComputeMonthStart(year+1, 0, false);
           U_DEBUG_RC_MSG(("jd%d trying y%d -> %d\n", julianDay, year+1, tryy));
           if(tryy > julianDay) {
             break;
@@ -329,7 +329,7 @@ void RepublicainCalendar::handleComputeFields(int32_t julianDay, UErrorCode &sta
         
     }
     // Now, we have the year.
-    int32_t yearStart = handleComputeMonthStart(year, 0, FALSE);
+    int32_t yearStart = handleComputeMonthStart(year, 0, false);
     U_DEBUG_RC_MSG(("jd%d y=%d yearst=%d\n", julianDay, year,yearStart));
     
     // month..
@@ -358,12 +358,12 @@ RepublicainCalendar::inDaylightTime(UErrorCode& status) const
 {
 // copied from GregorianCalendar
 if (U_FAILURE(status) || !getTimeZone().useDaylightTime()) 
-  return FALSE;
+  return false;
 
     // Force an update of the state of the Calendar.
 ((RepublicainCalendar*)this)->complete(status); // cast away const
 
-return (UBool)(U_SUCCESS(status) ? (internalGet(UCAL_DST_OFFSET) != 0) : FALSE);
+return (UBool)(U_SUCCESS(status) ? (internalGet(UCAL_DST_OFFSET) != 0) : false);
 }
 
 
@@ -386,7 +386,7 @@ int32_t         RepublicainCalendar::fgSystemDefaultCenturyStartYear   = -1;
 
 UBool RepublicainCalendar::haveDefaultCentury() const
 {
-  return TRUE;
+  return true;
 }
 
 UDate RepublicainCalendar::defaultCenturyStart() const
@@ -530,7 +530,7 @@ protected:
       return new RepublicainCalendar(canLoc, status);
     } else if(!uprv_strcmp(fType, "republicain")) {  
       RepublicainCalendar *i = new RepublicainCalendar(canLoc, status);
-      //i->setModified(FALSE, status);
+      //i->setModified(false, status);
 #ifdef U_DEBUG_CALSVC
       fprintf(stderr, "RepublicainFactory - creating R %p [status %s]\n", i, u_errorName(status));
 #endif      

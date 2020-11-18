@@ -317,7 +317,7 @@ extern void showExploreCalendar( LXContext *lx)
         /**************** calendar fields **********************/
     {
 #define  NR_ITEMS 4
-        static const  UBool   roll[NR_ITEMS] =  {   TRUE, FALSE, FALSE, TRUE };
+        static const  UBool   roll[NR_ITEMS] =  {   true, false, false, true };
         static const  int32_t amt [NR_ITEMS] =  {    -1 ,  -1  ,  1   ,  1   };
         static const char    *nam [NR_ITEMS] =  { "&lt;", "-"  , "+"  , "&gt;"};
 

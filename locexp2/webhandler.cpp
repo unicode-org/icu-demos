@@ -41,19 +41,19 @@ WebHandler::~WebHandler()
 UBool WebHandler::handles(const UnicodeString &url) {
     UErrorCode status = U_ZERO_ERROR;
     
-    if(urlPattern.isNull()) { return FALSE; }
+    if(urlPattern.isNull()) { return false; }
     
     LocalPointer<RegexMatcher> match(urlPattern->matcher(url, status));
     
     if(U_SUCCESS(status) && match!=NULL && match->matches(status)) {
-        return TRUE;
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 
 UBool WebHandler::doRequest(const UnicodeString &url, UFCGI *u) {
-    if(urlPattern.isNull()) { return FALSE; }
+    if(urlPattern.isNull()) { return false; }
 
     
     UErrorCode status = U_ZERO_ERROR;
@@ -62,9 +62,9 @@ UBool WebHandler::doRequest(const UnicodeString &url, UFCGI *u) {
     
     if(U_SUCCESS(status) && match!=NULL && match->matches(status)) {
         handleRequest(url,u,match.getAlias());
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 UBool    WebHandler::doRequest(UFCGI *u) {

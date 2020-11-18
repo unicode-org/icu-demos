@@ -63,13 +63,13 @@ int main(int argc, const char *argv[])
   const char *toCodepage;
   const char *locale = NULL;
 #ifdef DECOMPOSE
-  UBool useDecompose = FALSE
+  UBool useDecompose = false
 #endif
-  UBool escapeMode = FALSE;
+  UBool escapeMode = false;
   USort      *list = NULL;
   UCollationStrength strength = UCOL_DEFAULT_STRENGTH;
   UColAttributeValue normalizationMode = UCOL_OFF;
-  UBool trim = FALSE;
+  UBool trim = false;
 
   fromCodepage = ucnv_getDefaultName();
 
@@ -90,7 +90,7 @@ int main(int argc, const char *argv[])
 	    {
 #ifdef DECOMPOSE
 	    case 'D':
-	      useDecompose = TRUE;
+	      useDecompose = true;
 	      break;
 #endif
 	 
@@ -110,7 +110,7 @@ int main(int argc, const char *argv[])
 	      break;
 
 	    case 'e':
-	      escapeMode = TRUE;
+	      escapeMode = true;
 	      break;
 
 	    case '1':
@@ -138,7 +138,7 @@ int main(int argc, const char *argv[])
           break;
 
         case 't':
-          trim = TRUE;
+          trim = true;
           break;
 
 	    case 'L':
@@ -208,9 +208,9 @@ int main(int argc, const char *argv[])
       fprintf(stderr,"Couldn't open collator with cusotm rules: %s \n", u_errorName(status));
       abort();
     }
-    list = usort_openWithCollator(theCollator, TRUE, &status); /* common error check in a few lines.. */
+    list = usort_openWithCollator(theCollator, true, &status); /* common error check in a few lines.. */
   } else {
-    list = usort_open(locale, strength, TRUE, &status);
+    list = usort_open(locale, strength, true, &status);
     ucol_setAttribute(usort_getCollator(list), UCOL_NORMALIZATION_MODE, normalizationMode, &status);
   }
 
@@ -233,7 +233,7 @@ int main(int argc, const char *argv[])
   /***     Load the data */
 
   /* For now only load the data from the stdin */
-  usort_addLinesFromFILE( list, NULL, fromConverter, TRUE );
+  usort_addLinesFromFILE( list, NULL, fromConverter, true );
 
   /*** Now, sort and clean up */
 

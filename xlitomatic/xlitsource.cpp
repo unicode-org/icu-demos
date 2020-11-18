@@ -10,13 +10,13 @@
 /****************** TranslitUSource ************/
 TranslitUSource::TranslitUSource(UnicodeSource& src, const char *xlit)
   : source(src), trans(NULL), result(),
-    inTag(FALSE)
+    inTag(false)
 {
   char transname[500];
   sprintf(transname, "HTMLEntities-Unicode;%s", xlit);
   trans = Transliterator::createInstance(transname);
   if(!trans)
-    fEOF = TRUE;
+    fEOF = true;
 }
 
 TranslitUSource::~TranslitUSource()
@@ -31,14 +31,14 @@ void TranslitUSource::rewind()
 
 int32_t TranslitUSource::read(const UChar* &start, const UChar* &end)
 {
-  if(fEOF == TRUE) // 'shouldn't happen'
+  if(fEOF == true) // 'shouldn't happen'
     {
       return 0;
     }
 
   if(source.eof())
     {
-      fEOF = TRUE;
+      fEOF = true;
       return 0;
     }
 
@@ -47,7 +47,7 @@ int32_t TranslitUSource::read(const UChar* &start, const UChar* &end)
 
   if(source.read(sourceData, sourceDataLimit) == 0)
     {
-      fEOF = TRUE;
+      fEOF = true;
   fprintf(stderr, "****** READ exit ONCE - %d \n", sourceDataLimit-sourceData);
 
       return 0;
@@ -73,7 +73,7 @@ int32_t TranslitUSource::read(const UChar* &start, const UChar* &end)
               break; // rest of the line is in a tag
             }
           i = j+1;
-          inTag = FALSE;
+          inTag = false;
         }
       else // looking for '<'
         {
@@ -95,7 +95,7 @@ int32_t TranslitUSource::read(const UChar* &start, const UChar* &end)
           sublen = j-i;
           len += (sublen-oldsublen); // update the length
           
-          inTag = TRUE;
+          inTag = true;
           i = j; // start after the '<'
           fprintf(stderr, "%d/%d, i@%d\n", sublen, len, i);
         }

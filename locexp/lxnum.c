@@ -40,7 +40,7 @@ void showNumberSystem(LXContext *lx, const char *locale, const char *nsys) {
   u_strcat(disp,COLONSTR);
   u_strcat(disp,thisn);
 
-  showKeyAndStartItem(lx,NUMBERS,disp, locale, FALSE, status); /* Numbers : Western Digits */
+  showKeyAndStartItem(lx,NUMBERS,disp, locale, false, status); /* Numbers : Western Digits */
 
   {
     int32_t n;
@@ -79,7 +79,7 @@ void showNumberSystem(LXContext *lx, const char *locale, const char *nsys) {
         unum_formatDouble(nf,example,buf,sizeof(buf)/sizeof(buf[0]),NULL,&subStatus);
       }
 
-      len2 = unum_toPattern(nf, FALSE, buf2,sizeof(buf2)/sizeof(buf2[0]),&subStatus);
+      len2 = unum_toPattern(nf, false, buf2,sizeof(buf2)/sizeof(buf2[0]),&subStatus);
       
       if(U_FAILURE(subStatus)) {
         u_fprintf(lx->OUT, "<td colspan='2'>ERR: %s</td>\n", u_errorName(subStatus));
@@ -128,7 +128,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
   
     const char *tmp;
   
-    showKeyAndStartItem(lx, "EXPLORE_NumberPatterns", FSWF("EXPLORE_NumberPatterns", "Explore &gt; Numbers"), locale, FALSE, U_ZERO_ERROR);
+    showKeyAndStartItem(lx, "EXPLORE_NumberPatterns", FSWF("EXPLORE_NumberPatterns", "Explore &gt; Numbers"), locale, false, U_ZERO_ERROR);
 
     u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_NumberPatterns_What","This example demonstrates formatting of numbers in this locale."));
 
@@ -143,9 +143,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
         return; /* ? */
     }
   
-    unum_applyPattern(nf, TRUE, pattern, -1, NULL, NULL);
+    unum_applyPattern(nf, true, pattern, -1, NULL, NULL);
   
-    unum_toPattern(nf, FALSE, tempChars, 1024, &status);
+    unum_toPattern(nf, false, tempChars, 1024, &status);
 
     if(U_FAILURE(status))
     {
@@ -165,7 +165,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     }
   
     /* Load the default with a simplistic pattern .. */
-    unum_applyPattern(nf_default, FALSE, FSWF("EXPLORE_NumberPatterns_defaultPattern", "#,###.###############"), -1, NULL, NULL);
+    unum_applyPattern(nf_default, false, FSWF("EXPLORE_NumberPatterns_defaultPattern", "#,###.###############"), -1, NULL, NULL);
       
     /* Allright. we've got 'nf' which is our custom pattern in the target 
        locale, and we've got 'nf_default' which is a pattern that we hope is
@@ -266,9 +266,9 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
         u_fprintf(lx->OUT, "\" />\r\n");
 
         u_fprintf(lx->OUT, "<textarea name=NP_DEF rows=1 cols=20>");
-        lx->backslashCtx.html = FALSE;
+        lx->backslashCtx.html = false;
         u_fprintf(lx->OUT, "%S", tempChars); 
-        lx->backslashCtx.html = TRUE;
+        lx->backslashCtx.html = true;
       
         status = U_ZERO_ERROR;
       
@@ -329,7 +329,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
 
 
     u_fprintf(lx->OUT, "<textarea name=NP_SPL rows=1 cols=60>");
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
     if(U_FAILURE(status))
     {
         u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_errorFormat_number", "Couldn't format the number."));
@@ -339,7 +339,7 @@ void showExploreNumberPatterns(LXContext *lx, const char *locale)
     {
         u_fprintf(lx->OUT, "%S", tempChars); 
     }
-    lx->backslashCtx.html = TRUE;
+    lx->backslashCtx.html = true;
   
     status = U_ZERO_ERROR;
   

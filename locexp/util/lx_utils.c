@@ -73,7 +73,7 @@ static void
   return;
 }
 
-static UBool backslashInit = FALSE;
+static UBool backslashInit = false;
 
 U_STRING_DECL(backslashBegin,     "\\u"   , 2);
 U_STRING_DECL(backslashBeginHTML, "<B>\\u", 5);
@@ -112,14 +112,14 @@ UCNV_FROM_U_CALLBACK_BACKSLASH (const void *context,
     return;
   }
 
-  if(backslashInit == FALSE)
+  if(backslashInit == false)
   {
     U_STRING_INIT(backslashBegin,     "\\u"   , 2);
     U_STRING_INIT(backslashBeginHTML, "<B>\\u", 5);
     U_STRING_INIT(backslashEnd,       ""      , 0);
     U_STRING_INIT(backslashEndHTML,   "</B>"  , 4);
     
-    backslashInit = TRUE;
+    backslashInit = true;
   }
 
   ctx = (FromUBackslashContext *) context;
@@ -750,7 +750,7 @@ U_CAPI MySortable *createRegionList(const char * inLocale, MySortable *locales)
       }
     }
   }
-  mySort(root,&status, FALSE); 
+  mySort(root,&status, false); 
   return root;
 }
 
@@ -1011,14 +1011,14 @@ UBool testConverter(const char *converter,
 {
   UErrorCode  status = U_ZERO_ERROR;
   UConverter *cnv;
-  /*UBool      worked = FALSE;  */
+  /*UBool      worked = false;  */
   int8_t     *target;
   const void       *oldContext;
   UConverterFromUCallback oldAction;
 
   cnv = ucnv_open(converter, &status);
   if(U_FAILURE(status))
-    return FALSE;
+    return false;
 
   target = buffer;
 
@@ -1033,7 +1033,7 @@ UBool testConverter(const char *converter,
 		    &sample,
 		    sample + sampleLen,
 		    NULL,
-		    TRUE,
+		    true,
 		    &status);
   
   if(U_FAILURE(status)) {
@@ -1043,9 +1043,9 @@ UBool testConverter(const char *converter,
   ucnv_close(cnv);
 
   if(U_SUCCESS(status))
-    return TRUE;
+    return true;
   else
-    return FALSE;
+    return false;
 }
 
 UErrorCode  FSWF_bundleErr = U_ZERO_ERROR;

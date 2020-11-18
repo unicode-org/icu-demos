@@ -48,14 +48,14 @@ void showOneLocale(LXContext *lx)
     if(! locale )
     {
         /* show the 'choose a locale' page */
-        chooseLocale(lx, TRUE, "", "", FALSE);
+        chooseLocale(lx, true, "", "", false);
 
         /* show the demos */
         u_fprintf(lx->OUT, "<table border=\"0\" width=\"100%%\"><tr><td valign=\"top\">");
         u_fprintf(lx->OUT, " %S\r\n",
                   FSWF("explore_G7", "Try Multi-lingual Sorting"));
 
-        showExploreButtonSort(lx, NULL,"g7", "CollationElements", FALSE);
+        showExploreButtonSort(lx, NULL,"g7", "CollationElements", false);
 
         u_fprintf(lx->OUT, "<td width=\"50%%\"></td><td valign=\"top\">\r\n");
 
@@ -192,32 +192,32 @@ void showOneLocale(LXContext *lx)
         showLocaleCodes(lx, myRB, locale);
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
 
-        showKeyAndStartItem(lx, "LocaleID", NULL, locale, FALSE, status);
+        showKeyAndStartItem(lx, "LocaleID", NULL, locale, false, status);
         u_fprintf(lx->OUT, "0x%X", uloc_getLCID(locale));
         showKeyAndEndItem(lx, "LocaleID", locale);
 
         u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
-        showString(lx, myRB, locale, "Version", FALSE);
+        showString(lx, myRB, locale, "Version", false);
         u_fprintf(lx->OUT, "</td></tr></table>");
 
         showLocaleScript(lx, myRB, locale);
         u_fprintf(lx->OUT, "<!-- %s:%d -->\r\n", __FILE__, __LINE__);
 
-        showUnicodeSet(lx, myRB, locale, "ExemplarCharacters", FALSE);
-        /*    showString(lx, myRB, locale, "ExemplarCharacters", FALSE); */
+        showUnicodeSet(lx, myRB, locale, "ExemplarCharacters", false);
+        /*    showString(lx, myRB, locale, "ExemplarCharacters", false); */
     
         showSubArray(lx, locale, "Languages",
                      U_ICUDATA_LANG,
                      "Languages",
-                     TRUE);
+                     true);
         showSubArray(lx, locale, "Scripts",
                      U_ICUDATA_LANG,
                      "Scripts",
-                     TRUE);
+                     true);
         showSubArray(lx, locale, "Countries",
                      U_ICUDATA_REGION,
                      "Countries",
-                     TRUE);
+                     true);
         
 
         /* TODO: can't do this yet, need C wrapper for Calendar.getFDOW etc  */
@@ -279,15 +279,15 @@ void showOneLocale(LXContext *lx)
             UResourceBundle* nfrb = ures_open(U_ICUDATA_NAME U_TREE_SEPARATOR_STRING "rbnf", locale, &status);
             if (status != U_USING_DEFAULT_WARNING) {
                 showSpelloutExample(lx, nfrb, locale);
-                showString(lx, nfrb, locale, "SpelloutRules", TRUE);
-                showString(lx, nfrb, locale, "OrdinalRules", TRUE);
-                showString(lx, nfrb, locale, "DurationRules", TRUE);
+                showString(lx, nfrb, locale, "SpelloutRules", true);
+                showString(lx, nfrb, locale, "OrdinalRules", true);
+                showString(lx, nfrb, locale, "DurationRules", true);
             }
             else {
                 /* No data at all :-( */
-                showString(lx, myRB, locale, "SpelloutRules", TRUE);
-                showString(lx, myRB, locale, "OrdinalRules", TRUE);
-                showString(lx, myRB, locale, "DurationRules", TRUE);
+                showString(lx, myRB, locale, "SpelloutRules", true);
+                showString(lx, myRB, locale, "OrdinalRules", true);
+                showString(lx, myRB, locale, "DurationRules", true);
             }
             ures_close(nfrb);
         }

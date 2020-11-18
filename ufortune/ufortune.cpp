@@ -64,7 +64,7 @@ BOOL CComboListApp::InitInstance()
 		//  dismissed with Cancel
 	}
 
-	// Since the dialog has been closed, return FALSE so that we exit the
+	// Since the dialog has been closed, return false so that we exit the
 	//  application, rather than start the application's message pump.
-	return FALSE;
+	return false;
 }

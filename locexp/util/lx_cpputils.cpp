@@ -41,13 +41,13 @@ public:
             {
                 ((HTMLFilter*)this)->fState = 1;
                 YELL;
-                return FALSE;
+                return false;
             }
             else if(c == '>')
             {
                 ((HTMLFilter*)this)->fState = 0;
                 YELL;
-                return FALSE;
+                return false;
             }
             else if(fState == 0)
             {
@@ -55,10 +55,10 @@ public:
                 {
                     ((HTMLFilter*)this)->fState = 2;
                     YELL;
-                    return FALSE;
+                    return false;
                 }
 
-                return 	TRUE;
+                return 	true;
             }
             else
             {
@@ -68,26 +68,26 @@ public:
                     {
                         ((HTMLFilter*)this)->fState = 2;
                         YELL;
-                        return FALSE;
+                        return false;
                     }
                     if(c == ';')
                     {
                         ((HTMLFilter*)this)->fState = 0;
                         YELL;
-                        return FALSE;
+                        return false;
                     }
                     else if(u_isalnum(c) || (c=='#'))
                     {
-                        return FALSE;
+                        return false;
                     }
                     else
                     {
                         ((HTMLFilter*)this)->fState = 0;
                         YELL;
-                        return TRUE;
+                        return true;
                     }
                 }
-                return FALSE;
+                return false;
             }
 	}
 
@@ -104,7 +104,7 @@ U_CAPI
 void lx_setHTMLFilterOnTransliterator(UTransliterator *xlit, UBool doFilter)
 {
 
-    if(doFilter == FALSE)
+    if(doFilter == false)
     {
         ((Transliterator*)xlit)->adoptFilter(NULL);
     }

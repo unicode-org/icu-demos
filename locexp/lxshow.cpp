@@ -39,8 +39,8 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
     UChar *scopy = 0;
     UChar *comps = 0;
     UChar *compsBuf = 0;
-    UBool bigString     = FALSE; /* is it too big to show automatically? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
+    UBool bigString     = false; /* is it too big to show automatically? */
+    UBool userRequested = false; /* Did the user request this string? */
     int32_t len = 0, len2, i;
     UCollator *coll = NULL; /* build an actual collator */
     UResourceBundle *array = NULL, *item = NULL;
@@ -102,15 +102,15 @@ void showCollationElements( LXContext *lx, UResourceBundle *rb, const char *loca
 
     if(U_SUCCESS(status) && ( len > kShowStringCutoffSize ) )
     {
-        bigString = TRUE;
+        bigString = true;
         userRequested = didUserAskForKey(lx, key);
     }
 
-    showKeyAndStartItemShort(lx, key, NULL, locale, FALSE, status);
+    showKeyAndStartItemShort(lx, key, NULL, locale, false, status);
 
     u_fprintf(lx->OUT, "&nbsp;</td>\r\n</tr>\r\n<tr>\r\n<td></td>\r\n<td>");
   
-    showExploreButtonSort(lx, rb,locale,  "CollationElements", TRUE);
+    showExploreButtonSort(lx, rb,locale,  "CollationElements", true);
 
     u_fprintf(lx->OUT, "</td>\r\n"); /* Now, we're done with the ShowKey.. cell */
 
@@ -244,7 +244,7 @@ void showLocaleCodes(LXContext *lx,  UResourceBundle *rb, const char *locale)
     char tempctry[1000], templang[1000], tempvar[1000];
     const char *ctry3 = NULL, *lang3 = NULL;
 
-    showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, FALSE, status);
+    showKeyAndStartItem(lx, "LocaleCodes", FSWF("LocaleCodes", "Locale Codes"), locale, false, status);
 
     u_fprintf(lx->OUT, "<table class='data-table-1' summary=\"%S\">\r\n<tr><td></td><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td></tr>\r\n",
               FSWF("LocaleCodes", "Locale Codes"),
@@ -330,7 +330,7 @@ void showLocaleScript(LXContext *lx, UResourceBundle *rb, const char *locale)
 
     len = uscript_getCode(locale, list, sizeof(list)/sizeof(list[0]), &status);
 
-    showKeyAndStartItem(lx, "LocaleScript", FSWF("LocaleScript", "Locale Script"), locale, FALSE, status);
+    showKeyAndStartItem(lx, "LocaleScript", FSWF("LocaleScript", "Locale Script"), locale, false, status);
 
     u_fprintf(lx->OUT, "<table summary=\"%S\">\r\n",
               FSWF("LocaleScript", "Locale Script"));
@@ -367,7 +367,7 @@ void showInteger( LXContext *lx, UResourceBundle *rb, const char *locale, const 
 
     res = ures_getByKey(rb, key, res, &status);
     i = ures_getInt(res, &status);
-    showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+    showKeyAndStartItem(lx, key, NULL, locale, false, status);
 
     if(U_SUCCESS(status))
     {
@@ -395,19 +395,19 @@ void showString( LXContext *lx, UResourceBundle *rb, const char *locale, const c
   
     UErrorCode status = U_ZERO_ERROR;
     const UChar *s  = 0;
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
+    UBool bigString = false; /* is it big? */
+    UBool userRequested = false; /* Did the user request this string? */
     int32_t len;
 
     s = ures_getStringByKey(rb, key, &len, &status);
 
     if(U_SUCCESS(status) && ( u_strlen(s) > kShowStringCutoffSize ) )
     {
-        bigString = TRUE;
+        bigString = true;
         userRequested = didUserAskForKey(lx, key);
     }
 
-    showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+    showKeyAndStartItem(lx, key, NULL, locale, false, status);
 
     if(U_SUCCESS(status))
     {
@@ -459,8 +459,8 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     UErrorCode status = U_ZERO_ERROR;
     const UChar *s  = 0;
     UChar smallString[ kShowUnicodeSetCutoffSize + 1];
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
+    UBool bigString = false; /* is it big? */
+    UBool userRequested = false; /* Did the user request this string? */
     int32_t setLen = 0, rulesLen = 0, len;
     int32_t i;
     USet *uset;
@@ -476,7 +476,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
     
     uset = uset_openPattern(s, rulesLen, &status);
 
-    showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+    showKeyAndStartItem(lx, key, NULL, locale, false, status);
 
     if(U_FAILURE(status))
     {
@@ -498,7 +498,7 @@ void showUnicodeSet( LXContext *lx, UResourceBundle *rb, const char *locale, con
         (setLen > kShowUnicodeSetCutoffSize) )
     {
         userRequested = didUserAskForKey(lx, key);
-        bigString = TRUE;
+        bigString = true;
 
         if(userRequested) /* it's not hidden. */
         {
@@ -634,18 +634,18 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
   
     UErrorCode status = U_ZERO_ERROR;
     const UChar *s  = 0;
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
+    UBool bigString = false; /* is it big? */
+    UBool userRequested = false; /* Did the user request this string? */
     int32_t i;
     int32_t len;
 
     s = ures_getStringByKey(rb, key, &len, &status);
 
     /* we'll assume it's always big, for now. */
-    bigString = TRUE;
+    bigString = true;
     userRequested = didUserAskForKey(lx, key);
 
-    showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+    showKeyAndStartItem(lx, key, NULL, locale, false, status);
 
     /** DON'T show the string as a string. */
     /* 
@@ -654,8 +654,8 @@ void showStringWithDescription( LXContext *lx, UResourceBundle *rb, const char *
     */
     if(!hidable)
     {
-        userRequested = TRUE;
-        bigString = FALSE;
+        userRequested = true;
+        bigString = false;
     }
   
 
@@ -711,8 +711,8 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
     int i;
     /*const char *realKey;*/
     char   key2[1024];
-    UBool userRequested = FALSE;
-    UBool isDefault = FALSE;
+    UBool userRequested = false;
+    UBool isDefault = false;
 
     userRequested = didUserAskForKey(lx, key);
     strcpy(key2, key);
@@ -727,7 +727,7 @@ void showArray( LXContext *lx, UResourceBundle *rb, const char *locale, const ch
 
     item = ures_getByIndex(array, 0, item, &firstStatus);
 
-    showKeyAndStartItem(lx, key2, NULL, locale, FALSE, firstStatus);
+    showKeyAndStartItem(lx, key2, NULL, locale, false, firstStatus);
 
 /*    if(realKey == key2) {
       u_fprintf(lx->OUT, "(%s)<br />\r\n", lx->defaultCalendar);
@@ -806,7 +806,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
     UChar tempTime[1024]; /* for Date-Time */
     /*const char *realKey;
       char   key2[1024];*/
-    UBool isDefault = FALSE;
+    UBool isDefault = false;
     /* figure out what example to use */
     if(!strcmp(key,"DateTimePatterns"))
         exampleType = kDateTimeExample;
@@ -833,7 +833,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 
     item = ures_getByIndex(array, 0, item, &firstStatus);
     s = ures_getString(item, &len, &firstStatus);
-    showKeyAndStartItemShort(lx, key, NULL, locale, FALSE, firstStatus);
+    showKeyAndStartItemShort(lx, key, NULL, locale, false, firstStatus);
 
     #if 0
     if(realKey == key2) {
@@ -859,7 +859,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
             exampleDF = udat_open(UDAT_IGNORE,UDAT_IGNORE,locale,NULL, 0, s,-1,&exampleStatus);
             if(U_SUCCESS(exampleStatus))
             {
-                len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
+                len = udat_toPattern(exampleDF, true, tempChars, 1024,&exampleStatus);
                 if(U_SUCCESS(exampleStatus))
                 {
                     toShow = tempChars;
@@ -880,7 +880,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
             exampleNF = unum_open(0, s,-1,locale,NULL, &exampleStatus);
             if(U_SUCCESS(exampleStatus))
             {
-                len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
+                len = unum_toPattern(exampleNF, true, tempChars, 1024, &exampleStatus);
                 if(U_SUCCESS(exampleStatus))
                 {
                     toShow = tempChars;
@@ -984,13 +984,13 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
                 {
                     len = 0;
                     exampleDF = udat_open(UDAT_LONG, UDAT_LONG, locale,NULL, 0, s,-1,&exampleStatus);
-                    udat_applyPattern(exampleDF, FALSE, s, -1);
+                    udat_applyPattern(exampleDF, false, s, -1);
 #if 1
                     toShow = s;
 #else
                     if(U_SUCCESS(exampleStatus))
                     {
-                        len = udat_toPattern(exampleDF, TRUE, tempChars, 1024,&exampleStatus);
+                        len = udat_toPattern(exampleDF, true, tempChars, 1024,&exampleStatus);
                         
                         if(U_SUCCESS(exampleStatus))
                         {
@@ -1012,7 +1012,7 @@ void showArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char *l
 #else
                 if(U_SUCCESS(exampleStatus))
                 {
-                    len = unum_toPattern(exampleNF, TRUE, tempChars, 1024, &exampleStatus);
+                    len = unum_toPattern(exampleNF, true, tempChars, 1024, &exampleStatus);
                     if(U_SUCCESS(exampleStatus))
                     {
                         toShow = tempChars;
@@ -1170,7 +1170,7 @@ void showSpelloutExample( LXContext *lx, UResourceBundle *rb, const char *locale
     status = U_ZERO_ERROR;
     exampleNF = unum_open(UNUM_SPELLOUT,NULL, -1, locale, NULL, &status);
 
-    showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+    showKeyAndStartItem(lx, key, NULL, locale, false, status);
     if(exampleNF) unum_close(exampleNF);
 
     u_fprintf(lx->OUT, "<table width=\"100%%\">\r\n");
@@ -1204,7 +1204,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
     const UChar *s  = 0;
     int32_t    len;
     const int32_t   *elements;
-    UBool isDefault = FALSE;
+    UBool isDefault = false;
 
     const char *key = "DateTimeElements";
     /*
@@ -1216,7 +1216,7 @@ void showDateTimeElements( LXContext *lx, UResourceBundle *rb, const char *local
 
     status = U_ZERO_ERROR;
 
-    showKeyAndStartItem(lx, key, FSWF("DateTimeElements","Date and Time Options"), locale, FALSE, status);
+    showKeyAndStartItem(lx, key, FSWF("DateTimeElements","Date and Time Options"), locale, false, status);
 
 
     char id[99];
@@ -1301,7 +1301,7 @@ void showShortLongCal( LXContext *lx, UResourceBundle *rb, const char *locale, c
   }
   /* dayNames -> Day,  monthNames -> Month 
      for legacy translations */
-  showKeyAndStartItem(lx, aKeyStem, NULL, locale, FALSE, U_ZERO_ERROR); /* No status possible  because we have two items */
+  showKeyAndStartItem(lx, aKeyStem, NULL, locale, false, U_ZERO_ERROR); /* No status possible  because we have two items */
 
    u_fprintf(lx->OUT, "<h4 class='subtitle'>%S</h4>\n", FSWF("Calendar_type_format", "Formatting"));
    showShortLongCalType(lx, rb, locale, keyStem, "format");
@@ -1331,9 +1331,9 @@ void showShortLongCalType( LXContext *lx, UResourceBundle *rb, const char *local
       UResourceBundle *bund;
       UBool isDefault;
       UErrorCode status;
-    } stuff[] = { {"narrow", NULL, -1, NULL, FALSE, U_ZERO_ERROR},
-                  {"abbreviated", NULL, -1, NULL, FALSE, U_ZERO_ERROR},
-                  {"wide", NULL, -1, NULL, FALSE, U_ZERO_ERROR} };
+    } stuff[] = { {"narrow", NULL, -1, NULL, false, U_ZERO_ERROR},
+                  {"abbreviated", NULL, -1, NULL, false, U_ZERO_ERROR},
+                  {"wide", NULL, -1, NULL, false, U_ZERO_ERROR} };
  
     stuffCount = sizeof(stuff)/sizeof(stuff[0]);
     stuff[0].title = FSWF("DayNarrow", "Narrow Names");
@@ -1435,9 +1435,9 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
     const UChar *s  = 0;
     int32_t h,v;
     int32_t rows,cols;
-    UBool bigString = FALSE; /* is it big? */
-    UBool userRequested = FALSE; /* Did the user request this string? */
-    UBool isTZ = FALSE; /* do special TZ processing */
+    UBool bigString = false; /* is it big? */
+    UBool userRequested = false; /* Did the user request this string? */
+    UBool isTZ = false; /* do special TZ processing */
     int32_t len;
 
     UResourceBundle *array = ures_getByKey(rb, key, NULL, &status);
@@ -1455,11 +1455,11 @@ void show2dArrayWithDescription( LXContext *lx, UResourceBundle *rb, const char 
 
     if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff) || (cols > kShow2dArrayColCutoff)) )
     {
-        bigString = TRUE;
+        bigString = true;
         userRequested = didUserAskForKey(lx, key);
     }
 
-    showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
+    showKeyAndStartItem(lx, key, NULL, locale, true, status);
 
     if(bigString && !userRequested) /* it's hidden. */
     {
@@ -1581,19 +1581,19 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
   const UChar *s  = 0;
   int32_t v;
   int32_t rows;
-  UBool bigString = FALSE; /* is it big? */
-  UBool userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString = false; /* is it big? */
+  UBool userRequested = false; /* Did the user request this string? */
   int32_t len;
   UResourceBundle *item = NULL;
 
   rows = ures_countArrayItems(rb, key, &status);
 
   if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff))) {
-    bigString = TRUE;
+    bigString = true;
     userRequested = didUserAskForKey(lx, key);
   }
 
-  showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
+  showKeyAndStartItem(lx, key, NULL, locale, true, status);
 
   if(bigString && !userRequested) /* it's hidden. */  {
     u_fprintf(lx->OUT, "<a href=\"?_=%s&amp;SHOW%s=1#%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH "closed.gif\" alt=\"+\" />%S</a><br />\r\n<br />\r\n", locale, key,key, FSWF("bigStringClickToShow","(Omitted due to size. Click here to show.)"));
@@ -1731,22 +1731,22 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
   const UChar *s  = 0;
   int32_t v;
   int32_t rows;
-  UBool bigString = FALSE; /* is it big? */
-  UBool userRequested = FALSE; /* Did the user request this string? */
+  UBool bigString = false; /* is it big? */
+  UBool userRequested = false; /* Did the user request this string? */
   int32_t len;
   const char *key = "Currencies";
   UChar  cflu[9] = { 0, 0, };
   char cfl[4] = {0};
-  UBool sawDefault = FALSE;
+  UBool sawDefault = false;
 
   rows = ures_countArrayItems(rb, key, &status);
 
   if(U_SUCCESS(status) && ((rows > kShow2dArrayRowCutoff))) {
-    bigString = TRUE;
+    bigString = true;
     userRequested = didUserAskForKey(lx, key);
   }
 
-  showKeyAndStartItem(lx, key, NULL, locale, TRUE, status);
+  showKeyAndStartItem(lx, key, NULL, locale, true, status);
 
   if(U_SUCCESS(status)) {
     UErrorCode defCurSt = U_ZERO_ERROR;
@@ -1791,7 +1791,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         
       for(v=0;v<rows;v++) {
         const char *tag;
-        UBool isDefault = FALSE;
+        UBool isDefault = false;
           
         status = U_ZERO_ERROR;
         taggedItem = ures_getByIndex(tagged, v, NULL, &status);
@@ -1801,7 +1801,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
           break;
 
         if(!strcmp(tag,cfl)) {
-            isDefault = TRUE;
+            isDefault = true;
         }
 
         u_fprintf(lx->OUT,"<tr> ");
@@ -1813,7 +1813,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
                     isDefault?"</b>":"");
                     
           if(isDefault) {
-            sawDefault = TRUE;
+            sawDefault = true;
           }
             
           status = U_ZERO_ERROR;
@@ -1872,7 +1872,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
         u_fprintf(lx->OUT, "</tr>\r\n");
       }
       if(!sawDefault && cflu[0]) {
-        UBool isChoiceFormat = FALSE;
+        UBool isChoiceFormat = false;
         int32_t len = 0;
         UErrorCode subSta = U_ZERO_ERROR;
         u_fprintf(lx->OUT, "<tr><td><b>%S</b></td><td><b>%S</b></td><td><b>%S</b></td><td>%d</td>\r\n", 
@@ -1901,7 +1901,7 @@ void showCurrencies( LXContext *lx, UResourceBundle *rb, const char *locale )
 UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault, UErrorCode *status) {
   /* Yes, this is a near-reimplementation of icu::CalendarData.  */
   UResourceBundle *item1 = NULL;
-  *isDefault = FALSE;
+  *isDefault = false;
   if(U_FAILURE(*status)) { return NULL; }
   if(!lx->calMyBundle) {
     u_fprintf(lx->OUT, "LCR - no bundle!<br/>");
@@ -1917,7 +1917,7 @@ UResourceBundle *loadCalRes(LXContext *lx, const char *keyStem, UBool *isDefault
   
   if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
     *status = U_ZERO_ERROR;
-    *isDefault = TRUE;
+    *isDefault = true;
     item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
     /*u_fprintf(lx->OUT, "loading3 [%s]-%s<br/>", keyStem, u_errorName(*status));*/
   }
@@ -1939,7 +1939,7 @@ UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *ty
   UResourceBundle *item1 = NULL;
   UResourceBundle *item2 = NULL;
   UResourceBundle *item3 = NULL;
-  *isDefault = FALSE;
+  *isDefault = false;
   if(U_FAILURE(*status)) { return NULL; }
   if(!bnd) {
 #if defined(LX_DEBUG)
@@ -1963,7 +1963,7 @@ UResourceBundle *loadCalRes3x(LXContext *lx, const char *keyStem, const char *ty
    
   if((*status == U_MISSING_RESOURCE_ERROR) && (lx->calFbBundle)) {
     *status = U_ZERO_ERROR;
-    *isDefault = TRUE;
+    *isDefault = true;
     item1 = ures_getByKeyWithFallback(lx->calFbBundle, keyStem, item1, status);
     if(type) {
       item2 = ures_getByKeyWithFallback(item1, type, item2, status);
@@ -2048,7 +2048,7 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
   const char *key = "DefaultCalendar";
 
 
-  showKeyAndStartItem(lx, key, NULL, locale, FALSE, status);
+  showKeyAndStartItem(lx, key, NULL, locale, false, status);
 
 
   if(U_SUCCESS(status)) {
@@ -2087,7 +2087,7 @@ void showDefaultCalendar(LXContext *lx, UResourceBundle *myRB, const char *local
 UResourceBundle *loadCalendarStuffFor(LXContext *lx, UResourceBundle *myRB, const char *locale, const char *defCal)
 {
   UErrorCode status = U_ZERO_ERROR;
-  /*UBool typeFallback = FALSE;*/
+  /*UBool typeFallback = false;*/
   UResourceBundle *calBundle = NULL; /* "calendar" */
   UResourceBundle *myBundle = NULL;
   /*UResourceBundle *myBundle = NULL;*/ /* 'type' */
@@ -2164,7 +2164,7 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
   u_fprintf(lx->OUT, "</td><td>&nbsp;</td><td valign=\"top\">");
 /* showArray(lx, myRB, locale, "eras", kCal); */
   {
-    showKeyAndStartItem(lx, "eras", NULL, locale, TRUE, U_ZERO_ERROR);
+    showKeyAndStartItem(lx, "eras", NULL, locale, true, U_ZERO_ERROR);
     showShortLongCalType( lx, myRB, locale, "eras", NULL);
     showKeyAndEndItem(lx, "eras", locale);    
   }
@@ -2206,7 +2206,7 @@ void showDateTime(LXContext *lx, UResourceBundle *myRB, const char *locale)
   /*  show2dArrayWithDescription(lx, myRB, locale, zsDesc, "zoneStrings");   */
         /* not calendrical */
   }
-  /* showLPC(lx, myRB, locale, TRUE); */
+  /* showLPC(lx, myRB, locale, true); */
   showDateTimeElements(lx, myRB, locale); /* not calendrical? */
 }
 

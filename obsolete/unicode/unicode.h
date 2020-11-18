@@ -565,8 +565,8 @@ public:
      * </ul>
      *
      * @param   ch  the Unicode character.
-     * @return  TRUE if the character may start a Java identifier;
-     *          FALSE otherwise.
+     * @return  true if the character may start a Java identifier;
+     *          false otherwise.
      * @see     isJavaIdentifierPart
      * @see     isLetter
      * @see     isUnicodeIdentifierStart
@@ -594,8 +594,8 @@ public:
      * </ul>
      * 
      * @param   ch  the Unicode character.
-     * @return  TRUE if the character may be part of a Unicode identifier; 
-     *          FALSE otherwise.
+     * @return  true if the character may be part of a Unicode identifier; 
+     *          false otherwise.
      * @see     isIdentifierIgnorable
      * @see     isJavaIdentifierStart
      * @see     isLetter
@@ -613,8 +613,8 @@ public:
      * it is a letter.
      *
      * @param   ch  the Unicode character.
-     * @return  TRUE if the character may start a Unicode identifier;
-     *          FALSE otherwise.
+     * @return  true if the character may start a Unicode identifier;
+     *          false otherwise.
      * @see     isJavaIdentifierStart
      * @see     isLetter
      * @see     isUnicodeIdentifierPart
@@ -641,8 +641,8 @@ public:
      * </ul>
      * 
      * @param   ch  the Unicode character.
-     * @return  TRUE if the character may be part of a Unicode identifier;
-     *          FALSE otherwise.
+     * @return  true if the character may be part of a Unicode identifier;
+     *          false otherwise.
      * @see     isIdentifierIgnorable
      * @see     isJavaIdentifierPart
      * @see     isLetterOrDigit
@@ -671,8 +671,8 @@ public:
      * </table>
      * 
      * @param   ch  the Unicode character.
-     * @return  TRUE if the character may be part of a Unicode identifier;
-     *          FALSE otherwise.
+     * @return  true if the character may be part of a Unicode identifier;
+     *          false otherwise.
      * @see     isJavaIdentifierPart
      * @see     isUnicodeIdentifierPart
      *
@@ -878,7 +878,7 @@ public:
      * glyph.
      *
      * @param c the character (code point, Unicode scalar value) to be tested
-     * @return TRUE if the character has the "mirrored" property
+     * @return true if the character has the "mirrored" property
      *
      * @obsolete ICU 2.4. Use the parallel uchar.h/utf.h C API instead since this API will be removed in that release.
      */

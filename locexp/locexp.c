@@ -63,22 +63,22 @@ void displayLocaleExplorer(LXContext *lx)
         printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
     }
     u_fprintf(lx->OUT, "\r\n<title>");
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
     u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "ICU Demonstration - "));
-    printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, FALSE);
+    printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, false);
 
     /* TODO: check 'section' here */
     if(strstr(lx->queryString, "EXPLORE"))
     {
-        lx->inDemo = TRUE;
+        lx->inDemo = true;
         u_fprintf(lx->OUT, " &gt; %S", FSWF("exploreTitle", "Explore"));
     }
     else
     {
-        lx->inDemo = FALSE;
+        lx->inDemo = false;
     }
 
-    lx->backslashCtx.html =TRUE;
+    lx->backslashCtx.html =true;
     u_fprintf(lx->OUT, "</title>\r\n");
 
     /* if(!lx->pathInfo || !(lx->pathInfo[0])) */
@@ -152,7 +152,7 @@ void displayLocaleExplorer(LXContext *lx)
             UErrorCode stat = U_ZERO_ERROR;
             dispName[0] = 0;
             uloc_getDisplayName(lx->curLocaleName, lx->dispLocale, dispName, 1024, &stat);
-            lx->noBug = TRUE; /* hide bug form */
+            lx->noBug = true; /* hide bug form */
             u_fprintf(lx->OUT, "<blockquote><b>%S [%S]</b> \r\n",
                 FSWF("warningInheritedLocale", "Note: You're viewing a locale that does not have verified data . ICU will support this with inherited information, but that information is not verified to be correct."), dispName);
         }
@@ -160,7 +160,7 @@ void displayLocaleExplorer(LXContext *lx)
             isExperimentalLocale(lx->curLocaleName) && 
             strcmp(lx->curLocaleName,"g7"))
         {
-            lx->noBug = TRUE;
+            lx->noBug = true;
             u_fprintf(lx->OUT, "<blockquote><b>%S</b>\r\n",
                 FSWF("warningExperimentalLocale", "Note: You're viewing a Draft locale. This locale is not part of the official ICU installation. &nbsp;"  ));
         }
@@ -174,7 +174,7 @@ void displayLocaleExplorer(LXContext *lx)
             const char *suffix = NULL; /* Eventually would like ALL explorers to be able to use this logic */
 
             u_fprintf(lx->OUT, "<big>");
-            printPath(lx, lx->curLocale, lx->curLocale, TRUE); /* print the breadcrumb */
+            printPath(lx, lx->curLocale, lx->curLocale, true); /* print the breadcrumb */
 
             if(queryField(lx, "EXPLORE_CollationElements")) {
                 u_fprintf(lx->OUT, " &gt; %S", FSWF(/**/"EXPLORE_CollationElements", "Collation Demo"));
@@ -190,7 +190,7 @@ void displayLocaleExplorer(LXContext *lx)
 
             if(lx->curLocaleName[0]) { /* don't show a completely empty locale control */
                 u_fprintf(lx->OUT, "<big>");
-                printPath(lx, lx->curLocale, lx->curLocale, TRUE);
+                printPath(lx, lx->curLocale, lx->curLocale, true);
                 u_fprintf(lx->OUT, "</big>");
                 printChangeLocale(lx);
             }
@@ -230,7 +230,7 @@ void displayLocaleExplorer(LXContext *lx)
         if( !lx->curLocaleName[0] || !strcmp(lx->section,"main") || !strcmp(lx->section, "ka") ) {    /* ?locale  or not set: pick locale */
             printHelpTag(lx, "chooseLocale", NULL);
             u_fprintf(lx->OUT, "<h4>%S</h4>\r\n", FSWF("chooseLocale", "Choose Your Locale."));
-            chooseLocale(lx, TRUE, (char*)lx->dispLocale, "", !strcmp(lx->section,"ka"));
+            chooseLocale(lx, true, (char*)lx->dispLocale, "", !strcmp(lx->section,"ka"));
         } else if (hasQueryField(lx,"converter")) {  /* ?converter */
             const char *restored;
 
@@ -420,15 +420,15 @@ UBool didUserAskForKey(LXContext *lx, const char *key)
         
         if(((size_t)(limit-start) == strlen(key)) && !strncmp(start, key, (limit-start)))
         {
-            return TRUE;
+            return true;
         }
         if(limit==start)
         {
-            return FALSE;
+            return false;
         }
         start=limit;
     }
-    return FALSE;
+    return false;
 }
 
 

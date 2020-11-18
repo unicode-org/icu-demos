@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 int32_t lastcp = -1; /*  \fcharsetn of last cp run */
-UBool ignoreNext = FALSE;
+UBool ignoreNext = false;
 
 struct
 {
@@ -177,18 +177,18 @@ void icu_flushit(int final) /*  int for export's sake */
 void icu_putchar(char ch, int cp)
 {
   if(lastcp != cp) {
-    icu_flushit(TRUE); /*  flush due to cp change */
+    icu_flushit(true); /*  flush due to cp change */
     lastcp = cp;
   }
 
-  if(ignoreNext == TRUE) {
-    ignoreNext = FALSE;
+  if(ignoreNext == true) {
+    ignoreNext = false;
     return;
   }
 
   buf[p++] = ch;
   if(p >= BUF) {
-    icu_flushit(FALSE); /*  flush due to buffer overrun */
+    icu_flushit(false); /*  flush due to buffer overrun */
   }
 }
 
@@ -197,7 +197,7 @@ void icu_putuchar(int uchar)
   int n = 0;
   UErrorCode status = U_ZERO_ERROR;
 
-  icu_flushit(TRUE); /* #1 flush old chars, #2 set up utf8 converter */
+  icu_flushit(true); /* #1 flush old chars, #2 set up utf8 converter */
 
   ubuf[0] = uchar;
   
@@ -209,5 +209,5 @@ void icu_putuchar(int uchar)
   }
   fwrite(utf8buf, 1, n, stdout);
   
-  ignoreNext = TRUE; /* get rid of trailing '?' */
+  ignoreNext = true; /* get rid of trailing '?' */
 }

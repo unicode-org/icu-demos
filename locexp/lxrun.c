@@ -143,7 +143,7 @@ int setupLocaleExplorer(LXContext *lx)
                               &status);
     
     
-        lx->backslashCtx.html = TRUE;
+        lx->backslashCtx.html = true;
     
         memset(&lx->decomposeCtx, sizeof(lx->decomposeCtx), 0);
         ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
@@ -162,7 +162,7 @@ int setupLocaleExplorer(LXContext *lx)
         if(!strcmp(lx->chosenEncoding, "transliterated"))
         {
             memset(&lx->xlitCtx, sizeof(lx->xlitCtx), 0);
-            lx->xlitCtx.html = FALSE;
+            lx->xlitCtx.html = false;
             ucnv_setFromUCallBack((UConverter*)u_fgetConverter(lx->OUT), 
                                   UCNV_FROM_U_CALLBACK_TRANSLITERATED,
                                   &lx->xlitCtx,
@@ -259,7 +259,7 @@ int setupLocaleExplorer(LXContext *lx)
         }
         else
         {
-            lx_setHTMLFilterOnTransliterator(trans, TRUE);
+            lx_setHTMLFilterOnTransliterator(trans, true);
             u_fflush(lx->OUT);
             trans = u_fsettransliterator(lx->OUT, U_WRITE, trans, &transStatus);
             if(trans != NULL)
@@ -631,13 +631,13 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
 
   /* add in keywords */
   if(type[0] == 0) { /* only for non-display */
-    UBool hadKw = FALSE;
+    UBool hadKw = false;
     if(aCollator[0]) {
       if(hadKw) {
         strcat(curLocale, ";");
       } else {
         strcat(curLocale, "@");
-        hadKw = TRUE;
+        hadKw = true;
       }
       strcat(curLocale, "collation=");
       strcat(curLocale, aCollator);
@@ -647,7 +647,7 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
         strcat(curLocale, ";");
       } else {
         strcat(curLocale, "@");
-        hadKw = TRUE;
+        hadKw = true;
       }
       strcat(curLocale, "calendar=");
       strcat(curLocale, aCalendar);
@@ -657,7 +657,7 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
         strcat(curLocale, ";");
       } else {
         strcat(curLocale, "@");
-        hadKw = TRUE;
+        hadKw = true;
       }
       strcat(curLocale, "currency=");
       strcat(curLocale, aCurrency);
@@ -668,7 +668,7 @@ void loadLocaleFromFields(LXContext *lx, LocaleBlob* b, const char *type)
         strcat(curLocale, ";");
       } else {
         strcat(curLocale, "@");
-        hadKw = TRUE;
+        hadKw = true;
       }
       strcat(curLocale, kwn);
       strcat(curLocale, "=");
@@ -715,7 +715,7 @@ void setLocaleAndEncoding(LXContext *lx)
     
     available = ures_openAvailableLocales(FSWF_bundlePath(), &acceptStatus);
     newLocaleLen = uloc_acceptLanguageFromHTTP(newLocale, 200, &outResult, lx->acceptLanguage, available, &acceptStatus);
-    if(U_SUCCESS(status) && isSupportedLocale(newLocale, TRUE)) { /* DO NOT pick an unsupported locale from the browser's settings! */
+    if(U_SUCCESS(status) && isSupportedLocale(newLocale, true)) { /* DO NOT pick an unsupported locale from the browser's settings! */
       setBlobFromLocale(lx, &lx->dispLocaleBlob, newLocale, &status);
       strcat(lx->dispLocaleBlob.name, lx->dispLocaleBlob.base); /* copy base to name - no keywords */
     }

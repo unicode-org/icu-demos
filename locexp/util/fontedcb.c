@@ -52,7 +52,7 @@ U_CAPI void
 {
   char *oldTarget;
   UChar u;
-  UBool handled = FALSE;
+  UBool handled = false;
 
 #ifdef WIN32
   if (!((*err == U_INVALID_CHAR_FOUND) || (*err == U_ILLEGAL_CHAR_FOUND)))    return;
@@ -134,7 +134,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 		    &sourceAlias,
 		    sourceLimit,
 		    NULL,
-		    TRUE,
+		    true,
 		    &subErr); /* pass them the real error. */
   
   if(subErr == U_INDEX_OUTOFBOUNDS_ERROR)
@@ -151,7 +151,7 @@ static void convertIntoTargetOrErrChars(UConverter *_this,
 		       &sourceAlias,
 		       sourceLimit,
 		       NULL,
-		       TRUE,
+		       true,
 		       &subErr);
       /* fix the charBufferLength */
 
@@ -177,7 +177,7 @@ U_CAPI void
 {
   char *oldTarget;
   UChar u;
-  UBool handled = FALSE;
+  UBool handled = false;
   int32_t l;
 
   if (CONVERSION_U_SUCCESS (*err))

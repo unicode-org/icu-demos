@@ -50,17 +50,17 @@ void syrRevWrite(const char *c)
 */
 void doSyriac(const UChar **parentLoc)
 {
-  UBool inFont = FALSE;
+  UBool inFont = false;
   
   const UChar* c = *parentLoc;
   const UChar* p;
   int32_t n = 0;
-  UBool  sawLiveConsonant = FALSE;
+  UBool  sawLiveConsonant = false;
   char tmp[300];
   
   tmp[0] = 0;
   c = *parentLoc;
-  inFont = FALSE;
+  inFont = false;
 
   char *out = tmp;
   
@@ -77,19 +77,19 @@ void doSyriac(const UChar **parentLoc)
  	   didn't process them, and thus it's OK to flush.. */
       if(((*p)&0xFF00) != 0x0700)
 	{
-	  if(inFont == TRUE)
+	  if(inFont == true)
 	    {
 	      *out = 0;
 	      syrRevWrite(tmp);
-	      inFont = FALSE;
+	      inFont = false;
 	      *parentLoc = p;
 	      return; /**************** BREAK OUT ON NON SYRIAC TEXT **********/
 	    }
 	}
-      
-      if(inFont == FALSE)
+
+      if(inFont == false)
 	{
-	  inFont = TRUE;
+	  inFont = true;
 	}
 
       *(out) = syrLookupChar(*p);
@@ -139,12 +139,12 @@ void doSyriac(const UChar **parentLoc)
       *out = 0;
       syrRevWrite(tmp);
 
-      if(inFont == TRUE)
+      if(inFont == true)
 	{
 	  /* printf("</FONT>"); */
 	}
 
-      inFont = FALSE;
+      inFont = false;
       *parentLoc = p;
       return; /**************** BREAK OUT ON NON SYRIAC TEXT **********/
     }

@@ -13,23 +13,23 @@ UBool isSupportedLocale(const char *locale, UBool includeChildren)
 {
     UResourceBundle *newRB;
     UErrorCode       status = U_ZERO_ERROR;
-    UBool           supp   = TRUE;
+    UBool           supp   = true;
 
     newRB = ures_open(FSWF_bundlePath(), locale, &status);
 
     if(U_FAILURE(status))
     {
-        supp = FALSE;
+        supp = false;
     }
     else
     {
         if(status == U_USING_DEFAULT_WARNING)
         {
-            supp = FALSE;
+            supp = false;
         }
         else if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
         {
-            supp = FALSE;
+            supp = false;
         }
         else
         {
@@ -40,13 +40,13 @@ UBool isSupportedLocale(const char *locale, UBool includeChildren)
 
             if(status == U_USING_DEFAULT_WARNING)
             {
-                supp = FALSE;
+                supp = false;
             }
             else
             {
                 if( (!includeChildren) && (status == U_USING_FALLBACK_WARNING))
                 {
-                    supp = FALSE;
+                    supp = false;
                 }
             }
         }
@@ -62,19 +62,19 @@ UBool isExperimentalLocale(const char *locale)
 {
     UResourceBundle *newRB;
     UErrorCode       status = U_ZERO_ERROR;
-    UBool           supp   = FALSE;
+    UBool           supp   = false;
     int32_t len;
 
     newRB = ures_open(NULL, locale, &status);
     if(U_FAILURE(status) || (status == U_USING_FALLBACK_WARNING) || (status == U_USING_DEFAULT_WARNING)) {
-        supp = TRUE;
+        supp = true;
     }
     else
     {
         const UChar *s = ures_getStringByKey(newRB, "Version", &len, &status);
       
         if(*s == 0x0078) /* If it starts with an 'x'.. */
-            supp = TRUE;
+            supp = true;
 
         ures_close(newRB);
     }
@@ -86,11 +86,11 @@ UBool isExperimentalLocale(const char *locale)
 /* chooselocale --------------------------------------------------------------------------- */
 void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *restored, UBool showAll)
 {
-    UBool  hit = FALSE;
+    UBool  hit = false;
     int32_t n, j;
     UErrorCode status = U_ZERO_ERROR;
-    UBool  hadUnsupportedLocales = FALSE;
-    static UBool initStr = TRUE;
+    UBool  hadUnsupportedLocales = false;
+    static UBool initStr = true;
     U_STRING_DECL(BEGIN_HIT_CELL, "<td valign=\"top\" bgcolor=\"#c8d7e3\"><b>", 38);
     U_STRING_DECL(END_HIT_CELL, "</b></td>\r\n", 12);
     U_STRING_DECL(BEGIN_CELL, "<td valign=\"top\">", 17);
@@ -102,7 +102,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
         U_STRING_INIT(BEGIN_CELL, "<td valign=\"top\">", 17);
         U_STRING_INIT(END_CELL, "</td>\r\n", 8);
         U_STRING_INIT(COMMA_SPACE, ", &nbsp;", 9);
-        initStr = FALSE;
+        initStr = false;
     }
 /* v14-gray-table-border */
     u_fprintf(lx->OUT, "<div id='choose_select'></div><!-- used by javascript only -->\n");
@@ -116,12 +116,12 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     u_fprintf(lx->OUT, "<tr><td class='v14-header-4-small' colspan=\"2\"><a class='bs' href=\"?_=%s\">%S</a></td></tr>\r\n",
               lx->locales->str, lx->locales->ustr); /* default */ 
 
-    mySort(lx->locales, &status, TRUE); /* need the whole thing sorted */
+    mySort(lx->locales, &status, true); /* need the whole thing sorted */
 
     for(n=0;n<lx->locales->nSubLocs;n++)
     {
         /* This will hide display locales - LANGUAGE level-  that don't exist. */
-        if((toOpen == FALSE) && !isSupportedLocale(lx->locales->subLocs[n]->str, FALSE) && showAll == FALSE)
+        if((toOpen == false) && !isSupportedLocale(lx->locales->subLocs[n]->str, false) && showAll == false)
             continue;
 
         u_fprintf(lx->OUT, "<tr>\r\n");
@@ -151,7 +151,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
             {
 #ifndef LX_SHOW_ALL_DISPLAY_LOCALES
                 /* This will hide display locales- COUNTRY/VARIANT level that don't exist. */
-                if((toOpen == FALSE) && !isSupportedLocale(lx->locales->subLocs[n]->subLocs[j]->str, FALSE) && (showAll ==FALSE) )
+                if((toOpen == false) && !isSupportedLocale(lx->locales->subLocs[n]->subLocs[j]->str, false) && (showAll ==false) )
                     continue;
 #endif
 
@@ -177,7 +177,7 @@ void chooseLocale(LXContext *lx, UBool toOpen, const char *current, const char *
     if(hadUnsupportedLocales)
         u_fputs(FSWF("locale_experimental", "Locales in <I>Italics</I> are Draft and not officially supported."), lx->OUT);
 
-    if(showAll == FALSE && toOpen == FALSE)
+    if(showAll == false && toOpen == false)
     {
         u_fprintf(lx->OUT, "<a href=\"?locale_all&amp;%s\"><img border=\"0\" width=\"16\" height=\"16\" src=\"" LDATA_PATH_LOC "closed.gif\" alt=\"+\"/>%S</a>\r\n<br />",
                   (lx->queryString&&strlen(lx->queryString)>7)?(lx->queryString+7):"",
@@ -190,7 +190,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
 {
   UErrorCode status = U_ZERO_ERROR;
   int n;
-  UBool hadExperimentalSubLocales = FALSE;
+  UBool hadExperimentalSubLocales = false;
 
   /* look for sublocs */
   if(lx->curLocale && lx->curLocale->nSubLocs)
@@ -199,10 +199,10 @@ void printSubLocales(LXContext *lx, const char *suffix)
       if(!suffix || !*suffix) {
         u_fprintf(lx->OUT, "<br /><div style=\"margin-left: 2.5em; margin-top: 1em; margin-bottom: 1em\">", FSWF("sublocales", "Sublocales:"));
       } 
-      mySort(lx->curLocale, &status, FALSE);  /* Sort sub locales */
+      mySort(lx->curLocale, &status, false);  /* Sort sub locales */
       
       for(n=0;n<lx->curLocale->nSubLocs;n++)  {
-        UBool wasExperimental = FALSE;
+        UBool wasExperimental = false;
         
         if(n != 0) {
           u_fprintf(lx->OUT, ", ");
@@ -216,8 +216,8 @@ void printSubLocales(LXContext *lx, const char *suffix)
         
         if(isExperimentalLocale(lx->curLocale->subLocs[n]->str)) {
           u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
-          hadExperimentalSubLocales = TRUE;
-          wasExperimental = TRUE;
+          hadExperimentalSubLocales = true;
+          wasExperimental = true;
         }
         u_fprintf_u(lx->OUT, lx->curLocale->subLocs[n]->ustr);
         if(wasExperimental) {
@@ -254,7 +254,7 @@ void printSubLocales(LXContext *lx, const char *suffix)
       strcat(buf, stub);
       
       if(findLocaleNonRecursive(lx->locales->subLocs[i], buf) != -1) {
-        UBool wasExperimental = FALSE;
+        UBool wasExperimental = false;
         
         if((count++) > 0) {
           u_fprintf(lx->OUT, ", ");
@@ -272,8 +272,8 @@ void printSubLocales(LXContext *lx, const char *suffix)
         
         if(isExperimentalLocale(buf)) {
           u_fprintf(lx->OUT, "<i><font color=\"#9999FF\">");
-          hadExperimentalSubLocales = TRUE;
-          wasExperimental = TRUE;
+          hadExperimentalSubLocales = true;
+          wasExperimental = true;
         }
         
         u_fprintf_u(lx->OUT, lx->locales->subLocs[i]->ustr);
@@ -347,7 +347,7 @@ void printPath(LXContext *lx, const MySortable *leaf, const MySortable *current,
 void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *current, const char *restored, UBool *hadUnsupportedLocales)
 {
     UBool supported;
-    static UBool initStr = TRUE;
+    static UBool initStr = true;
     U_STRING_DECL(BEGIN_LINK, "<a class='bs' href=\"", 21);
     U_STRING_DECL(MIDDLE_LINK, "\">", 3);
     U_STRING_DECL(END_LINK, "</a>", 5);
@@ -359,13 +359,13 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
         U_STRING_INIT(END_LINK, "</a>", 5);
         U_STRING_INIT(BEGIN_UNSUP, "<i><font color=\"#9999FF\">", 25);
         U_STRING_INIT(END_UNSUP, "</font></i>", 12);
-        initStr = FALSE;
+        initStr = false;
     }
 
-    if ( toOpen == FALSE)
+    if ( toOpen == false)
     {
         /* locales for LOCEXP TEXT */
-        supported = isSupportedLocale(l->str, TRUE);
+        supported = isSupportedLocale(l->str, true);
     }
     else
     {
@@ -376,7 +376,7 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
 
     u_fprintf_u(lx->OUT, BEGIN_LINK);
   
-    if(toOpen == TRUE)
+    if(toOpen == true)
     {
         u_fprintf(lx->OUT, "%s", getLXBaseURL(lx, kNO_LOC));
         u_fprintf(lx->OUT,"&amp;_=%s", l->str);
@@ -399,10 +399,10 @@ void printLocaleLink(LXContext *lx, UBool toOpen, MySortable *l, const char *cur
     if(!supported)
     {
         u_fprintf_u(lx->OUT, BEGIN_UNSUP);
-        *hadUnsupportedLocales = TRUE;
+        *hadUnsupportedLocales = true;
     }
 
-    if(toOpen == TRUE) 
+    if(toOpen == true) 
     {
       u_fprintf_u(lx->OUT, l->ustr);
     }

@@ -88,7 +88,7 @@ int main(void)
   } else if(strcmp(rm,"POST")) { /* homepage */
     //const char *script=getenv("SCRIPT_NAME"); //"/cgi-bin/nbrowser"
     puts(htmlHeader);
-    if (FALSE || !printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "icusegments-header.html")) {
+    if (false || !printHTMLFragment(NULL, NULL, DEMO_COMMON_DIR "icusegments-header.html")) {
       puts(defaultHeader);
     }
     puts(endHeaderBeginBody);

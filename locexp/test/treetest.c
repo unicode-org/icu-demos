@@ -15,7 +15,7 @@ int main()
   strcpy(lx.cLocale,"en_US");
   lx.locales = createLocaleTree(lx.cLocale, &lx.numLocales);
   lx.curLocale = &(lx.locales->subLocs[0].subLocs[0]);
-  printPath(&lx, lx.curLocale,lx.curLocale, TRUE);
+  printPath(&lx, lx.curLocale,lx.curLocale, true);
   
   printf("done\n");
 }

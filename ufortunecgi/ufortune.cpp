@@ -200,7 +200,7 @@ printTableText(const UChar *s, int32_t length, UBool useBreakScripts, UBool make
     errorCode=U_ZERO_ERROR;
     UnicodeString result;
     UnicodeString str(s,length);
-    if(makeLink == TRUE){
+    if(makeLink == true){
     	result.append("<a href=\"");
    	if(str.indexOf(http)==-1){
 	   result.append(http);
@@ -211,7 +211,7 @@ printTableText(const UChar *s, int32_t length, UBool useBreakScripts, UBool make
 
     result.append(s,length);
 
-    if(makeLink == TRUE){
+    if(makeLink == true){
     	result.append("</a>\n");
     }
     u_strToUTF8(buffer, sizeof(buffer), &utf8Length, result.getBuffer(), result.length(), &errorCode);
@@ -317,7 +317,7 @@ main(int argc, const char *argv[]) {
     puts(htmlHeader);
 
     inputLength=0;
-    inputIsUTF8=FALSE;
+    inputIsUTF8=false;
     errorCode=U_ZERO_ERROR; 
     
 /* on win32 systems to debug uncomment the block below

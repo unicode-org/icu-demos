@@ -23,7 +23,7 @@ void showExploreBreak(LXContext *lx, const char *locale)
     const UChar *defaultValueErr = 0;
     const UChar *localValueErr   = 0;
 
-    showKeyAndStartItem(lx, "EXPLORE_Break", FSWF("EXPLORE_Break", "Explore &gt; Numbers"), locale, FALSE, U_ZERO_ERROR);
+    showKeyAndStartItem(lx, "EXPLORE_Break", FSWF("EXPLORE_Break", "Explore &gt; Numbers"), locale, false, U_ZERO_ERROR);
 
     u_fprintf(lx->OUT, "%S<p>", FSWF("formatExample_Break_What","This example demonstrates break iteration"));
 

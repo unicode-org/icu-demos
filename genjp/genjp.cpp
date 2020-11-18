@@ -90,9 +90,9 @@ UBool GenJP::isSemivoiced(UChar ch, UErrorCode &status) {
   decompLen = unorm_normalize(&ch, 1, UNORM_NFD, 0, decompBuff, 256, &status);
 
   if(decompBuff[decompLen-1]==0x309A) {
-    return TRUE;
+    return true;
   } else {
-    return FALSE;
+    return false;
   }
 }
 
@@ -103,9 +103,9 @@ UBool GenJP::isVoiced(UChar ch, UErrorCode &status) {
   decompLen = unorm_normalize(&ch, 1, UNORM_NFD, 0, decompBuff, 256, &status);
 
   if(decompBuff[decompLen-1]==0x3099) {
-    return TRUE;
+    return true;
   } else {
-    return FALSE;
+    return false;
   }
 }
 
@@ -185,7 +185,7 @@ void GenJP::processLengthMark(UErrorCode &status) { // This will do small vowels
   
   fprintf(out, "\n// Rules for treating length mark\n");
   while(*vowel != NULL) { // process one vowel
-    wasReset = TRUE;
+    wasReset = true;
     // printout "&[before 3]vowel"
     vowelNameLen = u_charName(*vowel, U_UNICODE_CHAR_NAME, vowelNameBuffer, _bufferSize, &status);
     vowelNameBuffer[vowelNameLen]=0;
@@ -216,11 +216,11 @@ void GenJP::processLengthMark(UErrorCode &status) { // This will do small vowels
 void GenJP::processIterationMark(UErrorCode &status) {
   UChar katakana = _katakanaStart;
   const char *name;
-  UBool hasSmall = FALSE;
+  UBool hasSmall = false;
 
   fprintf(out, "\n// Rules for treating iteration mark\n");
   while(katakana <= 0x30F3) { // We have anomalies for 0x30F3 and further.
-    wasReset = TRUE;
+    wasReset = true;
     name = getName(katakana, status);
     fprintf(out, "\n");
     if (katakana == 0x30AB) { // KA needs to pick up small Ka (0x30F5)
@@ -260,7 +260,7 @@ void GenJP::processIterationMark(UErrorCode &status) {
       processVoicedIterationMark(0x30F4, status);
     } else {
       if(strstr(name, "SMALL")) { // this is small Katakana
-        hasSmall = TRUE;
+        hasSmall = true;
         katakana++;
         name = getName(katakana, status);
       }
@@ -286,7 +286,7 @@ void GenJP::processIterationMark(UErrorCode &status) {
         katakana++;
       }
 
-      hasSmall = FALSE;
+      hasSmall = false;
     }
     katakana++;
   }
@@ -294,8 +294,8 @@ void GenJP::processIterationMark(UErrorCode &status) {
 }
 
 const char *GenJP::getRelation() {
-  if(wasReset==TRUE) {
-    wasReset = FALSE;
+  if(wasReset==true) {
+    wasReset = false;
     return _tertiaryLess;
   } else {
     return _equal;

@@ -29,7 +29,7 @@ UBool util_writeTo(FILE* file, const char* data, int32_t length) {
     // Write length
     size_t written = fwrite(&length, sizeof(length), 1, file);
     if (written != 1) {
-        return FALSE;
+        return false;
     }
     // Write data
     written = fwrite(data, 1, length, file);
@@ -66,7 +66,7 @@ char* util_readFrom(FILE* file, int32_t& length) {
 UBool util_writeTo(FILE* file, const UnicodeString& str) {
     char* charBuf = util_createChars(str);
     if (charBuf == 0) {
-        return FALSE;
+        return false;
     }
     int32_t size = strlen(charBuf) + 1;
     UBool result = util_writeTo(file, charBuf, size);
@@ -75,17 +75,17 @@ UBool util_writeTo(FILE* file, const UnicodeString& str) {
 }
 
 /**
- * Return TRUE on success.
+ * Return true on success.
  */
 UBool util_readFrom(FILE* file, UnicodeString& key) {
     int32_t length = 0;
     char* charBuf = util_readFrom(file, length);
     if (charBuf == 0) {
-        return FALSE;
+        return false;
     }
     key = UnicodeString(charBuf, ENCODING);
     delete[] charBuf;
-    return TRUE;
+    return true;
 }
 
 /**
@@ -148,11 +148,11 @@ void util_fprintf(FILE* out, const char* str, UBool inQuote) {
 UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote) {
     char* charBuf = util_createChars(str);
     if (charBuf == 0) {
-        return FALSE;
+        return false;
     }
     util_fprintf(out, charBuf, inQuote);
     delete[] charBuf;
-    return TRUE;
+    return true;
 }
 
 /**
@@ -162,7 +162,7 @@ UBool util_fprintf(FILE* out, const UnicodeString& str, UBool inQuote) {
 UBool util_fprintfq(FILE* out, const UnicodeString& str) {
     char* charBuf = util_createChars(str);
     if (charBuf == 0) {
-        return FALSE;
+        return false;
     }
     char* p = charBuf;
     while (*p) {
@@ -174,5 +174,5 @@ UBool util_fprintfq(FILE* out, const UnicodeString& str) {
         ++p;
     }
     delete[] charBuf;
-    return TRUE;
+    return true;
 }

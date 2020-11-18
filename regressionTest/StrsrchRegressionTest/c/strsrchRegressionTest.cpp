@@ -70,8 +70,8 @@ static FILE * setupResultDirectoryAndLogFile(const char *collatorNameBuffer, con
 
 int main (int argc, char **argv) {
     int result = 0;
-    UBool printUsage = FALSE;
-    UBool printVersion = FALSE;
+    UBool printUsage = false;
+    UBool printVersion = false;
     int32_t optind = 0;
     char *arg;
     char resultDir[LARGE_BUFFER_SIZE] = "";
@@ -131,11 +131,11 @@ int main (int argc, char **argv) {
 
         /* version info */
         if(strcmp(arg, "-v") == 0 || strcmp(arg, "--version") == 0) {
-            printVersion = TRUE;
+            printVersion = true;
         }
         /* usage info */
         else if(strcmp(arg, "-h") == 0 || strcmp(arg, "--help") == 0) {
-            printUsage = TRUE;;
+            printUsage = true;;
         }
         /* POSIX.1 says all arguments after -- are not options */
         else if(strcmp(arg, "--") == 0) {
@@ -146,7 +146,7 @@ int main (int argc, char **argv) {
         /* unrecognized option */
         else if(strncmp(arg, "-", strlen("-")) == 0) {
             printf("collationRegressionTest: invalid option -- %s\n", arg+1);
-            printUsage = TRUE;;
+            printUsage = true;;
         }
         /* done with options, display cal */
         else {
@@ -381,7 +381,7 @@ static int32_t startTest(const char *inLocale, const char *resultDirPath, const 
     int32_t localesCount = 0;
     UnicodeString *text = NULL;
     UnicodeString *pattern = NULL;
-    UBool getUCAVersion = TRUE;
+    UBool getUCAVersion = true;
 
     if ((pattern = loadPattern(inPattern, textFile)) == NULL) {
         printf("Failed loading pattern.\n");
@@ -423,7 +423,7 @@ static int32_t startTest(const char *inLocale, const char *resultDirPath, const 
             ucol_getUCAVersion(((RuleBasedCollator *)coll)->getUCollator(), version);
             u_versionToString(version, versionStringUCA);
 
-            getUCAVersion = FALSE;
+            getUCAVersion = false;
         }
 
         if (runTestLoop(pattern, text, coll, resultDirPath, localeName, versionStringICU, versionStringUCA, textFile) != 0) {

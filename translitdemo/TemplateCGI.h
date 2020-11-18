@@ -61,7 +61,7 @@ class TemplateCGI {
      * getParamValue("FOO", "").  Subclasses may invoke the default
      * implemenation using TemplateCGI::handleTemplateVariable().
      *
-     * @param inQuote if TRUE, then this variable is being output
+     * @param inQuote if true, then this variable is being output
      * into a double-quoted string.  We detect this only in the case
      * of "$FOO..."; that is, we only look at the immediately preceding
      * character.  The JavaScript code must be aware of this.  When

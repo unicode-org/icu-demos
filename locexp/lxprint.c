@@ -200,7 +200,7 @@ void showKeyAndStartItemShort(LXContext *lx, const char *key, const UChar *keyNa
     u_fprintf(lx->OUT, "</span>\n");
 
 
-    if(cumulative == TRUE )
+    if(cumulative == true )
     {
         u_fprintf(lx->OUT, " (%S)", FSWF("cumulative_notshown", "cumulative data from parent not shown"));
     }
@@ -243,11 +243,11 @@ void exploreShowPatternForm(LXContext *lx, UChar *dstPattern, const char *locale
     }
     u_fprintf(lx->OUT, "<textarea rows=\"2\" cols=\"60\" name=\"str\">");
 
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
 
     u_fprintf(lx->OUT, "%S", dstPattern); 
 
-    lx->backslashCtx.html = TRUE;
+    lx->backslashCtx.html = true;
   
     u_fprintf(lx->OUT, "</textarea><br /><br />\r\n<input type=\"submit\" value=\"Format\" /><input type=\"reset\" value=\"Reset\" /></form>\r\n");
 
@@ -284,7 +284,7 @@ void printStatusTable(LXContext *lx)
     u_fprintf(lx->OUT, "<b>%S</b></td>\r\n", FSWF("myConverter", "Encoding:"));
     u_fprintf(lx->OUT, "   <td>");
     /* now encoding */
-    if(lx->inDemo == FALSE)
+    if(lx->inDemo == false)
     {
         u_fprintf(lx->OUT, "<a href=\"?converter");
         if(strncmp(lx->queryString, "converter",9)) /* fixme */
@@ -294,7 +294,7 @@ void printStatusTable(LXContext *lx)
 
     u_fprintf(lx->OUT, "<big>%s</big>", lx->convName);
   
-    if(lx->inDemo == FALSE)
+    if(lx->inDemo == false)
     {
         u_fprintf(lx->OUT, "</a>\r\n");
     }
@@ -343,7 +343,7 @@ void printStatusTable(LXContext *lx)
     }
 
 #if 0
-    if(lx->inDemo == FALSE)
+    if(lx->inDemo == false)
     {
         u_fprintf(lx->OUT, "<a href=\"%s/en/utf-8/?PANICDEFAULT=yes\"><img src=\"" LDATA_PATH_LOC "incorrect.gif\" alt=\"Click here if text displays incorrectly\" /></a>", lx->scriptName, lx->dispLocale);
     }
@@ -356,7 +356,7 @@ void printStatusTable(LXContext *lx)
 
     u_fprintf(lx->OUT, "<td>");
   
-    if(lx->inDemo == FALSE)
+    if(lx->inDemo == false)
     {
       printChangeA(lx, lx->dispLocale, "d");
     } else {
@@ -374,7 +374,7 @@ void printStatusTable(LXContext *lx)
               FSWF("off", "off"));
 #else
     /* Transliteration is OK */
-    if(lx->inDemo == FALSE)  {
+    if(lx->inDemo == false)  {
       if(strstr(lx->pathInfo,"/transliterated/")) {
         u_fprintf(lx->OUT, "<td><b>*%S*</b> / <a href=\"%s/%s/?",
                   FSWF("on","on"),
@@ -408,7 +408,7 @@ void printStatusTable(LXContext *lx)
                 FSWF_bundlePath(), u_errorName(FSWF_bundleError()));
     }
     
-    if(!isSupportedLocale(lx->dispLocale, TRUE)) {  /* consider it 'supported' if it's been translated. */
+    if(!isSupportedLocale(lx->dispLocale, true)) {  /* consider it 'supported' if it's been translated. */
         u_fprintf(lx->OUT, "<tr><td colspan=\"3\" style=\"color: #FF0000;\">");
         u_fprintf_u(lx->OUT, FSWF("locale_unsupported", "This display locale, <strong>%s</strong>, is unsupported."), lx->dispLocale);
       u_fprintf(lx->OUT, "</td></tr>");
@@ -524,7 +524,7 @@ char *createEscapedSortList(const UChar *source)
 
 void writeEscapedHTMLChars(LXContext *lx, const char *s)
 {
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
 
     while(*s) {
         switch (*s) {
@@ -537,12 +537,12 @@ void writeEscapedHTMLChars(LXContext *lx, const char *s)
     }
 
     /* should 'get/restore' here. */
-    lx->backslashCtx.html = TRUE;
+    lx->backslashCtx.html = true;
 }
 
 void writeEscapedHTMLUChars(LXContext *lx, const UChar *s)
 {
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
 
     while(*s) {
         switch (*s) {
@@ -555,12 +555,12 @@ void writeEscapedHTMLUChars(LXContext *lx, const UChar *s)
     }
 
     /* should 'get/restore' here. */
-    lx->backslashCtx.html = TRUE;
+    lx->backslashCtx.html = true;
 }
 
 void writeEscaped(LXContext *lx, const UChar *s)
 {
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
 
     if(1||u_strchr(s, 0x00A0))
     {
@@ -581,12 +581,12 @@ void writeEscaped(LXContext *lx, const UChar *s)
     /*       u_fprintf(lx->OUT, "%S", s); */
 
     /* should 'get/restore' here. */
-    lx->backslashCtx.html = TRUE;
+    lx->backslashCtx.html = true;
 }
 
 void writeEscapedQuery(LXContext *lx, const UChar *s)
 {
-    lx->backslashCtx.html = FALSE;
+    lx->backslashCtx.html = false;
 
     if(u_strchr(s, 0x00A0))
     {
@@ -603,7 +603,7 @@ void writeEscapedQuery(LXContext *lx, const UChar *s)
     else
         u_fprintf(lx->OUT, "%S", s); 
 
-    lx->backslashCtx.html = TRUE;
+    lx->backslashCtx.html = true;
 }
 
 
@@ -781,8 +781,8 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
                const UChar* ustr, int32_t n, const char* current)
 {
   UBool selected;
-  UBool doBold = FALSE; /* boldface this item? */
-  UBool couldBold = FALSE; /* boldface any items? (i.e., gray out others) */
+  UBool doBold = false; /* boldface this item? */
+  UBool couldBold = false; /* boldface any items? (i.e., gray out others) */
   char partStr[20];
   partStr[0] = part;
   partStr[1] = 0;
@@ -791,7 +791,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
     if((!prefix||(*prefix!='d')) && (lx->rLocale)) {
       int32_t i, j;
       /* see which languages have this region*/
-      couldBold = TRUE;
+      couldBold = true;
 #if defined (LX_DEBUG)
       fprintf(stderr, "rLocale = %s\n", lx->rLocale->str);
 #endif
@@ -808,7 +808,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
             fprintf(stderr, "[L] %s vs %s\n", lx->curLocaleBlob.r, r);
 #endif
             if(!strcmp(lx->curLocaleBlob.r,r)) {
-              doBold = TRUE;
+              doBold = true;
             }
           }
         }
@@ -826,7 +826,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
       if((rx=strchr(r1,'_'))) {
         *rx = 0;
       }
-      couldBold = TRUE;
+      couldBold = true;
       m = lx->lLocale; /* check all Regions under current Language */
       for(i=0;!doBold && i<m->nSubLocs;i++) {
         UErrorCode status = U_ZERO_ERROR;
@@ -839,7 +839,7 @@ static void printCell(LXContext *lx, const char *myURL, const char *prefix, char
         fprintf(stderr, "[L] %s vs %s\n", r1, r);
 #endif
         if(!strcmp(r1,r)) {
-          doBold = TRUE;
+          doBold = true;
         }
       }
     }
@@ -1030,14 +1030,14 @@ void showChangePage(LXContext *lx)
 {
   const char *changeWhat;
   char part = 0;
-  UBool isDisp = FALSE;
+  UBool isDisp = false;
   char prefix[4];
   char oxStr[20];
   char myURL[2048];
   const char *ox;
   const char *baseU;
   int32_t n =0;
-  /*UBool selected = FALSE;*/
+  /*UBool selected = false;*/
   LocaleBlob *b;
   UErrorCode status = U_ZERO_ERROR;
   int32_t adds = 0;
@@ -1051,7 +1051,7 @@ void showChangePage(LXContext *lx)
   }
   changeWhat = lx->section + strlen("ch");
   if(*changeWhat == 'd') {
-    isDisp = TRUE;
+    isDisp = true;
     changeWhat++;
     strcpy(prefix,"d_");
     b = &lx->dispLocaleBlob;
@@ -1079,10 +1079,10 @@ void showChangePage(LXContext *lx)
   switch (part) {
   case 'l':
     if(isDisp) {
-      resetSortsInTheirLocales(lx->locales, &status, FALSE);
+      resetSortsInTheirLocales(lx->locales, &status, false);
     }
 
-    mySort(lx->locales, &status, FALSE); /* sort top level */
+    mySort(lx->locales, &status, false); /* sort top level */
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Locale", "Languages"));
     startCell(lx);
     printCell(lx, myURL, prefix, part, "root", lx->locales->ustr, n, b->l);  /* Language doesn't need a 'none' - use root */
@@ -1101,7 +1101,7 @@ void showChangePage(LXContext *lx)
   case 'r':
     u_fprintf(lx->OUT, "<h3>%S</h3>\n", FSWF("localeList_Sublocale", "Regions"));
     startCell(lx);
-    mySort(lx->regions, &status, FALSE); /* need the whole thing sorted */
+    mySort(lx->regions, &status, false); /* need the whole thing sorted */
     for(n=0;n<lx->regions->nSubLocs;n++) {
       int32_t len, len2; 
       char rgn[128];

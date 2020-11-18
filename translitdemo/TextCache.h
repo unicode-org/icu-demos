@@ -57,7 +57,7 @@ class TextCache {
     void acquireLock();
     // @param allTheWay if true, automatically balance ALL previous
     // calls to acquireLock (delete the lock file)
-    void releaseLock(UBool allTheWay=FALSE);
+    void releaseLock(UBool allTheWay=false);
 
     static UBool fileExists(const char* fullpath);
 

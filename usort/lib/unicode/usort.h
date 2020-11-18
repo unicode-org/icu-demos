@@ -137,7 +137,7 @@ typedef struct USort
  * Open a USort object.
  * @param locale Locale to use. NULL for default
  * @param strength Collation strength. If UCOL_DEFAULT, strength will not be set.
- * @param ownText TRUE if this object should own its' text.
+ * @param ownText true if this object should own its' text.
  * @param status Error code. [values?]
  */
 
@@ -148,7 +148,7 @@ usort_open(const char *locale, UCollationStrength strength, UBool ownText,
 /**
  * Open a USort object with a custom Collator
  * @param adopt Collator to adopt
- * @param ownText TRUE if this object should own its' text.
+ * @param ownText true if this object should own its' text.
  * @param status Error code. [values?]
  */
 
@@ -167,13 +167,13 @@ usort_close(USort *usort);
 
 /**
  * Add a line of text to the list.
- * if ownsText was FALSE, then the text will be copied. 
+ * if ownsText was false, then the text will be copied. 
  * Note: text MUST be null terminated if it's not being copied !
  * @param usort The sort object to add to
  * @param line Text to be added. [Typically, will not end with CR or
  *  LF]
  * @param len Length of text passed in. -1 if null terminated.
- * @param copy TRUE if the text should be copied. Text WILL be copied
+ * @param copy true if the text should be copied. Text WILL be copied
  *   if len is not -1. 
  * @param userData Your additional reference data can go here. Pass in NULL by default.
  */
@@ -188,7 +188,7 @@ usort_addLine(USort *usort, const UChar *line, int32_t len, UBool copy, void *us
  * @param usort the sort object to add to 
  * @param file FILE to read data from. Will read until EOF.
  * @param inConverter Converter to use to convert data in the FILE. If NULL, the converter specified by ucnv_getDefaultName() will be used.
- * @param escapeMode If TRUE, sequences such as \u0308 will be recognized.
+ * @param escapeMode If true@, sequences such as \u0308 will be recognized.
  */
 
 T_USORT_API void

@@ -21,7 +21,7 @@ void chooseConverter(LXContext *lx, const char *restored)
 
     ncnvs = ucnv_countAvailable();
 
-    mysort = usort_open(NULL, UCOL_DEFAULT_STRENGTH, TRUE, &status);
+    mysort = usort_open(NULL, UCOL_DEFAULT_STRENGTH, true, &status);
   
     if(U_FAILURE(status))
     {
@@ -65,9 +65,9 @@ void chooseConverter(LXContext *lx, const char *restored)
           strcpy(dispName, alias);
         
         if(!strcmp(alias,"fonted"))
-          usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)"fonted");
+          usort_addLine(mysort, uastrdup(dispName), -1, false, (void*)"fonted");
         else
-          usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)MIMECharsetName(name));
+          usort_addLine(mysort, uastrdup(dispName), -1, false, (void*)MIMECharsetName(name));
     }
 
     naliases = (mysort->count);
@@ -109,7 +109,7 @@ void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample)
   
     ncnvs = ucnv_countAvailable();
 
-    mysort = usort_open(NULL, UCOL_DEFAULT_STRENGTH, TRUE, &status);
+    mysort = usort_open(NULL, UCOL_DEFAULT_STRENGTH, true, &status);
   
     if(U_FAILURE(status))
     {
@@ -131,7 +131,7 @@ void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample)
 
         name = ucnv_getAvailableName(i);
 
-        if(testConverter(name, sample, sampleLen, junkChars, 1023) == FALSE)
+        if(testConverter(name, sample, sampleLen, junkChars, 1023) == false)
             continue; /* Too bad.. */
 
         nmatch++;
@@ -154,9 +154,9 @@ void chooseConverterMatching(LXContext *lx, const char *restored, UChar *sample)
                 strcpy(dispName, alias);
 
             if(!strcmp(alias,"fonted"))
-                usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)"fonted");
+                usort_addLine(mysort, uastrdup(dispName), -1, false, (void*)"fonted");
             else
-                usort_addLine(mysort, uastrdup(dispName), -1, FALSE, (void*)name);
+                usort_addLine(mysort, uastrdup(dispName), -1, false, (void*)name);
 	}
 
     }
