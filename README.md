@@ -1,57 +1,54 @@
-Copyright (c) 1998-2009 IBM and Others.
-I C U  -  A P P S
------------------
+# I C U  -  A P P S
+##Copyright (c) 1998-2009 IBM and Others.
 
- This package contains sample applications built using the ICU. For
+
+This package contains sample applications built using the
+International Components for Unicode (ICU) C++ library ICU4C. For
 more information on the ICU:
 
- URL:   http://icu-project.org/
+ [icu-project.org](http://icu-project.org/)
 
-
- If you have an application that is written using the ICU that you
-would like to contribute, join the ICU mailing list [above URL] and
-contact us.
+If you have an application that is written using the ICU that you
+would like to contribute, join the ICU mailing list [icu-project.org](http://icu-project.org/)
+and contact us.
 
 - The "iucsamples" directory contains samples for the
 Unicode conference <unicodeconference.org> and has its own
 build instructions.
 
-BUILDING
---------
+#BUILDING
 
-
-*** UNIX (or other command line platforms):
+## UNIX (or other command line platforms):
 
   1. Build and install the ICU ('make install'). Make note of the 
       prefix used to build the ICU, which can be set with the
-     '--prefix=' option to it's ./configure.
+     '--prefix=' option to it's ./configure. The example directory /var/local/ is used in the samples below.
 
   2. icu-config doesn't need to be on your PATH - just make sure the same --prefix is used as that which built ICU.
   
-  3. Run the ./configure script in the icuapps directory.  You will need
+  3. Run the ./configure script in the icu-demos directory.  You will need
      to supply the same '--prefix=XXX' argument that was passed to the
      ICU.
 
-  4. Type 'make' in the icuapps, or 'make install' if you wish.
+  4. Type 'make' in the icu-demos, or 'make install' if you wish.
 
- Example:
-
-  ICU:
-     cd ...somewhere/icu
+Example commands:
+````
+  icu4c:
+     cd ...somewhere/icu4c
      ./configure --prefix=/var/local
      make install
   
-  ICUAPPS:
-     cd ...somewhere/icuapps         (THIS directory)
+  icu-demos:
+     cd ...somewhere/icu-demos         (THIS directory)
      ./configure --prefix=/var/local
      make
      make install                    (optional)
-
-
+````
 
 *** Win32 Instructions
   1. build ICU in an 'icu' directory
-  2. build icuapps in an 'icuapps' directory at the same level as 'icu'
+  2. build icu-demos in an 'icuicu-demos' directory at the same level as 'icu'
 
 RUNNING CGIS
 ------------
@@ -65,7 +62,7 @@ RUNNING CGIS
     symlinks of this script with the name of the cgis (locexp, ubrowse, etc).  Change the 'ICU' 
     variable to point at the base of the installed ICU. (the prefix).
 
-----------------------------
+````
 #!/bin/sh
 # wrapper script.
 
@@ -74,12 +71,9 @@ ICU=/installed/icu
 cd ${ICU}/bin
 export DYLD_LIBRARY_PATH=${ICU}/lib:${DYLD_LIBRARY_PATH}
 exec ${ICU}/bin/${ME}
-----------------------------
+````
 
-==========================================
-==========================================
-THE APPS
-
+# The Demonstration Applications
 
 - uconv    From : Jonas Utterstrom 
                   <jonas.utterstrom@vittran.norrnod.se>
