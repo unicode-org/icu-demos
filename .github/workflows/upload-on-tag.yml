@@ -48,4 +48,3 @@ jobs:
         image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
         dockerfile: icu4jweb/Dockerfile
         context: icu4jweb
-        build_args:
