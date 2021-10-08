@@ -1,4 +1,4 @@
-name: Build ICU4J
+name: Build ICU4J Demos
 
 on:
   push:
@@ -31,3 +31,6 @@ jobs:
     - name: Build container unicode/icu4jweb
       run: >
         cd icu4jweb ; bash build-docker.sh
+    - name: Build iucsamples4j
+      run: >
+        mvn --file iucsamples/j/icu2work/pom.xml -s .github/workflows/mvn-settings.xml -B test
