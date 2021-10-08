@@ -1,0 +1,29 @@
+name: Build ICU4C Demos
+
+on:
+  push:
+    branches:
+    - '*'
+  pull_request:
+    branches:
+    - '*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # ccache?
+    - name: Cache apk
+      uses: actions/cache@v2
+      with:
+        path: ~/.apk
+        key: apk
+        restore-keys: |
+          apk
+    - name: Build iucsamples4c with docker
+      run: >
+        cd iucsamples/c && docker run --rm -v $HOME/.apk:/etc/apk/cache -v $(pwd)/:/usr/src -w /usr/src alpine:edge sh -c "apk --update add gcc make g++ bsd-compat-headers pkgconfig icu-dev && make all check"
+    - name: Build icudemos with docker
+      run: >
+        cd icu-kube && sh build.sh
+    # TODO: non-docker build?
