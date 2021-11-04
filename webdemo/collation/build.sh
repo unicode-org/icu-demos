@@ -2,7 +2,7 @@
 # © 2016 and later: Unicode, Inc. and others.
 # License & terms of use: http://www.unicode.org/copyright.html
 
-# Build script for http://demo.icu-project.org/icu-bin/collation.html
+# Build script for https://icu4c-demos.unicode.org/icu-bin/collation.html
 
 # To update the index.html file for the demo:
 # 1. "make install" ICU, for example with
