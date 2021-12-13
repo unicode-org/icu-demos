@@ -2,7 +2,7 @@
 <!-- © 2016 and later: Unicode, Inc. and others.
      License & terms of use: http://www.unicode.org/copyright.html -->
 <head>
-<title>ICU 70 Collation Demo</title>
+<title>ICU Collation Demo</title>
 <style type="text/css">
 .settings { font-size:67% }
 .default { text-decoration:underline }
@@ -23,11 +23,11 @@ th { text-align:right }
 <body>
 <form action="/cgi-bin/collation/dosort.sh" method="post" target="output">
 <div id="intro">
-<h1><a href="http://site.icu-project.org/">ICU</a> Collation Demo</h1>
-<p><a href="http://userguide.icu-project.org/collation/customization">User Guide</a> —
-<a href="http://www.unicode.org/reports/tr35/tr35-collation.html">LDML Collation</a> —
-<a href="http://demo.icu-project.org/icu-bin/icudemos">ICU4C Demos</a> —
-<a href="http://icu-project.org/icu4jdemos.html">ICU4J Demos</a></p>
+<h1><a href="https://icu.unicode.org/download/">ICU</a> Collation Demo</h1>
+<p><a href="https://unicode-org.github.io/icu/userguide/collation/customization/">User Guide</a> —
+<a href="https://www.unicode.org/reports/tr35/tr35-collation.html">LDML Collation</a> —
+<a href="https://icu4c-demos.unicode.org/icu-bin/icudemos">ICU4C Demos</a> —
+<a href="https://icu.unicode.org/home/icu4j-demos#">ICU4J Demos</a></p>
 <select name="co"><!-- begin output from webdemo/collation/available -->
 <option value="">und (type=standard):   root (Standard Sort Order)</option>
 <option value="@collation=emoji">und-u-co-emoji:   root (Emoji Sort Order)</option>
@@ -174,16 +174,16 @@ th { text-align:right }
 <!-- end output from webdemo/collation/available --></select><br>
 <!-- TODO: Maybe collapsible/growable rules textarea? -->
 Append rules: (For examples see the
-<a href="http://unicode.org/repos/cldr/trunk/common/collation/">CLDR tailoring data</a>,
+<a href="https://unicode.org/repos/cldr/trunk/common/collation/">CLDR tailoring data</a>,
 use "View Source" for .xml)<br>
 <textarea name="rules" rows="3" cols="60"></textarea><br>
 </div><!-- intro -->
 <div id="settings">
-<b>Settings</b> (see LDML <a href="http://www.unicode.org/reports/tr35/tr35-collation.html#Collation_Settings">Table</a> /
-<a href="http://www.unicode.org/reports/tr35/tr35-collation.html#Common_Settings">Common combinations</a>)<br>
+<b>Settings</b> (see LDML <a href="https://www.unicode.org/reports/tr35/tr35-collation.html#Collation_Settings">Table</a> /
+<a href="https://www.unicode.org/reports/tr35/tr35-collation.html#Common_Settings">Common combinations</a>)<br>
 <!-- TODO: Maybe make the settings collapsible? -->
 <!-- TODO: convenience buttons that set "ignore accents" and other common combinations,
-see http://unicode.org/repos/cldr/trunk/specs/ldml/tr35-collation.html#Common_Settings -->
+see https://unicode.org/repos/cldr/trunk/specs/ldml/tr35-collation.html#Common_Settings -->
 <table class="settings">
 <tr><th>normalization:</th><td>
 <input type="radio" name="kk" value="?" checked>default
@@ -258,7 +258,7 @@ file-12
 filé-110
 </textarea>
 <p>Escape syntax: \uHHHH or \U00HHHHHH.
-(See <a href="http://www.icu-project.org/apiref/icu4c/classicu_1_1UnicodeString.html">UnicodeString</a>::unescape() documentation.)</p>
+(See <a href="https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1UnicodeString.html">UnicodeString</a>::unescape() documentation.)</p>
 </div><!-- inputsection -->
 <!-- TODO: Add a little margin between the inputsection and outputsection. -->
 <div id="outputsection">
