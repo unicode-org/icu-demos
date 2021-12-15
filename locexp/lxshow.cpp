@@ -1587,6 +1587,7 @@ void showTaggedArray( LXContext *lx, UResourceBundle *rb, const char *locale, co
     UResourceBundle *item = NULL;
 
     // Todo - fix countArrayItems, which fails for many locales
+    // See https://unicode-org.atlassian.net/browse/ICU-21581
     return;
 
     if (rb) {
