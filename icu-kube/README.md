@@ -7,16 +7,24 @@ Dockerized ICU4C Demos
 
 ## Building with a special ICU version
 
-Use an ICU source tarball:
+Use an ICU source tarball such as those in [ICU
+releases](https://github.com/unicode-org/icu/tags):
 
-```sh
-$ docker build --build-arg ICU_PATH=https://github.com/unicode-org/icu/releases/download/release-65-1/icu4c-65_1-src.tgz -t icu4c-demos:my-demos  . -f icu-kube/docker.d/icu4c-demos/Dockerfile
+Run this from the icu-demos directory:
+```
+export RELEASE_PATH=https://github.com/unicode-org/icu/releases/download/release-70-1
+export LIB_TGZ=icu4c-70_1-src.tgz
+export RELEASE_LIB=$RELEASE_PATH/$LIB_TGZ
+
+echo $RELEASE_LIB
+
+docker build --build-arg ICU_PATH=$RELEASE_LIB -t icu4c-demos:my-demos  . -f icu-kube/docker.d/icu4c-demos/Dockerfile
 ```
 
-- If all goes well (it did, right?): you can now run
+- If all goes well, you can now run
 
 ```sh
-$ docker run --rm -p 8888:8080 icu4c-demos:my-demos
+docker run --rm -p 8888:8080 icu4c-demos:my-demos
 ```
 
 … That will serve up the demos at http://localhost:8888/icu-bin/icudemos

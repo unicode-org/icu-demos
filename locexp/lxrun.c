@@ -348,7 +348,7 @@ void runLocaleExplorer(LXContext *lx)
   if(!lx->fileObj && !failure) {
     displayLocaleExplorer(lx);
   }
-  
+
     fflush(lx->fOUT);
 #ifdef LX_TMPFILE
     len = ftell(tmpf); /* get length from pos in file */
