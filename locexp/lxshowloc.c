@@ -19,7 +19,12 @@ static void showSubArray(LXContext *lx, const char *locale, const char *transKey
 
   subRb = ures_open(path, locale, &status);
   if(U_SUCCESS(status)) {
-    showTaggedArray(lx,subRb,locale,transKey,compareToDisplay);
+      if (subRb) {
+        showTaggedArray(lx,subRb,locale,transKey,compareToDisplay);
+      } else {
+        fprintf(stderr, "showSubArray subRb == NULL for  locale=%s\n", locale);
+        fflush(stderr);
+      }
   }
   ures_close(subRb);
 }
@@ -71,7 +76,6 @@ void showOneLocale(LXContext *lx)
         return; /* BREAK out */
     }
 
-
     {
       UErrorCode nsErr = U_ZERO_ERROR;
       const char *theNs = NULL;
@@ -98,16 +102,17 @@ void showOneLocale(LXContext *lx)
         return;
     }
 
+    
     explainStatus(lx, status,"top");
 
     /*   u_fprintf(lx->OUT, "</td></tr><tr><td colspan=2>"); */
 
     /* analyze what kind of locale we've got.  Should this be a little smarter? */
-#if 0
+#if 1  // TEMPORARY
     /* "friendly" messages */
     u_fprintf(lx->OUT, "%S", FSWF("localeDataWhat", "This page shows the localization data for the locale listed at left. "));
 
-    if(strlen(locale)==2) /* just the language */
+    if(strlen(locale)==2 || strlen(locale)==3) /* just the language */
     {
         u_fprintf(lx->OUT, " %S",FSWF("localeDataLanguage","No region is specified, so the data is generic to this language."));
     }
@@ -115,16 +120,16 @@ void showOneLocale(LXContext *lx)
     {
         u_fprintf(lx->OUT, " %S", FSWF("localeDataDefault", "This is the default localization data, which will be used if no other installed locale is specified."));
     }
-    else if(locale[2] == '_')
+    else if(locale[2] == '_' || (strlen(locale) > 3 && locale[3] == '_'))
     {
-        if(strlen(locale) == 5)
-	{
-            u_fprintf(lx->OUT, " %S", FSWF("localeDataLangCountry", "This Locale contains data for this language, as well as conventions for this particular region."));
+        if(strlen(locale) >= 5)
+        {
+          u_fprintf(lx->OUT, " %S", FSWF("localeDataLangCountry", "This Locale contains data for this language, as well as conventions for this particular region."));
         }
         else
         {
-            u_fprintf(lx->OUT, " %S", FSWF("localeDataLangCountryVariant", "This Locale contains data for this language, as well as conventions for a variant within this particular region."));
-	}
+          u_fprintf(lx->OUT, " %S", FSWF("localeDataLangCountryVariant", "This Locale contains data for this language, as well as conventions for a variant within this particular region."));
+        }
     }
 
     if(strstr(locale, "_EURO"))
@@ -179,11 +184,11 @@ void showOneLocale(LXContext *lx)
     else /* ================================= Normal ShowXXXXX calls ===== */
     {
 		u_fprintf(lx->OUT, "<br />\r\n");
-	/*if(!getenv("SERVER_NAME") || strncmp(getenv("SERVER_NAME"),"oss",3)) {
+        /*if(!getenv("SERVER_NAME") || strncmp(getenv("SERVER_NAME"),"oss",3)) {
 		u_fprintf(lx->OUT, "<a href=\"%s&amp;x=iloc\">%S</a><br />",
 			getLXBaseURL(lx, kNO_SECT),
 			FSWF("icirView", "Switch to Survey View"));
-	 } else {
+            } else {
 		u_fprintf(lx->OUT, "<!-- survey disabled -->");
 	}*/
         /* %%%%%%%%%%%%%%%%%%%%%%%*/
@@ -219,7 +224,6 @@ void showOneLocale(LXContext *lx)
                      "Countries",
                      true);
         
-
         /* TODO: can't do this yet, need C wrapper for Calendar.getFDOW etc  */
         showDateTime(lx, myRB, locale);
 
@@ -239,7 +243,6 @@ void showOneLocale(LXContext *lx)
         showNumberSystem(lx, locale, nsys);
 #endif
 
-    
 #if 0
         { /*from dcfmtsym */
             const UChar *numDesc[12];
@@ -298,9 +301,7 @@ void showOneLocale(LXContext *lx)
 
         showCollationElements(lx, myRB, locale, "CollationElements");
     }
-
     ures_close(myRB);
-
 }
 
 

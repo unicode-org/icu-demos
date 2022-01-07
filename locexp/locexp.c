@@ -18,10 +18,11 @@
 *   7/14/2001    srl        Adding configurable Collation demo
 *  18/10/2001    srl        Adding RBNF.  Glad to have RBNF available again!
 *  30/10/2001    srl        Adding LocaleScript. updating RBNF.
-*   2/20/2003    srl        Adding Robot Exclusion META tags, finally 
+*   2/20/2003    srl        Adding Robot Exclusion META tags, finally
 *                             renaming 'tmp' to something meaningful.
 *   7/14/2006    srl        Happy 7th birthday, Locale Explorer!
-*   8/22/2006    srl        Taking the locale out of the URL. 
+*   8/22/2006    srl        Taking the locale out of the URL.
+*  12/13/2021    cwc        Updating to compile and run. Cleanup white space.
 ****************************************************************************
 */
 
@@ -102,7 +103,7 @@ void displayLocaleExplorer(LXContext *lx)
 /*        u_fprintf(lx->OUT, "<base href=\"%s%s/\" />\r\n",  lx->myBaseURL,
                 (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); */
                     /* Ensure that all relative paths have the cgi name followed by a slash.  Nope.. not anymore.   */
-                    
+
     }
 
     /* Robot Exclusion */
@@ -120,8 +121,8 @@ void displayLocaleExplorer(LXContext *lx)
         u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
     }
 
-    showSortStyle(lx);
-    
+  showSortStyle(lx);
+
     u_fprintf(lx->OUT, "\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"" LDATA_PATH_LOC "locexp.css\" />\r\n",
               lx->dispLocale);
 
@@ -134,7 +135,7 @@ void displayLocaleExplorer(LXContext *lx)
     }
 
     u_fprintf(lx->OUT, "<div class='displayproblems'>");
-    printHelpImg(lx, "display", 
+    printHelpImg(lx, "display",
                 FSWF("display_ALT", "Display Problems?"),
                 FSWF("display_GIF", "displayproblems.gif"),
                 FSWF("display_OPTIONS", "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"));
@@ -157,7 +158,7 @@ void displayLocaleExplorer(LXContext *lx)
                 FSWF("warningInheritedLocale", "Note: You're viewing a locale that does not have verified data . ICU will support this with inherited information, but that information is not verified to be correct."), dispName);
         }
         else if(lx->curLocaleName[0] &&
-            isExperimentalLocale(lx->curLocaleName) && 
+            isExperimentalLocale(lx->curLocaleName) &&
             strcmp(lx->curLocaleName,"g7"))
         {
             lx->noBug = true;
@@ -211,7 +212,7 @@ void displayLocaleExplorer(LXContext *lx)
         {
             u_fprintf(lx->OUT, DEMO_BREAD_CRUMB_BAR); /*  because we are in the dir with icudemos  */
             u_fprintf(lx->OUT, "<br/><div style=\"margin-left: 2.5em\"><p>" );
-            u_fprintf_u(lx->OUT, 
+            u_fprintf_u(lx->OUT,
                 FSWF("introSpiel", "This demo illustrates the International Components for Unicode localization data.  The data covers %V different languages, further divided into %V regions and variants.  For each language, data such as days of the week, months, and their abbreviations are defined.</p><p>ICU is an open-source project."),
                 (double)(lx->locales->nSubLocs),
                 (double)(uloc_countAvailable()-(lx->locales->nSubLocs)));
@@ -224,7 +225,6 @@ void displayLocaleExplorer(LXContext *lx)
 
             u_fprintf(lx->OUT, "</div>");
         }
-
 
         /* Logic here: */
         if( !lx->curLocaleName[0] || !strcmp(lx->section,"main") || !strcmp(lx->section, "ka") ) {    /* ?locale  or not set: pick locale */
@@ -273,6 +273,7 @@ void displayLocaleExplorer(LXContext *lx)
         }
         else if (!strncmp(lx->queryString,"SETTZ=",6))
         {
+
             /* lx->newZone is initted early, need it for cookies :) */
             if(u_strlen(lx->newZone))
             {
@@ -281,11 +282,11 @@ void displayLocaleExplorer(LXContext *lx)
                 u_fprintf(lx->OUT, "Time there =%S\n", date(lx->newZone,UDAT_FULL,lx->dispLocale,&subStatus));
             }
 
-            u_fprintf(lx->OUT, "%S: <form action='%s'><input name=\"SETTZ\" value=\"%S\" /><input type=submit /></form>\r\n", 
+            u_fprintf(lx->OUT, "%S: <form action='%s'><input name=\"SETTZ\" value=\"%S\" /><input type=submit /></form>\r\n",
                 cgi_url(lx),
                 FSWF("zone_set", "Set timezone to:"),
                 lx->newZone);
-            u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%S</i></div>\r\n", 
+            u_fprintf(lx->OUT, "<div style=\"margin-left: 2.5em\"><i>%S</i></div>\r\n",
                 FSWF("zone_warn","Note: only works if you have cookies turned on."));
 
             {
@@ -344,7 +345,7 @@ void displayLocaleExplorer(LXContext *lx)
 
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */
-    /* What this does:  
+    /* What this does:
     - brings them to the 'choose your locale' pane in English, then
     - brings them to the 'choose your encoding' pane in their locale, then
     - lists the locales to browse
@@ -368,8 +369,6 @@ void displayLocaleExplorer(LXContext *lx)
 
     u_fclose(lx->OUT);
 
-    /*     fflush(stderr); */
-
     if(lx->dispRB)
         ures_close(lx->dispRB);
 
@@ -381,31 +380,31 @@ const UChar *defaultLanguageDisplayName(LXContext *lx)
 {
     UErrorCode status = U_ZERO_ERROR;
     UChar *displayName = lx->displayName;
-    
+
     if(displayName[0] == 0x0000)
     {
         uloc_getDisplayLanguage(lx->dispLocale, lx->dispLocale ,displayName, 1024, &status);
     }
-    
+
     return displayName;
 }
 
 UBool didUserAskForKey(LXContext *lx, const char *key)
 {
     const char *start, *limit, *tmp1, *tmp2;
-    
-    
+
+
     /* look to see if they asked for it */
     start = lx->queryString;
     while( (start = strstr(start, "SHOW")) )
     {
         start += 4;
-        
+
         tmp1 = strchr(start,'='); /*look for end of that field */
         tmp2 = strchr(start,'&'); /*look for end of that field */
-        
+
         limit = tmp1;
-        if( (tmp1 && tmp2) && (tmp1 > tmp2) ) /* pin equalsign to same field */	
+        if( (tmp1 && tmp2) && (tmp1 > tmp2) ) /* pin equalsign to same field */
         {
             limit = tmp2;
         }
@@ -413,11 +412,11 @@ UBool didUserAskForKey(LXContext *lx, const char *key)
         {
             limit = tmp2;
         }
-        
+
         if(limit==NULL)
             limit = start + strlen(start);
-        
-        
+
+
         if(((size_t)(limit-start) == strlen(key)) && !strncmp(start, key, (limit-start)))
         {
             return true;
@@ -440,7 +439,7 @@ void exploreFetchNextPattern(LXContext *lx, UChar *dstPattern, const char *patte
     *dstPattern = 0;
     return;
   }
-  
+
   /*  unescapeAndDecodeQueryField(dstPattern, 1000, qs); */
   unescapeAndDecodeQueryField_enc(dstPattern, 1000, qs, "utf-8"); /* no option. */
   u_replaceChar(dstPattern, 0x0020, 0x00A0);
