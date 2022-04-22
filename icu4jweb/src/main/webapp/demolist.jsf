@@ -11,7 +11,7 @@ String demolist_jsps[] = {
         "bidi", 
         "formatTest", 
         //"files_all", 
-        "icuinfo",
+        // "icuinfo", // Obsoleted in Version 71.1.
         "interval",
         "patina",
         "numero",

@@ -2,14 +2,45 @@
 
 # BUILDING
 
+## Update ICU4J version to get
+* Edit pom.xml to choose the version already deployed to Maven Central.
+
+```      <artifactId>icu4j</artifactId>
+         <version>71.1</version>
+```
+* Next, rebuild the demos with the latest ICU4J with this command:
 - `mvn package`
 
+
 # RUNNING WITH [docker](https://docker.io)
+Note that this does not rebuild the demos, but just creates a new docker image for running locally.
 
 - `sh build-docker.sh`
 - `docker run --rm -p 8083:8080 unicode/icu4jweb:latest`  (^C to stop and delete the container)
-- now go to [http://127.0.0.1:8083/icu4jweb/](http://127.0.0.1:8083/icu4jweb/)
+- Verify that each demo program works [Run latest docker image](http://127.0.0.1:8083/icu4jweb/).
 
+# Deploy to [public demo](https://icu4j-demos.unicode.org/icu4jweb/)
+To publish the demos, one needs access to the Google Cloud [ICU4C demos project](https://pantheon.corp.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos).
+
+- First, make sure that the demos work locally in the previous step.
+- Rebuild the docker image, tagging it appropriately.
+- Edit build-deploy.sh, replacing "latest" with the release such as "71.1".
+- `sh build-deploy.sh`
+-- Expect a final line such as:- "Successfully tagged gcr.io/icu4c-demos/icu4jweb:latest"
+- Next, authenticate with gcloud:
+- `gcloud auth configure-docker`
+- Edit push-deploy.sh, replacing "latest" with the tag used in build-deploy.sh.
+- Now push the tagged image to the GCloud:
+- `sh push-deploy.sh`
+- Verify that the push succeeds. Expect a command such as
+"71.1: digest: sha256:d00e3bad53511402d4f9376b01cb9c3274f1cf6e75281aabb75e1c6e3f8766e0 size: 1999
+"
+
+### Deploying from GCloud:
+- Open [GCloud for icu4jweb](https://pantheon.corp.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos)
+- Touch the "Select button" under "Container image URL".
+- Open the menu item "gcr.io/icu4c-demos/icu4jweb".
+- Select the latest image that was pushed.
 # License
 
 Please see [../LICENSE](../LICENSE)
