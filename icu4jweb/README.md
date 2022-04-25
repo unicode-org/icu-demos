@@ -61,7 +61,7 @@ Instructions updated April 2022.
 
 # License
 
-Please see [../LICENSE](../LICENSE)
+Please see [Unicode LICENSE file.](../LICENSE)
 
 > Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
 Unicode and the Unicode Logo are registered trademarks 
