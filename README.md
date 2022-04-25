@@ -142,4 +142,4 @@ exec ${ICU}/bin/${ME}
     * Demonstrates the flexibility of the Calendar class.
 
 ## Your contribution could be here too!
-Submit a suggestion at [ICU issue tracker](https://sites.google.com/site/icusite/bugs) and / or join the icu-support mailing list (see above.)
+Submit a suggestion at [ICU issue tracker](http://site.icu-project.org/bugs) and / or join the icu-support mailing list (see above.)
