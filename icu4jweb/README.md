@@ -41,7 +41,7 @@ If necessary, use this link to rename, delete, and otherwise [mangage Docker ima
 
 ### Deploying from GCloud:
 Instructions updated April 2022.
-- Open [GCloud for icu4jweb](https://pantheon.corp.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos)
+- Open [GCloud for icu4jweb](https://console.cloud.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos)
 
 ![CloudWebUI](images/GCloudIcu4jWebUI.png)
 
