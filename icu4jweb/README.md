@@ -37,7 +37,7 @@ To publish the demos, one needs access to the Google Cloud [ICU4C demos project]
 
 
 ## Managing Docker images in Gcloud
-If necessary, use this link to rename, delete, and otherwise [mangage Docker images](https://pantheon.corp.google.com/gcr/images/icu4c-demos?project=icu4c-demos).
+If necessary, use this link to rename, delete, and otherwise [mangage Docker images](https://console.cloud.google.com/gcr/images/icu4c-demos?project=icu4c-demos).
 
 ### Deploying from GCloud:
 Instructions updated April 2022.
