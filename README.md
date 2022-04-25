@@ -4,7 +4,7 @@
 
 This package contains sample applications built using the
 International Components for Unicode (ICU) C++ library ICU4C. For
-more information on the ICU, see [icu-project.org](http://icu-project.org/)
+more information on ICU, see [icu-project.org](http://site.icu-project.org/)
 
 If you have an application that is written using the ICU that you
 would like to contribute, join the ICU mailing list **icu-support** on [ICU contacts]
