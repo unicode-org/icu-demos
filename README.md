@@ -8,7 +8,7 @@ more information on ICU, see [icu-project.org](http://site.icu-project.org/)
 
 If you have an application that is written using the ICU that you
 would like to contribute, join the ICU mailing list **icu-support** on [ICU contacts]
-(https://sites.google.com/site/icusite/contacts).
+(http://site.icu-project.org/contacts).
 
 Note: [The "iucsamples" directory](https://github.com/unicode-org/icu-demos/tree/master/iucsamples) contains
 sample applications for the (International Unicode Conference (IUC) 43)
