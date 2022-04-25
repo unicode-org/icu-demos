@@ -25,15 +25,16 @@ To publish the demos, one needs access to the Google Cloud [ICU4C demos project]
 - First, make sure that the demos work locally in the previous step.
 - Rebuild the docker image, tagging it appropriately.
 - Edit build-deploy.sh, replacing "latest" with the release such as "71.1".
-- `sh build-deploy.sh`
--- Expect a final line such as:- "Successfully tagged gcr.io/icu4c-demos/icu4jweb:latest"
+  - Suggestion: Update the script to get the release as a command line parameter.
+- `sh build-deploy.sh`. Expect a final line such as:
+  - "Successfully tagged gcr.io/icu4c-demos/icu4jweb:latest"
 - Next, authenticate with gcloud:
 - `gcloud auth configure-docker`
 - Edit push-deploy.sh, replacing "latest" with the tag used in build-deploy.sh.
 - Now push the tagged image to the GCloud:
 - `sh push-deploy.sh`
 - Verify that the push succeeds. Expect a command such as
-"71.1: digest: sha256:d00e3bad53511402d4f9376b01cb9c3274f1cf6e75281aabb75e1c6e3f8766e0 size: 1999"
+  - "71.1: digest: sha256:d00e3bad53511402d4f9376b01cb9c3274f1cf6e75281aabb75e1c6e3f8766e0 size: 1999"
 
 
 ## Managing Docker images in Gcloud
