@@ -43,17 +43,17 @@ If necessary, use this link to rename, delete, and otherwise [mangage Docker ima
 Instructions updated April 2022.
 - Open [GCloud for icu4jweb](https://pantheon.corp.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos)
 
-![WebUI](images/GCloudIcu4jWebUI.png)
+![CloudWebUI](images/GCloudIcu4jWebUI.png)
 
 - Touch the "Select button" under "Container image URL".
 
-![WebUI]/images/GCloudIcu4jWebSelectImage.png)
+![WebSelectImage](images/GcloudIcu4jWebSelectImage.png)
 
 - Open the menu item "gcr.io/icu4c-demos/icu4jweb".
 - Highlight and then select (big blue button) the latest image that was pushed.
 - Select "Deploy" (big blue button, lower left).
 
-![WebUI](images/GCloudIcu4jWebSelectImage.png)
+![DeployImage](images/GCloudIcu4jWebDeploy.png)
 
 - Finally, check that the [deployed Web Demo](https://icu4j-demos.unicode.org/icu4jweb/) shows the correct version. It should look like this:
 
