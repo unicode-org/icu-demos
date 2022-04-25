@@ -20,7 +20,7 @@ Note that this does not rebuild the demos, but just creates a new docker image f
 - Verify that each demo program works [Run latest docker image](http://127.0.0.1:8083/icu4jweb/).
 
 # Deploy to [public demo](https://icu4j-demos.unicode.org/icu4jweb/)
-To publish the demos, one needs access to the Google Cloud [ICU4C demos project](https://pantheon.corp.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos).
+To publish the demos, one needs access to the Google Cloud [ICU4C demos project](https://console.cloud.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos).
 
 - First, make sure that the demos work locally in the previous step.
 - Rebuild the docker image, tagging it appropriately.
