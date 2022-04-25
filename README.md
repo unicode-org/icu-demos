@@ -1,6 +1,4 @@
-# I C U  -  A P P S
-#### Copyright © 1998-2009 IBM and Others.
-
+# ICU Demos
 
 This package contains sample applications built using the
 International Components for Unicode (ICU) C++ library ICU4C. For
@@ -32,7 +30,7 @@ build instructions.
   4. Type 'make' in the icu-demos, or 'make install' if you wish.
 
 Example commands:
-````
+```
   icu4c:
      cd ...somewhere/icu4c
      ./configure --prefix=/var/local
@@ -43,11 +41,11 @@ Example commands:
      ./configure --prefix=/var/local
      make
      make install                    (optional)
-````
+```
 
 ## Win32 Instructions
-  1. build ICU in an 'icu' directory
-  2. build icu-demos in an 'icuicu-demos' directory at the same level as 'icu'
+  1. Build ICU in an 'icu' directory
+  2. Build icu-demos in an 'icuicu-demos' directory at the same level as 'icu'
 
 # RUNNING CGIS
 
@@ -60,7 +58,7 @@ Example commands:
     symlinks of this script with the name of the cgis (locexp, ubrowse, etc).  Change the 'ICU' 
     variable to point at the base of the installed ICU. (the prefix).
 
-````
+```
 #!/bin/sh
 # wrapper script.
 
@@ -69,7 +67,7 @@ ICU=/installed/icu
 cd ${ICU}/bin
 export DYLD_LIBRARY_PATH=${ICU}/lib:${DYLD_LIBRARY_PATH}
 exec ${ICU}/bin/${ME}
-````
+```
 
 # The Demonstration Applications
 
@@ -129,7 +127,11 @@ exec ${ICU}/bin/${ME}
  - xlitomatic From: Steven R. Loomis
                    <srl [at] icu-project.org>
         
-    Uses: transliteration
+    Uses: transliter-----
+
+### License
+
+Please see [./LICENSE](./LICENSE)ation
       Depends on: locexp/util, etc.
 
     * Transliterates HTML files using any transliterator. C++.
@@ -143,3 +145,14 @@ exec ${ICU}/bin/${ME}
 
 ## Your contribution could be here too!
 Submit a suggestion at [ICU issue tracker](http://site.icu-project.org/bugs) and / or join the icu-support mailing list (see above.)
+
+-----
+
+### License
+
+Please see [./LICENSE](./LICENSE)
+Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
+Copyright © 1998-2016 IBM and Others.
+Unicode and the Unicode Logo are registered trademarks
+of Unicode, Inc. in the U.S. and other countries.
+[Terms of Use and License](http://www.unicode.org/copyright.html)
