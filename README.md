@@ -101,8 +101,7 @@ exec ${ICU}/bin/${ME}
            Resource Bundles,  ...
              uconv & usort [above]
 
-    * Shows off a lot of things. go to the ICU homepage and
-       look for the Locale Explorer.
+    * Shows off a lot of things.
 
 - ubrowse   From : Steven R. Loomis
                  <srl [at] icu-project.org>
