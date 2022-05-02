@@ -101,8 +101,7 @@ exec ${ICU}/bin/${ME}
            Resource Bundles,  ...
              uconv & usort [above]
 
-    * Shows off a lot of things. go to the ICU homepage and
-       look for the Locale Explorer.
+    * Shows off a lot of things.
 
 - ubrowse   From : Steven R. Loomis
                  <srl [at] icu-project.org>
@@ -127,7 +126,7 @@ exec ${ICU}/bin/${ME}
  - xlitomatic From: Steven R. Loomis
                    <srl [at] icu-project.org>
         
-    Uses: transliter-----
+    Uses: Transliterator
 
 ### License
 
@@ -144,7 +143,7 @@ Please see [./LICENSE](./LICENSE)ation
     * Demonstrates the flexibility of the Calendar class.
 
 ## Your contribution could be here too!
-Submit a suggestion at [ICU issue tracker](http://site.icu-project.org/bugs) and / or join the icu-support mailing list (see above.)
+Submit a suggestion at [ICU issue tracker](https://icu.unicode.org/bugs) and / or join the icu-support mailing list (see above.)
 
 -----
 
