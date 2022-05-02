@@ -144,7 +144,7 @@ Please see [./LICENSE](./LICENSE)ation
     * Demonstrates the flexibility of the Calendar class.
 
 ## Your contribution could be here too!
-Submit a suggestion at [ICU issue tracker](http://site.icu-project.org/bugs) and / or join the icu-support mailing list (see above.)
+Submit a suggestion at [ICU issue tracker](https://icu.unicode.org/bugs) and / or join the icu-support mailing list (see above.)
 
 -----
 
