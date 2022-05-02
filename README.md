@@ -127,7 +127,7 @@ exec ${ICU}/bin/${ME}
  - xlitomatic From: Steven R. Loomis
                    <srl [at] icu-project.org>
         
-    Uses: transliter-----
+    Uses: Transliterator
 
 ### License
 
