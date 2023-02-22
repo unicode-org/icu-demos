@@ -10,6 +10,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      # "fail-fast: false" let other jobs keep running even if the test break in some locales.
+      fail-fast: false
+      matrix:
+        # Build with 3 configuration: the icu in the system, the latest rc and the latest release.
+        # Bump the verion after each release is out.
+        icu_path:
+          - system
+          - https://github.com/unicode-org/icu/releases/download/release-72-rc/icu4c-72rc-src.tgz
+          - https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
     steps:
     - uses: actions/checkout@v2
     # ccache?
@@ -18,12 +28,15 @@ jobs:
       with:
         path: ~/.apk
         key: apk
-        restore-keys: |
-          apk
+        restore-keys: apk
+
     - name: Build iucsamples4c with docker
-      run: >
+      run: |
         cd iucsamples/c && docker run --rm -v $HOME/.apk:/etc/apk/cache -v $(pwd)/:/usr/src -w /usr/src alpine:edge sh -c "apk --update add gcc make g++ bsd-compat-headers pkgconfig icu-dev && make all check"
+
     - name: Build icudemos with docker
-      run: >
-        cd icu-kube && sh build.sh
+      # https://github.com/FrankYFTang/icu-demos/blob/main/icu-kube/build.sh
+      run: |
+        set +x;
+        exec docker build -t unicode/icu4c-demos:latest --build-arg ICU_PATH=${{matrix.icu_path}} . -f icu-kube/docker.d/icu4c-demos/Dockerfile
     # TODO: non-docker build?
