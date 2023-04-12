@@ -18,6 +18,13 @@ body {
 .mainbody {
 	padding: 1em;
 }
+#main {
+	padding: 10px
+}
+
+/*
+ * A bit of space to the right of the left navigation bar.
+ */
 
 /*
  * Customize the headers to have less space around them than usual
