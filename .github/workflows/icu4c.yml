@@ -18,8 +18,8 @@ jobs:
         # Bump the verion after each release is out.
         icu_path:
           - system
-          - https://github.com/unicode-org/icu/releases/download/release-72-rc/icu4c-72rc-src.tgz
-          - https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
+          - https://github.com/unicode-org/icu/releases/download/release-73-rc/icu4c-73rc-src.tgz
+          - https://github.com/unicode-org/icu/releases/download/release-73-2/icu4c-73_2-src.tgz
     steps:
     - uses: actions/checkout@v2
     # ccache?
