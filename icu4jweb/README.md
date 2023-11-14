@@ -20,16 +20,16 @@ Note that this does not rebuild the demos, but just creates a new docker image f
 - Verify that each demo program works [Run latest docker image](http://127.0.0.1:8083/icu4jweb/).
 
 # Deploy to [public demo](https://icu4j-demos.unicode.org/icu4jweb/)
-To publish the demos, one needs access to the Google Cloud [ICU4C demos project](https://console.cloud.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos).
+To publish the demos, one needs access to the Google Cloud [ICU4C demos project]([https://pantheon.corp.google.com/run?project=goog-unicode-dev](https://pantheon.corp.google.com/run/deploy/us-central1/icu4j-demos?project=goog-unicode-dev)).
 
 - First, make sure that the demos work locally in the previous step.
 - Rebuild the docker image, tagging it appropriately.
 - Edit build-deploy.sh, replacing "latest" with the release such as "71.1".
   - Suggestion: Update the script to get the release as a command line parameter.
 - `sh build-deploy.sh`. Expect a final line such as:
-  - "Successfully tagged gcr.io/icu4c-demos/icu4jweb:latest"
+  - "Successfully tagged us-central1-docker.pkg.dev/goog-unicode-dev/unicode-jsps/icu4c-demos:icu4c_74_1"
 - Next, authenticate with gcloud:
-- `gcloud auth configure-docker`
+- `gcloud auth configure-docker us-central1-docker.pkg.dev`
 - Edit push-deploy.sh, replacing "latest" with the tag used in build-deploy.sh.
 - Now push the tagged image to the GCloud:
 - `sh push-deploy.sh`
