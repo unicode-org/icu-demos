@@ -1,4 +1,4 @@
 #!/bin/sh
 set -x
 # Edit the final part for each new release.
-docker push gcr.io/icu4c-demos/icu4jweb:71.1
+docker push us-central1-docker.pkg.dev/goog-unicode-dev/unicode-jsps/icu4j-demos:74.1
