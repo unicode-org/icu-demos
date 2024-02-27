@@ -13,6 +13,11 @@ Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
 
   <name>icu4jweb Maven Webapp</name>
   <url>https://www.icu-project.org</url>
+	<licenses>
+		<license>
+			<name>Unicode-3.0</name>
+		</license>
+	</licenses>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
