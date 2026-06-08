@@ -35,7 +35,7 @@ docker run --name icu4c-demos --rm -p 8888:8080 icu4c-demos:my-demos
 
 … That will serve up the demos at http://localhost:8888/icu-bin/icudemos
 
-## Building a releas for deployment and deploy it
+## Building a release for deployment and deploying it
 
 Run this from the icu-demos directory:
 
