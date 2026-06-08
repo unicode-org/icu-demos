@@ -56,19 +56,24 @@ Note that this does not rebuild the demos, but just creates a new docker image f
 * `docker run --rm -p 8083:8080 unicode/icu4jweb:latest`  (^C to stop and delete the container)
 * Verify that each demo program works [Run local docker image](http://127.0.0.1:8083/icu4jweb/).
 
-## Deploy to [public demo](https://icu4j-demos.unicode.org/icu4jweb/)
+## Deploy the public demos
 
-To publish the demos, one needs access to the Google Cloud [ICU4C demos project](https://console.cloud.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos).
+See [ICU4C](https://icu4c-demos.unicode.org/icu-bin/) & [ICU4J](https://icu4j-demos.unicode.org/icu4jweb/).
+
+To publish the demos, one needs access to the Google Cloud
+[Google Unicode Dev - Community](https://console.cloud.google.com/run/overview?authuser=0&project=goog-unicode-dev) project.
+
+### Build the Docker images and push to gcr
 
 * First, make sure that the demos work locally in the previous step.
 * Rebuild the docker image, tagging it appropriately.
-* Edit `build-deploy.sh`, replacing "latest" with the release such as "71.1".
+* Edit `build-deploy.sh`, replacing `ICU_VER` with the release such as "78.3".
   * Suggestion: Update the script to get the release as a command line parameter.
 * `sh build-deploy.sh`. Expect a final line such as:
-  * "Successfully tagged gcr.io/icu4c-demos/icu4jweb:latest"
+  * "Successfully tagged ..."
 * Next, authenticate with gcloud:
 * `gcloud auth configure-docker`
-* Edit `push-deploy.sh`, replacing `"latest"` with the tag used in `build-deploy.sh`.
+* Edit `push-deploy.sh`, replacing `ICU_VER` with the same value as `build-deploy.sh`.
 * Now push the tagged image to the GCloud:
 * `sh push-deploy.sh`
 * Verify that the push succeeds. Expect a message such as: \
@@ -76,29 +81,89 @@ To publish the demos, one needs access to the Google Cloud [ICU4C demos project]
 
 ### Managing Docker images in GCloud
 
-If necessary, use this link to rename, delete, and otherwise [mangage Docker images](https://console.cloud.google.com/gcr/images/icu4c-demos?project=icu4c-demos).
+If necessary open the [GCloud Artifact Registry](https://console.cloud.google.com/artifacts/docker/goog-unicode-dev/us-central1/unicode-jsps?authuser=0&project=goog-unicode-dev)
+to rename, delete, and otherwise
+manage the Docker images.
+
+![Cloud Registry](images/GCloudIcuRegistry.png)
+
+The "Updated" column for `icu4c-demos` and `icu4j-demos` should show some very
+recent times, matching to the time when you executed `push-deploy.sh`.
+
+If that is not the case then something went wrong with the deployment.
+
+When you inspect the `icu4c-demos` and `icu4j-demos` packages you should
+see docker images tagged with version you used in the `build-deploy.sh`
+and `push-deploy.sh` scripts.
+
+![Cloud Registry Image](images/GCloudIcuRegistryImg.png)
 
 ### Deploying from GCloud
 
-Instructions updated April 2022.
+Instructions updated June 2026.
 
-* Open [GCloud for icu4jweb](https://console.cloud.google.com/run/deploy/us-central1/icu4jweb?project=icu4c-demos)
+* Open the [Cloud Run -- Services](https://console.cloud.google.com/run/services?authuser=0&project=goog-unicode-dev)
 
-![CloudWebUI](images/GCloudIcu4jWebUI.png)
+  ![Cloud Run -- Services](images/GCloudIcuServices.png)
 
-* Touch the "Select button" under "Container image URL".
+* Open one of the `icu4?-demos` or `icu4?-demos-staging` services
 
-![WebSelectImage](images/GcloudIcu4jWebSelectImage.png)
+  You should first deploy the `icu4?-demos-staging`, check them,
+  then deploy the `icu4j-demos`
 
-* Open the menu item `"gcr.io/icu4c-demos/icu4jweb"`.
-* Highlight and then select (big blue button) the latest image that was pushed.
-* Select "Deploy" (big blue button, lower left).
+  The screenshots show `icu4j-demos-staging`, but the 3 others are identical.
 
-![DeployImage](images/GCloudIcu4jWebDeploy.png)
+* Click "Edit & deploy new version"
 
-* Finally, check that the [deployed Web Demo](https://icu4j-demos.unicode.org/icu4jweb/) shows the correct version. It should look like this:
+  ![Cloud Run -- Services](images/GCloudIcuServicesDeploy.png)
 
-![DeployedImage](images/GCloudIcu4jDeployedImage.png)
+* Click the "Select" button under "Containers" -- "Container image URL"
+
+  ![Select Container image URL](images/GCloudIcuServicesDeploySelectImg.png)
+
+* Navigate to the new image to use
+
+  ![Select Container image](images/GCloudIcuServicesDeploySelectImgTree.png)
+
+  Select the image (checking the times and the tag) and click the "Select" button.
+
+* Scroll all the way down and click the "Deploy" button
+
+  ![Deploy button](images/GCloudIcuServicesDeployButton.png)
+
+  Notice that the "Serve this revision immediately" is checked.
+  Keep it checked.
+
+* Back in the service select the "Revisions" tab
+
+  ![Deploy button](images/GCloudIcuServicesDeployedRevisions.png)
+
+  The revision you just deployed should have a green checkmark, show 100% traffic,
+  and a very recent deployment time (when you clicked "Deploy" in the previous step).
+
+* Check the deployment
+
+  Click the URL at that top (`https://icu4j-demos-staging-450283286218.us-central1.run.app`
+  in our screenshot).
+
+  For `icu4j-demos` that will show you a 404 page.
+  Append `/icu4jweb/` after it (`...us-central1.run.app/icu4jweb/`).
+  You should be able to play with the Java demos.
+
+  For `icu4c-demos` the URL will take you directly to the working C/C++ demos.
+
+* If everything looks good in `icu4?-demos-staging` then repeat it for `icu4?-demos`
+
+* Finally, if you went through the process with the `icu4?-demos` then you should
+be able to check that the public demos use the correct ICU version.
+
+  **ICU4C:** https://icu4c-demos.unicode.org/icu-bin/translit
+
+  ![ICU4C public Demo site](images/Icu4cLiveDemo.png)
+
+  **ICU4J:** https://icu4j-demos.unicode.org/icu4jweb/
+
+  ![ICU4J public Demo site](images/Icu4jLiveDemo.png)
 
 ## License
 
