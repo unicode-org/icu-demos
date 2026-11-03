@@ -39,7 +39,7 @@ String demolist_jsps[] = {
       <td id="hlines" valign="top" width="1px"></td>
       <td id="fadedtop" valign="top" class="fadedtop"><a href="#main"><img src="c.gif" border="0" width="100" height="1" alt="Skip to main content" /></a></td>
       <td id="ICUname" width="100%"><h1>
-      			<a class='subtle' href="http://icu-project.org">International Components for Unicode</a>: 
+      			<a class='subtle' href="https://icu-project.org">International Components for Unicode</a>: 
       			ICU4J <a class='subtle' href="index.jsp">Web Demos</a>:
       			 <%= title %></h1></td>
     </tr>
@@ -47,7 +47,7 @@ String demolist_jsps[] = {
 
 <div class='demoList'>
 
-<b><a href="http://icu-project.org">ICU4J</a> <a href="<%= demolist_base %>">Web Demos</a></b>:<br/>
+<b><a href="https://icu-project.org">ICU4J</a> <a href="<%= demolist_base %>">Web Demos</a></b>:<br/>
    <% for (String demolist_jsp : demolist_jsps) { 
         boolean bold = request.getServletPath().startsWith("/"+demolist_jsp);
 		String linkClass = bold?"currentDemo":"otherDemo";

@@ -78,7 +78,7 @@
     
 %>
 <h2>Patina: Pattern manipulation</h2>
-<a href="http://en.wikipedia.org/wiki/Japanese_mon_(currency)"><img width="100" src="patina.jpg" alt="1 Mon coin, Japan, 1859" title="1 Mon coin, Japan, 1859" border=0 align="right"></a>
+<a href="https://en.wikipedia.org/wiki/Japanese_mon_(currency)"><img width="100" src="patina.jpg" alt="1 Mon coin, Japan, 1859" title="1 Mon coin, Japan, 1859" border=0 align="right"></a>
 
 <div style='font-size: xx-large;'>
 
@@ -124,6 +124,6 @@ for(char c = aci.first();c!=CharacterIterator.DONE;c=aci.next()) {
 
 </div>
 <hr>
-<i>based on <a href="http://icu-project.org">ICU4J <%= com.ibm.icu.util.VersionInfo.ICU_VERSION %></i>
+<i>based on <a href="https://icu-project.org">ICU4J <%= com.ibm.icu.util.VersionInfo.ICU_VERSION %></i>
 </body>
 </html>

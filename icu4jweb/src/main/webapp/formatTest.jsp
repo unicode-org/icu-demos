@@ -298,8 +298,8 @@ catch (Exception e) {
 </div>
 
 <p class='poweredByIcu'>Powered by
-<a href="http://www.icu-project.org/">ICU</a> <%= trimVersion(com.ibm.icu.util.VersionInfo.ICU_VERSION.toString()) %> and
-<%= System.getProperty("java.vendor") %> <a href="http://java.sun.com/">Java</a> <%= trimVersion(System.getProperty("java.version")) %></p>
+<a href="https://icu.unicode.org/">ICU</a> <%= trimVersion(com.ibm.icu.util.VersionInfo.ICU_VERSION.toString()) %> and
+<%= System.getProperty("java.vendor") %> <a href="https://java.sun.com/">Java</a> <%= trimVersion(System.getProperty("java.version")) %></p>
 <!--  jsp:include page="/ssi/footer.fragment" -->
 </body>
 </html>

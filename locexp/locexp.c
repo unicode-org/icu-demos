@@ -43,105 +43,9 @@ void displayFatal(LXContext *lx) {
     return;
 }
 
-void displayLocaleExplorer(LXContext *lx)
+void displayProperContent(LXContext *lx, const char *localeParam)
 {
-    const char *localeParam;
     UErrorCode status = U_ZERO_ERROR;
-    char langName[ULOC_FULLNAME_CAPACITY] = {0};
-
-    localeParam = queryField(lx, "_");
-
-    /* -------------- */
-    u_fprintf(lx->OUT,"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n");
-
-    uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
-    u_fprintf(lx->OUT,"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"%s\"  lang=\"%s\">", langName, langName);
-
-    u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer %s \r\n     " ICU_URL "\r\n  -->\r\n\r\n", U_COPYRIGHT_STRING);
-
-    u_fprintf(lx->OUT, "<head>\r\n");
-    if(!lx->altPath) {
-        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
-    }
-    u_fprintf(lx->OUT, "\r\n<title>");
-    lx->backslashCtx.html = false;
-    u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "ICU Demonstration - "));
-    printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, false);
-
-    /* TODO: check 'section' here */
-    if(strstr(lx->queryString, "EXPLORE"))
-    {
-        lx->inDemo = true;
-        u_fprintf(lx->OUT, " &gt; %S", FSWF("exploreTitle", "Explore"));
-    }
-    else
-    {
-        lx->inDemo = false;
-    }
-
-    lx->backslashCtx.html =true;
-    u_fprintf(lx->OUT, "</title>\r\n");
-
-    /* if(!lx->pathInfo || !(lx->pathInfo[0])) */
-    {
-        const char *host;
-        host = getenv("LX_FORCE_HOST");  /* special variable - to force the hostname */
-        if((host == NULL)||!host[0])
-        {
-            host = getenv("HTTP_HOST");  /* Apache httpd canonical host name */
-        }
-        if((host == NULL)||!host[0])
-        {
-            host = getenv("SERVER_NAME"); /* the server's idea of the host name */
-        }
-        if((host == NULL)||!host[0])
-        {
-            host = "";
-        }
-        /* TODO: : scheme, port, ..  */
-        sprintf(lx->myBaseURL, "http://%s%s", host, lx->scriptName);
-/*        u_fprintf(lx->OUT, "<base href=\"%s%s/\" />\r\n",  lx->myBaseURL,
-                (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); */
-                    /* Ensure that all relative paths have the cgi name followed by a slash.  Nope.. not anymore.   */
-
-    }
-
-    /* Robot Exclusion */
-    if(hasQueryField(lx,"PANICDEFAULT") ||
-        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) /* TODO: urlfix */
-    {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
-    } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
-    } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
-    } else if(lx->convRequested && lx->convRequested[0] && !strstr(lx->convRequested, "utf-8")) {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
-    } else if(strstr(lx->queryString, "_=")) {
-        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
-    }
-
-  showSortStyle(lx);
-
-    u_fprintf(lx->OUT, "\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"" LDATA_PATH_LOC "locexp.css\" />\r\n",
-              lx->dispLocale);
-
-    u_fprintf(lx->OUT, "%s", "\r\n</head>\r\n<body>\r\n");
-    if(!lx->altPath && printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
-        u_fprintf(lx->OUT, "%s", DEMO_BEGIN_LEFT_NAV);
-        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_LEFTNAV);
-        u_fprintf(lx->OUT, "%s", DEMO_END_LEFT_NAV);
-        u_fprintf(lx->OUT, "%s", DEMO_BEGIN_CONTENT);
-    }
-
-    u_fprintf(lx->OUT, "<div class='displayproblems'>");
-    printHelpImg(lx, "display",
-                FSWF("display_ALT", "Display Problems?"),
-                FSWF("display_GIF", "displayproblems.gif"),
-                FSWF("display_OPTIONS", "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"));
-    u_fprintf(lx->OUT, "</div>");
-
-    u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
 
     if(!strncmp(lx->section, "ch", 2)) {
         showChangePage(lx);
@@ -342,6 +246,121 @@ void displayLocaleExplorer(LXContext *lx)
     if(!lx->altPath) {
         printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_FOOTER);
     }
+}
+
+void displayLocaleExplorer(LXContext *lx)
+{
+    const char *localeParam;
+    UErrorCode status = U_ZERO_ERROR;
+    char langName[ULOC_FULLNAME_CAPACITY] = {0};
+
+    localeParam = queryField(lx, "_");
+
+    /* -------------- */
+    u_fprintf(lx->OUT,"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n");
+
+    uloc_getLanguage(lx->dispLocale, langName, sizeof(langName)/sizeof(langName[0]), &status);
+    u_fprintf(lx->OUT,"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"%s\"  lang=\"%s\">", langName, langName);
+
+    u_fprintf(lx->OUT, "\r\n<!-- Locale Explorer %s \r\n     " ICU_URL "\r\n  -->\r\n\r\n", U_COPYRIGHT_STRING);
+
+    u_fprintf(lx->OUT, "<head>\r\n");
+    if(!lx->altPath) {
+        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_DIR "locexp-header.html");
+    }
+    u_fprintf(lx->OUT, "\r\n<title>");
+    lx->backslashCtx.html = false;
+    u_fprintf(lx->OUT, "%S ", FSWF("ibmg11n", "ICU Demonstration - "));
+    printPath(lx, NULL/*lx->curLocale*/, lx->curLocale, false);
+
+    /* TODO: check 'section' here */
+    if(strstr(lx->queryString, "EXPLORE"))
+    {
+        lx->inDemo = true;
+        u_fprintf(lx->OUT, " &gt; %S", FSWF("exploreTitle", "Explore"));
+    }
+    else
+    {
+        lx->inDemo = false;
+    }
+
+    lx->backslashCtx.html =true;
+    u_fprintf(lx->OUT, "</title>\r\n");
+
+    /* if(!lx->pathInfo || !(lx->pathInfo[0])) */
+    {
+        const char *host;
+        host = getenv("LX_FORCE_HOST");  /* special variable - to force the hostname */
+        if((host == NULL)||!host[0])
+        {
+            host = getenv("HTTP_HOST");  /* Apache httpd canonical host name */
+        }
+        if((host == NULL)||!host[0])
+        {
+            host = getenv("SERVER_NAME"); /* the server's idea of the host name */
+        }
+        if((host == NULL)||!host[0])
+        {
+            host = "";
+        }
+        /* TODO: : scheme, port, ..  */
+        sprintf(lx->myBaseURL, "http://%s%s", host, lx->scriptName);
+/*        u_fprintf(lx->OUT, "<base href=\"%s%s/\" />\r\n",  lx->myBaseURL,
+                (lx->dispLocale&&lx->dispLocale[0])?lx->dispLocale:"root"); */
+                    /* Ensure that all relative paths have the cgi name followed by a slash.  Nope.. not anymore.   */
+
+    }
+
+    /* Robot Exclusion */
+    if(hasQueryField(lx,"PANICDEFAULT") ||
+        (lx->pathInfo && strstr(lx->pathInfo,"transliterated"))) /* TODO: urlfix */
+    {
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
+    } else if(!strncmp(lx->queryString, "locale_all", 10) || strstr(lx->queryString,"converter")){
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
+    } else if(lx->pathInfo && *lx->pathInfo && lx->pathInfo[1] && !strstr(lx->pathInfo,"en_US")) {
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
+    } else if(lx->convRequested && lx->convRequested[0] && !strstr(lx->convRequested, "utf-8")) {
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
+    } else if(strstr(lx->queryString, "_=")) {
+        u_fprintf(lx->OUT, "<meta name=\"robots\" content=\"noindex,nofollow\" />\r\n");
+    }
+
+    showSortStyle(lx);
+
+    u_fprintf(lx->OUT, "\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"" LDATA_PATH_LOC "locexp.css\" />\r\n",
+              lx->dispLocale);
+
+    u_fprintf(lx->OUT, "%s", "\r\n</head>\r\n<body>\r\n");
+    if(!lx->altPath && printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_MASTHEAD)) {
+        u_fprintf(lx->OUT, "%s", DEMO_BEGIN_LEFT_NAV);
+        printHTMLFragment(lx->OUT, FSWF_getBundle(), DEMO_COMMON_LEFTNAV);
+        u_fprintf(lx->OUT, "%s", DEMO_END_LEFT_NAV);
+        u_fprintf(lx->OUT, "%s", DEMO_BEGIN_CONTENT);
+    }
+
+    u_fprintf(lx->OUT, "<div class='displayproblems'>");
+    printHelpImg(lx, "display",
+                FSWF("display_ALT", "Display Problems?"),
+                FSWF("display_GIF", "displayproblems.gif"),
+                FSWF("display_OPTIONS", "width=\x22\x31\x31\x34\x22  height=\x22\x31\x37\x22"));
+    u_fprintf(lx->OUT, "</div>");
+
+    u_fprintf(lx->OUT, "<br />\r\n<hr />\r\n");
+
+    // Disable this demo (Locale Explorer).
+    // It has links to all the locales, and Unicode extensions including alt. calendars, alt. digits, etc.
+    // One can use the links to "navigate" all combinations of all these elements.
+    // Most robots do it, with many thousands of requests, creating a Denial of Service on the demo server.
+    // We need to redesign the whole demo before re-enabling it.
+// #define DEMO_ENABLED
+#ifdef DEMO_ENABLED
+    displayProperContent(lx, localeParam);
+#else
+    u_fprintf(lx->OUT, "<h1>This demo is disabled</h1>\r\n");
+    u_fprintf(lx->OUT, "<p>This demo was abused by robots to the point of creating a DoS (Denial of Service), making the demo server unusable.</p>\r\n");
+    u_fprintf(lx->OUT, "<p>We will redesign and re-enable it, but for now we just take it offline.</p>\r\n");
+#endif
 
     /* a last resort. will switch to English if they get lost.. */
     /* DO NOT localize the following */

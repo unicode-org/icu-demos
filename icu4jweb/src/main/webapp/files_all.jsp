@@ -5,7 +5,7 @@
 		<title>ICU Download Page</title>
   <meta content="Copyright (c) 2008-2008 IBM Corporation and others. All Rights Reserved." name="COPYRIGHT" />
 
-		<link rel="stylesheet" href="http://icu-project.org/icu.css" type="text/css" />
+		<link rel="stylesheet" href="https://icu-project.org/icu.css" type="text/css" />
 	</head>
 	<body style='margin-left: 2em;'>
 

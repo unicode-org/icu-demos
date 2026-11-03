@@ -6,7 +6,7 @@ cd ..
 # It should match the version part of the release number in GitHub (without the `release-` part)
 # https://github.com/unicode-org/icu/releases
 
-export ICU_VER=78.3
+export ICU_VER=79.1
 
 export RELEASE_PATH=https://github.com/unicode-org/icu/releases/download/release-${ICU_VER}
 export LIB_TGZ=icu4c-${ICU_VER}-sources.tgz

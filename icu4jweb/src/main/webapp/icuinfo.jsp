@@ -9,7 +9,7 @@
  <style type="text/css">
     .hilite {  background: yellow; }
  </style>
- <link rel="stylesheet" href="http://icu-project.org/xml/icumeta.css" />
+ <link rel="stylesheet" href="https://icu-project.org/xml/icumeta.css" />
 <%@ include file="demohead.jsf" %>
 </head>
 <body>
@@ -38,7 +38,7 @@
    public static boolean showEOS = false;
 
 	public static String FILE = "xml/icuinfo.xml";
-	public static String kURL = "http://icu-project.org/"+FILE;
+	public static String kURL = "https://icu-project.org/"+FILE;
 	public static String SRL_PATH = "/xsrl/IP/htdocs/"+FILE;
 
 

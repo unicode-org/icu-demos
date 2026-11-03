@@ -54,6 +54,6 @@ To: <%= to.getDisplayName() %>
 
 </div>
 <hr>
-<i>based on <a href="http://icu-project.org">ICU4J <%= com.ibm.icu.util.VersionInfo.ICU_VERSION %></i>
+<i>based on <a href="https://icu-project.org">ICU4J <%= com.ibm.icu.util.VersionInfo.ICU_VERSION %></i>
 </body>
 </html>

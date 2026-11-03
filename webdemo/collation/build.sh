@@ -6,7 +6,7 @@
 
 # To update the index.html file for the demo:
 # 1. "make install" ICU, for example with
-#   .../runConfigureICU Linux --prefix=/usr/local/google/home/mscherer/icu/mine/inst/icu4c
+#   .../runConfigureICU Linux --prefix=${HOME}/icu/mine/inst/icu4c
 # 2. Adjust the local-machine variables below, and then do this:
 #   ~/icu-demos/mine/src$ webdemo/collation/build.sh
 # 3. Check the output from "available":
@@ -19,7 +19,9 @@
 #   part of webdemo/collation/index.html
 #   and commit into the repository.
 
-HOME=/usr/local/google/home/mscherer
+# If home is not already set, set it here
+# HOME=/usr/local/google/home/mscherer
+
 ICU_SRC=$HOME/icu/mine/src/icu4c
 PREFIX=$HOME/icu/mine/inst/icu4c
 ICUAPPS_SRC=$HOME/icu-demos/mine/src
