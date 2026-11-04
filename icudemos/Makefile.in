@@ -58,6 +58,7 @@ install-target: all-local
 	$(INSTALL) $(srcdir)/$(TARGET)-content-templ.html $(DESTDIR)$(BINDIR)/data
 	$(INSTALL) $(srcdir)/$(TARGET)-page-templ.html $(DESTDIR)$(BINDIR)/data
 	$(INSTALL) $(srcdir)/icu_v2.css $(DESTDIR)$(BINDIR)/data
+	$(INSTALL) $(srcdir)/favicon.ico $(DESTDIR)$(BINDIR)/data
 
 dist-local:
 

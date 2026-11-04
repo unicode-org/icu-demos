@@ -12,7 +12,7 @@ Copyright © 2016 and later Unicode, Inc. and others. All Rights Reserved.
   <packaging>war</packaging>
 
   <name>icu4jweb Maven Webapp</name>
-  <url>https://www.icu-project.org</url>
+  <url>https://icu.unicode.org</url>
 	<licenses>
 		<license>
 			<name>Unicode-3.0</name>

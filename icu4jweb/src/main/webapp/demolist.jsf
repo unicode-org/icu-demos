@@ -37,7 +37,7 @@ String demolist_jsps[] = {
 <table id="icupage" width="100%" cellpadding="0" cellspacing="0">
     <tr id="headline">
       <td id="hlines" valign="top" width="1px"></td>
-      <td id="fadedtop" valign="top" class="fadedtop"><a href="#main"><img src="c.gif" border="0" width="100" height="1" alt="Skip to main content" /></a></td>
+      <td id="fadedtop" valign="top" class="fadedtop"><img src="c.gif" border="0" width="100" height="1" alt="Skip to main content" /></td>
       <td id="ICUname" width="100%"><h1>
       			<a class='subtle' href="https://icu-project.org">International Components for Unicode</a>: 
       			ICU4J <a class='subtle' href="index.jsp">Web Demos</a>:

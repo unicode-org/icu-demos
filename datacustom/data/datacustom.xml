@@ -4,7 +4,7 @@
 	"http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
     <display-name>ICU Data Customizer</display-name>
-    <description>Applications used by the ICU project ( http://www.icu-project.org/ )</description>
+    <description>Applications used by the ICU project (https://icu.unicode.org/)</description>
     <servlet>
         <servlet-name>DataCustomizer</servlet-name>
         <servlet-class>com.ibm.icu.datacustom.DataCustomizer</servlet-class>

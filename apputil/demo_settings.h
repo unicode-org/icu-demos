@@ -39,10 +39,10 @@
 #define DEMO_END_CONTENT "</td>\n</tr>\n</table>\n"
 #endif
 
-#define ICU_URL "http://www.icu-project.org/"
+#define ICU_URL "https://icu.unicode.org/"
 
-#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
-    "<a class=\"bctl\" href=\"http://demo.icu-project.org/icu-bin/icudemos\">Demonstrations</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+#define DEMO_BREAD_CRUMB_BAR     "<a class=\"bctl\" href=\"https://icu.unicode.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"\
+    "<a class=\"bctl\" href=\"https://icu4c-demos.unicode.org/icu-bin/icudemos\">Demonstrations</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     
 #endif
 

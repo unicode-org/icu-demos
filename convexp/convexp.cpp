@@ -82,7 +82,7 @@ static const char endHeaderBeginBody[]=
 
 static const char breadCrumbMainHeader[]=
     "<div style=\"font-size: 6px\">" NBSP "</div>\n"
-    "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
+    "<a class=\"bctl\" href=\"https://icu.unicode.org/\">ICU</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n"
     "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">" NBSP NBSP "&gt;" NBSP "</span>\n";
 
 static const char navigationMainHeader[]=
@@ -128,8 +128,8 @@ static const char endForm[]=
     "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"175\" class=\"v14-gray-table-border\">\n"
     "<tr><th colspan=\"3\" class=\"v14-header-1-small\">Related Topics</th></tr>\n"
     "<tr><td colspan=\"3\"><span style=\"font-size: 5px\">" NBSP "</span></td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\">" NBSP "</td><td align=\"left\">&middot;" NBSP "<a href=\"http://www.icu-project.org/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
-    "<tr><td align=\"right\" valign=\"top\">" NBSP "</td><td align=\"left\">&middot;" NBSP "<a href=\"http://www.icu-project.org/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\">" NBSP "</td><td align=\"left\">&middot;" NBSP "<a href=\"https://icu-project.org/docs/demo/convexp_help.html\">" PROGRAM_NAME " Help</a></td><td width=\"5\">" NBSP "</td></tr>\n"
+    "<tr><td align=\"right\" valign=\"top\">" NBSP "</td><td align=\"left\">&middot;" NBSP "<a href=\"https://icu.unicode.org/charts/charset/\">ICU Charset Information</a></td><td width=\"5\">" NBSP "</td></tr>\n"
     "<tr><td><span style=\"font-size: 5px\">" NBSP "</span></td></tr>\n"
     "</table>\n"
 
@@ -143,7 +143,7 @@ static const char endTable[]="</table>";
 
 static const char versions[]=
     "<p style=\"border-top: 1px solid silver; margin-top: 2em; margin-bottom: 0; width: 99%\">Powered by "
-    "<a href=\"//www.icu-project.org/\">ICU</a> %s</p><br />\n";
+    "<a href=\"https://icu.unicode.org/\">ICU</a> %s</p><br />\n";
 
 static void printOptions(UErrorCode *status) {
     int32_t i;

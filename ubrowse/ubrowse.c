@@ -157,7 +157,7 @@ static const char endHeaderBeginBody[] =
   "<body>\n";
    
 static const char breadCrumbMainHeader[]=
-    "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"https://icu.unicode.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<h1>Unicode Browser</h1>\n";
 
@@ -597,7 +597,7 @@ void printRow(UChar32 theChar, UBool showBlock, const char *hilite, const char *
   u_fprintf(gOut, "<td>");
   if(link != NULL)
     {
-      u_fprintf(gOut, "<a href=\"?%s=%04X#here\">", link, theChar);
+      u_fprintf(gOut, "<a href=\"?%s=%04X\">", link, theChar);
     }
   u_fprintf(gOut, "<small>U+%04X ", theChar);
   printCharName(theChar);
@@ -1221,7 +1221,7 @@ main(int argc,
             u_fprintf(gOut, "</tr><tr>");
           u_fprintf(gOut, "<td>");
           u_fprintf(gOut, "%d ", stroke);
-          u_fprintf(gOut, "<a href=\"?k1=%04X#here\">", u);
+          u_fprintf(gOut, "<a href=\"?k1=%04X\">", u);
           printOneUChar32(u);
           u_fprintf(gOut, "</a></td>");
         }
@@ -1295,7 +1295,7 @@ main(int argc,
       }
       else
       {
-        u_fprintf(gOut, "<li><a href=\"?k1=%04X#here\"><tt>%04X</tt> - %s\n",
+        u_fprintf(gOut, "<li><a href=\"?k1=%04X\"><tt>%04X</tt> - %s\n",
                c,c,gSearchName);
         printOneUChar32(c);
         

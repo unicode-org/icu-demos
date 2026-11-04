@@ -21,7 +21,7 @@ OSS setup
 ---------
 
 On OSS we are going to map the URL
-  //www.icu-project.org/
+  https://icu.unicode.org/
 to
   (some directory?)
 
