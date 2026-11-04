@@ -21,10 +21,6 @@ body {
 	margin: 1em;
 }
 
-body.draft {
-	background-image: url(images/draftbg.png);
-}
-
 body.draft:before, body.draft:after {
 	content: "NOTE: THIS WEBPAGE IS STILL A DRAFT.";
 	font-size: x-large;
@@ -427,10 +423,6 @@ table.rtable tr td {
 
 body {
 	margin: 1em;
-}
-
-body.draft {
-	background-image: url(images/draftlt.png);
 }
 
 tr#headline td#fadedtop.fadedtop {

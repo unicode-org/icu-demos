@@ -45,7 +45,7 @@ void usage(const char *pname, const char *msg)
   fprintf(stderr, "\n\t-t               \n\t\tTrim the trailing spaces from the strings\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "Locale sensitive sort, (c) 1999-2012 IBM, Inc. Uses ICU.\n");
-  fprintf(stderr, "http://www.icu-project.org/\n");
+  fprintf(stderr, "https://icu.unicode.org/\n");
   exit(-1);
 }
 

@@ -13,7 +13,7 @@
 	<packaging>jar</packaging>
 
 	<name>icu2work</name>
-	<url>http://icu-project.org</url>
+	<url>https://icu.unicode.org</url>
 	<licenses>
 		<license>
 			<name>Unicode-3.0</name>

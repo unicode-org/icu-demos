@@ -251,16 +251,17 @@ void icuDemos(UnicodeString &outputText, UErrorCode &status) {
 #define CSS_TYPE "text/css"
 #define GIF_TYPE "image/gif"
 #define HTML_TYPE "text/html"
+#define ICO_TYPE "image/x-icon"
 
 const char *  files[] =
-
-{ 
-    CSS_FILE, CSS_TYPE ,
-	"/icu_v2.css", CSS_TYPE ,
-    CSS_DEMO_FILE, CSS_TYPE ,
-    "/1x1.gif", GIF_TYPE ,
-    "/lines.gif", GIF_TYPE ,
-    "/lines-gradient.gif", GIF_TYPE ,
+{
+    CSS_FILE, CSS_TYPE,
+    "/icu_v2.css", CSS_TYPE,
+    CSS_DEMO_FILE, CSS_TYPE,
+    "/favicon.ico", ICO_TYPE,
+    "/1x1.gif", GIF_TYPE,
+    "/lines.gif", GIF_TYPE,
+    "/lines-gradient.gif", GIF_TYPE,
     NULL, NULL
 };
 

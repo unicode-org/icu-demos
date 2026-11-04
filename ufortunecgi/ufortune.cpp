@@ -80,8 +80,8 @@ static const char *htmlHeader=
     " 1px solid  blue; border-right: 1px solid blue}.word {background-color:#DDFFFF}.num"
     " {background-color:#FFDDFF} body  {font-size: 12pt}\n"
     "</style>\n"
-    "<a href=\"http://www.icu-project.org/\">ICU</a> &gt;\n"
-    "<a href=\"http://demo.icu-project.org/icu-bin/icudemos\">Demo</a> &gt;<br><hr>\n"
+    "<a href=\"https://icu.unicode.org/\">ICU</a> &gt;\n"
+    "<a href=\"https://icu4c-demos.unicode.org/icu-bin/icudemos\">Demo</a> &gt;<br><hr>\n"
     "<h1>ufortune</h1>\n";
 
 static const char *htmlFooter=

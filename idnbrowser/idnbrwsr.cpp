@@ -71,7 +71,7 @@ static const char endHeaderBeginBody[] =
     "<body>\n";
 
 static const char breadCrumbMainHeader[]=
-    "<a class=\"bctl\" href=\"//www.icu-project.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
+    "<a class=\"bctl\" href=\"https://icu.unicode.org/\">ICU</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<a class=\"bctl\" href=\"icudemos\">Demo</a><span class=\"bct\">&nbsp;&nbsp;&gt;&nbsp;</span>\n"
     "<h1>IDNA Demo</h1>\n";
 
@@ -81,16 +81,16 @@ static const char *htmlFooter=
 
 static const char *helpText=
     "<a name=\"help\"></a><h2>About this demo</h2>\n"
-    " This CGI program demostrates the <a href=\"http://www.ietf.org/rfc/rfc3490.txt\">IDNA</a> implementation."
+    " This CGI program demostrates the <a href=\"https://www.rfc-editor.org/rfc/rfc3490.txt\">IDNA</a> implementation."
     " The RFC defines 2 operations: ToASCII and ToUnicode. Domain labels"
     " containing non-ASCII code points are required to be processed by"
     " ToASCII operation before passing it to resolver libraries. Domain names"
     " that are obtained from resolver libraries are required to be processed by"
     " ToUnicode operation before displaying the domain name to the user."
     " IDNA requires that implementations process input strings with"
-    " <a href=\"http://www.ietf.org/rfc/rfc3491.txt\">Nameprep</a>,"
-    " which is a profile of <a href=\"http://www.ietf.org/rfc/rfc3454.txt\"> Stringprep </a>,"
-    " and then with <a href=\"http://www.ietf.org/rfc/rfc3492.txt\">Punycode</a>."
+    " <a href=\"https://www.rfc-editor.org/rfc/rfc3491.txt\">Nameprep</a>,"
+    " which is a profile of <a href=\"https://www.rfc-editor.org/rfc/rfc3454.txt\"> Stringprep </a>,"
+    " and then with <a href=\"https://www.rfc-editor.org/rfc/rfc3492.txt\">Punycode</a>."
     " <p>In the above demo, different combinations of ToASCII and ToUnicode are applied to the input."
     " It also provides a simple illustration of how a GUI can visually indicate"
     " boundaries between different scripts, to help avoid spoofing. The code is rough,"
@@ -147,7 +147,7 @@ static const char *modeNames[]={ "(null)", "(None)", "ToASCII(input)", "ToUnicod
 
 static const char *versions=
     "<p>Unicode version used by IDNA %s &mdash; Powered by "
-    "<a href=\"//www.icu-project.org/\">ICU</a> %s</p>\n";
+    "<a href=\"https://icu.unicode.org/\">ICU</a> %s</p>\n";
 
 static const char *samples[] = { "www.&#x65E5;&#x672C;&#x5E73;.jp","www.&#x30CF;&#x30F3;&#x30C9;&#x30DC;&#x30FC;&#x30EB;&#x30B5;&#x30E0;&#x30BA;.com","www.f&#x00E4;rgbolaget.nu","www.b&#x00FC;cher.de","www.br&#x00E6;ndendek&#x00E6;rlighed.com","www.r&#x00E4;ksm&#x00F6;rg&#x00E5;s.se",  "www.&#xC608;&#xBE44;&#xAD50;&#xC0AC;.com", "&#x7406;&#x5BB9;&#x30CA;&#x30AB;&#x30E0;&#x30E9;.com", "&#x3042;&#x30FC;&#x308B;&#x3044;&#x3093;.com", "www.f&#xE4;rjestadsbk.net", "www.m&#xE4;kitorppa.com", NULL };
 

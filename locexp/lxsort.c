@@ -1162,7 +1162,7 @@ void showSort(LXContext *lx, const char *locale)
   u_fprintf(lx->OUT, "<p><br /></p>\r\n");
   u_fprintf(lx->OUT, "%S\r\n",  FSWF(/*NOEXTRACT*/"sortHelp",""));
   u_fprintf(lx->OUT, "<p><br />\r\n");
-  u_fprintf(lx->OUT, "%S <a href=\"http://icu-project.org/userguide/Collate_Intro.html\">%S</a><br /></p>\r\n",
+  u_fprintf(lx->OUT, "%S <a href=\"https://unicode-org.github.io/icu/userguide/collation/concepts.html\">%S</a><br /></p>\r\n",
             FSWF("EXPLORE_CollationElements_moreInfo1", "For more information, see the"),
             FSWF("EXPLORE_CollationElements_moreInfo2", "ICU userguide"));
 
