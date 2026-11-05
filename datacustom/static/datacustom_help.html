@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ICU Data Library Customizer Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<link rel="stylesheet" href="../../icu.css" type="text/css" />
+</head>
+<body>
+<!--#include virtual="../../ssi/header.html" -->
+<h1>ICU Demos</h1>
+<h2>ICU Data Library Customizer Help</h2>
+<hr />
+<p>The <a href="http://apps.icu-project.org/datacustom/">Data Library Customizer tool</a>
+    provides a way to customize ICU's data library.
+    There are two common scenarios to use this tool. You can remove data, and
+    you can add data that is not in ICU by default. Once you have customized the data
+    library, you may have to rebuild ICU, but under certain configurations, you will
+    be able to use the generated data library directly. These instructions will help
+    you to use this tool.</p>
+    <p>
+        The data that comes from this tool will only work with a specific version of ICU.
+        The data is compatible with the version of ICU with the same major and minor mentioned
+        on the main Data Library Customizer page. This data will not work with any other
+        version of ICU. When a new version of ICU is released, older versions of the data
+        may not be available any more.</p>
+<h3>Customization Overview</h3>
+    <p>
+        If you are using ICU in a memory constrained environment, you can use this tool to
+        remove some data. For most people, only the groups need to be selected for removal.
+        This is the easiest way to remove large chunks of data you may not be using. For example,
+        if you only need Unicode based collation, you can deselect all the groups
+        except the collation group. This will bring the data library down to a fraction
+        of the original size.</p>
+    <p>
+        ICU comes with a large set of data that meets the needs for the vast majority of
+        ICU users.
+        Under some circumstances, additional data is needed. For example, this tool provides
+        some additional charset conversion tables that are not available under the default
+        distribution of ICU. When you expand the "Charset Mapping Tables" group,
+        you will see a set of mapping tables that are available for addition or removal.
+        All items checked will be included in your customized data library. You can sort
+        the description column, and related data items will usually sort together.</p>
+    <p>
+        Before adding more charset mapping tables to ICU, you should consider using Unicode
+        with your application instead. Many of these mapping tables are only needed for
+        interacting with legacy systems that have not been upgraded to use Unicode yet.
+        These mapping tables are not needed to support additional languages or countries.
+        If there is a mapping table for the charset you need, then Unicode will support
+        all the characters you need.</p>
+<h4>Advanced Customization</h4>
+    <p>
+        Sometimes fine grained customization is needed to add or remove a large number of
+        specific data items. Instead of selecting many data items by hand, you can use the
+        "Advanced Options" at the bottom of the page. You can expand all the groups or contract
+        all the groups. You can also filter all the data items in the data library.</p>
+    <p>
+        When you perform a filter operation with a regular expression, only those items
+        will be visible under each group. Expanding all the groups will show you everything
+        that has been filtered. The "Select All" and "Deselect All" buttons can be used
+        to use to select or deselect the filtered items. When the filtering field is left
+        blank, and the "Filter Items" button is pressed, all selectable items become visible
+        for selection again.</p>
+
+     <p>For example, if you enter the expression <tt style='border:1px solid gray'>mt.*res</tt> 
+     	 and click "Filter Items", the customizer will SHOW only the Maltese related items.
+     	 If you click "Deselect All" next to the expression, it will deselect only those items,
+     	 and clicking "Select All" will select those items, all without altering any items not 
+     	matching the expression.</p>
+<h3> ICU4C Data Package</h3>
+    <p>
+        After the data library package has been downloaded there are two common ways to
+        use the new package.</p>
+    <ol>
+        <li><strong>Rebuild ICU</strong>: Under this scenario, you unzip the data package
+            into icu/source/data/in to replace the existing data package that comes with a standard
+            source code distribution. Then you use "gmake clean install". This will clean up
+            your previous build of ICU, and it will install the packages as specified by the
+            configure options that you originally used to build ICU.</li>
+        <li><strong>Install directly on end user's systems</strong>: Under this scenario, you
+            have already built ICU with the --with-data-packaging=archive configure option.
+            In order to update the data, your application will need to stop using ICU, unzip
+            the data package to where you installed ICU's data archive, and restart your application.</li>
+    </ol>
+    <p>There are other ways to configure ICU's data, and many of those options are described
+        in the <a href="/userguide/icudata.html">Data Management</a>
+        chapter of the <a href="/userguide/">ICU User's Guide</a>. For example, the icupkg
+        tool that comes with ICU4C can help with managing the data on an end user's system,
+        but your options may be limited if ICU is only set up to use its data from a shared
+        or static library.</p>
+<h3> ICU4J Data Package</h3>
+    <p>
+        As of ICU4J 3.8, there is only one normal way to modify ICU4J's data. Place the
+        icudata.jar into src/com/ibm/icu/impl/data in your copy of ICU4J's source code and
+        rebuild ICU4J.</p>
+    <p>
+        There are other ways to modify an existing ICU4J's data in a jar file, but it's
+        not trivial to perform this update. It's usually easier to just rebuild ICU4J.</p>
+
+<!--#include virtual="../../ssi/footer.html" -->
+</body>
+</html>
