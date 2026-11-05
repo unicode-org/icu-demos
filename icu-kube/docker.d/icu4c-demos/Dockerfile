@@ -60,4 +60,9 @@ EXPOSE 8080
 RUN cp -v /home/build/icu/usr/bin/data/collation.html /var/www/localhost/htdocs/ || true
 COPY icu-kube/lighttpd.conf /etc/lighttpd/lighttpd.conf
 COPY icu-kube/index.html /var/www/localhost/htdocs/index.html
+COPY icudemos/static /var/www/localhost/htdocs/icudemos
+COPY convexp/static /var/www/localhost/htdocs/convexp
+COPY datacustom/static /var/www/localhost/htdocs/datacustom
+COPY translitdemo/static /var/www/localhost/htdocs/translit
+
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
