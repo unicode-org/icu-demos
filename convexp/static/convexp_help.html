@@ -4,10 +4,9 @@
 <head>
 <title>ICU Converter Explorer Help</title>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
-<link rel="stylesheet" href="../../icu.css" type="text/css" />
+<link rel="stylesheet" href="/icudemos/icu.css" type="text/css" />
 </head>
 <body>
-<!--#include virtual="../../ssi/header.html" -->
 <h1>ICU Demos</h1>
 <h2>ICU Converter Explorer Help</h2>
 <hr />
@@ -19,15 +18,15 @@ changes to some codepage interpretations. This causes portability problems when
 the codepage legacy data is transferred between platforms.</p>
 <p>This Converter Explorer will allow you to "explore" the aliases and
 properties of each ICU converter. More details about ICU converters can be
-found on our <a href="http://icu-project.org/charts/charset/">Charset
+found on our <a href="https://icu.unicode.org/charts/charset/">Charset
 Repository</a> page, the ICU <a href=
-"http://icu-project.org/apiref/icu4c/">API reference</a>, and the <a href=
-"http://icu-project.org/userguide/conversion.html">Conversion section</a>
+"https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/">API reference</a>, and the <a href=
+"https://unicode-org.github.io/icu/userguide/conversion/">Conversion section</a>
 of the ICU User's Guide. All data from this explorer comes directly from
 ICU.</p>
 <p>If you are wondering why some alias names or byte sequences are mapped
 certain ways, you can always <a href=
-"http://source.icu-project.org/repos/icu/icu/trunk/source/data/mappings/convrtrs.txt">
+"https://github.com/unicode-org/icu/blob/main/icu4c/source/data/mappings/convrtrs.txt">
 view the ICU alias table</a> directly. The alias table is not meant to be
 easily read by newcomers to ICU, which is the main reason why the Converter
 Explorer exists, but it does contain comments that some people may find
@@ -36,7 +35,7 @@ than your copy of ICU or what is currently available in Converter Explorer. The
 bottom of each Converter Explorer page always describes the version of ICU it
 is using.</p>
 <h3>Viewing the aliases and standards</h3>
-<p><a href="http://www.iana.org/assignments/character-sets">IANA</a> is the
+<p><a href="https://www.iana.org/assignments/character-sets">IANA</a> is the
 main source of converter aliases on the Internet. Since IANA does not specify
 the Unicode mappings for every codepage and alias, and every platform supports
 other aliases besides the IANA aliases, ICU provides a way to target the
@@ -51,7 +50,7 @@ aliases recognized by IANA and ICU. You will notice that the IANA set of
 aliases is a subset of all ICU aliases.</p>
 <p>The column marked as "<i>Internal Converter Name</i>" is also known as a
 canonical name. The canonical name is a unique ICU converter name, and it is
-usually based upon the <a href="http://www.unicode.org/reports/tr22/">UTR
+usually based upon the <a href="https://www.unicode.org/reports/tr22/">UTR
 #22</a> naming scheme. The canonical name is always guaranteed to be the
 correct converter that you need in a particular ICU release, but sometimes the
 mapping tables will get updated between ICU releases and this converter may
@@ -108,9 +107,7 @@ based.<br />
 <br />
 Only the range [\x20-\x7E] is used for this comparison because some ISO
 controls are rotated, and most people are interested in the graphical
-interpretation of ASCII. More details on this subject can be found from this
-<a href=
-"http://icu-project.org/docs/papers/conversions_and_mappings_iuc19.ppt">paper</a>.</dd>
+interpretation of ASCII.</dd>
 <dt><b><i>Is ASCII [\\u0020-\\u007E] ambiguous?</i></b></dt>
 <dd>This is the value that <code>ucnv_isAmbiguous()</code> returns. When this
 value is TRUE, it usually implies that this is a non-ASCII compatible codepage
@@ -135,13 +132,13 @@ value is derived by creating a Unicode Set with the value
 "[[:NFC_Quick_Check=yes:]&[:ccc=0:]]", and confirming that it is a full
 superset of the codepage's Unicode Set. More details about Unicode
 Normalization can be found in <a
-href="http://www.unicode.org/reports/tr15/">Unicode Standard Annex #15</a>.</dd>
+href="https://www.unicode.org/reports/tr15/">Unicode Standard Annex #15</a>.</dd>
 <dt><b><i>Contains BiDi characters?</i></b></dt>
 <dd>When this value is <code>TRUE</code>, then a conversion to or from this
 codepage can contain bidirectional characters. These are right to left
 characters, like Hebrew and Arabic characters. When displaying data from this
 codepage, you may need to apply the BiDi algorithm described in 
-<a href="http://www.unicode.org/reports/tr9/">Unicode Standard Annex
+<a href="https://www.unicode.org/reports/tr9/">Unicode Standard Annex
 #9</a>.</dd>
 <dt><b><i>List of Languages Representable By This Codepage</i></b></dt>
 <dd>This is a list of languages that are representable by this codepage. This
